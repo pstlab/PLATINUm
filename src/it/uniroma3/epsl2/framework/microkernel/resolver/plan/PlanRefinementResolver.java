@@ -1,0 +1,828 @@
+package it.uniroma3.epsl2.framework.microkernel.resolver.plan;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
+import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
+import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
+import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
+import it.uniroma3.epsl2.framework.domain.component.pdb.ParameterSynchronizationConstraint;
+import it.uniroma3.epsl2.framework.domain.component.pdb.PlanDataBaseComponent;
+import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationConstraint;
+import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
+import it.uniroma3.epsl2.framework.domain.component.pdb.TemporalSynchronizationConstraint;
+import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
+import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.BindParameterRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.ParameterRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.TemporalRelation;
+import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
+import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
+
+/**
+ * 
+ * @author anacleto
+ *
+ */
+public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent> 
+{
+	/**
+	 * 
+	 */
+	protected PlanRefinementResolver() {
+		super(ResolverType.PLAN_REFINEMENT);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected List<Flaw> doFindFlaws() {
+		
+		// list of goals
+		List<Flaw> flaws = new ArrayList<>();
+		// check pending decisions
+		for (Decision decision : this.component.getPendingDecisions()) {
+			
+			// add sub-goal
+			Goal goal = new Goal(this.component, decision);
+			// check if external component
+			if (decision.getComponent().isExternal()) {
+				// set mandatory unification
+				goal.setMandatoryUnification();
+			}
+			
+			// add goal to flaws
+			flaws.add(goal);
+		}
+		// get detected flaws
+		return flaws;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected void doComputeFlawSolutions(Flaw flaw) 
+			throws UnsolvableFlawFoundException {
+
+		// get goal
+		Goal goal = (Goal) flaw;
+		// check solving information
+		if (!goal.isMandatoryUnification()) {
+			// compute expansion solutions
+			this.doComputeExpansionSolutions(goal);
+		}
+		
+		// check solving information
+		if (!goal.isMandatoryExpansion()) {
+			// compute unification solutions
+			this.doComputeUnificationSolutions(goal);
+		}
+		
+		// check if solvable
+		if (!flaw.isSolvable()) {
+			// simply throw exception
+			throw new UnsolvableFlawFoundException("Unsolvable flaw found on component " + this.component.getName() + ":\n" + flaw);
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param solution
+	 * @throws Exception
+	 */
+	@Override
+	protected void doApply(FlawSolution solution) 
+			throws FlawSolutionApplicationException {
+
+		// get goal justification
+		GoalJustification just = (GoalJustification) solution;
+		// check type 
+		switch (just.getJustificationType()) {
+		
+			// expansion step
+			case EXPANSION : {
+				// apply solution
+				this.doApplyExpansion((GoalExpansion) just);
+			}
+			break;
+			
+			// unification step
+			case UNIFICATION : {
+				// apply solution
+				this.doApplyUnification((GoalUnification) just);
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected void doRetract(FlawSolution solution) {
+		// check solution type
+		GoalJustification justif = (GoalJustification) solution;
+		switch (justif.type) {
+		
+			// retract expansion
+			case EXPANSION : {
+				// do retract expansion
+				this.doRetractExpansion((GoalExpansion) justif);
+			}
+			break;
+			
+			// retract unification
+			case UNIFICATION : {
+				// do retract unification
+				this.doRetractUnification((GoalUnification) justif);
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param goal
+	 */
+	private void doComputeUnificationSolutions(Goal goal) { 
+		
+		// get goal-related component
+		DomainComponent comp = goal.getComponent();
+		// get decision
+		Decision goalDecision = goal.getDecision();
+
+		// get (pending) relations related to the goal
+		List<Relation> list = new ArrayList<>();
+		for (Relation rel : this.component.getPendingRelations(goalDecision)) {
+		
+			// check if relation would be activated
+			if (rel.getTarget().equals(goalDecision) && rel.getReference().isActive() || 
+					rel.getReference().equals(goalDecision) && rel.getTarget().isActive() ||
+					// check reflexive relations
+					rel.getReference().equals(goalDecision) && rel.getTarget().equals(goalDecision)) {
+				
+				// add relation
+				list.add(rel);
+			}
+		}
+		
+		// get active decisions on goal related component
+		for (Decision unif : comp.getActiveDecisions()) {
+			
+			// list of relations to propagate for unification
+			List<Relation> toActivate = new ArrayList<>();
+			
+			// check decisions' values
+			if (unif.getValue().equals(goalDecision.getValue())) {
+				
+				// print debug information
+				String msg = "Trying to unify goal= " + goalDecision + " with decision= " + unif;
+				// prepare constraints to propagate
+				for (Relation rel : list) {
+					
+					// translate relation from goal to unification
+					this.translateRelationFromGoalToUnification(unif, goalDecision, rel);
+					toActivate.add(rel);
+				}
+				
+				// try to propagate constraints
+				List<Relation> committed = new ArrayList<>();
+				try {
+					
+					// propagate translated relations
+					for (Relation rel : toActivate) {
+						// activate relation
+						this.component.addRelation(rel);
+						committed.add(rel);
+					}
+					
+					// check temporal consistency
+					this.tdb.checkConsistency();
+					// check parameter consistency
+					this.pdb.checkConsistency();
+					
+					// if everything goes right we've found a possible unification
+					GoalUnification unification = new GoalUnification(goal, unif);
+					goal.addSolution(unification);
+					// decisions can unify
+					msg += "\nDecisions can unify!";
+				} 
+				catch (RelationPropagationException | ConsistencyCheckException ex) {
+					// error while propagating constraints for unification
+					this.logger.debug(msg);
+					// inconsistent network - not a valid unification
+					msg += "\nDecisions cannot unify\n" + ex.getMessage();
+				}
+				finally {
+					// retract committed relations
+					for (Relation rel : committed) {
+						// delete relation
+						this.component.delete(rel);
+						
+						// translate back relation
+						this.translateRelationFromUnificationToOriginalGoal(unif, goalDecision, rel);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param goal
+	 */
+	private void doComputeExpansionSolutions(Goal goal) {
+		
+		// check synchronization rules
+		List<SynchronizationRule> rules = this.component.
+				getSynchronizationRules(goal.getDecision().getValue());
+		// check synchronizations
+		if (rules.isEmpty()) {
+			
+			// the goal can be justified without applying synchronization rules
+			GoalExpansion expansion = new GoalExpansion(goal);
+			// add solution
+			goal.addSolution(expansion);
+		}
+		else {
+			
+			// can do expansion
+			for (SynchronizationRule rule : rules) {
+				// expansion solution
+				GoalExpansion expansion = new GoalExpansion(goal, rule);
+				// add solution
+				goal.addSolution(expansion);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param unification
+	 * @throws Exception
+	 */
+	private void doApplyUnification(GoalUnification unification) 
+			throws FlawSolutionApplicationException 
+	{
+		// get original goal
+		Decision goal = unification.getGoalDecision();
+		// get unifying decision
+		Decision unif = unification.getUnificationDecision();
+		
+		// pending relations translated
+		List<Relation> pendingTranslated = new ArrayList<>();
+		// check relations to activate
+		List<Relation> toActivate = new ArrayList<>();
+		// translate decision's pending relations
+		for (Relation rel : this.component.getPendingRelations(goal)) {
+			
+			// translate relation
+			this.translateRelationFromGoalToUnification(unif, goal, rel);
+			// add to pending
+			pendingTranslated.add(rel);
+		}
+		
+		// check pending relations to activate after translation
+		for (Relation rel : this.component.getPendingRelations(unif)) {
+			
+			if (rel.getReference().equals(unif) && rel.getTarget().isActive() || 
+					rel.getTarget().equals(unif) && rel.getReference().isActive() ||
+					// check reflexive relations
+					rel.getReference().equals(unif) && rel.getTarget().equals(unif)) {
+				// add relation
+				toActivate.add(rel);
+			}
+		}
+		
+		// remove to activate relations from pending
+		pendingTranslated.removeAll(toActivate);
+		try	{
+			// propagate relations
+			this.component.addRelations(toActivate);
+			// remove goal
+			this.component.delete(goal);
+			
+			// add activated relations
+			unification.addActivatedRelations(toActivate);
+			// add translated pending relations as created
+			unification.addCreatedRelations(pendingTranslated);
+		}
+		catch (RelationPropagationException ex) {
+			throw new FlawSolutionApplicationException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param expansion
+	 * @throws Exception
+	 */
+	private void doApplyExpansion(GoalExpansion expansion) 
+			throws FlawSolutionApplicationException 
+	{
+		// get goal
+		Decision goal = expansion.getGoalDecision();
+		Set<Decision> dCreated = new HashSet<>();
+		Set<Relation> rCreated = new HashSet<>();
+		
+		// check rule
+		if (expansion.hasSubGoals()) {
+			
+			// get synchronization rule to apply
+			SynchronizationRule rule = expansion.getSynchronizationRule();
+			
+			// create an index of token variable
+			Map<TokenVariable, Decision> var2dec = new HashMap<>();
+			var2dec.put(rule.getTriggerer(), goal);
+			
+			// add pending decisions
+			for (TokenVariable var : rule.getTokenVariables()) {
+				// create a pending decision
+				Decision pending = this.component.createDecision(
+						var.getValue(),
+						var.getParameterLabels());
+				
+				// check solving knowledge
+				if (var.isMandatoryExpansion()) {
+					pending.setMandatoryExpansion();
+				}
+
+				// check solving knowledge
+				if (var.isMandatoryUnificaiton()) {
+					pending.setMandatoryUnification();
+				}
+				
+				// add entry to cache
+				var2dec.put(var, pending);
+				// add created decision
+				dCreated.add(pending);
+			}
+			
+			// add pending relations
+			for (SynchronizationConstraint c : rule.getConstraints()) {
+				// check category
+				switch (c.getCategory()) 
+				{
+					// temporal category
+					case TEMPORAL_CONSTRAINT : { 
+						// temporal constraint
+						TemporalSynchronizationConstraint tc = (TemporalSynchronizationConstraint) c;
+						// get decisions
+						Decision reference = var2dec.get(tc.getSource());
+						Decision target = var2dec.get(tc.getTarget());
+						// create pending relation
+						TemporalRelation rel = (TemporalRelation) this.component.createRelation(tc.getType(), reference, target);
+						rel.setBounds(tc.getBounds());
+						// add created relation
+						rCreated.add(rel);
+					}
+					break;
+					
+					// parameter category
+					case PARAMETER_CONSTRAINT: {
+						// parameter constraint
+						ParameterSynchronizationConstraint pc = (ParameterSynchronizationConstraint) c;
+						// get decisions
+						Decision reference = var2dec.get(pc.getSource());
+						Decision target = var2dec.get(pc.getTarget());
+						
+						// create pending relation
+						ParameterRelation rel = (ParameterRelation) this.component.createRelation(pc.getType(), reference, target);
+						
+						// check type
+						if (rel.getType().equals(RelationType.BIND_PARAMETER)) {
+							// bind constraint
+							BindParameterRelation bind = (BindParameterRelation) rel;
+							// set binding value
+							bind.setValue(pc.getTargetLabel());
+							
+							// set reference label
+							if (pc.getSource().equals(rule.getTriggerer())) {
+								// get trigger label index
+								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
+								// set decision's label
+								String label = goal.getParameterLabelByIndex(index);
+								// set label
+								bind.setReferenceParameterLabel(label);
+							}
+							else {
+								bind.setReferenceParameterLabel(pc.getReferenceLabel());;
+							}
+						}
+						else {
+							// check if source is the trigger
+							if (pc.getSource().equals(rule.getTriggerer())) {
+								// get trigger label index
+								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
+								// get decions's label
+								String label = goal.getParameterLabelByIndex(index);
+								// set label
+								rel.setReferenceParameterLabel(label);
+							}
+							else {
+								// directly set the label
+								rel.setReferenceParameterLabel(pc.getReferenceLabel());
+							}
+							
+							// check if target is the trigger
+							if (pc.getTarget().equals(rule.getTriggerer())) {
+								// get trigger label index
+								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getTargetLabel());
+								// get decision's label
+								String label = goal.getParameterLabelByIndex(index);
+								// set label
+								rel.setTargetParameterLabel(label);
+							}
+							else {
+								// directly set the label
+								rel.setTargetParameterLabel(pc.getTargetLabel());
+							}
+						}
+						
+						// add created relation
+						rCreated.add(rel);
+					}
+				}
+			}
+		}
+		
+		try 
+		{
+			// activate decision
+			List<Relation> rActivated = this.component.addDecision(goal);
+			// set information to flaw solution
+			expansion.addActivatedDecision(goal);
+			expansion.addCreatedDecisions(dCreated);
+			expansion.addActivatedRelations(rActivated);
+			// remove activated relations if any
+			rCreated.removeAll(rActivated);
+			expansion.addCreatedRelations(rCreated);
+		}
+		catch (DecisionPropagationException ex) {
+			// throw exception
+			throw new FlawSolutionApplicationException(ex.getMessage());
+		}
+	}
+
+
+	/**
+	 * 
+	 * @param expansion
+	 */
+	private void doRetractExpansion(GoalExpansion expansion) {
+		
+		// free added relations
+		for (Relation rel : expansion.getAddedRelations()) {
+			this.component.free(rel);
+		}
+		
+		// deactivate relations
+		for (Relation rel : expansion.getActivatedRelations()) {
+			this.component.delete(rel);
+		}
+		
+		// delete created pending relations
+		for (Relation rel : expansion.getCreatedRelations()) {
+			this.component.delete(rel);
+		}
+		
+		// delete activated decisions
+		for (Decision dec : expansion.getActivatedDecisisons()) {
+			// deactivate decision
+			this.component.delete(dec);
+		}
+		
+		// delete pending decisions
+		for (Decision dec : expansion.getCreatedDecisions()) {
+			// delete pending decisions
+			this.component.delete(dec);
+		}
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param unification
+	 */
+	private void doRetractUnification(GoalUnification unification) {
+		// restore pending goal 
+		Decision goal = unification.getGoalDecision();
+		// ensure pending status of the goal
+		goal.clear();
+		
+		// set back "original" goal as pending goal
+		this.component.restorePendingDecision(goal);
+		
+		// delete added relations - unification do no add any relation actually
+		for (Relation rel : unification.getAddedRelations()) {
+			this.component.free(rel);
+		}
+		
+		// translate and deactivated relations
+		for (Relation rel : unification.getActivatedRelations()) {
+			// delete relation - set back to pending
+			this.component.delete(rel);
+			// translate relation
+			this.translateRelationFromUnificationToOriginalGoal(unification.getUnificationDecision(), goal, rel);
+		}
+		
+		/*
+		 *  delete pending relations
+		 *  
+		 *  In this specific case created relations have been translated. Namely 
+		 *  they do not represent relations that have been introduced into the plan, but 
+		 *  simply existing pending relations that have been translated in order to 
+		 *  refer to unifying decision.
+		 */
+		for (Relation rel : unification.getCreatedRelations()) {
+			// translate relation
+			this.translateRelationFromUnificationToOriginalGoal(unification.getUnificationDecision(), goal, rel);
+		}
+	}
+	
+//	/**
+//	 * 
+//	 * @param rel
+//	 * @return
+//	 */
+//	private Constraint doCreateConstraint(Decision dec, Relation rel, Decision goalDecision) {
+//		
+//		// constraint to create
+//		Constraint c = null;
+//		// check relation category
+//		switch (rel.getCategory()) {
+//		
+//			// temporal relation
+//			case TEMPORAL_CONSTRAINT : {
+//		
+//				// temporal relation
+//				TemporalRelation trel = (TemporalRelation) rel;
+//				
+//				// check reference
+//				if (trel.getReference().equals(goalDecision)) {
+//					
+//					/* 
+//					 * Create constraint by means of factory because the reference decision is still 
+//					 * pending at this point and it must be replaced by the decision selected for
+//					 * unification (dec).
+//					 * 
+//					 * Namely, the actual reference decision has not an instantiated Token thus,
+//					 * the create() method of the relation would throw an exception
+//					 * 
+//					 */
+//					TemporalConstraint cons = this.iConstraintFactory.
+//							create(trel.getConstraintType());
+//					
+//					cons.setReference(dec.getToken().getInterval());
+//					cons.setTarget(trel.getTarget().getToken().getInterval());
+//					// set constraint
+//					c = cons;
+//				}
+//				
+//				// check target
+//				if (trel.getTarget().equals(goalDecision)) {
+//					
+//					/* 
+//					 * Create constraint by means of factory because the target decision is still 
+//					 * pending at this point and it must be replaced by the decision selected for
+//					 * unification (dec).
+//					 * 
+//					 * Namely, the actual target decision has not an instantiated Token thus,
+//					 * the create() method of the relation would throw an exception
+//					 * 
+//					 */
+//					TemporalConstraint cons = this.iConstraintFactory.
+//							create(trel.getConstraintType());
+//					// set references
+//					cons.setReference(trel.getReference().getToken().getInterval());
+//					cons.setTarget(dec.getToken().getInterval());
+//					// set bounds
+//					cons.setBounds(trel.getBounds());
+//					// set constraint
+//					c = cons;
+//				}
+//			}
+//			break;
+//			
+//			// parameter relation
+//			case PARAMETER_CONSTRAINT : {
+//				
+//				// parameter relation
+//				ParameterRelation prel = (ParameterRelation) rel;
+//				
+//				/* 
+//				 * Create parameter constraint by means of factory because the reference/target parameter has 
+//				 * not been created yet and it must be replaced by the decision (active) selected for unification (dec).
+//				 */
+//				ParameterConstraint cons = this.pFactory.createParameterConstraint(prel.getConstraintType());
+//				
+//				// check constraint type to create
+//				switch (prel.getConstraintType()) {
+//				
+//					// bind constraint
+//					case BIND : {
+//				
+//						// get bind constraint
+//						BindParameterConstraint bind = (BindParameterConstraint) cons;
+//						BindParameterRelation bindRel = (BindParameterRelation) prel;
+//						// set value
+//						bind.setValue(bindRel.getValue());
+//						// get index
+//						int index = goalDecision.getParameterIndexByLabel(prel.getReferenceParameterLabel());
+//						// set parameter
+//						bind.setReference(dec.getParameterByIndex(index));
+//						// note: the target will be replaced by an anonymous parameter when propagating constraint
+//						bind.setTarget(dec.getParameterByIndex(index));
+//					}
+//					break;
+//					
+//					case EQUAL : 
+//					case NOT_EQUAL : {
+//						
+//						// updated reference and targets
+//						if (prel.getReference().equals(goalDecision)) {
+//							// get parameter index
+//							int index = goalDecision.getParameterIndexByLabel(prel.getReferenceParameterLabel());
+//							// set reference parameter
+//							cons.setReference(dec.getParameterByIndex(index));
+//							// get index
+//							index = prel.getTarget().getParameterIndexByLabel(prel.getTargetParameterLabel());
+//							// set target parameter
+//							cons.setTarget(prel.getTarget().getParameterByIndex(index));
+//						}
+//						
+//						if (prel.getTarget().equals(goalDecision)) {
+//							// get parameter index
+//							int index = prel.getReference().getParameterIndexByLabel(prel.getReferenceParameterLabel());
+//							// set reference
+//							cons.setReference(prel.getReference().getParameterByIndex(index));
+//							
+//							// get index
+//							index = goalDecision.getParameterIndexByLabel(prel.getTargetParameterLabel());
+//							// set target
+//							cons.setTarget(dec.getParameterByIndex(index));
+//						}
+//					}
+//					break;
+//				}
+//				
+//				// set constraint
+//				c = cons;
+//			}
+//			break;
+//		}
+//		
+//		// get constraint
+//		return c;
+//	}
+	
+	/**
+	 * 
+	 * @param unification
+	 * @param goal
+	 * @param rel
+	 */
+	private void translateRelationFromGoalToUnification(Decision unification, Decision goal, Relation rel) {
+		
+		// check relation category
+		switch (rel.getCategory()) {
+		
+			// manage temporal constraint translation
+			case TEMPORAL_CONSTRAINT : {
+			
+				// check and set reference
+				if (rel.getReference().equals(goal)) {
+					// update reference
+					rel.setReference(unification);
+				}
+				
+				// check and set target
+				if (rel.getTarget().equals(goal)) {
+					// update target
+					rel.setTarget(unification);
+				}
+			}
+			break;
+			
+			// manage parameter constraint translation
+			case PARAMETER_CONSTRAINT : {
+				
+				// get relation
+				ParameterRelation pRel = (ParameterRelation) rel;
+				
+				// translate reference if needed
+				if (pRel.getReference().equals(goal)) {
+					// update reference
+					pRel.setReference(unification);
+					// update reference label
+					int index = goal.getParameterIndexByLabel(pRel.getReferenceParameterLabel());
+					// set reference parameter label
+					pRel.setReferenceParameterLabel(unification.getParameterLabelByIndex(index));
+				}
+				
+				// check parameter constraint
+				if (pRel.getConstraintType().equals(ParameterConstraintType.BIND)) {
+					// set target the same as the reference 
+					pRel.setTarget(pRel.getReference());
+					// the binding value remains the same
+				}
+				else {
+					// binary relation - translate target if needed 
+					if (pRel.getTarget().equals(goal)) {
+						// update target
+						pRel.setTarget(unification);
+						// update target label
+						int index = goal.getParameterIndexByLabel(pRel.getTargetParameterLabel());
+						// set target label
+						pRel.setTargetParameterLabel(unification.getParameterLabelByIndex(index));
+					}
+				}
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param unification
+	 * @param goal
+	 * @param rel
+	 */
+	private void translateRelationFromUnificationToOriginalGoal(Decision unification, Decision goal, Relation rel) {
+		
+		// check relation type
+		switch (rel.getCategory()) {
+			
+			// translating temporal relation
+			case TEMPORAL_CONSTRAINT : {
+				
+				// update references
+				if (rel.getReference().equals(unification)) {
+					// set reference decision
+					rel.setReference(goal);
+				}
+	
+				// update target
+				if (rel.getTarget().equals(unification)) {
+					rel.setTarget(goal);
+				}
+			}
+			break;
+			
+			// translate parameter relation
+			case PARAMETER_CONSTRAINT : {
+				
+				// get relation
+				ParameterRelation pRel = (ParameterRelation) rel;
+				// update reference if needed
+				if (pRel.getReference().equals(unification)) {
+				
+					// set reference
+					pRel.setReference(goal);
+					// get unification reference parameter label index
+					int index = unification.getParameterIndexByLabel(pRel.getReferenceParameterLabel());
+					// set goal reference parameter label
+					pRel.setReferenceParameterLabel(goal.getParameterLabelByIndex(index));
+				}
+				
+				// check if binding relation
+				if (pRel.getType().equals(RelationType.BIND_PARAMETER)) {
+					
+					// set target the same as the reference 
+					pRel.setTarget(pRel.getReference());
+					// the binding value remains the same
+				}
+				else {
+					
+					// binary parameter relation - update target reference if needed
+					if (pRel.getTarget().equals(unification)) {
+					
+						// set target
+						pRel.setTarget(goal);
+						// get unification target parameter label index
+						int index = unification.getParameterIndexByLabel(pRel.getTargetParameterLabel());
+						// set goal target parameter label
+						pRel.setTargetParameterLabel(goal.getParameterLabelByIndex(index));
+					}
+				}
+			}
+			break;
+		}
+	}
+}

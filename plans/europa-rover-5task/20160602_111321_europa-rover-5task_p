@@ -1,0 +1,213 @@
+horizon = 150
+plan {
+	timelines {
+		RoverController {
+			 token 3  { Idle [10, 85] [10,85] }
+			 token 4  { TakeSample [19, 91] [5,81] }
+			 token 11  { Idle [25, 100] [5,81] }
+			 token 5  { TakeSample [34, 106] [5,81] }
+			 token 12  { Idle [40, 115] [5,81] }
+			 token 8  { TakeSample [49, 121] [5,81] }
+			 token 9  { Idle [55, 130] [5,81] }
+			 token 7  { TakeSample [64, 136] [5,81] }
+			 token 10  { Idle [70, 145] [5,81] }
+			 token 6  { TakeSample [79, 150] [5,80] }
+		}
+		InstrumentPosition {
+			 token 1  { Stowed [70, 142] [70,142] }
+			 token 619  { Unstowed [19, 91] [5,81] }
+			 token 639  { Stowing [22, 94] [3,3] }
+			 token 637  { Stowed [23, 97] [1,75] }
+			 token 638  { Unstowing [26, 100] [3,3] }
+			 token 618  { Unstowed [34, 106] [5,80] }
+			 token 629  { Stowing [37, 109] [3,3] }
+			 token 628  { Stowed [38, 112] [1,75] }
+			 token 627  { Unstowing [41, 115] [3,3] }
+			 token 622  { Unstowed [49, 121] [5,80] }
+			 token 632  { Stowing [52, 124] [3,3] }
+			 token 631  { Stowed [53, 127] [1,75] }
+			 token 630  { Unstowing [56, 130] [3,3] }
+			 token 621  { Unstowed [64, 136] [5,80] }
+			 token 625  { Stowing [67, 139] [3,3] }
+			 token 624  { Stowed [70, 142] [2,75] }
+			 token 626  { Unstowing [73, 145] [3,3] }
+			 token 620  { Unstowed [79, 150] [5,77] }
+		}
+		InstrumentOperation {
+			 token 2  { Idle [1, 72] [1,72] }
+			 token 613  { Placing [4, 75] [3,5] }
+			 token 612  { Placed [5, 76] [1,72] }
+			 token 565  { Idle [10, 81] [5,76] }
+			 token 617  { Placing [13, 84] [3,5] }
+			 token 616  { Placed [14, 85] [1,72] }
+			 token 23  { Sampling [19, 90] [5,7] }
+			 token 603  { Placed [20, 91] [1,72] }
+			 token 211  { Idle [25, 96] [5,76] }
+			 token 615  { Placing [28, 99] [3,5] }
+			 token 614  { Placed [29, 100] [1,72] }
+			 token 212  { Sampling [34, 105] [5,7] }
+			 token 609  { Placed [35, 106] [1,72] }
+			 token 600  { Idle [40, 111] [5,76] }
+			 token 608  { Placing [43, 114] [3,5] }
+			 token 607  { Placed [44, 115] [1,72] }
+			 token 502  { Sampling [49, 120] [5,7] }
+			 token 606  { Placed [50, 121] [1,72] }
+			 token 500  { Idle [55, 126] [5,76] }
+			 token 611  { Placing [58, 129] [3,5] }
+			 token 610  { Placed [59, 130] [1,72] }
+			 token 601  { Sampling [64, 135] [5,7] }
+			 token 602  { Placed [65, 136] [1,72] }
+			 token 589  { Idle [70, 141] [5,76] }
+			 token 605  { Placing [73, 144] [3,5] }
+			 token 604  { Placed [74, 145] [1,72] }
+			 token 501  { Sampling [79, 150] [5,7] }
+		}
+		NavigationController {
+			 token 0  { At [5, 76] [5,76] }
+			 token 19  { GoingTo [10, 81] [5,11] }
+			 token 16  { At [20, 91] [10,81] }
+			 token 20  { GoingTo [25, 96] [5,11] }
+			 token 17  { At [35, 106] [10,81] }
+			 token 18  { GoingTo [40, 111] [5,11] }
+			 token 15  { At [50, 121] [10,81] }
+			 token 22  { GoingTo [55, 126] [5,11] }
+			 token 14  { At [65, 136] [10,81] }
+			 token 21  { GoingTo [70, 141] [5,11] }
+			 token 13  { At [79, 150] [9,80] }
+		}
+	}
+	relations {
+		NavigationController 17 BEFORE [0, 150]  NavigationController 13
+		NavigationController 16 BEFORE [0, 150]  NavigationController 17
+		NavigationController 0 BEFORE [0, 150]  NavigationController 17
+		NavigationController 16 BEFORE [0, 150]  NavigationController 14
+		NavigationController 17 BEFORE [0, 150]  NavigationController 14
+		NavigationController 15 BEFORE [0, 150]  NavigationController 13
+		NavigationController 17 BEFORE [0, 150]  NavigationController 15
+		NavigationController 0 BEFORE [0, 150]  NavigationController 16
+		NavigationController 14 BEFORE [0, 150]  NavigationController 13
+		NavigationController 15 BEFORE [0, 150]  NavigationController 14
+		NavigationController 17 MEETS [0, 0]  NavigationController 18
+		NavigationController 18 MEETS [0, 0]  NavigationController 15
+		NavigationController 0 MEETS [0, 0]  NavigationController 19
+		NavigationController 19 MEETS [0, 0]  NavigationController 16
+		NavigationController 16 MEETS [0, 0]  NavigationController 20
+		NavigationController 20 MEETS [0, 0]  NavigationController 17
+		NavigationController 14 MEETS [0, 0]  NavigationController 21
+		NavigationController 21 MEETS [0, 0]  NavigationController 13
+		NavigationController 15 MEETS [0, 0]  NavigationController 22
+		NavigationController 22 MEETS [0, 0]  NavigationController 14
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 600
+		InstrumentOperation 211 BEFORE [0, 150]  InstrumentOperation 502
+		InstrumentOperation 565 BEFORE [0, 150]  InstrumentOperation 23
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 589
+		InstrumentOperation 565 BEFORE [0, 150]  InstrumentOperation 600
+		InstrumentOperation 600 BEFORE [0, 150]  InstrumentOperation 500
+		InstrumentOperation 212 BEFORE [0, 150]  InstrumentOperation 600
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 23
+		InstrumentOperation 500 BEFORE [0, 150]  InstrumentOperation 589
+		InstrumentOperation 23 BEFORE [0, 150]  InstrumentOperation 211
+		InstrumentOperation 500 BEFORE [0, 150]  InstrumentOperation 601
+		InstrumentOperation 211 BEFORE [0, 150]  InstrumentOperation 600
+		InstrumentOperation 502 BEFORE [0, 150]  InstrumentOperation 500
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 565
+		InstrumentOperation 211 BEFORE [0, 150]  InstrumentOperation 212
+		InstrumentOperation 601 BEFORE [0, 150]  InstrumentOperation 589
+		InstrumentOperation 589 BEFORE [0, 150]  InstrumentOperation 501
+		InstrumentOperation 600 BEFORE [0, 150]  InstrumentOperation 502
+		InstrumentOperation 601 MEETS [0, 0]  InstrumentOperation 602
+		InstrumentOperation 602 MEETS [0, 0]  InstrumentOperation 589
+		InstrumentOperation 23 MEETS [0, 0]  InstrumentOperation 603
+		InstrumentOperation 603 MEETS [0, 0]  InstrumentOperation 211
+		InstrumentOperation 589 MEETS [0, 0]  InstrumentOperation 605
+		InstrumentOperation 605 MEETS [0, 0]  InstrumentOperation 604
+		InstrumentOperation 604 MEETS [0, 0]  InstrumentOperation 501
+		InstrumentOperation 502 MEETS [0, 0]  InstrumentOperation 606
+		InstrumentOperation 606 MEETS [0, 0]  InstrumentOperation 500
+		InstrumentOperation 600 MEETS [0, 0]  InstrumentOperation 608
+		InstrumentOperation 608 MEETS [0, 0]  InstrumentOperation 607
+		InstrumentOperation 607 MEETS [0, 0]  InstrumentOperation 502
+		InstrumentOperation 212 MEETS [0, 0]  InstrumentOperation 609
+		InstrumentOperation 609 MEETS [0, 0]  InstrumentOperation 600
+		InstrumentOperation 500 MEETS [0, 0]  InstrumentOperation 611
+		InstrumentOperation 611 MEETS [0, 0]  InstrumentOperation 610
+		InstrumentOperation 610 MEETS [0, 0]  InstrumentOperation 601
+		InstrumentOperation 2 MEETS [0, 0]  InstrumentOperation 613
+		InstrumentOperation 613 MEETS [0, 0]  InstrumentOperation 612
+		InstrumentOperation 612 MEETS [0, 0]  InstrumentOperation 565
+		InstrumentOperation 211 MEETS [0, 0]  InstrumentOperation 615
+		InstrumentOperation 615 MEETS [0, 0]  InstrumentOperation 614
+		InstrumentOperation 614 MEETS [0, 0]  InstrumentOperation 212
+		InstrumentOperation 565 MEETS [0, 0]  InstrumentOperation 617
+		InstrumentOperation 617 MEETS [0, 0]  InstrumentOperation 616
+		InstrumentOperation 616 MEETS [0, 0]  InstrumentOperation 23
+		RoverController 5 BEFORE [0, 150]  RoverController 8
+		RoverController 3 BEFORE [0, 150]  RoverController 4
+		RoverController 8 BEFORE [0, 150]  RoverController 7
+		RoverController 4 BEFORE [0, 150]  RoverController 5
+		RoverController 8 BEFORE [0, 150]  RoverController 6
+		RoverController 7 BEFORE [0, 150]  RoverController 6
+		RoverController 8 MEETS [0, 0]  RoverController 9
+		RoverController 9 MEETS [0, 0]  RoverController 7
+		RoverController 3 MEETS [0, 0]  RoverController 4
+		RoverController 7 MEETS [0, 0]  RoverController 10
+		RoverController 10 MEETS [0, 0]  RoverController 6
+		RoverController 4 MEETS [0, 0]  RoverController 11
+		RoverController 11 MEETS [0, 0]  RoverController 5
+		RoverController 5 MEETS [0, 0]  RoverController 12
+		RoverController 12 MEETS [0, 0]  RoverController 8
+		InstrumentPosition 639 MEETS [0, 0]  InstrumentPosition 637
+		InstrumentPosition 637 MEETS [0, 0]  InstrumentPosition 638
+		InstrumentPosition 638 MEETS [0, 0]  InstrumentPosition 618
+		InstrumentPosition 1 BEFORE [0, 150]  InstrumentPosition 620
+		InstrumentPosition 621 MEETS [0, 0]  InstrumentPosition 625
+		InstrumentPosition 625 MEETS [0, 0]  InstrumentPosition 624
+		InstrumentPosition 624 MEETS [0, 0]  InstrumentPosition 626
+		InstrumentPosition 626 MEETS [0, 0]  InstrumentPosition 620
+		InstrumentPosition 1 BEFORE [0, 150]  InstrumentPosition 626
+		InstrumentPosition 618 MEETS [0, 0]  InstrumentPosition 629
+		InstrumentPosition 629 MEETS [0, 0]  InstrumentPosition 628
+		InstrumentPosition 628 MEETS [0, 0]  InstrumentPosition 627
+		InstrumentPosition 627 MEETS [0, 0]  InstrumentPosition 622
+		InstrumentPosition 622 MEETS [0, 0]  InstrumentPosition 632
+		InstrumentPosition 632 MEETS [0, 0]  InstrumentPosition 631
+		InstrumentPosition 631 MEETS [0, 0]  InstrumentPosition 630
+		InstrumentPosition 630 MEETS [0, 0]  InstrumentPosition 621
+		InstrumentPosition 619 MEETS [0, 0]  InstrumentPosition 639
+		RoverController 7 CONTAINS [0, 150]  [0,150]  InstrumentPosition 621
+		RoverController 7 DURING [0, 150]  [0,150]  NavigationController 14
+		InstrumentOperation 502 DURING [0, 150]  [0,150]  InstrumentPosition 622
+		RoverController 8 CONTAINS [0, 150]  [0,150]  InstrumentOperation 502
+		RoverController 8 CONTAINS [0, 150]  [0,150]  InstrumentPosition 622
+		RoverController 8 DURING [0, 150]  [0,150]  NavigationController 15
+		NavigationController 18 DURING [0, 150]  [0,150]  InstrumentOperation 600
+		NavigationController 18 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		InstrumentOperation 23 DURING [0, 150]  [0,150]  InstrumentPosition 619
+		NavigationController 19 DURING [0, 150]  [0,150]  InstrumentOperation 565
+		NavigationController 19 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		RoverController 4 CONTAINS [0, 150]  [0,150]  InstrumentOperation 23
+		RoverController 4 CONTAINS [0, 150]  [0,150]  InstrumentPosition 619
+		RoverController 4 DURING [0, 150]  [0,150]  NavigationController 16
+		InstrumentOperation 212 DURING [0, 150]  [0,150]  InstrumentPosition 618
+		NavigationController 20 DURING [0, 150]  [0,150]  InstrumentOperation 211
+		NavigationController 20 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		RoverController 5 CONTAINS [0, 150]  [0,150]  InstrumentOperation 212
+		RoverController 5 CONTAINS [0, 150]  [0,150]  InstrumentPosition 618
+		RoverController 5 DURING [0, 150]  [0,150]  NavigationController 17
+		InstrumentOperation 501 DURING [0, 150]  [0,150]  InstrumentPosition 620
+		NavigationController 21 DURING [0, 150]  [0,150]  InstrumentOperation 589
+		NavigationController 21 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		RoverController 6 CONTAINS [0, 150]  [0,150]  InstrumentOperation 501
+		RoverController 6 CONTAINS [0, 150]  [0,150]  InstrumentPosition 620
+		RoverController 6 DURING [0, 150]  [0,150]  NavigationController 13
+		InstrumentOperation 601 DURING [0, 150]  [0,150]  InstrumentPosition 621
+		NavigationController 22 DURING [0, 150]  [0,150]  InstrumentOperation 500
+		NavigationController 22 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		RoverController 7 CONTAINS [0, 150]  [0,150]  InstrumentOperation 601
+	}
+}
+observation {
+	timelines {
+	}
+}
+

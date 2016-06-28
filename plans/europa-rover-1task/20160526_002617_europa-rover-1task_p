@@ -1,0 +1,41 @@
+horizon = 20
+plan {
+	timelines {
+		InstrumentController {
+			 token 1  { Stowed [6, 8] [6,8] }
+			 token 8  { Unstowing [9, 11] [3,3] }
+			 token 9  { Unstowed [10, 12] [1,3] }
+			 token 7  { Placing [13, 15] [3,5] }
+			 token 5  { Sampling [18, 20] [5,7] }
+		}
+		RoverController {
+			 token 2  { Idle [6, 15] [6,15] }
+			 token 3  { TakeSample [18, 20] [5,14] }
+		}
+		NavigationController {
+			 token 0  { At [1, 3] [1,3] }
+			 token 6  { GoingTo [6, 8] [5,7] }
+			 token 4  { At [18, 20] [12,14] }
+		}
+	}
+	relations {
+		InstrumentController 8 MEETS [0, 0]  InstrumentController 9
+		InstrumentController 9 MEETS [0, 0]  InstrumentController 7
+		InstrumentController 7 MEETS [0, 0]  InstrumentController 5
+		InstrumentController 1 BEFORE [0, 20]  InstrumentController 5
+		InstrumentController 1 MEETS [0, 0]  InstrumentController 8
+		NavigationController 0 BEFORE [0, 20]  NavigationController 4
+		NavigationController 0 MEETS [0, 0]  NavigationController 6
+		NavigationController 6 MEETS [0, 0]  NavigationController 4
+		RoverController 2 BEFORE [0, 20]  RoverController 3
+		RoverController 2 MEETS [0, 0]  RoverController 3
+		RoverController 3 CONTAINS [0, 20]  [0,20]  InstrumentController 5
+		RoverController 3 DURING [0, 20]  [0,20]  NavigationController 4
+		NavigationController 6 DURING [0, 20]  [0,20]  InstrumentController 1
+	}
+}
+observation {
+	timelines {
+	}
+}
+

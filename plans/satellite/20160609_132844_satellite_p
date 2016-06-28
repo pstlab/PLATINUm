@@ -1,0 +1,33 @@
+horizon = 100
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 57] [1,57] }
+			 token 6  { Slewing [4, 60] [3,3] }
+			 token 4  { Science [15, 71] [11,18] }
+			 token 8  { Slewing [18, 74] [3,3] }
+			 token 7  { Earth [19, 75] [1,57] }
+			 token 5 uncontrollable { _Comm [34, 90] [15,23] }
+		}
+	}
+	relations {
+		PointingMode 0 BEFORE [0, 100]  PointingMode 4
+		PointingMode 0 MEETS [0, 0]  PointingMode 6
+		PointingMode 6 MEETS [0, 0]  PointingMode 4
+		PointingMode 4 MEETS [0, 0]  PointingMode 8
+		PointingMode 8 MEETS [0, 0]  PointingMode 7
+		PointingMode 7 MEETS [0, 0]  PointingMode 5
+		PointingMode 4 BEFORE [0, 100]  PointingMode 5
+		PointingMode 5 DURING [0, 100]  [0,100]  GroundStationVisibility 2
+	}
+}
+observation {
+	timelines {
+		GroundStationVisibility {
+			 token 1 { NotVisible [5, 10] [5, 10] }
+			 token 2 { Visible [90, 90] [80, 85] }
+			 token 3 { NotVisible [100, 100] [10, 10] }
+		}
+	}
+}
+

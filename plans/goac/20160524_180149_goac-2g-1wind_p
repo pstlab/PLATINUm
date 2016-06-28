@@ -1,0 +1,86 @@
+horizon = 550
+plan {
+	timelines {
+		Platine {
+			 token 20  { PointingAt [21, 470] [20,470] }
+			 token 1  { PointingAt [31, 470] [31,470] }
+			 token 22  { MovingTo [41, 480] [10,30] }
+			 token 21  { PointingAt [101, 550] [10,509] }
+		}
+		RobotBase {
+			 token 0  { At [1, 439] [1,439] }
+			 token 19  { GoingTo [11, 449] [10,30] }
+			 token 17  { At [21, 459] [10,448] }
+			 token 18  { GoingTo [31, 469] [10,30] }
+			 token 16  { At [111, 550] [31,519] }
+		}
+		MissionTimeline {
+			 token 8  { TakingPicture [90, 479] [30,479] }
+			 token 9  { Idle [91, 480] [1,390] }
+			 token 7  { TakingPicture [111, 500] [20,409] }
+		}
+		Camera {
+			 token 2  { CamIdle [11, 449] [11,449] }
+			 token 10  { TakingPicture [21, 459] [10,10] }
+			 token 12  { CamIdle [91, 480] [21,459] }
+			 token 11  { TakingPicture [101, 490] [10,10] }
+		}
+		Communication {
+			 token 3  { CommIdle [80, 469] [80,469] }
+			 token 13  { Communicating [90, 479] [10,30] }
+			 token 15  { CommIdle [101, 490] [11,400] }
+			 token 14  { Communicating [111, 500] [10,30] }
+		}
+	}
+	relations {
+		RobotBase 0 MEETS [0, 0]  RobotBase 19
+		RobotBase 19 MEETS [0, 0]  RobotBase 17
+		RobotBase 0 BEFORE [0, 550]  RobotBase 16
+		RobotBase 17 BEFORE [0, 550]  RobotBase 16
+		RobotBase 0 BEFORE [0, 550]  RobotBase 17
+		RobotBase 17 MEETS [0, 0]  RobotBase 18
+		RobotBase 18 MEETS [0, 0]  RobotBase 16
+		Platine 20 BEFORE [0, 550]  Platine 21
+		Platine 1 BEFORE [0, 550]  Platine 21
+		Platine 1 MEETS [0, 0]  Platine 22
+		Platine 22 MEETS [0, 0]  Platine 21
+		Platine 20 BEFORE [0, 550]  Platine 22
+		Camera 12 MEETS [0, 0]  Camera 11
+		Camera 2 MEETS [0, 0]  Camera 10
+		Camera 2 BEFORE [0, 550]  Camera 10
+		Camera 10 MEETS [0, 0]  Camera 12
+		MissionTimeline 8 MEETS [0, 0]  MissionTimeline 9
+		MissionTimeline 9 MEETS [0, 0]  MissionTimeline 7
+		MissionTimeline 8 BEFORE [0, 550]  MissionTimeline 7
+		Communication 3 BEFORE [0, 550]  Communication 13
+		Communication 13 MEETS [0, 0]  Communication 15
+		Communication 15 MEETS [0, 0]  Communication 14
+		Communication 3 MEETS [0, 0]  Communication 13
+		Camera 10 DURING [0, 550]  [0,550]  RobotBase 17
+		Camera 10 DURING [0, 550]  [0,550]  Platine 20
+		Camera 11 DURING [0, 550]  [0,550]  RobotBase 16
+		Camera 11 DURING [0, 550]  [0,550]  Platine 21
+		Communication 13 DURING [0, 550]  [0,550]  CommunicationVW 5
+		Communication 13 DURING [0, 550]  [0,550]  RobotBase 16
+		Communication 14 DURING [0, 550]  [0,550]  CommunicationVW 5
+		Communication 14 DURING [0, 550]  [0,550]  RobotBase 16
+		RobotBase 18 DURING [0, 550]  [0,550]  Platine 1
+		RobotBase 19 DURING [0, 550]  [0,550]  Platine 20
+		Camera 11 BEFORE [0, 550]  Communication 14
+		MissionTimeline 7 CONTAINS [0, 550]  [0,550]  Camera 11
+		MissionTimeline 7 CONTAINS [0, 550]  [0,0]  Communication 14
+		Camera 10 BEFORE [0, 550]  Communication 13
+		MissionTimeline 8 CONTAINS [0, 550]  [0,550]  Camera 10
+		MissionTimeline 8 CONTAINS [0, 550]  [0,0]  Communication 13
+	}
+}
+observation {
+	timelines {
+		CommunicationVW {
+			 token 4 { None [80, 100] [80, 100] }
+			 token 5 { Visible [500, 500] [400, 420] }
+			 token 6 { None [550, 550] [50, 50] }
+		}
+	}
+}
+

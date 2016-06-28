@@ -1,0 +1,11 @@
+PROBLEM SATELLITE_Problem (DOMAIN SATELLITE_Domain) 
+{
+	f0 <fact> PointingMode.pm.Earth() AT [0, 0] [1, +INF] [1, +INF];
+	
+	f1 <fact> GroundStationVisibility.gv.NotVisible() AT [0, 0] [5, 10] [5, 10];
+	f2 <fact> GroundStationVisibility.gv.Visible() AT [5, 10] [90, 90] [80, 85];
+	f3 <fact> GroundStationVisibility.gv.NotVisible() AT [90, 90] [100, 100] [10, 10];
+
+	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
+	g1 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
+}

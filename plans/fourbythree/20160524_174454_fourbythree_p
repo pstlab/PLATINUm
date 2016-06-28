@@ -1,0 +1,150 @@
+horizon = 80
+plan {
+	timelines {
+		CollaborationType {
+			 token 3  { None [1, 26] [1,26] }
+			 token 14  { Simultaneous [58, 80] [50,79] }
+		}
+		Human {
+			 token 2  { Idle [1, 19] [1,19] }
+			 token 9 uncontrollable { _Place [4, 22] [3,5] }
+			 token 33 uncontrollable { _Unscrew [12, 30] [8,11] }
+			 token 19  { Idle [54, 72] [50,68] }
+			 token 41  { Idle [13, 31] [1,19] }
+			 token 35 uncontrollable { _Rotate [16, 34] [3,7] }
+			 token 40  { Idle [17, 35] [1,19] }
+			 token 26 uncontrollable { _Unscrew [25, 43] [8,11] }
+			 token 45  { Idle [26, 44] [1,19] }
+			 token 23 uncontrollable { _RemovePart [37, 55] [11,18] }
+			 token 42  { Idle [38, 56] [1,19] }
+			 token 21 uncontrollable { _RebuildPart [53, 71] [15,23] }
+			 token 39  { Idle [54, 72] [1,19] }
+			 token 15 uncontrollable { _Screw [62, 80] [8,11] }
+		}
+		RobotController {
+			 token 4  { Idle [53, 75] [53,75] }
+			 token 30  { Unscrew [9, 31] [5,7] }
+			 token 47  { Idle [16, 39] [3,30] }
+			 token 25  { Unscrew [21, 44] [5,7] }
+			 token 46  { Idle [53, 75] [27,54] }
+			 token 11  { Screw [58, 80] [5,7] }
+		}
+		ScrewDriverController {
+			 token 6  { Unset [26, 71] [26,71] }
+			 token 31  { Operating [9, 33] [5,7] }
+			 token 43  { Ready [14, 39] [1,30] }
+			 token 27  { Operating [21, 46] [5,7] }
+			 token 38  { Ready [22, 67] [1,46] }
+			 token 36  { Unsetting [25, 70] [3,3] }
+			 token 37  { Unset [26, 71] [1,46] }
+			 token 16  { Setting [29, 74] [3,3] }
+			 token 17  { Ready [51, 75] [1,46] }
+			 token 12  { Operating [58, 80] [5,7] }
+		}
+		RobotArmController {
+			 token 5  { Idle [1, 23] [1,23] }
+			 token 18  { Moving [4, 26] [3,11] }
+			 token 32  { OnTarget [9, 36] [5,32] }
+			 token 13  { OnTarget [58, 80] [50,76] }
+			 token 44  { Moving [12, 39] [3,11] }
+			 token 28  { OnTarget [21, 80] [5,68] }
+		}
+		ALFA {
+			 token 0  { Idle [1, 19] [1,19] }
+			 token 7  { Assembly [62, 80] [61,79] }
+		}
+		AssemblyProcess {
+			 token 1  { None [1, 19] [1,19] }
+			 token 8  { SetTheWorkPiece [4, 22] [3,21] }
+			 token 29  { RemoveTopCover [12, 31] [8,27] }
+			 token 34  { TurnPiece [16, 35] [3,23] }
+			 token 24  { RemoveBottomCover [25, 44] [8,28] }
+			 token 22  { RemoveTheInsert [37, 56] [11,31] }
+			 token 20  { RebuildThePiece [53, 72] [15,35] }
+			 token 10  { CoverPlacement [62, 80] [8,27] }
+		}
+	}
+	relations {
+		AssemblyProcess 8 BEFORE [1, 80]  AssemblyProcess 10
+		AssemblyProcess 8 MEETS [0, 0]  AssemblyProcess 29
+		AssemblyProcess 29 MEETS [0, 0]  AssemblyProcess 34
+		AssemblyProcess 34 MEETS [0, 0]  AssemblyProcess 24
+		AssemblyProcess 24 MEETS [0, 0]  AssemblyProcess 22
+		AssemblyProcess 22 MEETS [0, 0]  AssemblyProcess 20
+		AssemblyProcess 20 MEETS [0, 0]  AssemblyProcess 10
+		AssemblyProcess 1 BEFORE [0, 80]  AssemblyProcess 8
+		AssemblyProcess 1 MEETS [0, 0]  AssemblyProcess 8
+		Human 35 MEETS [0, 0]  Human 40
+		Human 40 MEETS [0, 0]  Human 26
+		Human 33 MEETS [0, 0]  Human 41
+		Human 41 MEETS [0, 0]  Human 35
+		Human 23 MEETS [0, 0]  Human 42
+		Human 42 MEETS [0, 0]  Human 21
+		Human 9 MEETS [0, 0]  Human 19
+		Human 19 MEETS [0, 0]  Human 15
+		Human 2 MEETS [0, 0]  Human 9
+		Human 26 MEETS [0, 0]  Human 45
+		Human 45 MEETS [0, 0]  Human 23
+		Human 2 BEFORE [0, 80]  Human 15
+		Human 2 BEFORE [0, 80]  Human 9
+		Human 21 MEETS [0, 0]  Human 39
+		Human 39 MEETS [0, 0]  Human 15
+		CollaborationType 3 BEFORE [0, 80]  CollaborationType 14
+		CollaborationType 3 MEETS [0, 0]  CollaborationType 14
+		RobotController 47 MEETS [0, 0]  RobotController 25
+		RobotController 4 BEFORE [0, 80]  RobotController 11
+		RobotController 4 MEETS [0, 0]  RobotController 11
+		RobotController 25 MEETS [0, 0]  RobotController 46
+		RobotController 46 MEETS [0, 0]  RobotController 11
+		RobotController 30 MEETS [0, 0]  RobotController 47
+		RobotArmController 5 MEETS [0, 0]  RobotArmController 18
+		RobotArmController 18 MEETS [0, 0]  RobotArmController 13
+		RobotArmController 18 BEFORE [0, 80]  RobotArmController 32
+		RobotArmController 18 BEFORE [0, 80]  RobotArmController 28
+		RobotArmController 32 MEETS [0, 0]  RobotArmController 44
+		RobotArmController 32 BEFORE [0, 80]  RobotArmController 28
+		RobotArmController 44 MEETS [0, 0]  RobotArmController 28
+		RobotArmController 5 BEFORE [0, 80]  RobotArmController 13
+		ALFA 0 MEETS [0, 0]  ALFA 7
+		ALFA 0 BEFORE [0, 80]  ALFA 7
+		ScrewDriverController 31 MEETS [0, 0]  ScrewDriverController 43
+		ScrewDriverController 43 MEETS [0, 0]  ScrewDriverController 27
+		ScrewDriverController 31 BEFORE [0, 80]  ScrewDriverController 27
+		ScrewDriverController 27 BEFORE [0, 80]  ScrewDriverController 17
+		ScrewDriverController 27 BEFORE [0, 80]  ScrewDriverController 16
+		ScrewDriverController 6 BEFORE [0, 80]  ScrewDriverController 12
+		ScrewDriverController 27 MEETS [0, 0]  ScrewDriverController 38
+		ScrewDriverController 38 MEETS [0, 0]  ScrewDriverController 36
+		ScrewDriverController 36 MEETS [0, 0]  ScrewDriverController 37
+		ScrewDriverController 6 MEETS [0, 0]  ScrewDriverController 16
+		ScrewDriverController 37 MEETS [0, 0]  ScrewDriverController 16
+		ScrewDriverController 16 MEETS [0, 0]  ScrewDriverController 17
+		ScrewDriverController 17 MEETS [0, 0]  ScrewDriverController 12
+		AssemblyProcess 20 CONTAINS [0, 80]  [0,80]  Human 21
+		AssemblyProcess 22 CONTAINS [0, 80]  [0,80]  Human 23
+		RobotController 25 DURING [0, 80]  [0,80]  CollaborationType 14
+		AssemblyProcess 24 CONTAINS [0, 80]  [0,80]  RobotController 25
+		AssemblyProcess 24 CONTAINS [0, 80]  [0,80]  Human 26
+		ALFA 7 CONTAINS [0, 80]  [0,80]  AssemblyProcess 10
+		RobotController 25 DURING [0, 80]  [0,80]  ScrewDriverController 27
+		ALFA 7 CONTAINS [0, 80]  [0,80]  AssemblyProcess 8
+		RobotController 25 DURING [0, 80]  [0,80]  RobotArmController 28
+		RobotController 30 DURING [0, 80]  [0,80]  CollaborationType 14
+		AssemblyProcess 8 CONTAINS [0, 80]  [0,80]  Human 9
+		RobotController 11 DURING [0, 80]  [0,80]  CollaborationType 14
+		AssemblyProcess 29 CONTAINS [0, 80]  [0,80]  RobotController 30
+		AssemblyProcess 29 CONTAINS [0, 80]  [0,80]  Human 33
+		AssemblyProcess 10 CONTAINS [0, 80]  [0,80]  RobotController 11
+		AssemblyProcess 10 CONTAINS [0, 80]  [0,80]  Human 15
+		RobotController 30 DURING [0, 80]  [0,80]  ScrewDriverController 31
+		RobotController 30 DURING [0, 80]  [0,80]  RobotArmController 32
+		RobotController 11 DURING [0, 80]  [0,80]  ScrewDriverController 12
+		RobotController 11 DURING [0, 80]  [0,80]  RobotArmController 13
+		AssemblyProcess 34 CONTAINS [0, 80]  [0,80]  Human 35
+	}
+}
+observation {
+	timelines {
+	}
+}
+

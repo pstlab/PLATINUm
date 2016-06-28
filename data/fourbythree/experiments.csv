@@ -1,0 +1,10 @@
+process-size-effort;planning-time (msecs);process-duration-lb;process-duration-ub;#totalTasks;#assignableTasks;#robot-tasks;#human-tasks;horizon;robot-idle-time (%);human-idle-time (%)
+small-30;292;42;69;6;4;1;5;70;92.0;45.0
+small-50;217;33;39;6;4;2;4;40;75.0;25.0
+small-70;242;34;39;6;4;3;3;40;62.0;45.0
+medium-30;297;80;89;10;6;1;9;90;94.0;20.0
+medium-50;388;62;69;10;6;3;7;70;78.0;20.0
+medium-70;599;65;69;10;6;5;5;70;64.0;42.0
+large-30;828;125;139;16;12;2;14;140;92.0;20.0
+large-50;1233;89;99;16;12;6;10;100;70.0;20.0
+large-70;2602;99;109;16;12;11;5;110;50.0;63.0

@@ -1,0 +1,253 @@
+horizon = 150
+plan {
+	timelines {
+		RoverController {
+			 token 3  { Idle [6, 70] [6,70] }
+			 token 5  { TakeSample [15, 76] [5,70] }
+			 token 10  { Idle [21, 85] [5,70] }
+			 token 8  { TakeSample [30, 91] [5,70] }
+			 token 11  { Idle [36, 100] [5,70] }
+			 token 6  { TakeSample [45, 106] [5,70] }
+			 token 14  { Idle [51, 115] [5,70] }
+			 token 7  { TakeSample [60, 121] [5,70] }
+			 token 13  { Idle [66, 130] [5,70] }
+			 token 9  { TakeSample [75, 136] [5,70] }
+			 token 12  { Idle [81, 145] [5,70] }
+			 token 4  { TakeSample [90, 150] [5,69] }
+		}
+		InstrumentPosition {
+			 token 1  { Stowed [81, 142] [81,142] }
+			 token 1885  { Unstowed [15, 76] [5,70] }
+			 token 1889  { Stowing [18, 79] [3,3] }
+			 token 1891  { Stowed [19, 82] [1,64] }
+			 token 1890  { Unstowing [22, 85] [3,3] }
+			 token 1880  { Unstowed [30, 91] [5,69] }
+			 token 1897  { Stowing [33, 94] [3,3] }
+			 token 1895  { Stowed [34, 97] [1,64] }
+			 token 1896  { Unstowing [37, 100] [3,3] }
+			 token 1883  { Unstowed [45, 106] [5,69] }
+			 token 1903  { Stowing [48, 109] [3,3] }
+			 token 1902  { Stowed [49, 112] [1,64] }
+			 token 1901  { Unstowing [52, 115] [3,3] }
+			 token 1884  { Unstowed [60, 121] [5,69] }
+			 token 1888  { Stowing [63, 124] [3,3] }
+			 token 1887  { Stowed [64, 127] [1,64] }
+			 token 1886  { Unstowing [67, 130] [3,3] }
+			 token 1882  { Unstowed [75, 136] [5,69] }
+			 token 1898  { Stowing [78, 139] [3,3] }
+			 token 1899  { Stowed [81, 142] [2,64] }
+			 token 1900  { Unstowing [84, 145] [3,3] }
+			 token 1881  { Unstowed [90, 150] [5,66] }
+		}
+		InstrumentOperation {
+			 token 2  { Idle [6, 66] [6,66] }
+			 token 1877  { Placing [9, 69] [3,5] }
+			 token 1876  { Placed [10, 70] [1,61] }
+			 token 1528  { Sampling [15, 75] [5,7] }
+			 token 1864  { Placed [16, 76] [1,61] }
+			 token 628  { Idle [21, 81] [5,65] }
+			 token 1873  { Placing [24, 84] [3,5] }
+			 token 1872  { Placed [25, 85] [1,61] }
+			 token 629  { Sampling [30, 90] [5,7] }
+			 token 1868  { Placed [31, 91] [1,61] }
+			 token 1746  { Idle [36, 96] [5,65] }
+			 token 1867  { Placing [39, 99] [3,5] }
+			 token 1866  { Placed [40, 100] [1,61] }
+			 token 1840  { Sampling [45, 105] [5,7] }
+			 token 1871  { Placed [46, 106] [1,61] }
+			 token 1839  { Idle [51, 111] [5,65] }
+			 token 1875  { Placing [54, 114] [3,5] }
+			 token 1874  { Placed [55, 115] [1,61] }
+			 token 1529  { Sampling [60, 120] [5,7] }
+			 token 1863  { Placed [61, 121] [1,61] }
+			 token 1862  { Idle [66, 126] [5,65] }
+			 token 1879  { Placing [69, 129] [3,5] }
+			 token 1878  { Placed [70, 130] [1,61] }
+			 token 1748  { Sampling [75, 135] [5,7] }
+			 token 1865  { Placed [76, 136] [1,61] }
+			 token 1527  { Idle [81, 141] [5,65] }
+			 token 1869  { Placing [84, 144] [3,5] }
+			 token 1870  { Placed [85, 145] [1,61] }
+			 token 1747  { Sampling [90, 150] [5,7] }
+		}
+		NavigationController {
+			 token 0  { At [1, 61] [1,61] }
+			 token 26  { GoingTo [6, 66] [5,11] }
+			 token 17  { At [16, 76] [10,70] }
+			 token 25  { GoingTo [21, 81] [5,11] }
+			 token 20  { At [31, 91] [10,70] }
+			 token 24  { GoingTo [36, 96] [5,11] }
+			 token 16  { At [46, 106] [10,70] }
+			 token 21  { GoingTo [51, 111] [5,11] }
+			 token 18  { At [61, 121] [10,70] }
+			 token 22  { GoingTo [66, 126] [5,11] }
+			 token 19  { At [76, 136] [10,70] }
+			 token 23  { GoingTo [81, 141] [5,11] }
+			 token 15  { At [90, 150] [9,69] }
+		}
+	}
+	relations {
+		NavigationController 23 MEETS [0, 0]  NavigationController 15
+		NavigationController 20 MEETS [0, 0]  NavigationController 24
+		NavigationController 24 MEETS [0, 0]  NavigationController 16
+		NavigationController 17 MEETS [0, 0]  NavigationController 25
+		NavigationController 25 MEETS [0, 0]  NavigationController 20
+		NavigationController 0 MEETS [0, 0]  NavigationController 26
+		NavigationController 26 MEETS [0, 0]  NavigationController 17
+		NavigationController 16 BEFORE [0, 150]  NavigationController 18
+		NavigationController 17 BEFORE [0, 150]  NavigationController 16
+		NavigationController 20 BEFORE [0, 150]  NavigationController 18
+		NavigationController 0 BEFORE [0, 150]  NavigationController 15
+		NavigationController 0 BEFORE [0, 150]  NavigationController 19
+		NavigationController 0 BEFORE [0, 150]  NavigationController 18
+		NavigationController 18 BEFORE [0, 150]  NavigationController 19
+		NavigationController 20 BEFORE [0, 150]  NavigationController 15
+		NavigationController 16 BEFORE [0, 150]  NavigationController 15
+		NavigationController 20 BEFORE [0, 150]  NavigationController 16
+		NavigationController 0 BEFORE [0, 150]  NavigationController 20
+		NavigationController 18 BEFORE [0, 150]  NavigationController 15
+		NavigationController 19 BEFORE [0, 150]  NavigationController 15
+		NavigationController 0 BEFORE [0, 150]  NavigationController 17
+		NavigationController 17 BEFORE [0, 150]  NavigationController 20
+		NavigationController 16 MEETS [0, 0]  NavigationController 21
+		NavigationController 21 MEETS [0, 0]  NavigationController 18
+		NavigationController 18 MEETS [0, 0]  NavigationController 22
+		NavigationController 22 MEETS [0, 0]  NavigationController 19
+		NavigationController 19 MEETS [0, 0]  NavigationController 23
+		InstrumentOperation 1867 MEETS [0, 0]  InstrumentOperation 1866
+		InstrumentOperation 1866 MEETS [0, 0]  InstrumentOperation 1840
+		InstrumentOperation 629 MEETS [0, 0]  InstrumentOperation 1868
+		InstrumentOperation 1868 MEETS [0, 0]  InstrumentOperation 1746
+		InstrumentOperation 1527 MEETS [0, 0]  InstrumentOperation 1869
+		InstrumentOperation 1869 MEETS [0, 0]  InstrumentOperation 1870
+		InstrumentOperation 1870 MEETS [0, 0]  InstrumentOperation 1747
+		InstrumentOperation 1840 MEETS [0, 0]  InstrumentOperation 1871
+		InstrumentOperation 1871 MEETS [0, 0]  InstrumentOperation 1839
+		InstrumentOperation 628 MEETS [0, 0]  InstrumentOperation 1873
+		InstrumentOperation 1873 MEETS [0, 0]  InstrumentOperation 1872
+		InstrumentOperation 1872 MEETS [0, 0]  InstrumentOperation 629
+		InstrumentOperation 1839 MEETS [0, 0]  InstrumentOperation 1875
+		InstrumentOperation 1875 MEETS [0, 0]  InstrumentOperation 1874
+		InstrumentOperation 1874 MEETS [0, 0]  InstrumentOperation 1529
+		InstrumentOperation 2 MEETS [0, 0]  InstrumentOperation 1877
+		InstrumentOperation 1877 MEETS [0, 0]  InstrumentOperation 1876
+		InstrumentOperation 1876 MEETS [0, 0]  InstrumentOperation 1528
+		InstrumentOperation 1862 MEETS [0, 0]  InstrumentOperation 1879
+		InstrumentOperation 1879 MEETS [0, 0]  InstrumentOperation 1878
+		InstrumentOperation 1878 MEETS [0, 0]  InstrumentOperation 1748
+		InstrumentOperation 1862 BEFORE [0, 150]  InstrumentOperation 1747
+		InstrumentOperation 1528 BEFORE [0, 150]  InstrumentOperation 628
+		InstrumentOperation 1527 BEFORE [0, 150]  InstrumentOperation 1747
+		InstrumentOperation 1748 BEFORE [0, 150]  InstrumentOperation 1527
+		InstrumentOperation 628 BEFORE [0, 150]  InstrumentOperation 1839
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 1748
+		InstrumentOperation 1746 BEFORE [0, 150]  InstrumentOperation 1840
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 1839
+		InstrumentOperation 1839 BEFORE [0, 150]  InstrumentOperation 1529
+		InstrumentOperation 1862 BEFORE [0, 150]  InstrumentOperation 1527
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 1862
+		InstrumentOperation 628 BEFORE [0, 150]  InstrumentOperation 629
+		InstrumentOperation 1528 BEFORE [0, 150]  InstrumentOperation 1746
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 628
+		InstrumentOperation 1840 BEFORE [0, 150]  InstrumentOperation 1862
+		InstrumentOperation 1746 BEFORE [0, 150]  InstrumentOperation 1839
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 1746
+		InstrumentOperation 1839 BEFORE [0, 150]  InstrumentOperation 1862
+		InstrumentOperation 2 BEFORE [0, 150]  InstrumentOperation 1528
+		InstrumentOperation 1862 BEFORE [0, 150]  InstrumentOperation 1748
+		InstrumentOperation 628 BEFORE [0, 150]  InstrumentOperation 1746
+		InstrumentOperation 629 BEFORE [0, 150]  InstrumentOperation 1746
+		InstrumentOperation 1529 BEFORE [0, 150]  InstrumentOperation 1862
+		InstrumentOperation 1840 BEFORE [0, 150]  InstrumentOperation 1839
+		InstrumentOperation 1529 MEETS [0, 0]  InstrumentOperation 1863
+		InstrumentOperation 1863 MEETS [0, 0]  InstrumentOperation 1862
+		InstrumentOperation 1528 MEETS [0, 0]  InstrumentOperation 1864
+		InstrumentOperation 1864 MEETS [0, 0]  InstrumentOperation 628
+		InstrumentOperation 1748 MEETS [0, 0]  InstrumentOperation 1865
+		InstrumentOperation 1865 MEETS [0, 0]  InstrumentOperation 1527
+		InstrumentOperation 1746 MEETS [0, 0]  InstrumentOperation 1867
+		RoverController 7 BEFORE [0, 150]  RoverController 4
+		RoverController 8 BEFORE [0, 150]  RoverController 7
+		RoverController 3 BEFORE [0, 150]  RoverController 4
+		RoverController 5 BEFORE [0, 150]  RoverController 8
+		RoverController 7 BEFORE [0, 150]  RoverController 9
+		RoverController 8 BEFORE [0, 150]  RoverController 6
+		RoverController 6 BEFORE [0, 150]  RoverController 7
+		RoverController 3 BEFORE [0, 150]  RoverController 5
+		RoverController 9 BEFORE [0, 150]  RoverController 4
+		RoverController 5 MEETS [0, 0]  RoverController 10
+		RoverController 10 MEETS [0, 0]  RoverController 8
+		RoverController 8 MEETS [0, 0]  RoverController 11
+		RoverController 11 MEETS [0, 0]  RoverController 6
+		RoverController 9 MEETS [0, 0]  RoverController 12
+		RoverController 12 MEETS [0, 0]  RoverController 4
+		RoverController 7 MEETS [0, 0]  RoverController 13
+		RoverController 13 MEETS [0, 0]  RoverController 9
+		RoverController 6 MEETS [0, 0]  RoverController 14
+		RoverController 14 MEETS [0, 0]  RoverController 7
+		RoverController 3 MEETS [0, 0]  RoverController 5
+		InstrumentPosition 1 BEFORE [0, 150]  InstrumentPosition 1881
+		InstrumentPosition 1884 MEETS [0, 0]  InstrumentPosition 1888
+		InstrumentPosition 1888 MEETS [0, 0]  InstrumentPosition 1887
+		InstrumentPosition 1887 MEETS [0, 0]  InstrumentPosition 1886
+		InstrumentPosition 1886 MEETS [0, 0]  InstrumentPosition 1882
+		InstrumentPosition 1885 MEETS [0, 0]  InstrumentPosition 1889
+		InstrumentPosition 1889 MEETS [0, 0]  InstrumentPosition 1891
+		InstrumentPosition 1891 MEETS [0, 0]  InstrumentPosition 1890
+		InstrumentPosition 1890 MEETS [0, 0]  InstrumentPosition 1880
+		InstrumentPosition 1880 MEETS [0, 0]  InstrumentPosition 1897
+		InstrumentPosition 1897 MEETS [0, 0]  InstrumentPosition 1895
+		InstrumentPosition 1895 MEETS [0, 0]  InstrumentPosition 1896
+		InstrumentPosition 1896 MEETS [0, 0]  InstrumentPosition 1883
+		InstrumentPosition 1882 MEETS [0, 0]  InstrumentPosition 1898
+		InstrumentPosition 1898 MEETS [0, 0]  InstrumentPosition 1899
+		InstrumentPosition 1899 MEETS [0, 0]  InstrumentPosition 1900
+		InstrumentPosition 1900 MEETS [0, 0]  InstrumentPosition 1881
+		InstrumentPosition 1 BEFORE [0, 150]  InstrumentPosition 1900
+		InstrumentPosition 1883 MEETS [0, 0]  InstrumentPosition 1903
+		InstrumentPosition 1903 MEETS [0, 0]  InstrumentPosition 1902
+		InstrumentPosition 1902 MEETS [0, 0]  InstrumentPosition 1901
+		InstrumentPosition 1901 MEETS [0, 0]  InstrumentPosition 1884
+		RoverController 7 CONTAINS [0, 150]  [0,150]  InstrumentOperation 1529
+		RoverController 7 CONTAINS [0, 150]  [0,150]  InstrumentPosition 1884
+		RoverController 7 DURING [0, 150]  [0,150]  NavigationController 18
+		NavigationController 23 DURING [0, 150]  [0,150]  InstrumentOperation 1527
+		InstrumentOperation 629 DURING [0, 150]  [0,150]  InstrumentPosition 1880
+		NavigationController 23 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		RoverController 8 CONTAINS [0, 150]  [0,150]  InstrumentOperation 629
+		RoverController 8 CONTAINS [0, 150]  [0,150]  InstrumentPosition 1880
+		RoverController 8 DURING [0, 150]  [0,150]  NavigationController 20
+		NavigationController 24 DURING [0, 150]  [0,150]  InstrumentOperation 1746
+		InstrumentOperation 1748 DURING [0, 150]  [0,150]  InstrumentPosition 1882
+		NavigationController 24 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		RoverController 9 CONTAINS [0, 150]  [0,150]  InstrumentOperation 1748
+		RoverController 9 CONTAINS [0, 150]  [0,150]  InstrumentPosition 1882
+		RoverController 9 DURING [0, 150]  [0,150]  NavigationController 19
+		NavigationController 25 DURING [0, 150]  [0,150]  InstrumentOperation 628
+		NavigationController 25 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		NavigationController 26 DURING [0, 150]  [0,150]  InstrumentOperation 2
+		NavigationController 26 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		InstrumentOperation 1747 DURING [0, 150]  [0,150]  InstrumentPosition 1881
+		RoverController 4 CONTAINS [0, 150]  [0,150]  InstrumentOperation 1747
+		RoverController 4 CONTAINS [0, 150]  [0,150]  InstrumentPosition 1881
+		RoverController 4 DURING [0, 150]  [0,150]  NavigationController 15
+		InstrumentOperation 1528 DURING [0, 150]  [0,150]  InstrumentPosition 1885
+		RoverController 5 CONTAINS [0, 150]  [0,150]  InstrumentOperation 1528
+		RoverController 5 CONTAINS [0, 150]  [0,150]  InstrumentPosition 1885
+		RoverController 5 DURING [0, 150]  [0,150]  NavigationController 17
+		NavigationController 21 DURING [0, 150]  [0,150]  InstrumentOperation 1839
+		InstrumentOperation 1840 DURING [0, 150]  [0,150]  InstrumentPosition 1883
+		NavigationController 21 DURING [0, 150]  [0,150]  InstrumentPosition 1
+		RoverController 6 CONTAINS [0, 150]  [0,150]  InstrumentOperation 1840
+		RoverController 6 CONTAINS [0, 150]  [0,150]  InstrumentPosition 1883
+		RoverController 6 DURING [0, 150]  [0,150]  NavigationController 16
+		NavigationController 22 DURING [0, 150]  [0,150]  InstrumentOperation 1862
+		InstrumentOperation 1529 DURING [0, 150]  [0,150]  InstrumentPosition 1884
+		NavigationController 22 DURING [0, 150]  [0,150]  InstrumentPosition 1
+	}
+}
+observation {
+	timelines {
+	}
+}
+
