@@ -2,7 +2,8 @@ package it.uniroma3.epsl2.testing.executive.satellite;
 
 import it.istc.pst.epsl.microkernel.internal.solver.exception.NoSolutionFoundException;
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.executive.PlanExecutor;
+import it.uniroma3.epsl2.executive.EarliestStartTimeExecutive;
+import it.uniroma3.epsl2.executive.Executive;
 
 /**
  * 
@@ -30,10 +31,10 @@ class SatelliteExecutorTest {
 			System.out.println();
 			
 			// create executor
-			PlanExecutor executor = new PlanExecutor();
+			Executive executor = new EarliestStartTimeExecutive();
 			executor.init(plan);
 			// start executing the plan
-			executor.executePlan();
+			executor.execute();
 		}
 		catch (NoSolutionFoundException ex) {
 			System.err.println(ex.getMessage());

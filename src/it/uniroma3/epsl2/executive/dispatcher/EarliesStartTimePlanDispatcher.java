@@ -40,14 +40,16 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 
 		// compute schedules of ready to execute nodes
 		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.READY)) {
-			try 
-			{
+			
+			try {
+				
 				// check the actual bounds of the interval to schedule
 				this.pdb.checkSchedule(node);
 				
 				// check controllability type
 				if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE) || 
 						node.getControllabilityType().equals(ControllabilityType.EXTERNAL_TOKEN)) {
+					
 					// schedule the controllable token
 					long start = node.getStart()[0];
 					this.pdb.scheduleStartTime(node, start);

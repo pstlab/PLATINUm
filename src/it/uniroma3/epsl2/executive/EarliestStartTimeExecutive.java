@@ -2,50 +2,40 @@ package it.uniroma3.epsl2.executive;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.uniroma3.epsl2.executive.dispatcher.EarliesStartTimePlanDispatcher;
-import it.uniroma3.epsl2.executive.dispatcher.PlanDispatcher;
-import it.uniroma3.epsl2.executive.monitor.PlanMonitor;
 import it.uniroma3.epsl2.executive.monitor.UncontrollableDurationObservationPlanMonitor;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.executive.pdb.epsl.EPSLExecutivePlanDataBaseManager;
-import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.ClockReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.ExecutivePlanDataBaseReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.executive.cfg.ExecutiveConfiguration;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class PlanExecutor extends ApplicationFrameworkObject {
+@ExecutiveConfiguration(
+
+	// set dispatcher
+	dispatcher = EarliesStartTimePlanDispatcher.class,
 	
-	@ExecutivePlanDataBaseReference
-	private ExecutivePlanDataBaseManager pdb;	// the plan to execute
-	
-	@ClockReference
-	private ClockManager clock;						// execution clock controller
-	
-	private PlanMonitor monitor;					// plan monitor
-	private PlanDispatcher dispatcher;				// dispatching process
+	// set monitor
+	monitor = UncontrollableDurationObservationPlanMonitor.class
+)
+public class EarliestStartTimeExecutive extends Executive {
+
+	private boolean sharedClock;
 	
 	/**
 	 * 
 	 */
-	public PlanExecutor() {
-		super();
-	}
-	
-	/**
-	 * 
-	 * @param plan
-	 */
-	public void init(EPSLPlanDescriptor plan) {
-		// create execution plan data-base
-		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
-		// initialize plan data-base
-		this.pdb.init(plan);
-		// create clock
-		this.clock = new ClockManager();
+	@Override
+	public void init(ExecutivePlanDataBaseManager pdb, ClockManager clock) {
+		// set the clock
+		this.clock = clock;
+		this.sharedClock = true;		
+		// set the plan data-base
+		this.pdb = pdb;
+		
 		// create plan monitor
 		this.monitor = new UncontrollableDurationObservationPlanMonitor(this.clock, this.pdb);
 		// create dispatcher
@@ -54,26 +44,60 @@ public class PlanExecutor extends ApplicationFrameworkObject {
 	
 	/**
 	 * 
-	 * @throws InterruptedException
 	 */
-	public void executePlan() 
-			throws InterruptedException {
+	@Override
+	public void init(EPSLPlanDescriptor plan)  {
+		// create clock
+		this.clock = new ClockManager();
+		this.sharedClock = false;
+		// create execution plan data-base
+		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
+		// initialize plan data-base
+		this.pdb.init(plan);
+		
+		// create plan monitor
+		this.monitor = new UncontrollableDurationObservationPlanMonitor(this.clock, this.pdb);
+		// create dispatcher
+		this.dispatcher = new EarliesStartTimePlanDispatcher(this.clock, this.pdb);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void start() {
+		
 		// start execution
-		System.out.println("Starting execution...");
+		System.out.println("Starting execution....");
+		// start monitor
 		this.monitor.start();
+		// start dispatcher
 		this.dispatcher.start();
-		this.clock.start();
+		// start clock
+		if (!this.sharedClock) {
+			this.clock.start();
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void complete() 
+			throws InterruptedException {
 		
 		// wait completion
 		this.waitCompletion();
 		
 		System.out.println("Stopping execution...");
-		// stop execution
+		// stop monitor
 		this.monitor.stop();
+		// stop dispatcher
 		this.dispatcher.stop();
-		this.clock.stop();
-		// stop execution
-		System.out.println("Stopped!");
+		// stop clock
+		if (!this.sharedClock) {
+			this.clock.stop();
+		}
 	}
 	
 	/**

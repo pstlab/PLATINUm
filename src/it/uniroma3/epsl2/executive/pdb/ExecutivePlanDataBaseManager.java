@@ -39,12 +39,13 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		new Object(),	// executed status lock
 	};
 	
-	protected TemporalQueryFactory qFactory;							// interval query factory
-	protected IntervalConstraintFactory iFactory;								// interval constraint factory
-	protected TemporalDataBaseFacade facade;									// temporal data base
+	protected TemporalQueryFactory qFactory;			// interval query factory
+	protected IntervalConstraintFactory iFactory;		// interval constraint factory
+	protected TemporalDataBaseFacade facade;			// temporal data base
 	
-	protected Map<ExecutionNodeStatus, List<ExecutionNode>> nodes;				// plan's nodes
-	// dependency graphs
+	// plan's nodes
+	protected Map<ExecutionNodeStatus, List<ExecutionNode>> nodes;
+	// execution dependency graphs
 	protected Map<ExecutionNode, Map<ExecutionNode, ExecutionNodeStatus>> sdg;		// start dependency graph
 	protected Map<ExecutionNode, Map<ExecutionNode, ExecutionNodeStatus>> edg;		// end dependency graph
 	
@@ -54,6 +55,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param horizon
 	 */
 	public ExecutivePlanDataBaseManager(long origin, long horizon) {
+		
 		super();
 		// create factories
 		this.iFactory = IntervalConstraintFactory.getInstance();

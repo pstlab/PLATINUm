@@ -2,7 +2,8 @@ package it.uniroma3.epsl2.testing.executive.fourByThree;
 
 import it.istc.pst.epsl.microkernel.internal.solver.exception.NoSolutionFoundException;
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.executive.PlanExecutor;
+import it.uniroma3.epsl2.executive.EarliestStartTimeExecutive;
+import it.uniroma3.epsl2.executive.Executive;
 
 /**
  * 
@@ -29,10 +30,10 @@ class FourByThreeExecutionTest {
 			System.out.println();
 			
 			// create executor
-			PlanExecutor executor = new PlanExecutor();
-			executor.init(plan);
+			Executive executive = new EarliestStartTimeExecutive();
+			executive.init(plan);
 			// start executing the plan
-			executor.executePlan();
+			executive.execute();
 		}
 		catch (NoSolutionFoundException ex) {
 			System.err.println(ex.getMessage());

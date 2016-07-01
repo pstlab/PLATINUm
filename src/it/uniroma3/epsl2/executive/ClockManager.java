@@ -22,7 +22,7 @@ public class ClockManager extends ApplicationFrameworkObject
 	/**
 	 * 
 	 */
-	protected ClockManager() {
+	public ClockManager() {
 		super();
 		// initialize tick
 		this.tick = new AtomicLong(0);
