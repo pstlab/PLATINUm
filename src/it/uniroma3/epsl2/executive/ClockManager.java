@@ -12,7 +12,7 @@ import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
  */
 public class ClockManager extends ApplicationFrameworkObject
 {
-	private static double CLOCK_SAMPLING_RATE = .2;		// sampling time rate (in seconds)
+	private static long CLOCK_SAMPLING_RATE = 200;		// sampling time rate (in milliseconds)
 	private long startTime;								// clock start time (in milliseconds)
 	private AtomicLong tick;							// current tick (relative measure)
 	private final Thread process;						// clock
@@ -41,10 +41,12 @@ public class ClockManager extends ApplicationFrameworkObject
 					clockEventLock.notifyAll();
 				}
 				
+				// start clock
 				while (running) {
 					try {
+						
 						// wait latency
-						Thread.sleep((long) (CLOCK_SAMPLING_RATE * 1000));
+						Thread.sleep(CLOCK_SAMPLING_RATE);
 						// increment tick (atomic operation)
 						tick.incrementAndGet();
 						
@@ -53,6 +55,7 @@ public class ClockManager extends ApplicationFrameworkObject
 							// signal observers and release the lock
 							clockEventLock.notifyAll();
 						}
+						
 					} catch (InterruptedException ex) {
 						// stop thread
 						running = false;
@@ -118,12 +121,14 @@ public class ClockManager extends ApplicationFrameworkObject
 		}
 		
 		// wait a clock event
+		long eventTick;
 		synchronized (this.clockEventLock) {
 			this.clockEventLock.wait();
+			eventTick = this.tick.longValue();
 		}
 		
-		// get current tick
-		return this.tick.longValue();
+		// get event tick
+		return eventTick;
 	}
 	
 	/**
@@ -151,7 +156,7 @@ public class ClockManager extends ApplicationFrameworkObject
 	 * @return
 	 */
 	public long getSecondsFromTheOrigin(long tick) {
-		return (long) (CLOCK_SAMPLING_RATE * tick);
+		// convert to seconds
+		return (tick * CLOCK_SAMPLING_RATE) / 1000;
 	}
-	
 }

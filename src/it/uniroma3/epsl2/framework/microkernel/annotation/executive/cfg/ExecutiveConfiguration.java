@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.uniroma3.epsl2.executive.dispatcher.PlanDispatcher;
-import it.uniroma3.epsl2.executive.monitor.PlanMonitor;
+import it.uniroma3.epsl2.executive.PlanDispatcher;
+import it.uniroma3.epsl2.executive.PlanMonitor;
 
 /**
  * 

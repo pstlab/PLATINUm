@@ -1,8 +1,8 @@
-package it.uniroma3.epsl2.executive;
+package it.uniroma3.epsl2.executive.est;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.executive.dispatcher.EarliesStartTimePlanDispatcher;
-import it.uniroma3.epsl2.executive.monitor.UncontrollableDurationObservationPlanMonitor;
+import it.uniroma3.epsl2.executive.ClockManager;
+import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.executive.pdb.epsl.EPSLExecutivePlanDataBaseManager;
@@ -21,7 +21,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.executive.cfg.Executiv
 	// set monitor
 	monitor = UncontrollableDurationObservationPlanMonitor.class
 )
-public class EarliestStartTimeExecutive extends Executive {
+public class EarliestStartTimeExecutive extends Executive<EarliesStartTimePlanDispatcher, UncontrollableDurationObservationPlanMonitor> {
 
 	private boolean sharedClock;
 	
@@ -37,9 +37,9 @@ public class EarliestStartTimeExecutive extends Executive {
 		this.pdb = pdb;
 		
 		// create plan monitor
-		this.monitor = new UncontrollableDurationObservationPlanMonitor(this.clock, this.pdb);
+		this.monitor = new UncontrollableDurationObservationPlanMonitor(this);
 		// create dispatcher
-		this.dispatcher = new EarliesStartTimePlanDispatcher(this.clock, this.pdb);
+		this.dispatcher = new EarliesStartTimePlanDispatcher(this);
 	}
 	
 	/**
@@ -56,9 +56,9 @@ public class EarliestStartTimeExecutive extends Executive {
 		this.pdb.init(plan);
 		
 		// create plan monitor
-		this.monitor = new UncontrollableDurationObservationPlanMonitor(this.clock, this.pdb);
+		this.monitor = new UncontrollableDurationObservationPlanMonitor(this);
 		// create dispatcher
-		this.dispatcher = new EarliesStartTimePlanDispatcher(this.clock, this.pdb);
+		this.dispatcher = new EarliesStartTimePlanDispatcher(this);
 	}
 	
 	/**

@@ -1,8 +1,6 @@
 package it.uniroma3.epsl2.executive;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.executive.dispatcher.PlanDispatcher;
-import it.uniroma3.epsl2.executive.monitor.PlanMonitor;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.ClockReference;
@@ -15,7 +13,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanM
  * @author anacleto
  *
  */
-public abstract class Executive extends ApplicationFrameworkObject {
+public abstract class Executive <D extends PlanDispatcher, M extends PlanMonitor> extends ApplicationFrameworkObject {
 
 	@ClockReference
 	protected ClockManager clock;					// execution clock controller
@@ -24,10 +22,10 @@ public abstract class Executive extends ApplicationFrameworkObject {
 	protected ExecutivePlanDataBaseManager pdb;		// the plan to execute
 	
 	@PlanMonitorReference
-	protected PlanMonitor monitor;					// plan monitor
+	protected M monitor;					// plan monitor
 	
 	@PlanDispatcherReference
-	protected PlanDispatcher dispatcher;			// dispatching process
+	protected D dispatcher;					// dispatching process
 	
 	/**
 	 * This method allows to initialize the executive system on a already defined

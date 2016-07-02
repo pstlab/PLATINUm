@@ -1,10 +1,10 @@
-package it.uniroma3.epsl2.executive.monitor;
+package it.uniroma3.epsl2.executive.est;
 
-import it.uniroma3.epsl2.executive.ClockManager;
+import it.uniroma3.epsl2.executive.Executive;
+import it.uniroma3.epsl2.executive.PlanMonitor;
 import it.uniroma3.epsl2.executive.pdb.ControllabilityType;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
-import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 
 /**
  * 
@@ -17,11 +17,10 @@ public class UncontrollableDurationObservationPlanMonitor extends PlanMonitor
 	
 	/**
 	 * 
-	 * @param clock
-	 * @param pdb
+	 * @param exec
 	 */
-	public UncontrollableDurationObservationPlanMonitor(ClockManager c, ExecutivePlanDataBaseManager pdb) {
-		super(c, pdb);
+	protected UncontrollableDurationObservationPlanMonitor(Executive<?,?> exec) {
+		super(exec);
 
 		// create thread
 		this.process = new Thread(new Runnable() {

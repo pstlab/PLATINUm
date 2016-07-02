@@ -1,6 +1,5 @@
-package it.uniroma3.epsl2.executive.dispatcher;
+package it.uniroma3.epsl2.executive;
 
-import it.uniroma3.epsl2.executive.ClockManager;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.ClockReference;
@@ -23,15 +22,14 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 
 	/**
 	 * 
-	 * @param c
-	 * @param pdb
+	 * @param exec
 	 */
-	public PlanDispatcher(ClockManager c, ExecutivePlanDataBaseManager pdb) {
+	protected PlanDispatcher(Executive<?,?> exec) {
 		super();
 		// set the clock
-		this.clock = c;
+		this.clock = exec.clock;
 		// set the plan
-		this.pdb = pdb;
+		this.pdb = exec.pdb;
 		
 		// create thread
 		this.process = new Thread(new Runnable() {
@@ -77,6 +75,7 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	 */
 	public void stop() 
 			throws InterruptedException {
+		
 		synchronized(this.process) {
 			if (this.process.isAlive()) {
 				// stop process

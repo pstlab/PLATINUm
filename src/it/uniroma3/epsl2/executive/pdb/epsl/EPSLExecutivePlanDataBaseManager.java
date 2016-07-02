@@ -49,6 +49,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			for (EPSLTimelineDescriptor tl : plan.getTimelines()) {
 				// create an execution node for each token
 				for (EPSLTokenDescriptor token : tl.getTokens()) {
+					
 					// check predicate
 					if (!token.getPredicate().equals("unallocated")) {
 						// get token's bound

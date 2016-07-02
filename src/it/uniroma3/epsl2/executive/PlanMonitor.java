@@ -1,6 +1,5 @@
-package it.uniroma3.epsl2.executive.monitor;
+package it.uniroma3.epsl2.executive;
 
-import it.uniroma3.epsl2.executive.ClockManager;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.ClockReference;
@@ -21,15 +20,14 @@ public abstract class PlanMonitor extends ApplicationFrameworkObject {
 	
 	/**
 	 * 
-	 * @param clock
-	 * @param pdb
+	 * @param exec
 	 */
-	public PlanMonitor(ClockManager clock, ExecutivePlanDataBaseManager pdb) {
+	public PlanMonitor(Executive<?,?> exec) {
 		super();
 		// set clock manager
-		this.clock = clock;
+		this.clock = exec.clock;
 		// set executive plan data base
-		this.pdb = pdb;
+		this.pdb = exec.pdb;
 	}
 	
 	/**

@@ -1,10 +1,10 @@
-package it.uniroma3.epsl2.executive.dispatcher;
+package it.uniroma3.epsl2.executive.est;
 
-import it.uniroma3.epsl2.executive.ClockManager;
+import it.uniroma3.epsl2.executive.Executive;
+import it.uniroma3.epsl2.executive.PlanDispatcher;
 import it.uniroma3.epsl2.executive.pdb.ControllabilityType;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
-import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 
 /**
  * 
@@ -15,11 +15,10 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 
 	/**
 	 * 
-	 * @param clock
-	 * @param pdb
+	 * @param exec
 	 */
-	public EarliesStartTimePlanDispatcher(ClockManager clock, ExecutivePlanDataBaseManager pdb) {
-		super(clock, pdb);
+	public EarliesStartTimePlanDispatcher(Executive<?, ?> exec) {
+		super(exec);
 	}
 	
 	
@@ -76,10 +75,11 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 			}
 		}
 		
+		// check if execution should start
+		long seconds = this.clock.getSecondsFromTheOrigin(tick);
+		
 		// check scheduled tokens 
 		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.SCHEDULED)) {
-			// check if execution should start
-			long seconds = this.clock.getSecondsFromTheOrigin(tick);
 			// get scheduled start time
 			long start = node.getStart()[0];
 			if (seconds == start) {
