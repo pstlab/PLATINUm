@@ -79,6 +79,12 @@ public enum TemporalConstraintType
 			ConstraintCategory.TEMPORAL_CONSTRAINT),
 	
 	/**
+	 * Fix the end time of a flexible interval
+	 */
+	FIX_END_TIME(FixEndTimeIntervalConstraint.class.getName(),
+			ConstraintCategory.TEMPORAL_CONSTRAINT),
+	
+	/**
 	 * Fix the duration of a flexible interval
 	 */
 	FIX_DURATION(FixDurationIntervalConstraint.class.getName(),

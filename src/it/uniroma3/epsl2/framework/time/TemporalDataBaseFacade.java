@@ -20,6 +20,7 @@ import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationExceptio
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.ex.TimePointCreationException;
 import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixStartTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.AfterIntervalConstraint;
@@ -530,6 +531,17 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					fix.setPropagatedConstraints(c);
 				}
 				break;
+				
+				// set the end time of a temporal interval
+				case FIX_END_TIME : {
+					// get constraint
+					FixEndTimeIntervalConstraint fix = (FixEndTimeIntervalConstraint) constraint;
+					// propagate constraint
+					TimePointConstraint[] c = this.doPropagateFixEndConstraint(fix.getReference(), fix.getEnd());
+					// set propagate constraints
+					fix.setPropagatedConstraints(c);
+				}
+				break;
 			}
 		}
 		catch (InconsistentDistanceConstraintException ex) {
@@ -693,6 +705,21 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		// propagate constraints
 		return new TimePointConstraint[] {
 				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getStartTime(), new long[] {start, start}, true)
+		};
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param start
+	 * @return
+	 * @throws InconsistentDistanceConstraintException
+	 */
+	protected TimePointConstraint[] doPropagateFixEndConstraint(TemporalInterval reference, long end) 
+			throws InconsistentDistanceConstraintException {
+		// propagate constraints
+		return new TimePointConstraint[] {
+				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getEndTime(), new long[] {end, end}, true)
 		};
 	}
 

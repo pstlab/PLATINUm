@@ -157,6 +157,6 @@ public class ClockManager extends ApplicationFrameworkObject
 	 */
 	public long getSecondsFromTheOrigin(long tick) {
 		// convert to seconds
-		return (tick * CLOCK_SAMPLING_RATE) / 1000;
+		return Math.round((tick * CLOCK_SAMPLING_RATE) / 1000.0);
 	}
 }

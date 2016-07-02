@@ -16,6 +16,7 @@ import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixStartTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
@@ -277,6 +278,21 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		FixStartTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_START_TIME);
 		fix.setReference(node.getInterval());
 		fix.setStart(start);
+		// propagate constraint
+		this.facade.propagate(fix);
+	}
+
+	/**
+	 * 
+	 * @param node
+	 * @param end
+	 */
+	public void scheduleEndTime(ExecutionNode node, long end) 
+			throws Exception {
+		// create constraint
+		FixEndTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_END_TIME);
+		fix.setReference(node.getInterval());
+		fix.setEnd(end);
 		// propagate constraint
 		this.facade.propagate(fix);
 	}
