@@ -10,6 +10,7 @@ import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
+import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
@@ -166,7 +167,9 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	
 	/**
 	 * 
-	 * @param predicate
+	 * @param signature
+	 * @param pTypes
+	 * @param pValues
 	 * @param start
 	 * @param end
 	 * @param duration
@@ -174,13 +177,16 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	protected ExecutionNode createNode(String predicate, long[] start, long[] end, long[] duration, ControllabilityType controllability) 
+	protected ExecutionNode createNode(String signature, ParameterType[] pTypes, String[] pValues, long[] start, long[] end, long[] duration, ControllabilityType controllability) 
 			throws TemporalIntervalCreationException  {
 		// check interval controllability
 		boolean controllableInterval = controllability.equals(ControllabilityType.EXTERNAL_TOKEN) || 
 				controllability.equals(ControllabilityType.UNCONTROLLABLE_DURATION) ? false : true;
 		// create temporal interval
 		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, controllableInterval);
+		
+		// create predicate
+		NodePredicate predicate = new NodePredicate(signature, pTypes, pValues); 
 		// create execution node
 		return new ExecutionNode(predicate, interval, controllability);
 	}

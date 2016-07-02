@@ -2,6 +2,7 @@ package it.uniroma3.epsl2.executive.pdb;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 
 /**
@@ -14,7 +15,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	private static AtomicLong COUNTER = new AtomicLong(0);
 
 	private long id;
-	private String predicate;
+	private NodePredicate predicate;
 	private ControllabilityType controllability;
 	private TemporalInterval interval;
 	
@@ -27,7 +28,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * @param interval
 	 * @param type
 	 */
-	protected ExecutionNode(String predicate, TemporalInterval interval, ControllabilityType type) {
+	protected ExecutionNode(NodePredicate predicate, TemporalInterval interval, ControllabilityType type) {
 		this.id = getNextId();
 		this.controllability = type;
 		this.status = ExecutionNodeStatus.WAIT;
@@ -39,8 +40,26 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * 
 	 * @return
 	 */
-	public String getPredicate() {
-		return predicate;
+	public String getPredicateSignature() {
+		return this.predicate.getSignature();
+	}
+	
+	/**
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public String getValueOfParameter(int index) {
+		return this.predicate.getValueOfParameter(index);
+	}
+	
+	/**
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public ParameterType getTypeOfParameter(int index) {
+		return this.predicate.getTypeOfParameter(index);
 	}
 	
 	/**
@@ -179,7 +198,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 */
 	@Override
 	public String toString() {
-		return "[ExecNode id= " + this.id + " predicate=" + this.predicate + " status= " + this.status + " "
+		return "[ExecNode id= " + this.id + " predicate=" + this.predicate.getSignature() + " status= " + this.status + " "
 				+ "start= [" + this.interval.getStartTime().getLowerBound() + ", " + this.interval.getStartTime().getUpperBound() + "] "
 				+ "duration= [" + this.interval.getDurationLowerBound() + ", " + this.interval.getDurationUpperBound() + "]]";
 	}

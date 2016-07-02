@@ -3,6 +3,8 @@ package it.uniroma3.epsl2.executive.pdb.epsl;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.istc.pst.epsl.pdb.lang.EPSLParameterDescriptor;
+import it.istc.pst.epsl.pdb.lang.EPSLParameterTypes;
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.istc.pst.epsl.pdb.lang.EPSLTimelineDescriptor;
 import it.istc.pst.epsl.pdb.lang.EPSLTokenDescriptor;
@@ -13,6 +15,7 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
+import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
@@ -56,14 +59,35 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						long[] start = token.getStartTimeBounds();
 						long[] end = token.getEndTimeBounds();
 						long[] duration = token.getDurationBounds();
-						String predicate = tl.getComponent() + "." + token.getPredicate();
 						
 						// set controllability type
 						ControllabilityType controllability = tl.isExternal() ? ControllabilityType.EXTERNAL_TOKEN : 
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
+						// set parameter information
+						String signature = tl.getComponent() + "." + token.getPredicate();
+						String[] paramValues = new String[token.getParameters().size()];
+						ParameterType[] paramTypes = new ParameterType[token.getParameters().size()];
+						for (int index = 0; index < token.getParameters().size(); index++) {
+							// get parameter
+							EPSLParameterDescriptor param= token.getParameter(index);
+							// check type
+							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) {
+								// set type
+								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+								// set value
+								paramValues[index] = new Long(param.getBounds()[0]).toString();
+							}
+							else {
+								// enumeration
+								paramTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+								// set value
+								paramValues[index] = param.getValues()[0];
+							}
+						}
+						
 						// create a node
-						ExecutionNode node = this.createNode(predicate, start, end, duration, controllability);
+						ExecutionNode node = this.createNode(signature, paramTypes, paramValues, start, end, duration, controllability);
 						// add node
 						this.addNode(node);
 						// add entry to the dictionary
@@ -82,14 +106,35 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						long[] start = token.getStartTimeBounds();
 						long[] end = token.getEndTimeBounds();
 						long[] duration = token.getDurationBounds();
-						String predicate = tl.getName() + "." + token.getPredicate();
 						
 						// check controllability type
 						ControllabilityType controllability = tl.isExternal() ? ControllabilityType.EXTERNAL_TOKEN :
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
+						// set parameter information
+						String signature = tl.getComponent() + "." + token.getPredicate();
+						String[] paramValues = new String[token.getParameters().size()];
+						ParameterType[] paramTypes = new ParameterType[token.getParameters().size()];
+						for (int index = 0; index < token.getParameters().size(); index++) {
+							// get parameter
+							EPSLParameterDescriptor param= token.getParameter(index);
+							// check type
+							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) {
+								// set type
+								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+								// set value
+								paramValues[index] = new Long(param.getBounds()[0]).toString();
+							}
+							else {
+								// enumeration
+								paramTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+								// set value
+								paramValues[index] = param.getValues()[0];
+							}
+						}
+						
 						// create a node
-						ExecutionNode node = this.createNode(predicate, start, end, duration, controllability);
+						ExecutionNode node = this.createNode(signature, paramTypes, paramValues, start, end, duration, controllability);
 						// add node
 						this.addNode(node);
 						// add entry to the dictionary
