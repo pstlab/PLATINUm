@@ -97,6 +97,18 @@ public class ClockManager extends ApplicationFrameworkObject
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 * @throws InterruptedException
+	 */
+	public void join() 
+			throws InterruptedException {
+		// wait the end of the clock process
+		if (this.process.isAlive()) {
+			this.process.join();
+		}
+	}
 
 	/**
 	 * 
