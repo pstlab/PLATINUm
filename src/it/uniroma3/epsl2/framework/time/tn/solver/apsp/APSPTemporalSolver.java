@@ -196,8 +196,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 			// not update distance information
 			matrix += "Not Updated Distance Information";
 		} else {
-			for (TimePoint i : this.tn.getTimePoints()) {
-				for (TimePoint j : this.tn.getTimePoints()) {
+			for (TimePoint i : this.dgraph.getPoints()) {
+				for (TimePoint j : this.dgraph.getPoints()) {
 					matrix += "\t" + this.distance[i.getId()][j.getId()];
 				}
 				matrix += "\n";
