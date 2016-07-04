@@ -568,8 +568,8 @@ public class PlannerTestCase
 		System.out.println();
 		try 
 		{
-			final String DDL = "opt/fourbythree/fourbythree.ddl";
-			final String PDL = "opt/fourbythree/fourbythree.pdl";
+			final String DDL = "domains/fourbythree/fourbythree.ddl";
+			final String PDL = "domains/fourbythree/fourbythree.pdl";
 			// compile the plan database
 			PlanDataBase pdb = PlanDataBaseBuilder.build(DDL, PDL);
 			// create planner by means of factory
@@ -597,8 +597,8 @@ public class PlannerTestCase
 		try 
 		{	
 			// domain file
-			final String DDL = "opt/satellite/satellite.ddl";
-			final String PDL = "opt/satellite/satellite.pdl";
+			final String DDL = "domains/satellite/satellite.ddl";
+			final String PDL = "domains/satellite/satellite.pdl";
 			// compile the plan database
 			PlanDataBase pdb = PlanDataBaseBuilder.build(DDL, PDL);
 			
@@ -628,8 +628,8 @@ public class PlannerTestCase
 		try 
 		{	
 			// domain file
-			final String DDL = "opt/gecko/full.ddl";
-			final String PDL = "opt/gecko/full.pdl";
+			final String DDL = "domains/gecko/full.ddl";
+			final String PDL = "domains/gecko/full.pdl";
 			
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
@@ -661,8 +661,8 @@ public class PlannerTestCase
 		try 
 		{	
 			// domain file
-			final String DDL = "opt/neptus/neptus-1auv-3phen.ddl";
-			final String PDL = "opt/neptus/neptus-1auv-3phen-1task.pdl";
+			final String DDL = "domains/neptus/neptus-1auv-3phen.ddl";
+			final String PDL = "domains/neptus/neptus-1auv-3phen-1task.pdl";
 			
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
@@ -694,8 +694,8 @@ public class PlannerTestCase
 		try 
 		{	
 			// domain file
-			final String DDL = "opt/goac/goac.ddl";
-			final String PDL = "opt/goac/goac-2g-1wind.pdl";
+			final String DDL = "domains/goac/goac.ddl";
+			final String PDL = "domains/goac/goac-2g-1wind.pdl";
 			
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
@@ -727,8 +727,8 @@ public class PlannerTestCase
 		try 
 		{	
 			// domain file
-			final String DDL = "opt/ico/ico.ddl";
-			final String PDL = "opt/ico/ico.pdl";
+			final String DDL = "domains/ico/ico_1guest_1mug.ddl";
+			final String PDL = "domains/ico/ico_1guest_1mug_1task.pdl";
 			
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
@@ -760,8 +760,8 @@ public class PlannerTestCase
 		try 
 		{	
 			// domain file
-			final String DDL = "opt/dummyRobot/dummy.ddl";
-			final String PDL = "opt/dummyRobot/dummy.pdl";
+			final String DDL = "domains/dummyRobot/dummy.ddl";
+			final String PDL = "domains/dummyRobot/dummy.pdl";
 			
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);

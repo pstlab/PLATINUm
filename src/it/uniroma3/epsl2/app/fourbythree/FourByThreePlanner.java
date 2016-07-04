@@ -31,8 +31,8 @@ import it.uniroma3.epsl2.planner.solver.SolverType;
 )
 public class FourByThreePlanner extends Planner {
 
-	private static final String DDL_FILE = "domains/fourbythree/simple/fourbythree.ddl";
-	private static final String PDL_FILE = "domains/fourbythree/simple/fourbythree.pdl";
+	private static final String DDL_FILE = "domains/fourbythree/fourbythree.ddl";
+	private static final String PDL_FILE = "domains/fourbythree/fourbythree.pdl";
 	
 	/**
 	 * 

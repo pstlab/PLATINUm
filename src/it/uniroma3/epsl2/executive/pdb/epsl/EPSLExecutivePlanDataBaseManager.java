@@ -261,6 +261,42 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			}
 			break;
 			
+			case "starts_during" : {
+				// create constraint
+				TemporalConstraint c = this.iFactory.
+						create(TemporalConstraintType.STARTS_DURING);
+				// set intervals
+				c.setReference(reference.getInterval());
+				c.setTarget(target.getInterval());
+				// set bounds
+				c.setBounds(new long[][] {
+					rel.getFirstBound(),
+					rel.getSecondBound()
+				});
+				
+				// add start dependency
+				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+			}
+			break;
+			
+			case "ends_during" : {
+				// create constraint
+				TemporalConstraint c = this.iFactory.
+						create(TemporalConstraintType.ENDS_DURING);
+				// set intervals
+				c.setReference(reference.getInterval());
+				c.setTarget(target.getInterval());
+				// set bounds
+				c.setBounds(new long[][] {
+					rel.getFirstBound(),
+					rel.getSecondBound()
+				});
+				
+				// add end dependency
+				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+			}
+			break;
+			
 			default : {
 				throw new RuntimeException("Unknown relation " + rel.getType());
 			}

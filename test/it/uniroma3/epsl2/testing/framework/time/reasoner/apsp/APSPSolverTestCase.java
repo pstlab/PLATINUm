@@ -447,7 +447,7 @@ public class APSPSolverTestCase
 			solver.process(query);
 			// check bounds
 			Assert.assertTrue(this.tp4.getLowerBound() == 60);
-			Assert.assertTrue(this.tp4.getUpperBound() == 70);
+			Assert.assertTrue(this.tp4.getUpperBound() == 100);
 			
 			// check number of propagations
 			Assert.assertTrue(solver.getPropagationCounter() == 3);

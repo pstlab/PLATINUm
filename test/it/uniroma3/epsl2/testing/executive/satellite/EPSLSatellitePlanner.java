@@ -12,8 +12,8 @@ import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
  */
 class EPSLSatellitePlanner 
 {
-	private static final String DDL = "opt/satellite/satellite.ddl";
-	private static final String PDL = "opt/satellite/satellite.pdl";
+	private static final String DDL = "domains/satellite/satellite.ddl";
+	private static final String PDL = "domains/satellite/satellite.pdl";
 	
 	protected EPSLSatellitePlanner() {}
 	

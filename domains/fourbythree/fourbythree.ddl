@@ -18,7 +18,8 @@ DOMAIN FourByThree_Domain
 		}
 	}
 	
-	COMP_TYPE SingletonStateVariable AssemblyProcessType (None(),
+	COMP_TYPE SingletonStateVariable AssemblyProcessType (
+		None(),
 		SetTheWorkPiece(workpiece_id), 
 		RemoveTopCover(workpiece_id), 
 		TurnPiece(workpiece_id), 

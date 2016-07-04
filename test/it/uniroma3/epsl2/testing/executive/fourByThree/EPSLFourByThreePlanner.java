@@ -13,8 +13,8 @@ import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 class EPSLFourByThreePlanner 
 {
 	// DDL file path
-	private static final String DDL_PATH = "opt/fourbythree/fourbythree.ddl";
-	private static final String PDL_PATH = "opt/fourbythree/fourbythree.pdl";
+	private static final String DDL_PATH = "domains/fourbythree/fourbythree.ddl";
+	private static final String PDL_PATH = "domains/fourbythree/fourbythree.pdl";
 	
 	protected EPSLFourByThreePlanner() {}
 	
