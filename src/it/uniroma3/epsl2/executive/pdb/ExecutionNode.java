@@ -29,7 +29,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * @param type
 	 */
 	protected ExecutionNode(NodePredicate predicate, TemporalInterval interval, ControllabilityType type) {
-		this.id = getNextId();
+		this.id = COUNTER.getAndIncrement();
 		this.controllability = type;
 		this.status = ExecutionNodeStatus.WAIT;
 		this.interval = interval;
@@ -198,16 +198,8 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 */
 	@Override
 	public String toString() {
-		return "[ExecNode id= " + this.id + " predicate=" + this.predicate.getSignature() + " status= " + this.status + " "
+		return "[ExecNode id= " + this.id + " predicate=" + this.predicate.getGroundSignature() + " status= " + this.status + " "
 				+ "start= [" + this.interval.getStartTime().getLowerBound() + ", " + this.interval.getStartTime().getUpperBound() + "] "
 				+ "duration= [" + this.interval.getDurationLowerBound() + ", " + this.interval.getDurationUpperBound() + "]]";
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private static long getNextId() {
-		return COUNTER.getAndIncrement();
 	}
 }

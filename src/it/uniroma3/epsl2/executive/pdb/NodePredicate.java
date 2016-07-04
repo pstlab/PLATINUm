@@ -66,4 +66,16 @@ public class NodePredicate {
 	public ParameterType getTypeOfParameter(int index) {
 		return this.types[index];
 	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getGroundSignature() {
+		String str = this.signature;
+		for (String param : this.parameters) {
+			str += "-" + param;
+		}
+		return str;
+	}
 }
