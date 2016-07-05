@@ -27,14 +27,14 @@ import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
  * @author anacleto
  *
  */
-public class APSIExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManager {
+public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManager {
 
 	/**
 	 * 
 	 * @param origin
 	 * @param horizon
 	 */
-	public APSIExecutivePlanDataBaseManager(long origin, long horizon) {
+	public EPSLExecutivePlanDataBaseManager(long origin, long horizon) {
 		super(origin, horizon);
 	}
 	

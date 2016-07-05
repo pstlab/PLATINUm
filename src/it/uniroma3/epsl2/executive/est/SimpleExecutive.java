@@ -5,7 +5,7 @@ import it.uniroma3.epsl2.executive.ClockManager;
 import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
-import it.uniroma3.epsl2.executive.pdb.apsi.APSIExecutivePlanDataBaseManager;
+import it.uniroma3.epsl2.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.cfg.ExecutiveConfiguration;
 
 /**
@@ -52,7 +52,7 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 		this.clock = new ClockManager();
 		this.sharedClock = false;
 		// create execution plan data-base
-		this.pdb = new APSIExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
+		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
 		// initialize plan data-base
 		this.pdb.init(plan);
 		
