@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.executive.pdb.epsl;
+package it.uniroma3.epsl2.executive.pdb.apsi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +14,7 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
@@ -26,15 +27,27 @@ import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
  * @author anacleto
  *
  */
-public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManager {
+public class APSIExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManager {
 
 	/**
 	 * 
 	 * @param origin
 	 * @param horizon
 	 */
-	public EPSLExecutivePlanDataBaseManager(long origin, long horizon) {
+	public APSIExecutivePlanDataBaseManager(long origin, long horizon) {
 		super(origin, horizon);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void init(Plan plan) {
+		
+		/*
+		 *  FIXME <---- IMPLEMENTARE
+		 */
+		
 	}
 	
 	/**
@@ -42,19 +55,18 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param plan
 	 */
 	@Override
-	public void init(EPSLPlanDescriptor plan) 
-	{
-		try 
-		{
+	public void init(EPSLPlanDescriptor plan) {
+		try {
+			
 			// map token descriptor to nodes
 			Map<EPSLTokenDescriptor, ExecutionNode> dictionary = new HashMap<>();
 			// check time-lines
 			for (EPSLTimelineDescriptor tl : plan.getTimelines()) {
 				// create an execution node for each token
 				for (EPSLTokenDescriptor token : tl.getTokens()) {
-					
 					// check predicate
 					if (!token.getPredicate().equals("unallocated")) {
+						
 						// get token's bound
 						long[] start = token.getStartTimeBounds();
 						long[] end = token.getEndTimeBounds();
@@ -102,6 +114,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				for (EPSLTokenDescriptor token : tl.getTokens()) {
 					// check predicate
 					if (!token.getPredicate().equals("unallocated")) {
+						
 						// get token's bound
 						long[] start = token.getStartTimeBounds();
 						long[] end = token.getEndTimeBounds();
@@ -116,6 +129,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						String[] paramValues = new String[token.getParameters().size()];
 						ParameterType[] paramTypes = new ParameterType[token.getParameters().size()];
 						for (int index = 0; index < token.getParameters().size(); index++) {
+							
 							// get parameter
 							EPSLParameterDescriptor param= token.getParameter(index);
 							// check type

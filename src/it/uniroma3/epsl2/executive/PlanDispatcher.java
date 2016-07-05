@@ -1,5 +1,6 @@
 package it.uniroma3.epsl2.executive;
 
+import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.ClockReference;
@@ -94,4 +95,11 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	 * @param tick
 	 */
 	protected abstract void onTick(long tick);
+	
+	/**
+	 * Dispatch the node to start execution
+	 * 
+	 * @param node
+	 */
+	protected abstract void dispatch(ExecutionNode node);
 }

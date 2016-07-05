@@ -5,7 +5,7 @@ import it.uniroma3.epsl2.executive.ClockManager;
 import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
-import it.uniroma3.epsl2.executive.pdb.epsl.EPSLExecutivePlanDataBaseManager;
+import it.uniroma3.epsl2.executive.pdb.apsi.APSIExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.cfg.ExecutiveConfiguration;
 
 /**
@@ -19,9 +19,9 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.executive.cfg.Executiv
 	dispatcher = EarliesStartTimePlanDispatcher.class,
 	
 	// set monitor
-	monitor = UncontrollableDurationObservationPlanMonitor.class
+	monitor = SimpleEarliestObserverPlanMonitor.class
 )
-public class EarliestStartTimeExecutive extends Executive<EarliesStartTimePlanDispatcher, UncontrollableDurationObservationPlanMonitor> {
+public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, SimpleEarliestObserverPlanMonitor> {
 
 	private boolean sharedClock;
 	
@@ -37,7 +37,7 @@ public class EarliestStartTimeExecutive extends Executive<EarliesStartTimePlanDi
 		this.pdb = pdb;
 		
 		// create plan monitor
-		this.monitor = new UncontrollableDurationObservationPlanMonitor(this);
+		this.monitor = new SimpleEarliestObserverPlanMonitor(this);
 		// create dispatcher
 		this.dispatcher = new EarliesStartTimePlanDispatcher(this);
 	}
@@ -47,16 +47,17 @@ public class EarliestStartTimeExecutive extends Executive<EarliesStartTimePlanDi
 	 */
 	@Override
 	public void init(EPSLPlanDescriptor plan)  {
+		
 		// create clock
 		this.clock = new ClockManager();
 		this.sharedClock = false;
 		// create execution plan data-base
-		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
+		this.pdb = new APSIExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
 		// initialize plan data-base
 		this.pdb.init(plan);
 		
 		// create plan monitor
-		this.monitor = new UncontrollableDurationObservationPlanMonitor(this);
+		this.monitor = new SimpleEarliestObserverPlanMonitor(this);
 		// create dispatcher
 		this.dispatcher = new EarliesStartTimePlanDispatcher(this);
 	}
@@ -122,7 +123,6 @@ public class EarliestStartTimeExecutive extends Executive<EarliesStartTimePlanDi
 						clock.waitTick();
 						// check if execution is complete
 						running = !pdb.getNodesByStatus(ExecutionNodeStatus.WAIT).isEmpty() ||
-								!pdb.getNodesByStatus(ExecutionNodeStatus.READY).isEmpty() ||
 								!pdb.getNodesByStatus(ExecutionNodeStatus.SCHEDULED).isEmpty() ||
 								!pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
 					}

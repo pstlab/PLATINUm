@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
+import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
@@ -72,7 +73,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		// initialize data structures
 		this.nodes = new HashMap<>();
 		this.nodes.put(ExecutionNodeStatus.WAIT, new LinkedList<>());
-		this.nodes.put(ExecutionNodeStatus.READY, new LinkedList<>());
 		this.nodes.put(ExecutionNodeStatus.SCHEDULED, new LinkedList<>());
 		this.nodes.put(ExecutionNodeStatus.IN_EXECUTION, new LinkedList<>());
 		this.nodes.put(ExecutionNodeStatus.EXECUTED, new LinkedList<>());
@@ -81,6 +81,12 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		this.sdg = new HashMap<>();
 		this.edg = new HashMap<>();
 	}
+	
+	/**
+	 * 
+	 * @param plan
+	 */
+	public abstract void init(Plan plan);
 	
 	/**
 	 * 
