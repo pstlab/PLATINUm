@@ -52,28 +52,37 @@ public abstract class Executive <D extends PlanDispatcher, M extends PlanMonitor
 	public abstract void init(EPSLPlanDescriptor plan);
 	
 	/**
-	 * Non blocking method which start the execution of the plan
+	 * Non blocking method which starts the execution of the plan
 	 */
 	public abstract void start();
 	
 	/**
-	 * Blocking method which waits the end of the execution of the plan
+	 * Blocking method which ends the execution of the plan
+	 *  
+	 * @throws InterruptedException
 	 */
-	public abstract void complete() 
+	public abstract void stop() 
 			throws InterruptedException;
 	
 	/**
-	 * Blocking method which start the execution of the plan and 
-	 * waits for completion.
-	 * 
-	 * @throws InterruptedException
+	 * Blocking method which start the execution of the plan and
+	 *  waits for completion.
 	 */
-	public void execute() 
-			throws InterruptedException {
-		
-		// start execution
-		this.start();
-		// wait completion
-		this.complete();
-	}
+	public abstract void execute() 
+			throws InterruptedException;
+	
+//	/**
+//	 * Blocking method which start the execution of the plan and 
+//	 * waits for completion.
+//	 * 
+//	 * @throws InterruptedException
+//	 */
+//	public void execute() 
+//			throws InterruptedException {
+//		
+//		// start execution
+//		this.start();
+//		// wait completion
+//		this.complete();
+//	}
 }

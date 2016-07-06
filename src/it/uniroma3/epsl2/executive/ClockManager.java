@@ -15,7 +15,7 @@ public class ClockManager extends ApplicationFrameworkObject
 	private static long CLOCK_SAMPLING_RATE = 200;		// sampling time rate (in milliseconds)
 	private long startTime;								// clock start time (in milliseconds)
 	private AtomicLong tick;							// current tick (relative measure)
-	private final Thread process;						// clock
+	private final Thread process;						// clock incrementing the tick
 	
 	private final Object clockEventLock = new Object();
 	
@@ -34,6 +34,8 @@ public class ClockManager extends ApplicationFrameworkObject
 			 */
 			@Override
 			public void run() {
+				
+				// set thread running
 				boolean running = true;
 				// generate the start clock event
 				synchronized (clockEventLock) {							
@@ -69,6 +71,8 @@ public class ClockManager extends ApplicationFrameworkObject
 	 * 
 	 */
 	public void start() {
+		
+		// start clock
 		synchronized(this.process) {
 			// check if alive
 			if (!this.process.isAlive()) {
@@ -88,6 +92,8 @@ public class ClockManager extends ApplicationFrameworkObject
 	 */
 	public void stop() 
 			throws InterruptedException {
+		
+		// stop clock
 		synchronized(this.process) {
 			// check clock thread status
 			if (this.process.isAlive()) {
@@ -95,18 +101,6 @@ public class ClockManager extends ApplicationFrameworkObject
 				this.process.interrupt();
 				this.process.join();
 			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @throws InterruptedException
-	 */
-	public void join() 
-			throws InterruptedException {
-		// wait the end of the clock process
-		if (this.process.isAlive()) {
-			this.process.join();
 		}
 	}
 
@@ -124,6 +118,7 @@ public class ClockManager extends ApplicationFrameworkObject
 	 */
 	public long waitTick() 
 			throws InterruptedException {
+		
 		// check if process has been started
 		synchronized(this.process) {
 			while (!this.process.isAlive()) {
@@ -132,10 +127,13 @@ public class ClockManager extends ApplicationFrameworkObject
 			}
 		}
 		
-		// wait a clock event
+		// event tick
 		long eventTick;
+		// wait a clock event
 		synchronized (this.clockEventLock) {
+			// wait the event
 			this.clockEventLock.wait();
+			// set event tick
 			eventTick = this.tick.longValue();
 		}
 		
@@ -148,12 +146,12 @@ public class ClockManager extends ApplicationFrameworkObject
 	 * @return
 	 */
 	public long getCurrentTick() 
-			throws InterruptedException 
-	{
-		// check if process has been started
+			throws InterruptedException {
+		
+		// check if process is running
 		synchronized(this.process) {
 			while (!this.process.isAlive()) {
-				// wait process to start
+				// wait the process to start
 				this.process.wait();
 			}
 		}

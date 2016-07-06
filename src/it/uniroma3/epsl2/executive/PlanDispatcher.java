@@ -19,7 +19,7 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	@ClockReference
 	protected ClockManager clock;					// execution clock
 	
-	private final Thread process;					// tick-driven process
+	private Thread process;							// tick-driven process
 
 	/**
 	 * 
@@ -48,6 +48,7 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 						onTick(tick);
 					}
 					catch (InterruptedException ex) {
+						// stop thread
 						running = false;
 					}
 				}
@@ -59,14 +60,11 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	 * 
 	 */
 	public void start() {
-		synchronized(this.process) {
-			if (!this.process.isAlive()) {
-				// start process
-				this.process.start();
+		// start process
+		if (!this.process.isAlive()) {
+			// start process
+			this.process.start();
 				
-				// notify all
-				this.process.notifyAll();
-			}
 		}
 	}
 	
@@ -77,15 +75,11 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	public void stop() 
 			throws InterruptedException {
 		
-		synchronized(this.process) {
-			if (this.process.isAlive()) {
-				// stop process
-				this.process.interrupt();
-				this.process.join();
-				
-				// signal
-				this.process.notifyAll();
-			}
+		// stop process
+		if (this.process.isAlive()) {
+			// stop process
+			this.process.interrupt();
+			this.process.join();
 		}
 	}
 	

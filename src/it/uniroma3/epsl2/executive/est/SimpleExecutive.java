@@ -79,16 +79,13 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 			this.clock.start();
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
-	public void complete() 
+	public void stop() 
 			throws InterruptedException {
-		
-		// wait completion
-		this.waitCompletion();
 		
 		System.out.println("Stopping execution...");
 		// stop monitor
@@ -99,6 +96,21 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 		if (!this.sharedClock) {
 			this.clock.stop();
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void execute() 
+			throws InterruptedException {
+		
+		// start executive
+		this.start();
+		// wait completion
+		this.waitCompletion();
+		// stop executive
+		this.stop();
 	}
 	
 	/**
