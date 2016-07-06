@@ -9,6 +9,7 @@ import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationEx
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
+import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
@@ -19,7 +20,6 @@ import it.uniroma3.epsl2.framework.lang.problem.Problem;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
-import it.uniroma3.epsl2.planner.heuristic.fsh.ex.NoFlawFoundException;
 
 /**
  * 

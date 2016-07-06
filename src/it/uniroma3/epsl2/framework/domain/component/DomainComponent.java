@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.istc.pst.epsl.microkernel.internal.engine.exception.UnsolvableFlawException;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;

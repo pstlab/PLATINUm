@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
+import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
@@ -12,7 +13,6 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanD
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.FilterPipelineReference;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
-import it.uniroma3.epsl2.planner.heuristic.fsh.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.planner.heuristic.fsh.filter.FlawFilter;
 
 /**

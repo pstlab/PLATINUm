@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Set;
 
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
@@ -11,7 +12,6 @@ import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
-import it.uniroma3.epsl2.planner.heuristic.fsh.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.planner.search.ex.EmptyFringeException;
 
 /**

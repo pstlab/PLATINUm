@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
@@ -14,7 +15,6 @@ import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
-import it.uniroma3.epsl2.planner.heuristic.fsh.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.planner.search.SearchStrategy;
 import it.uniroma3.epsl2.planner.search.SearchStrategyFactory;
 import it.uniroma3.epsl2.planner.search.SearchStrategyType;

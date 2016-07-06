@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.planner.heuristic.fsh.ex;
+package it.uniroma3.epsl2.framework.lang.ex;
 
 /**
  * 
