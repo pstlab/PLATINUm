@@ -1410,12 +1410,12 @@ public class DDLv3Compiler extends DomainCompiler
 			String name = ddlComponent.getName();
 			// check if external
 			boolean external = ddlTimeline.getParameters().contains("uncontrollable");
-			// create state variable 
+			// create state variable (cast needed for Java7 compatibility)
 			StateVariable sv = external ?
 					// external variable
-					pdb.createDomainComponent(name, DomainComponentType.SV_EXTERNAL) :
+					(StateVariable) pdb.createDomainComponent(name, DomainComponentType.SV_EXTERNAL) :
 					// programmable variable
-					pdb.createDomainComponent(name, DomainComponentType.SV_PRIMTIVE);
+					(StateVariable) pdb.createDomainComponent(name, DomainComponentType.SV_PRIMTIVE);
 
 			// get component type
 			DDLSingletonStateVariableComponentType ddlComponentType = (DDLSingletonStateVariableComponentType) this.ddl_domain.getComponentTypes().get(ddlComponent.getComponentType());
@@ -1501,7 +1501,7 @@ public class DDLv3Compiler extends DomainCompiler
 								String referenceLabel = numConstraint.getLeftTerm();
 								// initialize structure
 								if (!labels2constraint.containsKey(referenceLabel)) {
-									labels2constraint.put(referenceLabel, new HashMap<>());
+									labels2constraint.put(referenceLabel, new HashMap<String, DDLNumericParameterConstraintType>());
 								}
 								
 								// check targets
@@ -1510,7 +1510,7 @@ public class DDLv3Compiler extends DomainCompiler
 									labels2constraint.get(referenceLabel).put(targetLabel, numConstraint.getNumericConstraintType());
 									// add also "reverse" entry
 									if (!labels2constraint.containsKey(targetLabel)) {
-										labels2constraint.put(targetLabel, new HashMap<>());
+										labels2constraint.put(targetLabel, new HashMap<String, DDLNumericParameterConstraintType>());
 									}
 									labels2constraint.get(targetLabel).put(referenceLabel, numConstraint.getNumericConstraintType());
 								}

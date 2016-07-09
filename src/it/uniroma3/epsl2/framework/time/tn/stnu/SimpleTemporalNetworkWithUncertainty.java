@@ -44,15 +44,15 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		
 		// add the origin to the network
 		this.points.put(this.tpOrigin.getId(), this.tpOrigin);
-		this.constraints.put(this.tpOrigin, new HashMap<>());
-		this.contingents.put(this.tpOrigin, new HashMap<>());
-		this.requirements.put(this.tpOrigin, new HashMap<>());
+		this.constraints.put(this.tpOrigin, new HashMap<TimePoint, List<TimePointConstraint>>());
+		this.contingents.put(this.tpOrigin, new HashMap<TimePoint, TimePointConstraint>());
+		this.requirements.put(this.tpOrigin, new HashMap<TimePoint, TimePointConstraint>());
 		
 		// add the horizon to the network
 		this.points.put(this.tpHorizion.getId(), this.tpHorizion);
-		this.constraints.put(this.tpHorizion, new HashMap<>());
-		this.contingents.put(this.tpHorizion, new HashMap<>());
-		this.requirements.put(this.tpHorizion, new HashMap<>());
+		this.constraints.put(this.tpHorizion, new HashMap<TimePoint, List<TimePointConstraint>>());
+		this.contingents.put(this.tpHorizion, new HashMap<TimePoint, TimePointConstraint>());
+		this.requirements.put(this.tpHorizion, new HashMap<TimePoint, TimePointConstraint>());
 		
 		try {
 			// add distance constraint between origin and the horizon
@@ -221,15 +221,15 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		
 		// add constraints
 		this.requirements.get(this.tpOrigin).put(tp, t0);
-		this.requirements.put(tp, new HashMap<>());
-		this.contingents.put(tp, new HashMap<>());
+		this.requirements.put(tp, new HashMap<TimePoint, TimePointConstraint>());
+		this.contingents.put(tp, new HashMap<TimePoint, TimePointConstraint>());
 		this.requirements.get(tp).put(this.tpHorizion, t1);
 		
 		// add general constraints
-		this.constraints.get(this.tpOrigin).put(tp, new ArrayList<>());
+		this.constraints.get(this.tpOrigin).put(tp, new ArrayList<TimePointConstraint>());
 		this.constraints.get(this.tpOrigin).get(tp).add(t0);
-		this.constraints.put(tp, new HashMap<>());
-		this.constraints.get(tp).put(this.tpHorizion, new ArrayList<>());
+		this.constraints.put(tp, new HashMap<TimePoint, List<TimePointConstraint>>());
+		this.constraints.get(tp).put(this.tpHorizion, new ArrayList<TimePointConstraint>());
 		this.constraints.get(tp).get(this.tpHorizion).add(t1);
 	}
 
@@ -306,12 +306,12 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			// set structures
 			if (!this.constraints.containsKey(reference)) {
 				// add entries
-				this.constraints.put(reference, new HashMap<>());
+				this.constraints.put(reference, new HashMap<TimePoint, List<TimePointConstraint>>());
 			}
 			
 			if (!this.constraints.get(reference).containsKey(target)) {
 				// setup data structures
-				this.constraints.get(reference).put(target, new ArrayList<>());
+				this.constraints.get(reference).put(target, new ArrayList<TimePointConstraint>());
 			}
 			
 			// add constraint
@@ -319,7 +319,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			// setup requirements
 			if (!this.requirements.containsKey(reference)) {
 				// setup data structure
-				this.requirements.put(reference, new HashMap<>());
+				this.requirements.put(reference, new HashMap<TimePoint, TimePointConstraint>());
 			}
 			
  			// check if a requirement constraint already exists between points			
@@ -359,19 +359,19 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			// add constraint
 			if (!this.constraints.containsKey(reference)) {
 				// setup data structure
-				this.constraints.put(reference, new HashMap<>());
+				this.constraints.put(reference, new HashMap<TimePoint, List<TimePointConstraint>>());
 			}
 		
 			if (!this.constraints.get(reference).containsKey(target)) {
 				// setup data structure
-				this.constraints.get(reference).put(target, new ArrayList<>());
+				this.constraints.get(reference).put(target, new ArrayList<TimePointConstraint>());
 			}
 			
 			// add constraint
 			this.constraints.get(reference).get(target).add(c);
 			// activate contingent link
 			if (!this.contingents.containsKey(reference)) {
-				this.contingents.put(reference, new HashMap<>());
+				this.contingents.put(reference, new HashMap<TimePoint, TimePointConstraint>());
 			}
 			
 			// set contingent link

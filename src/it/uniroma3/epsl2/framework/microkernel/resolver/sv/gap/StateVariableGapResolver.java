@@ -290,7 +290,7 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 			case SEMANTIC_CONNECTION : {
 				
 				// direct connection between decisions
-				GapCompletion sol = new GapCompletion(gap, new ArrayList<>());
+				GapCompletion sol = new GapCompletion(gap, new ArrayList<ComponentValue>());
 				gap.addSolution(sol);
 			}
 			break;

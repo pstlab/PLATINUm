@@ -30,7 +30,7 @@ public final class Transition
 		// initialize constraints
 		int index = 0;
 		while (index < this.reference.getNumberOfParameterPlaceHolders()) {
-			this.constraints.put(index, new HashMap<>());
+			this.constraints.put(index, new HashMap<Integer, ParameterConstraintType>());
 			index++;
 		}
 	}

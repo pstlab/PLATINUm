@@ -354,7 +354,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 					for (Decision issue : issues.get(c)) {
 						// add pseudo-controllability issues
 						if (!squeezed.containsKey(c)) {
-							squeezed.put(c, new ArrayList<>());
+							squeezed.put(c, new ArrayList<Decision>());
 						}
 						// add issue
 						squeezed.get(c).add(issue);
@@ -502,11 +502,11 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		ComponentValue value = rule.getTriggerer().getValue();
 		// check data
 		if (!this.rules.containsKey(value.getComponent())) {
-			this.rules.put(value.getComponent(), new HashMap<>());
+			this.rules.put(value.getComponent(), new HashMap<ComponentValue, List<SynchronizationRule>>());
 		}
 		if (!this.rules.get(value.getComponent()).containsKey(value)) {
 			// initialize
-			this.rules.get(value.getComponent()).put(value, new ArrayList<>());
+			this.rules.get(value.getComponent()).put(value, new ArrayList<SynchronizationRule>());
 		}
 		
 		// look for cycles

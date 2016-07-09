@@ -24,7 +24,6 @@ public abstract class StateVariable extends DomainComponent
 	// list of values
 	protected List<StateVariableValue> values;
 	// SV's transition function
-//	protected Map<ComponentValue, List<Transition>> transition;	
 	protected Map<ComponentValue, Map<ComponentValue, Transition>> transitions;
 	
 	/**
@@ -92,7 +91,7 @@ public abstract class StateVariable extends DomainComponent
 		// create value
 		ComponentValue v = this.doCreateValue(value, new long[] {1, this.tdb.getHorizon()}, controllable);
 		// add transition
-		this.transitions.put(v, new HashMap<>());
+		this.transitions.put(v, new HashMap<ComponentValue, Transition>());
 		// get value
 		return v;
 	}
@@ -109,7 +108,7 @@ public abstract class StateVariable extends DomainComponent
 		// create value
 		ComponentValue v = this.doCreateValue(value, duration, controllable);
 		// add transition
-		this.transitions.put(v, new HashMap<>());
+		this.transitions.put(v, new HashMap<ComponentValue, Transition>());
 		// get value
 		return v;
 	}
@@ -179,7 +178,7 @@ public abstract class StateVariable extends DomainComponent
 		// list of available paths
 		List<List<ComponentValue>> result = new ArrayList<>();
 		// search for paths
-		this.getPaths(new ArrayList<>(), source, target, result);
+		this.getPaths(new ArrayList<ComponentValue>(), source, target, result);
 		// get resulting paths
 		return result;
 	}
@@ -189,7 +188,7 @@ public abstract class StateVariable extends DomainComponent
 	 */
 	@Override
 	public List<ComponentValue> getValues() {
-		return new ArrayList<>(this.values);
+		return new ArrayList<ComponentValue>(this.values);
 	}
 	
 	/**

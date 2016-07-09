@@ -72,7 +72,7 @@ public class DistanceGraph {
 	 */
 	public void add(TimePoint point) {
 		this.nodes.put(point.getId(), point);
-		this.edges.put(point, new HashMap<>());
+		this.edges.put(point, new HashMap<TimePoint, Long>());
 	}
 	
 
@@ -85,7 +85,7 @@ public class DistanceGraph {
 	public void add(TimePoint source, TimePoint target, long weight) {
 		// check graph
 		if (!this.edges.containsKey(source)) {
-			this.edges.put(source, new HashMap<>());
+			this.edges.put(source, new HashMap<TimePoint, Long>());
 		}
 		
 		// update weight

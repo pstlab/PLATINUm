@@ -157,7 +157,7 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		}
 		
 		// get peaks
-		return new ArrayList<>(peaks);
+		return new ArrayList<Flaw>(peaks);
 	}
 	
 //	/**
@@ -309,7 +309,7 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		// initialize permutations
 		List<List<Decision>> result = new ArrayList<>();
 		// compute permutations
-		this.computePermutations(decisions, new ArrayList<>(), result);
+		this.computePermutations(decisions, new ArrayList<Decision>(), result);
 		// get permutations
 		return result;
 	}

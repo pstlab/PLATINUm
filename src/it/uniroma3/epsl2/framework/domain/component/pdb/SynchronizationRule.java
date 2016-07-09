@@ -55,10 +55,10 @@ public class SynchronizationRule
 		TemporalSynchronizationConstraint rel = new TemporalSynchronizationConstraint(type, source, target, bounds);
 		// add constraint
 		if (!this.constraints.containsKey(source)) {
-			this.constraints.put(source, new HashMap<>());
+			this.constraints.put(source, new HashMap<TokenVariable, List<SynchronizationConstraint>>());
 		}
 		if (!this.constraints.get(source).containsKey(target)) {
-			this.constraints.get(source).put(target, new ArrayList<>());
+			this.constraints.get(source).put(target, new ArrayList<SynchronizationConstraint>());
 		}
 		// set relation
 		this.constraints.get(source).get(target).add(rel);
@@ -80,10 +80,10 @@ public class SynchronizationRule
 		ParameterSynchronizationConstraint rel = new ParameterSynchronizationConstraint(type, source, referenceLabel, target, targetLabel);
 		// add constraint
 		if (!this.constraints.containsKey(source)) {
-			this.constraints.put(source, new HashMap<>());
+			this.constraints.put(source, new HashMap<TokenVariable, List<SynchronizationConstraint>>());
 		}
 		if (!this.constraints.get(source).containsKey(target)) {
-			this.constraints.get(source).put(target, new ArrayList<>());
+			this.constraints.get(source).put(target, new ArrayList<SynchronizationConstraint>());
 		}
 		// set relation
 		this.constraints.get(source).get(target).add(rel);
@@ -104,10 +104,10 @@ public class SynchronizationRule
 		ParameterSynchronizationConstraint rel = new ParameterSynchronizationConstraint(type, source, referenceLabel, source, value);
 		// add constraint
 		if (!this.constraints.containsKey(source)) {
-			this.constraints.put(source, new HashMap<>());
+			this.constraints.put(source, new HashMap<TokenVariable, List<SynchronizationConstraint>>());
 		}
 		if (!this.constraints.get(source).containsKey(source)) {
-			this.constraints.get(source).put(source, new ArrayList<>());
+			this.constraints.get(source).put(source, new ArrayList<SynchronizationConstraint>());
 		}
 		// set relation
 		this.constraints.get(source).get(source).add(rel);

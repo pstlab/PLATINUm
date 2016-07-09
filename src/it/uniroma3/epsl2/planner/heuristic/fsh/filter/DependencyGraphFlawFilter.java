@@ -123,7 +123,7 @@ public class DependencyGraphFlawFilter extends FlawFilter
 		// initialize the dependency graph
 		for (DomainComponent node : this.pdb.getComponents()) {
 			// initialize DG 
-			this.dg.put(node, new HashSet<>());
+			this.dg.put(node, new HashSet<DomainComponent>());
 		}
 			
 		// check synchronization and build the graph as "incident" matrix

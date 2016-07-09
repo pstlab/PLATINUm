@@ -295,8 +295,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 				// add variable
 				this.vars.put(nparam, var);
 				// add edges
-				this.out.put(nparam, new ArrayList<>());
-				this.in.put(nparam, new ArrayList<>());
+				this.out.put(nparam, new ArrayList<ParameterConstraint>());
+				this.in.put(nparam, new ArrayList<ParameterConstraint>());
 			}
 			break;
 		
@@ -317,8 +317,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 				// add variable
 				this.vars.put(eparam, var);
 				// add edges
-				this.out.put(eparam, new ArrayList<>());
-				this.in.put(eparam, new ArrayList<>());
+				this.out.put(eparam, new ArrayList<ParameterConstraint>());
+				this.in.put(eparam, new ArrayList<ParameterConstraint>());
 			}
 			break;
 			
@@ -338,8 +338,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 				// add variable
 				this.vars.put(eparam, var);
 				// add edges
-				this.out.put(eparam, new ArrayList<>());
-				this.in.put(eparam, new ArrayList<>());
+				this.out.put(eparam, new ArrayList<ParameterConstraint>());
+				this.in.put(eparam, new ArrayList<ParameterConstraint>());
 			}
 			break;
 			
@@ -355,8 +355,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 				// add variable
 				this.vars.put(nparam, var);
 				// add edges
-				this.out.put(nparam, new ArrayList<>());
-				this.in.put(nparam, new ArrayList<>());
+				this.out.put(nparam, new ArrayList<ParameterConstraint>());
+				this.in.put(nparam, new ArrayList<ParameterConstraint>());
 			}
 		}
 	}

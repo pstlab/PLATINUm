@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.istc.pst.epsl.microkernel.internal.engine.exception.UnsolvableFlawException;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
@@ -94,12 +95,12 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		
 		// initialize decisions of the (local) plan
 		this.decisions = new HashMap<>();
-		this.decisions.put(PlanElementStatus.PENDING, new HashSet<>());
-		this.decisions.put(PlanElementStatus.ACTIVE, new HashSet<>());
+		this.decisions.put(PlanElementStatus.PENDING, new HashSet<Decision>());
+		this.decisions.put(PlanElementStatus.ACTIVE, new HashSet<Decision>());
 		// initialize relations of the (local) plan
 		this.relations = new HashMap<>();
-		this.relations.put(PlanElementStatus.PENDING, new HashSet<>());
-		this.relations.put(PlanElementStatus.ACTIVE, new HashSet<>());
+		this.relations.put(PlanElementStatus.PENDING, new HashSet<Relation>());
+		this.relations.put(PlanElementStatus.ACTIVE, new HashSet<Relation>());
 		
 		
 		// set up the list of resolvers

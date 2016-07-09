@@ -55,9 +55,11 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory {
 	public PlanDataBase create(String name, long origin, long horizon) {
 		PlanDataBase pdb = null;
 		try {
+			
 			// get class
-			Class<PlanDataBase> clazz = (Class<PlanDataBase>) Class.forName(DomainComponentType.PDB.
-					getComponentClassName());
+			Class<PlanDataBase> clazz = (Class<PlanDataBase>) Class.
+					forName(DomainComponentType.PDB.getComponentClassName());
+			// check annotation
 			if (clazz.isAnnotationPresent(PlanDataBaseConfiguration.class)) 
 			{
 				// get annotation
@@ -72,8 +74,8 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory {
 				// create parameter data base facade
 				this.pdbFactory.createSingleton(cfg.pdb());
 				
-				// create component
-				pdb = this.cFactory.create(name, DomainComponentType.PDB);
+				// create component (cast needed for Java7 compatibility)
+				pdb = (PlanDataBase) this.cFactory.create(name, DomainComponentType.PDB);
 				// complete initialization
 				this.completeApplicationObjectInitialization((PlanDataBaseComponent) pdb);
 				// add instance to framework registry

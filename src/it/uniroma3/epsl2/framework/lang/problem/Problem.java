@@ -25,8 +25,8 @@ public class Problem
 	public Problem() {
 		// setup data
 		this.fluents = new HashMap<>();
-		this.fluents.put(ProblemFluentType.FACT, new ArrayList<>());
-		this.fluents.put(ProblemFluentType.GOAL, new ArrayList<>());
+		this.fluents.put(ProblemFluentType.FACT, new ArrayList<ProblemFluent>());
+		this.fluents.put(ProblemFluentType.GOAL, new ArrayList<ProblemFluent>());
 		this.constraints = new ArrayList<>();
 		this.fluent2constraints = new HashMap<>();
 	}
@@ -55,7 +55,7 @@ public class Problem
 	public ProblemFact addFact(ComponentValue value, String[] labels, long[] start, long[] end) {
 		ProblemFact f = new ProblemFact(value, labels, start, end, value.getDurationBounds());
 		this.fluents.get(f.getType()).add(f);
-		this.fluent2constraints.put(f, new ArrayList<>());
+		this.fluent2constraints.put(f, new ArrayList<ProblemConstraint>());
 		return f;
 	}
 	
@@ -71,7 +71,7 @@ public class Problem
 	public ProblemFact addObservation(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
 		ProblemFact f = new ProblemFact(value, labels, start, end, duration);
 		this.fluents.get(f.getType()).add(f);
-		this.fluent2constraints.put(f, new ArrayList<>());
+		this.fluent2constraints.put(f, new ArrayList<ProblemConstraint>());
 		return f;
 	}
 	
@@ -99,7 +99,7 @@ public class Problem
 	public ProblemGoal addGoal(ComponentValue value, String[] labels, long[] start, long[] end) {
 		ProblemGoal g = new ProblemGoal(value, labels, start, end, value.getDurationBounds());
 		this.fluents.get(ProblemFluentType.GOAL).add(g);
-		this.fluent2constraints.put(g, new ArrayList<>());
+		this.fluent2constraints.put(g, new ArrayList<ProblemConstraint>());
 		return g;
 	}
 	

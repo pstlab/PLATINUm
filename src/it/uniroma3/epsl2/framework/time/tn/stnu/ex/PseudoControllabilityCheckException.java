@@ -34,7 +34,7 @@ public class PseudoControllabilityCheckException extends ConsistencyCheckExcepti
 	 */
 	public void addIssue(Decision dec) {
 		if (!issues.containsKey(dec.getComponent())) {
-			this.issues.put(dec.getComponent(), new ArrayList<>());
+			this.issues.put(dec.getComponent(), new ArrayList<Decision>());
 		}
 		// add issue
 		this.issues.get(dec.getComponent()).add(dec);

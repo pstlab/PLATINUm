@@ -108,8 +108,8 @@ public final class CSPParameterDataBaseFacade extends ParameterDataBaseFacade
 	protected void doAddParameter(Parameter param)  {
 		// add parameter
 		this.parameters.add(param);
-		this.out.put(param, new ArrayList<>());
-		this.in.put(param, new ArrayList<>());
+		this.out.put(param, new ArrayList<ParameterConstraint>());
+		this.in.put(param, new ArrayList<ParameterConstraint>());
 		
 		// create notification
 		AddParameterNotification notif = this.factory.create(ParameterNotificationType.ADD_PARAM);

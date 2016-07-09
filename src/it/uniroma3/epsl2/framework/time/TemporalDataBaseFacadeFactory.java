@@ -41,17 +41,17 @@ public final class TemporalDataBaseFacadeFactory extends ApplicationFrameworkFac
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends TemporalDataBaseFacade> T createSingleton(TemporalDataBaseFacadeType type, long origin, long horizon) 
-	{
+	public <T extends TemporalDataBaseFacade> T createSingleton(TemporalDataBaseFacadeType type, long origin, long horizon) {
+		
 		// temporal reasoning facade instance
 		T tdb = null;
-		try 
-		{
+		try {
+			
 			// get facade's class
 			Class<T> clazz = (Class<T>) Class.forName(type.getFacadeClassName());
 			// get temporal data base annotation
-			if (clazz.isAnnotationPresent(TemporalDataBaseConfiguration.class)) 
-			{
+			if (clazz.isAnnotationPresent(TemporalDataBaseConfiguration.class)) {
+				
 				// get constructor 
 				Constructor<T> c = clazz.getDeclaredConstructor();
 				// set constructor accessible

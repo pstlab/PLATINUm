@@ -72,10 +72,10 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 
 		// initialize data structures
 		this.nodes = new HashMap<>();
-		this.nodes.put(ExecutionNodeStatus.WAIT, new LinkedList<>());
-		this.nodes.put(ExecutionNodeStatus.SCHEDULED, new LinkedList<>());
-		this.nodes.put(ExecutionNodeStatus.IN_EXECUTION, new LinkedList<>());
-		this.nodes.put(ExecutionNodeStatus.EXECUTED, new LinkedList<>());
+		this.nodes.put(ExecutionNodeStatus.WAIT, new LinkedList<ExecutionNode>());
+		this.nodes.put(ExecutionNodeStatus.SCHEDULED, new LinkedList<ExecutionNode>());
+		this.nodes.put(ExecutionNodeStatus.IN_EXECUTION, new LinkedList<ExecutionNode>());
+		this.nodes.put(ExecutionNodeStatus.EXECUTED, new LinkedList<ExecutionNode>());
 		
 		// initialize the dependency graph
 		this.sdg = new HashMap<>();
@@ -167,8 +167,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		// insert node
 		node.setStatus(ExecutionNodeStatus.WAIT);
 		this.nodes.get(ExecutionNodeStatus.WAIT).add(node);
-		this.sdg.put(node, new HashMap<>());
-		this.edg.put(node, new HashMap<>());
+		this.sdg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
+		this.edg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
 	}
 	
 	/**

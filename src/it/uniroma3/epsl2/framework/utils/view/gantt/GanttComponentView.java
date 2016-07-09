@@ -115,12 +115,12 @@ public class GanttComponentView extends ApplicationFrame implements ComponentVie
 	 		// create a task series if necessary
 	 		if (!index.containsKey(dec.getComponent())) {
 	 			// initialize component data
-	 			index.put(dec.getComponent(), new HashMap<>());
+	 			index.put(dec.getComponent(), new HashMap<ComponentValue, List<Token>>());
 	 		}
 	 		
 	 		if (!index.get(dec.getComponent()).containsKey(dec.getValue())) {
 	 			// initialize value data
-	 			index.get(dec.getComponent()).put(dec.getValue(), new ArrayList<>());
+	 			index.get(dec.getComponent()).put(dec.getValue(), new ArrayList<Token>());
 	 		}
 	 		
 	 		// add token for value
