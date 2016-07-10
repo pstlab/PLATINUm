@@ -1,7 +1,7 @@
 package it.uniroma3.epsl2.testing.executive.satellite;
 
 import it.istc.pst.epsl.app.EPSLApplicationBuilder;
-import it.istc.pst.epsl.app.run.EPSLApplicationPlanner;
+import it.istc.pst.epsl.app.run.EPSLRunnableApplicationPlanner;
 import it.istc.pst.epsl.microkernel.internal.solver.exception.NoSolutionFoundException;
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 
@@ -25,7 +25,7 @@ class EPSLSatellitePlanner
 	public EPSLPlanDescriptor plan() 
 			throws NoSolutionFoundException {
 		// build planner
-		 EPSLApplicationPlanner planner = EPSLApplicationBuilder.buildAPSIPlanner(DDL, PDL);
+		 EPSLRunnableApplicationPlanner planner = EPSLApplicationBuilder.buildAPSIPlanner(DDL, PDL);
 		// run planner
 		planner.plan();
 		System.out.println("Solution found after " + planner.getSolvingTime() + " msecs");
