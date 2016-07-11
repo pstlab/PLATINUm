@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFrame;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -23,7 +25,6 @@ import org.jfree.data.category.IntervalCategoryDataset;
 import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
@@ -38,10 +39,11 @@ import it.uniroma3.epsl2.framework.utils.view.ComponentView;
  * @author anacleto
  *
  */
-public class GanttComponentView extends ApplicationFrame implements ComponentView, Comparator<Token> {
+public class GanttComponentView extends JFrame implements ComponentView, Comparator<Token> {
 	private static final long serialVersionUID = 1L;
 
 	private DomainComponent component;
+	private ChartPanel panel;
 	
 	/**
 	 * 
@@ -50,6 +52,16 @@ public class GanttComponentView extends ApplicationFrame implements ComponentVie
 	public GanttComponentView(DomainComponent component) {
 		super(component.getName() + " Component View");
 		this.component = component;
+		
+		// add the chart to a panel
+		this.panel = new ChartPanel(null);
+		setContentPane(panel);
+		
+		// display the Gantt graph
+		this.pack();
+		RefineryUtilities.centerFrameOnScreen(this);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 	
 	/**
@@ -87,14 +99,8 @@ public class GanttComponentView extends ApplicationFrame implements ComponentVie
 		renderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator(
 				"value= \"{1}\", start= \"{2}\"", NumberFormat.getInstance()));
 		
-		// add the chart to a panel
-		ChartPanel panel = new ChartPanel(chart);
-		setContentPane(panel);
-		
-		// display the Gantt graph
-		this.pack();
-		RefineryUtilities.centerFrameOnScreen(this);
-		this.setVisible(true);
+		// set chart to display
+		this.panel.setChart(chart);
 	}
 	
 	/**
