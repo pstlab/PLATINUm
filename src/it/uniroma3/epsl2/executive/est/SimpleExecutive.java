@@ -66,7 +66,8 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 	 * 
 	 */
 	@Override
-	public void start() {
+	public void start() 
+			throws InterruptedException {
 		
 		// start execution
 		System.out.println("Starting execution....");

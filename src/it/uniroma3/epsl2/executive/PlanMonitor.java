@@ -32,8 +32,10 @@ public abstract class PlanMonitor extends ApplicationFrameworkObject {
 	
 	/**
 	 * 
+	 * @throws InterruptedException
 	 */
-	public abstract void start();
+	public abstract void start() 
+			throws InterruptedException;
 	
 	/**
 	 * 

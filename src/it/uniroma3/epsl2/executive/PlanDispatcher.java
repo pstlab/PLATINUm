@@ -20,6 +20,9 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	protected ClockManager clock;					// execution clock
 	
 	private Thread process;							// tick-driven process
+	
+	private final Object lock;
+	private boolean ready;
 
 	/**
 	 * 
@@ -31,6 +34,8 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 		this.clock = exec.clock;
 		// set the plan
 		this.pdb = exec.pdb;
+		this.lock = new Object();
+		this.ready = false;
 		
 		// create thread
 		this.process = new Thread(new Runnable() {
@@ -40,7 +45,18 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 			 */
 			@Override
 			public void run() {
+				
+				// start running
 				boolean running = true;
+				// set status
+				synchronized (lock) {
+					// set status
+					ready = true;
+					// send signal
+					lock.notifyAll();
+				}
+				
+				// run process
 				while (running) {
 					try {
 						// wait current tick
@@ -58,13 +74,25 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	
 	/**
 	 * 
+	 * @throws InterruptedException
 	 */
-	public void start() {
+	public void start() 
+			throws InterruptedException {
+		
 		// start process
 		if (!this.process.isAlive()) {
 			// start process
 			this.process.start();
+			// wait process ready
+			synchronized (this.lock) {
+				// wait the process ready
+				while (!this.ready) {
+					this.lock.wait();
+				}
 				
+				// send signal
+				this.lock.notifyAll();
+			}
 		}
 	}
 	

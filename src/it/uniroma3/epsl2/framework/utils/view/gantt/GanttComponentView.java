@@ -55,7 +55,7 @@ public class GanttComponentView extends JFrame implements ComponentView, Compara
 		
 		// add the chart to a panel
 		this.panel = new ChartPanel(null);
-		setContentPane(panel);
+		setContentPane(this.panel);
 		
 		// display the Gantt graph
 		this.pack();

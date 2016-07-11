@@ -37,20 +37,14 @@ public class ClockManager extends ApplicationFrameworkObject
 				
 				// set thread running
 				boolean running = true;
-				// generate the start clock event
-				synchronized (clockEventLock) {							
-					// signal observers and release the lock
-					clockEventLock.notifyAll();
-				}
-				
-				// start clock
+				// start process
 				while (running) {
 					try {
 						
 						// wait latency
 						Thread.sleep(CLOCK_SAMPLING_RATE);
 						// increment tick (atomic operation)
-						tick.incrementAndGet();
+						tick.getAndIncrement();
 						
 						// generate a clock event
 						synchronized (clockEventLock) {							
