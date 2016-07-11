@@ -1,7 +1,6 @@
 package it.uniroma3.epsl2.executive;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicLong;
 
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 
@@ -14,10 +13,11 @@ public class ClockManager extends ApplicationFrameworkObject
 {
 	private static long CLOCK_SAMPLING_RATE = 200;		// sampling time rate (in milliseconds)
 	private long startTime;								// clock start time (in milliseconds)
-	private AtomicLong tick;							// current tick (relative measure)
+//	private AtomicLong tick;							// current tick (relative measure)
+	private long tick;
 	private final Thread process;						// clock incrementing the tick
 	
-	private final Object clockEventLock = new Object();
+	private final Object tickLock = new Object();
 	
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class ClockManager extends ApplicationFrameworkObject
 	public ClockManager() {
 		super();
 		// initialize tick
-		this.tick = new AtomicLong(0);
+		this.tick = 0;
 		// initialize clock thread
 		this.process = new Thread(new Runnable() {
 			
@@ -43,13 +43,13 @@ public class ClockManager extends ApplicationFrameworkObject
 						
 						// wait latency
 						Thread.sleep(CLOCK_SAMPLING_RATE);
-						// increment tick (atomic operation)
-						tick.getAndIncrement();
-						
 						// generate a clock event
-						synchronized (clockEventLock) {							
+						synchronized (tickLock) {
+
+							// update the current tick
+							tick++;
 							// signal observers and release the lock
-							clockEventLock.notifyAll();
+							tickLock.notifyAll();
 						}
 						
 					} catch (InterruptedException ex) {
@@ -113,25 +113,20 @@ public class ClockManager extends ApplicationFrameworkObject
 	public long waitTick() 
 			throws InterruptedException {
 		
-		// check if process has been started
-		synchronized(this.process) {
-			while (!this.process.isAlive()) {
-				// wait process to start
-				this.process.wait();
-			}
-		}
-		
 		// event tick
 		long eventTick;
 		// wait a clock event
-		synchronized (this.clockEventLock) {
+		synchronized (this.tickLock) {
+
 			// wait the event
-			this.clockEventLock.wait();
-			// set event tick
-			eventTick = this.tick.longValue();
+			this.tickLock.wait();
+			// read tick after notification
+			eventTick = this.tick;
+			// send signal
+			this.tickLock.notifyAll();
 		}
 		
-		// get event tick
+		// get read event tick
 		return eventTick;
 	}
 	
@@ -141,17 +136,18 @@ public class ClockManager extends ApplicationFrameworkObject
 	 */
 	public long getCurrentTick() 
 			throws InterruptedException {
-		
-		// check if process is running
-		synchronized(this.process) {
-			while (!this.process.isAlive()) {
-				// wait the process to start
-				this.process.wait();
-			}
+
+		// current clock's tick
+		long currentTick;
+		synchronized (this.tickLock) {
+			// read current tick
+			currentTick = this.tick;
+			// send signal
+			this.tickLock.notifyAll();
 		}
 		
-		// get current tick
-		return this.tick.longValue();
+		// get read tick
+		return currentTick;
 	}
 	
 	/**

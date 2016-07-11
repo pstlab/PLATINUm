@@ -108,6 +108,14 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 			// stop process
 			this.process.interrupt();
 			this.process.join();
+			
+			// change status
+			synchronized (this.lock) {
+				// update
+				this.ready = false;
+				// send signal
+				this.lock.notifyAll();
+			}
 		}
 	}
 	
