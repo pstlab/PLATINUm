@@ -99,7 +99,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						}
 						
 						// create a node
-						ExecutionNode node = this.createNode(signature, paramTypes, paramValues, start, end, duration, controllability);
+						ExecutionNode node = this.createNode(tl.getComponent(), signature, paramTypes, paramValues, start, end, duration, controllability);
 						// add node
 						this.addNode(node);
 						// add entry to the dictionary
@@ -148,7 +148,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						}
 						
 						// create a node
-						ExecutionNode node = this.createNode(signature, paramTypes, paramValues, start, end, duration, controllability);
+						ExecutionNode node = this.createNode(tl.getComponent(), signature, paramTypes, paramValues, start, end, duration, controllability);
 						// add node
 						this.addNode(node);
 						// add entry to the dictionary

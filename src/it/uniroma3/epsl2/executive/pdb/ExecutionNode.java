@@ -46,6 +46,14 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public String getComponent() {
+		return this.predicate.getComponent();
+	}
+	
+	/**
+	 * 
 	 * @param index
 	 * @return
 	 */

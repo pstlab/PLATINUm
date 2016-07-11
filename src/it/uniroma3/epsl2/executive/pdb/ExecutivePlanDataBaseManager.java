@@ -31,8 +31,11 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkObject 
-{
+public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkObject {
+	
+	private long origin;
+	private long horizon;
+	
 	// plan locks
 	private final Object[] locks = {
 		new Object(),	// wait status lock
@@ -58,8 +61,11 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param horizon
 	 */
 	public ExecutivePlanDataBaseManager(long origin, long horizon) {
-		
 		super();
+		// set origin and horizon
+		this.origin = origin;
+		this.horizon = horizon;
+		
 		// create factories
 		this.iFactory = IntervalConstraintFactory.getInstance();
 		this.qFactory = TemporalQueryFactory.getInstance();
@@ -80,6 +86,22 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		// initialize the dependency graph
 		this.sdg = new HashMap<>();
 		this.edg = new HashMap<>();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getOrigin() {
+		return this.origin;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getHorizon() {
+		return this.horizon;
 	}
 	
 	/**
@@ -173,6 +195,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	
 	/**
 	 * 
+	 * @param component
 	 * @param signature
 	 * @param pTypes
 	 * @param pValues
@@ -183,7 +206,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	protected ExecutionNode createNode(String signature, ParameterType[] pTypes, String[] pValues, long[] start, long[] end, long[] duration, ControllabilityType controllability) 
+	protected ExecutionNode createNode(String component, String signature, ParameterType[] pTypes, String[] pValues, long[] start, long[] end, long[] duration, ControllabilityType controllability) 
 			throws TemporalIntervalCreationException  {
 		// check interval controllability
 		boolean controllableInterval = controllability.equals(ControllabilityType.EXTERNAL_TOKEN) || 
@@ -192,7 +215,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, controllableInterval);
 		
 		// create predicate
-		NodePredicate predicate = new NodePredicate(signature, pTypes, pValues); 
+		NodePredicate predicate = new NodePredicate(component, signature, pTypes, pValues); 
 		// create execution node
 		return new ExecutionNode(predicate, interval, controllability);
 	}

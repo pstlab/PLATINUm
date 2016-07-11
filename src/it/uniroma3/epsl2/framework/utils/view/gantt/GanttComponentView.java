@@ -57,9 +57,9 @@ public class GanttComponentView extends ApplicationFrame implements ComponentVie
 	 */
 	@Override
 	public void display() {
+
 		// create the data-set from the plan
 		final IntervalCategoryDataset dataset = this.createDataset();
-
 		// create the chart
 		final JFreeChart chart = ChartFactory.createGanttChart(
 				null,				// chart title 

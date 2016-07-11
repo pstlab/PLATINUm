@@ -9,6 +9,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
  */
 public class NodePredicate {
 
+	private String component;
 	private String signature;
 	private ParameterType[] types;
 	private String[] parameters;
@@ -19,10 +20,19 @@ public class NodePredicate {
 	 * @param types
 	 * @param parameters
 	 */
-	protected NodePredicate(String signature, ParameterType[] types, String[] parameters) {
+	protected NodePredicate(String component, String signature, ParameterType[] types, String[] parameters) {
+		this.component = component;
 		this.signature = signature;
 		this.types = types;
 		this.parameters = parameters;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getComponent() {
+		return component;
 	}
 	
 	/**
