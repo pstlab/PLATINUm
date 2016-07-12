@@ -13,10 +13,10 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanM
  * @author anacleto
  *
  */
-public abstract class Executive <D extends PlanDispatcher, M extends PlanMonitor> extends ApplicationFrameworkObject {
+public abstract class Executive <C extends ClockManager, D extends PlanDispatcher, M extends PlanMonitor> extends ApplicationFrameworkObject {
 
 	@ClockReference
-	protected ClockManager clock;					// execution clock controller
+	protected C clock;					// execution clock controller
 	
 	@ExecutivePlanDataBaseReference
 	protected ExecutivePlanDataBaseManager pdb;		// the plan to execute
@@ -39,7 +39,7 @@ public abstract class Executive <D extends PlanDispatcher, M extends PlanMonitor
 	 * @param pdb
 	 * @param clock
 	 */
-	public abstract void init(ExecutivePlanDataBaseManager pdb, ClockManager clock);
+	public abstract void init(ExecutivePlanDataBaseManager pdb, C clock);
 	
 	/**
 	 * This method allows to initialize an executive system on a generated plan.

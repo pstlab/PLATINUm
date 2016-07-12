@@ -11,65 +11,61 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.Execu
  * @author anacleto
  *
  */
-public abstract class PlanDispatcher extends ApplicationFrameworkObject {
+public abstract class PlanDispatcher extends ApplicationFrameworkObject implements ClockObserver, Runnable {
 
 	@ExecutivePlanDataBaseReference
 	protected ExecutivePlanDataBaseManager pdb;		// the plan
 	
 	@ClockReference
-	protected ClockManager clock;					// execution clock
+	protected ClockManager clock;				// execution clock
 	
 	private Thread process;							// tick-driven process
 	
-	private final Object lock;
-	private boolean ready;
+	private final Object lock;						// process status' lock	
+	private ProcessStatus processStatus;			// process status
+	
+	private long currentTick;						// current execution tick
 
 	/**
 	 * 
 	 * @param exec
 	 */
-	protected PlanDispatcher(Executive<?,?> exec) {
+	protected PlanDispatcher(Executive<?,?,?> exec) {
 		super();
 		// set the clock
-		this.clock = exec.clock;
+		this.clock = (AtomicClockManager) exec.clock;
 		// set the plan
 		this.pdb = exec.pdb;
-		this.lock = new Object();
-		this.ready = false;
 		
+		// set status
+		this.lock = new Object();
+		this.processStatus = ProcessStatus.INACTIVE;
 		// create thread
-		this.process = new Thread(new Runnable() {
-			
-			/**
-			 * 
-			 */
-			@Override
-			public void run() {
-				
-				// start running
-				boolean running = true;
-				// set status
-				synchronized (lock) {
-					// set status
-					ready = true;
-					// send signal
-					lock.notifyAll();
-				}
-				
-				// run process
-				while (running) {
-					try {
-						// wait current tick
-						long tick = clock.waitTick();
-						onTick(tick);
-					}
-					catch (InterruptedException ex) {
-						// stop thread
-						running = false;
-					}
-				}
+		this.process = null;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void clockUpdate(long tick) 
+			throws InterruptedException {
+		
+		// update the current tick
+		synchronized (this.lock) {
+			// check status
+			while (!this.processStatus.equals(ProcessStatus.READY)) {
+				// wait signal
+				this.lock.wait();
 			}
-		});
+			
+			// set current tick
+			this.currentTick = tick;
+			// update status
+			this.processStatus = ProcessStatus.PROCESSING;
+			// send signal
+			this.lock.notifyAll();
+		}
 	}
 	
 	/**
@@ -79,20 +75,22 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	public void start() 
 			throws InterruptedException {
 		
-		// start process
-		if (!this.process.isAlive()) {
-			// start process
-			this.process.start();
-			// wait process ready
-			synchronized (this.lock) {
-				// wait the process ready
-				while (!this.ready) {
-					this.lock.wait();
-				}
-				
-				// send signal
-				this.lock.notifyAll();
+		// check status
+		synchronized (this.lock) {
+			// check if already active
+			if (this.processStatus.equals(ProcessStatus.INACTIVE)) {
+				// activate process
+				this.process = new Thread(this);
+				// subscribe to clock
+				this.clock.subscribe(this);
+				// update status
+				this.processStatus = ProcessStatus.READY;
+				// start process
+				this.process.start();
 			}
+			
+			// send signal
+			this.lock.notifyAll();
 		}
 	}
 	
@@ -103,18 +101,69 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject {
 	public void stop() 
 			throws InterruptedException {
 		
-		// stop process
-		if (this.process.isAlive()) {
-			// stop process
+		// check status
+		boolean toStop = false;
+		synchronized (this.lock) {
+			// check if active
+			toStop = !this.processStatus.equals(ProcessStatus.INACTIVE);
+			this.lock.notifyAll();
+		}
+		
+		// stop process if necessary
+		if (toStop) {
+			// interrupt process
 			this.process.interrupt();
 			this.process.join();
+			this.process = null;
 			
-			// change status
+			// cancel from clock
+			this.clock.unSubscribe(this);
+			// update status
 			synchronized (this.lock) {
-				// update
-				this.ready = false;
-				// send signal
+				// set status
+				this.processStatus = ProcessStatus.INACTIVE;
 				this.lock.notifyAll();
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public final void run() {
+		
+		// start running
+		boolean running = true;
+		// run process
+		while (running) {
+			try {
+				
+				// check status
+				synchronized (this.lock) {
+					// check condition
+					while (!this.processStatus.equals(ProcessStatus.PROCESSING)) {
+						this.lock.wait();
+					}
+					
+					// send signal
+					this.lock.notifyAll();
+				}
+				
+				// handle tick
+				this.onTick(this.currentTick);
+				
+				// change status
+				synchronized (this.lock) {
+					// update status
+					this.processStatus = ProcessStatus.READY;
+					// send signal
+					this.lock.notifyAll();
+				}
+			}
+			catch (InterruptedException ex) {
+				// stop thread
+				running = false;
 			}
 		}
 	}

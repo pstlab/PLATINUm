@@ -1,7 +1,7 @@
 package it.uniroma3.epsl2.executive.est;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.executive.ClockManager;
+import it.uniroma3.epsl2.executive.AtomicClockManager;
 import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
@@ -19,9 +19,9 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.executive.cfg.Executiv
 	dispatcher = EarliesStartTimePlanDispatcher.class,
 	
 	// set monitor
-	monitor = SimpleEarliestObserverPlanMonitor.class
+	monitor = EarliestStartTimePlanMonitor.class
 )
-public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, SimpleEarliestObserverPlanMonitor> {
+public class EarliestStartTimeExecutive extends Executive<AtomicClockManager, EarliesStartTimePlanDispatcher, EarliestStartTimePlanMonitor> {
 
 	private boolean sharedClock;
 	
@@ -29,7 +29,7 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 	 * 
 	 */
 	@Override
-	public void init(ExecutivePlanDataBaseManager pdb, ClockManager clock) {
+	public void init(ExecutivePlanDataBaseManager pdb, AtomicClockManager clock) {
 		// set the clock
 		this.clock = clock;
 		this.sharedClock = true;		
@@ -37,7 +37,7 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 		this.pdb = pdb;
 		
 		// create plan monitor
-		this.monitor = new SimpleEarliestObserverPlanMonitor(this);
+		this.monitor = new EarliestStartTimePlanMonitor(this);
 		// create dispatcher
 		this.dispatcher = new EarliesStartTimePlanDispatcher(this);
 	}
@@ -49,7 +49,7 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 	public void init(EPSLPlanDescriptor plan)  {
 		
 		// create clock
-		this.clock = new ClockManager();
+		this.clock = new AtomicClockManager();
 		this.sharedClock = false;
 		// create execution plan data-base
 		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
@@ -57,7 +57,7 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 		this.pdb.init(plan);
 		
 		// create plan monitor
-		this.monitor = new SimpleEarliestObserverPlanMonitor(this);
+		this.monitor = new EarliestStartTimePlanMonitor(this);
 		// create dispatcher
 		this.dispatcher = new EarliesStartTimePlanDispatcher(this);
 	}
@@ -88,15 +88,18 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 	public void stop() 
 			throws InterruptedException {
 		
-		System.out.println("Stopping execution...");
 		// stop monitor
+		System.out.println("Stopping monitor... ");
 		this.monitor.stop();
 		// stop dispatcher
+		System.out.println("Stopping dispatcher... ");
 		this.dispatcher.stop();
 		// stop clock
 		if (!this.sharedClock) {
+			System.out.println("Stopping clock... ");
 			this.clock.stop();
 		}
+		System.out.println("... Execution ends");
 	}
 	
 	/**
@@ -132,8 +135,10 @@ public class SimpleExecutive extends Executive<EarliesStartTimePlanDispatcher, S
 				boolean running = true;
 				while (running) {
 					try {
-						// wait clock event
-						clock.waitTick();
+						
+						// wait a bit
+						Thread.sleep(1000);
+						
 						// check if execution is complete
 						running = !pdb.getNodesByStatus(ExecutionNodeStatus.WAIT).isEmpty() ||
 								!pdb.getNodesByStatus(ExecutionNodeStatus.SCHEDULED).isEmpty() ||

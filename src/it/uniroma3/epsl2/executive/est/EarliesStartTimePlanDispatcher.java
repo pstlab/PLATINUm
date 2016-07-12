@@ -16,7 +16,7 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 	 * 
 	 * @param exec
 	 */
-	public EarliesStartTimePlanDispatcher(Executive<?, ?> exec) {
+	public EarliesStartTimePlanDispatcher(Executive<?, ?, ?> exec) {
 		super(exec);
 	}
 	
@@ -52,7 +52,7 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 				}
 				catch (Exception ex) {
 					// failure start executing node
-					throw new RuntimeException("{tick = " + tick + "} {PlanDispatcher:EarliestStartTimeDispatcher} -> Failure start executing node " + node + " ERROR {\n- Failure while scheduling node " + node + "\n}\n" + ex.getMessage());
+					throw new RuntimeException("{tick = " + tick + "} {EarliesStartTimePlanDispatcher} -> Failure start executing node " + node + " ERROR {\n- Failure while scheduling node " + node + "\n}\n" + ex.getMessage());
 				}
 			}
 		}
@@ -66,9 +66,10 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 			long start = node.getStart()[0];
 			// check if ready to start execution
 			if (tau >= start) {
+				
 				// dispatch node
 				this.dispatch(node);
-				System.out.println("{tick = " + tick + "} {PlanDispatcher:EarliestStartTimeDispatcher} -> Start executing node " + node);
+				System.out.println("{tick = " + tick + "} {EarliesStartTimePlanDispatcher} -> Start executing node " + node);
 			}
 		}
 	}

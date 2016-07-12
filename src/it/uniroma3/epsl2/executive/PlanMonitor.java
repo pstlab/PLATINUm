@@ -22,7 +22,7 @@ public abstract class PlanMonitor extends ApplicationFrameworkObject {
 	 * 
 	 * @param exec
 	 */
-	public PlanMonitor(Executive<?,?> exec) {
+	public PlanMonitor(Executive<?,?,?> exec) {
 		super();
 		// set clock manager
 		this.clock = exec.clock;
