@@ -13,11 +13,10 @@ public class ClockManager extends ApplicationFrameworkObject
 {
 	private static long CLOCK_SAMPLING_RATE = 200;		// sampling time rate (in milliseconds)
 	private long startTime;								// clock start time (in milliseconds)
-//	private AtomicLong tick;							// current tick (relative measure)
-	private long tick;
 	private final Thread process;						// clock incrementing the tick
 	
 	private final Object tickLock = new Object();
+	private long tick;
 	
 	/**
 	 * 
