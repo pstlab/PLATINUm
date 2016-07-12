@@ -1,8 +1,8 @@
 package it.uniroma3.epsl2.executive.est;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.executive.AtomicClockManager;
 import it.uniroma3.epsl2.executive.Executive;
+import it.uniroma3.epsl2.executive.clock.AtomicClockManager;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;

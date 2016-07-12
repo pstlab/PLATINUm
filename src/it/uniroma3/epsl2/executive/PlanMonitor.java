@@ -1,5 +1,6 @@
 package it.uniroma3.epsl2.executive;
 
+import it.uniroma3.epsl2.executive.clock.ClockManager;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.ClockReference;

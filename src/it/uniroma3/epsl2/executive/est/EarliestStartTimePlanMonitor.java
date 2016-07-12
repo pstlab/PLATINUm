@@ -1,9 +1,9 @@
 package it.uniroma3.epsl2.executive.est;
 
-import it.uniroma3.epsl2.executive.ClockObserver;
 import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.PlanMonitor;
 import it.uniroma3.epsl2.executive.ProcessStatus;
+import it.uniroma3.epsl2.executive.clock.ClockObserver;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 
