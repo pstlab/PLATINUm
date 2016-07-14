@@ -9,6 +9,7 @@ import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.PlanDataBaseConfiguration;
 import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
+import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 
 /**
@@ -63,7 +64,8 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory {
 			if (clazz.isAnnotationPresent(PlanDataBaseConfiguration.class)) 
 			{
 				// get annotation
-				PlanDataBaseConfiguration cfg = clazz.getDeclaredAnnotation(PlanDataBaseConfiguration.class);
+				PlanDataBaseConfiguration cfg = AnnotationUtils.
+				        getDeclaredAnnotation(clazz, PlanDataBaseConfiguration.class);
 			
 				// create logger
 				this.lFactory.createFrameworkLogger(cfg.logging());
