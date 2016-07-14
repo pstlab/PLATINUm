@@ -1,6 +1,5 @@
 package it.uniroma3.epsl2.executive.est;
 
-import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.PlanMonitor;
 import it.uniroma3.epsl2.executive.ProcessStatus;
 import it.uniroma3.epsl2.executive.clock.ClockObserver;
@@ -23,14 +22,36 @@ public class EarliestStartTimePlanMonitor extends PlanMonitor implements Runnabl
 	 * 
 	 * @param exec
 	 */
-	protected EarliestStartTimePlanMonitor(Executive<?,?,?> exec) {
+	protected EarliestStartTimePlanMonitor(EarliestStartTimeExecutive exec) {
 		super(exec);
+		
+		// subscribe to clock
+		this.clock.subscribe(this);
 
 		// set status
 		this.lock = new Object();
 		this.processStatus = ProcessStatus.INACTIVE;
 		// create thread
 		this.process = null;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void waitReady() 
+			throws InterruptedException {
+		
+		// check status
+		synchronized (this.lock) {
+			// wait ready status
+			while (!this.processStatus.equals(ProcessStatus.READY)) {
+				this.lock.wait();
+			}
+			
+			// send signal
+			this.lock.notifyAll();
+		}
 	}
 	
 	/**

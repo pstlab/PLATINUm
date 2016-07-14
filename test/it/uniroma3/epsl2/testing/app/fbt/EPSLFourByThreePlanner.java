@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.executive.satellite;
+package it.uniroma3.epsl2.testing.app.fbt;
 
 import it.istc.pst.epsl.app.EPSLApplicationBuilder;
 import it.istc.pst.epsl.app.run.EPSLRunnableApplicationPlanner;
@@ -7,15 +7,16 @@ import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 
 /**
  * 
- * @author anacleto
+ * @author alessandroumbrico
  *
  */
-class EPSLSatellitePlanner 
+class EPSLFourByThreePlanner 
 {
-	private static final String DDL = "domains/satellite/satellite.ddl";
-	private static final String PDL = "domains/satellite/satellite.pdl";
+	// DDL file path
+	private static final String DDL_PATH = "domains/fourbythree/beta/fourbythree.ddl";
+	private static final String PDL_PATH = "domains/fourbythree/beta/fourbythree.pdl";
 	
-	protected EPSLSatellitePlanner() {}
+	protected EPSLFourByThreePlanner() {}
 	
 	/**
 	 * 
@@ -25,8 +26,8 @@ class EPSLSatellitePlanner
 	public EPSLPlanDescriptor plan() 
 			throws NoSolutionFoundException {
 		// build planner
-		 EPSLRunnableApplicationPlanner planner = EPSLApplicationBuilder.buildAPSIPlanner(DDL, PDL);
-		// run planner
+		EPSLRunnableApplicationPlanner planner = EPSLApplicationBuilder.buildAPSIPlanner(DDL_PATH, PDL_PATH);
+		// run planner - default timeout at 60/180 seconds
 		planner.plan();
 		System.out.println("Solution found after " + planner.getSolvingTime() + " msecs");
 		// export plan

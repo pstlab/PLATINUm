@@ -1,6 +1,5 @@
 package it.uniroma3.epsl2.executive;
 
-import it.uniroma3.epsl2.executive.clock.AtomicClockManager;
 import it.uniroma3.epsl2.executive.clock.ClockManager;
 import it.uniroma3.epsl2.executive.clock.ClockObserver;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
@@ -36,7 +35,9 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject implemen
 	protected PlanDispatcher(Executive<?,?,?> exec) {
 		super();
 		// set the clock
-		this.clock = (AtomicClockManager) exec.clock;
+		this.clock = exec.clock;
+		// subscribe to clock
+		this.clock.subscribe(this);
 		// set the plan
 		this.pdb = exec.pdb;
 		
@@ -73,6 +74,25 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject implemen
 	
 	/**
 	 * 
+	 */
+	@Override
+	public void waitReady() 
+			throws InterruptedException {
+		
+		// check status
+		synchronized (this.lock) {
+			// wait ready status
+			while (!this.processStatus.equals(ProcessStatus.READY)) {
+				this.lock.wait();
+			}
+			
+			// send signal
+			this.lock.notifyAll();
+		}
+	}
+	
+	/**
+	 * 
 	 * @throws InterruptedException
 	 */
 	public void start() 
@@ -84,8 +104,6 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject implemen
 			if (this.processStatus.equals(ProcessStatus.INACTIVE)) {
 				// activate process
 				this.process = new Thread(this);
-				// subscribe to clock
-				this.clock.subscribe(this);
 				// update status
 				this.processStatus = ProcessStatus.READY;
 				// start process

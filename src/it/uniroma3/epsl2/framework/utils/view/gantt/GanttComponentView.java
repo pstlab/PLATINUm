@@ -52,6 +52,13 @@ public class GanttComponentView extends JFrame implements ComponentView, Compara
 	public GanttComponentView(DomainComponent component) {
 		super(component.getName() + " Component View");
 		this.component = component;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void display() {
 		
 		// add the chart to a panel
 		this.panel = new ChartPanel(null);
@@ -62,13 +69,6 @@ public class GanttComponentView extends JFrame implements ComponentView, Compara
 		RefineryUtilities.centerFrameOnScreen(this);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void display() {
 
 		// create the data-set from the plan
 		final IntervalCategoryDataset dataset = this.createDataset();

@@ -31,7 +31,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	protected ExecutionNode(NodePredicate predicate, TemporalInterval interval, ControllabilityType type) {
 		this.id = COUNTER.getAndIncrement();
 		this.controllability = type;
-		this.status = ExecutionNodeStatus.WAIT;
+		this.status = ExecutionNodeStatus.WAITING;
 		this.interval = interval;
 		this.predicate = predicate;
 	}

@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.executive.fourByThree;
+package it.uniroma3.epsl2.testing.app.fbt;
 
 import it.istc.pst.epsl.microkernel.internal.solver.exception.NoSolutionFoundException;
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;

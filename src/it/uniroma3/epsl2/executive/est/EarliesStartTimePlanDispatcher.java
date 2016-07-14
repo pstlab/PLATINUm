@@ -29,7 +29,7 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 		// get current time in seconds
 		long tau = this.clock.getSecondsFromTheOrigin(tick);
 		// compute ready to execute nodes
-		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.WAIT)) {
+		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING)) {
 			// check start condition and controllability type
 			if (this.pdb.canStartExecution(node)) {
 				

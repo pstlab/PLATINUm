@@ -140,7 +140,7 @@ public class EarliestStartTimeExecutive extends Executive<AtomicClockManager, Ea
 						Thread.sleep(1000);
 						
 						// check if execution is complete
-						running = !pdb.getNodesByStatus(ExecutionNodeStatus.WAIT).isEmpty() ||
+						running = !pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() ||
 								!pdb.getNodesByStatus(ExecutionNodeStatus.SCHEDULED).isEmpty() ||
 								!pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
 					}

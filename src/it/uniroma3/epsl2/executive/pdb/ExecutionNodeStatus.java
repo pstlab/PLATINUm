@@ -10,7 +10,7 @@ public enum ExecutionNodeStatus {
 	/**
 	 * The token is in the plan but it cannot be executed yet.
 	 */
-	WAIT(0),
+	WAITING(0),
 	
 	/**
 	 * The token has been scheduled, i.e. the process has decided the exact time at which 

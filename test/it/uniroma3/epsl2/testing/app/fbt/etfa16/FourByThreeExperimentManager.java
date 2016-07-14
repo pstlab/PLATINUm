@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.app.fourbythree;
+package it.uniroma3.epsl2.testing.app.fbt.etfa16;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,7 +34,7 @@ public class FourByThreeExperimentManager {
 	};
 	
 	// planning problem
-	private static final String PDL_FILE = "domains/fourbythree/test/fourbythree.pdl";
+	private static final String PDL_FILE = "domains/fourbythree/etfa16/fourbythree.pdl";
 	
 	/**
 	 * 
@@ -66,7 +66,7 @@ public class FourByThreeExperimentManager {
 					for (String effort : EFFORT) {
 						
 						// set DDL file
-						String DDL_FILE = "domains/fourbythree/test/fourbythree_" + size +  "_" + effort + "effort.ddl";
+						String DDL_FILE = "domains/fourbythree/etfa16/fourbythree_" + size +  "_" + effort + "effort.ddl";
 						// get the planner
 						FourByThreePlanner planner = PlannerBuilder.build(PLANNER_CLASS, DDL_FILE, PDL_FILE);
 						try {

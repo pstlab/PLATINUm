@@ -85,31 +85,41 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 	 */
 	@Override
 	public void run() {
-		
-		// set clock start time
-		this.clockSart = System.currentTimeMillis();
-		// initialize tick
-		this.tick = new AtomicLong(0);
-		// set thread running
-		boolean running = true;
-		// start process
-		while (running) {
-			try {
-				
-				// wait latency
-				Thread.sleep(CLOCK_SAMPLING_RATE);
-
-				// update the current tick
-				long currentTick = this.tick.getAndIncrement();
-				// notify all observers
-				for (ClockObserver obs : this.observers) {
-					// notify clock update
-					obs.clockUpdate(currentTick);
-				}
-			} catch (InterruptedException ex) {
-				// stop thread
-				running = false;
+		try {
+			// set clock start time
+			this.clockSart = System.currentTimeMillis();
+			// initialize tick
+			this.tick = new AtomicLong(0);
+			// wait before start
+			for (ClockObserver obs : this.observers) {
+				// wait the that the observer is ready
+				obs.waitReady();
 			}
+			
+			// set thread running
+			boolean running = true;
+			// start process
+			while (running) {
+				try {
+					
+					// wait latency
+					Thread.sleep(CLOCK_SAMPLING_RATE);
+	
+					// update the current tick
+					long currentTick = this.tick.getAndIncrement();
+					// notify all observers
+					for (ClockObserver obs : this.observers) {
+						// notify clock update
+						obs.clockUpdate(currentTick);
+					}
+				} catch (InterruptedException ex) {
+					// stop thread
+					running = false;
+				}
+			}
+		}
+		catch (Exception ex) {
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 	

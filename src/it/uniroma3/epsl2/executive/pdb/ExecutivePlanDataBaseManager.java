@@ -78,7 +78,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 
 		// initialize data structures
 		this.nodes = new HashMap<>();
-		this.nodes.put(ExecutionNodeStatus.WAIT, new LinkedList<ExecutionNode>());
+		this.nodes.put(ExecutionNodeStatus.WAITING, new LinkedList<ExecutionNode>());
 		this.nodes.put(ExecutionNodeStatus.SCHEDULED, new LinkedList<ExecutionNode>());
 		this.nodes.put(ExecutionNodeStatus.IN_EXECUTION, new LinkedList<ExecutionNode>());
 		this.nodes.put(ExecutionNodeStatus.EXECUTED, new LinkedList<ExecutionNode>());
@@ -187,8 +187,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 */
 	public void addNode(ExecutionNode node) {
 		// insert node
-		node.setStatus(ExecutionNodeStatus.WAIT);
-		this.nodes.get(ExecutionNodeStatus.WAIT).add(node);
+		node.setStatus(ExecutionNodeStatus.WAITING);
+		this.nodes.get(ExecutionNodeStatus.WAITING).add(node);
 		this.sdg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
 		this.edg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
 	}
@@ -248,15 +248,18 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @return
 	 */
 	public boolean canEndExecution(ExecutionNode node) {
+		// flag 
 		boolean canEnd = true;
-		Map<ExecutionNode, ExecutionNodeStatus> conditions = this.getNodeEndDependencies(node);
-		Iterator<ExecutionNode> it = conditions.keySet().iterator();
-		while (it.hasNext() && canEnd) {
-			// get next dependency
-			ExecutionNode d = it.next();
-			canEnd = d.getStatus().equals(conditions.get(d));
+		Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeEndDependencies(node);
+		if (!dependencies.isEmpty()) {
+			// check if conditions are satisfied
+			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
+			while (it.hasNext() && canEnd) {
+				// get next dependency
+				ExecutionNode d = it.next();
+				canEnd = d.getStatus().equals(dependencies.get(d));
+			}
 		}
-		
 		// true if the node can end execution
 		return canEnd;
 	}
@@ -268,21 +271,22 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 */
 	public boolean canStartExecution(ExecutionNode node) {
 		// flag
-		boolean ready = true;
+		boolean canStart = true;
 		// get node's start dependencies
 		Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
 		if (!dependencies.isEmpty()) {
 			// check if conditions are satisfied
 			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
-			while (it.hasNext() && ready) {
+			while (it.hasNext() && canStart) {
 				// get a dependency parent
 				ExecutionNode d = it.next();
 				// check condition
-				ready = d.getStatus().equals(dependencies.get(d));
+				canStart = d.getStatus().equals(dependencies.get(d));
 			}
 		}
+		
 		// true if ready
-		return ready;
+		return canStart;
 	}
 
 	/**
