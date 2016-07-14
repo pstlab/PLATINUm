@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.ParameterDataBaseFacadeConfiguration;
 import it.uniroma3.epsl2.framework.parameter.solver.ParameterSolverFactory;
+import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
 
 /**
  * 
@@ -46,7 +47,8 @@ public class ParameterDataBaseFacadeFactory extends ApplicationFrameworkFactory 
 				facade = c.newInstance();
 				
 				// get configuration annotation
-				ParameterDataBaseFacadeConfiguration cfg = clazz.getDeclaredAnnotation(ParameterDataBaseFacadeConfiguration.class);
+				ParameterDataBaseFacadeConfiguration cfg = AnnotationUtils.
+				        getDeclaredAnnotation(clazz,ParameterDataBaseFacadeConfiguration.class);
 				
 				// create solver
 				this.pFactory.create(cfg.solver());
