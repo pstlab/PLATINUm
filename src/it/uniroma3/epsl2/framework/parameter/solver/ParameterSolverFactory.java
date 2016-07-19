@@ -37,7 +37,7 @@ public class ParameterSolverFactory extends ApplicationFrameworkFactory
 			// inject logger
 			this.injectFrameworkLoggerReference(reasoner);
 			// complete initialization
-			this.completeApplicationObjectInitialization(reasoner);
+			this.doCompleteApplicationObjectInitialization(reasoner);
 			// add (singleton) entry to the registry
 			this.register(SINGLETON_PARAMETER_SOLVER_REFERENCE, reasoner);
 		}

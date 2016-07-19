@@ -46,7 +46,7 @@ public class TemporalNetworkFactory extends ApplicationFrameworkFactory {
 			// inject logger
 			this.injectFrameworkLoggerReference(tn);
 			// complete initialization
-			this.completeApplicationObjectInitialization(tn);
+			this.doCompleteApplicationObjectInitialization(tn);
 			// registry the network as singleton object
 			this.register(SINGLETON_TEMPORAL_NETWORK_REFERENCE, tn);
 		}
@@ -85,9 +85,9 @@ public class TemporalNetworkFactory extends ApplicationFrameworkFactory {
 			tn = c.newInstance(origin, horizon);
 			
 			// complete initialization
-			this.completeApplicationObjectInitialization(tn);
+			this.doCompleteApplicationObjectInitialization(tn);
 			// registry the network as singleton object
-			this.register(tn);
+			this.doRegister(tn);
 		}
 		catch (SecurityException | NoSuchMethodException ex) {
 			throw new RuntimeException(ex.getMessage());

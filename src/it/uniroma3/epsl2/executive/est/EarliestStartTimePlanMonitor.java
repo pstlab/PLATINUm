@@ -35,24 +35,24 @@ public class EarliestStartTimePlanMonitor extends PlanMonitor implements Runnabl
 		this.process = null;
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void waitReady() 
-			throws InterruptedException {
-		
-		// check status
-		synchronized (this.lock) {
-			// wait ready status
-			while (!this.processStatus.equals(ProcessStatus.READY)) {
-				this.lock.wait();
-			}
-			
-			// send signal
-			this.lock.notifyAll();
-		}
-	}
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void waitReady() 
+//			throws InterruptedException {
+//		
+//		// check status
+//		synchronized (this.lock) {
+//			// wait ready status
+//			while (!this.processStatus.equals(ProcessStatus.READY)) {
+//				this.lock.wait();
+//			}
+//			
+//			// send signal
+//			this.lock.notifyAll();
+//		}
+//	}
 	
 	/**
 	 * 
@@ -102,7 +102,7 @@ public class EarliestStartTimePlanMonitor extends PlanMonitor implements Runnabl
 				}
 				
 				// handle tick
-				this.onTick(this.currentTick);
+				this.handleTick(this.currentTick);
 				
 				// change status
 				synchronized (this.lock) {
@@ -157,7 +157,7 @@ public class EarliestStartTimePlanMonitor extends PlanMonitor implements Runnabl
 	 * 
 	 */
 	@Override
-	public void clockUpdate(long tick) 
+	public void onTick(long tick) 
 			throws InterruptedException {
 		
 		// update the current tick
@@ -181,10 +181,10 @@ public class EarliestStartTimePlanMonitor extends PlanMonitor implements Runnabl
 	 * 
 	 * @param tick
 	 */
-	protected void onTick(long tick) {
+	protected void handleTick(long tick) {
 		
 		// get seconds w.r.t. the temporal origin
-		long tau = this.clock.getSecondsFromTheOrigin(tick);
+		double tau = this.clock.convertClockTickToSeconds(tick);
 		// check nodes in execution
 		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
 			

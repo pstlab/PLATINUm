@@ -538,8 +538,8 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 	public final TimePointConstraint addConstraint(TimePoint reference, TimePoint target, long[] distance, boolean controllable) 
 			throws InconsistentDistanceConstraintException 
 	{
-		// check bounds
-		if (distance[0] > distance[1] || distance[1] > this.horizon || distance[0] < 0) {
+		// check consistency of distance bound
+		if (distance[0] > distance[1]) {			// || distance[1] > this.horizon || distance[0] < 0) {
 			// inconsistent value
 			throw new InconsistentDistanceConstraintException("DistanceConstraint (dmin= " + distance[0] +", dmax= " + distance[1] + ") is inconsistent or it is not compatible wih the domain [origin= " + this.origin + ", horizon= " + this.horizon + "]");
 		}

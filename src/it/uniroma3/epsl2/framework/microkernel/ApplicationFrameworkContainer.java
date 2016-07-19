@@ -60,6 +60,18 @@ public final class ApplicationFrameworkContainer {
 	
 	/**
 	 * 
+	 * @param obj
+	 */
+	public <T extends ApplicationFrameworkObject> void cancel(T obj) {
+		// get key
+		String key = obj.getRegistryKey();
+		if (this.registry.containsKey(key)) {
+			this.registry.remove(key);
+		}
+	}
+	
+	/**
+	 * 
 	 * @param key
 	 * @return
 	 */

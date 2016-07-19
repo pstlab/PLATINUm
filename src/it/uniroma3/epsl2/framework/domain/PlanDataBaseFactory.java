@@ -9,6 +9,7 @@ import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.PlanDataBaseConfiguration;
 import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
+import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 
 /**
@@ -63,7 +64,8 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory {
 			if (clazz.isAnnotationPresent(PlanDataBaseConfiguration.class)) 
 			{
 				// get annotation
-				PlanDataBaseConfiguration cfg = clazz.getDeclaredAnnotation(PlanDataBaseConfiguration.class);
+				PlanDataBaseConfiguration cfg = AnnotationUtils.
+				        getDeclaredAnnotation(clazz, PlanDataBaseConfiguration.class);
 			
 				// create logger
 				this.lFactory.createFrameworkLogger(cfg.logging());
@@ -77,7 +79,7 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory {
 				// create component (cast needed for Java7 compatibility)
 				pdb = (PlanDataBase) this.cFactory.create(name, DomainComponentType.PDB);
 				// complete initialization
-				this.completeApplicationObjectInitialization((PlanDataBaseComponent) pdb);
+				this.doCompleteApplicationObjectInitialization((PlanDataBaseComponent) pdb);
 				// add instance to framework registry
 				this.register(SINGLETON_PLAN_DATA_BASE_REFERENCE, (PlanDataBaseComponent) pdb);
 			}

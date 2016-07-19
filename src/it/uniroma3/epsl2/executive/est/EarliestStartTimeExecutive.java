@@ -54,7 +54,7 @@ public class EarliestStartTimeExecutive extends Executive<AtomicClockManager, Ea
 		// create execution plan data-base
 		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
 		// initialize plan data-base
-		this.pdb.init(plan);
+		this.pdb.setup(plan);
 		
 		// create plan monitor
 		this.monitor = new EarliestStartTimePlanMonitor(this);

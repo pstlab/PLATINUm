@@ -36,8 +36,11 @@ public class TemporalInterval extends TemporalData
 		this.controllable = duration.isControllable();
 		
 		// initialize actual lower and upper distances
-		this.durationLowerBound = Long.MIN_VALUE + 1;
-		this.durationUpperBound = Long.MAX_VALUE - 1;
+		this.durationLowerBound = this.nominalDurationLowerBound;
+		this.durationUpperBound = this.nominalDurationUpperBound;
+		
+//		this.durationLowerBound = Long.MIN_VALUE + 1;
+//		this.durationUpperBound = Long.MAX_VALUE - 1;
 	}
 	
 	/**

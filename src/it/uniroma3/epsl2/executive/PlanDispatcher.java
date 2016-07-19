@@ -52,7 +52,7 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject implemen
 	 * 
 	 */
 	@Override
-	public void clockUpdate(long tick) 
+	public void onTick(long tick) 
 			throws InterruptedException {
 		
 		// update the current tick
@@ -72,24 +72,24 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject implemen
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void waitReady() 
-			throws InterruptedException {
-		
-		// check status
-		synchronized (this.lock) {
-			// wait ready status
-			while (!this.processStatus.equals(ProcessStatus.READY)) {
-				this.lock.wait();
-			}
-			
-			// send signal
-			this.lock.notifyAll();
-		}
-	}
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void waitReady() 
+//			throws InterruptedException {
+//		
+//		// check status
+//		synchronized (this.lock) {
+//			// wait ready status
+//			while (!this.processStatus.equals(ProcessStatus.READY)) {
+//				this.lock.wait();
+//			}
+//			
+//			// send signal
+//			this.lock.notifyAll();
+//		}
+//	}
 	
 	/**
 	 * 
@@ -194,7 +194,7 @@ public abstract class PlanDispatcher extends ApplicationFrameworkObject implemen
 	 * 
 	 * @param tick
 	 */
-	protected abstract void onTick(long tick);
+	protected abstract void handleTick(long tick);
 	
 	/**
 	 * Dispatch the node to start execution

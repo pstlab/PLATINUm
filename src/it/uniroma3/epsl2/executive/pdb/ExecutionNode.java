@@ -28,7 +28,8 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * @param interval
 	 * @param type
 	 */
-	protected ExecutionNode(NodePredicate predicate, TemporalInterval interval, ControllabilityType type) {
+	protected ExecutionNode(NodePredicate predicate, TemporalInterval interval, ControllabilityType type) 
+	{
 		this.id = COUNTER.getAndIncrement();
 		this.controllability = type;
 		this.status = ExecutionNodeStatus.WAITING;
@@ -48,6 +49,14 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * 
 	 * @return
 	 */
+	public String getCompletePredicateSignature() {
+		return this.predicate.getComponent() + "." + this.predicate.getSignature();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getComponent() {
 		return this.predicate.getComponent();
 	}
@@ -59,6 +68,14 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 */
 	public String getValueOfParameter(int index) {
 		return this.predicate.getValueOfParameter(index);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String[] getParameters() {
+		return this.predicate.getParameters();
 	}
 	
 	/**
@@ -148,6 +165,14 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	public NodePredicate getPredicate() {
+		return this.predicate;
+	}
+	
+	/**
 	 * Wait a change of the execution status and returns the detected status
 	 * 
 	 * @throws InterruptedException
@@ -206,7 +231,7 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 */
 	@Override
 	public String toString() {
-		return "[ExecNode id= " + this.id + " predicate=" + this.predicate.getGroundSignature() + " status= " + this.status + " "
+		return "[ExecNode id= " + this.id + " predicate=" + this.predicate.getComponent() + "." + this.predicate.getGroundSignature() + " status= " + this.status + " "
 				+ "start= [" + this.interval.getStartTime().getLowerBound() + ", " + this.interval.getStartTime().getUpperBound() + "] "
 				+ "duration= [" + this.interval.getDurationLowerBound() + ", " + this.interval.getDurationUpperBound() + "]]";
 	}

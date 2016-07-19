@@ -598,6 +598,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 */
 	protected TimePointConstraint[] doPropagateContainsConstraint(TemporalInterval reference, TemporalInterval target, long[] startTimeBounds, long[] endTimeBounds) 
 			throws InconsistentDistanceConstraintException {
+		
 		// create a distance constraint between reference's start time and target's start time 
 		TimePointConstraint c1 = this.tn.addConstraint(reference.getStartTime(), target.getStartTime(), startTimeBounds, true);
 		// crate a distance constraint between target's end time and reference's end time

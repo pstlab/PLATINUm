@@ -24,10 +24,10 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 	 * 
 	 */
 	@Override
-	protected void onTick(long tick) {
-		
+	protected void handleTick(long tick) 
+	{
 		// get current time in seconds
-		long tau = this.clock.getSecondsFromTheOrigin(tick);
+		double tau = this.clock.convertClockTickToSeconds(tick);
 		// compute ready to execute nodes
 		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING)) {
 			// check start condition and controllability type
@@ -42,7 +42,7 @@ public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
 					// check if delay
 					if (tau > start) {
 						// set current time
-						start = tau;
+						start = Math.round(tau);
 					}
 					
 					// schedule start time of the activity

@@ -46,8 +46,17 @@ public abstract class ApplicationFrameworkFactory
 	 * 
 	 * @param obj
 	 */
-	protected void register(ApplicationFrameworkObject obj) {
+	protected void doRegister(ApplicationFrameworkObject obj) {
 		this.container.save(obj);
+	}
+	
+	/**
+	 * 
+	 * @param obj
+	 */
+	protected void doUnregister(ApplicationFrameworkObject obj) {
+		// check if object in container
+		this.container.cancel(obj);
 	}
 	
 	/**
@@ -69,7 +78,7 @@ public abstract class ApplicationFrameworkFactory
 	 * @throws IllegalAccessException 
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void completeApplicationObjectInitialization(T obj) 
+	protected <T extends ApplicationFrameworkObject> void doCompleteApplicationObjectInitialization(T obj) 
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException 
 	{
 		// call post construct method

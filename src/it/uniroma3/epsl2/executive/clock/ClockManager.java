@@ -46,7 +46,12 @@ public interface ClockManager {
 	 * @param tick
 	 * @return
 	 */
-	public long getSecondsFromTheOrigin(long tick);
+	public double convertClockTickToSeconds(long tick);
 
-	
+	/**
+	 * 
+	 * @param seconds
+	 * @return
+	 */
+	public double convertSecondsToClockTick(long seconds);
 }

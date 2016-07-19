@@ -26,8 +26,10 @@ public class TimePoint extends TemporalData implements Comparable<TimePoint>
 		this.domLb = lb;
 		this.domUb = ub;
 		// initialize data
-		this.lb = Long.MIN_VALUE + 1;
-		this.ub = Long.MAX_VALUE - 1;
+		this.lb = this.domLb;
+		this.ub = this.domUb;
+//		this.lb = Long.MIN_VALUE + 1;
+//		this.ub = Long.MAX_VALUE - 1;
 	}
 	
 	/**

@@ -55,7 +55,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param plan
 	 */
 	@Override
-	public void init(EPSLPlanDescriptor plan) {
+	public void setup(EPSLPlanDescriptor plan) {
 		try {
 			
 			// map token descriptor to nodes
@@ -77,7 +77,8 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
 						// set parameter information
-						String signature = tl.getComponent() + "." + token.getPredicate();
+//						String signature = tl.getComponent() + "." + token.getPredicate();
+						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
 						ParameterType[] paramTypes = new ParameterType[token.getParameters().size()];
 						for (int index = 0; index < token.getParameters().size(); index++) {
@@ -99,7 +100,10 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						}
 						
 						// create a node
-						ExecutionNode node = this.createNode(tl.getComponent(), signature, paramTypes, paramValues, start, end, duration, controllability);
+						ExecutionNode node = this.createNode(tl.getComponent() + "." + tl.getName(), signature, 
+								paramTypes, paramValues, 
+								start, end, duration, controllability);
+						
 						// add node
 						this.addNode(node);
 						// add entry to the dictionary
@@ -125,7 +129,8 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
 						// set parameter information
-						String signature = tl.getComponent() + "." + token.getPredicate();
+//						String signature = tl.getComponent() + "." + token.getPredicate();
+						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
 						ParameterType[] paramTypes = new ParameterType[token.getParameters().size()];
 						for (int index = 0; index < token.getParameters().size(); index++) {
@@ -148,7 +153,10 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						}
 						
 						// create a node
-						ExecutionNode node = this.createNode(tl.getComponent(), signature, paramTypes, paramValues, start, end, duration, controllability);
+						ExecutionNode node = this.createNode(tl.getComponent() + "." + tl.getName(), signature, 
+								paramTypes, paramValues, 
+								start, end, duration, controllability);
+						
 						// add node
 						this.addNode(node);
 						// add entry to the dictionary
@@ -159,17 +167,20 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			
 			// check relations
 			for (EPSLRelationDescriptor rel : plan.getRelations()) {
-				// get related nodes
-				ExecutionNode reference = dictionary.get(rel.getFrom());
-				ExecutionNode target = dictionary.get(rel.getTo());
-				
-				// add temporal constraints and related execution dependencies
-				this.createConstraintsAndDependencies(reference, target, rel);
+				try {
+					// get related nodes
+					ExecutionNode reference = dictionary.get(rel.getFrom());
+					ExecutionNode target = dictionary.get(rel.getTo());
+					// add temporal constraints and related execution dependencies
+					this.createConstraintsAndDependencies(reference, target, rel);
+				}
+				catch (Exception ex) {
+					throw new ConsistencyCheckException("Error while propagating plan's relation " + rel + "\n" + ex.getMessage());
+				}
 			}
 			
 			// check consistency
 			this.facade.checkConsistency();
-			
 			// check the schedule for all temporal intervals
 			for (ExecutionNode node : dictionary.values()) {
 				// check node schedule
@@ -192,16 +203,24 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param target
 	 * @param rel
 	 */
-	private void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, EPSLRelationDescriptor rel) {
+	private void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, EPSLRelationDescriptor rel) 
+			throws Exception {
+		
 		// check relation type
 		switch (rel.getType()) {
 		
 			case "meets" : {
 				// create constraint
-				TemporalConstraint c = this.iFactory.
+				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.MEETS);
-				c.setReference(reference.getInterval());
-				c.setTarget(target.getInterval());
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
+				constraint.setBounds(new long[][] {
+					new long[] {0, 0}
+				});
+				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add start dependency
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 			}
@@ -210,15 +229,22 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			case "before" : {
 				
 				// create constraint
-				TemporalConstraint c = this.iFactory.
+				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.BEFORE);
-				c.setReference(reference.getInterval());
-				c.setTarget(target.getInterval());
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
+				// check bound
+				long[] firstBound = rel.getFirstBound();
+				if (firstBound[1] > this.getHorizon()) {
+					firstBound[1] = this.getHorizon();
+				}
 				// set bound
-				c.setBounds(new long[][] {
-					rel.getFirstBound()
+				constraint.setBounds(new long[][] {
+					firstBound
 				});
 				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add start dependency
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 			}
@@ -227,15 +253,17 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			case "after" : {
 				
 				// create constraint
-				TemporalConstraint c = this.iFactory.
-						create(TemporalConstraintType.BEFORE);
-				c.setReference(target.getInterval());
-				c.setTarget(reference.getInterval());
+				TemporalConstraint constraint = this.iFactory.
+						create(TemporalConstraintType.AFTER);
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
 				// set bounds
-				c.setBounds(new long[][] {
+				constraint.setBounds(new long[][] {
 					rel.getFirstBound()
 				});
 				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add execution dependencies
 				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
 			}
@@ -244,16 +272,18 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			case "during" : {
 				
 				// create constraint
-				TemporalConstraint c = this.iFactory.
+				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.DURING);
-				c.setReference(reference.getInterval());
-				c.setTarget(target.getInterval());
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
 				// set bounds
-				c.setBounds(new long[][] {
+				constraint.setBounds(new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
 				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add execution dependencies
 				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
 				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
@@ -262,16 +292,18 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			
 			case "contains" : {
 				// create constraint
-				TemporalConstraint c = this.iFactory.
+				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.CONTAINS);
-				c.setReference(reference.getInterval());
-				c.setTarget(target.getInterval());
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
 				// set bounds
-				c.setBounds(new long[][] {
+				constraint.setBounds(new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
 				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add execution dependencies
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
 				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
@@ -282,11 +314,13 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			case "equals" : {
 				
 				// create constraint
-				TemporalConstraint c = this.iFactory.
+				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.EQUALS);
-				c.setReference(reference.getInterval());
-				c.setTarget(target.getInterval());
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
 				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add execution dependencies
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
 				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
@@ -296,17 +330,19 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			case "starts_during" : {
 				
 				// create constraint
-				TemporalConstraint c = this.iFactory.
+				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.STARTS_DURING);
 				// set intervals
-				c.setReference(reference.getInterval());
-				c.setTarget(target.getInterval());
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
 				// set bounds
-				c.setBounds(new long[][] {
+				constraint.setBounds(new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
 				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add start dependency
 				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
 			}
@@ -315,17 +351,19 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			case "ends_during" : {
 				
 				// create constraint
-				TemporalConstraint c = this.iFactory.
+				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.ENDS_DURING);
 				// set intervals
-				c.setReference(reference.getInterval());
-				c.setTarget(target.getInterval());
+				constraint.setReference(reference.getInterval());
+				constraint.setTarget(target.getInterval());
 				// set bounds
-				c.setBounds(new long[][] {
+				constraint.setBounds(new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
 				
+				// propagate temporal constraint
+				this.facade.propagate(constraint);
 				// add end dependency
 				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
 			}

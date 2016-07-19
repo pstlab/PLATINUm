@@ -235,7 +235,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 	{
 		// check controllability
 		if (!c.isControllable()) {
-			throw new UnableToHandleContingentConstraintsException("Simple Temporal Netowrk cannot handle contingent constraints " + c);
+			throw new UnableToHandleContingentConstraintsException("Simple Temporal Network cannot handle contingent constraints " + c);
 		}
 		
 		// check if related time points exits

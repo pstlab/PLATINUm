@@ -62,9 +62,9 @@ public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory {
 				// inject plan data base reference
 				this.injectSingletonPlanDataBaseReference(heuristic, false);
 				// complete initialization if needed
-				this.completeApplicationObjectInitialization(heuristic);
+				this.doCompleteApplicationObjectInitialization(heuristic);
 				// add to registry
-				this.register(heuristic);
+				this.doRegister(heuristic);
 			}
 			else {
 				// error

@@ -53,10 +53,10 @@ public class ResolverFactory extends ApplicationFrameworkFactory {
 			// inject logger
 			this.injectFrameworkLoggerReference(resv);
 			// complete initialization
-			this.completeApplicationObjectInitialization(resv);
+			this.doCompleteApplicationObjectInitialization(resv);
 			
 			// add entry to the registry
-			this.register(resv);
+			this.doRegister(resv);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

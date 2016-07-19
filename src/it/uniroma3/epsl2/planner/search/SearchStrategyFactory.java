@@ -42,9 +42,9 @@ public class SearchStrategyFactory extends ApplicationFrameworkFactory {
 			// inject logger
 			this.injectPlannerLoggerReference(strategy);
 			// complete initialization if needed
-			this.completeApplicationObjectInitialization(strategy);
+			this.doCompleteApplicationObjectInitialization(strategy);
 			// add to registry
-			this.register(strategy);
+			this.doRegister(strategy);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

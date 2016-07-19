@@ -47,9 +47,9 @@ public class TemporalSolverFactory extends ApplicationFrameworkFactory {
 			// inject temporal network reference
 			this.injectSingletonTemporalNetworkReference(reasoner, false);
 			// complete initialization
-			this.completeApplicationObjectInitialization(reasoner);
+			this.doCompleteApplicationObjectInitialization(reasoner);
 			// add entry to the registry
-			this.register(reasoner);
+			this.doRegister(reasoner);
 		}
 		catch (SecurityException | NoSuchMethodException ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -85,9 +85,9 @@ public class TemporalSolverFactory extends ApplicationFrameworkFactory {
 			field.setAccessible(true);
 			field.set(reasoner, tn);
 			// complete initialization
-			this.completeApplicationObjectInitialization(reasoner);
+			this.doCompleteApplicationObjectInitialization(reasoner);
 			// add entry to the registry
-			this.register(reasoner);
+			this.doRegister(reasoner);
 		}
 		catch (SecurityException | NoSuchMethodException ex) {
 			throw new RuntimeException(ex.getMessage());

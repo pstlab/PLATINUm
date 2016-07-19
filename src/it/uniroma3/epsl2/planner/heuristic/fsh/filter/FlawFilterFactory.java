@@ -42,9 +42,9 @@ public class FlawFilterFactory extends ApplicationFrameworkFactory {
 			// inject logger
 			this.injectPlannerLoggerReference(filter);
 			// complete initialization if needed
-			this.completeApplicationObjectInitialization(filter);
+			this.doCompleteApplicationObjectInitialization(filter);
 			// add to registry
-			this.register(filter);
+			this.doRegister(filter);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

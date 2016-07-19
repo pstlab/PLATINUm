@@ -1,8 +1,12 @@
 package it.uniroma3.epsl2.executive.clock;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
@@ -14,10 +18,12 @@ import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
  */
 public class AtomicClockManager extends ApplicationFrameworkObject implements Runnable, ClockManager
 {
-	private static long CLOCK_SAMPLING_RATE = 200;		// sampling time rate (in milliseconds)
-	private long clockSart;								// clock start time (in milliseconds)
-	private Thread process;								// clock updating process
+	private static final String CLOCK_RATE_PROPERTY = "clock_frequency";	// property specifying sampling time rate (in milliseconds)
+	private Properties config;												// executive configuration file
+	private long clockSart;													// clock start time (in milliseconds)
+	private Thread process;													// clock updating process
 	
+	private long tickStart;
 	private AtomicLong tick;
 	private List<ClockObserver> observers;				// list of observers
 	
@@ -26,10 +32,37 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 	 */
 	public AtomicClockManager() {
 		super();
+		// set tick start
+		this.tickStart = 0;
+		// set observers
 		this.observers = new ArrayList<ClockObserver>();
 		// initialize clock thread and tick
 		this.tick = null;
 		this.process = null;
+		try 
+		{
+			// create property file
+			this.config = new Properties();
+			// load file property
+			try (InputStream input = new FileInputStream("etc/executive.properties")) { 
+				// load file
+				this.config.load(input);
+			}
+		}
+		catch (IOException ex) {
+			// problems locating property file
+			throw new RuntimeException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param tick
+	 */
+	public AtomicClockManager(long tick) {
+		this();
+		// set tick start
+		this.tickStart = tick;
 	}
 	
 	/**
@@ -72,7 +105,7 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 			throws InterruptedException {
 		
 		// check clock thread status
-		if (this.process.isAlive()) {
+		if (this.process != null && this.process.isAlive()) {
 			// stop and wait clock thread
 			this.process.interrupt();
 			this.process.join();
@@ -84,33 +117,32 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 	 * 
 	 */
 	@Override
-	public void run() {
-		try {
+	public void run() 
+	{
+		try 
+		{
 			// set clock start time
 			this.clockSart = System.currentTimeMillis();
 			// initialize tick
-			this.tick = new AtomicLong(0);
-			// wait before start
-			for (ClockObserver obs : this.observers) {
-				// wait the that the observer is ready
-				obs.waitReady();
-			}
-			
+			this.tick = new AtomicLong(this.tickStart);
 			// set thread running
 			boolean running = true;
 			// start process
-			while (running) {
-				try {
-					
+			while (running) 
+			{
+				try 
+				{
+					// get sampling rate from the configuration file
+					long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
 					// wait latency
-					Thread.sleep(CLOCK_SAMPLING_RATE);
+					Thread.sleep(sampling);
 	
 					// update the current tick
 					long currentTick = this.tick.getAndIncrement();
 					// notify all observers
 					for (ClockObserver obs : this.observers) {
 						// notify clock update
-						obs.clockUpdate(currentTick);
+						obs.onTick(currentTick);
 					}
 				} catch (InterruptedException ex) {
 					// stop thread
@@ -150,8 +182,21 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 	 * @return
 	 */
 	@Override
-	public long getSecondsFromTheOrigin(long tick) {
+	public double convertClockTickToSeconds(long tick) {
+		// get sampling rate in milliseconds
+		long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
 		// convert to seconds
-		return Math.round((tick * CLOCK_SAMPLING_RATE) / 1000.0);
+		return (tick * sampling) / 1000.0;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public double convertSecondsToClockTick(long seconds) {
+		// get sampling rate in milliseconds
+		long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
+		// convert to tick
+		return (seconds * 1000) / sampling;
 	}
 }

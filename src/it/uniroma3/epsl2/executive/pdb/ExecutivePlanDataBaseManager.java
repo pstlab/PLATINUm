@@ -74,7 +74,9 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		lf.createFrameworkLogger(FrameworkLoggingLevel.OFF);
 		// create temporal facade
 		TemporalDataBaseFacadeFactory factory = new TemporalDataBaseFacadeFactory();
-		this.facade = factory.createSingleton(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, origin, horizon);
+		this.facade = factory.create(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, origin, horizon);
+		// unregister facade
+		factory.unregister(this.facade);
 
 		// initialize data structures
 		this.nodes = new HashMap<>();
@@ -114,7 +116,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @param plan
 	 */
-	public abstract void init(EPSLPlanDescriptor plan);
+	public abstract void setup(EPSLPlanDescriptor plan);
 	
 	/**
 	 * 
@@ -174,7 +176,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @param node
 	 */
-	public void checkSchedule(ExecutionNode node) {
+	public void checkSchedule(ExecutionNode node) 
+	{
 		// check resulting schedule of the interval
 		CheckIntervalScheduleQuery query = this.qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
 		query.setInterval(node.getInterval());
@@ -207,7 +210,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @throws TemporalIntervalCreationException
 	 */
 	protected ExecutionNode createNode(String component, String signature, ParameterType[] pTypes, String[] pValues, long[] start, long[] end, long[] duration, ControllabilityType controllability) 
-			throws TemporalIntervalCreationException  {
+			throws TemporalIntervalCreationException  
+	{
 		// check interval controllability
 		boolean controllableInterval = controllability.equals(ControllabilityType.EXTERNAL_TOKEN) || 
 				controllability.equals(ControllabilityType.UNCONTROLLABLE_DURATION) ? false : true;
@@ -312,7 +316,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @throws Exception
 	 */
 	public void scheduleStartTime(ExecutionNode node, long start) 
-			throws Exception {
+			throws Exception 
+	{
 		// create constraint
 		FixStartTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_START_TIME);
 		fix.setReference(node.getInterval());

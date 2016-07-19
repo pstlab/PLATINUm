@@ -96,9 +96,9 @@ public class PlannerFactory extends ApplicationFrameworkFactory {
 				f.set(planner, solver);
 	
 				// complete initialization
-				this.completeApplicationObjectInitialization(planner);
+				this.doCompleteApplicationObjectInitialization(planner);
 				// register the planner
-				this.register(planner);
+				this.doRegister(planner);
 			}
 			else {
 				
@@ -151,9 +151,9 @@ public class PlannerFactory extends ApplicationFrameworkFactory {
 			f.set(planner, solver);
 
 			// complete initialization
-			this.completeApplicationObjectInitialization(planner);
+			this.doCompleteApplicationObjectInitialization(planner);
 			// register the planner
-			this.register(planner);
+			this.doRegister(planner);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -197,9 +197,9 @@ public class PlannerFactory extends ApplicationFrameworkFactory {
 			// inject plan data base reference
 			this.injectSingletonPlanDataBaseReference(solver, false);
 			// complete initialization if needed
-			this.completeApplicationObjectInitialization(solver);
+			this.doCompleteApplicationObjectInitialization(solver);
 			// add to registry
-			this.register(solver);
+			this.doRegister(solver);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  
