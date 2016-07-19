@@ -16,6 +16,14 @@ public interface ClockManager {
 	
 	/**
 	 * 
+	 * @param tick
+	 * @throws InterruptedException
+	 */
+	public void start(long tick) 
+			throws InterruptedException;
+	
+	/**
+	 * 
 	 * @throws InterruptedException
 	 */
 	public void stop() 

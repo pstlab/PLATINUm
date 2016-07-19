@@ -30,7 +30,8 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 	/**
 	 * 
 	 */
-	public AtomicClockManager() {
+	public AtomicClockManager() 
+	{
 		super();
 		// set tick start
 		this.tickStart = 0;
@@ -55,15 +56,15 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 		}
 	}
 	
-	/**
-	 * 
-	 * @param tick
-	 */
-	public AtomicClockManager(long tick) {
-		this();
-		// set tick start
-		this.tickStart = tick;
-	}
+//	/**
+//	 * 
+//	 * @param tick
+//	 */
+//	public AtomicClockManager(long tick) {
+//		this();
+//		// set tick start
+//		this.tickStart = tick;
+//	}
 	
 	/**
 	 * 
@@ -85,11 +86,36 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 
 	/**
 	 * 
+	 * @throws InterruptedException
 	 */
-	public synchronized void start() {
-
+	@Override
+	public synchronized void start() 
+			throws InterruptedException
+	{
 		// check process
 		if (this.process == null) {
+			// set tick start
+			this.tickStart = 0;
+			// create and start process
+			this.process = new Thread(this);
+			// start clock thread
+			this.process.start();
+		}
+	}
+
+	/**
+	 * 
+	 * @param tick
+	 * @throws InterruptedException
+	 */
+	@Override
+	public void start(long tick) 
+			throws InterruptedException 
+	{
+		// check process
+		if (this.process == null) {
+			// set tick start
+			this.tickStart = tick;
 			// create and start process
 			this.process = new Thread(this);
 			// start clock thread
@@ -102,8 +128,8 @@ public class AtomicClockManager extends ApplicationFrameworkObject implements Ru
 	 * @throws InterruptedException
 	 */
 	public synchronized void stop() 
-			throws InterruptedException {
-		
+			throws InterruptedException 
+	{
 		// check clock thread status
 		if (this.process != null && this.process.isAlive()) {
 			// stop and wait clock thread
