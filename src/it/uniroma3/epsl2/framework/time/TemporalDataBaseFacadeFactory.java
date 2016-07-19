@@ -62,8 +62,8 @@ public final class TemporalDataBaseFacadeFactory extends ApplicationFrameworkFac
 				tdb = c.newInstance();
 				
 				// get configuration annotation
-				TemporalDataBaseConfiguration cfg = clazz.
-						getDeclaredAnnotation(TemporalDataBaseConfiguration.class);
+				TemporalDataBaseConfiguration cfg = AnnotationUtils.
+				        getDeclaredAnnotation(clazz, TemporalDataBaseConfiguration.class);
 				
 				// create (singleton) temporal network 
 				this.tnFactory.createSingleton(cfg.network(), origin, horizon);
