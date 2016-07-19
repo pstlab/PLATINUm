@@ -1,2 +1,6 @@
 /bin/**
 .DS_Store
+/.classpath
+/.DS_Store
+/.gitignore
+/.DS_Store
