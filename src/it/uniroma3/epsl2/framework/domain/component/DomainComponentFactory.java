@@ -13,6 +13,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.Resol
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverFactory;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
+import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
 import it.uniroma3.epsl2.framework.utils.view.ComponentView;
 import it.uniroma3.epsl2.framework.utils.view.ComponentViewFactory;
 import it.uniroma3.epsl2.framework.utils.view.ComponentViewType;
@@ -70,10 +71,10 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 				// inject parameter data base reference
 				this.injectSingletonParameterDataBaseFacadeReference(component);
 				// complete initialization
-				this.completeApplicationObjectInitialization(component);
+				this.doCompleteApplicationObjectInitialization(component);
 				
 				// add entry to registry
-				this.register(component);
+				this.doRegister(component);
 			}
 			else {
 				// configuration annotation not found
@@ -99,8 +100,8 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 	private void injectResolvers(DomainComponent component) 
 			throws IllegalArgumentException, IllegalAccessException {
 		// get annotation
-		DomainComponentConfiguration annot = component.getClass().
-				getDeclaredAnnotation(DomainComponentConfiguration.class);
+		DomainComponentConfiguration annot = AnnotationUtils.getDeclaredAnnotation(
+		        component.getClass(),DomainComponentConfiguration.class);
 		
 		// list of resolvers
 		List<Resolver<?>> list = new ArrayList<>();

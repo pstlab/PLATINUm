@@ -15,8 +15,10 @@ import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQu
  */
 @TemporalDataBaseConfiguration(
 		
+	// temporal network representation
 	network= TemporalNetworkType.STNU,
 	
+	// temporal reasoner
 	solver = TemporalSolverType.APSP
 )
 public final class UncertaintyTemporalDataBaseFacade extends TemporalDataBaseFacade 
