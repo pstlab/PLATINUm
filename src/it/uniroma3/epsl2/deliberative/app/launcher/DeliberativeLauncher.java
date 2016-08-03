@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.app.launcher;
+package it.uniroma3.epsl2.deliberative.app.launcher;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -27,7 +27,7 @@ import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
  * @author anacleto
  *
  */
-public class PlannerLauncher 
+public class DeliberativeLauncher 
 {
 	/**
 	 * The main method of the launcher program  

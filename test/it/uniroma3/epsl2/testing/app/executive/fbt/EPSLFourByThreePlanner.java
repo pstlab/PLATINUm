@@ -34,4 +34,21 @@ class EPSLFourByThreePlanner
 		// export plan
 		return planner.export();
 	}
+	
+	/**
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) 
+	{
+		EPSLFourByThreePlanner planner = new EPSLFourByThreePlanner();
+		try 
+		{
+			EPSLPlanDescriptor plan = planner.plan();
+			System.out.println(plan);
+		}
+		catch (NoSolutionFoundException ex) {
+			System.err.println(ex.getMessage());
+		}
+	}
 }
