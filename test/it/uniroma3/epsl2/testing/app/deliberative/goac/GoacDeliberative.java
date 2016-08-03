@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.app.deliberative.fbt;
+package it.uniroma3.epsl2.testing.app.deliberative.goac;
 
 import it.uniroma3.epsl2.deliberative.Planner;
 import it.uniroma3.epsl2.deliberative.PlannerBuilder;
@@ -30,10 +30,10 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	// set log level
 	logging = FrameworkLoggingLevel.OFF
 )
-public class FourByThreeDeliberative extends Planner
+public class GoacDeliberative extends Planner
 {
-	private static final String DDL = "domains/gecko/full.ddl";
-	private static final String PDL = "domains/gecko/full.pdl";
+	private static final String DDL = "domains/goac/goac.ddl";
+	private static final String PDL = "domains/goac/goac-2g-1wind.pdl";
 	
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class FourByThreeDeliberative extends Planner
 	{ 
 		try 
 		{
-			Planner planner = PlannerBuilder.build(FourByThreeDeliberative.class.getName(), DDL, PDL);	
+			Planner planner = PlannerBuilder.build(GoacDeliberative.class.getName(), DDL, PDL);	
 			// start planning
 			Plan plan = planner.plan();
 			// solution found
