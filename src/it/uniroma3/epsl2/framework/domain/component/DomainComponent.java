@@ -44,8 +44,8 @@ import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
-import it.uniroma3.epsl2.framework.utils.view.ComponentView;
-import it.uniroma3.epsl2.framework.utils.view.gantt.GanttComponentView;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentView;
+import it.uniroma3.epsl2.framework.utils.view.component.gantt.GanttComponentView;
 
 /**
  * 

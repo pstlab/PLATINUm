@@ -71,24 +71,33 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	
 	/**
 	 * 
+	 * @throws ParameterNotFoundException
 	 */
-	private void rebuild() {
+	private void rebuild() 
+			throws ParameterNotFoundException 
+	{
 		// clean existing solver instance
-		for (Constraint c : this.constraints.values()) {
-			this.solver.unpost(c);
-		}
-		
-		for (IntVar var : this.vars.values()) {
-			this.solver.unassociates(var);
-		}
+//		for (Constraint c : this.constraints.values()) {
+//			this.solver.unpost(c);
+//		}
+//		
+//		FIXME <<<<------- 
+//		
+//		for (IntVar var : this.vars.values()) {
+//			this.solver.unassociates(var);
+//		}
 		
 		// reset solver
 		this.solver = new Solver();
-		System.gc();
 		
 		// reset variables and constraints
+		for (Parameter param : this.vars.keySet()) {
+			this.doCreateVariable(param);
+		}
 		
-		
+		for (ParameterConstraint cons : this.constraints.keySet()) {
+			this.doCreateParameterConstraint(cons);
+		}
 		
 		// set rebuild flag
 		this.buildSolver = false;
@@ -98,12 +107,17 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	 * 
 	 */
 	@Override
-	public boolean isConsistent() {
-		
+	public boolean isConsistent() 
+	{
 		// consistency flag
 		boolean consistent = true;
-		try {
-
+		try 
+		{
+			// check if rebuild flag
+			if (this.buildSolver) {
+				this.rebuild();
+			}
+			
 			// try to propagate constraints
 			this.solver.propagate();
 			this.solver.getEngine().flush();
@@ -111,6 +125,9 @@ public final class Chocho3CSPSolver extends ParameterSolver
 		catch (ContradictionException ex) {
 			// inconsistent constraint network
 			consistent = false;
+		}
+		catch (ParameterNotFoundException ex) {
+			throw new RuntimeException(ex.getMessage());
 		}
 		
 		// get consistency result
@@ -121,37 +138,39 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	 * 
 	 */
 	@Override
-	public void computeValues(Parameter param) {
-		
-		try {
+	public void computeValues(Parameter param) 
+	{
+		try 
+		{
+			// check rebuild flag
+			if (this.buildSolver) {
+				this.rebuild();
+			}
 			
 			// check parameter type
-			switch (param.getType()) {
-			
+			switch (param.getType()) 
+			{
 				// enumeration parameter
-				case ENUMERATION_PARAMETER_TYPE : {
-					
+				case ENUMERATION_PARAMETER_TYPE : 
+				{
 					// get enumeration 
 					EnumerationParameter enu = (EnumerationParameter) param;
 					// get domain
 					EnumerationParameterDomain edom = (EnumerationParameterDomain) enu.getDomain();
-					
 					// compute enumeration's values
 					int value = this.doComputeVariableValue(enu);
 					// get enumeration
 					String eval = edom.getValue(value);
-					
 					// set value to variable
 					enu.setValue(new String[] {eval});
 				}
 				break;
 				
 				// numeric parameter
-				case NUMERIC_PARAMETER_TYPE : {
-					
+				case NUMERIC_PARAMETER_TYPE : 
+				{
 					// get numeric 
 					NumericParameter num = (NumericParameter) param;
-					
 					// compute numeric's value
 					int value = this.doComputeVariableValue(num);
 					// set value
@@ -161,8 +180,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 				break;
 				
 				case CONSTANT_ENUMERATION_PARAMETER_TYPE : 
-				case CONSTANT_NUMERIC_PARAMETER_TYPE : {
-					
+				case CONSTANT_NUMERIC_PARAMETER_TYPE : 
+				{
 					// constant parameters
 					this.logger.debug("Constant paramets' values cannot change");
 				}
@@ -172,23 +191,25 @@ public final class Chocho3CSPSolver extends ParameterSolver
 		catch (ParameterConsistencyException ex) {
 			this.logger.warning(ex.getMessage());
 		}
-		
+		catch (ParameterNotFoundException ex) {
+			throw new RuntimeException(ex.getMessage());
+		}
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void notify(ParameterNotification info) {
-		
-		try {
-			
+	public void update(ParameterNotification info) 
+	{
+		try 
+		{
 			// check notification type
-			switch (info.getType()) {
-			
+			switch (info.getType()) 
+			{
 				// new parameter added
-				case ADD_PARAM : {
-
+				case ADD_PARAM : 
+				{
 					// get notification
 					AddParameterNotification notif = (AddParameterNotification) info;
 					// create variable
@@ -197,18 +218,20 @@ public final class Chocho3CSPSolver extends ParameterSolver
 				break;
 				
 				// existing parameter deleted
-				case DEL_PARAM : {
-					
+				case DEL_PARAM : 
+				{
 					// get notification 
 					DelParameterNotification notif = (DelParameterNotification) info;
 					// remove variable
 					this.doDeleteVariable(notif.getParameter());
+					// set flag
+					this.buildSolver = true;
 				}
 				break;
 				
 				// add parameter constraint
-				case ADD_CONSTRAINT : {
-
+				case ADD_CONSTRAINT : 
+				{
 					// get notification
 					AddConstraintParameterNotification notif = (AddConstraintParameterNotification) info;
 					// create constraint
@@ -217,12 +240,14 @@ public final class Chocho3CSPSolver extends ParameterSolver
 				break;
 				
 				// delete parameter constraint
-				case DEL_CONSTRAINT : {
-
+				case DEL_CONSTRAINT : 
+				{
 					// get notification
 					DelConstraintParameterNotification notif = (DelConstraintParameterNotification) info;
 					// delete constraint
 					this.doDeleteParameterConstraint(notif.getParameterConstraint());
+					// set flag
+					this.buildSolver = true;
 				}
 				break;
 			}
@@ -238,8 +263,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	 * @throws ParameterNotFoundException
 	 */
 	protected void doDeleteVariable(Parameter param) 
-			throws ParameterNotFoundException {
-		
+			throws ParameterNotFoundException 
+	{
 		// check if parameter exists
 		if (!this.vars.containsKey(param)) {
 			throw new ParameterNotFoundException("Parameter not found " + param);
@@ -249,8 +274,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 		List<ParameterConstraint> list = this.out.remove(param);
 		list.addAll(this.in.remove(param));
 		// remove constraints
-		for (ParameterConstraint cons : this.constraints.keySet()) {
-			
+		for (ParameterConstraint cons : this.constraints.keySet()) 
+		{
 			// get constraint
 			Constraint cspConstraint = this.constraints.get(cons);
 			// remove from solver
@@ -258,7 +283,6 @@ public final class Chocho3CSPSolver extends ParameterSolver
 			// remove constraint
 			this.constraints.remove(cons);
 		}
-		
 		
 		// get related variable
 		IntVar var = this.vars.get(param);
@@ -272,14 +296,14 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	 * 
 	 * @param param
 	 */
-	protected void doCreateVariable(Parameter param) {
-
+	protected void doCreateVariable(Parameter param) 
+	{
 		// check parameter type
-		switch (param.getType()) {
-		
+		switch (param.getType()) 
+		{
 			// numeric parameter
-			case NUMERIC_PARAMETER_TYPE : {
-				
+			case NUMERIC_PARAMETER_TYPE : 
+			{
 				// get numeric parameter
 				NumericParameter nparam = (NumericParameter) param;
 				// get domain 
@@ -301,13 +325,12 @@ public final class Chocho3CSPSolver extends ParameterSolver
 			break;
 		
 			// enumeration parameter
-			case ENUMERATION_PARAMETER_TYPE : {
-				
+			case ENUMERATION_PARAMETER_TYPE : 
+			{
 				// get parameter
 				EnumerationParameter eparam = (EnumerationParameter) param;
 				// get domain 
 				EnumerationParameterDomain dom = (EnumerationParameterDomain) param.getDomain();
-				
 				// create variable
 				IntVar var = VF.enumerated(eparam.getLabel(), 
 						0,
@@ -323,18 +346,16 @@ public final class Chocho3CSPSolver extends ParameterSolver
 			break;
 			
 			// constant enumeration parameter
-			case CONSTANT_ENUMERATION_PARAMETER_TYPE : {
-				
+			case CONSTANT_ENUMERATION_PARAMETER_TYPE : 
+			{
 				// get parameter
 				EnumerationConstantParameter eparam = (EnumerationConstantParameter) param;
 				// get domain
 				EnumerationParameterDomain dom = (EnumerationParameterDomain) param.getDomain();
-				
 				// get value
 				int value = dom.getIndex(eparam.getValue());
 				// create fixed variable
 				IntVar var = VF.fixed(value, this.solver);
-				
 				// add variable
 				this.vars.put(eparam, var);
 				// add edges
@@ -344,20 +365,19 @@ public final class Chocho3CSPSolver extends ParameterSolver
 			break;
 			
 			// constant numeric parameter
-			case CONSTANT_NUMERIC_PARAMETER_TYPE : {
-				
+			case CONSTANT_NUMERIC_PARAMETER_TYPE : 
+			{
 				// get parameter
 				NumericConstantParameter nparam = (NumericConstantParameter) param;
-				
 				// create fixed variable
 				IntVar var = VF.fixed((int) nparam.getValue(), this.solver);
-				
 				// add variable
 				this.vars.put(nparam, var);
 				// add edges
 				this.out.put(nparam, new ArrayList<ParameterConstraint>());
 				this.in.put(nparam, new ArrayList<ParameterConstraint>());
 			}
+			break;
 		}
 	}
 	
@@ -367,8 +387,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	 * @throws ParameterConstraintNotFoundException
 	 */
 	protected void doDeleteParameterConstraint(ParameterConstraint cons) 
-			throws ParameterConstraintNotFoundException {
-		
+			throws ParameterConstraintNotFoundException 
+	{
 		// check if constraint exists
 		if (!this.constraints.containsKey(cons)) {
 			throw new ParameterConstraintNotFoundException("ParameterConstraint not found " + cons);
@@ -378,7 +398,6 @@ public final class Chocho3CSPSolver extends ParameterSolver
 		Constraint cspConstraint = this.constraints.get(cons);
 		// remove from solver
 		this.solver.unpost(cspConstraint);
-		
 		// remove constraint
 		this.constraints.remove(cons);
 		this.out.get(cons.getReference()).remove(cons);
@@ -391,8 +410,8 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	 * @throws ParameterNotFoundException
 	 */
 	protected void doCreateParameterConstraint(ParameterConstraint cons) 
-			throws ParameterNotFoundException {
-		
+			throws ParameterNotFoundException 
+	{
 		// check if parameters exists
 		if (!this.vars.containsKey(cons.getReference()) || !this.vars.containsKey(cons.getTarget())) {
 			throw new ParameterNotFoundException("Constraint's parameters not found reference= " + cons.getReference() + " target= " + cons.getTarget());
@@ -422,24 +441,20 @@ public final class Chocho3CSPSolver extends ParameterSolver
 	 * @throws ParameterConsistencyException
 	 */
 	protected int doComputeVariableValue(Parameter param) 
-			throws ParameterConsistencyException {
-		
+			throws ParameterConsistencyException 
+	{
 		// get variable
 		IntVar var = this.vars.get(param);
 		// configure solver
 		this.solver.set(IntStrategyFactory.lexico_LB(var));
 		if (!this.solver.findSolution()) {
-			
 			// inconsistent problem
 			throw new ParameterConsistencyException("Inconsistent constraints. Impossible to find solutions");
 		}
 		
 		// get variable's value for the computed solution
 		int value = var.getValue();
-		
 		// get values
 		return value;
-		
-		
 	}
 }

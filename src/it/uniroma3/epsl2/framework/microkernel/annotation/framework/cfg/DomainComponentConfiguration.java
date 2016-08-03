@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
-import it.uniroma3.epsl2.framework.utils.view.ComponentViewType;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
  * Component Configuration annotation

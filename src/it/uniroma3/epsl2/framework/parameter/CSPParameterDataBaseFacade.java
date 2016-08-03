@@ -243,7 +243,7 @@ public final class CSPParameterDataBaseFacade extends ParameterDataBaseFacade
 	 */
 	private void publish(ParameterNotification notif) {
 		for (ParameterNotificationObserver observer : this.observers) {
-			observer.notify(notif);
+			observer.update(notif);
 		}
 	}
 	

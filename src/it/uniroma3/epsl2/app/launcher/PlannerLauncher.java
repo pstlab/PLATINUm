@@ -5,13 +5,13 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import it.uniroma3.epsl2.deliberative.Planner;
+import it.uniroma3.epsl2.deliberative.PlannerBuilder;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
-import it.uniroma3.epsl2.planner.Planner;
-import it.uniroma3.epsl2.planner.PlannerBuilder;
 
 /**
  * This program takes as input the paths to DDL and PDL files respectively and
@@ -27,18 +27,18 @@ import it.uniroma3.epsl2.planner.PlannerBuilder;
  * @author anacleto
  *
  */
-public class PlannerLauncher {
-
+public class PlannerLauncher 
+{
 	/**
 	 * The main method of the launcher program  
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) 
+	{
 		// check arguments
-		if (args.length >= 2) {
-			
+		if (args.length >= 2) 
+		{
 			// create output directory if it does not exists
 			File out = new File("plans");
 			// check if exists

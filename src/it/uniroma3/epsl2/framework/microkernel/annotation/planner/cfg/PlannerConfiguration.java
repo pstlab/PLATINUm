@@ -5,10 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristicType;
+import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
+import it.uniroma3.epsl2.deliberative.solver.SolverType;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
-import it.uniroma3.epsl2.planner.heuristic.fsh.FlawSelectionHeuristicType;
-import it.uniroma3.epsl2.planner.search.SearchStrategyType;
-import it.uniroma3.epsl2.planner.solver.SolverType;
 
 /**
  * 

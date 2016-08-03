@@ -138,7 +138,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param node
 	 * @param status
 	 */
-	public void updateNodeStatus(ExecutionNode node, ExecutionNodeStatus status) {
+	public void updateNodeStatus(ExecutionNode node, ExecutionNodeStatus status) 
+	{
 		// remove node from the current status
 		synchronized (this.locks[node.getStatus().getIndex()]) {
 			// remove node from list

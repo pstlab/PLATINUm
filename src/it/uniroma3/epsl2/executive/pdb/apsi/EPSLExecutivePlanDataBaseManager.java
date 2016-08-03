@@ -55,18 +55,21 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param plan
 	 */
 	@Override
-	public void setup(EPSLPlanDescriptor plan) {
-		try {
-			
+	public void setup(EPSLPlanDescriptor plan) 
+	{
+		try 
+		{
 			// map token descriptor to nodes
 			Map<EPSLTokenDescriptor, ExecutionNode> dictionary = new HashMap<>();
 			// check time-lines
-			for (EPSLTimelineDescriptor tl : plan.getTimelines()) {
+			for (EPSLTimelineDescriptor tl : plan.getTimelines()) 
+			{
 				// create an execution node for each token
-				for (EPSLTokenDescriptor token : tl.getTokens()) {
+				for (EPSLTokenDescriptor token : tl.getTokens()) 
+				{
 					// check predicate
-					if (!token.getPredicate().equals("unallocated")) {
-						
+					if (!token.getPredicate().equals("unallocated")) 
+					{
 						// get token's bound
 						long[] start = token.getStartTimeBounds();
 						long[] end = token.getEndTimeBounds();
@@ -85,13 +88,15 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							// get parameter
 							EPSLParameterDescriptor param= token.getParameter(index);
 							// check type
-							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) {
+							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) 
+							{
 								// set type
 								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 								// set value
 								paramValues[index] = new Long(param.getBounds()[0]).toString();
 							}
-							else {
+							else 
+							{
 								// enumeration
 								paramTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
 								// set value
@@ -113,12 +118,14 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			}
 			
 			// check observations
-			for (EPSLTimelineDescriptor tl : plan.getObservations()) {
+			for (EPSLTimelineDescriptor tl : plan.getObservations()) 
+			{
 				// create an execution node for each token
-				for (EPSLTokenDescriptor token : tl.getTokens()) {
+				for (EPSLTokenDescriptor token : tl.getTokens()) 
+				{
 					// check predicate
-					if (!token.getPredicate().equals("unallocated")) {
-						
+					if (!token.getPredicate().equals("unallocated")) 
+					{
 						// get token's bound
 						long[] start = token.getStartTimeBounds();
 						long[] end = token.getEndTimeBounds();
@@ -138,13 +145,15 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							// get parameter
 							EPSLParameterDescriptor param= token.getParameter(index);
 							// check type
-							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) {
+							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) 
+							{
 								// set type
 								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 								// set value
 								paramValues[index] = new Long(param.getBounds()[0]).toString();
 							}
-							else {
+							else 
+							{
 								// enumeration
 								paramTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
 								// set value
@@ -166,8 +175,10 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			}
 			
 			// check relations
-			for (EPSLRelationDescriptor rel : plan.getRelations()) {
-				try {
+			for (EPSLRelationDescriptor rel : plan.getRelations()) 
+			{
+				try 
+				{
 					// get related nodes
 					ExecutionNode reference = dictionary.get(rel.getFrom());
 					ExecutionNode target = dictionary.get(rel.getTo());

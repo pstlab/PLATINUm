@@ -400,12 +400,14 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	public final void propagate(TemporalConstraint constraint) 
 			throws TemporalConstraintPropagationException 
 	{
-		try {
+		try 
+		{
 			// check temporal constraint type
 			switch (constraint.getType()) 
 			{
 				// create BEFORE constraint into the temporal network
-				case BEFORE : {
+				case BEFORE : 
+				{
 					// get constraint
 					BeforeIntervalConstraint before = (BeforeIntervalConstraint) constraint;
 					// propagate constraint
@@ -418,7 +420,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create AFTER constraint into the temporal network
-				case AFTER : {
+				case AFTER : 
+				{
 					AfterIntervalConstraint after = (AfterIntervalConstraint) constraint;
 					// propagate constraint
 					TimePointConstraint[] c = new TimePointConstraint[] {
@@ -430,7 +433,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create MEETS constraint into the temporal network
-				case MEETS : {
+				case MEETS : 
+				{
 					// get constraint
 					MeetsIntervalConstraint meets = (MeetsIntervalConstraint) constraint;
 					// propagate constraint
@@ -443,7 +447,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create MET-BY constraint into the temporal network
-				case MET_BY : {
+				case MET_BY : 
+				{
 					// get constraint
 					MetByIntervalConstraint metby = (MetByIntervalConstraint) constraint;
 					// propagate constraint
@@ -456,7 +461,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create CONTAINS constraint into the temporal network
-				case CONTAINS : {
+				case CONTAINS : 
+				{
 					// get constraint
 					ContainsIntervalConstraint contains = (ContainsIntervalConstraint) constraint;
 					// propagate constraint
@@ -467,7 +473,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create DURING constraint into the temporal network
-				case DURING : {
+				case DURING : 
+				{
 					// get constraint
 					DuringIntervalConstraint during = (DuringIntervalConstraint) constraint;
 					// propagate constraint
@@ -478,7 +485,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create STARTS-DURING constraint into the network
-				case STARTS_DURING : {
+				case STARTS_DURING : 
+				{
 					// get constraint
 					StartsDuringIntervalConstraint sdc = (StartsDuringIntervalConstraint) constraint;
 					// propagate constraint
@@ -489,7 +497,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create ENDS-DURING constraint into the network
-				case ENDS_DURING : {
+				case ENDS_DURING : 
+				{
 					// get constraint
 					EndsDuringIntervalConstraint edc = (EndsDuringIntervalConstraint) constraint;
 					// propagate constraint
@@ -500,7 +509,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// create EQUALS constraint into the temporal network
-				case EQUALS : {
+				case EQUALS : 
+				{
 					// get constraint
 					EqualsIntervalConstraint equals = (EqualsIntervalConstraint) constraint;
 					// propagate constraint
@@ -522,7 +532,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// set the start time of a temporal interval
-				case FIX_START_TIME : {
+				case FIX_START_TIME : 
+				{
 					// get constraint
 					FixStartTimeIntervalConstraint fix = (FixStartTimeIntervalConstraint) constraint;
 					// propagate constraint
@@ -533,7 +544,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				break;
 				
 				// set the end time of a temporal interval
-				case FIX_END_TIME : {
+				case FIX_END_TIME : 
+				{
 					// get constraint
 					FixEndTimeIntervalConstraint fix = (FixEndTimeIntervalConstraint) constraint;
 					// propagate constraint
@@ -578,11 +590,12 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateEqualsConstraint(TemporalInterval reference, TemporalInterval target) 
-			throws InconsistentDistanceConstraintException {
+			throws InconsistentDistanceConstraintException 
+	{
 		// create a distance constraint between start times
-		TimePointConstraint c1 = this.tn.addConstraint(reference.getStartTime(), target.getEndTime(), new long[] {0, 0}, true);
+		TimePointConstraint c1 = this.tn.addConstraint(reference.getStartTime(), target.getStartTime(), new long[] {0, 0}, true);
 		// create a distance constraint between end times
-		TimePointConstraint c2 = this.tn.addConstraint(reference.getEndTime(), target.getEndTime(), new long[] {0, 0}, true);
+		TimePointConstraint c2 = this.tn.addConstraint(target.getEndTime(), reference.getEndTime(), new long[] {0, 0}, true);
 		// get added distance constraints
 		return new TimePointConstraint[] {c1, c2};
 	}
@@ -597,8 +610,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateContainsConstraint(TemporalInterval reference, TemporalInterval target, long[] startTimeBounds, long[] endTimeBounds) 
-			throws InconsistentDistanceConstraintException {
-		
+			throws InconsistentDistanceConstraintException 
+	{
 		// create a distance constraint between reference's start time and target's start time 
 		TimePointConstraint c1 = this.tn.addConstraint(reference.getStartTime(), target.getStartTime(), startTimeBounds, true);
 		// crate a distance constraint between target's end time and reference's end time
@@ -617,7 +630,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateDuringConstraint(TemporalInterval reference, TemporalInterval target, long[] startTimeBounds, long[] endTimeBounds) 
-			throws InconsistentDistanceConstraintException {
+			throws InconsistentDistanceConstraintException 
+	{
 		// create a distance constraint between target's start time and reference's start time
 		TimePointConstraint c1 = this.tn.addConstraint(target.getStartTime(), reference.getStartTime(), startTimeBounds, true);
 		// create a distance constraint between reference's end time and target's end time
@@ -636,12 +650,12 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateEndsDuringConstraint(TemporalInterval reference, TemporalInterval target, long[] firstTimeBound, long[] secondTimeBound) 
-			throws InconsistentDistanceConstraintException {
+			throws InconsistentDistanceConstraintException 
+	{
 		// create a distance constraint between target's start time and reference's start time
 		TimePointConstraint c1 = this.tn.addConstraint(target.getStartTime(), reference.getEndTime(), firstTimeBound, true);
 		// create a distance constraint between reference's end time and target's end time
 		TimePointConstraint c2 = this.tn.addConstraint(reference.getEndTime(), target.getEndTime(), secondTimeBound, true);
-		
 		// propagate constraints
 		return new TimePointConstraint[] {c1, c2};
 	}
@@ -656,12 +670,12 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateStartsDuringConstraint(TemporalInterval reference, TemporalInterval target, long[] firstTimeBound, long[] secondTimeBound) 
-			throws InconsistentDistanceConstraintException {
+			throws InconsistentDistanceConstraintException 
+	{
 		// create a distance constraint between target's start time and reference's start time
 		TimePointConstraint c1 = this.tn.addConstraint(target.getStartTime(), reference.getStartTime(), firstTimeBound, true);
 		// create a distance constraint between reference's end time and target's end time
 		TimePointConstraint c2 = this.tn.addConstraint(reference.getStartTime(), target.getEndTime(), secondTimeBound, true);
-		
 		// propagate constraints
 		return new TimePointConstraint[] {c1, c2};
 	}
@@ -676,7 +690,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint doPropagateBeforeConstraint(TemporalInterval reference, TemporalInterval target, long[] distance) 
-			throws InconsistentDistanceConstraintException {
+			throws InconsistentDistanceConstraintException 
+	{
 		// create a distance constraint between reference's end time and target's start time
 		return this.tn.addConstraint(reference.getEndTime(), target.getStartTime(), distance, true);
 	}
@@ -689,9 +704,11 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws Exception
 	 */
 	protected TimePointConstraint doPropagateMeetsConstraint(TemporalInterval reference, TemporalInterval target) 
-			throws InconsistentDistanceConstraintException {
+			throws InconsistentDistanceConstraintException 
+	{
 		// create a distance constraint between reference's end time and target's start time
-		return this.tn.addConstraint(reference.getEndTime(), target.getStartTime(), new long[] {0, 0}, true);
+		return this.tn.addConstraint(reference.getEndTime(), target.getStartTime(), 
+				new long[] {0, 0}, true);
 	}
 	
 	/**
@@ -702,10 +719,11 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateFixStartConstraint(TemporalInterval reference, long start) 
-			throws InconsistentDistanceConstraintException {
-		// propagate constraints
+			throws InconsistentDistanceConstraintException 
+	{
 		return new TimePointConstraint[] {
-				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getStartTime(), new long[] {start, start}, true)
+				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getStartTime(), 
+						new long[] {start, start}, true) 
 		};
 	}
 	
@@ -717,10 +735,11 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateFixEndConstraint(TemporalInterval reference, long end) 
-			throws InconsistentDistanceConstraintException {
-		// propagate constraints
+			throws InconsistentDistanceConstraintException 
+	{
 		return new TimePointConstraint[] {
-				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getEndTime(), new long[] {end, end}, true)
+				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getEndTime(), 
+						new long[] {end, end}, true) 
 		};
 	}
 
@@ -732,10 +751,11 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointConstraint[] doPropagateFixDurationConstraint(TemporalInterval reference, long duration) 
-			throws InconsistentDistanceConstraintException {
-		// propagate constraint
-		return new TimePointConstraint[] {
-			this.tn.addConstraint(reference.getStartTime(), reference.getEndTime(), new long[] {duration, duration}, reference.isControllable())	
+			throws InconsistentDistanceConstraintException 
+	{
+		return new TimePointConstraint[] { 
+				this.tn.addConstraint(reference.getStartTime(), reference.getEndTime(), 
+						new long[] {duration, duration}, reference.isControllable()) 
 		};
 	}
 }

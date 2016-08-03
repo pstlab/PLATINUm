@@ -1,6 +1,5 @@
 package it.uniroma3.epsl2.executive.est;
 
-import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.PlanDispatcher;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
@@ -10,76 +9,66 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
  * @author anacleto
  *
  */
-public class EarliesStartTimePlanDispatcher extends PlanDispatcher {
-
+public class EarliesStartTimePlanDispatcher implements PlanDispatcher 
+{
+	private EarliestStartTimeExecutive executive;
+	
 	/**
 	 * 
 	 * @param exec
 	 */
-	public EarliesStartTimePlanDispatcher(Executive<?, ?, ?> exec) {
-		super(exec);
+	public EarliesStartTimePlanDispatcher(EarliestStartTimeExecutive exec) {
+		this.executive = exec;
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	protected void handleTick(long tick) 
+	public void handleTick(long tick) 
 	{
-		// get current time in seconds
-		double tau = this.clock.convertClockTickToSeconds(tick);
-		// compute ready to execute nodes
-		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING)) {
-			// check start condition and controllability type
-			if (this.pdb.canStartExecution(node)) {
-				
-				try {
-					
-					// check the actual bounds of the interval to schedule
-					this.pdb.checkSchedule(node);
-					// schedule the start time to its earliest start time
-					long start = node.getStart()[0];
-					// check if delay
-					if (tau > start) {
-						// set current time
-						start = Math.round(tau);
+		// get tau
+		long tau = this.executive.convertTickToTau(tick);
+		// check human waiting nodes ready to dispatch
+		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.WAITING)) 
+		{
+			try
+			{
+				// check if node can start
+				if (this.executive.canStart(node)) 
+				{
+					// check the actual bounds
+					this.executive.checkSchedule(node);
+					// check start window
+					if (tau >= node.getStart()[0] && tau <= node.getStart()[1]) {
+						// schedule node start to tau
+						this.executive.scheduleStartTime(node, tau);
+						// dispatch node
+						this.dispatch(node);
+						System.out.println("{tick = " + tick + " } {tau= " + tau + "} {PlanDispatcher} -> Start executing node at time= " + tau + " - node " + node);
 					}
-					
-					// schedule start time of the activity
-					this.pdb.scheduleStartTime(node, start);
-					// update node status
-					this.pdb.updateNodeStatus(node, ExecutionNodeStatus.SCHEDULED);
-				}
-				catch (Exception ex) {
-					// failure start executing node
-					throw new RuntimeException("{tick = " + tick + "} {EarliesStartTimePlanDispatcher} -> Failure start executing node " + node + " ERROR {\n- Failure while scheduling node " + node + "\n}\n" + ex.getMessage());
+					else if (tau > node.getStart()[1]) {
+						// keep going with the execution by scheduling to the upper bound
+						this.executive.scheduleStartTime(node, node.getStart()[1]);
+						// dispatch node
+						this.dispatch(node);
+						System.out.println("{tick = " + tick + " } {tau= " + tau + "} {PlanDispatcher} -> Start executing node at time= " + tau + " - node " + node);
+					}
 				}
 			}
-		}
-		
-		// check scheduled tokens which start execution
-		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.SCHEDULED)) {
-			
-			// check schedule
-			this.pdb.checkSchedule(node);
-			// get earliest start time
-			long start = node.getStart()[0];
-			// check if ready to start execution
-			if (tau >= start) {
-				
-				// dispatch node
-				this.dispatch(node);
-				System.out.println("{tick = " + tick + "} {EarliesStartTimePlanDispatcher} -> Start executing node " + node);
+			catch (Exception ex) {
+				throw new RuntimeException("{tick = " + tick + "} {tau= " + tau + "} {PlanDispatcher} -> Failure start executing node " + node + " ERROR {\n- Failure while scheduling node " + node + "\n}\n" + ex.getMessage());
 			}
 		}
 	}
 	
 	/**
 	 * 
+	 * @param node
 	 */
 	@Override
-	protected void dispatch(ExecutionNode node) {
-		// simply update node status
-		this.pdb.updateNodeStatus(node, ExecutionNodeStatus.IN_EXECUTION);
+	public void dispatch(ExecutionNode node) {
+		// update the status of the node
+		this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 	}
 }

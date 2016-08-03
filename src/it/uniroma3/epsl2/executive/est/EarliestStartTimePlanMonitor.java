@@ -1,8 +1,6 @@
 package it.uniroma3.epsl2.executive.est;
 
 import it.uniroma3.epsl2.executive.PlanMonitor;
-import it.uniroma3.epsl2.executive.ProcessStatus;
-import it.uniroma3.epsl2.executive.clock.ClockObserver;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 
@@ -11,211 +9,70 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
  * @author anacleto
  *
  */
-public class EarliestStartTimePlanMonitor extends PlanMonitor implements Runnable, ClockObserver {
-	
-	private long currentTick;				// current tick
-	private Thread process;
-	private final Object lock;				// status' lock
-	private ProcessStatus processStatus;	// process status
+public class EarliestStartTimePlanMonitor implements PlanMonitor 
+{
+	private EarliestStartTimeExecutive executive;
 	
 	/**
 	 * 
 	 * @param exec
 	 */
 	protected EarliestStartTimePlanMonitor(EarliestStartTimeExecutive exec) {
-		super(exec);
-		
-		// subscribe to clock
-		this.clock.subscribe(this);
-
-		// set status
-		this.lock = new Object();
-		this.processStatus = ProcessStatus.INACTIVE;
-		// create thread
-		this.process = null;
+		// set executive
+		this.executive = exec;
 	}
-	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public void waitReady() 
-//			throws InterruptedException {
-//		
-//		// check status
-//		synchronized (this.lock) {
-//			// wait ready status
-//			while (!this.processStatus.equals(ProcessStatus.READY)) {
-//				this.lock.wait();
-//			}
-//			
-//			// send signal
-//			this.lock.notifyAll();
-//		}
-//	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void start() {
-		
-		// check status
-		synchronized (this.lock) {
-			// check if not active
-			if (this.processStatus.equals(ProcessStatus.INACTIVE)) {
-				// activate process
-				this.process = new Thread(this);
-				// subscribe to clock
-				this.clock.subscribe(this);
-				// update status
-				this.processStatus = ProcessStatus.READY;
-				// start process
-				this.process.start();
-			}
- 			
-			// send signal 
-			this.lock.notifyAll();
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void run() {
-		
-		// starting process
-		boolean running = true;
-		while (running) {
-			try {
-				
-				// check status
-				synchronized (this.lock) {
-					// check condition
-					while (!this.processStatus.equals(ProcessStatus.PROCESSING)) {
-						this.lock.wait();
-					}
-					
-					// send signal
-					this.lock.notifyAll();
-				}
-				
-				// handle tick
-				this.handleTick(this.currentTick);
-				
-				// change status
-				synchronized (this.lock) {
-					// update status
-					this.processStatus = ProcessStatus.READY;
-					// send signal
-					this.lock.notifyAll();
-				}
-			}
-			catch (InterruptedException ex) {
-				// stop thread
-				running = false;
-			}
-		}
-	}
-	
 
 	/**
 	 * 
-	 * @throws InterruptedException
-	 */
-	public void stop() 
-			throws InterruptedException {
-		
-		// check status
-		boolean toStop = false;
-		synchronized (this.lock) {
-			// check if active
-			toStop = !this.processStatus.equals(ProcessStatus.INACTIVE);
-			this.lock.notifyAll();
-		}
-		
-		// stop process if necessary
-		if (toStop) {
-			// interrupt process
-			this.process.interrupt();
-			this.process.join();
-			this.process = null;
-			
-			// cancel from clock
-			this.clock.unSubscribe(this);
-			// update status
-			synchronized (this.lock) {
-				// set status
-				this.processStatus = ProcessStatus.INACTIVE;
-				this.lock.notifyAll();
-			}
-		}
-	}
-	
-	/**
-	 * 
 	 */
 	@Override
-	public void onTick(long tick) 
-			throws InterruptedException {
-		
-		// update the current tick
-		synchronized (this.lock) {
-			// check status
-			while (!this.processStatus.equals(ProcessStatus.READY)) {
-				// wait signal
-				this.lock.wait();
+	public void handleTick(long tick) 
+	{
+		// simulate execution of nodes
+		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
+			// check node and end condition
+			if (this.executive.canEnd(node)) {
+				// simulate human task end
+				this.doSimulateEndNodeExecution(tick, node);
 			}
-			
-			// set current tick
-			this.currentTick = tick;
-			// update status
-			this.processStatus = ProcessStatus.PROCESSING;
-			// send signal
-			this.lock.notifyAll();
 		}
 	}
 	
 	/**
 	 * 
 	 * @param tick
+	 * @param tau
+	 * @param node
 	 */
-	protected void handleTick(long tick) {
-		
-		// get seconds w.r.t. the temporal origin
-		double tau = this.clock.convertClockTickToSeconds(tick);
-		// check nodes in execution
-		for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
-			
-			// check end condition
-			if (this.pdb.canEndExecution(node)) {
-				// check schedule
-				this.pdb.checkSchedule(node);
-				try {
-					
-					// schedule duration if needed
-					if (node.getDuration()[0] != node.getDuration()[1]) {
-						
-						// schedule duration to lower bound
-						this.pdb.scheduleDuration(node, node.getDuration()[0]);
-						this.pdb.checkSchedule(node);
-					}
-				}
-				catch (Exception ex) {
-					throw new RuntimeException("{tick = " + tick + "} {EarliestStartTimePlanMonitor} -> Failure scheduling duration of node " + node + " ERROR {\n- message= " + ex.getMessage() + "\n}");
-				}
-				
-				// check if execution ended
-				long end = node.getEnd()[0];
-				// check if delay
-				if (tau >= end) {
-					
-					// update status
-					this.pdb.updateNodeStatus(node, ExecutionNodeStatus.EXECUTED);
-					System.out.println("{tick = " + tick +"} {EarliestStartTimePlanMonitor} -> End executing node " + node);
-				}
+	private void doSimulateEndNodeExecution(long tick, ExecutionNode node) 
+	{
+		// get tau
+		long tau = this.executive.convertTickToTau(tick);
+		try 
+		{
+			// check schedule
+			this.executive.checkSchedule(node);
+			// check end window
+			if (tau >= node.getEnd()[0] && tau <= node.getEnd()[1]) {
+				// estimate duration
+				long duration = tau - node.getStart()[0];
+				// schedule node to estimated duration
+				this.executive.scheduleDuration(node, duration);
+				// update status
+				this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+				System.out.println("{tick = " + tick + "} {tau = " + tau + "} {PlanMonitor} -> End executing node with duration= " + node.getDuration()[1] + " - node " + node);
+			}
+			else if (tau > node.getEnd()[1]) {
+				// schedule node to duration upper bound
+				this.executive.scheduleDuration(node, node.getDuration()[1]);
+				// update status
+				this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+				System.err.println("{tick = " + tick + "} {tau = " + tau + "} {PlanMonitor} -> End executing node with duration= " + node.getDuration()[1] + " - node " + node + " WARNING {\n- Execution delay tau = " + tau + " ewind= [" + node.getEnd()[0] + ", " + node.getEnd()[1] + "]\n}");
 			}
 		}
+		catch (Exception ex) {
+			throw new RuntimeException("{tick = " + tick + "} {tau = " + tau + "} {PlanMonitor} -> Error while scheduling duration for node " + node + " ERROR {\n- message= " + ex.getMessage() + "\n}"); 
+		}
 	}
+	
 }

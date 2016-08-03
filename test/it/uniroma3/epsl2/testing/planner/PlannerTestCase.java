@@ -5,6 +5,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.uniroma3.epsl2.deliberative.Planner;
+import it.uniroma3.epsl2.deliberative.PlannerBuilder;
+import it.uniroma3.epsl2.deliberative.PlannerFactory;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseBuilder;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseFactory;
@@ -23,9 +26,6 @@ import it.uniroma3.epsl2.framework.lang.problem.ProblemGoal;
 import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
-import it.uniroma3.epsl2.planner.Planner;
-import it.uniroma3.epsl2.planner.PlannerBuilder;
-import it.uniroma3.epsl2.planner.PlannerFactory;
 
 /**
  * 

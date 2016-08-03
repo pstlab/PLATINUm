@@ -11,5 +11,5 @@ public interface ParameterNotificationObserver {
 	 * 
 	 * @param info
 	 */
-	public void notify(ParameterNotification info);
+	public void update(ParameterNotification info);
 }

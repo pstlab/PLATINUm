@@ -14,9 +14,9 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverFactory;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
-import it.uniroma3.epsl2.framework.utils.view.ComponentView;
-import it.uniroma3.epsl2.framework.utils.view.ComponentViewFactory;
-import it.uniroma3.epsl2.framework.utils.view.ComponentViewType;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentView;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewFactory;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
  * 

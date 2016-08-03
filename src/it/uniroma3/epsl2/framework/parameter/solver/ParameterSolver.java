@@ -41,5 +41,5 @@ public abstract class ParameterSolver extends ApplicationFrameworkObject impleme
 	 * 
 	 */
 	@Override
-	public abstract void notify(ParameterNotification info);
+	public abstract void update(ParameterNotification info);
 }

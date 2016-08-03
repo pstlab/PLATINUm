@@ -313,8 +313,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 	/**
 	 * 
 	 */
-	private void compute() {
-	
+	private void compute() 
+	{
 		// check size of the distance graph
 		int size = this.dgraph.size();
 		// initialize distance matrix
@@ -365,72 +365,4 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 		// set propagation flag
 		this.toPropagate = false;
 	}
-	
-
-//	/**
-//	 * 
-//	 * @param tp
-//	 */
-//	private void addTimePoint(TimePoint tp) 
-//	{
-//		// check time point's id w.r.t. distance matrix's size
-//		if (this.tn.size() >= this.distance.length) {
-//			// resize matrix
-//			this.resize((this.tn.size() - this.distance.length) + 1);
-//		}
-//		
-//		// current size
-//		int size = this.distance.length;
-//		// initialize sub-matrix
-//		for (int index = 0; index < size; index++) {
-//			if (index == tp.getId()) {
-//				// set distance
-//				this.distance[tp.getId()][index] = 0; 
-//			}
-//			else {
-//				// initialize distance
-//				this.distance[tp.getId()][index] = this.tn.getHorizon();
-//				this.distance[index][tp.getId()] = this.tn.getHorizon();
-//			}
-//		}
-//		
-//		// set distance between the origin and the new time point
-//		TimePointConstraint originToTp = this.tn.getConstraintFromOrigin(tp);
-//		this.distance[originToTp.getReference().getId()][originToTp.getTarget().getId()] = originToTp.getDistanceUpperBound();
-//		this.distance[originToTp.getTarget().getId()][originToTp.getReference().getId()] = -originToTp.getDistanceLowerBound();
-//		
-//		// set distance between the horizon and the new time point
-//		TimePointConstraint tpToHorizon = this.tn.getConstraintToHorizon(tp);
-//		this.distance[tpToHorizon.getReference().getId()][tpToHorizon.getTarget().getId()] = tpToHorizon.getDistanceUpperBound();
-//		this.distance[tpToHorizon.getTarget().getId()][tpToHorizon.getReference().getId()] = -tpToHorizon.getDistanceLowerBound();
-//	}
-	
-//	/**
-//	 * Resizes distance matrix.
-//	 * This method is called every time the number of time points in 
-//	 * the network exceeds the matrix's size.
-//	 * 
-//	 * The method takes as input the difference between the current size
-//	 * and the id of the time point created.
-//	 * 
-//	 * The resize delta is 1/3 of the current matrix size
-//	 * 
-//	 * @param diff
-//	 */
-//	private void resize(int diff) {
-//		// get matrix current size
-//		int size = this.distance.length;
-//		int delta = size / 3;
-//		// make a copy of the current matrix
-//		long[][] distanceBackUp = this.distance;
-//		// create a larger distance matrix
-//		int nextSize = size + diff + delta;
-//		this.distance = new long[nextSize][nextSize];
-//		// copy data
-//		for (int i= 0; i < distanceBackUp.length; i++) {
-//			for (int j = 0; j < distanceBackUp.length; j++) {
-//				this.distance[i][j] = distanceBackUp[i][j];
-//			}
-//		}
-//	}
 }
