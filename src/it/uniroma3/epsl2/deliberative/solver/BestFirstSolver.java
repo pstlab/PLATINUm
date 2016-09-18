@@ -19,8 +19,8 @@ import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckExc
  * @author anacleto
  *
  */
-public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNode> {
-
+public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNode> 
+{
 	private long time;
 	private long stepCounter;
 	
@@ -97,19 +97,21 @@ public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNod
 				
  				// get the "best" flaws to solve first
 				Set<Flaw> flaws = this.heuristic.choose();
-//				// print selected flaw
-//				this.logger.debug("Selected flaw to solve:\n" + flaw + "\n- #solutions= " + flaw.getSolutions().size());
 				// take into account all the "equivalent" flaws as possible plan refinements
-				for (Flaw flaw : flaws) { 
-				// expand the search space
-					for (FlawSolution flawSolution : flaw.getSolutions()) {
+				for (Flaw flaw : flaws) 
+				{ 
+					// create a branch for each possible solution of a flaw
+					for (FlawSolution flawSolution : flaw.getSolutions()) 
+					{
+						// expand the search tree
+						this.logger.debug("Expanding the search tree with flaw to solve:\n" + flaw + "\n- #solutions= " + flaw.getSolutions().size());
 						// create operator
 						Operator op = new Operator(flawSolution);
-						this.logger.debug("Creating new operator for flaw solution:\n" + flawSolution);
 						// create child node
 						SearchSpaceNode child = new SearchSpaceNode(extracted, op);
 						// enqueue node
 						this.strategy.enqueue(child);
+						this.logger.debug("Child-node= " + child + ":\n- operator= " + op + "\n- flaw= " + flaw + "\n- solution= " + flawSolution);
 					}
 				}
 				

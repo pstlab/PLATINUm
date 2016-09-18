@@ -13,8 +13,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
  * @author anacleto
  *
  */
-public abstract class FlawFilter extends ApplicationFrameworkObject {
-
+public abstract class FlawFilter extends ApplicationFrameworkObject 
+{
 	private FlawFilterType type;
 	
 	@FrameworkLoggerReference

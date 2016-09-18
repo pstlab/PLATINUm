@@ -52,8 +52,8 @@ public class DeliberativeLauncher
 			// get time format
 			String time = timeFormatter.format(new Date(now));
 			
-			try {
-				
+			try 
+			{
 				// get file paths
 				String ddlPath = args[0].trim();
 				String pdlPath = args[1].trim();
@@ -67,8 +67,8 @@ public class DeliberativeLauncher
 				
 				// build a planner instance
 				Planner planner = PlannerBuilder.build(ddlPath, pdlPath);
-				try {
-					
+				try 
+				{
 					// start planning
 					System.out.println("Running EPSL2 planner on domain= " + domainName + " and problem= " + problemName + "...");
 					// start planning
@@ -95,8 +95,8 @@ public class DeliberativeLauncher
 					
 					// export the plan to the output file
 					try (PrintWriter writer = new PrintWriter(new File(
-							subdir.getPath() + File.separator + time + "_" + problemName + "_" + pseudo))) {
-						
+							subdir.getPath() + File.separator + time + "_" + problemName + "_" + pseudo))) 
+					{
 						// export
 						writer.println(plan.export());
 						writer.flush();

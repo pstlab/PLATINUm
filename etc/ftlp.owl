@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.uniroma3.it/ontologies/ftlp#"
+     xml:base="http://www.uniroma3.it/ontologies/ftlp"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.uniroma3.it/ontologies/ftlp">
+        <owl:versionIRI rdf:resource="http://www.uniroma3.it/ontologies/ftlp/1.0.0"/>
+        <rdfs:comment>FTLP Ontology
+
+Temporal Reasoning Ontology for Timeline-based Planning</rdfs:comment>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#After -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#After">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <owl:inverseOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#Before"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#Before -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#Before">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#CausalRelation -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#CausalRelation">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanRelation"/>
+        <owl:inverseOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#isChild"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#Contains -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#Contains">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <owl:inverseOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#During"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#During -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#During">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#EndsDuring -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#EndsDuring">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#Meets -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#Meets">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#Before"/>
+        <owl:inverseOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#MetBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#MetBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#MetBy">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#After"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#PlanRelation -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#PlanRelation">
+        <rdfs:domain rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
+        <rdfs:range rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#StartsDuring -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#StartsDuring">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#TemporalRelation -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#isChild -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#isChild">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#ordering -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#ordering">
+        <rdfs:domain rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
+        <rdfs:range rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#PlanDecision -->
+
+    <owl:Class rdf:about="http://www.uniroma3.it/ontologies/ftlp#PlanDecision">
+        <rdfs:subClassOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#PlanEntity -->
+
+    <owl:Class rdf:about="http://www.uniroma3.it/ontologies/ftlp#PlanEntity"/>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.1.3.20151118-2017) https://github.com/owlcs/owlapi -->
+

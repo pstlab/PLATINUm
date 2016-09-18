@@ -17,6 +17,7 @@ public class Decision
 {
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
+	private Decision causalLink;		// set "generator" decision
 	private ComponentValue value;
 	private PlanElementStatus status;
 	private String[] labels;
@@ -37,11 +38,14 @@ public class Decision
 	 * @param end
 	 * @param nominalDuration
 	 */
-	public Decision(ComponentValue value, String[] labels, long[] start, long[] end, long[] nominalDuration) {
+	public Decision(ComponentValue value, String[] labels, long[] start, long[] end, long[] nominalDuration) 
+	{
 		// set id
 		this.id = ID_COUNTER.getAndIncrement();
 		// set parameter labels
 		this.labels = labels;
+		// set causal link
+		this.causalLink = null;
 		// set related value
 		this.value = value;
 		this.start = start;
@@ -62,6 +66,22 @@ public class Decision
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	/**
+	 * 
+	 * @param dec
+	 */
+	public void setCausalLink(Decision dec) {
+		this.causalLink = dec;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Decision getCausalLink() {
+		return this.causalLink;
 	}
 	
 	/**

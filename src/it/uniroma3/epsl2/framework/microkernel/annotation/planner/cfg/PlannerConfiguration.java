@@ -29,7 +29,7 @@ public @interface PlannerConfiguration {
 	 * 
 	 * @return
 	 */
-	FlawSelectionHeuristicType heuristic() default FlawSelectionHeuristicType.HFSH;
+	FlawSelectionHeuristicType heuristic() default FlawSelectionHeuristicType.HTFSH;
 	
 	/**
 	 * 
@@ -41,5 +41,5 @@ public @interface PlannerConfiguration {
 	 * 
 	 * @return
 	 */
-	FrameworkLoggingLevel logging() default FrameworkLoggingLevel.ERROR;
+	FrameworkLoggingLevel logging() default FrameworkLoggingLevel.DEBUG;
 }

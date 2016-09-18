@@ -246,23 +246,24 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 	 * 
 	 * @param goal
 	 */
-	private void doComputeExpansionSolutions(Goal goal) {
-		
+	private void doComputeExpansionSolutions(Goal goal) 
+	{
 		// check synchronization rules
 		List<SynchronizationRule> rules = this.component.
 				getSynchronizationRules(goal.getDecision().getValue());
 		// check synchronizations
-		if (rules.isEmpty()) {
-			
+		if (rules.isEmpty()) 
+		{
 			// the goal can be justified without applying synchronization rules
 			GoalExpansion expansion = new GoalExpansion(goal);
 			// add solution
 			goal.addSolution(expansion);
 		}
-		else {
-			
+		else 
+		{
 			// can do expansion
-			for (SynchronizationRule rule : rules) {
+			for (SynchronizationRule rule : rules) 
+			{
 				// expansion solution
 				GoalExpansion expansion = new GoalExpansion(goal, rule);
 				// add solution
@@ -283,14 +284,13 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 		Decision goal = unification.getGoalDecision();
 		// get unifying decision
 		Decision unif = unification.getUnificationDecision();
-		
 		// pending relations translated
 		List<Relation> pendingTranslated = new ArrayList<>();
 		// check relations to activate
 		List<Relation> toActivate = new ArrayList<>();
 		// translate decision's pending relations
-		for (Relation rel : this.component.getPendingRelations(goal)) {
-			
+		for (Relation rel : this.component.getPendingRelations(goal)) 
+		{
 			// translate relation
 			this.translateRelationFromGoalToUnification(unif, goal, rel);
 			// add to pending
@@ -298,12 +298,13 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 		}
 		
 		// check pending relations to activate after translation
-		for (Relation rel : this.component.getPendingRelations(unif)) {
-			
+		for (Relation rel : this.component.getPendingRelations(unif)) 
+		{
 			if (rel.getReference().equals(unif) && rel.getTarget().isActive() || 
 					rel.getTarget().equals(unif) && rel.getReference().isActive() ||
 					// check reflexive relations
-					rel.getReference().equals(unif) && rel.getTarget().equals(unif)) {
+					rel.getReference().equals(unif) && rel.getTarget().equals(unif)) 
+			{
 				// add relation
 				toActivate.add(rel);
 			}
@@ -311,12 +312,12 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 		
 		// remove to activate relations from pending
 		pendingTranslated.removeAll(toActivate);
-		try	{
+		try	
+		{
 			// propagate relations
 			this.component.addRelations(toActivate);
 			// remove goal
 			this.component.delete(goal);
-			
 			// add activated relations
 			unification.addActivatedRelations(toActivate);
 			// add translated pending relations as created
@@ -341,22 +342,23 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 		Set<Relation> rCreated = new HashSet<>();
 		
 		// check rule
-		if (expansion.hasSubGoals()) {
-			
+		if (expansion.hasSubGoals()) 
+		{
 			// get synchronization rule to apply
 			SynchronizationRule rule = expansion.getSynchronizationRule();
-			
 			// create an index of token variable
 			Map<TokenVariable, Decision> var2dec = new HashMap<>();
 			var2dec.put(rule.getTriggerer(), goal);
-			
 			// add pending decisions
-			for (TokenVariable var : rule.getTokenVariables()) {
+			for (TokenVariable var : rule.getTokenVariables()) 
+			{
 				// create a pending decision
 				Decision pending = this.component.createDecision(
 						var.getValue(),
 						var.getParameterLabels());
 				
+				// set causal link
+				pending.setCausalLink(goal);
 				// check solving knowledge
 				if (var.isMandatoryExpansion()) {
 					pending.setMandatoryExpansion();
@@ -374,12 +376,14 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 			}
 			
 			// add pending relations
-			for (SynchronizationConstraint c : rule.getConstraints()) {
+			for (SynchronizationConstraint c : rule.getConstraints()) 
+			{
 				// check category
 				switch (c.getCategory()) 
 				{
 					// temporal category
-					case TEMPORAL_CONSTRAINT : { 
+					case TEMPORAL_CONSTRAINT : 
+					{ 
 						// temporal constraint
 						TemporalSynchronizationConstraint tc = (TemporalSynchronizationConstraint) c;
 						// get decisions
@@ -394,7 +398,8 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 					break;
 					
 					// parameter category
-					case PARAMETER_CONSTRAINT: {
+					case PARAMETER_CONSTRAINT: 
+					{
 						// parameter constraint
 						ParameterSynchronizationConstraint pc = (ParameterSynchronizationConstraint) c;
 						// get decisions
@@ -405,14 +410,15 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 						ParameterRelation rel = (ParameterRelation) this.component.createRelation(pc.getType(), reference, target);
 						
 						// check type
-						if (rel.getType().equals(RelationType.BIND_PARAMETER)) {
+						if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+						{
 							// bind constraint
 							BindParameterRelation bind = (BindParameterRelation) rel;
 							// set binding value
 							bind.setValue(pc.getTargetLabel());
-							
 							// set reference label
-							if (pc.getSource().equals(rule.getTriggerer())) {
+							if (pc.getSource().equals(rule.getTriggerer())) 
+							{
 								// get trigger label index
 								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
 								// set decision's label
@@ -421,12 +427,14 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 								bind.setReferenceParameterLabel(label);
 							}
 							else {
-								bind.setReferenceParameterLabel(pc.getReferenceLabel());;
+								bind.setReferenceParameterLabel(pc.getReferenceLabel());
 							}
 						}
-						else {
+						else 
+						{
 							// check if source is the trigger
-							if (pc.getSource().equals(rule.getTriggerer())) {
+							if (pc.getSource().equals(rule.getTriggerer())) 
+							{
 								// get trigger label index
 								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
 								// get decions's label
@@ -440,7 +448,8 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 							}
 							
 							// check if target is the trigger
-							if (pc.getTarget().equals(rule.getTriggerer())) {
+							if (pc.getTarget().equals(rule.getTriggerer())) 
+							{
 								// get trigger label index
 								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getTargetLabel());
 								// get decision's label
@@ -484,8 +493,8 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 	 * 
 	 * @param expansion
 	 */
-	private void doRetractExpansion(GoalExpansion expansion) {
-		
+	private void doRetractExpansion(GoalExpansion expansion) 
+	{
 		// free added relations
 		for (Relation rel : expansion.getAddedRelations()) {
 			this.component.free(rel);
@@ -496,7 +505,7 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 			this.component.delete(rel);
 		}
 		
-		// delete created pending relations
+		// delete pending relations created
 		for (Relation rel : expansion.getCreatedRelations()) {
 			this.component.delete(rel);
 		}
@@ -514,13 +523,12 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 		}
 	}
 	
-	
-	
 	/**
 	 * 
 	 * @param unification
 	 */
-	private void doRetractUnification(GoalUnification unification) {
+	private void doRetractUnification(GoalUnification unification) 
+	{
 		// restore pending goal 
 		Decision goal = unification.getGoalDecision();
 		// ensure pending status of the goal
@@ -535,7 +543,8 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 		}
 		
 		// translate and deactivated relations
-		for (Relation rel : unification.getActivatedRelations()) {
+		for (Relation rel : unification.getActivatedRelations()) 
+		{
 			// delete relation - set back to pending
 			this.component.delete(rel);
 			// translate relation
@@ -556,156 +565,20 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 		}
 	}
 	
-//	/**
-//	 * 
-//	 * @param rel
-//	 * @return
-//	 */
-//	private Constraint doCreateConstraint(Decision dec, Relation rel, Decision goalDecision) {
-//		
-//		// constraint to create
-//		Constraint c = null;
-//		// check relation category
-//		switch (rel.getCategory()) {
-//		
-//			// temporal relation
-//			case TEMPORAL_CONSTRAINT : {
-//		
-//				// temporal relation
-//				TemporalRelation trel = (TemporalRelation) rel;
-//				
-//				// check reference
-//				if (trel.getReference().equals(goalDecision)) {
-//					
-//					/* 
-//					 * Create constraint by means of factory because the reference decision is still 
-//					 * pending at this point and it must be replaced by the decision selected for
-//					 * unification (dec).
-//					 * 
-//					 * Namely, the actual reference decision has not an instantiated Token thus,
-//					 * the create() method of the relation would throw an exception
-//					 * 
-//					 */
-//					TemporalConstraint cons = this.iConstraintFactory.
-//							create(trel.getConstraintType());
-//					
-//					cons.setReference(dec.getToken().getInterval());
-//					cons.setTarget(trel.getTarget().getToken().getInterval());
-//					// set constraint
-//					c = cons;
-//				}
-//				
-//				// check target
-//				if (trel.getTarget().equals(goalDecision)) {
-//					
-//					/* 
-//					 * Create constraint by means of factory because the target decision is still 
-//					 * pending at this point and it must be replaced by the decision selected for
-//					 * unification (dec).
-//					 * 
-//					 * Namely, the actual target decision has not an instantiated Token thus,
-//					 * the create() method of the relation would throw an exception
-//					 * 
-//					 */
-//					TemporalConstraint cons = this.iConstraintFactory.
-//							create(trel.getConstraintType());
-//					// set references
-//					cons.setReference(trel.getReference().getToken().getInterval());
-//					cons.setTarget(dec.getToken().getInterval());
-//					// set bounds
-//					cons.setBounds(trel.getBounds());
-//					// set constraint
-//					c = cons;
-//				}
-//			}
-//			break;
-//			
-//			// parameter relation
-//			case PARAMETER_CONSTRAINT : {
-//				
-//				// parameter relation
-//				ParameterRelation prel = (ParameterRelation) rel;
-//				
-//				/* 
-//				 * Create parameter constraint by means of factory because the reference/target parameter has 
-//				 * not been created yet and it must be replaced by the decision (active) selected for unification (dec).
-//				 */
-//				ParameterConstraint cons = this.pFactory.createParameterConstraint(prel.getConstraintType());
-//				
-//				// check constraint type to create
-//				switch (prel.getConstraintType()) {
-//				
-//					// bind constraint
-//					case BIND : {
-//				
-//						// get bind constraint
-//						BindParameterConstraint bind = (BindParameterConstraint) cons;
-//						BindParameterRelation bindRel = (BindParameterRelation) prel;
-//						// set value
-//						bind.setValue(bindRel.getValue());
-//						// get index
-//						int index = goalDecision.getParameterIndexByLabel(prel.getReferenceParameterLabel());
-//						// set parameter
-//						bind.setReference(dec.getParameterByIndex(index));
-//						// note: the target will be replaced by an anonymous parameter when propagating constraint
-//						bind.setTarget(dec.getParameterByIndex(index));
-//					}
-//					break;
-//					
-//					case EQUAL : 
-//					case NOT_EQUAL : {
-//						
-//						// updated reference and targets
-//						if (prel.getReference().equals(goalDecision)) {
-//							// get parameter index
-//							int index = goalDecision.getParameterIndexByLabel(prel.getReferenceParameterLabel());
-//							// set reference parameter
-//							cons.setReference(dec.getParameterByIndex(index));
-//							// get index
-//							index = prel.getTarget().getParameterIndexByLabel(prel.getTargetParameterLabel());
-//							// set target parameter
-//							cons.setTarget(prel.getTarget().getParameterByIndex(index));
-//						}
-//						
-//						if (prel.getTarget().equals(goalDecision)) {
-//							// get parameter index
-//							int index = prel.getReference().getParameterIndexByLabel(prel.getReferenceParameterLabel());
-//							// set reference
-//							cons.setReference(prel.getReference().getParameterByIndex(index));
-//							
-//							// get index
-//							index = goalDecision.getParameterIndexByLabel(prel.getTargetParameterLabel());
-//							// set target
-//							cons.setTarget(dec.getParameterByIndex(index));
-//						}
-//					}
-//					break;
-//				}
-//				
-//				// set constraint
-//				c = cons;
-//			}
-//			break;
-//		}
-//		
-//		// get constraint
-//		return c;
-//	}
-	
 	/**
 	 * 
 	 * @param unification
 	 * @param goal
 	 * @param rel
 	 */
-	private void translateRelationFromGoalToUnification(Decision unification, Decision goal, Relation rel) {
-		
+	private void translateRelationFromGoalToUnification(Decision unification, Decision goal, Relation rel) 
+	{
 		// check relation category
-		switch (rel.getCategory()) {
-		
+		switch (rel.getCategory()) 
+		{
 			// manage temporal constraint translation
-			case TEMPORAL_CONSTRAINT : {
-			
+			case TEMPORAL_CONSTRAINT : 
+			{
 				// check and set reference
 				if (rel.getReference().equals(goal)) {
 					// update reference
@@ -721,8 +594,8 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 			break;
 			
 			// manage parameter constraint translation
-			case PARAMETER_CONSTRAINT : {
-				
+			case PARAMETER_CONSTRAINT : 
+			{
 				// get relation
 				ParameterRelation pRel = (ParameterRelation) rel;
 				
@@ -737,14 +610,17 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 				}
 				
 				// check parameter constraint
-				if (pRel.getConstraintType().equals(ParameterConstraintType.BIND)) {
+				if (pRel.getConstraintType().equals(ParameterConstraintType.BIND)) 
+				{
 					// set target the same as the reference 
 					pRel.setTarget(pRel.getReference());
 					// the binding value remains the same
 				}
-				else {
+				else 
+				{
 					// binary relation - translate target if needed 
-					if (pRel.getTarget().equals(goal)) {
+					if (pRel.getTarget().equals(goal)) 
+					{
 						// update target
 						pRel.setTarget(unification);
 						// update target label
@@ -764,14 +640,14 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 	 * @param goal
 	 * @param rel
 	 */
-	private void translateRelationFromUnificationToOriginalGoal(Decision unification, Decision goal, Relation rel) {
-		
+	private void translateRelationFromUnificationToOriginalGoal(Decision unification, Decision goal, Relation rel) 
+	{
 		// check relation type
-		switch (rel.getCategory()) {
-			
+		switch (rel.getCategory()) 
+		{
 			// translating temporal relation
-			case TEMPORAL_CONSTRAINT : {
-				
+			case TEMPORAL_CONSTRAINT : 
+			{
 				// update references
 				if (rel.getReference().equals(unification)) {
 					// set reference decision
@@ -786,13 +662,13 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 			break;
 			
 			// translate parameter relation
-			case PARAMETER_CONSTRAINT : {
-				
+			case PARAMETER_CONSTRAINT : 
+			{
 				// get relation
 				ParameterRelation pRel = (ParameterRelation) rel;
 				// update reference if needed
-				if (pRel.getReference().equals(unification)) {
-				
+				if (pRel.getReference().equals(unification)) 
+				{
 					// set reference
 					pRel.setReference(goal);
 					// get unification reference parameter label index
@@ -802,17 +678,17 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 				}
 				
 				// check if binding relation
-				if (pRel.getType().equals(RelationType.BIND_PARAMETER)) {
-					
+				if (pRel.getType().equals(RelationType.BIND_PARAMETER)) 
+				{
 					// set target the same as the reference 
 					pRel.setTarget(pRel.getReference());
 					// the binding value remains the same
 				}
-				else {
-					
+				else 
+				{
 					// binary parameter relation - update target reference if needed
-					if (pRel.getTarget().equals(unification)) {
-					
+					if (pRel.getTarget().equals(unification)) 
+					{
 						// set target
 						pRel.setTarget(goal);
 						// get unification target parameter label index

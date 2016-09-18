@@ -17,8 +17,8 @@ import it.uniroma3.epsl2.framework.lang.plan.timeline.Timeline;
  * @author anacleto
  *
  */
-public class FourByThreeExperimentManager {
-
+public class FourByThreeExperimentManager 
+{
 	private static final String PLANNER_CLASS = FourByThreePlanner.class.getName();
 	private static final String FIELD_SEPARATOR = ";";
 	// data folder

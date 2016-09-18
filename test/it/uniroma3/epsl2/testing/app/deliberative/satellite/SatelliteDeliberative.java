@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.app.deliberative.gecko;
+package it.uniroma3.epsl2.testing.app.deliberative.satellite;
 
 import it.uniroma3.epsl2.deliberative.Planner;
 import it.uniroma3.epsl2.deliberative.PlannerBuilder;
@@ -21,19 +21,19 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	// set heuristic
 	heuristic = FlawSelectionHeuristicType.HTFSH,
 	
-	// set solving strategy
+	// set solver
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
 	
-	// set search strategy
+	// set strategy
 	strategy = SearchStrategyType.DFS,
 	
-	// set log level
+	// log level
 	logging = FrameworkLoggingLevel.DEBUG
 )
-public class GeckoDeliberative extends Planner
+public class SatelliteDeliberative extends Planner
 {
-	private static final String DDL = "domains/gecko/gecko.ddl";
-	private static final String PDL = "domains/gecko/gecko_5g.pdl";
+	private static final String DDL = "domains/satellite/satellite.ddl";
+	private static final String PDL = "domains/satellite/satellite.pdl";
 	
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class GeckoDeliberative extends Planner
 	{ 
 		try 
 		{
-			Planner planner = PlannerBuilder.build(GeckoDeliberative.class.getName(), DDL, PDL);	
+			Planner planner = PlannerBuilder.build(SatelliteDeliberative.class.getName(), DDL, PDL);	
 			// start planning
 			Plan plan = planner.plan();
 			// solution found

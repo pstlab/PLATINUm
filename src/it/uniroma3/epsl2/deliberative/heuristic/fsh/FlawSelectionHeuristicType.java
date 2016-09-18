@@ -5,28 +5,23 @@ package it.uniroma3.epsl2.deliberative.heuristic.fsh;
  * @author anacleto
  *
  */
-public enum FlawSelectionHeuristicType {
-	
-	/**
-	 * No criteria flaw selection
-	 */
-	BLIND(BlindFlawSelectionHeuristic.class.getName()),
-
+public enum FlawSelectionHeuristicType 
+{
 	/**
 	 * Flaw type-based selection heuristic
 	 */
-	TFSH(TypePreferencesFlawSelectionHeuristic.class.getName()),
+	TFSH(TypeFlawSelectionHeuristic.class.getName()),
 	
 	/**
 	 * Flaw dependency-based selection heuristic 
 	 */
-	DgFSH(DependencyGraphFlawSelectionHeuristic.class.getName()),
+	HFSH(HierarchyFlawSelectionHeuristic.class.getName()),
 	
 	/**
 	 * Flaw hierarchy-based selection heuristic, it combines TFSH
 	 * and DgFSH evaluation criteria 
 	 */
-	HFSH(HierarchicalFlawSelectionHeuristic.class.getName());
+	HTFSH(HierarchyTypeFlawSelectionHeuristic.class.getName());
 	
 	private String cname;
 	

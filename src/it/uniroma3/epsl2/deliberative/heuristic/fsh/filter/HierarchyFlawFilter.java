@@ -24,7 +24,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.Pos
  * @author anacleto
  *
  */
-public class DependencyGraphFlawFilter extends FlawFilter 
+public class HierarchyFlawFilter extends FlawFilter 
 {
 	@PlanDataBaseReference
 	private PlanDataBase pdb;
@@ -36,8 +36,8 @@ public class DependencyGraphFlawFilter extends FlawFilter
 	/**
 	 * 
 	 */
-	protected DependencyGraphFlawFilter() {
-		super(FlawFilterType.DgF);
+	protected HierarchyFlawFilter() {
+		super(FlawFilterType.HFF);
 		// initialize incident graph
 		this.dg = new HashMap<>();
 		// initialize hierarchy
@@ -48,58 +48,45 @@ public class DependencyGraphFlawFilter extends FlawFilter
 	 * 
 	 */
 	@PostConstruct
-	protected void init() {
-		
-		try {
-			
-			// compute DG (as incident graph) 
-			this.computeDependencyGraph();
-			// compute hierarchy
-			this.computeHierarchy();
-		}
-		catch (HierarchyCycleException ex) {
-			
-			// cycle in the hierarchy
-			this.logger.error(ex.getMessage());
-			// compute flat hierarchy
-			this.computeFlatHierarchy();
-		}
-		finally {
-			
-			// print hierarchy
-			String str = "computed hierarchy ";
-			int index = 0;
-			while (index < hierarchy.length) {
-				str += "[" + index + "] { ";
-				for (DomainComponent comp : hierarchy[index]) {
-					str += comp.getName() + " ";
-				}
-				str += "} ";
-				index++;
+	protected void init() 
+	{
+		// compute DG (as incident graph) 
+		this.computeDependencyGraph();
+		// compute hierarchy
+		this.computeHierarchy();
+		// print hierarchy
+		String str = "computed hierarchy ";
+		int index = 0;
+		while (index < hierarchy.length) {
+			str += "[" + index + "] { ";
+			for (DomainComponent comp : hierarchy[index]) {
+				str += comp.getName() + " ";
 			}
-			
-			// print domain hierarchy
-			this.logger.info(str);
+			str += "} ";
+			index++;
 		}
+		
+		// print domain hierarchy
+		this.logger.info(str);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public Set<Flaw> filter(Collection<Flaw> flaws) {
-		
+	public Set<Flaw> filter(Collection<Flaw> flaws) 
+	{
 		// filtered set
 		Set<Flaw> filtered = new HashSet<>();
 		// filter flaws according to the hierarchy of the related component
-		for (int hlevel = 0; hlevel < this.hierarchy.length && filtered.isEmpty(); hlevel++) {
-			
+		for (int hlevel = 0; hlevel < this.hierarchy.length && filtered.isEmpty(); hlevel++) 
+		{
 			// extract flaws of equivalent components
-			for (DomainComponent c : this.hierarchy[hlevel]) {
-				
+			for (DomainComponent c : this.hierarchy[hlevel]) 
+			{
 				// check component's flaws
-				for (Flaw flaw : flaws) {
-					
+				for (Flaw flaw : flaws) 
+				{
 					// check flaw's component
 					if (flaw.getComponent().equals(c)) {
 						// add flaw
@@ -114,12 +101,16 @@ public class DependencyGraphFlawFilter extends FlawFilter
 	}
 	
 	/**
+	 * Compute an acyclic Dependency Graph by analyzing the temporal constraints
+	 * of the synchronization rules in the domain specification.
 	 * 
-	 * @throws HierarchyCycleException
+	 * The dependency graph represents a relaxed view of the temporal dependencies 
+	 * among domain components. Namely, if a cycle exists it is ignored by the
+	 * dependency graph representation. Thus, only the sub-set of acyclic relations
+	 * are considered for inferring dependencies between components.
 	 */
 	private void computeDependencyGraph() 
-			throws HierarchyCycleException {
-		
+	{
 		// initialize the dependency graph
 		for (DomainComponent node : this.pdb.getComponents()) {
 			// initialize DG 
@@ -127,31 +118,35 @@ public class DependencyGraphFlawFilter extends FlawFilter
 		}
 			
 		// check synchronization and build the graph as "incident" matrix
-		for (SynchronizationRule rule : this.pdb.getSynchronizationRules()) {
-			
+		for (SynchronizationRule rule : this.pdb.getSynchronizationRules()) 
+		{
 			// check constraints
-			for (SynchronizationConstraint ruleConstraint : rule.getConstraints()) {
-				
+			for (SynchronizationConstraint ruleConstraint : rule.getConstraints()) 
+			{
 				// consider only temporal constraint to build the dependency graph
-				if (ruleConstraint.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) {
-					
+				if (ruleConstraint.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) 
+				{
 					// get related token variables
 					TokenVariable source = ruleConstraint.getSource();
 					TokenVariable target = ruleConstraint.getTarget();
-					
 					// check related values' components
 					DomainComponent master = source.getValue().getComponent();
 					DomainComponent slave = target.getValue().getComponent();
 					// check if "external" constraint
-					if (!master.equals(slave)) {
-						
-						// update DG
-						this.dg.get(slave).add(master);
-						// check cycle
-						if (this.dg.get(master).contains(slave)) {
-							
-							// cycle detected
-							throw new HierarchyCycleException("A cycle has been detected in the Dependency Graph");
+					if (!master.equals(slave)) 
+					{
+						try 
+						{
+							// update DG
+							this.dg.get(slave).add(master);
+							// check hierarchy cycle
+							this.checkHiearchyCycle(master, slave);
+						}
+						catch (HierarchyCycleException ex) {
+							// a cycle into the hierarchy has been found
+							this.logger.warning(ex.getMessage() + "\nIgnore dependency relation between component=" + master + " and component=" + slave);
+							// remove dependency relation
+							this.dg.get(slave).remove(master);
 						}
 					}
 				}
@@ -161,28 +156,63 @@ public class DependencyGraphFlawFilter extends FlawFilter
 	
 	/**
 	 * 
+	 * @param master
+	 * @param slave
+	 * @throws HierarchyCycleException
 	 */
-	@SuppressWarnings("unchecked")
-	private void computeFlatHierarchy() {
-	
-		// set all component at the same hierarchy level
-		this.hierarchy = (List<DomainComponent>[]) new ArrayList[1]; 
-		// add all components
-		this.hierarchy[0] = new ArrayList<>(this.pdb.getComponents());
+	private void checkHiearchyCycle(DomainComponent master, DomainComponent slave) 
+			throws HierarchyCycleException
+	{
+		// check direct cycle
+		if (this.dg.get(master).contains(slave)) {
+			// cycle detected
+			throw new HierarchyCycleException("A cycle has been detected in the Dependency Graph between component= " + master + " and component= " + slave);
+		}
+		else {
+			// check paths
+			this.findCycle(master, new HashSet<DomainComponent>());
+		}
 	}
 	
 	/**
 	 * 
+	 * @param comp
+	 * @param visited
+	 * @throws HierarchyCycleException
+	 */
+	private void findCycle(DomainComponent comp, Set<DomainComponent> visited) 
+			throws HierarchyCycleException
+	{
+		// add component to visited
+		visited.add(comp);
+		// check component's successors
+		for (DomainComponent next : this.dg.get(comp)) {
+			// check if visited
+			if (!visited.contains(next)) {
+				// recursive call
+				this.findCycle(next, visited);
+			}
+			else {
+				// throw exception
+				throw new HierarchyCycleException("A cycle has been introduced in the Dependency Graph between component= " + comp + " and component= " + next);
+			}
+		}
+	}
+	
+	/**
+	 * Given an acyclic dependency graph, the method builds the 
+	 * hierarchy by means of a topological sort algorithm on the 
+	 * dependency graph
 	 */
 	@SuppressWarnings("unchecked")
-	private void computeHierarchy() {
-	
+	private void computeHierarchy() 
+	{
 		// copy the dependency graph
 		Map<DomainComponent, Set<DomainComponent>> graph = new HashMap<>(this.dg);
 		// compute hierarchy by means of topological sort algorithm
 		List<DomainComponent> S = new ArrayList<>();	// root components
-		for (DomainComponent c : graph.keySet()) {
-			
+		for (DomainComponent c : graph.keySet()) 
+		{
 			// check if root
 			if (graph.get(c).isEmpty()) {
 				S.add(c);
@@ -198,29 +228,20 @@ public class DependencyGraphFlawFilter extends FlawFilter
 		
 		// top hierarchy level
 		int hlevel = 0;
-//		// check if root element has been found
-//		if (S.isEmpty()) {
-//			// all the component are at the same hierarchy level
-//			for (DomainComponent comp : this.pdb.getComponents()) {
-//				this.hierarchy[hlevel].add(comp);
-//			}
-//			// flat hierarchy
-//			this.logger.warning("Flat hierarchy found... all the component are at the same hierarcical level " + hlevel);
-//		}
-//		else {
 		// start building hierarchy
-		while (!S.isEmpty()) {
+		while (!S.isEmpty()) 
+		{
 			// get current root component
 			DomainComponent root = S.remove(0);
 			// add component
 			this.hierarchy[hlevel].add(root);
-				
 			// update hierarchy degree
 			hlevel++;
 			
 			// update the graph and look for new roots
 			graph.remove(root);
-			for (DomainComponent c : graph.keySet()) {
+			for (DomainComponent c : graph.keySet()) 
+			{
 				// remove node
 				if (graph.get(c).contains(root)) {
 					graph.get(c).remove(root);
@@ -232,7 +253,6 @@ public class DependencyGraphFlawFilter extends FlawFilter
 					S.add(c);
 				}
 			}
-//			}
 		}
 	}
 }

@@ -25,7 +25,8 @@ public class EarliestStartTimeExecutive extends Executive
 	/**
 	 * 
 	 */
-	public EarliestStartTimeExecutive() {
+	public EarliestStartTimeExecutive() 
+	{
 		super();
 		// create plan monitor
 		this.monitor = new EarliestStartTimePlanMonitor(this);

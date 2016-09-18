@@ -2,7 +2,6 @@ package it.uniroma3.epsl2.deliberative.solver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyFactory;
@@ -79,30 +78,33 @@ public class PseudoControllabilityAwareSolver extends Solver {
 				boolean skip = false;
 				
 				// check if last is root node
-				if (this.stepCounter > 1) {
+				if (this.stepCounter > 1) 
+				{
 					// extract next node from the fringe
 					extracted = this.strategy.dequeue();
 					// propagate node
 					this.logger.debug("Propagating node:\n" + extracted + "\nof " + this.strategy.getFringeSize() + " available in the fringe");
-					
 					// context switch
 					this.contextSwitch(last, extracted);
 					// updated last propagated node
 					last = extracted;
 				} 
-				else {
+				else 
+				{
 					// create root node
 					extracted = new SearchSpaceNode();
 					// set extracted as the root node
 					last = extracted;
 				}
 				
-				try {
+				try 
+				{
 					// consistency check
 					this.pdb.check();
 					this.logger.debug("Plan refinement successfully done...");
 				}
-				catch (PseudoControllabilityCheckException ex) {
+				catch (PseudoControllabilityCheckException ex) 
+				{
 					// check solving modality
 					if (pseudocontrollability) {
 						// add node to the priority queue
@@ -121,22 +123,23 @@ public class PseudoControllabilityAwareSolver extends Solver {
 					this.logger.debug("Looking for flaws on the current refined plan...");
 	 				// choose the best flaws to solve
 					List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
-					// randomly select a flaw to solve
-					Random rand = new Random(System.currentTimeMillis());
-					int index = rand.nextInt(flaws.size());
-					// next flaw
-					Flaw flaw = flaws.get(index);
-					// create a branch for each possible solution of the flaw
-					for (FlawSolution flawSolution : flaw.getSolutions()) {
-						
-						// create operator
-						Operator op = new Operator(flawSolution);
-						// create child node
-						SearchSpaceNode child = new SearchSpaceNode(extracted, op);
-						// enqueue node
-						this.strategy.enqueue(child);
-						// expand the search space
-						this.logger.debug("Expanding search space node= " + child + ":\n- operator= " + op + "\n- flaw= " + flaw + "\n- solution= " + flawSolution);
+					// create a branch for each "equivalent" flaw to solve next
+					for (Flaw flaw : flaws)
+					{
+						// create a branch for each possible solution of the flaw
+						for (FlawSolution flawSolution : flaw.getSolutions()) 
+						{
+							// expand the search tree
+							this.logger.debug("Expanding the search tree with flaw to solve:\n" + flaw + "\n- #solutions= " + flaw.getSolutions().size());
+							// create operator
+							Operator op = new Operator(flawSolution);
+							// create child node
+							SearchSpaceNode child = new SearchSpaceNode(extracted, op);
+							// enqueue node
+							this.strategy.enqueue(child);
+							// expand the search space
+							this.logger.debug("Child-node= " + child + ":\n- operator= " + op + "\n- flaw= " + flaw + "\n- solution= " + flawSolution);
+						}
 					}
 				}
 			}
@@ -144,10 +147,10 @@ public class PseudoControllabilityAwareSolver extends Solver {
 				// unsolvable flaw found
 				this.logger.error("Error during plan refinement:\n " + ex.getMessage());
 			}
-			catch (EmptyFringeException ex) {
-
-				try {
-					
+			catch (EmptyFringeException ex) 
+			{
+				try 
+				{
 					// no pseudo-controllable solution try with not pseudo-controllable ones
 					this.logger.debug("No more node in the fringe but still flaws to solve [" + this.blacklist.getFringeSize() +  "] ...");
 					// change solving modality
@@ -157,8 +160,8 @@ public class PseudoControllabilityAwareSolver extends Solver {
 					// notify changing modality
 					this.logger.warning("Entering in no pseudo-controllability mode");
 				}
-				catch (EmptyFringeException exx) {
-					
+				catch (EmptyFringeException exx) 
+				{
 					/*
 					 * TODO : RETRACT INITIAL PROBLEM
 					 */
@@ -169,15 +172,15 @@ public class PseudoControllabilityAwareSolver extends Solver {
 					throw new NoSolutionFoundException("No solution found after " + this.time  + " msecs and " + this.stepCounter  + " solving steps");
 				}
 			}
-			catch (NoFlawFoundException ex) {
-				
+			catch (NoFlawFoundException ex) 
+			{
 				// get solving time
 				this.time = System.currentTimeMillis() - start;
 				// solution found
 				exit = true;
 				// check solving modality
-				if (pseudocontrollability) {
-					
+				if (pseudocontrollability) 
+				{
 					// set plan
 					plan = this.pdb.getPlan();
 					plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABLE);
@@ -185,8 +188,8 @@ public class PseudoControllabilityAwareSolver extends Solver {
 					// pseudo-controllable solution found
 					this.logger.info("Pseudo-controllable solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
 				}
-				else {
-					
+				else 
+				{
 					// set plan
 					plan = this.pdb.getPlan();
 					plan.setControllability(PlanControllabilityType.NOT_PSEUDO_CONTROLLABLE);

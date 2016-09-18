@@ -27,6 +27,7 @@ import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
+import it.istc.pst.epsl.microkernel.external.search.metrcs.DisruptibilityTimelineMetricCalcualtor;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.Token;
@@ -58,8 +59,8 @@ public class GanttComponentView extends JFrame implements ComponentView, Compara
 	 * 
 	 */
 	@Override
-	public void display() {
-		
+	public void display() 
+	{
 		// add the chart to a panel
 		this.panel = new ChartPanel(null);
 		setContentPane(this.panel);

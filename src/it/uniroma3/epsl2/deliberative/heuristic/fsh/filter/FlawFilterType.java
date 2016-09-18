@@ -5,18 +5,22 @@ package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter;
  * @author anacleto
  *
  */
-public enum FlawFilterType {
-
+public enum FlawFilterType 
+{
 	/**
-	 * Filter flaws according to their type
+	 * Type-based Flaw Filter
 	 */
-	TF(TypePreferencesFlawFilter.class.getName()),
+	TFF(TypeFlawFilter.class.getName()),
 	
 	/**
-	 * Filter flaws according to the component they belong to and the related
-	 * dependency level
+	 * Hierarchy-based Flaw Filter
 	 */
-	DgF(DependencyGraphFlawFilter.class.getName());
+	HFF(HierarchyFlawFilter.class.getName()),
+	
+	/**
+	 * Temporal Semantic-based Flaw Filter
+	 */
+	TSFF(TemporalSemanticFlawFilter.class.getName());
 	
 	private String cname;
 

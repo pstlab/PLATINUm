@@ -9,6 +9,7 @@ import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerConfiguration;
+import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
@@ -18,13 +19,16 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerCon
 @PlannerConfiguration(
 		
 	// set heuristic
-	heuristic = FlawSelectionHeuristicType.TFSH,
+	heuristic = FlawSelectionHeuristicType.HTFSH,
 	
 	// set solver
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
 	
 	// set strategy
-	strategy = SearchStrategyType.DFS
+	strategy = SearchStrategyType.DFS,
+	
+	// log level
+	logging = FrameworkLoggingLevel.DEBUG
 )
 public class ICODeliberative extends Planner
 {

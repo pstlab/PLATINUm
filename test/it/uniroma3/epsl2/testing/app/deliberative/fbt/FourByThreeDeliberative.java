@@ -19,7 +19,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 @PlannerConfiguration(
 		
 	// set heuristic
-	heuristic = FlawSelectionHeuristicType.HFSH,
+	heuristic = FlawSelectionHeuristicType.HTFSH,
 	
 	// set solving strategy
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,

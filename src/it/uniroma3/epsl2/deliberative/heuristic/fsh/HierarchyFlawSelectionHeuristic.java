@@ -12,16 +12,15 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelect
 	
 	// set pipeline of filters
 	pipeline = {
-		
-		FlawFilterType.DgF
+		FlawFilterType.HFF			// dependency-based filter
 	}
 )
-public class DependencyGraphFlawSelectionHeuristic extends FlawSelectionHeuristic {
+public class HierarchyFlawSelectionHeuristic extends FlawSelectionHeuristic {
 
 	/**
 	 * 
 	 */
-	protected DependencyGraphFlawSelectionHeuristic() {
-		super(FlawSelectionHeuristicType.DgFSH);
+	protected HierarchyFlawSelectionHeuristic() {
+		super(FlawSelectionHeuristicType.HFSH);
 	}
 }

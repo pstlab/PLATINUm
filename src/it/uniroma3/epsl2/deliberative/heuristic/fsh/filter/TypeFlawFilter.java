@@ -14,15 +14,15 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.Pos
  * @author anacleto
  *
  */
-public class TypePreferencesFlawFilter extends FlawFilter {
+public class TypeFlawFilter extends FlawFilter {
 	
 	private FlawType[] preferences;
 
 	/**
 	 * 
 	 */
-	protected TypePreferencesFlawFilter() {
-		super(FlawFilterType.TF);
+	protected TypeFlawFilter() {
+		super(FlawFilterType.TFF);
 	}
 	
 	/**
