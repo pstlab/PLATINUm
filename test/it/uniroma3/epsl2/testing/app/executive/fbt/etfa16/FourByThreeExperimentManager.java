@@ -9,7 +9,7 @@ import it.uniroma3.epsl2.framework.domain.component.Token;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.timeline.Timeline;
 
 /**
@@ -75,7 +75,7 @@ public class FourByThreeExperimentManager
 							System.out.println("Test: [ddl= " + DDL_FILE + ", pdl= " + PDL_FILE + "]");
 							System.out.println("Start planning... ");
 							// start planning
-							Plan plan = planner.plan();
+							SolutionPlan plan = planner.plan();
 							System.out.println("... solution found after " + plan.getSolvingTime() + " msecs");
 							System.out.println();
 							// print final plan
@@ -146,7 +146,7 @@ public class FourByThreeExperimentManager
 	 * @param plan
 	 * @return
 	 */
-	private static int computeNumberOfRobotTasks(Plan plan) {
+	private static int computeNumberOfRobotTasks(SolutionPlan plan) {
 		
 		// initialize task counter
 		int tasks = 0;
@@ -176,7 +176,7 @@ public class FourByThreeExperimentManager
 	 * @param plan
 	 * @return
 	 */
-	private static int computeNumberOfHumanTasks(Plan plan) {
+	private static int computeNumberOfHumanTasks(SolutionPlan plan) {
 		
 		// initialize task counter
 		int tasks = 0;
@@ -206,7 +206,7 @@ public class FourByThreeExperimentManager
 	 * @param plan
 	 * @return
 	 */
-	private static int computeNumberOfSharedTasks(Plan plan) {
+	private static int computeNumberOfSharedTasks(SolutionPlan plan) {
 		
 		int tasks = 0;
 		for (Timeline tl : plan.getTimelines()) {
@@ -235,7 +235,7 @@ public class FourByThreeExperimentManager
 	 * @param plan
 	 * @return
 	 */
-	private static int computeNumberOfProcessTasks(Plan plan) {
+	private static int computeNumberOfProcessTasks(SolutionPlan plan) {
 		
 		// initialize task counter
 		int tasks = 0;
@@ -265,7 +265,7 @@ public class FourByThreeExperimentManager
 	 * @param plan
 	 * @return
 	 */
-	private static long[] getProcessDuration(Plan plan) {
+	private static long[] getProcessDuration(SolutionPlan plan) {
 		
 		// processe's duration
 		long[] duration = new long[2];
@@ -301,7 +301,7 @@ public class FourByThreeExperimentManager
 	 * @param plan
 	 * @return
 	 */
-	private static double computeIdleTimeOfComponent(String componentName, Plan plan) {
+	private static double computeIdleTimeOfComponent(String componentName, SolutionPlan plan) {
 		
 		// get horizon
 		long horizon = plan.getHorizon();

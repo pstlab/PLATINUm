@@ -10,7 +10,7 @@ import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
 
@@ -44,7 +44,7 @@ public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNod
 	 * 
 	 */
 	@Override
-	public Plan solve() 
+	public SolutionPlan solve() 
 			throws NoSolutionFoundException 
 	{
 		// prepare the search
@@ -56,7 +56,7 @@ public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNod
 		SearchSpaceNode last = null;				// root node
 		
 		// the solution plan
-		Plan plan = null;
+		SolutionPlan plan = null;
 		// starts solution search
 		while (!exit) 
 		{
@@ -146,7 +146,7 @@ public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNod
 
 		
 		// get the resulting solution plan
-		plan = this.pdb.getPlan();
+		plan = this.pdb.getSolutionPlan();
 		// set solving time
 		plan.setSolvingTime(this.time);
 		// get plan

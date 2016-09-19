@@ -6,7 +6,7 @@ import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristicType;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.solver.SolverType;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerConfiguration;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -59,7 +59,7 @@ public class FourByThreePlanner extends Planner {
 			try {
 				
 				// start planning
-				Plan plan = planner.plan();
+				SolutionPlan plan = planner.plan();
 				System.out.println("... solution found after " + plan.getSolvingTime() + " msecs");
 				System.out.println();
 				// print final plan

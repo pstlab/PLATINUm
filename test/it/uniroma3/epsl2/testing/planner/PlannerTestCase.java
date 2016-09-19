@@ -17,7 +17,7 @@ import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.ExternalStateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.PrimitiveStateVariable;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.lang.problem.Problem;
 import it.uniroma3.epsl2.framework.lang.problem.ProblemFact;
@@ -172,7 +172,7 @@ public class PlannerTestCase
 			// create planner
 			Planner planner = this.plannerFactory.create();
 			// try to solve the plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			
@@ -277,7 +277,7 @@ public class PlannerTestCase
 			// get initial plan
 			System.out.println(planner.getCurrentPlan());
 			// try to solve the plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			
@@ -410,7 +410,7 @@ public class PlannerTestCase
 			// create planner
 			Planner planner = this.plannerFactory.create();
 			// try to solve the plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			
@@ -546,7 +546,7 @@ public class PlannerTestCase
 			// create planner
 			Planner planner = this.plannerFactory.create();
 			// try to solve the plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			
@@ -574,7 +574,7 @@ public class PlannerTestCase
 			PlanDataBase pdb = PlanDataBaseBuilder.build(DDL, PDL);
 			// create planner by means of factory
 			Planner planner = PlannerFactory.getInstance().create();
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			// display plan data-base
@@ -604,7 +604,7 @@ public class PlannerTestCase
 			
 			// create a planner instance
 			Planner planner = PlannerFactory.getInstance().create();
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			
@@ -634,7 +634,7 @@ public class PlannerTestCase
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
 			// get solution plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			// export plan
@@ -667,7 +667,7 @@ public class PlannerTestCase
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
 			// get solution plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			// export plan
@@ -700,7 +700,7 @@ public class PlannerTestCase
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
 			// get solution plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			// export plan
@@ -733,7 +733,7 @@ public class PlannerTestCase
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
 			// get solution plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			// export plan
@@ -766,7 +766,7 @@ public class PlannerTestCase
 			// build the planner
 			Planner planner = PlannerBuilder.build(DDL, PDL);
 			// get solution plan
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
 			// export plan

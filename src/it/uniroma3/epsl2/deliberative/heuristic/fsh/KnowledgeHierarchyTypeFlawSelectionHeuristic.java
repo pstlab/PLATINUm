@@ -13,16 +13,17 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelect
 	
 	// set pipeline filters
 	pipeline = {
-			
+		FlawFilterType.TKFF,	// temporal knowledge-based flaw filter
+		FlawFilterType.HFF,		// hierarchy-based flaw filter
 		FlawFilterType.TFF		// type-based flaw filter
 	}
 )
-public class TypeFlawSelectionHeuristic extends FlawSelectionHeuristic 
+public class KnowledgeHierarchyTypeFlawSelectionHeuristic extends FlawSelectionHeuristic 
 {
 	/**
 	 * 
 	 */
-	protected TypeFlawSelectionHeuristic() {
-		super(FlawSelectionHeuristicType.TFSH);
+	protected KnowledgeHierarchyTypeFlawSelectionHeuristic() {
+		super(FlawSelectionHeuristicType.KHTFSH);
 	}
 }

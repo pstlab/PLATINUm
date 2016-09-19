@@ -10,7 +10,7 @@ import it.uniroma3.epsl2.deliberative.PlannerBuilder;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
 
 /**
@@ -72,7 +72,7 @@ public class DeliberativeLauncher
 					// start planning
 					System.out.println("Running EPSL2 planner on domain= " + domainName + " and problem= " + problemName + "...");
 					// start planning
-					Plan plan = planner.plan();
+					SolutionPlan plan = planner.plan();
 					// solution found
 					System.out.println("... solution found after " + plan.getSolvingTime() + " msecs\n");
 					// print the resulting plan

@@ -14,7 +14,7 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
@@ -42,7 +42,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * 
 	 */
 	@Override
-	public void init(Plan plan) {
+	public void init(SolutionPlan plan) {
 		
 		/*
 		 *  FIXME <---- IMPLEMENTARE

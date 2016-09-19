@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter;
+package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.hff;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilter;
+import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilterType;
 import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.ex.HierarchyCycleException;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
@@ -36,7 +38,8 @@ public class HierarchyFlawFilter extends FlawFilter
 	/**
 	 * 
 	 */
-	protected HierarchyFlawFilter() {
+	protected HierarchyFlawFilter() 
+	{
 		super(FlawFilterType.HFF);
 		// initialize incident graph
 		this.dg = new HashMap<>();

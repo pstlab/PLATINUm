@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
+import it.uniroma3.epsl2.framework.domain.PlanDataBaseObserver;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
@@ -23,10 +24,12 @@ import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.BindParameterRelation;
 import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.ParameterRelation;
 import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.TemporalRelation;
@@ -71,6 +74,8 @@ import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckExc
 )
 public class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
+	// list of observers
+	private List<PlanDataBaseObserver> observers;
 	// see Composite design pattern
 	private Map<String, DomainComponent> components;
 	private DomainComponentFactory componentFactory;
@@ -87,6 +92,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	protected PlanDataBaseComponent(String name) {
 		super(name, DomainComponentType.PDB);
+		this.observers = new ArrayList<>();
 		this.components = new HashMap<>();
 		this.parameterDomains = new HashMap<>();
 		this.rules = new HashMap<>();
@@ -250,7 +256,16 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public void clear() {
+	public void subscribe(PlanDataBaseObserver observer) {
+		this.observers.add(observer);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void clear() 
+	{
 		// remove pending decisions
 		for (Decision dec : this.getPendingDecisions()) {
 			// delete decision
@@ -271,9 +286,9 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public Plan getPlan() {
+	public SolutionPlan getSolutionPlan() {
 		// create a plan
-		Plan plan = new Plan(this.name, this.getHorizon());
+		SolutionPlan plan = new SolutionPlan(this.name, this.getHorizon());
 		for (DomainComponent component : this.components.values()) {
 			// add a component to the plan
 			plan.add(component);
@@ -284,6 +299,50 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			plan.add(rel);
 		}
 		// get current plan
+		return plan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	public Agenda getAgenda() 
+	{
+		// initialize the agenda
+		Agenda agenda = new Agenda();
+		// get pending decisions
+		for (Decision goal : this.getPendingDecisions()) {
+			agenda.add(goal);
+		}
+		// get pending relations
+		for (Relation rel : this.getPendingRelations()) {
+			agenda.add(rel);
+		}
+		
+		// get the agenda
+		return agenda;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	public Plan getPlan() 
+	{
+		// initialize the agenda
+		Plan plan = new Plan();
+		// get decisions
+		for (Decision goal : this.getActiveDecisions()) {
+			plan.add(goal);
+		}
+		// get relations
+		for (Relation rel : this.getActiveRelations()) {
+			plan.add(rel);
+		}
+		
+		// get the plan
 		return plan;
 	}
 	
@@ -1145,11 +1204,19 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public void propagete(FlawSolution solution) 
-			throws PlanRefinementException {
-		try {
+			throws PlanRefinementException 
+	{
+		try 
+		{
 			// apply solution
 			this.commit(solution);
-		} catch (FlawSolutionApplicationException ex) {
+			// notify update to observers
+			for (PlanDataBaseObserver observer : this.observers) {
+				// notify propagation
+				observer.propagated(solution);
+			}
+		} 
+		catch (FlawSolutionApplicationException ex) {
 			throw new PlanRefinementException(ex.getMessage());
 		}
 	}
@@ -1159,9 +1226,15 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public void retract(FlawSolution solution) 
-			throws FlawSolutionApplicationException {
+			throws FlawSolutionApplicationException 
+	{
 		// roll-back flaw solution
 		this.rollback(solution);
+		// notify update to observers
+		for (PlanDataBaseObserver observer : this.observers) {
+			// notify retraction
+			observer.retracted(solution);
+		}
 	}
 	
 	/**

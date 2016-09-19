@@ -9,7 +9,7 @@ import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
@@ -59,7 +59,7 @@ public abstract class Solver extends ApplicationFrameworkObject
 	 * 
 	 * @throws NoSolutionFoundException
 	 */
-	public abstract Plan solve() 
+	public abstract SolutionPlan solve() 
 			throws NoSolutionFoundException;
 	
 	/**

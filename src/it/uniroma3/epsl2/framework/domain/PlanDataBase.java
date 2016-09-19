@@ -15,7 +15,9 @@ import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.problem.Problem;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
@@ -26,8 +28,14 @@ import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
  * @author anacleto
  *
  */
-public interface PlanDataBase {
-
+public interface PlanDataBase 
+{
+	/**
+	 * 
+	 * @param observer
+	 */
+	public void subscribe(PlanDataBaseObserver observer);
+	
 	/**
 	 * 
 	 * @return
@@ -52,6 +60,18 @@ public interface PlanDataBase {
 	 * 
 	 */
 	public void clear();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public SolutionPlan getSolutionPlan();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Agenda getAgenda();
 	
 	/**
 	 * 

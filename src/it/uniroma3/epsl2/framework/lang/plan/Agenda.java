@@ -8,9 +8,9 @@ import java.util.List;
  * @author anacleto
  *
  */
-public class Plan 
+public class Agenda 
 {
-	private List<Decision> decisions;
+	private List<Decision> goals;
 	private List<Relation> relations;
 	
 	/**
@@ -18,8 +18,8 @@ public class Plan
 	 * @param name
 	 * @param horizon
 	 */
-	public Plan() {
-		this.decisions = new ArrayList<>();
+	public Agenda() {
+		this.goals = new ArrayList<>();
 		this.relations = new ArrayList<>();
 	}
 	
@@ -27,8 +27,8 @@ public class Plan
 	 * 
 	 * @return
 	 */
-	public List<Decision> getDecisions() {
-		return new ArrayList<>(this.decisions);
+	public List<Decision> getGoals() {
+		return new ArrayList<>(this.goals);
 	}
 	
 	/**
@@ -36,7 +36,7 @@ public class Plan
 	 * @param goal
 	 */
 	public void add(Decision goal) {
-		this.decisions.add(goal);
+		this.goals.add(goal);
 	}
 	
 	/**

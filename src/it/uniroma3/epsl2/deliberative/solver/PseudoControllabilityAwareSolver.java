@@ -13,7 +13,7 @@ import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
@@ -24,8 +24,8 @@ import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckExc
  * @author anacleto
  *
  */
-public class PseudoControllabilityAwareSolver extends Solver {
-
+public class PseudoControllabilityAwareSolver extends Solver 
+{
 	private long time;
 	private long stepCounter;
 	private SearchStrategy blacklist;
@@ -50,7 +50,7 @@ public class PseudoControllabilityAwareSolver extends Solver {
 	 * 
 	 */
 	@Override
-	public Plan solve() 
+	public SolutionPlan solve() 
 			throws NoSolutionFoundException 
 	{
 		// prepare the search
@@ -62,7 +62,7 @@ public class PseudoControllabilityAwareSolver extends Solver {
 		SearchSpaceNode last = null;				// root node
 		
 		// the solution plan
-		Plan plan = null;
+		SolutionPlan plan = null;
 		
 		// start with pseudo-controllability mode
 		boolean pseudocontrollability = true;
@@ -117,8 +117,8 @@ public class PseudoControllabilityAwareSolver extends Solver {
 				}
 				
 				// check solving flags
-				if (!skip) {
-					
+				if (!skip) 
+				{
 					// looks for flaws
 					this.logger.debug("Looking for flaws on the current refined plan...");
 	 				// choose the best flaws to solve
@@ -182,7 +182,7 @@ public class PseudoControllabilityAwareSolver extends Solver {
 				if (pseudocontrollability) 
 				{
 					// set plan
-					plan = this.pdb.getPlan();
+					plan = this.pdb.getSolutionPlan();
 					plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABLE);
 					plan.setSolvingTime(this.time);
 					// pseudo-controllable solution found
@@ -191,7 +191,7 @@ public class PseudoControllabilityAwareSolver extends Solver {
 				else 
 				{
 					// set plan
-					plan = this.pdb.getPlan();
+					plan = this.pdb.getSolutionPlan();
 					plan.setControllability(PlanControllabilityType.NOT_PSEUDO_CONTROLLABLE);
 					plan.setSolvingTime(this.time);
 					// not pseudo-controllable solution found

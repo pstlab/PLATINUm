@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
@@ -110,7 +110,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @param plan
 	 */
-	public abstract void init(Plan plan);
+	public abstract void init(SolutionPlan plan);
 	
 	/**
 	 * 

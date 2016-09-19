@@ -21,8 +21,8 @@ import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.problem.Problem;
 import it.uniroma3.epsl2.framework.microkernel.resolver.plan.Goal;
 import it.uniroma3.epsl2.framework.microkernel.resolver.plan.GoalExpansion;
@@ -984,7 +984,7 @@ public class PlanDataBaseTestCase {
 			
 			
 			// print current plan
-			Plan plan = this.pdb.getPlan();
+			SolutionPlan plan = this.pdb.getSolutionPlan();
 			System.out.println();
 			System.out.println(plan);
 			System.out.println();

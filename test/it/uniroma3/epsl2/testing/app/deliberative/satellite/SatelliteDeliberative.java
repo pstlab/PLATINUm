@@ -7,7 +7,7 @@ import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.solver.SolverType;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerConfiguration;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -19,7 +19,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 @PlannerConfiguration(
 		
 	// set heuristic
-	heuristic = FlawSelectionHeuristicType.HTFSH,
+	heuristic = FlawSelectionHeuristicType.KHTFSH,
 	
 	// set solver
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
@@ -28,7 +28,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	strategy = SearchStrategyType.DFS,
 	
 	// log level
-	logging = FrameworkLoggingLevel.DEBUG
+	logging = FrameworkLoggingLevel.OFF
 )
 public class SatelliteDeliberative extends Planner
 {
@@ -45,7 +45,7 @@ public class SatelliteDeliberative extends Planner
 		{
 			Planner planner = PlannerBuilder.build(SatelliteDeliberative.class.getName(), DDL, PDL);	
 			// start planning
-			Plan plan = planner.plan();
+			SolutionPlan plan = planner.plan();
 			// solution found
 			System.out.println("... solution found after " + plan.getSolvingTime() + " msecs\n");
 			// print the resulting plan

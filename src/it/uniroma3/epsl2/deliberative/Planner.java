@@ -3,7 +3,7 @@ package it.uniroma3.epsl2.deliberative;
 import it.uniroma3.epsl2.deliberative.solver.Solver;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerConfiguration;
@@ -46,7 +46,7 @@ public class Planner extends ApplicationFrameworkObject {
 	 * @return
 	 * @throws NoSolutionFoundException
 	 */
-	public Plan plan() 
+	public SolutionPlan plan() 
 			throws NoSolutionFoundException {
 		// solve the problem and get the plan
 		return this.solver.solve();
@@ -57,9 +57,9 @@ public class Planner extends ApplicationFrameworkObject {
 	 * 
 	 * @return
 	 */
-	public Plan getCurrentPlan() {
+	public SolutionPlan getCurrentPlan() {
 		// get current plan
-		return this.pdb.getPlan();
+		return this.pdb.getSolutionPlan();
 	}
 	
 	/**

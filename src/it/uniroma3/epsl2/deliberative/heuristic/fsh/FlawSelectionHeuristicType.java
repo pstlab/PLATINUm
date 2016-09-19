@@ -21,7 +21,12 @@ public enum FlawSelectionHeuristicType
 	 * Flaw hierarchy-based selection heuristic, it combines TFSH
 	 * and DgFSH evaluation criteria 
 	 */
-	HTFSH(HierarchyTypeFlawSelectionHeuristic.class.getName());
+	HTFSH(HierarchyTypeFlawSelectionHeuristic.class.getName()),
+	
+	/**
+	 * 
+	 */
+	KHTFSH(KnowledgeHierarchyTypeFlawSelectionHeuristic.class.getName());
 	
 	private String cname;
 	
