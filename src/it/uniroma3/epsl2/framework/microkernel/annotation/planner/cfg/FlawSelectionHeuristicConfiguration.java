@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilterType;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 
 /**
  * 

@@ -2,7 +2,7 @@ package it.uniroma3.epsl2.testing.app.deliberative.ico;
 
 import it.uniroma3.epsl2.deliberative.Planner;
 import it.uniroma3.epsl2.deliberative.PlannerBuilder;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristicType;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.solver.SolverType;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
@@ -19,7 +19,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 @PlannerConfiguration(
 		
 	// set heuristic
-	heuristic = FlawSelectionHeuristicType.KHTFSH,
+	heuristic = FlawSelectionHeuristicType.H2,
 	
 	// set solver
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,

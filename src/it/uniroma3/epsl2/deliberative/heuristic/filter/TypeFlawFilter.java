@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter;
+package it.uniroma3.epsl2.deliberative.heuristic.filter;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,8 +14,8 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.Pos
  * @author anacleto
  *
  */
-public class TypeFlawFilter extends FlawFilter {
-	
+public class TypeFlawFilter extends FlawFilter 
+{
 	private FlawType[] preferences;
 
 	/**

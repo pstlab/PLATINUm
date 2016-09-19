@@ -1,7 +1,7 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter;
+package it.uniroma3.epsl2.deliberative.heuristic.filter;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.hff.HierarchyFlawFilter;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.tkff.TemporalKnowledgeFlawFilter;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.hff.HierarchyFlawFilter;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.sff.SemanticFlawFilter;
 
 /**
  * 
@@ -23,7 +23,7 @@ public enum FlawFilterType
 	/**
 	 * Temporal Knowledge-based Flaw Filter
 	 */
-	TKFF(TemporalKnowledgeFlawFilter.class.getName());
+	SFF(SemanticFlawFilter.class.getName());
 	
 	private String cname;
 

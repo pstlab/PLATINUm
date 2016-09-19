@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.tkff;
+package it.uniroma3.epsl2.deliberative.heuristic.filter.sff;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import it.uniroma3.epsl2.framework.lang.plan.Relation;
  * @author anacleto
  *
  */
-public interface TemporalKnowledgeReasoner 
+public interface TemporalSemanticReasoner 
 {
 	/**
 	 * 

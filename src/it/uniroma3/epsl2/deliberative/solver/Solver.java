@@ -3,7 +3,7 @@ package it.uniroma3.epsl2.deliberative.solver;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristic;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristic;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;

@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.tkff;
+package it.uniroma3.epsl2.deliberative.heuristic.filter.sff;
 
 /**
  * 

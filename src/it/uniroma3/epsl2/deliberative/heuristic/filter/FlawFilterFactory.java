@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter;
+package it.uniroma3.epsl2.deliberative.heuristic.filter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

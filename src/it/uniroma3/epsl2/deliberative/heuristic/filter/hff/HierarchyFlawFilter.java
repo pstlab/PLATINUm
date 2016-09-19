@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.hff;
+package it.uniroma3.epsl2.deliberative.heuristic.filter.hff;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilter;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilterType;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.ex.HierarchyCycleException;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.ex.HierarchyCycleException;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationConstraint;
@@ -140,10 +140,10 @@ public class HierarchyFlawFilter extends FlawFilter
 					{
 						try 
 						{
-							// update DG
+							// update the dependency graph - recall: the dg is an incident graph
 							this.dg.get(slave).add(master);
 							// check hierarchy cycle
-							this.checkHiearchyCycle(master, slave);
+							this.checkHiearchyCycle(slave, master);
 						}
 						catch (HierarchyCycleException ex) {
 							// a cycle into the hierarchy has been found
@@ -159,21 +159,22 @@ public class HierarchyFlawFilter extends FlawFilter
 	
 	/**
 	 * 
-	 * @param master
-	 * @param slave
+	 * @param reference
+	 * @param target
 	 * @throws HierarchyCycleException
 	 */
-	private void checkHiearchyCycle(DomainComponent master, DomainComponent slave) 
+	private void checkHiearchyCycle(DomainComponent reference, DomainComponent target) 
 			throws HierarchyCycleException
 	{
 		// check direct cycle
-		if (this.dg.get(master).contains(slave)) {
+		if (this.dg.get(reference).contains(target) &&
+				this.dg.get(target).contains(reference)) {
 			// cycle detected
-			throw new HierarchyCycleException("A cycle has been detected in the Dependency Graph between component= " + master + " and component= " + slave);
+			throw new HierarchyCycleException("A direct cycle has been detected in the Dependency Graph between component= " + reference + " and component= " + target);
 		}
 		else {
 			// check paths
-			this.findCycle(master, new HashSet<DomainComponent>());
+			this.findCycle(reference, new HashSet<DomainComponent>());
 		}
 	}
 	
@@ -193,7 +194,7 @@ public class HierarchyFlawFilter extends FlawFilter
 			// check if visited
 			if (!visited.contains(next)) {
 				// recursive call
-				this.findCycle(next, visited);
+				this.findCycle(next, new HashSet<DomainComponent>(visited));
 			}
 			else {
 				// throw exception

@@ -472,6 +472,7 @@ DOMAIN FourByThree_Domain
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
 			ENDS-DURING [0, +INF] [0, +INF] cd1;
+			CONTAINS [0, +INF] [0, +INF] cd2;
 			cd2 DURING [0, +INF] [0, +INF] cd0;
 			
 			?location0 = ?location;
@@ -489,6 +490,7 @@ DOMAIN FourByThree_Domain
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
 			ENDS-DURING [0, +INF] [0, +INF] cd1;
+			CONTAINS [0, +INF] [0, +INF] cd2;
 			cd2 DURING [0, +INF] [0, +INF] cd0;
 			
 			?location0 = ?location;

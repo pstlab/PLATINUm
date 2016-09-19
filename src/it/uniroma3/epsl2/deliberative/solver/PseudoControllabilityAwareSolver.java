@@ -13,8 +13,8 @@ import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
@@ -43,7 +43,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 	@PostConstruct
 	protected void init() {
 		SearchStrategyFactory sf = new SearchStrategyFactory();
-		this.blacklist = sf.create(SearchStrategyType.DFD);
+		this.blacklist = sf.create(SearchStrategyType.DFS);
 	}
 	
 	/**

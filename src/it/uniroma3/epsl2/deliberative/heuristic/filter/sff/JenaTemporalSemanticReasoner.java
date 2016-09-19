@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.tkff;
+package it.uniroma3.epsl2.deliberative.heuristic.filter.sff;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
  * @author anacleto
  *
  */
-public class JenaTemporalKnowledgeReasoner implements TemporalKnowledgeReasoner 
+public class JenaTemporalSemanticReasoner implements TemporalSemanticReasoner 
 {
 	private static final String ONTOLOGY_PATH = "etc/ftlp.owl";
 	private static final String ONTOLOGY_URL = "http://www.uniroma3.it/ontologies/ftlp"; 
@@ -42,7 +42,7 @@ public class JenaTemporalKnowledgeReasoner implements TemporalKnowledgeReasoner
 	/**
 	 * 
 	 */
-	protected JenaTemporalKnowledgeReasoner() 
+	protected JenaTemporalSemanticReasoner() 
 	{
 		// setup index
 		this.index = new HashMap<>();
@@ -163,6 +163,12 @@ public class JenaTemporalKnowledgeReasoner implements TemporalKnowledgeReasoner
 	{
 		// initialize the graph
 		Map<Decision, List<Decision>> graph = new HashMap<>();
+		// initialize graph
+		for (Decision decision : this.index.values()) {
+			// add entry to graph
+			graph.put(decision, new ArrayList<Decision>());
+		}
+		
 		// check inferred "ordering" properties
 		List<Statement> statements = this.read(TemporalRole.ORDERING);
 		for (Statement s : statements)
@@ -176,6 +182,9 @@ public class JenaTemporalKnowledgeReasoner implements TemporalKnowledgeReasoner
 			
 			// get target
 			Decision target = this.index.get(s.getObject().asResource());
+			if (!graph.containsKey(target)) {
+				graph.put(target, new ArrayList<Decision>());
+			}
 			// add edge to graph
 			graph.get(reference).add(target);
 		}

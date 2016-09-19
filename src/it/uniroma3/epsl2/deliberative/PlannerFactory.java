@@ -4,8 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristic;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristicFactory;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristic;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicFactory;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyFactory;
 import it.uniroma3.epsl2.deliberative.solver.Solver;

@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh;
+package it.uniroma3.epsl2.deliberative.heuristic;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -6,9 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilter;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilterFactory;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilterType;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterFactory;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelectionHeuristicConfiguration;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.FilterPipelineReference;
@@ -18,8 +18,8 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.FilterP
  * @author anacleto
  *
  */
-public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory {
-
+public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory 
+{
 	private FlawFilterFactory factory;
 	
 	/**
@@ -35,11 +35,12 @@ public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory {
 	 * @param type
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends FlawSelectionHeuristic> T create(FlawSelectionHeuristicType type) {
+	public <T extends FlawSelectionHeuristic> T create(FlawSelectionHeuristicType type) 
+	{
 		// heuristic filter reference
 		T heuristic = null;
-		try {
-			
+		try 
+		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getHeuristicClassName());
 			// check annotation
@@ -89,7 +90,8 @@ public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory {
 	 * @throws IllegalAccessException
 	 */
 	private void injectFilters(FlawFilterType[] types, FlawSelectionHeuristic heuristic) 
-			throws IllegalArgumentException, IllegalAccessException {
+			throws IllegalArgumentException, IllegalAccessException 
+	{
 		// create filters
 		List<FlawFilter> filters = new ArrayList<>();
 		for (FlawFilterType type : types) { 

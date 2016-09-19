@@ -2,7 +2,7 @@ package it.uniroma3.epsl2.testing.app.deliberative.fbt;
 
 import it.uniroma3.epsl2.deliberative.Planner;
 import it.uniroma3.epsl2.deliberative.PlannerBuilder;
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristicType;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.solver.SolverType;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
@@ -18,22 +18,22 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  */
 @PlannerConfiguration(
 		
-	// set heuristic
-	heuristic = FlawSelectionHeuristicType.HTFSH,
-	
 	// set solving strategy
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
+		
+	// set heuristic
+	heuristic = FlawSelectionHeuristicType.HFH,
 	
 	// set search strategy
-	strategy = SearchStrategyType.DFD,
+	strategy = SearchStrategyType.DFS,
 	
 	// set log level
 	logging = FrameworkLoggingLevel.OFF
 )
 public class FourByThreeDeliberative extends Planner
 {
-	private static final String DDL = "domains/gecko/full.ddl";
-	private static final String PDL = "domains/gecko/full.pdl";
+	private static final String DDL = "domains/fourbythree/meeting0716/fourbythree.ddl";
+	private static final String PDL = "domains/fourbythree/meeting0716/fourbythree.pdl";
 	
 	/**
 	 * 

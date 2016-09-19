@@ -1,10 +1,10 @@
-package it.uniroma3.epsl2.deliberative.heuristic.fsh;
+package it.uniroma3.epsl2.deliberative.heuristic;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.filter.FlawFilter;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
@@ -20,8 +20,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
  * @author anacleto
  *
  */
-public abstract class FlawSelectionHeuristic extends ApplicationFrameworkObject {
-	
+public abstract class FlawSelectionHeuristic extends ApplicationFrameworkObject 
+{
 	private FlawSelectionHeuristicType type;
 	
 	@PlanDataBaseReference
@@ -57,8 +57,8 @@ public abstract class FlawSelectionHeuristic extends ApplicationFrameworkObject 
 	 * @throws NoFlawFoundException
 	 */
 	public final Set<Flaw> choose() 
-			throws UnsolvableFlawFoundException, NoFlawFoundException {
-		
+			throws UnsolvableFlawFoundException, NoFlawFoundException 
+	{
 		// initial set of flaws
 		Set<Flaw> flaws = new HashSet<>(this.pdb.detectFlaws());
 		

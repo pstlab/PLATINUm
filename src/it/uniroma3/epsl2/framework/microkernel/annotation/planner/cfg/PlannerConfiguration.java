@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.uniroma3.epsl2.deliberative.heuristic.fsh.FlawSelectionHeuristicType;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.solver.SolverType;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
@@ -29,7 +29,7 @@ public @interface PlannerConfiguration {
 	 * 
 	 * @return
 	 */
-	FlawSelectionHeuristicType heuristic() default FlawSelectionHeuristicType.HTFSH;
+	FlawSelectionHeuristicType heuristic() default FlawSelectionHeuristicType.H1;
 	
 	/**
 	 * 
