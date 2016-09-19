@@ -25,16 +25,6 @@ enum TemporalRole
 	/**
 	 * 
 	 */
-	STARTS_DURING("StartsDuring"),
-	
-	/**
-	 * 
-	 */
-	ENDS_DURING("EndsDuring"),
-	
-	/**
-	 * 
-	 */
 	ORDERING("ordering"),
 	
 	/**

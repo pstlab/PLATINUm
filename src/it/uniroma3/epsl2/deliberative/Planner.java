@@ -15,8 +15,8 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.SolverR
  *
  */
 @PlannerConfiguration
-public class Planner extends ApplicationFrameworkObject {
-
+public class Planner extends ApplicationFrameworkObject 
+{
 	@PlanDataBaseReference
 	private PlanDataBase pdb;
 	

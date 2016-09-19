@@ -2,6 +2,7 @@ package it.uniroma3.epsl2.framework.microkernel.resolver.plan;
 
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -29,6 +30,19 @@ public class GoalExpansion extends GoalJustification {
 	protected GoalExpansion(Goal goal) {
 		super(goal, JustificationType.EXPANSION);
 		this.rule = null;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public double getCost() {
+		// get property file 
+		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
+		// read property
+		String cost = property.getProperty("expansion-cost");
+		// parse and get double value
+		return Double.parseDouble(cost);
 	}
 	
 	/**

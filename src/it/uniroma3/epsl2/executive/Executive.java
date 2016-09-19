@@ -1,12 +1,8 @@
 package it.uniroma3.epsl2.executive;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
@@ -16,6 +12,7 @@ import it.uniroma3.epsl2.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanDispatcherReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanMonitorReference;
+import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -25,7 +22,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanM
 public abstract class Executive extends ApplicationFrameworkObject implements Runnable, ClockObserver
 {
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
-	private Properties config;													// configuration property file
+	private FilePropertyReader config;				// configuration property file
 	private final Object lock;							// executive's status lock
 	private ExecutionStatus status;						// executive's operating status
 	private Thread process;								// execution controller process
@@ -42,28 +39,14 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 	/**
 	 * 
 	 */
-	protected Executive() 
-	{
+	protected Executive() {
 		super();
-		try 
-		{
-			// create property file
-			this.config = new Properties();
-			// load file property
-			try (InputStream input = new FileInputStream("etc/executive.properties")) { 
-				// load file
-				this.config.load(input);
-			}
-			
-			// set clock and initial status
-			this.lock = new Object();
-			this.status = ExecutionStatus.INACTIVE;
-			this.process = null;
-		}
-		catch (IOException ex) {
-			// problems locating property file
-			throw new RuntimeException(ex.getMessage());
-		}
+		// get executive file properties
+		this.config = FilePropertyReader.getExecutivePropertyFile();
+		// set clock and initial status
+		this.lock = new Object();
+		this.status = ExecutionStatus.INACTIVE;
+		this.process = null;
 	}
 	
 	/**

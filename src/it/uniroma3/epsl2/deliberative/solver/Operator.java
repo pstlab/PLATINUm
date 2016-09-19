@@ -10,8 +10,8 @@ import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
  * @author anacleto
  *
  */
-public class Operator implements Comparable<Operator> {
-
+public class Operator implements Comparable<Operator> 
+{
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private FlawSolution solution;
@@ -31,6 +31,14 @@ public class Operator implements Comparable<Operator> {
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getCost() {
+		return this.solution.getCost();
 	}
 	
 	/**

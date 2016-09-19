@@ -8,8 +8,6 @@ PROBLEM FourByThree_Problem (DOMAIN FourByThree_Domain) {
 	f4 <fact> RobotArmController.motion.SetOn(?home, ?modality) AT [0, 0] [1,+INF] [1,+INF];
 	?home = home;
 	?modality = independent;
-	
-	f5 <fact> ScrewDriverController.driver.Unset() AT [0, 0] [1,+INF] [1,+INF];
 
 	g0  <goal> ALFA.use_case.Assembly(?piece0) AT [0, +INF] [0, +INF] [0, +INF];
 	?piece0 = 0;

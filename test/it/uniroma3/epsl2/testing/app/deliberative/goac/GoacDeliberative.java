@@ -17,18 +17,18 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  *
  */
 @PlannerConfiguration(
-		
-	// set heuristic
-	heuristic = FlawSelectionHeuristicType.H1,
-	
+
 	// set solving strategy
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
+		
+	// set heuristic
+	heuristic = FlawSelectionHeuristicType.SHFSH,
 	
 	// set search strategy
 	strategy = SearchStrategyType.DFS,
 	
 	// set log level
-	logging = FrameworkLoggingLevel.DEBUG
+	logging = FrameworkLoggingLevel.OFF
 )
 public class GoacDeliberative extends Planner
 {

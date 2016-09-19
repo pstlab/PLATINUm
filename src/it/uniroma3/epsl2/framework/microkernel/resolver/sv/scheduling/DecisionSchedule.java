@@ -5,6 +5,7 @@ import java.util.List;
 
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -23,6 +24,19 @@ public final class DecisionSchedule extends FlawSolution {
 	protected DecisionSchedule(Peak peak, List<Decision> schedule) {
 		super(peak);
 		this.schedule= new ArrayList<>(schedule);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public double getCost() {
+		// get property file 
+		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
+		// read property
+		String cost = property.getProperty("scheduling-cost");
+		// parse and get double value
+		return Double.parseDouble(cost);
 	}
 	
 	/**

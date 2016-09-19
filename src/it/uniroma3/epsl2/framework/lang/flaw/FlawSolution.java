@@ -12,8 +12,8 @@ import it.uniroma3.epsl2.framework.lang.plan.Relation;
  * @author anacleto
  *
  */
-public abstract class FlawSolution {
-	
+public abstract class FlawSolution 
+{
 	private static int ID_COUNTER = 0;
 	private int id;
 	protected Flaw flaw;
@@ -31,7 +31,8 @@ public abstract class FlawSolution {
 	 * 
 	 * @param flaw
 	 */
-	protected FlawSolution(Flaw flaw) {
+	protected FlawSolution(Flaw flaw) 
+	{
 		this.id = getNextId();
 		this.flaw = flaw;
 		// initialize data structures
@@ -57,6 +58,12 @@ public abstract class FlawSolution {
 	public Flaw getFlaw() {
 		return flaw;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract double getCost();
 	
 	/**
 	 * 

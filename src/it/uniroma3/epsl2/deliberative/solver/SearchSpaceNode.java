@@ -12,12 +12,12 @@ import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
  * @author anacleto
  *
  */
-public class SearchSpaceNode {
-
+public class SearchSpaceNode implements Comparable<SearchSpaceNode>
+{
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
-	private List<Operator> operators;
-	private Operator generator;
+	private List<Operator> operators;	// node generation trace
+	private Operator generator;			// node generator operator
 	
 	/**
 	 * Create a root node
@@ -62,6 +62,20 @@ public class SearchSpaceNode {
 	 */
 	public int getDepth() {
 		return this.operators.size();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getCost() {
+		// compute the cost of the current node
+		double cost = this.generator.getCost();
+		for (Operator op : this.operators) {
+			cost += op.getCost();
+		}
+		// get node cost
+		return cost;
 	}
 	
 	/**
@@ -178,6 +192,17 @@ public class SearchSpaceNode {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @param o
+	 * @return
+	 */
+	@Override
+	public int compareTo(SearchSpaceNode o) {
+		// compare nodes by their ID
+		return this.id <= o.id ? -1 : 1;
 	}
 	
 	/**

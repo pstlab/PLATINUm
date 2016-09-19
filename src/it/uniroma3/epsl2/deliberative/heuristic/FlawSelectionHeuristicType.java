@@ -1,5 +1,8 @@
 package it.uniroma3.epsl2.deliberative.heuristic;
 
+import it.uniroma3.epsl2.deliberative.heuristic.hfsh.HierarchicalFlawSelectionHeuristic;
+import it.uniroma3.epsl2.deliberative.heuristic.shfsh.SemanticHierarchyFLawSelectionHeuristic;
+
 /**
  * 
  * @author anacleto
@@ -8,19 +11,14 @@ package it.uniroma3.epsl2.deliberative.heuristic;
 public enum FlawSelectionHeuristicType 
 {
 	/**
-	 * 
+	 * Semantic and Hierarchy-based Flaw Selection Heuristic
 	 */
-	H1(H1SelectionHeuristic.class.getName()),
+	SHFSH(SemanticHierarchyFLawSelectionHeuristic.class.getName()),
 	
 	/**
-	 * 
+	 * Hierarchy-based Flaw Selection Heuristic
 	 */
-	H2(H2SelectionHeuristic.class.getName()),
-	
-	/**
-	 * 
-	 */
-	HFH(HierarchicalFlawSelectionHeuristic.class.getName());
+	HFSH(HierarchicalFlawSelectionHeuristic.class.getName());
 	
 	private String cname;
 	

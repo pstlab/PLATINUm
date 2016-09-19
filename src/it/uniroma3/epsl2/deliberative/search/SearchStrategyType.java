@@ -10,7 +10,12 @@ public enum SearchStrategyType {
 	/**
 	 * "Classical" Depth First search strategy
 	 */
-	DFS(DepthFirstSearchStrategy.class.getName());
+	DFS(DepthFirstSearchStrategy.class.getName()),
+	
+	/**
+	 * 
+	 */
+	DIJKSTRA(DijkstraSearchStrategy.class.getName());
 	
 	private String cname;
 	

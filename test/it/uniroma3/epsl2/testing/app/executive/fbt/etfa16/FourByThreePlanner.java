@@ -21,7 +21,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 		solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
 		
 		// set the flaw selection heuristic
-		heuristic = FlawSelectionHeuristicType.H1,
+		heuristic = FlawSelectionHeuristicType.HFSH,
 		
 		// set search strategy
 		strategy = SearchStrategyType.DFS,

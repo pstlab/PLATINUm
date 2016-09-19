@@ -286,7 +286,6 @@ DOMAIN FourByThree_Domain
 	// robot controller components
 	COMPONENT RobotController {FLEXIBLE functions(trex_internal_dispatch_asap)} : RobotFunctionType;
 	COMPONENT RobotArmController {FLEXIBLE motion(trex_internal_dispatch_asap)} : RobotArmMotionType;
-	COMPONENT ScrewDriverController {FLEXIBLE driver(trex_internal_dispatch_asap)} : RobotToolType;
 	
 	// domain rules
 	SYNCHRONIZE ALFA.use_case
@@ -468,12 +467,9 @@ DOMAIN FourByThree_Domain
 		{
 			cd0 RobotArmController.motion.SetOn(?location0, ?modality0);
 			cd1 RobotArmController.motion.SetOn(?location1, ?modality1);
-			cd2 ScrewDriverController.driver.Operating();
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
 			ENDS-DURING [0, +INF] [0, +INF] cd1;
-			CONTAINS [0, +INF] [0, +INF] cd2;
-			cd2 DURING [0, +INF] [0, +INF] cd0;
 			
 			?location0 = ?location;
 			?modality0 = ?modality;
@@ -486,12 +482,9 @@ DOMAIN FourByThree_Domain
 		{
 			cd0 RobotArmController.motion.SetOn(?location0, ?modality0);
 			cd1 RobotArmController.motion.SetOn(?location1, ?modality1);
-			cd2 ScrewDriverController.driver.Operating();
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
 			ENDS-DURING [0, +INF] [0, +INF] cd1;
-			CONTAINS [0, +INF] [0, +INF] cd2;
-			cd2 DURING [0, +INF] [0, +INF] cd0;
 			
 			?location0 = ?location;
 			?modality0 = ?modality;

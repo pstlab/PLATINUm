@@ -1,6 +1,7 @@
 package it.uniroma3.epsl2.framework.microkernel.resolver.plan;
 
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -19,6 +20,19 @@ public class GoalUnification extends GoalJustification
 	protected GoalUnification(Goal goal, Decision dec) {
 		super(goal, JustificationType.UNIFICATION);
 		this.unification = dec;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public double getCost() {
+		// get property file 
+		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
+		// read property
+		String cost = property.getProperty("unification-cost");
+		// parse and get double value
+		return Double.parseDouble(cost);
 	}
 	
 	/**

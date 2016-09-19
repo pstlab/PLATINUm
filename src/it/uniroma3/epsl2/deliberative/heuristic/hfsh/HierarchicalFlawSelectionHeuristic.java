@@ -1,5 +1,7 @@
-package it.uniroma3.epsl2.deliberative.heuristic;
+package it.uniroma3.epsl2.deliberative.heuristic.hfsh;
 
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristic;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelectionHeuristicConfiguration;
 
@@ -13,15 +15,15 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelect
 	pipeline = {
 		FlawFilterType.HFF,			// hierarchy-based flaw filter
 		FlawFilterType.TFF,			// type-based flaw filter
-		FlawFilterType.SFF			// semantic-based flaw filter
+		FlawFilterType.FFF			// fail-first flaw filter
 	}
 )
-public class H1SelectionHeuristic extends FlawSelectionHeuristic {
+public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic {
 
 	/**
 	 * 
 	 */
-	protected H1SelectionHeuristic() {
-		super(FlawSelectionHeuristicType.H1);
+	protected HierarchicalFlawSelectionHeuristic() {
+		super(FlawSelectionHeuristicType.HFSH);
 	}
 }

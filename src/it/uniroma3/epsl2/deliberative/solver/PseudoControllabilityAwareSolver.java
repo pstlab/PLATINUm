@@ -130,7 +130,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 						for (FlawSolution flawSolution : flaw.getSolutions()) 
 						{
 							// expand the search tree
-							this.logger.debug("Expanding the search tree with flaw to solve:\n" + flaw + "\n- #solutions= " + flaw.getSolutions().size());
+							this.logger.debug("Expanding the search tree by solving flaw:\n" + flaw + "\n- #solutions= " + flaw.getSolutions().size());
 							// create operator
 							Operator op = new Operator(flawSolution);
 							// create child node

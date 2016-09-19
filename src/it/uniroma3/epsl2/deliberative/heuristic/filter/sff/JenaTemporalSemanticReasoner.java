@@ -238,21 +238,11 @@ public class JenaTemporalSemanticReasoner implements TemporalSemanticReasoner
 			}
 			break;
 			
-			case DURING : {
+			case DURING : 
+			case STARTS_DURING : 
+			case ENDS_DURING : {
 				// set role 
 				role = TemporalRole.DURING;
-			}
-			break;
-			
-			case STARTS_DURING : {
-				// set role
-				role = TemporalRole.STARTS_DURING;
-			}
-			break;
-			
-			case ENDS_DURING : {
-				// set role
-				role = TemporalRole.ENDS_DURING;
 			}
 			break;
 			

@@ -38,7 +38,7 @@ public class DepthFirstSearchStrategy extends SearchStrategy {
 			throws EmptyFringeException {
 		// check the fringe
 		if (this.fringe.isEmpty()) {
-			throw new EmptyFringeException("No more node in the fringe");
+			throw new EmptyFringeException("No more nodes in the fringe");
 		}
 		// get the head of the stack
 		return this.fringe.pop();
