@@ -824,7 +824,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		for (int index = 0; index < labels.length; index++) 
 		{
 			// get value's parameter place holder
-			ParameterPlaceHolder ph = value.getPlaceHolderByIndex(index);
+			ParameterPlaceHolder ph = value.getParameterPlaceHolderByIndex(index);
 			
 			// create a parameter
 			Parameter param = this.pdb.createParameter(labels[index], ph.getType(), ph.getDomain());

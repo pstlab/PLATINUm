@@ -10,6 +10,6 @@ PROBLEM FourByThree_Problem (DOMAIN FourByThree_Domain) {
 	?modality = independent;
 
 
-	g0  <goal> ALFA.use_case.Assembly(?piece0) AT [0, +INF] [0, +INF] [0, +INF];
+	g0  <goal> ALFA.use_case.RemoveTopCover(?piece0) AT [0, +INF] [0, +INF] [0, +INF];
 	?piece0 = 0;
 }

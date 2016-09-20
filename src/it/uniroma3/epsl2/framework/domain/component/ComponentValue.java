@@ -115,7 +115,7 @@ public abstract class ComponentValue {
 	 * @param index
 	 * @return
 	 */
-	public ParameterPlaceHolder getPlaceHolderByIndex(int index) {
+	public ParameterPlaceHolder getParameterPlaceHolderByIndex(int index) {
 		return this.placeholders.get(index);
 	}
 	

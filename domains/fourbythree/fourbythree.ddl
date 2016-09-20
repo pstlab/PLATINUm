@@ -332,7 +332,6 @@ DOMAIN FourByThree_Domain
 			CONTAINS [0, +INF] [0, +INF] cd1;
 			CONTAINS [0, +INF] [0, +INF] cd2;
 			CONTAINS [0, +INF] [0, +INF] cd3;
-			
 			CONTAINS [0, +INF] [0, +INF] cd4;
 			CONTAINS [0, +INF] [0, +INF] cd5;
 			CONTAINS [0, +INF] [0, +INF] cd6;
@@ -461,12 +460,14 @@ DOMAIN FourByThree_Domain
 		{
 			cd0 <!> RobotArmController.motion.SetOn(?location0, ?modality0);
 			cd1 <!> RobotArmController.motion.SetOn(?location1, ?modality1);
-			cd2 <!> ScrewDriverController.driver.Operating();
+			cd2 <!> ScrewDriverController.driver.Activate();
+			cd3 <!> ScrewDriverController.driver.Deactivate();
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
 			ENDS-DURING [0, +INF] [0, +INF] cd1;
-			//cd2 DURING [0, +INF] [0, +INF] cd0;
 			cd0 CONTAINS [0, +INF] [0, +INF] cd2;
+			cd0 CONTAINS [0, +INF] [0, +INF] cd3;
+			cd2 BEFORE [0, +INF] cd3;
 			
 			?location0 = ?location;
 			?modality0 = ?modality;
@@ -479,27 +480,20 @@ DOMAIN FourByThree_Domain
 		{
 			cd0 <!> RobotArmController.motion.SetOn(?location0, ?modality0);
 			cd1 <!> RobotArmController.motion.SetOn(?location1, ?modality1);
-			cd2 <!> ScrewDriverController.driver.Operating();
+			cd2 <!> ScrewDriverController.driver.Activate();
+			cd3 <!> ScrewDriverController.driver.Deactivate();
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
 			ENDS-DURING [0, +INF] [0, +INF] cd1;
 			cd0 CONTAINS [0, +INF] [0, +INF] cd2;
-			//cd2 DURING [0, +INF] [0, +INF] cd0;
+			cd0 CONTAINS [0, +INF] [0, +INF] cd3;
+			cd2 BEFORE [0, +INF] cd3;
 			
 			?location0 = ?location;
 			?modality0 = ?modality;
 			
 			?location1 = home;
 			?modality1 = ?modality;
-		}
-	}
-	
-	SYNCHRONIZE RobotArmController.motion
-	{
-		VALUE _MovingTo(?location, ?modality)
-		{
-			cd0 ScrewDriverController.driver.Unset();
-			DURING [0, +INF] [0, +INF] cd0;
 		}
 	}
 }

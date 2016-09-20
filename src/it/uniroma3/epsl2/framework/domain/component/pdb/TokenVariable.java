@@ -96,7 +96,7 @@ public class TokenVariable
 	 */
 	public ParameterPlaceHolder getParameterPlaceHolderByLabel(String label) {
 		// get placeholder
-		return this.value.getPlaceHolderByIndex(this.getParameterIndexByLabel(label));
+		return this.value.getParameterPlaceHolderByIndex(this.getParameterIndexByLabel(label));
 	}
 	
 	/**
