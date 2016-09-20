@@ -32,8 +32,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 )
 public class FourByThreeDeliberative extends Planner
 {
-	private static final String DDL = "domains/fourbythree/meeting0716/fourbythree.ddl";
-	private static final String PDL = "domains/fourbythree/meeting0716/fourbythree.pdl";
+	private static final String DDL = "domains/fourbythree/fourbythree.ddl";
+	private static final String PDL = "domains/fourbythree/fourbythree.pdl";
 	
 	/**
 	 * 

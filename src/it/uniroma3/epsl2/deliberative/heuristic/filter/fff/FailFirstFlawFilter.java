@@ -34,23 +34,36 @@ public class FailFirstFlawFilter extends FlawFilter
 	{
 		// index flaws by number of available solutions
 		Map<Integer, List<Flaw>> index = new HashMap<>();
-		// minimum number of solution of a flaw
-		int min = Integer.MAX_VALUE - 1;
-		// check number of solution of each flaw
-		for (Flaw flaw : flaws) 
+		// subset of flaws
+		Set<Flaw> selected;
+		// check flaw size
+		if (!flaws.isEmpty()) 
 		{
-			// get "degree"
-			int size = flaw.getSolutions().size();
-			// update minimum
-			min = Math.min(min, size);
-			if (!index.containsKey(size)) {
-				index.put(size, new ArrayList<Flaw>());
+			// minimum number of solution of a flaw
+			int min = Integer.MAX_VALUE - 1;
+			// check number of solution of each flaw
+			for (Flaw flaw : flaws) 
+			{
+				// get "degree"
+				int size = flaw.getSolutions().size();
+				// update minimum
+				min = Math.min(min, size);
+				if (!index.containsKey(size)) {
+					index.put(size, new ArrayList<Flaw>());
+				}
+				// add flaw
+				index.get(size).add(flaw);
 			}
-			// add flaw
-			index.get(size).add(flaw);
+			
+			// get selected subset
+			selected = new HashSet<>(index.get(min));
+		}
+		else {
+			selected = new HashSet<>(flaws);		
 		}
 		
+		
 		// get sub-set of flaw with the lowest number of solutions available
-		return new HashSet<Flaw>(index.get(min));
+		return selected;
 	}
 }
