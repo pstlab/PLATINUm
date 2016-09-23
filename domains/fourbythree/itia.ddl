@@ -1,7 +1,7 @@
 DOMAIN FourByThree_Domain
 {
 	// one unit is half-second
-	TEMPORAL_MODULE temporal_module = [0, 40], 300;
+	TEMPORAL_MODULE temporal_module = [0, 50], 300;
 
 	PAR_TYPE EnumerationParameterType modality = {
 		independent, simultaneous, supportive, synchronous		
@@ -176,8 +176,8 @@ DOMAIN FourByThree_Domain
 	{
 		VALUE HRC_ITIA()
 		{
-			r1 <!> RobotController.controller.R1(?r1h4);
-			r3 <!> RobotController.controller.R3(?r3h3);
+			r3 <!> RobotController.controller.R3(?r3h4);
+			r1 <!> RobotController.controller.R1(?r1h3);
 			r2 <!> RobotController.controller.R2(?r2h1);
 			
 			h3 <!> Human.operator._H3();
@@ -185,17 +185,33 @@ DOMAIN FourByThree_Domain
 			h2 <!> Human.operator._H2();
 			h1 <!> Human.operator._H1();
 			
-			r1 BEFORE [0, +INF] r3;
-			r3 BEFORE [0, +INF] h2;
+			CONTAINS [0, +INF] [0, +INF] r1;
+			CONTAINS [0, +INF] [0, +INF] r2;
+			CONTAINS [0, +INF] [0, +INF] r3;
+			CONTAINS [0, +INF] [0, +INF] h1;
+			CONTAINS [0, +INF] [0, +INF] h2;
+			CONTAINS [0, +INF] [0, +INF] h3;
+			CONTAINS [0, +INF] [0, +INF] h4;
+			
+			// robot sequence
+			r3 BEFORE [0, +INF] r1;
+			r1 BEFORE [0, +INF] r2;
+			
+			//r3 BEFORE [0, +INF] h4;
+			//r1 BEFORE [0, +INF] h2;
+
+			// human sequence
 			h3 BEFORE [0, +INF] h4;
 			h4 BEFORE [0, +INF] h2;
 			h2 BEFORE [0, +INF] r2;
+			
+			// human to robot coordination
 			h2 BEFORE [0, +INF] h1;
-
-			?r1h4 = H4;			
-			?r3h3 = H3;			
+			h4 AFTER [0, +INF] r3;
+			
+			?r3h4 = H4;
+			?r1h3 = H3;			
 			?r2h1 = H1;
-
 		}
 	}
 	
@@ -236,8 +252,9 @@ DOMAIN FourByThree_Domain
 			CONTAINS [0, +INF] [0, +INF] cd4;
 			CONTAINS [0, +INF] [0, +INF] cd5;
 			
+			cd2 BEFORE [0, +INF] cd4;
+			cd3 BEFORE [0, +INF] cd5;
 			cd2 BEFORE [0, +INF] cd3;
-			cd3 BEFORE [0, +INF] cd4;
 			cd4 BEFORE [0, +INF] cd5;
 			
 			?device1 = T1; 
@@ -265,8 +282,9 @@ DOMAIN FourByThree_Domain
 			CONTAINS [0, +INF] [0, +INF] cd4;
 			CONTAINS [0, +INF] [0, +INF] cd5;
 			
+			cd2 BEFORE [0, +INF] cd4;
+			cd3 BEFORE [0, +INF] cd5;
 			cd2 BEFORE [0, +INF] cd3;
-			cd3 BEFORE [0, +INF] cd4;
 			cd4 BEFORE [0, +INF] cd5;
 			
 			?device1 = T2; 
@@ -292,8 +310,9 @@ DOMAIN FourByThree_Domain
 			CONTAINS [0, +INF] [0, +INF] cd4;
 			CONTAINS [0, +INF] [0, +INF] cd5;
 			
+			cd2 BEFORE [0, +INF] cd4;
+			cd3 BEFORE [0, +INF] cd5;
 			cd2 BEFORE [0, +INF] cd3;
-			cd3 BEFORE [0, +INF] cd4;
 			cd4 BEFORE [0, +INF] cd5;
 			
 			?device1 = T1; 
