@@ -154,7 +154,8 @@ public final class AtomicClockManager implements Runnable, ClockManager
 						// notify clock update
 						obs.onTick(currentTick);
 					}
-				} catch (InterruptedException ex) {
+				} 
+				catch (InterruptedException ex) {
 					// stop thread
 					running = false;
 				}

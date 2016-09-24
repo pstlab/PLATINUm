@@ -13,12 +13,6 @@ public enum ExecutionNodeStatus {
 	WAITING(0),
 	
 	/**
-	 * The token has been scheduled, i.e. the process has decided the exact time at which 
-	 * the token must be executed.
-	 */
-	SCHEDULED(1),
-	
-	/**
 	 * The process has started the execution of the token.
 	 */
 	IN_EXECUTION(2),

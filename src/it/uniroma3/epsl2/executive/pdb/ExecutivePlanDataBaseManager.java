@@ -81,7 +81,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		// initialize data structures
 		this.nodes = new HashMap<>();
 		this.nodes.put(ExecutionNodeStatus.WAITING, new LinkedList<ExecutionNode>());
-		this.nodes.put(ExecutionNodeStatus.SCHEDULED, new LinkedList<ExecutionNode>());
+//		this.nodes.put(ExecutionNodeStatus.SCHEDULED, new LinkedList<ExecutionNode>());
 		this.nodes.put(ExecutionNodeStatus.IN_EXECUTION, new LinkedList<ExecutionNode>());
 		this.nodes.put(ExecutionNodeStatus.EXECUTED, new LinkedList<ExecutionNode>());
 		
@@ -122,7 +122,9 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @return
 	 */
-	public List<ExecutionNode> getNodesByStatus(ExecutionNodeStatus status) {
+	public List<ExecutionNode> getNodesByStatus(ExecutionNodeStatus status) 
+	{
+		// list of nodes
 		List<ExecutionNode> list = new LinkedList<>();
 		synchronized (this.locks[status.getIndex()]) {
 			// get all nodes with the desired status
@@ -140,16 +142,16 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 */
 	public void updateNodeStatus(ExecutionNode node, ExecutionNodeStatus status) 
 	{
-		// remove node from the current status
-		synchronized (this.locks[node.getStatus().getIndex()]) {
-			// remove node from list
-			this.nodes.get(node.getStatus()).remove(node);
-		}
-		
 		// add node to the new status
 		synchronized (this.locks[status.getIndex()]) {
 			// add node
 			this.nodes.get(status).add(node);
+		}
+		
+		// remove node from the current status
+		synchronized (this.locks[node.getStatus().getIndex()]) {
+			// remove node from list
+			this.nodes.get(node.getStatus()).remove(node);
 			// update status
 			node.setStatus(status);
 		}
@@ -180,7 +182,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	public void checkSchedule(ExecutionNode node) 
 	{
 		// check resulting schedule of the interval
-		CheckIntervalScheduleQuery query = this.qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+		CheckIntervalScheduleQuery query = this.qFactory.
+				 create(TemporalQueryType.CHECK_SCHEDULE);
 		query.setInterval(node.getInterval());
 		this.facade.process(query);
 	}
@@ -189,7 +192,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @param node
 	 */
-	public void addNode(ExecutionNode node) {
+	public void addNode(ExecutionNode node) 
+	{
 		// insert node
 		node.setStatus(ExecutionNodeStatus.WAITING);
 		this.nodes.get(ExecutionNodeStatus.WAITING).add(node);
@@ -210,7 +214,10 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	protected ExecutionNode createNode(String component, String signature, ParameterType[] pTypes, String[] pValues, long[] start, long[] end, long[] duration, ControllabilityType controllability) 
+	protected ExecutionNode createNode(String component, 
+			String signature, ParameterType[] pTypes, String[] pValues, 
+			long[] start, long[] end, long[] duration, 
+			ControllabilityType controllability) 
 			throws TemporalIntervalCreationException  
 	{
 		// check interval controllability
@@ -252,7 +259,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param node
 	 * @return
 	 */
-	public boolean canEndExecution(ExecutionNode node) {
+	public boolean canEndExecution(ExecutionNode node) 
+	{
 		// flag 
 		boolean canEnd = true;
 		Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeEndDependencies(node);
@@ -274,7 +282,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param node
 	 * @return
 	 */
-	public boolean canStartExecution(ExecutionNode node) {
+	public boolean canStartExecution(ExecutionNode node) 
+	{
 		// flag
 		boolean canStart = true;
 		// get node's start dependencies
@@ -301,7 +310,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @throws Exception
 	 */
 	public void scheduleDuration(ExecutionNode node, long duration) 
-			throws Exception {
+			throws Exception 
+	{
 		// fix start time first
 		FixDurationIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_DURATION);
 		fix.setReference(node.getInterval());
@@ -333,7 +343,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param end
 	 */
 	public void scheduleEndTime(ExecutionNode node, long end) 
-			throws Exception {
+			throws Exception 
+	{
 		// create constraint
 		FixEndTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_END_TIME);
 		fix.setReference(node.getInterval());

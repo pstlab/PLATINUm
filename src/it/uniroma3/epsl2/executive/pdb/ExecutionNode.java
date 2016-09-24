@@ -10,8 +10,8 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public class ExecutionNode implements Comparable<ExecutionNode> {
-
+public class ExecutionNode implements Comparable<ExecutionNode> 
+{
 	private static AtomicLong COUNTER = new AtomicLong(0);
 
 	private long id;
@@ -41,16 +41,9 @@ public class ExecutionNode implements Comparable<ExecutionNode> {
 	 * 
 	 * @return
 	 */
-	public String getPredicateSignature() {
-		return this.predicate.getSignature();
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public String getCompletePredicateSignature() {
-		return this.predicate.getComponent() + "." + this.predicate.getSignature();
+	public String getSignature() {
+		return this.predicate.getGroundSignature();
+//		return this.predicate.getSignature();
 	}
 	
 	/**

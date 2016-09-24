@@ -27,8 +27,8 @@ import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
  * @author anacleto
  *
  */
-public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManager {
-
+public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManager 
+{
 	/**
 	 * 
 	 * @param origin
@@ -80,11 +80,11 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
 						// set parameter information
-//						String signature = tl.getComponent() + "." + token.getPredicate();
 						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
 						ParameterType[] paramTypes = new ParameterType[token.getParameters().size()];
-						for (int index = 0; index < token.getParameters().size(); index++) {
+						for (int index = 0; index < token.getParameters().size(); index++) 
+						{
 							// get parameter
 							EPSLParameterDescriptor param= token.getParameter(index);
 							// check type
@@ -136,7 +136,6 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
 						// set parameter information
-//						String signature = tl.getComponent() + "." + token.getPredicate();
 						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
 						ParameterType[] paramTypes = new ParameterType[token.getParameters().size()];
@@ -193,11 +192,35 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			// check consistency
 			this.facade.checkConsistency();
 			// check the schedule for all temporal intervals
-			for (ExecutionNode node : dictionary.values()) {
+			for (ExecutionNode node : dictionary.values()) 
+			{
 				// check node schedule
 				CheckIntervalScheduleQuery query = this.qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
 				query.setInterval(node.getInterval());
 				this.facade.process(query);
+			}
+			
+			// FIXME -> print execution dependency graph
+			for (ExecutionNodeStatus status : this.nodes.keySet())
+			{
+				// get nodes by status
+				for (ExecutionNode node : this.nodes.get(status))
+				{
+					// print node and the related execution conditions
+					System.out.println("Execution node " + node);
+					System.out.println("\tNode execution starting conditions:");
+					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
+					for (ExecutionNode dep : dependencies.keySet()) {
+						System.out.println("\t\tCan start if -> " + dep.getSignature() + " is in " + dependencies.get(dep));
+					}
+					
+					// get end conditions
+					dependencies = this.getNodeEndDependencies(node);
+					System.out.println("\tNode execution ending conditions:");
+					for (ExecutionNode dep : dependencies.keySet()) {
+						System.out.println("\t\tCan end if -> " + dep.getSignature() + " is in " + dependencies.get(dep));
+					}
+				}
 			}
 		}
 		catch (TemporalIntervalCreationException ex) {
@@ -214,13 +237,14 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param target
 	 * @param rel
 	 */
-	private void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, EPSLRelationDescriptor rel) 
-			throws Exception {
-		
+	protected void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, EPSLRelationDescriptor rel) 
+			throws Exception 
+	{
 		// check relation type
 		switch (rel.getType()) {
 		
 			case "meets" : {
+				
 				// create constraint
 				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.MEETS);
@@ -234,6 +258,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				this.facade.propagate(constraint);
 				// add start dependency
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
 			}
 			break;
 			
@@ -258,6 +283,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				this.facade.propagate(constraint);
 				// add start dependency
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
 			}
 			break;
 			
@@ -277,6 +303,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				this.facade.propagate(constraint);
 				// add execution dependencies
 				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
 			}
 			break;
 			
@@ -295,13 +322,18 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				
 				// propagate temporal constraint
 				this.facade.propagate(constraint);
+				
 				// add execution dependencies
 				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
 				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+				
+				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
+				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 			}
 			break;
 			
 			case "contains" : {
+				
 				// create constraint
 				TemporalConstraint constraint = this.iFactory.
 						create(TemporalConstraintType.CONTAINS);
@@ -318,6 +350,8 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				// add execution dependencies
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
 				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+				
+				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
 				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
 			}
 			break;
@@ -335,6 +369,9 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				// add execution dependencies
 				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
 				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+				
+				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
 			}
 			break;
 			
@@ -356,6 +393,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				this.facade.propagate(constraint);
 				// add start dependency
 				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
 			}
 			break;
 			
@@ -377,6 +415,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				this.facade.propagate(constraint);
 				// add end dependency
 				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 			}
 			break;
 			
