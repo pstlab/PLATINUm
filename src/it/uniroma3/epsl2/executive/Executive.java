@@ -9,6 +9,7 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanDispatcherReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanMonitorReference;
@@ -203,6 +204,38 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 		
 		// create execution plan data-base
 		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
+		// initialize plan data-base
+		this.pdb.setup(plan);
+		
+		// initialization complete
+		synchronized (this.lock) {
+			// update status and send a signal
+			this.status = ExecutionStatus.READY;
+			this.lock.notifyAll();
+		}
+	}
+	
+	/**
+	 * 
+	 * @param plan
+	 * @throws InterruptedException
+	 */
+	public final void initialize(SolutionPlan plan) 
+			throws InterruptedException
+	{
+		// check status
+		synchronized (this.lock) {
+			while (!this.status.equals(ExecutionStatus.INACTIVE)) {
+				this.lock.wait();
+			}
+			
+			// change status and send a signal
+			this.status = ExecutionStatus.INITIALIZING;
+			this.lock.notifyAll();
+		}
+		
+		// create execution plan data-base
+		this.pdb = new EPSLExecutivePlanDataBaseManager(0, plan.getHorizon());
 		// initialize plan data-base
 		this.pdb.setup(plan);
 		

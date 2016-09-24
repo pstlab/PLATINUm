@@ -21,6 +21,7 @@ import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixStartTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
@@ -110,7 +111,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @param plan
 	 */
-	public abstract void init(SolutionPlan plan);
+	public abstract void setup(SolutionPlan plan);
 	
 	/**
 	 * 
@@ -238,7 +239,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param dependency
 	 * @param condition
 	 */
-	public void addStartExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus condition) {
+	protected void addStartExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus condition) {
 		// add node's start dependency and related condition
 		this.sdg.get(node).put(dependency, condition);
 	}
@@ -249,7 +250,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param dependency
 	 * @param condition
 	 */
-	public void addEndExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus condition) {
+	protected void addEndExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus condition) {
 		// add node's end dependency and related condition
 		this.edg.get(node).put(dependency, condition);
 	}
@@ -351,5 +352,206 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		fix.setEnd(end);
 		// propagate constraint
 		this.facade.propagate(fix);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareBeforeTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception
+	{
+		// create and propagate temporal constraint
+		TemporalConstraint constraint = this.iFactory.create(TemporalConstraintType.BEFORE);
+		// set data
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		constraint.setBounds(bounds);
+		// propagate constraint
+		this.facade.propagate(constraint);
+		
+		// set execution constraints
+		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+//		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareMeetsTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception
+	{
+		// create and propagate temporal constraint
+		TemporalConstraint constraint = this.iFactory.create(TemporalConstraintType.MEETS);
+		// set data
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		constraint.setBounds(bounds);
+		// propagate constraint
+		this.facade.propagate(constraint);
+		
+		// set execution constraints
+		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+//		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareAfterTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception 
+	{
+		// create constraint
+		TemporalConstraint constraint = this.iFactory.
+				create(TemporalConstraintType.AFTER);
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		// set bounds
+		constraint.setBounds(bounds);
+		// propagate temporal constraint
+		this.facade.propagate(constraint);
+		// add execution dependencies
+		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+//		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareDuringTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception 
+	{
+		// create constraint
+		TemporalConstraint constraint = this.iFactory.
+				create(TemporalConstraintType.DURING);
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		// set bounds
+		constraint.setBounds(bounds);
+		// propagate temporal constraint
+		this.facade.propagate(constraint);
+		// add execution dependencies
+		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+		
+		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
+		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareContainsTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception 
+	{
+		// create constraint
+		TemporalConstraint constraint = this.iFactory.
+				create(TemporalConstraintType.CONTAINS);
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		// set bounds
+		constraint.setBounds(bounds);
+		// propagate temporal constraint
+		this.facade.propagate(constraint);
+		// add execution dependencies
+		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+		
+		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareEqualsTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception 
+	{
+		// create constraint
+		TemporalConstraint constraint = this.iFactory.
+				create(TemporalConstraintType.EQUALS);
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		// set bounds
+		constraint.setBounds(bounds);
+		// propagate temporal constraint
+		this.facade.propagate(constraint);
+		// add execution dependencies
+		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+		
+		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareStartsDuringTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception 
+	{
+		// create constraint
+		TemporalConstraint constraint = this.iFactory.
+				create(TemporalConstraintType.STARTS_DURING);
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		// set bounds
+		constraint.setBounds(bounds);
+		// propagate temporal constraint
+		this.facade.propagate(constraint);
+		// add start dependency
+		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+//		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param bounds
+	 * @throws Exception
+	 */
+	protected void prepareEndsDuringTemporalConstraint(ExecutionNode reference, ExecutionNode target, long[][] bounds) 
+			throws Exception 
+	{
+		// create constraint
+		TemporalConstraint constraint = this.iFactory.
+				create(TemporalConstraintType.ENDS_DURING);
+		constraint.setReference(reference.getInterval());
+		constraint.setTarget(target.getInterval());
+		// set bounds
+		constraint.setBounds(bounds);
+		// propagate temporal constraint
+		this.facade.propagate(constraint);
+		// add end dependency
+		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+//		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 	}
 }

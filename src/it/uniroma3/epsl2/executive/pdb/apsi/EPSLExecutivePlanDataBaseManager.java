@@ -13,13 +13,30 @@ import it.uniroma3.epsl2.executive.pdb.ControllabilityType;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
+import it.uniroma3.epsl2.framework.domain.component.Token;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.AfterRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.BeforeRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.ContainsRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.DuringRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.EndsDuringRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.EqualsRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.MeetsRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.MetByRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.StartsDuringRelation;
+import it.uniroma3.epsl2.framework.lang.plan.timeline.Timeline;
+import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
+import it.uniroma3.epsl2.framework.parameter.lang.EnumerationConstantParameter;
+import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameter;
+import it.uniroma3.epsl2.framework.parameter.lang.NumericConstantParameter;
+import it.uniroma3.epsl2.framework.parameter.lang.NumericParameter;
+import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
+import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
-import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
 
 /**
@@ -42,12 +59,168 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * 
 	 */
 	@Override
-	public void init(SolutionPlan plan) {
-		
-		/*
-		 *  FIXME <---- IMPLEMENTARE
-		 */
-		
+	public void setup(SolutionPlan plan) 
+	{
+		try 
+		{
+			// map tokens to nodes
+			Map<Token, ExecutionNode> dictionary = new HashMap<>();
+			for (Timeline tl : plan.getTimelines())
+			{
+				// get tokens
+				for (Token token : tl.getTokens())
+				{
+					// create an execution node for the token
+					TemporalInterval i = token.getInterval();
+					// check controllability type
+					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.EXTERNAL_TOKEN : 
+						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
+					// get predicate
+					String predicate = token.getPredicate().getValue().getLabel();
+					
+					// check predicate's parameters and values
+					String[] pValues = new String[token.getPredicate().getValue().getNumberOfParameterPlaceHolders()];
+					ParameterType[] pTypes = new ParameterType[pValues.length];
+					// check values and types
+					for (int index = 0; index < pValues.length; index++) 
+					{
+						// get parameter by index
+						Parameter param = token.getPredicate().getParameterByIndex(index);
+						// check type
+						switch (param.getType())
+						{
+							case CONSTANT_ENUMERATION_PARAMETER_TYPE : {
+								// get parameter
+								EnumerationConstantParameter p = (EnumerationConstantParameter) param;
+								// set parameter value
+								pValues[index] = p.getValue();
+								// set parameter type
+								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+							}
+							break;
+							
+							case CONSTANT_NUMERIC_PARAMETER_TYPE : {
+								// get parameter
+								NumericConstantParameter p = (NumericConstantParameter) param;
+								// set parameter value
+								pValues[index] = new Integer(p.getValue()).toString();
+								// set parameter type
+								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+							}
+							break;
+							
+							case ENUMERATION_PARAMETER_TYPE : {
+								// get parameter
+								EnumerationParameter p = (EnumerationParameter) param;
+								// set parameter value
+								pValues[index] = p.getValue()[0];			// only one element expected
+								// set parameter type
+								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+
+							}
+							break;
+							
+							case NUMERIC_PARAMETER_TYPE : {
+								// get parameter 
+								NumericParameter p = (NumericParameter) param;
+								// set parameter value
+								pValues[index] = new Integer(p.getValue()[0]).toString();		// it should be the same as the upper bound
+								// set parameter type
+								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+							}
+							break;
+							
+							default : {
+								throw new RuntimeException("Unknown parameter type " + param.getType());
+							}
+						}
+					}
+					
+					// create the related execution node
+					ExecutionNode node = this.createNode(tl.getComponent().getName() + "." + tl.getName(), 
+							predicate, 
+							pTypes, 
+							pValues, 
+							new long[] {
+									i.getStartTime().getLowerBound(),
+									i.getStartTime().getUpperBound()
+							}, 
+							new long[] {
+									i.getEndTime().getLowerBound(),
+									i.getEndTime().getUpperBound()
+							}, 
+							new long[] {
+									i.getDurationLowerBound(),
+									i.getDurationUpperBound()
+							}, 
+							controllability);
+
+					
+					// add node
+					this.addNode(node);
+					// add created node to index
+					dictionary.put(token, node);
+				}
+			}
+			
+			// check relations
+			for (Relation rel : plan.getRelations()) 
+			{
+				try 
+				{
+					// check involved execution nodes
+					ExecutionNode reference = dictionary.get(rel.getReference().getToken());
+					ExecutionNode target = dictionary.get(rel.getTarget().getToken());
+					// add temporal constraints and related execution dependencies
+					this.createConstraintsAndDependencies(reference, target, rel);
+				}
+				catch (Exception ex) {
+					throw new ConsistencyCheckException("Error while propagating plan's relation " + rel + "\n" + ex.getMessage());
+				}
+			}
+			
+			// check consistency
+			this.facade.checkConsistency();
+			// check the schedule for all temporal intervals
+			for (ExecutionNode node : dictionary.values()) 
+			{
+				// check node schedule
+				CheckIntervalScheduleQuery query = this.qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+				query.setInterval(node.getInterval());
+				this.facade.process(query);
+			}
+			
+			// FIXME -> print execution dependency graph
+			for (ExecutionNodeStatus status : this.nodes.keySet())
+			{
+				// get nodes by status
+				for (ExecutionNode node : this.nodes.get(status))
+				{
+					// print node and the related execution conditions
+					System.out.println("Execution node " + node);
+					System.out.println("\tNode execution starting conditions:");
+					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
+					for (ExecutionNode dep : dependencies.keySet()) {
+						System.out.println("\t\tCan start if -> " + dep.getSignature() + " is in " + dependencies.get(dep));
+					}
+					
+					// get end conditions
+					dependencies = this.getNodeEndDependencies(node);
+					System.out.println("\tNode execution ending conditions:");
+					for (ExecutionNode dep : dependencies.keySet()) {
+						System.out.println("\t\tCan end if -> " + dep.getSignature() + " is in " + dependencies.get(dep));
+					}
+				}
+			}
+			
+			
+		}
+		catch (TemporalIntervalCreationException ex) {
+			throw new RuntimeException(ex.getMessage());
+		}
+		catch (ConsistencyCheckException ex) {
+			throw new RuntimeException(ex.getMessage());
+		}
 	}
 	
 	/**
@@ -236,190 +409,190 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param reference
 	 * @param target
 	 * @param rel
+	 * @throws Exception
+	 */
+	protected void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, Relation rel) 
+			throws Exception
+	{
+		// check temporal category
+		if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT))
+		{
+			// check relation
+			switch (rel.getType())
+			{
+				// meets temporal relation
+				case MEETS : {
+					// get meets relation
+					MeetsRelation meets = (MeetsRelation) rel;
+					// prepare meets constraint
+					this.prepareMeetsTemporalConstraint(reference, target, meets.getBounds());
+				}
+				break;
+				
+				// before temporal relation
+				case BEFORE : {
+					// get before relation
+					BeforeRelation before = (BeforeRelation) rel;
+					// prepare before constraint
+					this.prepareBeforeTemporalConstraint(reference, target, before.getBounds());
+				}
+				break;
+				
+				case MET_BY : {
+					// get met-by relation
+					MetByRelation metby = (MetByRelation) rel;
+					this.prepareAfterTemporalConstraint(reference, target, metby.getBounds());
+				}
+				break;
+				
+				case AFTER : {
+					// get after relation
+					AfterRelation after = (AfterRelation) rel;
+					// prepare after constraint
+					this.prepareAfterTemporalConstraint(reference, target, after.getBounds());
+				}
+				break;
+				
+				case CONTAINS : {
+					// get contains relation
+					ContainsRelation contains = (ContainsRelation) rel;
+					// prepare contains constraint
+					this.prepareContainsTemporalConstraint(reference, target, contains.getBounds());
+				}
+				break;
+				
+				case DURING : {
+					// get during relation
+					DuringRelation during = (DuringRelation) rel;
+					// prepare during constraint
+					this.prepareDuringTemporalConstraint(reference, target, during.getBounds());
+				}
+				break;
+				
+				case EQUALS : {
+					// get equals relation
+					EqualsRelation equals = (EqualsRelation) rel;
+					// prepare equals constraint
+					this.prepareEqualsTemporalConstraint(reference, target, equals.getBounds());
+				}
+				break;
+				
+				case STARTS_DURING : {
+					// get starts-during relation
+					StartsDuringRelation sduring = (StartsDuringRelation) rel;
+					// prepare starts-during constraint
+					this.prepareStartsDuringTemporalConstraint(reference, target, sduring.getBounds());
+				}
+				break;
+				
+				case ENDS_DURING : {
+					// get ends-during relation
+					EndsDuringRelation eduring = (EndsDuringRelation) rel;
+					// prepare ends-during constraint
+					this.prepareEndsDuringTemporalConstraint(reference, target, eduring.getBounds());
+				}
+				break;
+				
+				default : {
+					throw new RuntimeException("Unknown relation " + rel.getType());
+				}
+				
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @param rel
 	 */
 	protected void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, EPSLRelationDescriptor rel) 
 			throws Exception 
 	{
 		// check relation type
-		switch (rel.getType()) {
-		
+		switch (rel.getType()) 
+		{
+			// meets temporal relation
 			case "meets" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.MEETS);
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				constraint.setBounds(new long[][] {
-					new long[] {0, 0}
+				// prepare meets constraint
+				this.prepareMeetsTemporalConstraint(reference, target, new long[][] {
+					{0, 0}
 				});
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				// add start dependency
-				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
-				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
 			}
 			break;
 			
 			case "before" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.BEFORE);
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				// check bound
-				long[] firstBound = rel.getFirstBound();
-				if (firstBound[1] > this.getHorizon()) {
-					firstBound[1] = this.getHorizon();
-				}
-				// set bound
-				constraint.setBounds(new long[][] {
-					firstBound
+				// prepare before constraint
+				this.prepareBeforeTemporalConstraint(reference, target, new long[][] {
+					rel.getFirstBound()
 				});
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				// add start dependency
-				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
-				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+			}
+			break;
+			
+			case "met-by" : {
+				// prepare after constraint
+				this.prepareAfterTemporalConstraint(reference, target, new long[][] {
+					{0, 0}
+				});
 			}
 			break;
 			
 			case "after" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.AFTER);
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				// set bounds
-				constraint.setBounds(new long[][] {
+				// prepare after constraint
+				this.prepareAfterTemporalConstraint(reference, target, new long[][] {
 					rel.getFirstBound()
 				});
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				// add execution dependencies
-				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
-				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
 			}
 			break;
 			
 			case "during" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.DURING);
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				// set bounds
-				constraint.setBounds(new long[][] {
+				// prepare during constraint
+				this.prepareDuringTemporalConstraint(reference, target, new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				
-				// add execution dependencies
-				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-				
-				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
-				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 			}
 			break;
 			
 			case "contains" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.CONTAINS);
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				// set bounds
-				constraint.setBounds(new long[][] {
+				// prepare contains constraint
+				this.prepareContainsTemporalConstraint(reference, target, new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				// add execution dependencies
-				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-				
-				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
-				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
 			}
 			break;
 			
 			case "equals" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.EQUALS);
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				// add execution dependencies
-				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-				
-				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
-				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+				// prepare equals constraint
+				this.prepareEqualsTemporalConstraint(reference, target, new long[][] {
+					{0, 0},
+					{0, 0}
+				});
 			}
 			break;
 			
 			case "starts_during" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.STARTS_DURING);
-				// set intervals
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				// set bounds
-				constraint.setBounds(new long[][] {
+				// prepare starts-during constraint
+				this.prepareStartsDuringTemporalConstraint(reference, target, new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				// add start dependency
-				this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-				this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
 			}
 			break;
 			
 			case "ends_during" : {
-				
-				// create constraint
-				TemporalConstraint constraint = this.iFactory.
-						create(TemporalConstraintType.ENDS_DURING);
-				// set intervals
-				constraint.setReference(reference.getInterval());
-				constraint.setTarget(target.getInterval());
-				// set bounds
-				constraint.setBounds(new long[][] {
+				// prepare ends-during constraint
+				this.prepareEndsDuringTemporalConstraint(reference, target, new long[][] {
 					rel.getFirstBound(),
 					rel.getSecondBound()
 				});
-				
-				// propagate temporal constraint
-				this.facade.propagate(constraint);
-				// add end dependency
-				this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-				this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 			}
 			break;
 			
 			default : {
+				// unknown temporal relation
 				throw new RuntimeException("Unknown relation " + rel.getType());
 			}
 		}

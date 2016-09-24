@@ -1,16 +1,23 @@
 package it.uniroma3.epsl2.testing.app.executive.satellite;
 
-import it.istc.pst.epsl.microkernel.internal.solver.exception.NoSolutionFoundException;
-import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
+import it.uniroma3.epsl2.deliberative.Planner;
+import it.uniroma3.epsl2.deliberative.PlannerBuilder;
 import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.est.EarliestStartTimeExecutive;
+import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
+import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
+import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 
 /**
  * 
  * @author anacleto
  *
  */
-class SatelliteExecutorTest {
+class SatelliteExecutorTest 
+{
+	private static final String DDL = "domains/satellite/satellite.ddl";
+	private static final String PDL = "domains/satellite/satellite.pdl";
 
 	/**
 	 * 
@@ -20,13 +27,12 @@ class SatelliteExecutorTest {
 	{
 		try 
 		{
-			System.out.println("Start plannig...");
-			// create planner
-			EPSLSatellitePlanner planner = new EPSLSatellitePlanner();
-			// generate a plan
-			EPSLPlanDescriptor plan = planner.plan();
-
+			// build the planner
+			Planner planner = PlannerBuilder.build(EPSL2SatellitePlanner.class.getName(), DDL, PDL);
+			// start deliberative process 
+			SolutionPlan plan = planner.plan();
 			System.out.println();
+			System.out.println("... solution found after " + plan.getSolvingTime() + " msecs\n");
 			System.out.println(plan);
 			System.out.println();
 			
@@ -36,7 +42,7 @@ class SatelliteExecutorTest {
 			// start executing the plan
 			executor.execute();
 		}
-		catch (NoSolutionFoundException ex) {
+		catch (SynchronizationCycleException  | ProblemInitializationException | NoSolutionFoundException ex) {
 			System.err.println(ex.getMessage());
 		}
 		catch (InterruptedException ex) {

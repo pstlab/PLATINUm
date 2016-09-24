@@ -10,12 +10,12 @@ import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
  * @author anacleto
  *
  */
-class EPSLSatellitePlanner 
+class EPSL1SatellitePlanner 
 {
 	private static final String DDL = "domains/satellite/satellite.ddl";
 	private static final String PDL = "domains/satellite/satellite.pdl";
 	
-	protected EPSLSatellitePlanner() {}
+	protected EPSL1SatellitePlanner() {}
 	
 	/**
 	 * 
@@ -23,7 +23,8 @@ class EPSLSatellitePlanner
 	 * @throws NoSolutionFoundException
 	 */
 	public EPSLPlanDescriptor plan() 
-			throws NoSolutionFoundException {
+			throws NoSolutionFoundException 
+	{
 		// build planner
 		 EPSLRunnableApplicationPlanner planner = EPSLApplicationBuilder.buildAPSIPlanner(DDL, PDL);
 		// run planner
