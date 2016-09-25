@@ -16,8 +16,8 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class SolutionPlan {
-	
+public class SolutionPlan 
+{
 	private long horizion;
 	private long solvingTime;
 	private String name;
@@ -95,6 +95,14 @@ public class SolutionPlan {
 	 */
 	public List<Timeline> getTimelines() {
 		return new ArrayList<>(this.timelines);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Timeline> getObservations() {
+		return new ArrayList<>(this.observations);
 	}
 	
 	/**

@@ -65,6 +65,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 		{
 			// map tokens to nodes
 			Map<Token, ExecutionNode> dictionary = new HashMap<>();
+			// setup timelines
 			for (Timeline tl : plan.getTimelines())
 			{
 				// get tokens
@@ -162,6 +163,106 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 					dictionary.put(token, node);
 				}
 			}
+			
+			// setup observations
+			for (Timeline tl : plan.getObservations())
+			{
+				// get tokens
+				for (Token token : tl.getTokens())
+				{
+					// create an execution node for the token
+					TemporalInterval i = token.getInterval();
+					// check controllability type
+					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.EXTERNAL_TOKEN : 
+						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
+					// get predicate
+					String predicate = token.getPredicate().getValue().getLabel();
+					
+					// check predicate's parameters and values
+					String[] pValues = new String[token.getPredicate().getValue().getNumberOfParameterPlaceHolders()];
+					ParameterType[] pTypes = new ParameterType[pValues.length];
+					// check values and types
+					for (int index = 0; index < pValues.length; index++) 
+					{
+						// get parameter by index
+						Parameter param = token.getPredicate().getParameterByIndex(index);
+						// check type
+						switch (param.getType())
+						{
+							case CONSTANT_ENUMERATION_PARAMETER_TYPE : {
+								// get parameter
+								EnumerationConstantParameter p = (EnumerationConstantParameter) param;
+								// set parameter value
+								pValues[index] = p.getValue();
+								// set parameter type
+								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+							}
+							break;
+							
+							case CONSTANT_NUMERIC_PARAMETER_TYPE : {
+								// get parameter
+								NumericConstantParameter p = (NumericConstantParameter) param;
+								// set parameter value
+								pValues[index] = new Integer(p.getValue()).toString();
+								// set parameter type
+								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+							}
+							break;
+							
+							case ENUMERATION_PARAMETER_TYPE : {
+								// get parameter
+								EnumerationParameter p = (EnumerationParameter) param;
+								// set parameter value
+								pValues[index] = p.getValue()[0];			// only one element expected
+								// set parameter type
+								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+
+							}
+							break;
+							
+							case NUMERIC_PARAMETER_TYPE : {
+								// get parameter 
+								NumericParameter p = (NumericParameter) param;
+								// set parameter value
+								pValues[index] = new Integer(p.getValue()[0]).toString();		// it should be the same as the upper bound
+								// set parameter type
+								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+							}
+							break;
+							
+							default : {
+								throw new RuntimeException("Unknown parameter type " + param.getType());
+							}
+						}
+					}
+					
+					// create the related execution node
+					ExecutionNode node = this.createNode(tl.getComponent().getName() + "." + tl.getName(), 
+							predicate, 
+							pTypes, 
+							pValues, 
+							new long[] {
+									i.getStartTime().getLowerBound(),
+									i.getStartTime().getUpperBound()
+							}, 
+							new long[] {
+									i.getEndTime().getLowerBound(),
+									i.getEndTime().getUpperBound()
+							}, 
+							new long[] {
+									i.getDurationLowerBound(),
+									i.getDurationUpperBound()
+							}, 
+							controllability);
+
+					
+					// add node
+					this.addNode(node);
+					// add created node to index
+					dictionary.put(token, node);
+				}
+			}
+			
 			
 			// check relations
 			for (Relation rel : plan.getRelations()) 

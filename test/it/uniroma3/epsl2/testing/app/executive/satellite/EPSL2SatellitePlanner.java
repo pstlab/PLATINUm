@@ -1,13 +1,9 @@
 package it.uniroma3.epsl2.testing.app.executive.satellite;
 
 import it.uniroma3.epsl2.deliberative.Planner;
-import it.uniroma3.epsl2.deliberative.PlannerBuilder;
 import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.solver.SolverType;
-import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerConfiguration;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -39,7 +35,6 @@ public class EPSL2SatellitePlanner extends Planner
 		super();
 	}
 	
-//	
 //	/**
 //	 * 
 //	 * @param args
