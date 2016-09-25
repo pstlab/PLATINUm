@@ -19,7 +19,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 @PlannerConfiguration(
 		
 	// set solving strategy
-	solver = SolverType.BEST_FIRST,
+	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
 		
 	// set heuristic
 	heuristic = FlawSelectionHeuristicType.SHFSH,
@@ -28,7 +28,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	strategy = SearchStrategyType.DFS,
 	
 	// set log level
-	logging = FrameworkLoggingLevel.INFO
+	logging = FrameworkLoggingLevel.OFF
 )
 public class FourByThreeITIADeliberative extends Planner
 {

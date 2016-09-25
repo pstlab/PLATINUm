@@ -7,11 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseObserver;
+import it.uniroma3.epsl2.framework.domain.component.pdb.PlanDataBaseEvent;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
@@ -28,18 +31,24 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.plan.Goal;
  * @author anacleto
  *
  */
-public class SemanticFlawFilter extends FlawFilter implements PlanDataBaseObserver
+public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanDataBaseObserver
 {
 	@PlanDataBaseReference
 	private PlanDataBase pdb;
 	
-	private JenaTemporalSemanticReasoner reasoner;			// knowledge reasoner
+	private BlockingQueue<PlanDataBaseEvent> queue;			// event queue
+	private Thread process;									// knowledge update process
+	private final TemporalSemanticReasoner reasoner;				// temporal reasoner
 	
 	/**
 	 * 
 	 */
 	protected SemanticFlawFilter() {
 		super(FlawFilterType.SFF);
+		this.process = new Thread(this);
+		this.queue = new LinkedBlockingQueue<>();
+		// setup knowledge reasoner
+		this.reasoner = new JenaTemporalSemanticReasoner();
 	}
 	
 	/**
@@ -50,8 +59,6 @@ public class SemanticFlawFilter extends FlawFilter implements PlanDataBaseObserv
 	{
 		// subscribe to the plan data base
 		this.pdb.subscribe(this);
-		// setup knowledge reasoner
-		this.reasoner = new JenaTemporalSemanticReasoner();
 		// setup the knowledge on the initial plan and the initial agenda
 		Plan plan = this.pdb.getPlan();
 		for (Decision decision : plan.getDecisions()) {
@@ -68,49 +75,64 @@ public class SemanticFlawFilter extends FlawFilter implements PlanDataBaseObserv
 		for (Relation rel : agenda.getRelations()) {
 			this.reasoner.add(rel);
 		}
+		
+		// start knowledge update process
+		this.process.start();
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void propagated(FlawSolution solution) 
+	public void run() 
 	{
-		// check added decisions (either active or pending)
-		List<Decision> decisions = solution.getCreatedDecisions();
-		decisions.addAll(solution.getActivatedDecisisons());
-		// add decisions to the knowledge
-		for (Decision dec : decisions) {
-			this.reasoner.add(dec);
+		// running flag
+		boolean running = true;
+		while (running)
+		{
+			try
+			{
+				// wait an event
+				PlanDataBaseEvent event = this.queue.take();
+				// check type
+				switch (event.getType()) 
+				{
+					case PROPAGATE : {
+						// handle event
+						this.handlePropagateEvent(event.getSolution());
+					}
+					break;
+					
+					case RETRACT : {
+						// handle event
+						this.handleRetractEvent(event.getSolution());
+					}
+					break;
+				}
+				
+			}
+			catch (InterruptedException ex) {
+				// stop running
+				running = false;
+				System.err.println(ex.getMessage());
+			}
 		}
 		
-		// check added relations (either active or pending)
-		List<Relation> relations = solution.getCreatedRelations();
-		relations.addAll(solution.getActivatedRelations());			// this could be not necessary
-		// add relations to the knowledge
-		for (Relation rel : relations) {
-			this.reasoner.add(rel);
-		}
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void retracted(FlawSolution solution) 
+	public void notify(PlanDataBaseEvent event) 
 	{
-		// remove only created relations
-		List<Relation> relations = solution.getCreatedRelations();
-		// remove relations from the knowledge
-		for (Relation rel : relations) {
-			this.reasoner.delete(rel);
+		try 
+		{
+			// simply write into the queue
+			this.queue.put(event);
 		}
-		
-		// remove only created decisions
-		List<Decision> decisions = solution.getCreatedDecisions();
-		// remove decisions from the knowledge
-		for (Decision dec : decisions) {
-			this.reasoner.delete(dec);
+		catch (InterruptedException ex) {
+			System.err.println(ex.getMessage());
 		}
 	}
 	
@@ -147,7 +169,13 @@ public class SemanticFlawFilter extends FlawFilter implements PlanDataBaseObserv
 			this.logger.debug(str);
 			
 			// get the inferred "ordering" graph
-			Map<Decision, List<Decision>> graph = this.reasoner.getOrderingGraph();
+			Map<Decision, List<Decision>> graph;
+			// mutually access to the reasoner
+			synchronized (this.reasoner) {
+				// read the graph
+				graph = this.reasoner.getOrderingGraph();
+			}
+			
 			// compute the hierarchy
 			List<Decision>[] hierarchy = this.computeHierarchy(graph);
 			// do filter flaws
@@ -259,5 +287,57 @@ public class SemanticFlawFilter extends FlawFilter implements PlanDataBaseObserv
 		
 		// get the hierarchy
 		return hierarchy;
+	}
+	
+	/**
+	 * 
+	 * @param solution
+	 */
+	private void handlePropagateEvent(FlawSolution solution) 
+	{
+		// mutually access to reasoner
+		synchronized(this.reasoner) 
+		{
+			// check added decisions (either active or pending)
+			List<Decision> decisions = solution.getCreatedDecisions();
+			decisions.addAll(solution.getActivatedDecisisons());
+			// add decisions to the knowledge
+			for (Decision dec : decisions) {
+				this.reasoner.add(dec);
+			}
+			
+			// check added relations (either active or pending)
+			List<Relation> relations = solution.getCreatedRelations();
+			relations.addAll(solution.getActivatedRelations());			// this could be not necessary
+			// add relations to the knowledge
+			for (Relation rel : relations) {
+				this.reasoner.add(rel);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param solution
+	 */
+	private void handleRetractEvent(FlawSolution solution) 
+	{
+		// mutually access to reasoner
+		synchronized (this.reasoner)
+		{
+			// remove only created relations
+			List<Relation> relations = solution.getCreatedRelations();
+			// remove relations from the knowledge
+			for (Relation rel : relations) {
+				this.reasoner.delete(rel);
+			}
+			
+			// remove only created decisions
+			List<Decision> decisions = solution.getCreatedDecisions();
+			// remove decisions from the knowledge
+			for (Decision dec : decisions) {
+				this.reasoner.delete(dec);
+			}
+		}
 	}
 }

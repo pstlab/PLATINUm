@@ -203,12 +203,12 @@ DOMAIN FourByThree_Domain
 			// human sequence
 			h3 BEFORE [0, +INF] h4;
 			h4 BEFORE [0, +INF] h2;
-			h2 BEFORE [0, +INF] r2;
+			h2 BEFORE [0, +INF] h1;
 			
 			// human to robot coordination
-			h2 BEFORE [0, +INF] h1;
-			h4 AFTER [0, +INF] r3;
-			
+			h2 MEETS r2;
+			//r3 BEFORE [0, +INF] h4;
+
 			?r3h4 = H4;
 			?r1h3 = H3;			
 			?r2h1 = H1;
@@ -223,8 +223,8 @@ DOMAIN FourByThree_Domain
 			cd1 <?> RobotHandController.hand.Holding(?device1);
 			cd2 <!> RobotHandController.hand.Holding(?device2);
 			
-			STARTS-DURING [0, +INF] [0, +INF] cd1;
-			ENDS-DURING [0, +INF] [0, +INF] cd2;
+			MET-BY cd1;
+			MEETS cd2;
 			DURING [0, +INF] [0, +INF] cd0;
 			
 			?device1 = T1;
@@ -256,6 +256,7 @@ DOMAIN FourByThree_Domain
 			cd3 BEFORE [0, +INF] cd5;
 			cd2 BEFORE [0, +INF] cd3;
 			cd4 BEFORE [0, +INF] cd5;
+			cd4 AFTER [0, +INF] cd3;
 			
 			?device1 = T1; 
 			?task3 = R1;
@@ -286,6 +287,7 @@ DOMAIN FourByThree_Domain
 			cd3 BEFORE [0, +INF] cd5;
 			cd2 BEFORE [0, +INF] cd3;
 			cd4 BEFORE [0, +INF] cd5;
+			cd4 AFTER [0, +INF] cd3;
 			
 			?device1 = T2; 
 			?task3 = R2;
@@ -314,6 +316,7 @@ DOMAIN FourByThree_Domain
 			cd3 BEFORE [0, +INF] cd5;
 			cd2 BEFORE [0, +INF] cd3;
 			cd4 BEFORE [0, +INF] cd5;
+			cd4 AFTER [0, +INF] cd3;
 			
 			?device1 = T1; 
 			?task3 = R3;

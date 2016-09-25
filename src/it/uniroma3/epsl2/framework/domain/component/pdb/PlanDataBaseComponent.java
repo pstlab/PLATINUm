@@ -1212,8 +1212,10 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			this.commit(solution);
 			// notify update to observers
 			for (PlanDataBaseObserver observer : this.observers) {
-				// notify propagation
-				observer.propagated(solution);
+				// create event
+				PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.PROPAGATE, solution);
+				// notify event
+				observer.notify(event);
 			}
 		} 
 		catch (FlawSolutionApplicationException ex) {
@@ -1232,8 +1234,10 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		this.rollback(solution);
 		// notify update to observers
 		for (PlanDataBaseObserver observer : this.observers) {
+			// create event
+			PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.RETRACT, solution);
 			// notify retraction
-			observer.retracted(solution);
+			observer.notify(event);
 		}
 	}
 	
