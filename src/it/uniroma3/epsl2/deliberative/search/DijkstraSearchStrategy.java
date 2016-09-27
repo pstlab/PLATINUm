@@ -21,7 +21,8 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 	 */
 	protected DijkstraSearchStrategy() {
 		super(SearchStrategyType.DIJKSTRA);
-		this.fringe = new PriorityQueue<SearchSpaceNode>(this);
+		// java7 compliant constructor
+		this.fringe = new PriorityQueue<SearchSpaceNode>(11, this);
 	}
 	
 	/**

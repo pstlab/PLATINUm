@@ -28,7 +28,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	strategy = SearchStrategyType.DFS,
 	
 	// set log level
-	logging = FrameworkLoggingLevel.INFO
+	logging = FrameworkLoggingLevel.OFF
 )
 public class FourByThreeDeliberative extends Planner
 {
