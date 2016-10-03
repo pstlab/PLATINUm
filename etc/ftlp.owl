@@ -26,10 +26,31 @@ Temporal Reasoning Ontology for Timeline-based Planning</rdfs:comment>
     
 
 
+    <!-- http://www.uniroma3.it/ontologies/ftlp#After -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#After">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <owl:inverseOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#Before"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.uniroma3.it/ontologies/ftlp#Before -->
 
     <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#Before">
         <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#CausalLink -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#CausalLink">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#CausalRelation"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
     </owl:ObjectProperty>
     
 
@@ -38,8 +59,6 @@ Temporal Reasoning Ontology for Timeline-based Planning</rdfs:comment>
 
     <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#CausalRelation">
         <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanRelation"/>
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
     </owl:ObjectProperty>
     
 
@@ -63,11 +82,38 @@ Temporal Reasoning Ontology for Timeline-based Planning</rdfs:comment>
     
 
 
+    <!-- http://www.uniroma3.it/ontologies/ftlp#EndsDuring -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#EndsDuring">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#Equals -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#Equals">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.uniroma3.it/ontologies/ftlp#PlanRelation -->
 
     <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#PlanRelation">
         <rdfs:domain rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
         <rdfs:range rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.uniroma3.it/ontologies/ftlp#StartsDuring -->
+
+    <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#StartsDuring">
+        <rdfs:subPropertyOf rdf:resource="http://www.uniroma3.it/ontologies/ftlp#TemporalRelation"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
     </owl:ObjectProperty>
     
 
@@ -83,6 +129,7 @@ Temporal Reasoning Ontology for Timeline-based Planning</rdfs:comment>
     <!-- http://www.uniroma3.it/ontologies/ftlp#ordering -->
 
     <owl:ObjectProperty rdf:about="http://www.uniroma3.it/ontologies/ftlp#ordering">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
         <rdfs:domain rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
         <rdfs:range rdf:resource="http://www.uniroma3.it/ontologies/ftlp#PlanDecision"/>
     </owl:ObjectProperty>

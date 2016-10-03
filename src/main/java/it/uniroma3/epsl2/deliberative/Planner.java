@@ -49,7 +49,8 @@ public class Planner extends ApplicationFrameworkObject
 	public SolutionPlan plan() 
 			throws NoSolutionFoundException {
 		// solve the problem and get the plan
-		return this.solver.solve();
+		SolutionPlan plan = this.solver.solve();
+		return plan;
 	}
 	
 	/**

@@ -89,7 +89,12 @@ public abstract class Solver extends ApplicationFrameworkObject
 			throws PlanRefinementException 
 	{
 		// get operators of the last propagated node
-		List<Operator> from = last.getOperators();
+		List<Operator> from = new ArrayList<>();
+		// check last node 
+		if (last != null) {
+			// get operators from the last propagated node
+			from = last.getOperators();
+		}
 		List<Operator> to = extracted.getOperators();
 		
 		// check if retraction is needed

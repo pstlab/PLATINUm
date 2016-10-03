@@ -58,11 +58,13 @@ public class PseudoControllabilityAwareSolver extends Solver
 		long start = System.currentTimeMillis();			// execution start time
 		this.stepCounter = 0;								// solving step counter
 
-		SearchSpaceNode extracted = null;			// current extracted node
-		SearchSpaceNode last = null;				// root node
-		
 		// the solution plan
 		SolutionPlan plan = null;
+		SearchSpaceNode extracted = null;			// current extracted node
+		SearchSpaceNode last = null;				// root node
+		// create root node and add to the fringe
+		SearchSpaceNode root = new SearchSpaceNode();
+		this.strategy.enqueue(root);
 		
 		// start with pseudo-controllability mode
 		boolean pseudocontrollability = true;
@@ -77,25 +79,14 @@ public class PseudoControllabilityAwareSolver extends Solver
 				// skip flag
 				boolean skip = false;
 				
-				// check if last is root node
-				if (this.stepCounter > 1) 
-				{
-					// extract next node from the fringe
-					extracted = this.strategy.dequeue();
-					// propagate node
-					this.logger.debug("Propagating node:\n" + extracted + "\nof " + this.strategy.getFringeSize() + " available in the fringe");
-					// context switch
-					this.contextSwitch(last, extracted);
-					// updated last propagated node
-					last = extracted;
-				} 
-				else 
-				{
-					// create root node
-					extracted = new SearchSpaceNode();
-					// set extracted as the root node
-					last = extracted;
-				}
+				// extract next node from the fringe
+				extracted = this.strategy.dequeue();
+				// propagate node
+				this.logger.debug("Propagating node:\n" + extracted + "\nof " + this.strategy.getFringeSize() + " available in the fringe");
+				// context switch
+				this.contextSwitch(last, extracted);
+				// updated last propagated node
+				last = extracted;
 				
 				try 
 				{
@@ -107,7 +98,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				{
 					// check solving modality
 					if (pseudocontrollability) {
-						// add node to the priority queue
+						// add node to the black list
 						this.blacklist.enqueue(extracted);
 						// skip
 						skip = true;
@@ -123,6 +114,21 @@ public class PseudoControllabilityAwareSolver extends Solver
 					this.logger.debug("Looking for flaws on the current refined plan...");
 	 				// choose the best flaws to solve
 					List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
+					
+					// print data
+					System.out.println("Solving step(" + this.stepCounter  +") -> Selected Flaw(s) to solve:");
+					for (Flaw flaw : flaws) {
+						System.out.println("- " + flaw);
+					}
+					this.pdb.display();
+					try {
+						Thread.sleep(1000);
+					}catch (InterruptedException ex) {
+						
+					}
+					System.out.println("---------------------------------------------------");
+					
+					
 					// create a branch for each "equivalent" flaw to solve next
 					for (Flaw flaw : flaws)
 					{

@@ -65,13 +65,23 @@ public class JenaTemporalSemanticReasoner implements TemporalSemanticReasoner
 	{
 		// get decision type
 		Resource type = this.abox.getResource(ONTOLOGY_NS + "Decision");
-		// check if a resource already exists
-		if (this.abox.getResource(ONTOLOGY_NS + decision.getId()) != null) {
-			// create individual
-			Resource resource = this.abox.createResource(ONTOLOGY_NS + decision.getId(), type);
-			// add entry to index
-			this.index.put(resource, decision);
+		// create individual
+		Resource resource = this.abox.createResource(ONTOLOGY_NS + decision.getId(), type);
+		// check decision's causal link
+		Decision parent = decision.getCausalLink();
+		// check if a causal link relation exists
+		if (parent != null) 
+		{
+			// get parent resource
+			Resource parentResource = this.abox.getResource(ONTOLOGY_NS + parent.getId());
+			// get causal link property
+			Property causalLink = this.tbox.getProperty(ONTOLOGY_NS + TemporalRole.CAUSAL_LINK);
+			// add statement to the knowledge base
+			this.abox.add(resource, causalLink, parentResource);
 		}
+		
+		// add entry to index
+		this.index.put(resource, decision);
 	}
 	
 	/**
@@ -103,19 +113,10 @@ public class JenaTemporalSemanticReasoner implements TemporalSemanticReasoner
 			TemporalRole role = this.checkRelationType(relation.getType());
 			// get property from the general knowledge
 			Property property = this.tbox.getProperty(ONTOLOGY_NS + role.getLabel());
-			// get related resources
-			Resource subject, object;
-			if (relation.getType().equals(RelationType.AFTER) || 
-					relation.getType().equals(RelationType.MET_BY)) {
-				// set subject and object
-				subject = this.abox.getResource(ONTOLOGY_NS + relation.getTarget().getId());
-				object = this.abox.getResource(ONTOLOGY_NS + relation.getReference().getId());
-			}
-			else {
-				// set subject and object
-				subject = this.abox.getResource(ONTOLOGY_NS + relation.getReference().getId());
-				object = this.abox.getResource(ONTOLOGY_NS + relation.getTarget().getId());
-			}
+			// get subject
+			Resource subject = this.abox.getResource(ONTOLOGY_NS + relation.getReference().getId());
+			// get object
+			Resource object = this.abox.getResource(ONTOLOGY_NS + relation.getTarget().getId());
 			// check if the related statement already exists
 			if (!this.abox.listStatements(subject, property, object).hasNext()) {
 				// add statement to the knowledge base
@@ -223,7 +224,12 @@ public class JenaTemporalSemanticReasoner implements TemporalSemanticReasoner
 		switch (type)
 		{
 			case AFTER : 
-			case MET_BY :
+			case MET_BY : {
+				// set role
+				role = TemporalRole.AFTER;
+			}
+			break;
+			
 			case MEETS : 
 			case BEFORE : {
 				// set role
@@ -238,11 +244,21 @@ public class JenaTemporalSemanticReasoner implements TemporalSemanticReasoner
 			}
 			break;
 			
-			case DURING : 
-			case STARTS_DURING : 
-			case ENDS_DURING : {
+			case DURING : {
 				// set role 
 				role = TemporalRole.DURING;
+			}
+			break; 
+			
+			case STARTS_DURING :  {
+				// set role
+				role = TemporalRole.STARTS_DURING;
+			}
+			break;
+			
+			case ENDS_DURING : {
+				// set role
+				role = TemporalRole.ENDS_DURING;
 			}
 			break;
 			

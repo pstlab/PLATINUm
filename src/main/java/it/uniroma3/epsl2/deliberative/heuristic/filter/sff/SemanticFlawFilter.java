@@ -154,12 +154,7 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 		// next flaws to filter
 		Set<Flaw> toFilter = new HashSet<>();
 		// check goals to analyze
-		if (goals.size() == 1) {
-			// no filter is needed
-			toFilter.addAll(goals);
-			this.logger.debug("Only one planning goal found\n " + toFilter);
-		}
-		else if (goals.size() > 1) 
+		if (!goals.isEmpty()) 
 		{
 			// list planning goals to analyze
 			String str = "Planning goals to analyze:\n";
@@ -174,7 +169,22 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 			synchronized (this.reasoner) {
 				// read the graph
 				graph = this.reasoner.getOrderingGraph();
+				// release lock
+				this.reasoner.notifyAll();
 			}
+			
+			
+			str = "\n************************************************\n";
+			str += "Inferred Ordering Graph:\n";
+			for (Decision i : graph.keySet()) {
+				str += "\tDecision: " + i.getId() +"-" + i.getComponent().getName() + "." + i.getValue().getLabel() + "\n";
+				for (Decision j : graph.get(i)) {
+					str += "\t\t-> " + j.getId() + "-" + j.getComponent().getName() + "." + j.getValue().getLabel() + "\n";
+				}
+			}
+			str += "************************************************\n";
+			System.out.println(str);
+			
 			
 			// compute the hierarchy
 			List<Decision>[] hierarchy = this.computeHierarchy(graph);
@@ -313,6 +323,9 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 			for (Relation rel : relations) {
 				this.reasoner.add(rel);
 			}
+			
+			// release lock
+			this.reasoner.notifyAll();
 		}
 	}
 	
@@ -338,6 +351,9 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 			for (Decision dec : decisions) {
 				this.reasoner.delete(dec);
 			}
+			
+			// release lock
+			this.reasoner.notifyAll();
 		}
 	}
 }

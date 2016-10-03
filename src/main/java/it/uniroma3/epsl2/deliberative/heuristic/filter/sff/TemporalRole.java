@@ -11,6 +11,11 @@ enum TemporalRole
 	 * 
 	 */
 	BEFORE("Before"),
+
+	/**
+	 * 
+	 */
+	AFTER("After"),
 	
 	/**
 	 * 
@@ -25,13 +30,23 @@ enum TemporalRole
 	/**
 	 * 
 	 */
-	ORDERING("ordering"),
+	STARTS_DURING("StartsDuring"),
 	
 	/**
 	 * 
 	 */
-	CAUSAL_RELATION("CausalRelation");
+	ENDS_DURING("EndsDuring"),
 	
+	/**
+	 * 
+	 */
+	CAUSAL_LINK("CausalLink"),
+	
+	/**
+	 * 
+	 */
+	ORDERING("ordering");
+
 	private String label;
 	
 	/**
@@ -48,6 +63,14 @@ enum TemporalRole
 	 */
 	public String getLabel() {
 		return label;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return this.getLabel();
 	}
 
 }

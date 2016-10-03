@@ -3,9 +3,7 @@ package it.uniroma3.epsl2.executive;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,17 +21,18 @@ public final class AtomicClockManager implements Runnable, ClockManager
 	
 	private long tickStart;
 	private AtomicLong tick;
-	private List<ClockObserver> observers;									// list of observers
+	private ExecutionManager executive;										// executive system
 	
 	/**
 	 * 
+	 * @param exec
 	 */
-	public AtomicClockManager() {
+	public AtomicClockManager(ExecutionManager exec) {
 		super();
 		// set tick start
 		this.tickStart = 0;
-		// set observers
-		this.observers = new ArrayList<ClockObserver>();
+		// set executive
+		this.executive = exec;
 		// initialize clock thread and tick
 		this.tick = null;
 		this.process = null;
@@ -53,24 +52,6 @@ public final class AtomicClockManager implements Runnable, ClockManager
 		}
 	}
 	
-	/**
-	 * 
-	 * @param obs
-	 */
-	@Override
-	public void subscribe(ClockObserver obs) { 
-		this.observers.add(obs);
-	}
-	
-	/**
-	 * 
-	 * @param obs
-	 */
-	@Override
-	public void unSubscribe(ClockObserver obs) {
-		this.observers.remove(obs);
-	}
-
 	/**
 	 * 
 	 */
@@ -111,13 +92,35 @@ public final class AtomicClockManager implements Runnable, ClockManager
 	 * 
 	 * @throws InterruptedException
 	 */
-	public synchronized void stop() 
-			throws InterruptedException {
-		
+	@Override
+	public synchronized long stop() 
+			throws InterruptedException 
+	{
+		// get current tick
+		long lastTick = this.tick.getAndIncrement();
 		// check clock thread status
 		if (this.process != null && this.process.isAlive()) {
 			// stop and wait clock thread
 			this.process.interrupt();
+			this.process.join();
+			this.process = null;
+		}
+		
+		// return last tick
+		return lastTick;
+	}
+	
+	/**
+	 * 
+	 * @throws InterruptedException
+	 */
+	@Override
+	public synchronized void join() 
+			throws InterruptedException
+	{
+		// check clock thread status
+		if (this.process != null && this.process.isAlive()) {
+			// wait the process to complete
 			this.process.join();
 			this.process = null;
 		}
@@ -135,10 +138,10 @@ public final class AtomicClockManager implements Runnable, ClockManager
 			this.clockSart = System.currentTimeMillis();
 			// initialize tick
 			this.tick = new AtomicLong(this.tickStart);
-			// set thread running
-			boolean running = true;
+			// set execution complete flag
+			boolean complete = false;
 			// start process
-			while (running) 
+			while (!complete) 
 			{
 				try 
 				{
@@ -149,15 +152,13 @@ public final class AtomicClockManager implements Runnable, ClockManager
 	
 					// update the current tick
 					long currentTick = this.tick.getAndIncrement();
-					// notify all observers
-					for (ClockObserver obs : this.observers) {
-						// notify clock update
-						obs.onTick(currentTick);
-					}
+					// notify executive
+					complete = this.executive.onTick(currentTick);
 				} 
 				catch (InterruptedException ex) {
-					// stop thread
-					running = false;
+					// complete execution
+					complete = true;
+					System.err.println("Execution Interrupted\n" + ex.getMessage());
 				}
 			}
 		}

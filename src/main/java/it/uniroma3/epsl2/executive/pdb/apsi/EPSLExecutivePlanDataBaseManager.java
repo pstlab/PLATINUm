@@ -291,7 +291,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				this.facade.process(query);
 			}
 			
-			// FIXME -> print execution dependency graph
+			// FIXME -> print execution dependency graph (for debug only)
 			for (ExecutionNodeStatus status : this.nodes.keySet())
 			{
 				// get nodes by status
@@ -474,7 +474,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 				this.facade.process(query);
 			}
 			
-			// FIXME -> print execution dependency graph
+			// FIXME -> print execution dependency graph (for debug only)
 			for (ExecutionNodeStatus status : this.nodes.keySet())
 			{
 				// get nodes by status

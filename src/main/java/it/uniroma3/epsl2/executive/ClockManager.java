@@ -5,8 +5,8 @@ package it.uniroma3.epsl2.executive;
  * @author anacleto
  *
  */
-public interface ClockManager {
-	
+public interface ClockManager 
+{
 	/**
 	 * 
 	 * @throws InterruptedException
@@ -24,22 +24,18 @@ public interface ClockManager {
 	
 	/**
 	 * 
+	 * @return
 	 * @throws InterruptedException
 	 */
-	public void stop() 
+	public long stop() 
 			throws InterruptedException;
-
-	/**
-	 * 
-	 * @param obs
-	 */
-	public void subscribe(ClockObserver obs);
 	
 	/**
 	 * 
-	 * @param obs
+	 * @throws InterruptedException
 	 */
-	public void unSubscribe(ClockObserver obs);
+	public void join() 
+			throws InterruptedException;
 	
 	/**
 	 * 

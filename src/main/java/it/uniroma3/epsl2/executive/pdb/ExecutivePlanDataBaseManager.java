@@ -32,18 +32,16 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkObject {
-	
+public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkObject 
+{
 	private long origin;
 	private long horizon;
 	
 	// plan locks
 	private final Object[] locks = {
-		new Object(),	// wait status lock
-		new Object(),	// ready status lock
-		new Object(),	// scheduled status lock
+		new Object(),	// waiting status lock
 		new Object(),	// in_execution status lock
-		new Object(),	// executed status lock
+		new Object()	// executed status lock
 	};
 	
 	protected TemporalQueryFactory qFactory;			// interval query factory
@@ -82,7 +80,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		// initialize data structures
 		this.nodes = new HashMap<>();
 		this.nodes.put(ExecutionNodeStatus.WAITING, new LinkedList<ExecutionNode>());
-//		this.nodes.put(ExecutionNodeStatus.SCHEDULED, new LinkedList<ExecutionNode>());
 		this.nodes.put(ExecutionNodeStatus.IN_EXECUTION, new LinkedList<ExecutionNode>());
 		this.nodes.put(ExecutionNodeStatus.EXECUTED, new LinkedList<ExecutionNode>());
 		
@@ -141,18 +138,19 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param node
 	 * @param status
 	 */
-	public void updateNodeStatus(ExecutionNode node, ExecutionNodeStatus status) 
+	public synchronized void updateNodeStatus(ExecutionNode node, ExecutionNodeStatus status) 
 	{
-		// add node to the new status
-		synchronized (this.locks[status.getIndex()]) {
-			// add node
-			this.nodes.get(status).add(node);
-		}
-		
 		// remove node from the current status
 		synchronized (this.locks[node.getStatus().getIndex()]) {
 			// remove node from list
 			this.nodes.get(node.getStatus()).remove(node);
+			
+		}
+		
+		// add node to the new status
+		synchronized (this.locks[status.getIndex()]) {
+			// add node
+			this.nodes.get(status).add(node);
 			// update status
 			node.setStatus(status);
 		}

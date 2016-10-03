@@ -86,6 +86,11 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 			this.doComputeExpansionSolutions(goal);
 		}
 		
+		/*
+		 * FIXME -> TOGLIERE PUNTI INTERROGATIVI ED ESCLAMATIVI -> gestire le scelte durante la search con 
+		 * la gestione della frontiera
+		 */
+		
 		// check solving information
 		if (!goal.isMandatoryExpansion()) {
 			// compute unification solutions

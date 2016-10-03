@@ -9,8 +9,8 @@ import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
  * @author anacleto
  *
  */
-public class GoalExpansion extends GoalJustification {
-
+public class GoalExpansion extends GoalJustification 
+{
 	private SynchronizationRule rule;
 	
 	/**

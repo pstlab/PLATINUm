@@ -52,11 +52,14 @@ public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNod
 		long start = System.currentTimeMillis();			// execution start time
 		this.stepCounter = 0;								// solving step counter
 
-		SearchSpaceNode extracted = null;			// current extracted node
-		SearchSpaceNode last = null;				// root node
-		
 		// the solution plan
 		SolutionPlan plan = null;
+		SearchSpaceNode extracted = null;			// current extracted node
+		SearchSpaceNode last = null;				// root node
+		// create root node and add to the fringe
+		SearchSpaceNode root = new SearchSpaceNode();
+		this.strategy.enqueue(root);
+		
 		// starts solution search
 		while (!exit) 
 		{
@@ -66,24 +69,15 @@ public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNod
 				this.stepCounter++;
 				this.logger.debug("Solving step " + this.stepCounter);
 				
-				// check if last is root node
-				if (this.stepCounter > 1) {
-					// extract next node from the fringe
-					extracted = this.strategy.dequeue();
-					// propagate node
-					this.logger.debug("Propagating node:\n" + extracted + "\nof " + this.strategy.getFringeSize() + " available in the fringe");
-					
-					// context switch
-					this.contextSwitch(last, extracted);
-					// updated last propagated node
-					last = extracted;
-				} 
-				else {
-					// create root node
-					extracted = new SearchSpaceNode();
-					// set extracted as the root node
-					last = extracted;
-				}
+				// extract next node from the fringe
+				extracted = this.strategy.dequeue();
+				// propagate node
+				this.logger.debug("Propagating node:\n" + extracted + "\nof " + this.strategy.getFringeSize() + " available in the fringe");
+				
+				// context switch
+				this.contextSwitch(last, extracted);
+				// updated last propagated node
+				last = extracted;
 				
 				try {
 					// consistency check

@@ -47,13 +47,13 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 	 * 
 	 */
 	@Override
-	public int compare(Decision d1, Decision d2) {
-		
+	public int compare(Decision d1, Decision d2) 
+	{
 		// get start times
 		TimePoint s1 = d1.getToken().getInterval().getStartTime();
 		TimePoint s2 = d2.getToken().getInterval().getStartTime();
-		// compare
-		return s1.getLowerBound() <= s2.getLowerBound() ? -1 : 1;
+		// compare start times w.r.t. lower and upper bounds
+		return s1.getLowerBound() < s2.getLowerBound() ? -1 : s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
 	}
 	
 	/**
@@ -166,8 +166,8 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 	 * @return
 	 */
 	@Override
-	protected List<Flaw> doFindFlaws() {
-		
+	protected List<Flaw> doFindFlaws() 
+	{
 		// list of gaps
 		List<Flaw> flaws = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
@@ -175,10 +175,11 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 		
 		// sort decisions
 		Collections.sort(decs, this);
-		
+		// hypothesis for gap detection
+		boolean scheduled = true;
 		// look for gaps
-		for (int index = 0; index <= decs.size() - 2; index++) {
-			
+		for (int index = 0; index <= decs.size() - 2 && scheduled; index++) 
+		{
 			// get two adjacent decisions
 			Decision left = decs.get(index);
 			Decision right = decs.get(index + 1);
@@ -193,18 +194,31 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 			// process query
 			this.tdb.process(query);
 			// get result
-			long lb = query.getDistanceLowerBound();
-			long ub = query.getDistanceUpperBound();
+			long dmin = query.getDistanceLowerBound();
+			long dmax = query.getDistanceUpperBound();
 			
-			// check distance bounds
-			if (lb > 0 || (lb == 0 && ub > 0)) {
+			// check distance bound
+			if (dmin < 0 && dmax < 0) {
+				// error while ordering tokens 
+				this.logger.debug("Inverted tokens of the timeline [dmin= " + dmin + ", dmax= " + dmax +  "] " + this.component + "between:\n-" + left + "\n-" + right);
 				// we've got a gap
-				this.logger.debug("Gap found on [dmin= " + lb + ", dmax= " + ub + "] " + this.component + " between:\n- " + left + "\n- " + right);
-				Gap gap = new Gap(this.component, left, right, new long[] {lb, ub});
+				this.logger.error("(Inverted) Gap found on [dmin= " + -dmax + ", dmax= " + -dmin + "] " + this.component + " between:\n- " + left + "\n- " + right);
+				Gap gap = new Gap(this.component, right, left, new long[] {
+						-dmax, -dmin
+				});
 				// add the gap
 				flaws.add(gap);
 			}
-			else if (lb == 0 && ub == 0) {
+			if (dmin >= 0 && dmax > 0) 
+			{
+				// we've got a gap
+				this.logger.debug("Gap found on [dmin= " + dmin + ", dmax= " + dmax + "] " + this.component + " between:\n- " + left + "\n- " + right);
+				Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
+				// add the gap
+				flaws.add(gap);
+			}
+			else if (dmin == 0 && dmax == 0) 
+			{
 				// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
 				boolean connected = false;
 				Iterator<Relation> it = this.component.getExistingRelations(left, right).iterator();
@@ -224,8 +238,12 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 				}
 			}
 			else {
+				// set scheduling flag to false
+				scheduled = false;
+				// clear gaps detected till now
+				flaws = new ArrayList<>();
 				// not scheduled decisions
-				this.logger.warning("Not scheduled decisions [" + lb +  ", " + ub + "] gaps cannot be detected:\n- " + left + "\n- " + right);
+				this.logger.info("Not scheduled decisions [" + dmin +  ", " + dmax + "] gaps cannot be detected:\n- " + left + "\n- " + right);
 			}
 		}
 		

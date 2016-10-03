@@ -2,47 +2,52 @@
 @prefix ftlp:	http://www.uniroma3.it/ontologies/ftlp#
 
 
-[rule-a:
+[rule01: 
 	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision),
 	notEqual(?d1, ?d2),
 	(?d1 ftlp:Before ?d2)
 	->
 	(?d1 ftlp:ordering ?d2)]
-
-[rule-b:
-	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision),
-	notEqual(?d1, ?d2),
-	(?d1 ftlp:Contains ?d2)
-	->
-	(?d1 ftlp:ordering ?d2)]
-
-[rule-c:
-	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision),
-	notEqual(?d1, ?d2),
-	(?d1 ftlp:During ?d2)
-	->
-	(?d2 ftlp:ordering ?d1)]
-
-[rule-e:
+	
+[rule02:
 	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision), (?d3 rdf:type ftlp:Decision),
 	notEqual(?d1, ?d2), notEqual(?d1, ?d3), notEqual(?d2, ?d3),
-	(?d1 ftlp:Contains ?d2), (?d2 ftlp:During ?d3)
-	->
-	(?d3 ftlp:ordering ?d1)]
+	(?d2 ftlp:CausalLink ?d1), (?d3 ftlp:CausalLink ?d1),
+	(?d1 ftlp:StartsDuring ?d2), (?d1 ftlp:EndsDuring ?d3)
+	-> 
+	(?d2 ftlp:ordering ?d3)]
 	
-[rule-i:
-	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision), (?d3 rdf:type ftlp:Decision), (?d4 rdf:type ftlp:Decision),
-	notEqual(?d1, ?d2), notEqual(?d1, ?d3), notEqual(?d1, ?d4), notEqual(?d2, ?d3), notEqual(?d2, ?d4), notEqual(?d3, ?d4),
-	(?d3 ftlp:CausalRelation ?d1), (?d4 ftlp:CausalRelation ?d2), (?d1 ftlp:ordering ?d2)
-	->
-	(?d3 ftlp:ordering ?d2), (?d3 ftlp:ordering ?d4)]
-	
-[rule-l:
+[rule03:
 	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision), (?d3 rdf:type ftlp:Decision),
 	notEqual(?d1, ?d2), notEqual(?d1, ?d3), notEqual(?d2, ?d3),
-	(?d1 ftlp:ordering ?d2), (?d2 ftlp:ordering ?d3)
+	(?d2 ftlp:CausalLink ?d1), (?d3 ftlp:CausalLink ?d1),
+	(?d1 ftlp:Contains ?d2), (?d1 ftlp:During ?d3)
 	->
-	(?d1 ftlp:ordering ?d3)]
+	(?d3 ftlp:ordering ?d2)]
+	
+[rule04:
+	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision), (?d3 rdf:type ftlp:Decision),
+	notEqual(?d1, ?d2), notEqual(?d1, ?d3), notEqual(?d2, ?d3),
+	(?d2 ftlp:CausalLink ?d1), (?d3 ftlp:CausalLink ?d1),
+	(?d2 ftlp:Contains ?d3)
+	->
+	(?d2 ftlp:ordering ?d3)]
+	
+[rule04:
+	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision), (?d3 rdf:type ftlp:Decision),
+	notEqual(?d1, ?d2), notEqual(?d1, ?d3), notEqual(?d2, ?d3),
+	(?d2 ftlp:CausalLink ?d1), (?d3 ftlp:CausalLink ?d1),
+	(?d2 ftlp:During ?d3)
+	->
+	(?d3 ftlp:ordering ?d2)]
+	
+	
+[rule05:
+	(?d1 rdf:type ftlp:Decision), (?d2 rdf:type ftlp:Decision), (?d3 rdf:type ftlp:Decision),
+	notEqual(?d1, ?d2), notEqual(?d1, ?d3), notEqual(?d2, ?d3),
+	(?d2 ftlp:CausalLink ?d1), (?d1 ftlp:ordering ?d3)
+	->
+	(?d2 ftlp:ordering ?d3)]
 
 	
 	

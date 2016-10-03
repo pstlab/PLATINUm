@@ -15,12 +15,12 @@ public enum ExecutionNodeStatus {
 	/**
 	 * The process has started the execution of the token.
 	 */
-	IN_EXECUTION(2),
+	IN_EXECUTION(1),
 	
 	/**
 	 * The token has been successfully executed
 	 */
-	EXECUTED(3);
+	EXECUTED(2);
 	
 	private int index;
 	

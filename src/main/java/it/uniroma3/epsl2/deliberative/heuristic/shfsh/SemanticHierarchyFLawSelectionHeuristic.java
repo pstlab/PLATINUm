@@ -13,8 +13,9 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelect
 @FlawSelectionHeuristicConfiguration(
 	// set pipeline of filters
 	pipeline = {
-		FlawFilterType.SFF,			// semantic-based flaw filter
+		FlawFilterType.SFF,
 		FlawFilterType.HFF,			// hierarchy-based flaw filter
+		FlawFilterType.TFF,			// type-baed flaw filter
 		FlawFilterType.FFF			// fail-first flaw filter
 	}
 )

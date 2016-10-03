@@ -40,8 +40,9 @@ public class EarliestStartTimeExecutive extends Executive
 	 * 
 	 */
 	@Override
-	public void onTick(long tick)
+	public boolean onTick(long tick)
 	{
+		boolean complete = false;
 		try 
 		{
 			System.out.println("\n##################################################");
@@ -55,20 +56,14 @@ public class EarliestStartTimeExecutive extends Executive
 			System.out.println("##################################################");
 			// display executive window
 			this.displayWindow();
+			// check if execution is complete
+			complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
+					this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
 		}
 		catch (InterruptedException ex) {
 			System.err.println(ex.getMessage());
 		}
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public boolean isExecutionComplete() {
-		// check nodes status
-		return this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
-				this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
+		return complete;
 	}
 	
 	/**

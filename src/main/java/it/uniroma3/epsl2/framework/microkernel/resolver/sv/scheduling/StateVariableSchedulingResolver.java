@@ -42,11 +42,13 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 	 * Compare two decisions according to their tokens
 	 */
 	@Override
-	public int compare(Decision d1, Decision d2) {
+	public int compare(Decision d1, Decision d2) 
+	{
 		// get start times
 		TimePoint s1 = d1.getToken().getInterval().getStartTime();
 		TimePoint s2 = d2.getToken().getInterval().getStartTime();
-		return s1.getLowerBound() <= s2.getLowerBound() ? -1 : 1;
+		// compare start times w.r.t lower and upper bounds
+		return s1.getLowerBound() < s2.getLowerBound() ? -1 : s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
 	}
 
 	/**
@@ -61,7 +63,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		// prepare relations
 		List<Relation> relations = new ArrayList<>();
 		// setup relations
-		for (int index = 0; index <= ordering.getSchedule().size() - 2; index++) {
+		for (int index = 0; index <= ordering.getSchedule().size() - 2; index++) 
+		{
 			// get adjacent decisions
 			Decision reference = ordering.getSchedule().get(index);
 			Decision target = ordering.getSchedule().get(index + 1);
@@ -94,11 +97,12 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 	 * 
 	 */
 	@Override
-	protected List<Flaw> doFindFlaws() {
+	protected List<Flaw> doFindFlaws() 
+	{
 		// list of peaks
 		Set<Peak> peaks = new HashSet<>();
 		// set of scheduled decisions
-		Set<Set<Decision>> scheduled = new HashSet<>();
+//		Set<Set<Decision>> scheduled = new HashSet<>();
 		
 		// list of active decisions
 		List<Decision> decisions = this.component.getActiveDecisions();
@@ -106,14 +110,14 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		Collections.sort(decisions, this);
 
 		// look for peaks
-		for (Decision source : decisions) {
-			for (Decision target : decisions) {
-				
+		for (Decision source : decisions) 
+		{
+			for (Decision target : decisions) 
+			{
 				// check decisions and if a peak with them already exists
-				if (!source.equals(target) && 
-						!this.checkInPeak(peaks, source, target) &&
-						!this.checkInScheduled(scheduled, source, target)) {
-					
+				if (!source.equals(target) && !this.checkInPeak(peaks, source, target)) //&&
+//						!this.checkInScheduled(scheduled, source, target)) 
+				{
 					// check flexibility
 					CheckIntervalDistanceQuery query = this.queryFactory.
 							create(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
@@ -129,8 +133,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 					long dmax = query.getDistanceUpperBound();
 					
 					// check distance bounds
-					if (dmin < 0 && dmax > 0) {
-						
+					if (dmin < 0 && dmax > 0) 
+					{
 						// overlapping decisions
 						this.logger.debug("Overlapping decisions found [dmin= " + dmin +", dmax= " + dmax + "]\n" + source + "\n" + target);
 						// we've got a peak
@@ -141,8 +145,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 						// add peak
 						peaks.add(peak);
 					}
-					else {
-						
+					else 
+					{
 						// already scheduled decision
 						this.logger.debug("Already scheduled decisions [dmin= " + dmin +", dmax= " + dmax + "]\n- source: " + source + "\n- target: " + target);
 					}
@@ -160,115 +164,13 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		return new ArrayList<Flaw>(peaks);
 	}
 	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	protected List<Flaw> doFindFlaws() {
-//		// set of peaks
-//		Set<Peak> peaks = new HashSet<>();
-//		// set of scheduled decisions detected
-//		Set<Set<Decision>> scheduled = new HashSet<>();
-//		
-//		// list of active decisions
-//		List<Decision> decisions = this.component.getActiveDecisions();
-//		// sort decisions
-//		Collections.sort(decisions, this);
-//
-//		// look for peaks
-//		for (Decision source : decisions) {
-//			for (Decision target : decisions) {
-//				// check decisions and if a peak with them already exists
-//				if (!source.equals(target) && 
-//						!this.checkInPeak(peaks, source, target) &&
-//						!this.checkInScheduled(scheduled, source, target)) {
-//					
-//					// check flexibility
-//					CheckIntervalDistanceQuery querySourceTarget = this.queryFactory.
-//							create(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
-//					
-//					// set intervals
-//					querySourceTarget.setSource(source.getToken().getInterval());
-//					querySourceTarget.setTarget(target.getToken().getInterval());
-//					//process query
-//					this.tdb.process(querySourceTarget);
-//					
-//
-//					// get bounds
-//					long dmin = querySourceTarget.getDistanceLowerBound();
-//					long dmax = querySourceTarget.getDistanceUpperBound();
-//					
-//					// check distance bounds
-//					if (dmin < 0 && dmax > 0) {
-//						// overlapping decisions
-//						this.logger.debug("Overlapping decisions found [dmin= " + dmin +", dmax= " + dmax + "]\n" + source + "\n" + target);
-//						// we've got a peak
-//						Peak peak = new Peak(this.component);
-//						// set related decisions
-//						peak.add(source);
-//						peak.add(target);
-//						// add the peak
-//						peaks.add(peak);
-//					}
-//					else if (dmin < 0 && dmax <= 0) {
-//						// check distance with respect to other interval
-//						
-//						// check flexibility 
-//						CheckIntervalDistanceQuery queryTargetSource = this.queryFactory.
-//								create(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
-//						
-//						// set intervals
-//						queryTargetSource.setSource(target.getToken().getInterval());
-//						queryTargetSource.setTarget(source.getToken().getInterval());
-//						// process query
-//						this.tdb.process(queryTargetSource);
-//						
-//						long dmin2 = queryTargetSource.getDistanceLowerBound(); 
-//						long dmax2 = queryTargetSource.getDistanceUpperBound();
-//						
-//						// check computed distances
-//						if (dmin2 < 0 && dmax2 < 0) {
-//							// overlapping decisions
-//							this.logger.debug("Overlapping decisions found d(s, t) = [" + dmin + ", " + dmax + "], d(t, s) = [" + dmin2  + "," + dmax2 + "]\n- s= " + source + "\n- t= " + target);
-//							// we've got a peak
-//							Peak peak = new Peak(this.component);
-//							// set related decisions
-//							peak.add(source);
-//							peak.add(target);
-//							// add the peak
-//							peaks.add(peak);
-//						}
-//					}
-//					else {
-//						// already scheduled decision
-//						this.logger.debug("Already scheduled decisions [dmin= " + dmin +", dmax= " + dmax + "]\n- source: " + source + "\n- target: " + target);
-//						// to the the set
-//						Set<Decision> set = new HashSet<>();
-//						set.add(source);
-//						set.add(target);
-//						scheduled.add(set);
-//					}
-//				}
-//			}
-//		}
-//		
-//		// check if peaks have been found
-//		if (!peaks.isEmpty()) {
-//			// print peaks found
-//			this.logger.debug("Peaks found on " + this.component +":\n" + peaks);
-//		}
-//		
-//		// get peaks
-//		return new ArrayList<>(peaks);
-//	}
-	
 	/**
 	 * 
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException {
-			
+			throws UnsolvableFlawFoundException 
+	{
 		// cast flaw
 		Peak peak = (Peak) flaw;
 		// compute all possible orderings of the tokens
@@ -409,22 +311,22 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		return exist;
 	}
 	
-	/**
-	 * 
-	 * @param peaks
-	 * @param source
-	 * @param target
-	 * @return
-	 */
-	private boolean checkInScheduled(Set<Set<Decision>> scheduled, Decision source, Decision target) {
-		boolean exist = false;
-		for (Set<Decision> set : scheduled) {
-			exist = set.contains(source) && set.contains(target);
-			if (exist) {
-				break;
-			}
-		}
-		return exist;
-	}
+//	/**
+//	 * 
+//	 * @param peaks
+//	 * @param source
+//	 * @param target
+//	 * @return
+//	 */
+//	private boolean checkInScheduled(Set<Set<Decision>> scheduled, Decision source, Decision target) {
+//		boolean exist = false;
+//		for (Set<Decision> set : scheduled) {
+//			exist = set.contains(source) && set.contains(target);
+//			if (exist) {
+//				break;
+//			}
+//		}
+//		return exist;
+//	}
 }
 

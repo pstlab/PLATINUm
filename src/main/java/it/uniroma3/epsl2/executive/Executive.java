@@ -20,14 +20,13 @@ import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
  * @author anacleto
  *
  */
-public abstract class Executive extends ApplicationFrameworkObject implements Runnable, ClockObserver
+public abstract class Executive extends ApplicationFrameworkObject implements ExecutionManager
 {
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
-	private FilePropertyReader config;				// configuration property file
-	private final Object lock;							// executive's status lock
-	private ExecutionStatus status;						// executive's operating status
-	private Thread process;								// execution controller process
-	private ClockManager clock;							// execution clock controller
+	private FilePropertyReader config;											// configuration property file
+	private final Object lock;													// executive's status lock
+	private ExecutionStatus status;												// executive's operating status
+	private ClockManager clock;													// execution clock controller
 	
 	@PlanMonitorReference
 	protected PlanMonitor monitor;						// plan monitor
@@ -47,7 +46,6 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 		// set clock and initial status
 		this.lock = new Object();
 		this.status = ExecutionStatus.INACTIVE;
-		this.process = null;
 	}
 	
 	/**
@@ -161,7 +159,8 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 	 * @throws Exception
 	 */
 	public void scheduleStartTime(ExecutionNode node, long start) 
-			throws Exception {
+			throws Exception 
+	{
 		// propagate scheduled start time
 		this.pdb.scheduleStartTime(node, start);
 		this.pdb.checkSchedule(node);
@@ -174,7 +173,8 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 	 * @throws Exception
 	 */
 	public void scheduleDuration(ExecutionNode node, long duration) 
-			throws Exception {
+			throws Exception 
+	{
 		// propagate scheduled duration time
 		this.pdb.scheduleDuration(node, duration);
 		this.pdb.checkSchedule(node);
@@ -268,11 +268,12 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 			this.lock.notifyAll();
 		}
 		
-		// start and wait the end of the execution
-		this.process = new Thread(this);
-		process.start();
-		process.join();
-		this.process = null;
+		// setup the clock
+		this.clock = new AtomicClockManager(this);
+		// start clock
+		this.clock.start();
+		// wait execution completes
+		this.clock.join();
 		
 		// execution complete
 		synchronized (this.lock) 
@@ -291,79 +292,19 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 	/**
 	 * 
 	 */
-	@Override
-	public void run() 
-	{
-		try 
-		{
-			// setup the clock
-			// create clock
-			this.clock = new AtomicClockManager();
-			// subscribe to clock
-			this.clock.subscribe(this);
-			// start clock
-			this.clock.start();
-			
-			// prepare execution
-			boolean running = true;
-			while (running)
-			{
-				try 
-				{
-					// periodically check execution end condition
-					Thread.sleep(1000);
-					
-					// check execution end
-					running = !this.isExecutionComplete();
-				}
-				catch (InterruptedException ex) {
-					running = false;
-				}
-			} // execution ended
-			
-			// stop clock
-			this.clock.stop();
-			this.clock.unSubscribe(this);
-		}
-		catch (Exception ex) {
-			System.err.println(ex.getMessage());
-		}
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract boolean isExecutionComplete();
-	
-	/**
-	 * 
-	 */
-	@Override
-	public abstract void onTick(long tick); 
-	
-	/**
-	 * 
-	 */
 	public final void interrupt() 
 	{
 		// check status
 		synchronized (this.lock) 
 		{
 			// check if in execution
-			if (this.status.equals(ExecutionStatus.EXECUTING)) 
-			{
-				try 
-				{
-					// interrupt process
-					if (this.process != null) {
-						this.process.interrupt();
-						this.process.join();
-						this.process = null;
-					}
+			if (this.status.equals(ExecutionStatus.EXECUTING)) {
+				try {
+					// interrupt the clock
+					this.clock.stop();
 				}
 				catch (InterruptedException ex) {
-					System.err.println(ex.getMessage());
+					throw new RuntimeException(ex.getMessage());
 				}
 			}
 			
@@ -382,19 +323,13 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 		synchronized (this.lock) 
 		{
 			// check if in execution
-			if (this.status.equals(ExecutionStatus.EXECUTING)) 
-			{
-				try 
-				{
-					// interrupt process
-					if (this.process != null) {
-						this.process.interrupt();
-						this.process.join();
-						this.process = null;
-					}
+			if (this.status.equals(ExecutionStatus.EXECUTING)) {
+				try {
+					// interrupt the clock
+					this.clock.stop();
 				}
 				catch (InterruptedException ex) {
-					System.err.println(ex.getMessage());
+					throw new RuntimeException(ex.getMessage());
 				}
 			}
 			
@@ -403,4 +338,10 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ru
 			this.lock.notifyAll();
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public abstract boolean onTick(long tick); 
 }
