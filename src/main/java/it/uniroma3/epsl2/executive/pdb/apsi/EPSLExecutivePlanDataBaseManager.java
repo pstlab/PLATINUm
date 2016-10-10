@@ -74,7 +74,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 					// create an execution node for the token
 					TemporalInterval i = token.getInterval();
 					// check controllability type
-					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.EXTERNAL_TOKEN : 
+					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.UNCONTROLLABLE : 
 						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 					// get predicate
 					String predicate = token.getPredicate().getValue().getLabel();
@@ -173,7 +173,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 					// create an execution node for the token
 					TemporalInterval i = token.getInterval();
 					// check controllability type
-					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.EXTERNAL_TOKEN : 
+					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.UNCONTROLLABLE : 
 						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 					// get predicate
 					String predicate = token.getPredicate().getValue().getLabel();
@@ -350,7 +350,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						long[] duration = token.getDurationBounds();
 						
 						// set controllability type
-						ControllabilityType controllability = tl.isExternal() ? ControllabilityType.EXTERNAL_TOKEN : 
+						ControllabilityType controllability = tl.isExternal() ? ControllabilityType.UNCONTROLLABLE : 
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
 						// set parameter information
@@ -406,7 +406,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						long[] duration = token.getDurationBounds();
 						
 						// check controllability type
-						ControllabilityType controllability = tl.isExternal() ? ControllabilityType.EXTERNAL_TOKEN :
+						ControllabilityType controllability = tl.isExternal() ? ControllabilityType.UNCONTROLLABLE :
 							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
 						// set parameter information

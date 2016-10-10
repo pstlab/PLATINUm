@@ -13,14 +13,21 @@ public enum ExecutionNodeStatus {
 	WAITING(0),
 	
 	/**
+	 * The token is into an intermediate state waiting for a feedback to 
+	 * actually start execution. This status is needed only for completely 
+	 * uncontrollable values
+	 */
+	STARTING(1),
+	
+	/**
 	 * The process has started the execution of the token.
 	 */
-	IN_EXECUTION(1),
+	IN_EXECUTION(2),
 	
 	/**
 	 * The token has been successfully executed
 	 */
-	EXECUTED(2);
+	EXECUTED(3);
 	
 	private int index;
 	

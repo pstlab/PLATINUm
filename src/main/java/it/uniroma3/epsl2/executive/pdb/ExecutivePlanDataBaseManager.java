@@ -38,12 +38,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	private long horizon;
 	
 	// plan locks
-	private final Object[] locks = {
-		new Object(),	// waiting status lock
-		new Object(),	// in_execution status lock
-		new Object()	// executed status lock
-	};
-	
+	private final Object[] locks;
 	protected TemporalQueryFactory qFactory;			// interval query factory
 	protected IntervalConstraintFactory iFactory;		// interval constraint factory
 	protected TemporalDataBaseFacade facade;			// temporal data base
@@ -59,11 +54,20 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param origin
 	 * @param horizon
 	 */
-	public ExecutivePlanDataBaseManager(long origin, long horizon) {
+	public ExecutivePlanDataBaseManager(long origin, long horizon) 
+	{
 		super();
 		// set origin and horizon
 		this.origin = origin;
 		this.horizon = horizon;
+		
+		// initialize array of locks
+		this.locks = new Object[ExecutionNodeStatus.values().length];
+		// add locks 
+		for (ExecutionNodeStatus s : ExecutionNodeStatus.values()) {
+			// set lock
+			this.locks[s.getIndex()] = new Object();
+		}
 		
 		// create factories
 		this.iFactory = IntervalConstraintFactory.getInstance();
@@ -79,9 +83,10 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 
 		// initialize data structures
 		this.nodes = new HashMap<>();
-		this.nodes.put(ExecutionNodeStatus.WAITING, new LinkedList<ExecutionNode>());
-		this.nodes.put(ExecutionNodeStatus.IN_EXECUTION, new LinkedList<ExecutionNode>());
-		this.nodes.put(ExecutionNodeStatus.EXECUTED, new LinkedList<ExecutionNode>());
+		for (ExecutionNodeStatus s : ExecutionNodeStatus.values()) {
+			// initialize the index of execution nodes
+			this.nodes.put(s, new LinkedList<ExecutionNode>());
+		}
 		
 		// initialize the dependency graph
 		this.sdg = new HashMap<>();
@@ -220,7 +225,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws TemporalIntervalCreationException  
 	{
 		// check interval controllability
-		boolean controllableInterval = controllability.equals(ControllabilityType.EXTERNAL_TOKEN) || 
+		boolean controllableInterval = controllability.equals(ControllabilityType.UNCONTROLLABLE) || 
 				controllability.equals(ControllabilityType.UNCONTROLLABLE_DURATION) ? false : true;
 		// create temporal interval
 		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, controllableInterval);

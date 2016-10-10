@@ -18,7 +18,7 @@ public enum ControllabilityType {
 	UNCONTROLLABLE_DURATION,
 	
 	/**
-	 * The token belongs to an external component of the domain
+	 * The executive cannot decide neither the start time neither the actual duration of the temporal interval
 	 */
-	EXTERNAL_TOKEN
+	UNCONTROLLABLE
 }
