@@ -22,13 +22,13 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
 		
 	// set heuristic
-	heuristic = FlawSelectionHeuristicType.SHFSH,
+	heuristic = FlawSelectionHeuristicType.HFSH,
 	
 	// set search strategy
-	strategy = SearchStrategyType.DFS,
+	strategy = SearchStrategyType.DFCF,
 	
 	// set log level
-	logging = FrameworkLoggingLevel.WARNING
+	logging = FrameworkLoggingLevel.DEBUG
 )
 public class FourByThreeITIADeliberative extends Planner
 {

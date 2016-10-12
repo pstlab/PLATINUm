@@ -48,7 +48,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		TimePoint s1 = d1.getToken().getInterval().getStartTime();
 		TimePoint s2 = d2.getToken().getInterval().getStartTime();
 		// compare start times w.r.t lower and upper bounds
-		return s1.getLowerBound() < s2.getLowerBound() ? -1 : s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
+		return s1.getLowerBound() < s2.getLowerBound() ? -1 : 
+			s1.getLowerBound() == s2.getLowerBound() && s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
 	}
 
 	/**
@@ -73,9 +74,10 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 			BeforeRelation rel = this.component.createRelation(RelationType.BEFORE, reference, target);
 			// set bounds
 			rel.setBound(new long[] {0, this.component.getHorizon()});
-			
 			// add reference, target and constraint
 			relations.add(rel);
+			
+			this.logger.debug("Applying flaw solution\n- " + solution + "\nthrough before constraint " + rel);
 		}
 		
 		try {
@@ -102,7 +104,7 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		// list of peaks
 		Set<Peak> peaks = new HashSet<>();
 		// set of scheduled decisions
-//		Set<Set<Decision>> scheduled = new HashSet<>();
+		Set<Set<Decision>> scheduled = new HashSet<>();
 		
 		// list of active decisions
 		List<Decision> decisions = this.component.getActiveDecisions();
@@ -115,8 +117,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 			for (Decision target : decisions) 
 			{
 				// check decisions and if a peak with them already exists
-				if (!source.equals(target) && !this.checkInPeak(peaks, source, target)) //&&
-//						!this.checkInScheduled(scheduled, source, target)) 
+				if (!source.equals(target) && !this.checkInPeak(peaks, source, target) &&
+						!this.checkInScheduled(scheduled, source, target)) 
 				{
 					// check flexibility
 					CheckIntervalDistanceQuery query = this.queryFactory.
@@ -147,6 +149,11 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 					}
 					else 
 					{
+						// add decisions to scheduled set
+						Set<Decision> sset = new HashSet<>();
+						sset.add(source);
+						sset.add(target);
+						scheduled.add(sset);
 						// already scheduled decision
 						this.logger.debug("Already scheduled decisions [dmin= " + dmin +", dmax= " + dmax + "]\n- source: " + source + "\n- target: " + target);
 					}
@@ -176,22 +183,22 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		// compute all possible orderings of the tokens
 		List<List<Decision>> orderings = this.schedule(peak.getDecisions());
 		// compute solutions
-		for (List<Decision> ordering : orderings) {
-			
+		for (List<Decision> ordering : orderings) 
+		{
 			// check consistency of possible schedule
 			this.logger.debug("Check consistency of possible schedule\n" + ordering);
 			// add a possible 
 			DecisionSchedule solution = new DecisionSchedule(peak, ordering);
 			// compute precedence constraints and check their temporal consistency
-			if (this.checkScheduleConsistency(solution)) {
-
+			if (this.checkScheduleConsistency(solution)) 
+			{
 				// feasible solution of the peak
 				this.logger.debug("Feasible solution of the peak\n" + solution);
 				// add solution
 				peak.addSolution(solution);
 			}
-			else {
-				
+			else 
+			{
 				// not feasible solution 
 				this.logger.debug("Discarding not feasible solution of the peak:\n" + solution);
 			}
@@ -253,7 +260,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		boolean consistent = true;
 		int index = 0;
 		int size = solution.getSchedule().size();
-		while (index <= size - 2 && consistent) {
+		while (index <= size - 2 && consistent) 
+		{
 			// get related tokens
 			Token i = solution.getSchedule().
 					get(index).getToken();
@@ -284,7 +292,12 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 			 * temporal inconsistency because the interval j precedes interval i,
 			 * i.e. j is before i actually
 			 */
-			consistent = query.getDistanceLowerBound() >= 0 || query.getDistanceUpperBound() >= 0;
+			
+			long dmin = query.getDistanceLowerBound();
+			long dmax = query.getDistanceUpperBound();
+			
+//			consistent = query.getDistanceLowerBound() >= 0 || query.getDistanceUpperBound() >= 0;
+			consistent = !(dmin < 0 && dmax < 0);
 			// next precedence constraint
 			index++;
 		}
@@ -311,22 +324,22 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 		return exist;
 	}
 	
-//	/**
-//	 * 
-//	 * @param peaks
-//	 * @param source
-//	 * @param target
-//	 * @return
-//	 */
-//	private boolean checkInScheduled(Set<Set<Decision>> scheduled, Decision source, Decision target) {
-//		boolean exist = false;
-//		for (Set<Decision> set : scheduled) {
-//			exist = set.contains(source) && set.contains(target);
-//			if (exist) {
-//				break;
-//			}
-//		}
-//		return exist;
-//	}
+	/**
+	 * 
+	 * @param peaks
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	private boolean checkInScheduled(Set<Set<Decision>> scheduled, Decision source, Decision target) {
+		boolean exist = false;
+		for (Set<Decision> set : scheduled) {
+			exist = set.contains(source) && set.contains(target);
+			if (exist) {
+				break;
+			}
+		}
+		return exist;
+	}
 }
 

@@ -61,8 +61,13 @@ public class FailFirstFlawFilter extends FlawFilter
 		else {
 			selected = new HashSet<>(flaws);		
 		}
-		
-		
+
+		// FIXME: select the first of equivalent set
+		if (selected.size() > 1) {
+			List<Flaw> list = new ArrayList<>(selected);
+			selected = new HashSet<>();
+			selected.add(list.remove(0));
+		}
 		// get sub-set of flaw with the lowest number of solutions available
 		return selected;
 	}

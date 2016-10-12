@@ -322,8 +322,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			for (Relation rel : this.getPendingRelations(dec)) {
 				// check if can be activate
 				if (rel.getReference().equals(dec) && rel.getTarget().isActive() || 
-						rel.getTarget().equals(dec) && rel.getReference().isActive() &&
-						// check reflexive relations
+						rel.getTarget().equals(dec) && rel.getReference().isActive() ||
+						// activate reflexive relations also
 						rel.getTarget().equals(dec) && rel.getReference().equals(dec)) {
 					// add relation
 					local.add(rel);

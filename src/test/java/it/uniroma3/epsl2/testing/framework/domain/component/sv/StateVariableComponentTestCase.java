@@ -15,6 +15,7 @@ import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.microkernel.resolver.sv.gap.Gap;
 import it.uniroma3.epsl2.framework.microkernel.resolver.sv.gap.GapCompletion;
 import it.uniroma3.epsl2.framework.microkernel.resolver.sv.scheduling.DecisionSchedule;
@@ -587,6 +588,10 @@ public class StateVariableComponentTestCase {
 			// check pending decisions
 			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
 			Assert.assertTrue(this.psv.getActiveDecisions().size() == 4);
+
+			// check if all pending relations have been propagated
+			List<Relation> prel = this.psv.getPendingRelations();
+			Assert.assertTrue(prel.isEmpty());
 			
 			// check flaws
 			flaws = this.psv.detectFlaws();

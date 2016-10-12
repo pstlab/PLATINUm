@@ -1,14 +1,10 @@
-PROBLEM FourByThree_Problem (DOMAIN FourByThree_Domain) {
-
+PROBLEM FourByThree_Problem (DOMAIN FourByThree_Domain) 
+{
 	f0 <fact> Human.operator.Idle() AT [0, 0] [1, +INF] [1, +INF];
 	f1 <fact> RobotController.controller.Idle() AT [0, 0] [1, +INF] [1, +INF];
-	f2 <fact> RobotArmController.motion.Home() AT [0, 0] [1, +INF] [1, +INF];
-	f3 <fact> RobotHandController.hand.Holding(?tool) AT [0, 0] [1,+INF] [1,+INF];
-	f4 <fact> Tool1.t1.Unset() AT [0, 0] [1,+INF] [1,+INF];
-	f5 <fact> Tool2.t2.Unset() AT [0, 0] [1,+INF] [1,+INF];
-	?tool = T1;
+	f2 <fact> HRInteraction.monitoring.None() AT [0, 0] [1, +INF] [1, +INF];
+	f3 <fact> RobotToolHandler.status.Mounted-T1() AT [0, 0] [1, +INF] [1, +INF];
 
-
-	g0  <goal> HRC.interaction.HRC_ITIA() AT [0, +INF] [0, +INF] [0, +INF];
+	g0  <goal> HRC.process.HRC_ITIA() AT [0, +INF] [0, +INF] [0, +INF];
 
 }

@@ -15,6 +15,11 @@ public enum SearchStrategyType {
 	/**
 	 * 
 	 */
+	DFCF(DepthFirstCostFirstStrategy.class.getName()),
+	
+	/**
+	 * 
+	 */
 	DIJKSTRA(DijkstraSearchStrategy.class.getName());
 	
 	private String cname;

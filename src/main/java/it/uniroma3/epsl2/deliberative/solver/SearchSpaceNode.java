@@ -70,10 +70,15 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	public double getCost() {
 		// compute the cost of the current node
-		double cost = this.generator.getCost();
-		for (Operator op : this.operators) {
-			cost += op.getCost();
+		double cost = 0.0;
+		if (this.generator != null) {
+			// set initial cost
+			cost = this.generator.getCost();
+			for (Operator op : this.operators) {
+				cost += op.getCost();
+			}
 		}
+		
 		// get node cost
 		return cost;
 	}
@@ -210,6 +215,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	@Override
 	public String toString() {
-		return "[SearchSpaceNode id= " + this.id +" depth= " + this.getDepth() + " " + (this.isRootNode() ? "" : "operator= " + this.getGenerator()) + "]";
+		return "[SearchSpaceNode id= " + this.id +" depth= " + this.getDepth() + " cost= " + this.getCost() +" " + (this.isRootNode() ? "" : "operator= " + this.getGenerator()) + "]";
 	}
 }

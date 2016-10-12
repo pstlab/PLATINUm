@@ -97,7 +97,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 				catch (PseudoControllabilityCheckException ex) 
 				{
 					// check solving modality
-					if (pseudocontrollability) {
+					if (pseudocontrollability) 
+					{
 						// add node to the black list
 						this.blacklist.enqueue(extracted);
 						// skip
@@ -111,23 +112,15 @@ public class PseudoControllabilityAwareSolver extends Solver
 				if (!skip) 
 				{
 					// looks for flaws
-					this.logger.debug("Looking for flaws on the current refined plan...");
+					String info = "[step= " + this.stepCounter + "] Looking for flaws on the current plan...\n";
 	 				// choose the best flaws to solve
 					List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
-					
-					// print data
-					System.out.println("Solving step(" + this.stepCounter  +") -> Selected Flaw(s) to solve:");
+					info += "Selected Flaw(s) to solve:\n";
 					for (Flaw flaw : flaws) {
-						System.out.println("- " + flaw);
+						info += "- " + flaw + "\n";
 					}
-					this.pdb.display();
-					try {
-						Thread.sleep(1000);
-					}catch (InterruptedException ex) {
-						
-					}
-					System.out.println("---------------------------------------------------");
-					
+					// print info
+					this.logger.info(info);
 					
 					// create a branch for each "equivalent" flaw to solve next
 					for (Flaw flaw : flaws)
@@ -135,8 +128,6 @@ public class PseudoControllabilityAwareSolver extends Solver
 						// create a branch for each possible solution of the flaw
 						for (FlawSolution flawSolution : flaw.getSolutions()) 
 						{
-							// expand the search tree
-							this.logger.debug("Expanding the search tree by solving flaw:\n" + flaw + "\n- #solutions= " + flaw.getSolutions().size());
 							// create operator
 							Operator op = new Operator(flawSolution);
 							// create child node
@@ -144,9 +135,13 @@ public class PseudoControllabilityAwareSolver extends Solver
 							// enqueue node
 							this.strategy.enqueue(child);
 							// expand the search space
-							this.logger.debug("Child-node= " + child + ":\n- operator= " + op + "\n- flaw= " + flaw + "\n- solution= " + flawSolution);
+							this.logger.debug("Search tree expansion:\nChild-node= " + child + ":\n- operator= " + op + "\n- flaw= " + flaw + "\n- solution= " + flawSolution);
 						}
 					}
+				}
+				else {
+					// skipping current plan
+					this.logger.info("Skipping current plan for controllability issues...");
 				}
 			}
 			catch (PlanRefinementException | ConsistencyCheckException | UnsolvableFlawFoundException ex) {
@@ -158,13 +153,11 @@ public class PseudoControllabilityAwareSolver extends Solver
 				try 
 				{
 					// no pseudo-controllable solution try with not pseudo-controllable ones
-					this.logger.debug("No more node in the fringe but still flaws to solve [" + this.blacklist.getFringeSize() +  "] ...");
-					// change solving modality
 					pseudocontrollability = false;
 					// enqueue not pseudo-controllable node
 					this.strategy.enqueue(this.blacklist.dequeue());
 					// notify changing modality
-					this.logger.warning("Entering in no pseudo-controllability mode");
+					this.logger.warning("No more node in the fringe but still flaws to solve [" + this.blacklist.getFringeSize() +  "] ...\nEntering in no pseudo-controllability mode\n");
 				}
 				catch (EmptyFringeException exx) 
 				{

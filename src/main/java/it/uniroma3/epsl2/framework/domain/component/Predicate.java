@@ -57,29 +57,6 @@ public class Predicate {
 		this.parameters[index] = param;
 	}
 	
-//	/**
-//	 * 
-//	 * @param label
-//	 * @param param
-//	 * @return
-//	 */
-//	public int addParameter(String label, Parameter param) {
-//		int index = 0;
-//		boolean added = false;
-//		while (index < this.parameters.length && !added) {
-//			// check position
-//			if (this.parameters[index] == null) {
-//				// position found
-//				this.labels[index] = label;
-//				this.parameters[index] = param;
-//				added = true;
-//			}
-//			index++;
-//		}
-//		// get index
-//		return index;
-//	}
-	
 	/**
 	 * 
 	 * @param index
@@ -189,7 +166,11 @@ public class Predicate {
 				// enumeration parameter
 				case ENUMERATION_PARAMETER_TYPE : {
 					EnumerationParameter p = (EnumerationParameter) param;
-					description += p.getLabel() + "= " + p.getValue() + " ";
+					description += p.getLabel() + "= {";
+					for (String v : p.getValue()) {
+						description += " "+ v + " ";
+					}
+					description += "} ";
 				}
 				break;
 			}

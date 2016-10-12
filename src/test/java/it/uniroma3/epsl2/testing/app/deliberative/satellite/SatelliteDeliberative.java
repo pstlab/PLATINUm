@@ -22,10 +22,10 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
 		
 	// set heuristic
-	heuristic = FlawSelectionHeuristicType.SHFSH,
+	heuristic = FlawSelectionHeuristicType.HFSH,
 	
 	// set strategy
-	strategy = SearchStrategyType.DFS,
+	strategy = SearchStrategyType.DFCF,
 	
 	// log level
 	logging = FrameworkLoggingLevel.OFF

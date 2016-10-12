@@ -53,7 +53,8 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 		TimePoint s1 = d1.getToken().getInterval().getStartTime();
 		TimePoint s2 = d2.getToken().getInterval().getStartTime();
 		// compare start times w.r.t. lower and upper bounds
-		return s1.getLowerBound() < s2.getLowerBound() ? -1 : s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
+		return s1.getLowerBound() < s2.getLowerBound() ? -1 :
+			s1.getLowerBound() == s2.getLowerBound() && s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
 	}
 	
 	/**
@@ -66,12 +67,12 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 		// get the flaw solution to consider
 		GapCompletion completion = (GapCompletion) solution;
 		// check solution path
-		if (completion.getPath().isEmpty()) {
-			
+		if (completion.getPath().isEmpty()) 
+		{
 			// list of committed relations to retract if needed
 			List<Relation> committed = new ArrayList<>();
-			try {
-				
+			try 
+			{
 				// direct token transition between active decisions
 				Decision reference = completion.getLeftDecision();
 				Decision target = completion.getRightDecision();
@@ -85,8 +86,8 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 				solution.addAddedRelation(meets);
 				
 				// check if parameter constraints must be added
-				try {
-					
+				try 
+				{
 					// create parameter relations
 					List<Relation> pRels = this.createParameterRelations(reference, target);
 					// propagate relation
@@ -110,16 +111,16 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 				throw new FlawSolutionApplicationException(ex.getMessage());
 			}
 		}
-		else {
-			
+		else 
+		{
 			// create the list of the decisions
 			List<Decision> transition = new ArrayList<>();
 			
 			// add the gap-left decision
 			transition.add(completion.getLeftDecision());
 			// create intermediate decisions
-			for (ComponentValue value : completion.getPath()) {
-				
+			for (ComponentValue value : completion.getPath()) 
+			{
 				// create parameters' labels
 				String[] labels = new String[value.getNumberOfParameterPlaceHolders()];
 				for (int index = 0; index < labels.length; index++) {
@@ -198,24 +199,23 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 			long dmax = query.getDistanceUpperBound();
 			
 			// check distance bound
-			if (dmin < 0 && dmax < 0) {
-				// error while ordering tokens 
-				this.logger.debug("Inverted tokens of the timeline [dmin= " + dmin + ", dmax= " + dmax +  "] " + this.component + "between:\n-" + left + "\n-" + right);
-				// we've got a gap
-				this.logger.error("(Inverted) Gap found on [dmin= " + -dmax + ", dmax= " + -dmin + "] " + this.component + " between:\n- " + left + "\n- " + right);
+			if (dmin < 0 && dmax <= 0) 
+			{
+				// we've got an inverted gap
 				Gap gap = new Gap(this.component, right, left, new long[] {
 						-dmax, -dmin
 				});
 				// add the gap
 				flaws.add(gap);
+				this.logger.error("(Inverted) Gap found on [dmin= " + -dmax + ", dmax= " + -dmin + "] " + this.component + " between:\n- " + right + "\n- " + left);
 			}
-			if (dmin >= 0 && dmax > 0) 
+			else if (dmin >= 0 && dmax > 0) 
 			{
 				// we've got a gap
-				this.logger.debug("Gap found on [dmin= " + dmin + ", dmax= " + dmax + "] " + this.component + " between:\n- " + left + "\n- " + right);
 				Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
 				// add the gap
 				flaws.add(gap);
+				this.logger.debug("Gap found on [dmin= " + dmin + ", dmax= " + dmax + "] " + this.component + " between:\n- " + left + "\n- " + right);
 			}
 			else if (dmin == 0 && dmax == 0) 
 			{
@@ -237,7 +237,8 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 					flaws.add(gap);
 				}
 			}
-			else {
+			else 
+			{
 				// set scheduling flag to false
 				scheduled = false;
 				// clear gaps detected till now

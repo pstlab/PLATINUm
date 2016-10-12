@@ -12,15 +12,15 @@ import it.uniroma3.epsl2.deliberative.solver.SearchSpaceNode;
  * @author anacleto
  *
  */
-public class DijkstraSearchStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
+public class DepthFirstCostFirstStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
 {
 	private Queue<SearchSpaceNode> fringe;
 	
 	/**
 	 * 
 	 */
-	protected DijkstraSearchStrategy() {
-		super(SearchStrategyType.DIJKSTRA);
+	protected DepthFirstCostFirstStrategy() {
+		super(SearchStrategyType.DFCF);
 		// java7 compliant constructor
 		this.fringe = new PriorityQueue<SearchSpaceNode>(11, this);
 	}
@@ -62,7 +62,8 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 	 */
 	@Override
 	public int compare(SearchSpaceNode o1, SearchSpaceNode o2) {
-		// compare the costs of the nodes
-		return o1.getCost() <= o2.getCost() ? -1 : 1;
+		// compare the depth and the cost of the two nodes
+		return o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 :
+			o1.getCost() <= o2.getCost() ? -1 : 1;
 	}
 }
