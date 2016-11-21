@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
+import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
@@ -16,6 +17,7 @@ import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
+import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationException;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
@@ -208,6 +210,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	/**
 	 * 
 	 * @param component
+	 * @param timeline
 	 * @param signature
 	 * @param pTypes
 	 * @param pValues
@@ -218,7 +221,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	protected ExecutionNode createNode(String component, 
+	protected ExecutionNode createNode(String component, String timeline, 
 			String signature, ParameterType[] pTypes, String[] pValues, 
 			long[] start, long[] end, long[] duration, 
 			ControllabilityType controllability) 
@@ -231,7 +234,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, controllableInterval);
 		
 		// create predicate
-		NodePredicate predicate = new NodePredicate(component, signature, pTypes, pValues); 
+		NodePredicate predicate = new NodePredicate(component, timeline, signature, pTypes, pValues); 
 		// create execution node
 		return new ExecutionNode(predicate, interval, controllability);
 	}
@@ -311,27 +314,46 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @param node
 	 * @param duration
-	 * @throws Exception
+	 * @throws TemporalConstraintPropagationException
 	 */
-	public void scheduleDuration(ExecutionNode node, long duration) 
-			throws Exception 
+	public final void scheduleDuration(ExecutionNode node, long duration) 
+			throws TemporalConstraintPropagationException 
 	{
+		// check node controllability and duration
+		if ((node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) || 
+				node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE_DURATION)) && 
+				(duration < node.getDuration()[0] || duration > node.getDuration()[1]))
+		{
+			// inconsistent duration to schedule
+			throw new TemporalConstraintPropagationException("Invalid duration constraint for node\n- duration= " + duration +"\n- node= " + node + "\n");
+		}
+			
 		// fix start time first
 		FixDurationIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_DURATION);
 		fix.setReference(node.getInterval());
 		fix.setDuration(duration);
 		// propagate constraint
 		this.facade.propagate(fix);
+		try 
+		{
+			// check the consistency of the resulting network
+			this.facade.checkConsistency();
+		}
+		catch (ConsistencyCheckException ex) {
+			// retract propagated constraint and throw exception
+			this.facade.retract(fix);
+			throw new TemporalConstraintPropagationException("Error while propagating duration constraint for node\n- duration= " + duration +"\n- node= " + node + "\n");
+		}
 	}
 	
 	/**
 	 * 
 	 * @param node
 	 * @param start
-	 * @throws Exception
+	 * @throws TemporalConstraintPropagationException
 	 */
-	public void scheduleStartTime(ExecutionNode node, long start) 
-			throws Exception 
+	public final void scheduleStartTime(ExecutionNode node, long start) 
+			throws TemporalConstraintPropagationException 
 	{
 		// create constraint
 		FixStartTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_START_TIME);
@@ -339,15 +361,25 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		fix.setStart(start);
 		// propagate constraint
 		this.facade.propagate(fix);
+		try {
+			// check consistency of the resulting network
+			this.facade.checkConsistency();
+		}
+		catch (ConsistencyCheckException ex) {
+			// retract propagated constraint and throw exception
+			this.facade.retract(fix);
+			throw new TemporalConstraintPropagationException("Error while propagating start constraint for node\n- start= " + start + "\n- node= " + node + "\n");
+		}
 	}
 
 	/**
 	 * 
 	 * @param node
 	 * @param end
+	 * @throws TemporalConstraintPropagationException
 	 */
 	public void scheduleEndTime(ExecutionNode node, long end) 
-			throws Exception 
+			throws TemporalConstraintPropagationException 
 	{
 		// create constraint
 		FixEndTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_END_TIME);
@@ -355,6 +387,15 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		fix.setEnd(end);
 		// propagate constraint
 		this.facade.propagate(fix);
+		try {
+			// check consistency of the resulting network
+			this.facade.checkConsistency();
+		}
+		catch (ConsistencyCheckException ex) {
+			// retract propagated constraint and throw exception
+			this.facade.retract(fix);
+			throw new TemporalConstraintPropagationException("Error while propagating end constraint for node\n- end= " + end + "\n- node= " + node + "\n");
+		}
 	}
 	
 	/**

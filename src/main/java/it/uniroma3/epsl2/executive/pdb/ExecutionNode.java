@@ -41,9 +41,24 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 	 * 
 	 * @return
 	 */
-	public String getSignature() {
+	public long getId() {
+		return id;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getGroundSignature() {
 		return this.predicate.getGroundSignature();
-//		return this.predicate.getSignature();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getSignature() {
+		return this.predicate.getSignature();
 	}
 	
 	/**
@@ -52,6 +67,14 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 	 */
 	public String getComponent() {
 		return this.predicate.getComponent();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTimeline() {
+		return this.predicate.getTimeline();
 	}
 	
 	/**

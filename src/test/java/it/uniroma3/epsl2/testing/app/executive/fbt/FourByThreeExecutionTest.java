@@ -41,5 +41,8 @@ class FourByThreeExecutionTest
 		catch (InterruptedException ex) {
 			System.err.println(ex.getMessage());
 		}
+		catch (Exception ex) {
+			System.err.println(ex.getMessage());
+		}
 	}
 }

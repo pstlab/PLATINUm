@@ -7,21 +7,25 @@ import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
  * @author anacleto
  *
  */
-public class NodePredicate {
-
+public class NodePredicate 
+{
 	private String component;
+	private String timeline;
 	private String signature;
 	private ParameterType[] types;
 	private String[] parameters;
 	
 	/**
 	 * 
+	 * @param component
+	 * @param timeline
 	 * @param signature
 	 * @param types
 	 * @param parameters
 	 */
-	protected NodePredicate(String component, String signature, ParameterType[] types, String[] parameters) {
+	protected NodePredicate(String component, String timeline, String signature, ParameterType[] types, String[] parameters) {
 		this.component = component;
+		this.timeline = timeline;
 		this.signature = signature;
 		this.types = types;
 		this.parameters = parameters;
@@ -33,6 +37,14 @@ public class NodePredicate {
 	 */
 	public String getComponent() {
 		return component;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTimeline() {
+		return timeline;
 	}
 	
 	/**

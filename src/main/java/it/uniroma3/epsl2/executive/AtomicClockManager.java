@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
+import it.uniroma3.epsl2.executive.ex.ExecutionException;
+
 /**
  * 
  * @author anacleto
@@ -132,38 +134,36 @@ public final class AtomicClockManager implements Runnable, ClockManager
 	@Override
 	public void run() 
 	{
-		try 
+		// set clock start time
+		this.clockSart = System.currentTimeMillis();
+		// initialize tick
+		this.tick = new AtomicLong(this.tickStart);
+		// set execution complete flag
+		boolean complete = false;
+		// start process
+		while (!complete) 
 		{
-			// set clock start time
-			this.clockSart = System.currentTimeMillis();
-			// initialize tick
-			this.tick = new AtomicLong(this.tickStart);
-			// set execution complete flag
-			boolean complete = false;
-			// start process
-			while (!complete) 
+			try 
 			{
-				try 
-				{
-					// get sampling rate from the configuration file
-					long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
-					// wait latency
-					Thread.sleep(sampling);
-	
-					// update the current tick
-					long currentTick = this.tick.getAndIncrement();
-					// notify executive
-					complete = this.executive.onTick(currentTick);
-				} 
-				catch (InterruptedException ex) {
-					// complete execution
-					complete = true;
-					System.err.println("Execution Interrupted\n" + ex.getMessage());
-				}
+				// get sampling rate from the configuration file
+				long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
+				// wait latency
+				Thread.sleep(sampling);
+
+				// update the current tick
+				long currentTick = this.tick.getAndIncrement();
+				// notify executive
+				complete = this.executive.onTick(currentTick);
+			} 
+			catch (InterruptedException ex) {
+				// complete execution
+				System.err.println("Execution Interrupted\n" + ex.getMessage());
+				complete = true;
 			}
-		}
-		catch (Exception ex) {
-			throw new RuntimeException(ex.getMessage());
+			catch (ExecutionException ex) { 
+				// stop execution
+				complete = true;
+			}
 		}
 	}
 	

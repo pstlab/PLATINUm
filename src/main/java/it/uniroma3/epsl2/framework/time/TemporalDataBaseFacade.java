@@ -289,7 +289,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * 
 	 */
 	@Override
-	public final void process(TemporalQuery query) {
+	public final void process(TemporalQuery query) 
+	{
 		// check query type
 		switch (query.getType()) 
 		{

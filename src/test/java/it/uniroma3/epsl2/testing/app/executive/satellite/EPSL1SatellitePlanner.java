@@ -23,7 +23,7 @@ class EPSL1SatellitePlanner
 	 * @throws NoSolutionFoundException
 	 */
 	public EPSLPlanDescriptor plan() 
-			throws NoSolutionFoundException 
+			throws NoSolutionFoundException, Exception
 	{
 		// build planner
 		 EPSLRunnableApplicationPlanner planner = EPSLApplicationBuilder.buildAPSIPlanner(DDL, PDL);

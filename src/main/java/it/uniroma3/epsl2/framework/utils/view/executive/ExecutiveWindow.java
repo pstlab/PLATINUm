@@ -126,12 +126,12 @@ public class ExecutiveWindow extends JFrame {
 			}
 			
 			// add entry for predicate
-			if (!index.get(node.getComponent()).containsKey(node.getSignature())) {
-				index.get(node.getComponent()).put(node.getSignature(), new ArrayList<ExecutionNode>());
+			if (!index.get(node.getComponent()).containsKey(node.getGroundSignature())) {
+				index.get(node.getComponent()).put(node.getGroundSignature(), new ArrayList<ExecutionNode>());
 			}
 			
 			// add node
-			index.get(node.getComponent()).get(node.getSignature()).add(node);
+			index.get(node.getComponent()).get(node.getGroundSignature()).add(node);
 		}
 		
 		// set data to show
@@ -156,7 +156,7 @@ public class ExecutiveWindow extends JFrame {
 					for (ExecutionNode node : nodes) 
 					{
 						// create a sub-task
-						Task subTask = new Task(node.getSignature(),
+						Task subTask = new Task(node.getGroundSignature(),
 								new Date(node.getStart()[0]),
 								new Date(node.getEnd()[0]));
 						

@@ -539,7 +539,7 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 			throws InconsistentDistanceConstraintException 
 	{
 		// check consistency of distance bound
-		if (distance[0] > distance[1]) {			// || distance[1] > this.horizon || distance[0] < 0) {
+		if (distance[0] > distance[1]) {
 			// inconsistent value
 			throw new InconsistentDistanceConstraintException("DistanceConstraint (dmin= " + distance[0] +", dmax= " + distance[1] + ") is inconsistent or it is not compatible wih the domain [origin= " + this.origin + ", horizon= " + this.horizon + "]");
 		}
@@ -556,7 +556,8 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 		info.addRelation(rel);
 		
 		// notify observers
-		for (TemporalNetworkObserver obs : this.observers) {
+		for (TemporalNetworkObserver obs : this.observers) 
+		{
 			try {
 				// try to notify
 				obs.notify(info);
@@ -659,8 +660,10 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 	 * 
 	 * @param rel
 	 */
-	public final void removeConstraint(TimePointConstraint rel) {
-		try {
+	public final void removeConstraint(TimePointConstraint rel) 
+	{
+		try 
+		{
 			// remove temporal relation
 			this.doRemoveDistanceConstraint(rel);
 			

@@ -24,7 +24,7 @@ class EPSLFourByThreePlanner
 	 * @throws NoSolutionFoundException
 	 */
 	public EPSLPlanDescriptor plan() 
-			throws NoSolutionFoundException 
+			throws NoSolutionFoundException, Exception
 	{
 		// build planner
 		EPSLRunnableApplicationPlanner planner = EPSLApplicationBuilder.buildAPSIPlanner(DDL_PATH, PDL_PATH);
@@ -47,7 +47,7 @@ class EPSLFourByThreePlanner
 			EPSLPlanDescriptor plan = planner.plan();
 			System.out.println(plan);
 		}
-		catch (NoSolutionFoundException ex) {
+		catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
 	}
