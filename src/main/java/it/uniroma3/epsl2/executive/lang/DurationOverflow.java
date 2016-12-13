@@ -9,7 +9,6 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
  */
 public class DurationOverflow extends ExecutionFailureCause 
 {
-	private ExecutionNode node;
 	private long observedDuration;
 	
 	/**
@@ -19,18 +18,8 @@ public class DurationOverflow extends ExecutionFailureCause
 	 * @param observedDuration
 	 */
 	public DurationOverflow(long tick, ExecutionNode node, long observedDuration) {
-		super(tick, ExecutionFailureCauseType.DURATION_OVERFLOW);
-		// set value
-		this.node = node;
+		super(tick, node, ExecutionFailureCauseType.DURATION_OVERFLOW);
 		this.observedDuration = observedDuration;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public ExecutionNode getNode() {
-		return node;
 	}
 	
 	/**
@@ -48,6 +37,6 @@ public class DurationOverflow extends ExecutionFailureCause
 	public String toString() {
 		return "[DurationOverflow] The observed duration exceeds the upper bound of the domain specification\n"
 				+ "\t- observed-duration= " + this.observedDuration + "\n"
-				+ "\t- node= " + this.node + "\n";
+				+ "\t- node= " + this.getInterruptNode() + "\n";
 	}
 }

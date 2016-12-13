@@ -11,6 +11,7 @@ import it.istc.pst.epsl.pdb.lang.EPSLTokenDescriptor;
 import it.istc.pst.epsl.pdb.lang.rel.EPSLRelationDescriptor;
 import it.uniroma3.epsl2.executive.pdb.ControllabilityType;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
+import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.domain.component.Token;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
@@ -472,27 +473,27 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			}
 			
 			// print execution dependency graph (for debug only)
-//			for (ExecutionNodeStatus status : this.nodes.keySet())
-//			{
-//				// get nodes by status
-//				for (ExecutionNode node : this.nodes.get(status))
-//				{
-//					// print node and the related execution conditions
-//					System.out.println("Execution node " + node);
-//					System.out.println("\tNode execution starting conditions:");
-//					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
-//					for (ExecutionNode dep : dependencies.keySet()) {
-//						System.out.println("\t\tCan start if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
-//					}
-//					
-//					// get end conditions
-//					dependencies = this.getNodeEndDependencies(node);
-//					System.out.println("\tNode execution ending conditions:");
-//					for (ExecutionNode dep : dependencies.keySet()) {
-//						System.out.println("\t\tCan end if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
-//					}
-//				}
-//			}
+			for (ExecutionNodeStatus status : this.nodes.keySet())
+			{
+				// get nodes by status
+				for (ExecutionNode node : this.nodes.get(status))
+				{
+					// print node and the related execution conditions
+					System.out.println("Execution node " + node);
+					System.out.println("\tNode execution starting conditions:");
+					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
+					for (ExecutionNode dep : dependencies.keySet()) {
+						System.out.println("\t\tCan start if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
+					}
+					
+					// get end conditions
+					dependencies = this.getNodeEndDependencies(node);
+					System.out.println("\tNode execution ending conditions:");
+					for (ExecutionNode dep : dependencies.keySet()) {
+						System.out.println("\t\tCan end if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
+					}
+				}
+			}
 		}
 		catch (TemporalIntervalCreationException ex) {
 			throw new RuntimeException(ex.getMessage());

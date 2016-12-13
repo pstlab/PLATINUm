@@ -160,7 +160,7 @@ public final class AtomicClockManager implements Runnable, ClockManager
 				System.err.println("Execution Interrupted\n" + ex.getMessage());
 				complete = true;
 			}
-			catch (ExecutionException ex) { 
+			catch (ExecutionException ex) {
 				// stop execution
 				complete = true;
 			}
