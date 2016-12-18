@@ -10,5 +10,10 @@ public enum ExecutionFailureCauseType
 	/**
 	 * 
 	 */
-	DURATION_OVERFLOW
+	DURATION_OVERFLOW,
+	
+	/**
+	 * 
+	 */
+	START_OVERFLOW
 }
