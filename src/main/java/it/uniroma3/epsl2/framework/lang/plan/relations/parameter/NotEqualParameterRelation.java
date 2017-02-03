@@ -4,6 +4,7 @@ import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.NotEqualParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
+import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintFactory;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 
 /**
@@ -13,6 +14,9 @@ import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstrain
  */
 public class NotEqualParameterRelation extends ParameterRelation 
 {
+	private String targetParameterLabel;
+	private ParameterConstraintFactory factory;
+	
 	/**
 	 * 
 	 * @param refrence
@@ -20,7 +24,23 @@ public class NotEqualParameterRelation extends ParameterRelation
 	 */
 	protected NotEqualParameterRelation(Decision reference, Decision target) {
 		super(RelationType.NOT_EQUAL_PARAMETER, reference, target);
-		
+		this.factory = ParameterConstraintFactory.getInstance();
+	}
+	
+	/**
+	 * 
+	 * @param label
+	 */
+	public void setTargetParameterLabel(String label) {
+		this.targetParameterLabel = label;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTargetParameterLabel() {
+		return this.targetParameterLabel;
 	}
 	
 	/**
@@ -35,7 +55,8 @@ public class NotEqualParameterRelation extends ParameterRelation
 	 * 
 	 */
 	@Override
-	public ParameterConstraint create() {
+	public ParameterConstraint create() 
+	{
 		// create constraint
 		NotEqualParameterConstraint constraint = this.factory.
 				createParameterConstraint(ParameterConstraintType.NOT_EQUAL);

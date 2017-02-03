@@ -51,6 +51,14 @@ public abstract class ParameterDomain
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public ParameterType getParameterType() {
+		return this.type.getParameterType();
+	}
+	
+	/**
+	 * 
 	 */
 	@Override
 	public int hashCode() {

@@ -31,6 +31,8 @@ import it.uniroma3.epsl2.framework.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.BindParameterRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.EqualParameterRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.NotEqualParameterRelation;
 import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.ParameterRelation;
 import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.TemporalRelation;
 import it.uniroma3.epsl2.framework.lang.problem.ParameterProblemConstraint;
@@ -50,10 +52,9 @@ import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
-import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
-import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 
 /**
  * 
@@ -197,21 +198,51 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 						break;
 						
 						// parameter constraint
-						case PARAMETER_CONSTRAINT : {
+						case PARAMETER_CONSTRAINT : 
+						{
 							// get parameter constraint
 							ParameterProblemConstraint pc = (ParameterProblemConstraint) constraint;
 							// create relation
 							ParameterRelation rel = this.createRelation(constraint.getType(), reference, target);
 							// set labels
 							rel.setReferenceParameterLabel(pc.getReferenceParameterLabel());
-							if (rel.getConstraintType().equals(ParameterConstraintType.BIND)) {
-								BindParameterRelation bind = (BindParameterRelation) rel;
-								// set the binding value
-								bind.setValue(pc.getTargetParameterLabel());
-							}
-							else {
-								// set also the target label
-								rel.setTargetParameterLabel(pc.getTargetParameterLabel());
+							
+							// check relation type
+							switch (rel.getType())
+							{
+								// bind parameter relation
+								case BIND_PARAMETER :
+								{
+									// get relation
+									BindParameterRelation bind = (BindParameterRelation) rel;
+									// set the binding value
+									bind.setValue(pc.getTargetParameterLabel());
+								}
+								break;
+								
+								// equal parameter relation
+								case EQUAL_PARAMETER :  
+								{
+									// get relation
+									EqualParameterRelation eq = (EqualParameterRelation) rel;
+									// set target label
+									eq.setTargetParameterLabel(pc.getTargetParameterLabel());
+								}
+								break; 
+								
+								// not equal parameter relation
+								case NOT_EQUAL_PARAMETER : 
+								{
+									// get relation
+									NotEqualParameterRelation neq = (NotEqualParameterRelation) rel;
+									// set also the target label
+									neq.setTargetParameterLabel(pc.getTargetParameterLabel());
+								}
+								break;
+								
+								default : {
+									throw new RuntimeException("Unknown parameter relation type - " + rel.getType());
+								}
 							}
 							
 							// check if relation can be activated

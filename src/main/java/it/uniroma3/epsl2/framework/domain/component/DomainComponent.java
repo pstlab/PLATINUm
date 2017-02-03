@@ -28,7 +28,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.Frame
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterDataBaseFacadeReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ResolverReferences;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
@@ -42,7 +42,7 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentView;
 import it.uniroma3.epsl2.framework.utils.view.component.gantt.GanttComponentView;

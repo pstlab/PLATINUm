@@ -1,5 +1,7 @@
 package it.uniroma3.epsl2.framework.parameter;
 
+import it.uniroma3.epsl2.framework.parameter.csp.CSPParameterDataBaseFacade;
+
 /**
  * 
  * @author anacleto

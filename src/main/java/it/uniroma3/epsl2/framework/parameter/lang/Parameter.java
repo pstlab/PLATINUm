@@ -7,14 +7,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author anacleto
  *
  */
-public abstract class Parameter
+public abstract class Parameter <T extends ParameterDomain>
 {
 	private final static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	
 	protected int id;					// id
 	protected String label;				// variable name
 	protected ParameterType type;		// type of parameter
-	protected ParameterDomain domain;	// parameter's domain
+	protected T domain;					// parameter's domain
 
 	/**
 	 * 
@@ -22,10 +22,23 @@ public abstract class Parameter
 	 * @param type
 	 * @param domain
 	 */
-	protected Parameter(String label, ParameterType type, ParameterDomain domain) {
-		// get parameter's id
+	protected Parameter(String label, ParameterType type, T domain) {
+		// get ID
 		this.id = ID_COUNTER.getAndIncrement();
 		this.label = label;
+		this.type = type;
+		this.domain = domain;
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param domain
+	 */
+	protected Parameter(ParameterType type, T domain) {
+		// get ID
+		this.id = ID_COUNTER.getAndIncrement();
+		this.label = "anonym-" + this.id;
 		this.type = type;
 		this.domain = domain;
 	}
@@ -58,10 +71,10 @@ public abstract class Parameter
 	 * 
 	 * @return
 	 */
-	public  ParameterDomain getDomain() {
+	public  T getDomain() {
 		return this.domain;
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -84,7 +97,7 @@ public abstract class Parameter
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Parameter other = (Parameter) obj;
+		Parameter<?> other = (Parameter<?>) obj;
 		if (id != other.id)
 			return false;
 		return true;

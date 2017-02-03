@@ -11,7 +11,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.Param
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalNetworkReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 
 /**
  * 

@@ -14,13 +14,13 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.TemporalNetworkTransactionFailureException;
+import it.uniroma3.epsl2.framework.time.tn.simple.SimpleTemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverFactory;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverType;
 import it.uniroma3.epsl2.framework.time.tn.solver.apsp.APSPTemporalSolver;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointBoundQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
-import it.uniroma3.epsl2.framework.time.tn.stn.SimpleTemporalNetwork;
-import it.uniroma3.epsl2.framework.time.tn.stnu.SimpleTemporalNetworkWithUncertainty;
+import it.uniroma3.epsl2.framework.time.tn.uncertainty.SimpleTemporalNetworkWithUncertainty;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 

@@ -5,9 +5,9 @@ package it.uniroma3.epsl2.framework.parameter.lang;
  * @author anacleto
  *
  */
-public class EnumerationParameter extends Parameter 
+public class EnumerationParameter extends Parameter<EnumerationParameterDomain> 
 {
-	private String[] value;
+	private int value;
 	
 	/**
 	 * 
@@ -16,22 +16,64 @@ public class EnumerationParameter extends Parameter
 	 */
 	protected EnumerationParameter(String label, EnumerationParameterDomain domain) {
 		super(label, ParameterType.ENUMERATION_PARAMETER_TYPE, domain);
-		this.value = domain.getValues();
+	}
+	
+	/**
+	 * 
+	 * @param dom
+	 */
+	protected EnumerationParameter(EnumerationParameterDomain dom) {
+		super(ParameterType.ENUMERATION_PARAMETER_TYPE, dom);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String[] getDomainValues() {
+		return this.domain.getValues();
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	public String[] getValue() {
-		return this.value;
+	public String getValue() {
+		// get label from value
+		return this.domain.getValue(this.value);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int[] getValues() 
+	{
+		// get labels
+		String[] vals = this.domain.getValues();
+		// value indexes
+		int[] indexes = new int[vals.length];
+		for (int i = 0; i < vals.length; i++) {
+			indexes[i] = i;
+		}
+		// get indexes
+		return indexes;
 	}
 	
 	/**
 	 * 
 	 * @param values
 	 */
-	public void setValue(String[] value) {
+	public void setValue(String value) {
+		int index = this.domain.getIndex(value);
+		this.value = index;
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 */
+	public void setValue(int value) {
 		this.value = value;
 	}
 	
@@ -40,6 +82,7 @@ public class EnumerationParameter extends Parameter
 	 */
 	@Override
 	public String toString() {
-		return "[EnumerationParameter label= " + this.getLabel() + " values=" + this.value + " domain= " + this.domain + "]";
+		return "[EnumerationParameter label= " + this.getLabel() + " "
+				+ "value=" + this.value + " domain= " + this.domain + "]";
 	}
 }

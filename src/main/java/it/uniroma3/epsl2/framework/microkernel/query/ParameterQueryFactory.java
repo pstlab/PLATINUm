@@ -7,8 +7,8 @@ import java.lang.reflect.Constructor;
  * @author anacleto
  *
  */
-public class ParameterQueryFactory {
-
+public class ParameterQueryFactory 
+{
 	private static ParameterQueryFactory INSTANCE = null;
 	
 	private ParameterQueryFactory() {}

@@ -29,9 +29,7 @@ import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.StartsDuringRela
 import it.uniroma3.epsl2.framework.lang.plan.timeline.Timeline;
 import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
-import it.uniroma3.epsl2.framework.parameter.lang.EnumerationConstantParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameter;
-import it.uniroma3.epsl2.framework.parameter.lang.NumericConstantParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.NumericParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
@@ -86,46 +84,28 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 					for (int index = 0; index < pValues.length; index++) 
 					{
 						// get parameter by index
-						Parameter param = token.getPredicate().getParameterByIndex(index);
+						Parameter<?> param = token.getPredicate().getParameterByIndex(index);
 						// check type
 						switch (param.getType())
 						{
-							case CONSTANT_ENUMERATION_PARAMETER_TYPE : {
-								// get parameter
-								EnumerationConstantParameter p = (EnumerationConstantParameter) param;
-								// set parameter value
-								pValues[index] = p.getValue();
-								// set parameter type
-								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
-							}
-							break;
-							
-							case CONSTANT_NUMERIC_PARAMETER_TYPE : {
-								// get parameter
-								NumericConstantParameter p = (NumericConstantParameter) param;
-								// set parameter value
-								pValues[index] = new Integer(p.getValue()).toString();
-								// set parameter type
-								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
-							}
-							break;
-							
-							case ENUMERATION_PARAMETER_TYPE : {
+							case ENUMERATION_PARAMETER_TYPE : 
+							{
 								// get parameter
 								EnumerationParameter p = (EnumerationParameter) param;
 								// set parameter value
-								pValues[index] = p.getValue()[0];			// only one element expected
+								pValues[index] = p.getValue();			// only one element expected
 								// set parameter type
 								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
 
 							}
 							break;
 							
-							case NUMERIC_PARAMETER_TYPE : {
+							case NUMERIC_PARAMETER_TYPE : 
+							{
 								// get parameter 
 								NumericParameter p = (NumericParameter) param;
 								// set parameter value
-								pValues[index] = new Integer(p.getValue()[0]).toString();		// it should be the same as the upper bound
+								pValues[index] = new Integer(p.getValue()).toString();		// it should be the same as the upper bound
 								// set parameter type
 								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 							}
@@ -185,35 +165,15 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 					for (int index = 0; index < pValues.length; index++) 
 					{
 						// get parameter by index
-						Parameter param = token.getPredicate().getParameterByIndex(index);
+						Parameter<?> param = token.getPredicate().getParameterByIndex(index);
 						// check type
 						switch (param.getType())
 						{
-							case CONSTANT_ENUMERATION_PARAMETER_TYPE : {
-								// get parameter
-								EnumerationConstantParameter p = (EnumerationConstantParameter) param;
-								// set parameter value
-								pValues[index] = p.getValue();
-								// set parameter type
-								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
-							}
-							break;
-							
-							case CONSTANT_NUMERIC_PARAMETER_TYPE : {
-								// get parameter
-								NumericConstantParameter p = (NumericConstantParameter) param;
-								// set parameter value
-								pValues[index] = new Integer(p.getValue()).toString();
-								// set parameter type
-								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
-							}
-							break;
-							
 							case ENUMERATION_PARAMETER_TYPE : {
 								// get parameter
 								EnumerationParameter p = (EnumerationParameter) param;
 								// set parameter value
-								pValues[index] = p.getValue()[0];			// only one element expected
+								pValues[index] = p.getValue();			// only one element expected
 								// set parameter type
 								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
 
@@ -224,7 +184,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 								// get parameter 
 								NumericParameter p = (NumericParameter) param;
 								// set parameter value
-								pValues[index] = new Integer(p.getValue()[0]).toString();		// it should be the same as the upper bound
+								pValues[index] = new Integer(p.getValue()).toString();		// it should be the same as the upper bound
 								// set parameter type
 								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 							}

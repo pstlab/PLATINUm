@@ -23,7 +23,7 @@ import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.resolver.plan.Goal;
 
 /**

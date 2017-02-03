@@ -20,7 +20,7 @@ import it.uniroma3.epsl2.framework.time.lang.allen.DuringIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalDistanceQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 

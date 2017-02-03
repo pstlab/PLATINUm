@@ -17,7 +17,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.Compo
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterDataBaseFacadeReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;

@@ -5,7 +5,7 @@ package it.uniroma3.epsl2.framework.parameter.lang.constraints;
  * @author anacleto
  *
  */
-public class NotEqualParameterConstraint extends ParameterConstraint 
+public class NotEqualParameterConstraint extends BinaryParameterConstraint 
 {
 	/**
 	 * 
@@ -13,4 +13,13 @@ public class NotEqualParameterConstraint extends ParameterConstraint
 	protected NotEqualParameterConstraint() {
 		super(ParameterConstraintType.NOT_EQUAL);
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[NotEqualParameterConstraint symbol= " + this.type.getSymbol() + "\n- reference= " + this.reference + "\n- target= " + this.target + "\n]";
+	}
+	
 }

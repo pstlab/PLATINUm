@@ -4,6 +4,7 @@ import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.BindParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
+import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintFactory;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 
 /**
@@ -14,6 +15,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstrain
 public class BindParameterRelation extends ParameterRelation 
 {
 	private String value;
+	private ParameterConstraintFactory factory;
 
 	/**
 	 * 
@@ -24,24 +26,7 @@ public class BindParameterRelation extends ParameterRelation
 		super(RelationType.BIND_PARAMETER, reference, target);
 		// reflexive relation
 		this.target = reference;
-	}
-
-	/**
-	 * 
-	 * @param dec
-	 */
-	@Override
-	public void setTarget(Decision dec) {
-		this.setReference(dec);
-	}
-	
-	/**
-	 * 
-	 * @param label
-	 */
-	@Override
-	public void setTargetParameterLabel(String label) {
-		this.setReferenceParameterLabel(label);
+		this.factory = ParameterConstraintFactory.getInstance();
 	}
 	
 	/**
@@ -73,16 +58,17 @@ public class BindParameterRelation extends ParameterRelation
 	 * 
 	 */
 	@Override
-	public ParameterConstraint create() {
+	public ParameterConstraint create() 
+	{
 		// create constraint
 		BindParameterConstraint constraint = this.factory.
 				createParameterConstraint(ParameterConstraintType.BIND);
+		
 		// get index
 		int index = this.reference.getParameterIndexByLabel(this.referenceParameterLabel);
 		// set reference parameter
 		constraint.setReference(this.reference.getParameterByIndex(index));
-		// note: the target will be replaced by an anonymous parameter when propagating constraint
-		constraint.setTarget(this.reference.getParameterByIndex(index));
+		// set the value
 		constraint.setValue(this.value);
 		// set and get constraint
 		this.constraint = constraint;

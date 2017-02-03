@@ -8,18 +8,6 @@ package it.uniroma3.epsl2.framework.parameter.lang;
 public enum ParameterType 
 {
 	/**
-	 * Constant numeric parameter
-	 */
-	CONSTANT_NUMERIC_PARAMETER_TYPE(NumericConstantParameter.class.getName(), 
-			ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE),
-	
-	/**
-	 * Constant enumeration parameter
-	 */
-	CONSTANT_ENUMERATION_PARAMETER_TYPE(EnumerationConstantParameter.class.getName(), 
-			ParameterDomainType.ENUMERATION_DOMAIN_PARAMETER_TYPE),
-	
-	/**
 	 * Numeric parameter type
 	 */
 	NUMERIC_PARAMETER_TYPE(NumericParameter.class.getName(), 

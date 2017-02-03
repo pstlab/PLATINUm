@@ -6,7 +6,7 @@ import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
-import it.uniroma3.epsl2.framework.time.tn.stnu.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**

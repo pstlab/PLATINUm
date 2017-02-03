@@ -1,9 +1,5 @@
 package it.uniroma3.epsl2.framework.domain.component;
 
-import it.uniroma3.epsl2.framework.parameter.lang.EnumerationConstantParameter;
-import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameter;
-import it.uniroma3.epsl2.framework.parameter.lang.NumericConstantParameter;
-import it.uniroma3.epsl2.framework.parameter.lang.NumericParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 
 /**
@@ -135,45 +131,13 @@ public class Predicate {
 	 * 
 	 */
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		String description = "[Predicate id= " + this.id +", value= " + this.value.getLabel() + "(";
 		// add parameters
 		for (Parameter param : this.parameters) {
 			// check type
-			switch (param.getType()) 
-			{
-				// numeric parameter
-				case NUMERIC_PARAMETER_TYPE : {
-					NumericParameter p = (NumericParameter) param;
-					description += p.getLabel() + "= [" + p.getLowerBound() + "," + p.getUpperBound() +"] ";
-				}
-				break;
-				
-				// constant numeric parameter
-				case CONSTANT_NUMERIC_PARAMETER_TYPE : {
-					NumericConstantParameter p = (NumericConstantParameter) param;
-					description += p.getLabel() + "= " + p.getValue() +" ";
-				}
-				break;
-				
-				// constant enumeration parameter
-				case CONSTANT_ENUMERATION_PARAMETER_TYPE : {
-					EnumerationConstantParameter p = (EnumerationConstantParameter) param;
-					description += p.getLabel() + "= " + p.getValue() + " ";
-				}
-				break;
-				
-				// enumeration parameter
-				case ENUMERATION_PARAMETER_TYPE : {
-					EnumerationParameter p = (EnumerationParameter) param;
-					description += p.getLabel() + "= {";
-					for (String v : p.getValue()) {
-						description += " "+ v + " ";
-					}
-					description += "} ";
-				}
-				break;
-			}
+			description += " " + param + " ";
 		}
 		// close parameter description
 		description += ")]";

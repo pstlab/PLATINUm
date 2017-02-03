@@ -22,14 +22,14 @@ import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.BindParameterRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.EqualParameterRelation;
+import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.NotEqualParameterRelation;
 import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.ParameterRelation;
 import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.TemporalRelation;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 
 /**
  * 
@@ -414,57 +414,110 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 						// create pending relation
 						ParameterRelation rel = (ParameterRelation) this.component.createRelation(pc.getType(), reference, target);
 						
-						// check type
-						if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+						// check parameter relation type
+						switch (rel.getType())
 						{
-							// bind constraint
-							BindParameterRelation bind = (BindParameterRelation) rel;
-							// set binding value
-							bind.setValue(pc.getTargetLabel());
-							// set reference label
-							if (pc.getSource().equals(rule.getTriggerer())) 
+							// bind parameter relation
+							case BIND_PARAMETER : 
 							{
-								// get trigger label index
-								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
-								// set decision's label
-								String label = goal.getParameterLabelByIndex(index);
-								// set label
-								bind.setReferenceParameterLabel(label);
+								// bind constraint
+								BindParameterRelation bind = (BindParameterRelation) rel;
+								// set binding value
+								bind.setValue(pc.getTargetLabel());
+								// set reference label
+								if (pc.getSource().equals(rule.getTriggerer())) 
+								{
+									// get trigger label index
+									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
+									// set decision's label
+									String label = goal.getParameterLabelByIndex(index);
+									// set label
+									bind.setReferenceParameterLabel(label);
+								}
+								else {
+									bind.setReferenceParameterLabel(pc.getReferenceLabel());
+								}
 							}
-							else {
-								bind.setReferenceParameterLabel(pc.getReferenceLabel());
-							}
-						}
-						else 
-						{
-							// check if source is the trigger
-							if (pc.getSource().equals(rule.getTriggerer())) 
-							{
-								// get trigger label index
-								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
-								// get decions's label
-								String label = goal.getParameterLabelByIndex(index);
-								// set label
-								rel.setReferenceParameterLabel(label);
-							}
-							else {
-								// directly set the label
-								rel.setReferenceParameterLabel(pc.getReferenceLabel());
-							}
+							break;
 							
-							// check if target is the trigger
-							if (pc.getTarget().equals(rule.getTriggerer())) 
+							// equal parameter relation
+							case EQUAL_PARAMETER : 
 							{
-								// get trigger label index
-								int index = rule.getTriggerer().getParameterIndexByLabel(pc.getTargetLabel());
-								// get decision's label
-								String label = goal.getParameterLabelByIndex(index);
-								// set label
-								rel.setTargetParameterLabel(label);
+								// get relation
+								EqualParameterRelation eq = (EqualParameterRelation) rel;
+								
+								// check if source is the trigger
+								if (pc.getSource().equals(rule.getTriggerer())) 
+								{
+									// get trigger label index
+									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
+									// get decions's label
+									String label = goal.getParameterLabelByIndex(index);
+									// set label
+									eq.setReferenceParameterLabel(label);
+								}
+								else {
+									// directly set the label
+									eq.setReferenceParameterLabel(pc.getReferenceLabel());
+								}
+								
+								// check if target is the trigger
+								if (pc.getTarget().equals(rule.getTriggerer())) 
+								{
+									// get trigger label index
+									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getTargetLabel());
+									// get decision's label
+									String label = goal.getParameterLabelByIndex(index);
+									// set label
+									eq.setTargetParameterLabel(label);
+								}
+								else {
+									// directly set the label
+									eq.setTargetParameterLabel(pc.getTargetLabel());
+								}
 							}
-							else {
-								// directly set the label
-								rel.setTargetParameterLabel(pc.getTargetLabel());
+							break;
+							
+							// not-equal parameter relation
+							case NOT_EQUAL_PARAMETER : 
+							{
+								// get relation
+								EqualParameterRelation neq = (EqualParameterRelation) rel;
+								
+								// check if source is the trigger
+								if (pc.getSource().equals(rule.getTriggerer())) 
+								{
+									// get trigger label index
+									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
+									// get decions's label
+									String label = goal.getParameterLabelByIndex(index);
+									// set label
+									neq.setReferenceParameterLabel(label);
+								}
+								else {
+									// directly set the label
+									neq.setReferenceParameterLabel(pc.getReferenceLabel());
+								}
+								
+								// check if target is the trigger
+								if (pc.getTarget().equals(rule.getTriggerer())) 
+								{
+									// get trigger label index
+									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getTargetLabel());
+									// get decision's label
+									String label = goal.getParameterLabelByIndex(index);
+									// set label
+									neq.setTargetParameterLabel(label);
+								}
+								else {
+									// directly set the label
+									neq.setTargetParameterLabel(pc.getTargetLabel());
+								}
+							}
+							break;
+							
+							default : {
+								throw new RuntimeException("Unknown parameter constraint type - " + rel.getType());
 							}
 						}
 						
@@ -614,24 +667,56 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 					pRel.setReferenceParameterLabel(unification.getParameterLabelByIndex(index));
 				}
 				
-				// check parameter constraint
-				if (pRel.getConstraintType().equals(ParameterConstraintType.BIND)) 
+				
+				// check relation type
+				switch (pRel.getType())
 				{
-					// set target the same as the reference 
-					pRel.setTarget(pRel.getReference());
-					// the binding value remains the same
-				}
-				else 
-				{
-					// binary relation - translate target if needed 
-					if (pRel.getTarget().equals(goal)) 
+					// bind parameter relation
+					case BIND_PARAMETER : {
+						// get relation
+						BindParameterRelation bind = (BindParameterRelation) pRel;
+						bind.setTarget(bind.getReference());
+					}
+					break;
+					
+					// equal parameter relation
+					case EQUAL_PARAMETER : 
 					{
-						// update target
-						pRel.setTarget(unification);
-						// update target label
-						int index = goal.getParameterIndexByLabel(pRel.getTargetParameterLabel());
-						// set target label
-						pRel.setTargetParameterLabel(unification.getParameterLabelByIndex(index));
+						// get relation
+						EqualParameterRelation eq = (EqualParameterRelation) pRel;
+						// binary relation - translate target if needed 
+						if (pRel.getTarget().equals(goal)) 
+						{
+							// update target
+							eq.setTarget(unification);
+							// update target label
+							int index = goal.getParameterIndexByLabel(eq.getTargetParameterLabel());
+							// set target label
+							eq.setTargetParameterLabel(unification.getParameterLabelByIndex(index));
+						}
+					}
+					break;
+					
+					// not equal parameter relation
+					case NOT_EQUAL_PARAMETER : 
+					{
+						// get relation
+						NotEqualParameterRelation neq = (NotEqualParameterRelation) pRel;
+						// binary relation - translate target if needed 
+						if (neq.getTarget().equals(goal)) 
+						{
+							// update target
+							neq.setTarget(unification);
+							// update target label
+							int index = goal.getParameterIndexByLabel(neq.getTargetParameterLabel());
+							// set target label
+							neq.setTargetParameterLabel(unification.getParameterLabelByIndex(index));
+						}
+					}
+					break;
+					
+					default : {
+						throw new RuntimeException("Unknown parameter relation type " + pRel.getType());
 					}
 				}
 			}
@@ -682,24 +767,57 @@ public class PlanRefinementResolver extends Resolver<PlanDataBaseComponent>
 					pRel.setReferenceParameterLabel(goal.getParameterLabelByIndex(index));
 				}
 				
-				// check if binding relation
-				if (pRel.getType().equals(RelationType.BIND_PARAMETER)) 
+				// check parameter relation type
+				switch (pRel.getType())
 				{
-					// set target the same as the reference 
-					pRel.setTarget(pRel.getReference());
-					// the binding value remains the same
-				}
-				else 
-				{
-					// binary parameter relation - update target reference if needed
-					if (pRel.getTarget().equals(unification)) 
+					// bind parameter relation
+					case BIND_PARAMETER : 
 					{
-						// set target
-						pRel.setTarget(goal);
-						// get unification target parameter label index
-						int index = unification.getParameterIndexByLabel(pRel.getTargetParameterLabel());
-						// set goal target parameter label
-						pRel.setTargetParameterLabel(goal.getParameterLabelByIndex(index));
+						// bind constraint
+						BindParameterRelation bind = (BindParameterRelation) pRel;
+						// set the target
+						bind.setTarget(bind.getReference());
+					}
+					break;
+					
+					// equal parameter relation
+					case EQUAL_PARAMETER : 
+					{
+						// get relation
+						EqualParameterRelation eq = (EqualParameterRelation) pRel;
+						// binary parameter relation - update target reference if needed
+						if (eq.getTarget().equals(unification)) 
+						{
+							// set target
+							eq.setTarget(goal);
+							// get unification target parameter label index
+							int index = unification.getParameterIndexByLabel(eq.getTargetParameterLabel());
+							// set goal target parameter label
+							eq.setTargetParameterLabel(goal.getParameterLabelByIndex(index));
+						}
+					}
+					break;
+					
+					// not-equal parameter relation
+					case NOT_EQUAL_PARAMETER : 
+					{
+						// get relation
+						NotEqualParameterRelation neq = (NotEqualParameterRelation) pRel;
+						// binary parameter relation - update target reference if needed
+						if (neq.getTarget().equals(unification)) 
+						{
+							// set target
+							neq.setTarget(goal);
+							// get unification target parameter label index
+							int index = unification.getParameterIndexByLabel(neq.getTargetParameterLabel());
+							// set goal target parameter label
+							neq.setTargetParameterLabel(goal.getParameterLabelByIndex(index));
+						}
+					}
+					break;
+					
+					default : {
+						throw new RuntimeException("Unknown parameter relation type - " + rel.getType());
 					}
 				}
 			}

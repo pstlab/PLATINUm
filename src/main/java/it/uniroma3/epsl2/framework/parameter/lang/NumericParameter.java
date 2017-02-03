@@ -5,10 +5,9 @@ package it.uniroma3.epsl2.framework.parameter.lang;
  * @author anacleto
  *
  */
-public class NumericParameter extends Parameter
+public class NumericParameter extends Parameter<NumericParameterDomain>
 {
-	private int[] domainBounds;
-	private int[] value;
+	private int value;
 	
 	/**
 	 * 
@@ -17,32 +16,14 @@ public class NumericParameter extends Parameter
 	 */
 	protected NumericParameter(String label, NumericParameterDomain domain) {
 		super(label, ParameterType.NUMERIC_PARAMETER_TYPE, domain);
-		// set domain bound
-		this.domainBounds = new int[] {
-			domain.getLowerBound(),
-			domain.getUpperBound()
-		};
-		// initialize value bound
-		this.value = new int[] {
-				domain.getLowerBound(),
-				domain.getUpperBound()
-		};
 	}
 	
 	/**
 	 * 
-	 * @return
+	 * @param dom
 	 */
-	public int getDomainLowerBound() {
-		return this.domainBounds[0];
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public int getDomainUpperBound() {
-		return this.domainBounds[1];
+	protected NumericParameter(NumericParameterDomain dom) {
+		super(ParameterType.NUMERIC_PARAMETER_TYPE, dom);
 	}
 	
 	/**
@@ -50,7 +31,7 @@ public class NumericParameter extends Parameter
 	 * @return
 	 */
 	public int getLowerBound() {
-		return this.value[0];
+		return this.domain.getLowerBound();
 	}
 	
 	/**
@@ -58,14 +39,14 @@ public class NumericParameter extends Parameter
 	 * @return
 	 */
 	public int getUpperBound() {
-		return this.value[1];
+		return this.domain.getUpperBound();
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public int[] getValue() {
+	public int getValue() {
 		return this.value;
 	}
 	
@@ -73,25 +54,8 @@ public class NumericParameter extends Parameter
 	 * 
 	 * @param value
 	 */
-	public void setValue(int[] value) {
+	public void setValue(int value) {
 		this.value = value;
-	}
-	
-	/**
-	 * 
-	 * @param lb
-	 */
-	public void setLowerBound(int lb) {
-		this.value[0] = lb;
-	}
-	
-	
-	/**
-	 * 
-	 * @param ub
-	 */
-	public void setUpperBound(int ub) {
-		this.value[1] = ub;
 	}
 	
 	/**
@@ -100,6 +64,6 @@ public class NumericParameter extends Parameter
 	@Override
 	public String toString() {
 		return "[NumericParameter label= " + this.getLabel() + " value= "
-				+ "[" + this.value[0] + ", " + this.value[1] + "] domain= " + this.domain + "]";
+				+ "" + this.value + " domain= " + this.domain + "]";
 	}
 }

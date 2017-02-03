@@ -4,6 +4,7 @@ import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.EqualParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
+import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintFactory;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 
 /**
@@ -13,6 +14,9 @@ import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstrain
  */
 public class EqualParameterRelation extends ParameterRelation 
 {
+	private String targetParameterLabel;
+	private ParameterConstraintFactory factory;
+	
 	/**
 	 * 
 	 * @param refrence
@@ -20,6 +24,24 @@ public class EqualParameterRelation extends ParameterRelation
 	 */
 	protected EqualParameterRelation(Decision reference, Decision target) {
 		super(RelationType.EQUAL_PARAMETER, reference, target);
+		this.factory = ParameterConstraintFactory.getInstance();
+	}
+	
+	/**
+	 * 
+	 * @param label
+	 */
+	public void setTargetParameterLabel(String label) {
+		this.targetParameterLabel = label;
+	}
+	
+	/**
+	 * 
+	 * @param label
+	 * @return
+	 */
+	public String getTargetParameterLabel() {
+		return this.targetParameterLabel;
 	}
 	
 	/**
@@ -34,7 +56,8 @@ public class EqualParameterRelation extends ParameterRelation
 	 * 
 	 */
 	@Override
-	public ParameterConstraint create() {
+	public ParameterConstraint create() 
+	{
 		// create constraint
 		EqualParameterConstraint constraint = this.factory.
 				createParameterConstraint(ParameterConstraintType.EQUAL);

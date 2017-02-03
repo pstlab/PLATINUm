@@ -11,8 +11,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 public abstract class ParameterConstraint extends Constraint
 {
 	protected ParameterConstraintType type;
-	protected Parameter reference;
-	protected Parameter target;
+	protected Parameter<?> reference;
 	
 	/**
 	 * 
@@ -27,7 +26,7 @@ public abstract class ParameterConstraint extends Constraint
 	 * 
 	 * @param param
 	 */
-	public void setReference(Parameter param) {
+	public void setReference(Parameter<?> param) {
 		this.reference = param;
 	}
 	
@@ -35,27 +34,10 @@ public abstract class ParameterConstraint extends Constraint
 	 * 
 	 * @return
 	 */
-	public Parameter getReference() {
+	public Parameter<?> getReference() {
 		return this.reference;
 	}
 			
-	
-	/**
-	 * 
-	 * @param param
-	 */
-	public void setTarget(Parameter param) {
-		this.target = param;
-	}
-			
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public Parameter getTarget() {
-		return this.target;
-	}
 	
 	/**
 	 * 
@@ -69,7 +51,5 @@ public abstract class ParameterConstraint extends Constraint
 	 * 
 	 */
 	@Override
-	public String toString() {
-		return "[ParameterConstraint label= \"" + this.label + "\" reference= " + this.reference.getLabel()  + " target= " + this.target.getLabel() + "]";
-	}
+	public abstract String toString();
 }

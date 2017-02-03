@@ -5,8 +5,8 @@ package it.uniroma3.epsl2.framework.microkernel;
  * @author anacleto
  *
  */
-public abstract class ApplicationFrameworkObject {
-
+public abstract class ApplicationFrameworkObject 
+{
 	@SuppressWarnings("unused")
 	private ApplicationFrameworkContainer container;
 	private String registryKey;

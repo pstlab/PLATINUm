@@ -10,7 +10,7 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.IntervalDisjunctionException;
-import it.uniroma3.epsl2.framework.time.tn.stn.SimpleTemporalNetwork;
+import it.uniroma3.epsl2.framework.time.tn.simple.SimpleTemporalNetwork;
 
 /**
  * 

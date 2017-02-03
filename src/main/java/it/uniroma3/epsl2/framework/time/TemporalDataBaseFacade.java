@@ -104,7 +104,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @throws TimePointCreationException
 	 */
 	public final TimePoint createTimePoint() 
-			throws TimePointCreationException {
+			throws TimePointCreationException 
+	{
 		// time point to create
 		TimePoint point = null;
 		try {

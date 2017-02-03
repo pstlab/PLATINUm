@@ -19,7 +19,7 @@ import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 
 /**
  * 

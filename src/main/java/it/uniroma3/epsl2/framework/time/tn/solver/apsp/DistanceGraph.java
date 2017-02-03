@@ -12,8 +12,8 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class DistanceGraph {
-
+public class DistanceGraph 
+{
 	private long infty;												// temporal horizon
 	private Map<Integer, TimePoint> nodes;							// list of points
 	private Map<TimePoint, Map<TimePoint, Long>> edges;				// list of weighted edges

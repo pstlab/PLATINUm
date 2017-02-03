@@ -1,5 +1,7 @@
 package it.uniroma3.epsl2.framework.time;
 
+import it.uniroma3.epsl2.framework.time.tn.uncertainty.UncertaintyTemporalDataBaseFacade;
+
 /**
  * 
  * @author anacleto

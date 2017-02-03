@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.ParameterDataBaseFacadeConfiguration;
-import it.uniroma3.epsl2.framework.parameter.solver.ParameterSolverFactory;
+import it.uniroma3.epsl2.framework.parameter.csp.solver.ParameterSolverFactory;
 import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
 
 /**

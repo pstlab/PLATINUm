@@ -7,7 +7,7 @@ package it.uniroma3.epsl2.framework.parameter.lang.constraints;
  */
 public class BindParameterConstraint extends ParameterConstraint 
 {
-	private String value;
+	private Object value;
 	
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class BindParameterConstraint extends ParameterConstraint
 	 * 
 	 * @param value
 	 */
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 	
@@ -28,7 +28,7 @@ public class BindParameterConstraint extends ParameterConstraint
 	 * 
 	 * @return
 	 */
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
 	
@@ -37,6 +37,6 @@ public class BindParameterConstraint extends ParameterConstraint
 	 */
 	@Override
 	public String toString() {
-		return "[BindParameterConstraint label= \"" + this.label + "\" reference= " + this.reference.getLabel() + " value= " + this.value + "]";
+		return "[BindParameterConstraint symbol= " + this.type.getSymbol() + "\n- reference= " + this.reference.getLabel() + "\n- value= " + this.value + "\n]";
 	}
 }

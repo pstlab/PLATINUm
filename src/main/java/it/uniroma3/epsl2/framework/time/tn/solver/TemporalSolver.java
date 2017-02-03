@@ -3,7 +3,7 @@ package it.uniroma3.epsl2.framework.time.tn.solver;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalNetworkReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifcycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.query.Query;
 import it.uniroma3.epsl2.framework.microkernel.query.QueryManager;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetwork;
