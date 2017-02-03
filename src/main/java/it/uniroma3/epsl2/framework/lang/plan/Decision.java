@@ -293,7 +293,7 @@ public class Decision
 	 * @param index
 	 * @return
 	 */
-	public Parameter getParameterByIndex(int index) {
+	public Parameter<?> getParameterByIndex(int index) {
 		return this.token.getPredicate().getParameterByIndex(index);
 	}
 

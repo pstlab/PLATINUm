@@ -1,5 +1,7 @@
 package it.uniroma3.epsl2.framework.parameter.lang;
 
+import java.util.Arrays;
+
 /**
  * 
  * @author anacleto
@@ -7,7 +9,7 @@ package it.uniroma3.epsl2.framework.parameter.lang;
  */
 public class EnumerationParameter extends Parameter<EnumerationParameterDomain> 
 {
-	private int value;
+	private int[] values;
 	
 	/**
 	 * 
@@ -16,6 +18,11 @@ public class EnumerationParameter extends Parameter<EnumerationParameterDomain>
 	 */
 	protected EnumerationParameter(String label, EnumerationParameterDomain domain) {
 		super(label, ParameterType.ENUMERATION_PARAMETER_TYPE, domain);
+		// initialize values from the domain
+		this.values = new int[this.domain.getValues().length];
+		for (int index= 0; index < this.values.length; index++) {
+			this.values[index] = index;
+		}
 	}
 	
 	/**
@@ -24,6 +31,11 @@ public class EnumerationParameter extends Parameter<EnumerationParameterDomain>
 	 */
 	protected EnumerationParameter(EnumerationParameterDomain dom) {
 		super(ParameterType.ENUMERATION_PARAMETER_TYPE, dom);
+		// initialize values from the domain
+		this.values = new int[this.domain.getValues().length];
+		for (int index= 0; index < this.values.length; index++) {
+			this.values[index] = index;
+		}
 	}
 	
 	/**
@@ -38,43 +50,48 @@ public class EnumerationParameter extends Parameter<EnumerationParameterDomain>
 	 * 
 	 * @return
 	 */
-	public String getValue() {
+	public String[] getValues() 
+	{
 		// get label from value
-		return this.domain.getValue(this.value);
+		String[] list = new String[this.values.length];
+		for (int i= 0; i < this.values.length; i++) {
+			// get value label
+			String val = this.domain.getValue(this.values[i]);
+			list[i] = val;
+		}
+		// get the list
+		return list;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public int[] getValues() 
-	{
-		// get labels
-		String[] vals = this.domain.getValues();
-		// value indexes
-		int[] indexes = new int[vals.length];
-		for (int i = 0; i < vals.length; i++) {
-			indexes[i] = i;
-		}
-		// get indexes
-		return indexes;
+	public int[] getValueIndexes() {
+		return this.values;
 	}
 	
 	/**
 	 * 
 	 * @param values
 	 */
-	public void setValue(String value) {
-		int index = this.domain.getIndex(value);
-		this.value = index;
+	public void setValues(String[] vals) 
+	{
+		// list of indexes
+		this.values = new int[vals.length];
+		for (int i= 0; i < vals.length; i++) {
+			// get value index
+			int index = this.domain.getIndex(vals[i]);
+			this.values[i] = index;
+		}
 	}
 	
 	/**
 	 * 
-	 * @param value
+	 * @param vals
 	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setValues(int[] vals) {
+		this.values = vals;
 	}
 	
 	/**
@@ -83,6 +100,6 @@ public class EnumerationParameter extends Parameter<EnumerationParameterDomain>
 	@Override
 	public String toString() {
 		return "[EnumerationParameter label= " + this.getLabel() + " "
-				+ "value=" + this.value + " domain= " + this.domain + "]";
+				+ "value=" + Arrays.asList(this.values) + " domain= " + this.domain + "]";
 	}
 }

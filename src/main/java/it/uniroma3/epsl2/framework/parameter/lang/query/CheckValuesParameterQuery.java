@@ -11,7 +11,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
  */
 public class CheckValuesParameterQuery extends ParameterQuery 
 {
-	private Parameter param;
+	private Parameter<?> param;
 	
 	/**
 	 * 
@@ -24,7 +24,7 @@ public class CheckValuesParameterQuery extends ParameterQuery
 	 * 
 	 * @param param
 	 */
-	public void setParameter(Parameter param) {
+	public void setParameter(Parameter<?> param) {
 		this.param = param;
 	}
 	
@@ -32,7 +32,7 @@ public class CheckValuesParameterQuery extends ParameterQuery
 	 * 
 	 * @return
 	 */
-	public Parameter getParameter() {
+	public Parameter<?> getParameter() {
 		return param;
 	}
 }

@@ -9,14 +9,18 @@ import org.junit.Test;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddConstraintParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.DelConstraintParameterNotification;
+import it.uniroma3.epsl2.framework.parameter.csp.event.DelParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.ParameterNotificationFactory;
 import it.uniroma3.epsl2.framework.parameter.csp.event.ParameterNotificationType;
 import it.uniroma3.epsl2.framework.parameter.csp.solver.choco.v4.ChocoSolver;
+import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.NumericParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.BindParameterConstraint;
+import it.uniroma3.epsl2.framework.parameter.lang.constraints.EqualParameterConstraint;
+import it.uniroma3.epsl2.framework.parameter.lang.constraints.ExcludeParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 
 /**
@@ -304,5 +308,218 @@ public class ChochoSolverUnitTest
 		
 		// check model 
 		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		// delete parameter
+		DelParameterNotification dpInfo = this.notiFactory.create(ParameterNotificationType.DEL_PARAM);
+		dpInfo.setParameter(ep);
+		
+		// notify solver
+		this.solver.update(dpInfo);
+		
+		// check model 
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+	}
+	
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void addVariablesAndConstraintsTest() 
+			throws Exception
+	{
+		// check model
+		Assert.assertTrue(this.solver.isConsistent());
+		
+		// create enumeration parameter
+		EnumerationParameterDomain edom = this.paramFactory.createParameterDomain("locations", 
+				ParameterDomainType.ENUMERATION_DOMAIN_PARAMETER_TYPE);
+		edom.setValues(new String[] {
+				"kitchen",		// value: 0
+				"bathroom",		// value: 1
+				"bedroom",		// value: 2
+				"corridor"		// value: 3
+		});
+		
+		// create enumeration parameter
+		Parameter<?> p1 = this.paramFactory.createParameter("p1", edom);
+		Parameter<?> p2 = this.paramFactory.createParameter("p2", edom);
+		
+		// create notification
+		AddParameterNotification apInfo = this.notiFactory.create(ParameterNotificationType.ADD_PARAM);
+		apInfo.setParameter(p1);
+		// send notification
+		this.solver.update(apInfo);
+		apInfo.setParameter(p2);
+		this.solver.update(apInfo);
+		
+		// check consistency
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		// create equal constraint
+		EqualParameterConstraint eq = this.paramFactory.createParameterConstraint(ParameterConstraintType.EQUAL);
+		eq.setReference(p1);
+		eq.setTarget(p2);
+		
+		// create notification
+		AddConstraintParameterNotification acInfo = this.notiFactory.create(ParameterNotificationType.ADD_CONSTRAINT);
+		acInfo.setConstraint(eq);
+		// notify solver
+		this.solver.update(acInfo);
+		
+		// check model
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		// create bind constraint
+		BindParameterConstraint bind = this.paramFactory.createParameterConstraint(ParameterConstraintType.BIND);
+		bind.setReference(p1);
+		bind.setValue("corridor");
+		// create notification
+		acInfo = this.notiFactory.create(ParameterNotificationType.ADD_CONSTRAINT);
+		acInfo.setConstraint(bind);
+		// notify solver
+		this.solver.update(acInfo);
+		
+		// check model
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		// add inconsistent constraint
+		bind.setReference(p2);
+		bind.setValue("bathroom");
+		// create notification
+		acInfo = this.notiFactory.create(ParameterNotificationType.ADD_CONSTRAINT);
+		acInfo.setConstraint(bind);
+		// notify solver
+		this.solver.update(acInfo);
+		
+		// check model
+		Assert.assertFalse(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		// retract last propagated constraint
+		DelConstraintParameterNotification dcInfo = this.notiFactory.create(ParameterNotificationType.DEL_CONSTRAINT);
+		dcInfo.setConstraint(bind);
+		// notify solver
+		this.solver.update(dcInfo);
+		
+		// check model 
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+	}
+	
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void addVariableExcludeConstraintAndQueryTest() 
+			throws Exception
+	{
+		// check model
+		Assert.assertTrue(this.solver.isConsistent());
+		
+		// create enumeration parameter
+		EnumerationParameterDomain edom = this.paramFactory.createParameterDomain("locations", 
+				ParameterDomainType.ENUMERATION_DOMAIN_PARAMETER_TYPE);
+		edom.setValues(new String[] {
+				"kitchen",		// value: 0
+				"bathroom",		// value: 1
+				"bedroom",		// value: 2
+				"corridor"		// value: 3
+		});
+		
+		// create enumeration parameter
+		EnumerationParameter p1 = this.paramFactory.createParameter("p1", edom);
+		
+		// create notification
+		AddParameterNotification apInfo = this.notiFactory.create(ParameterNotificationType.ADD_PARAM);
+		apInfo.setParameter(p1);
+		// send notification
+		this.solver.update(apInfo);
+		
+		// check consistency
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		
+		// create bind constraint
+		ExcludeParameterConstraint ex = this.paramFactory.createParameterConstraint(ParameterConstraintType.EXCLUDE);
+		ex.setReference(p1);
+		ex.setValue("kitchen");
+		// create notification
+		AddConstraintParameterNotification acInfo = this.notiFactory.create(ParameterNotificationType.ADD_CONSTRAINT);
+		acInfo.setConstraint(ex);
+		// notify solver
+		this.solver.update(acInfo);
+		
+		// check model
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		this.solver.computeValues(p1);
+		String[] vals = p1.getValues();
+		Assert.assertTrue(vals.length < p1.getDomainValues().length);
+		// verify that the value "kitchen" has been actually excluded
+		boolean found = false;
+		for (int i= 0; i < vals.length && !found; i++) { 
+			found = vals[i].equals("kitchen");
+			System.out.println("- val: " + vals[i]);
+		}
+		Assert.assertFalse(found);
+		
+		// exclude another value
+		ex = this.paramFactory.createParameterConstraint(ParameterConstraintType.EXCLUDE);
+		ex.setReference(p1);
+		ex.setValue("bedroom");
+		// create notification
+		acInfo = this.notiFactory.create(ParameterNotificationType.ADD_CONSTRAINT);
+		acInfo.setConstraint(ex);
+		// notify solver
+		this.solver.update(acInfo);
+		
+		// check model
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		this.solver.computeValues(p1);
+		vals = p1.getValues();
+		Assert.assertTrue(vals.length < p1.getDomainValues().length);
+		// verify that the value "kitchen" has been actually excluded
+		found = false;
+		for (int i= 0; i < vals.length && !found; i++) { 
+			found = vals[i].equals("kitchen");
+			System.out.println("- val: " + vals[i]);
+		}
+		Assert.assertFalse(found);
+		
+		// redundant constraint
+		ex = this.paramFactory.createParameterConstraint(ParameterConstraintType.EXCLUDE);
+		ex.setReference(p1);
+		ex.setValue("bedroom");
+		// create notification
+		acInfo = this.notiFactory.create(ParameterNotificationType.ADD_CONSTRAINT);
+		acInfo.setConstraint(ex);
+		// notify solver
+		this.solver.update(acInfo);
+		
+		// check model
+		Assert.assertTrue(this.solver.isConsistent());
+		System.out.println(this.solver);
+		
+		this.solver.computeValues(p1);
+		vals = p1.getValues();
+		Assert.assertTrue(vals.length < p1.getDomainValues().length);
+		// verify that the value "kitchen" has been actually excluded
+		found = false;
+		for (int i= 0; i < vals.length && !found; i++) { 
+			found = vals[i].equals("kitchen");
+			System.out.println("- val: " + vals[i]);
+		}
+		Assert.assertFalse(found);
 	}
 }

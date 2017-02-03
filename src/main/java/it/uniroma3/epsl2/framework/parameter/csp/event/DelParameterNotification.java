@@ -9,7 +9,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
  */
 public class DelParameterNotification extends ParameterNotification 
 {
-	private Parameter param;
+	private Parameter<?> param;
 	
 	/**
 	 * 
@@ -22,7 +22,7 @@ public class DelParameterNotification extends ParameterNotification
 	 * 
 	 * @param param
 	 */
-	public void setParameter(Parameter param) {
+	public void setParameter(Parameter<?> param) {
 		this.param = param;
 	}
 	
@@ -30,7 +30,7 @@ public class DelParameterNotification extends ParameterNotification
 	 * 
 	 * @return
 	 */
-	public Parameter getParameter() {
+	public Parameter<?> getParameter() {
 		return param;
 	}
 }

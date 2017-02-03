@@ -25,6 +25,12 @@ public enum ParameterConstraintType
 	 * Bind a variable to a specific value
 	 */
 	BIND("=", BindParameterConstraint.class.getName(),
+			ConstraintCategory.PARAMETER_CONSTRAINT),
+	
+	/**
+	 * Exclude a value from the set of those allowed for a variable
+	 */
+	EXCLUDE("!=", ExcludeParameterConstraint.class.getName(),
 			ConstraintCategory.PARAMETER_CONSTRAINT);
 	
 	private String symbol;

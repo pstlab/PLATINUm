@@ -93,7 +93,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 								// get parameter
 								EnumerationParameter p = (EnumerationParameter) param;
 								// set parameter value
-								pValues[index] = p.getValue();			// only one element expected
+								pValues[index] = p.getValues()[0];			// only one element expected
 								// set parameter type
 								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
 
@@ -105,7 +105,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 								// get parameter 
 								NumericParameter p = (NumericParameter) param;
 								// set parameter value
-								pValues[index] = new Integer(p.getValue()).toString();		// it should be the same as the upper bound
+								pValues[index] = new Integer(p.getLowerBound()).toString();		// it should be the same as the upper bound
 								// set parameter type
 								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 							}
@@ -173,7 +173,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 								// get parameter
 								EnumerationParameter p = (EnumerationParameter) param;
 								// set parameter value
-								pValues[index] = p.getValue();			// only one element expected
+								pValues[index] = p.getValues()[0];			// only one element expected
 								// set parameter type
 								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
 
@@ -184,7 +184,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 								// get parameter 
 								NumericParameter p = (NumericParameter) param;
 								// set parameter value
-								pValues[index] = new Integer(p.getValue()).toString();		// it should be the same as the upper bound
+								pValues[index] = new Integer(p.getLowerBound()).toString();		// it should be the same as the upper bound
 								// set parameter type
 								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 							}

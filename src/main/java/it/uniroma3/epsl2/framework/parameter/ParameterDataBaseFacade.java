@@ -13,6 +13,8 @@ import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterReasonerReference;
 import it.uniroma3.epsl2.framework.microkernel.query.ParameterQuery;
+import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryFactory;
+import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
 import it.uniroma3.epsl2.framework.microkernel.query.QueryManager;
 import it.uniroma3.epsl2.framework.parameter.csp.solver.ParameterSolver;
 import it.uniroma3.epsl2.framework.parameter.ex.ParameterConstraintPropagationException;
@@ -44,7 +46,7 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 	protected Map<Parameter<?>, List<ParameterConstraint>> out;	// outgoing constraints
 	protected Map<Parameter<?>, List<ParameterConstraint>> in;		// incoming constraints
 	
-//	protected ParameterQueryFactory queryFactory;				// query factory
+	protected ParameterQueryFactory queryFactory;				// query factory
 
 	/**
 	 * 
@@ -58,7 +60,7 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 		this.out = new HashMap<>();
 		this.in = new HashMap<>();
 		// get query factory
-//		this.queryFactory = ParameterQueryFactory.getInstance();
+		this.queryFactory = ParameterQueryFactory.getInstance();
 	}
 	
 	/**
@@ -96,6 +98,16 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 		this.domains.put(domain.getName(), domain);
 		// get created domain
 		return domain;
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public <T extends ParameterQuery> T createQuery(ParameterQueryType type) {
+		// create query
+		return this.queryFactory.create(type);
 	}
 	
 	/**
@@ -170,6 +182,7 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 		{
 			// bind constraint
 			case BIND : 
+			case EXCLUDE :
 			{
 				// check reference parameter
 				if (!this.parameters.contains(constraint.getReference())) {
@@ -203,7 +216,7 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 			break;
 			
 			default : {
-				throw new RuntimeException("Unknownw parameter constraint type - " + constraint.getType());
+				throw new RuntimeException("Unknown parameter constraint type - " + constraint.getType());
 			}
 		}
 	}
@@ -230,6 +243,7 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 		{
 			// bind constraint
 			case BIND : 
+			case EXCLUDE : 
 			{
 				// remove constraint
 				this.out.get(constraint.getReference()).remove(constraint);
@@ -249,7 +263,6 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 			break;
 			
 			default : {
-				// unknown 
 				throw new RuntimeException("Unknown parameter constraint type - " + constraint.getType());
 			}
 		}

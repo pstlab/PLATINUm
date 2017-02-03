@@ -12,7 +12,7 @@ public class Predicate {
 	private int id;
 	private ComponentValue value;
 	private String[] labels;
-	private Parameter[] parameters;
+	private Parameter<?>[] parameters;
 	
 	/**
 	 * 
@@ -48,7 +48,7 @@ public class Predicate {
 	 * @param label
 	 * @param param
 	 */
-	public void setParameter(int index, String label, Parameter param) {
+	public void setParameter(int index, String label, Parameter<?> param) {
 		this.labels[index] = label;
 		this.parameters[index] = param;
 	}
@@ -58,7 +58,7 @@ public class Predicate {
 	 * @param index
 	 * @return
 	 */
-	public Parameter getParameterByIndex(int index) {
+	public Parameter<?> getParameterByIndex(int index) {
 		return this.parameters[index];
 	}
 	
@@ -93,7 +93,7 @@ public class Predicate {
 	 * @param label
 	 * @return
 	 */
-	public Parameter getParameter(String label) {
+	public Parameter<?> getParameter(String label) {
 		// get label's index
 		int index = this.getParameterIndexByLabel(label);
 		return this.getParameterByIndex(index);
@@ -135,7 +135,7 @@ public class Predicate {
 	{
 		String description = "[Predicate id= " + this.id +", value= " + this.value.getLabel() + "(";
 		// add parameters
-		for (Parameter param : this.parameters) {
+		for (Parameter<?> param : this.parameters) {
 			// check type
 			description += " " + param + " ";
 		}

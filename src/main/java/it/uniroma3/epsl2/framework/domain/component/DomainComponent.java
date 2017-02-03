@@ -827,7 +827,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			ParameterPlaceHolder ph = value.getParameterPlaceHolderByIndex(index);
 			
 			// create a parameter
-			Parameter param = this.pdb.createParameter(labels[index], ph.getType(), ph.getDomain());
+			Parameter<?> param = this.pdb.createParameter(labels[index], ph.getType(), ph.getDomain());
 
 			// add parameter to predicate
 			

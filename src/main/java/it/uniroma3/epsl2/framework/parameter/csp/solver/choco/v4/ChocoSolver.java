@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.util.iterators.DisposableValueIterator;
 
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddConstraintParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddParameterNotification;
@@ -21,6 +23,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.BinaryParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.BindParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.EqualParameterConstraint;
+import it.uniroma3.epsl2.framework.parameter.lang.constraints.ExcludeParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.NotEqualParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
 
@@ -118,21 +121,59 @@ public class ChocoSolver extends ParameterSolver
 		
 		// check clean flag
 		if (!this.clean) {
+			// build the model
 			this.build();
 		}
-		
-		// find a solution
-		if (!this.model.getSolver().solve()) {
-			// unsolvable
-			throw new RuntimeException("Inconsistent CSP");
+	
+		// check parameter type
+		switch (param.getType())
+		{
+			// enumeration parameter
+			case ENUMERATION_PARAMETER_TYPE : 
+			{
+				// get numeric parameter
+				EnumerationParameter ep = (EnumerationParameter) param;
+				// compute allowed values
+				List<Integer> vals = new ArrayList<>();
+				// check possible solutions
+				if (this.model.getSolver().solve())
+				{
+					// get variable
+					IntVar var = this.variables.get(ep);
+					DisposableValueIterator it = var.getValueIterator(true);
+					while (it.hasNext()) {
+						// add value
+						vals.add(it.next());
+					}
+					// dispose iterator
+					it.dispose();
+					
+					// set allowed values
+					int[] values = ArrayUtils.toPrimitive(vals.toArray(new Integer[vals.size()]));
+					ep.setValues(values);
+				}
+				
+				// reset solver
+				this.model.getSolver().reset();
+			}
+			break;
+			
+			// numeric parameter
+			case NUMERIC_PARAMETER_TYPE : 
+			{
+				// get numeric parameter
+				NumericParameter np = (NumericParameter) param;
+				if (this.model.getSolver().solve()) {
+					// get variable
+					IntVar var = this.variables.get(np);
+					np.setLowerBound(var.getLB());
+					np.setUpperBound(var.getUB());
+				}
+				// reset solver
+				this.model.getSolver().reset();
+			}
+			break;
 		}
-		
-		// get variable
-		IntVar var = this.variables.get(param);
-		
-		/*
-		 * TODO
-		 */
 	}
 
 	/**
@@ -271,7 +312,7 @@ public class ChocoSolver extends ParameterSolver
 				// get enumeration parameter
 				EnumerationParameter p = (EnumerationParameter) param;
 				// get value indexes
-				int[] values = p.getValues();
+				int[] values = p.getValueIndexes();
 				// create variable
 				var = this.model.intVar(p.getLabel(), values);
 			}
@@ -316,6 +357,14 @@ public class ChocoSolver extends ParameterSolver
 				cons = this.doCreateBindCSPConstraint(bind);
 			}
 			break;
+			
+			case EXCLUDE :
+			{
+				// get exclude constraint
+				ExcludeParameterConstraint ex = (ExcludeParameterConstraint) constraint;
+				cons = this.doCreateExcludeCSPConstraint(ex);
+			}
+			break;
 				
 			// equal parameter constraint
 			case EQUAL : 
@@ -335,9 +384,8 @@ public class ChocoSolver extends ParameterSolver
 			}
 			break;
 			
-			// unknown parameter constraint
 			default : {
-				throw new RuntimeException("Unknown constraint type - " + constraint.getType());
+				throw new RuntimeException("Unknown parameter constraint type - " + constraint.getType());
 			}
 		}
 		
@@ -391,6 +439,64 @@ public class ChocoSolver extends ParameterSolver
 				int value = (int) bind.getValue();
 				// create constraint
 				cons = this.model.arithm(var, "=", value);
+			}
+			break;
+				
+			default : {
+				throw new RuntimeException("Unknown parameter type - " + param.getType());
+			}
+		}
+		
+		// get create CSP constraint
+		return cons;
+	}
+	
+	/**
+	 * 
+	 * @param bind
+	 * @return
+	 */
+	private Constraint doCreateExcludeCSPConstraint(ExcludeParameterConstraint bind)
+	{
+		// CSP constraint
+		Constraint cons;
+		// get reference parameter
+		Parameter<?> param = bind.getReference();
+		// check if parameter variable exists
+		if (!this.variables.containsKey(param)) {
+			throw new RuntimeException("Unknown parameter variable - " + param);
+		}
+		
+		// check parameter type 
+		switch(param.getType())
+		{
+			// binding to enumeration parameter
+			case ENUMERATION_PARAMETER_TYPE : 
+			{
+				// get parameter
+				EnumerationParameter p = (EnumerationParameter) param;
+				// get variable
+				IntVar var = this.variables.get(p);
+				// get binding value
+				String value = (String) bind.getValue();
+				// get related index
+				int index = p.getDomain().getIndex(value);
+				// create constraint 
+				cons = this.model.arithm(var, "!=", index);
+			}	
+			break;
+				
+			// binding numeric variable
+			case NUMERIC_PARAMETER_TYPE : 
+			{
+				// get parameter 
+				NumericParameter p = (NumericParameter) param;
+				// get variable 
+				IntVar var = this.variables.get(p);
+				// get binding value
+				int value = (int) bind.getValue();
+				// create constraint
+				cons = this.model.arithm(var, "!=", value);
 			}
 			break;
 				
@@ -466,6 +572,7 @@ public class ChocoSolver extends ParameterSolver
 			{
 				// bind constraint
 				case BIND : 
+				case EXCLUDE : 
 				{
 					// check reference
 					if (cons.getReference().equals(param)) {

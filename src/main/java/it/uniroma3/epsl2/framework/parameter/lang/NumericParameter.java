@@ -7,7 +7,8 @@ package it.uniroma3.epsl2.framework.parameter.lang;
  */
 public class NumericParameter extends Parameter<NumericParameterDomain>
 {
-	private int value;
+	private int lowerBound;
+	private int upperBound;
 	
 	/**
 	 * 
@@ -16,6 +17,8 @@ public class NumericParameter extends Parameter<NumericParameterDomain>
 	 */
 	protected NumericParameter(String label, NumericParameterDomain domain) {
 		super(label, ParameterType.NUMERIC_PARAMETER_TYPE, domain);
+		this.lowerBound = domain.getLowerBound();
+		this.upperBound = domain.getUpperBound();
 	}
 	
 	/**
@@ -24,6 +27,8 @@ public class NumericParameter extends Parameter<NumericParameterDomain>
 	 */
 	protected NumericParameter(NumericParameterDomain dom) {
 		super(ParameterType.NUMERIC_PARAMETER_TYPE, dom);
+		this.lowerBound = domain.getLowerBound();
+		this.upperBound = domain.getUpperBound();
 	}
 	
 	/**
@@ -31,7 +36,7 @@ public class NumericParameter extends Parameter<NumericParameterDomain>
 	 * @return
 	 */
 	public int getLowerBound() {
-		return this.domain.getLowerBound();
+		return this.lowerBound;
 	}
 	
 	/**
@@ -39,23 +44,23 @@ public class NumericParameter extends Parameter<NumericParameterDomain>
 	 * @return
 	 */
 	public int getUpperBound() {
-		return this.domain.getUpperBound();
+		return this.upperBound;
+	}
+
+	/**
+	 * 
+	 * @param lb
+	 */
+	public void setLowerBound(int lb) {
+		this.lowerBound = lb;
 	}
 	
 	/**
 	 * 
-	 * @return
+	 * @param ub
 	 */
-	public int getValue() {
-		return this.value;
-	}
-	
-	/**
-	 * 
-	 * @param value
-	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setUpperBound(int ub) {
+		this.upperBound = ub;
 	}
 	
 	/**
@@ -64,6 +69,6 @@ public class NumericParameter extends Parameter<NumericParameterDomain>
 	@Override
 	public String toString() {
 		return "[NumericParameter label= " + this.getLabel() + " value= "
-				+ "" + this.value + " domain= " + this.domain + "]";
+				+ "[" + this.lowerBound + ", " + this.upperBound +"] domain= " + this.domain + "]";
 	}
 }
