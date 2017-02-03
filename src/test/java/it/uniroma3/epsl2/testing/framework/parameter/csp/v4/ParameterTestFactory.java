@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.framework.parameter.facade.csp.v4;
+package it.uniroma3.epsl2.testing.framework.parameter.csp.v4;
 
 import java.lang.reflect.Constructor;
 

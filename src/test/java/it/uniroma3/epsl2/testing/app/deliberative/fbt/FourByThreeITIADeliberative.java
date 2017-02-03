@@ -32,8 +32,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 )
 public class FourByThreeITIADeliberative extends Planner
 {
-	private static final String DDL = "domains/fourbythree/itia/itia.ddl";
-	private static final String PDL = "domains/fourbythree/itia/itia.pdl";
+	private static final String DDL = "domains/fourbythree/itia/itia_v4.ddl";
+	private static final String PDL = "domains/fourbythree/itia/itia_v4.pdl";
 	
 	/**
 	 * 

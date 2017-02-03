@@ -7,8 +7,8 @@ import java.lang.reflect.Constructor;
  * @author anacleto
  *
  */
-public class TemporalQueryFactory {
-
+public class TemporalQueryFactory 
+{
 	private static TemporalQueryFactory INSTANCE = null;
 	
 	private TemporalQueryFactory() {}

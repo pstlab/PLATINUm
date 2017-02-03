@@ -93,6 +93,14 @@ public final class CSPParameterDataBaseFacade extends ParameterDataBaseFacade
 				this.solver.computeValues(param);
 			}
 			break;
+			
+			// compute values of all variables
+			case COMPUTE_SOLUTION :
+			{
+				// compute CSP solution
+				this.solver.computeSolution();
+			}
+			break;
 		}
 	}
 	

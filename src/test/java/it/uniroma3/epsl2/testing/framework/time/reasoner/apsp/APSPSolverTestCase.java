@@ -46,7 +46,8 @@ public class APSPSolverTestCase
 	 * 
 	 */
 	@Before
-	public void setupTest() {
+	public void setupTest() 
+	{
 		try {
 			System.out.println("**********************************************************************************");
 			System.out.println("****************************** APSPU Solver Test Case ****************************");

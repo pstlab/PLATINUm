@@ -7,8 +7,8 @@ import java.lang.reflect.Constructor;
  * @author anacleto
  *
  */
-public class IntervalConstraintFactory {
-
+public class IntervalConstraintFactory 
+{
 	private static IntervalConstraintFactory INSTANCE = null;
 	
 	/*
@@ -36,17 +36,17 @@ public class IntervalConstraintFactory {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends TemporalConstraint> T create(TemporalConstraintType type) {	//, TemporalInterval reference, TemporalInterval target) 
+	public <T extends TemporalConstraint> T create(TemporalConstraintType type) { 
 		// constraint to create
 		T constraint = null;
 		try {
 			// get class from name
 			Class<T> clazz = (Class<T>) Class.forName(type.getConstraintClassName());
 			// get constructor
-			Constructor<T> c = clazz.getDeclaredConstructor();	//TemporalInterval.class, TemporalInterval.class);
+			Constructor<T> c = clazz.getDeclaredConstructor();
 			c.setAccessible(true);
 			// create instance
-			constraint = c.newInstance();	//	reference, target);
+			constraint = c.newInstance();
 		}
 		catch(Exception ex) {
 			throw new RuntimeException(ex.getMessage());

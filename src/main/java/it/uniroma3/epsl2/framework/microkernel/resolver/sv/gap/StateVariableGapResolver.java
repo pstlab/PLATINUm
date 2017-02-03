@@ -186,8 +186,8 @@ public final class StateVariableGapResolver extends Resolver<StateVariable> impl
 			Decision right = decs.get(index + 1);
 			
 			// check distance between related temporal intervals
-			CheckIntervalDistanceQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+			CheckIntervalDistanceQuery query = this.tdb.
+					createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
 			
 			// set intervals
 			query.setSource(left.getToken().getInterval());

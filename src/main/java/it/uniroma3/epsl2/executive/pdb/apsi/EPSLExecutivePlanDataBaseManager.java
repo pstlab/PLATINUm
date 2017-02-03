@@ -246,7 +246,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			for (ExecutionNode node : dictionary.values()) 
 			{
 				// check node schedule
-				CheckIntervalScheduleQuery query = this.qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+				CheckIntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.CHECK_SCHEDULE);
 				query.setInterval(node.getInterval());
 				this.facade.process(query);
 			}
@@ -427,7 +427,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			for (ExecutionNode node : dictionary.values()) 
 			{
 				// check node schedule
-				CheckIntervalScheduleQuery query = this.qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+				CheckIntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.CHECK_SCHEDULE);
 				query.setInterval(node.getInterval());
 				this.facade.process(query);
 			}

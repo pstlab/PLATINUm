@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.framework.parameter.facade.csp.v4;
+package it.uniroma3.epsl2.testing.framework.parameter.csp.v4;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;

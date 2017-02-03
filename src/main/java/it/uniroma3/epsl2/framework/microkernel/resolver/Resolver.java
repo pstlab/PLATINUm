@@ -18,12 +18,10 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.Frame
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterDataBaseFacadeReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
-import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
-import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
@@ -49,8 +47,8 @@ public abstract class Resolver <T extends DomainComponent> extends ApplicationFr
 	@FrameworkLoggerReference
 	protected FrameworkLogger logger;
 	
-	protected TemporalQueryFactory queryFactory;
-	protected IntervalConstraintFactory constraintFactory;
+//	protected TemporalQueryFactory queryFactory;
+//	protected IntervalConstraintFactory constraintFactory;
 	
 	/**
 	 * 
@@ -76,10 +74,10 @@ public abstract class Resolver <T extends DomainComponent> extends ApplicationFr
 	 */
 	@PostConstruct
 	protected void init() {
-		// get query factory
-		this.queryFactory = TemporalQueryFactory.getInstance();
+//		// get query factory
+//		this.queryFactory = TemporalQueryFactory.getInstance();
 		// get constraint factory
-		this.constraintFactory = IntervalConstraintFactory.getInstance();
+//		this.constraintFactory = IntervalConstraintFactory.getInstance();
 	}
 	
 	/**

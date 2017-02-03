@@ -73,8 +73,8 @@ public final class ExternalStateVariable extends StateVariable {
 		// check every value of the state variable
 		for (Decision dec : this.getActiveDecisions()) {
 			// create query
-			CheckPseudoControllabilityQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);
+			CheckPseudoControllabilityQuery query = this.tdb.
+					createTemporalQuery(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);
 			
 			// set related temporal interval
 			query.setInterval(dec.getToken().getInterval());

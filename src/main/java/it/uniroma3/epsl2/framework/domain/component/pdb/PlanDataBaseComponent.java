@@ -45,6 +45,7 @@ import it.uniroma3.epsl2.framework.lang.problem.TemporalProblemConstraint;
 import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.PlanDataBaseConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
@@ -52,6 +53,7 @@ import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
+import it.uniroma3.epsl2.framework.parameter.lang.query.ComputeSolutionParameterQuery;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
@@ -317,7 +319,8 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public SolutionPlan getSolutionPlan() {
+	public SolutionPlan getSolutionPlan() 
+	{
 		// create a plan
 		SolutionPlan plan = new SolutionPlan(this.name, this.getHorizon());
 		for (DomainComponent component : this.components.values()) {
@@ -329,6 +332,11 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			// add relation
 			plan.add(rel);
 		}
+		
+		// computer parameter solutions
+		ComputeSolutionParameterQuery query = this.pdb.
+				createQuery(ParameterQueryType.COMPUTE_SOLUTION);
+		this.pdb.process(query);
 		// get current plan
 		return plan;
 	}

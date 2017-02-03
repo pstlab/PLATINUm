@@ -29,7 +29,6 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.Param
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ResolverReferences;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
-import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
@@ -61,7 +60,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	protected DomainComponentType type;
 	
 	// query factory
-	protected TemporalQueryFactory queryFactory;
+//	protected TemporalQueryFactory queryFactory;
 	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
@@ -108,7 +107,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		this.index = new HashMap<>();
 		
 		// complete initialization
-		this.queryFactory = TemporalQueryFactory.getInstance();
+//		this.queryFactory = TemporalQueryFactory.getInstance();
 	}
 	
 	/**
@@ -183,7 +182,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		// get schedule information
 		for (Decision dec : this.decisions.get(PlanElementStatus.ACTIVE)) {
 			// create query
-			CheckIntervalScheduleQuery query = this.queryFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+			CheckIntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.CHECK_SCHEDULE);
 			// set related temporal interval
 			query.setInterval(dec.getToken().getInterval());
 			// process 

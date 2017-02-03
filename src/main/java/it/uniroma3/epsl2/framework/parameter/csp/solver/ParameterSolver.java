@@ -33,6 +33,11 @@ public abstract class ParameterSolver extends ApplicationFrameworkObject impleme
 	
 	/**
 	 * 
+	 */
+	public abstract void computeSolution();
+	
+	/**
+	 * 
 	 * @param param
 	 */
 	public abstract void computeValues(Parameter<?> param);

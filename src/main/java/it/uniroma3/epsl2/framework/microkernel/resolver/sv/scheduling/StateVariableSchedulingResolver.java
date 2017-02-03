@@ -121,8 +121,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 						!this.checkInScheduled(scheduled, source, target)) 
 				{
 					// check flexibility
-					CheckIntervalDistanceQuery query = this.queryFactory.
-							create(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+					CheckIntervalDistanceQuery query = this.tdb.
+							createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
 					
 					// set intervals
 					query.setSource(source.getToken().getInterval());
@@ -269,8 +269,8 @@ public final class StateVariableSchedulingResolver extends Resolver<StateVariabl
 					get(index + 1).getToken();
 			
 			// check interval distance
-			CheckIntervalDistanceQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+			CheckIntervalDistanceQuery query = this.tdb.
+					createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
 			
 			// set parameters
 			query.setSource(i.getInterval());

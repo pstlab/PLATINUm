@@ -1,5 +1,7 @@
 package it.uniroma3.epsl2.framework.domain.component;
 
+import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameter;
+import it.uniroma3.epsl2.framework.parameter.lang.NumericParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 
 /**
@@ -135,9 +137,40 @@ public class Predicate {
 	{
 		String description = "[Predicate id= " + this.id +", value= " + this.value.getLabel() + "(";
 		// add parameters
-		for (Parameter<?> param : this.parameters) {
+		for (int index = 0; index < this.parameters.length; index++) 
+		{
+			// get parameter
+			Parameter<?> param = this.parameters[index];
 			// check type
-			description += " " + param + " ";
+			switch (param.getType())
+			{
+				case ENUMERATION_PARAMETER_TYPE : {
+					// get parameter
+					EnumerationParameter enu = (EnumerationParameter) param;
+					description += param.getLabel() + "= ";
+					for (String val : enu.getValues()) {
+						description += val;
+					}
+				}
+				break;
+				
+				case NUMERIC_PARAMETER_TYPE : {
+					// get parameter
+					NumericParameter num = (NumericParameter) param;
+					description += param.getLabel() + "= ";
+					if (num.getLowerBound() == num.getUpperBound()) {
+						description += num.getLowerBound();
+					}
+					else {
+						description += "[" + num.getLowerBound() + " , " + num.getUpperBound() + "] ";
+					}
+				}
+				break;
+			}
+			
+			if (index < this.parameters.length -1) {
+				description += ", ";
+			}
 		}
 		// close parameter description
 		description += ")]";

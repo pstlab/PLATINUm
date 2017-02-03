@@ -22,7 +22,9 @@ import it.uniroma3.epsl2.framework.time.ex.TimePointCreationException;
 import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixStartTimeIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.allen.AfterIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.ContainsIntervalConstraint;
@@ -63,6 +65,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	protected FrameworkLogger logger;
 	
 	protected TemporalQueryFactory qf;						// temporal query factory
+	protected IntervalConstraintFactory icf;	 			// temporal interval constraint factory
 	
 	/**
 	 * 
@@ -70,6 +73,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	protected TemporalDataBaseFacade() {
 		// get query factory instance
 		this.qf = TemporalQueryFactory.getInstance();
+		this.icf = IntervalConstraintFactory.getInstance();
 	}
 	
 	/**
@@ -284,6 +288,30 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		if (!this.solver.isConsistent()) {
 			throw new TemporalConsistencyCheckException("The network is not temporally consistent");
 		}
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public final <T extends TemporalQuery> T createTemporalQuery(TemporalQueryType type) {
+		// query instance
+		T query = this.qf.create(type);
+		// get created instance
+		return query;
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public final <T extends TemporalConstraint> T createIntervalConstraint(TemporalConstraintType type) {
+		// create constraint
+		T cons = this.icf.create(type);
+		// get created constraint
+		return cons;
 	}
 	
 	/**

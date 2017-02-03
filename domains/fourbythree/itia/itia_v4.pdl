@@ -1,0 +1,14 @@
+PROBLEM FourByThree_Problem (DOMAIN FourByThree_Domain) 
+{
+	f0 <fact> Human.operator.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f1 <fact> RobotController.controller.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f2 <fact> RobotArm.motion.At(?position, ?level) AT [0, 0] [1, +INF] [1, +INF];
+	f4 <fact> T1.tool.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f5 <fact> ArmTool.status.Mounted(?tool) AT [0, 0] [1, +INF] [1, +INF];
+
+	g0  <goal> HRC.process.HRC_ITIA() AT [0, +INF] [0, +INF] [0, +INF];
+	
+	?position = P4;
+	?tool = T1;	
+	?level = green;
+}

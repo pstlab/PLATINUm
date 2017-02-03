@@ -54,8 +54,8 @@ public abstract class StateVariable extends DomainComponent
 			// check if token is controllable
 			if (!dec.isControllable()) {
 				// check actual duration
-				CheckPseudoControllabilityQuery query = this.queryFactory.
-						create(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);
+				CheckPseudoControllabilityQuery query = this.tdb.
+						createTemporalQuery(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);
 				
 				// set related temporal interval
 				query.setInterval(dec.getToken().getInterval());

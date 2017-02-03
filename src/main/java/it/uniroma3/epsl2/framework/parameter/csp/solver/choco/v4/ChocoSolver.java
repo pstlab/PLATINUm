@@ -108,6 +108,24 @@ public class ChocoSolver extends ParameterSolver
 		// get consistency flag
 		return consistent;
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void computeSolution()
+	{
+		// check clean flag
+		if (!this.clean) {
+			// build the model
+			this.build();
+		}
+		
+		// compute values for each parameter
+		for (Parameter<?> param : this.variables.keySet()) {
+			this.computeValues(param);
+		}
+	}
 
 	/**
 	 * 
@@ -445,7 +463,7 @@ public class ChocoSolver extends ParameterSolver
 				// get variable 
 				IntVar var = this.variables.get(p);
 				// get binding value
-				int value = (int) bind.getValue();
+				int value = Integer.parseInt(bind.getValue().toString());
 				// create constraint
 				cons = this.model.arithm(var, "=", value);
 			}

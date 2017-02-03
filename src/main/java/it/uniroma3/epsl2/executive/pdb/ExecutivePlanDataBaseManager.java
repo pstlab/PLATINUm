@@ -10,7 +10,6 @@ import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
@@ -22,7 +21,6 @@ import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.FixStartTimeIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
@@ -41,8 +39,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	
 	// plan locks
 	private final Object[] locks;
-	protected TemporalQueryFactory qFactory;			// interval query factory
-	protected IntervalConstraintFactory iFactory;		// interval constraint factory
+//	protected TemporalQueryFactory qFactory;			// interval query factory
+//	protected IntervalConstraintFactory iFactory;		// interval constraint factory
 	protected TemporalDataBaseFacade facade;			// temporal data base
 	
 	// plan's nodes
@@ -72,8 +70,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		}
 		
 		// create factories
-		this.iFactory = IntervalConstraintFactory.getInstance();
-		this.qFactory = TemporalQueryFactory.getInstance();
+//		this.iFactory = IntervalConstraintFactory.getInstance();
+//		this.qFactory = TemporalQueryFactory.getInstance();
 		// create logger
 		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
 		lf.createFrameworkLogger(FrameworkLoggingLevel.OFF);
@@ -188,8 +186,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	public void checkSchedule(ExecutionNode node) 
 	{
 		// check resulting schedule of the interval
-		CheckIntervalScheduleQuery query = this.qFactory.
-				 create(TemporalQueryType.CHECK_SCHEDULE);
+		CheckIntervalScheduleQuery query = this.facade.
+				 createTemporalQuery(TemporalQueryType.CHECK_SCHEDULE);
 		query.setInterval(node.getInterval());
 		this.facade.process(query);
 	}
@@ -329,7 +327,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		}
 			
 		// fix start time first
-		FixDurationIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_DURATION);
+		FixDurationIntervalConstraint fix = this.facade.
+				createIntervalConstraint(TemporalConstraintType.FIX_DURATION);
 		fix.setReference(node.getInterval());
 		fix.setDuration(duration);
 		// propagate constraint
@@ -356,7 +355,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws TemporalConstraintPropagationException 
 	{
 		// create constraint
-		FixStartTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_START_TIME);
+		FixStartTimeIntervalConstraint fix = this.facade.
+				createIntervalConstraint(TemporalConstraintType.FIX_START_TIME);
 		fix.setReference(node.getInterval());
 		fix.setStart(start);
 		// propagate constraint
@@ -382,7 +382,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws TemporalConstraintPropagationException 
 	{
 		// create constraint
-		FixEndTimeIntervalConstraint fix = this.iFactory.create(TemporalConstraintType.FIX_END_TIME);
+		FixEndTimeIntervalConstraint fix = this.facade.
+				createIntervalConstraint(TemporalConstraintType.FIX_END_TIME);
 		fix.setReference(node.getInterval());
 		fix.setEnd(end);
 		// propagate constraint
@@ -409,7 +410,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception
 	{
 		// create and propagate temporal constraint
-		TemporalConstraint constraint = this.iFactory.create(TemporalConstraintType.BEFORE);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.BEFORE);
 		// set data
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
@@ -433,7 +435,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception
 	{
 		// create and propagate temporal constraint
-		TemporalConstraint constraint = this.iFactory.create(TemporalConstraintType.MEETS);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.MEETS);
 		// set data
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
@@ -457,8 +460,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.iFactory.
-				create(TemporalConstraintType.AFTER);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.AFTER);
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
@@ -481,8 +484,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.iFactory.
-				create(TemporalConstraintType.DURING);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.DURING);
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
@@ -508,8 +511,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.iFactory.
-				create(TemporalConstraintType.CONTAINS);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.CONTAINS);
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
@@ -535,8 +538,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.iFactory.
-				create(TemporalConstraintType.EQUALS);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.EQUALS);
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
@@ -562,8 +565,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.iFactory.
-				create(TemporalConstraintType.STARTS_DURING);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.STARTS_DURING);
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
@@ -586,8 +589,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.iFactory.
-				create(TemporalConstraintType.ENDS_DURING);
+		TemporalConstraint constraint = this.facade.
+				createIntervalConstraint(TemporalConstraintType.ENDS_DURING);
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
