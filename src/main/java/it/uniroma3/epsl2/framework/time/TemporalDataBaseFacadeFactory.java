@@ -20,8 +20,8 @@ import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
  * @author anacleto
  *
  */
-public final class TemporalDataBaseFacadeFactory extends ApplicationFrameworkFactory {
-	
+public final class TemporalDataBaseFacadeFactory extends ApplicationFrameworkFactory 
+{
 	// temporal network factory
 	private TemporalNetworkFactory tnFactory;
 	private TemporalSolverFactory trfactory;

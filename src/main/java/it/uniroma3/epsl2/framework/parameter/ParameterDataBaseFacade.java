@@ -23,7 +23,6 @@ import it.uniroma3.epsl2.framework.parameter.ex.ParameterNotFoundException;
 import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
-import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.BinaryParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
@@ -118,16 +117,11 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 	 * @return
 	 * @throws ParameterCreationException
 	 */
-	public <T extends Parameter<?>> T createParameter(String label, ParameterType type, ParameterDomain domain) 
+	public <T extends Parameter<?>> T createParameter(String label, ParameterDomain domain) 
 			throws ParameterCreationException
 	{
-		// check domain and parameter type
-		if (!type.getDomainType().equals(domain.getType())) {
-			throw new ParameterCreationException("Wrong domain type " + domain.getType() + " for parameter of type " + type);
-		}
-	
 		// create parameter
-		T param = this.doCreateParameter(label, type, domain);
+		T param = this.doCreateParameter(label, domain);
 		// get create parameter
 		return param;
 	}
@@ -345,12 +339,13 @@ public abstract class ParameterDataBaseFacade extends ApplicationFrameworkObject
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private <T extends Parameter<?>> T doCreateParameter(String label, ParameterType type, ParameterDomain domain) {
+	private <T extends Parameter<?>> T doCreateParameter(String label, ParameterDomain domain) {
 		// parameter to create
 		T param = null;
 		try {
 			// get parameter class
-			Class<T> clazz = (Class<T>) Class.forName(type.getParameterClassName());
+			Class<T> clazz = (Class<T>) Class.forName(domain.getParameterType()
+					.getParameterClassName());
 			// get constructor
 			Constructor<T> c = clazz.getDeclaredConstructor(
 					String.class, 

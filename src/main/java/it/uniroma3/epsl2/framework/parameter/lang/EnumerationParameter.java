@@ -1,7 +1,5 @@
 package it.uniroma3.epsl2.framework.parameter.lang;
 
-import java.util.Arrays;
-
 /**
  * 
  * @author anacleto
@@ -98,8 +96,16 @@ public class EnumerationParameter extends Parameter<EnumerationParameterDomain>
 	 * 
 	 */
 	@Override
-	public String toString() {
-		return "[EnumerationParameter label= " + this.getLabel() + " "
-				+ "value=" + Arrays.asList(this.values) + " domain= " + this.domain + "]";
+	public String toString() 
+	{
+		String desc= "[EnumerationParameter label= " + this.getLabel() + " value= [";
+		for (int index : this.values)
+		{
+			// get value
+			String val = this.domain.getValue(index);
+			desc += " " + val + " ";
+		}
+		desc += "]  domain= " + this.domain + "]";
+		return desc;
 	}
 }

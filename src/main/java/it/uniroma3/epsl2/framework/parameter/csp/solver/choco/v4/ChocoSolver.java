@@ -2,8 +2,10 @@ package it.uniroma3.epsl2.framework.parameter.csp.solver.choco.v4;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.chocosolver.solver.Model;
@@ -51,7 +53,6 @@ public class ChocoSolver extends ParameterSolver
 		if (INSTANCE == null) {
 			INSTANCE = new ChocoSolver();
 		}
-		
 		return INSTANCE;
 	}
 	
@@ -134,9 +135,9 @@ public class ChocoSolver extends ParameterSolver
 				// get numeric parameter
 				EnumerationParameter ep = (EnumerationParameter) param;
 				// compute allowed values
-				List<Integer> vals = new ArrayList<>();
+				Set<Integer> vals = new HashSet<>();
 				// check possible solutions
-				if (this.model.getSolver().solve())
+				while (this.model.getSolver().solve())
 				{
 					// get variable
 					IntVar var = this.variables.get(ep);
@@ -147,11 +148,12 @@ public class ChocoSolver extends ParameterSolver
 					}
 					// dispose iterator
 					it.dispose();
-					
-					// set allowed values
-					int[] values = ArrayUtils.toPrimitive(vals.toArray(new Integer[vals.size()]));
-					ep.setValues(values);
 				}
+				
+				// set allowed values
+				int[] values = ArrayUtils.toPrimitive(vals.toArray(new Integer[vals.size()]));
+				// set values
+				ep.setValues(values);
 				
 				// reset solver
 				this.model.getSolver().reset();
@@ -163,12 +165,19 @@ public class ChocoSolver extends ParameterSolver
 			{
 				// get numeric parameter
 				NumericParameter np = (NumericParameter) param;
-				if (this.model.getSolver().solve()) {
-					// get variable
+				int lb = Integer.MIN_VALUE;
+				int ub = Integer.MAX_VALUE;
+				// check all solutions
+				while (this.model.getSolver().solve()) {
+					// check variable bounds
 					IntVar var = this.variables.get(np);
-					np.setLowerBound(var.getLB());
-					np.setUpperBound(var.getUB());
+					lb = Math.max(lb, var.getLB());
+					ub = Math.min(ub, var.getUB());
 				}
+				
+				// set bounds
+				np.setLowerBound(lb);
+				np.setUpperBound(ub);
 				// reset solver
 				this.model.getSolver().reset();
 			}

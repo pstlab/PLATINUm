@@ -2,6 +2,7 @@ package it.uniroma3.epsl2.testing.framework.parameter.facade.csp.v4;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,17 +40,34 @@ public class ChochoSolverUnitTest
 	 */
 	@Before
 	public void init() {
+		System.out.println("**********************************************************************************");
+		System.out.println("****************************** Choco Solver Test Case ****************************");
+		System.out.println("**********************************************************************************");
 		this.paramFactory = new ParameterTestFactory();
 		this.notiFactory = ParameterNotificationFactory.getInstance();
 		this.solver = ChocoSolver.getInstance();
+	}
+	
+	/**
+	 * 
+	 */
+	@After
+	public void clear() {
+		this.solver = null;
+		System.gc();
+		System.out.println();
+		System.out.println("**********************************************************************************");
+		System.out.println();
 	}
 
 	/**
 	 * 
 	 */
 	@Test
-	public void choch4Test()
+	public void choco4Test()
 	{
+		System.out.println("[Test]: choco4Test() --------------------");
+		System.out.println();
 		// 1. create a model
 		Model model = new Model("Chocho4 first model");
 		
@@ -105,6 +123,8 @@ public class ChochoSolverUnitTest
 	public void createVariablesTest() 
 			throws Exception
 	{
+		System.out.println("[Test]: createVariablesTest() --------------------");
+		System.out.println();
 		// check model
 		Assert.assertTrue(this.solver.isConsistent());
 		
@@ -243,6 +263,8 @@ public class ChochoSolverUnitTest
 	public void addVariablesAndInconsistentConstraintsTest() 
 			throws Exception
 	{
+		System.out.println("[Test]: addVariablesAndInconsistentConstraintsTest() --------------------");
+		System.out.println();
 		// check model
 		Assert.assertTrue(this.solver.isConsistent());
 		
@@ -330,6 +352,8 @@ public class ChochoSolverUnitTest
 	public void addVariablesAndConstraintsTest() 
 			throws Exception
 	{
+		System.out.println("[Test]: addVariablesAndConstraintsTest() --------------------");
+		System.out.println();
 		// check model
 		Assert.assertTrue(this.solver.isConsistent());
 		
@@ -420,6 +444,8 @@ public class ChochoSolverUnitTest
 	public void addVariableExcludeConstraintAndQueryTest() 
 			throws Exception
 	{
+		System.out.println("[Test]: addVariableExcludeConstraintAndQueryTest() --------------------");
+		System.out.println();
 		// check model
 		Assert.assertTrue(this.solver.isConsistent());
 		
@@ -445,7 +471,6 @@ public class ChochoSolverUnitTest
 		// check consistency
 		Assert.assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
-		
 		
 		// create bind constraint
 		ExcludeParameterConstraint ex = this.paramFactory.createParameterConstraint(ParameterConstraintType.EXCLUDE);

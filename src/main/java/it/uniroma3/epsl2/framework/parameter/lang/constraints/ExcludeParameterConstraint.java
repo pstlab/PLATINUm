@@ -37,6 +37,6 @@ public class ExcludeParameterConstraint extends ParameterConstraint
 	 */
 	@Override
 	public String toString() {
-		return "[ExcludeParameterConstraint symbol= " + this.type.getSymbol() + "\n- reference= " + this.reference.getLabel() + "\n- value= " + this.value + "\n]";
+		return "[ExcludeParameterConstraint symbol= \"" + this.type.getSymbol() + "\"\n- reference= " + this.reference.getLabel() + "\n- value= " + this.value + "\n]";
 	}
 }

@@ -13,8 +13,8 @@ import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
  * @author anacleto
  *
  */
-public class ParameterDataBaseFacadeFactory extends ApplicationFrameworkFactory {
-
+public class ParameterDataBaseFacadeFactory extends ApplicationFrameworkFactory 
+{
 	// parameter solver factory
 	private ParameterSolverFactory pFactory;
 	
@@ -35,7 +35,8 @@ public class ParameterDataBaseFacadeFactory extends ApplicationFrameworkFactory 
 	public <T extends ParameterDataBaseFacade> T createSingleton(ParameterDataBaseFacadeType type) {
 		// the facade
 		T facade = null;
-		try {
+		try 
+		{
 			// get facade's class
 			Class<T> clazz = (Class<T>) Class.forName(type.getFacadeClassName());
 			// get configuration annotation
@@ -48,7 +49,7 @@ public class ParameterDataBaseFacadeFactory extends ApplicationFrameworkFactory 
 				
 				// get configuration annotation
 				ParameterDataBaseFacadeConfiguration cfg = AnnotationUtils.
-				        getDeclaredAnnotation(clazz,ParameterDataBaseFacadeConfiguration.class);
+				        getDeclaredAnnotation(clazz, ParameterDataBaseFacadeConfiguration.class);
 				
 				// create solver
 				this.pFactory.create(cfg.solver());

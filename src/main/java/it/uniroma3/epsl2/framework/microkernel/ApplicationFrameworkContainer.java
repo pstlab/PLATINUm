@@ -8,8 +8,8 @@ import java.util.Map;
  * @author anacleto
  *
  */
-public final class ApplicationFrameworkContainer {
-
+public final class ApplicationFrameworkContainer 
+{
 	private static ApplicationFrameworkContainer CONTAINER = null;
 	private static int counter = 0;
 	private Map<String, ApplicationFrameworkObject> registry;
@@ -75,7 +75,8 @@ public final class ApplicationFrameworkContainer {
 	 * @param key
 	 * @return
 	 */
-	public ApplicationFrameworkObject lookup(String key) {
+	public ApplicationFrameworkObject lookup(String key) 
+	{
 		// check registry
 		if (!this.registry.containsKey(key)) {
 			throw new RuntimeException("Application object with key \"" + key +"\" not found in registry");

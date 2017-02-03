@@ -37,6 +37,6 @@ public class BindParameterConstraint extends ParameterConstraint
 	 */
 	@Override
 	public String toString() {
-		return "[BindParameterConstraint symbol= " + this.type.getSymbol() + "\n- reference= " + this.reference.getLabel() + "\n- value= " + this.value + "\n]";
+		return "[BindParameterConstraint symbol= \"" + this.type.getSymbol() + "\"\n- reference= " + this.reference.getLabel() + "\n- value= " + this.value + "\n]";
 	}
 }

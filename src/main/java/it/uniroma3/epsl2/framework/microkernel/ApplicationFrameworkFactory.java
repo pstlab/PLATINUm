@@ -195,7 +195,8 @@ public abstract class ApplicationFrameworkFactory
 		// find annotated field
 		Field field = this.findFieldAnnotatedBy(clazz, FrameworkLoggerReference.class);
 		// check if field has been found
-		if (field != null) {
+		if (field != null) 
+		{
 			// get logger reference
 			// create logger
 			ApplicationFrameworkObject	logger = this.container.lookup(SINGLETON_FRAMEWORK_LOGGER_REFERENCE);

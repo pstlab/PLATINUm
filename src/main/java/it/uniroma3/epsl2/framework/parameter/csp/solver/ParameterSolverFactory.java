@@ -28,7 +28,8 @@ public class ParameterSolverFactory extends ApplicationFrameworkFactory
 	public <T extends ParameterSolver> T create(ParameterSolverType type) {
 		// parameter reasoner
 		T reasoner = null;
-		try {
+		try 
+		{
 			Class<T> clazz = (Class<T>) Class.forName(type.getParameterSolverClassName());
 			Constructor<T> c = clazz.getDeclaredConstructor();
 			c.setAccessible(true);
