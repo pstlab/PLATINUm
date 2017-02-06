@@ -53,10 +53,11 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public PlanDataBase create(String name, long origin, long horizon) {
+	public PlanDataBase create(String name, long origin, long horizon) 
+	{
 		PlanDataBase pdb = null;
-		try {
-			
+		try 
+		{
 			// get class
 			Class<PlanDataBase> clazz = (Class<PlanDataBase>) Class.
 					forName(DomainComponentType.PDB.getComponentClassName());

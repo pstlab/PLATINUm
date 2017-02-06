@@ -15,8 +15,8 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public class Timeline implements Comparator<Token> {
-
+public class Timeline implements Comparator<Token> 
+{
 	private DomainComponent component;
 	
 	/**

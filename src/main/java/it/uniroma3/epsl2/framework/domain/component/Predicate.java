@@ -9,8 +9,8 @@ import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
  * @author anacleto
  *
  */
-public class Predicate {
-	
+public class Predicate 
+{
 	private int id;
 	private ComponentValue value;
 	private String[] labels;
@@ -42,6 +42,54 @@ public class Predicate {
 	 */
 	public final ComponentValue getValue() {
 		return this.value;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Parameter<?>[] getParameters()
+	{
+		return this.parameters;
+	}
+	
+	public String getGroundSignature()
+	{
+		// set signature
+		String sign = this.value.getLabel();
+		// check parameter values
+		for(Parameter<?> param : this.parameters) 
+		{
+			sign += "-";
+			// check parameter type
+			switch (param.getType())
+			{
+				case ENUMERATION_PARAMETER_TYPE : {
+					// get parameter 
+					EnumerationParameter ep = (EnumerationParameter) param;
+					// get allowed values
+					for (int index = 0; index < ep.getValues().length; index++) {
+						// get value 
+						String val = ep.getValues()[index];
+						sign += val;
+						if (index < ep.getValues().length - 1) {
+							sign += "_";
+						}
+					}
+				}
+				break;
+			
+				case NUMERIC_PARAMETER_TYPE : {
+					// get parameter
+					NumericParameter np = (NumericParameter) param;
+					sign += np.getLowerBound() + "_" + np.getUpperBound();
+				}
+				break;
+			}
+ 		}
+		
+		// get signature
+		return sign;
 	}
 	
 	/**

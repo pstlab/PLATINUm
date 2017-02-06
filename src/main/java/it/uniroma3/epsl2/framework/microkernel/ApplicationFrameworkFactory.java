@@ -98,12 +98,15 @@ public abstract class ApplicationFrameworkFactory
 		}
 		
 		// check if method has been found
-		if (!found) {
+		if (!found) 
+		{
 			// check super classes
 			Class<?> current = clazz;
-			while (current.getSuperclass() != null && !found) {
+			while (current.getSuperclass() != null && !found) 
+			{
 				// check super-class methods
-				for (Method m : current.getSuperclass().getDeclaredMethods()) {
+				for (Method m : current.getSuperclass().getDeclaredMethods()) 
+				{
 					// check annotation
 					found = m.isAnnotationPresent(PostConstruct.class);
 					if (found) {

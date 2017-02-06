@@ -13,6 +13,7 @@ import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.iterators.DisposableValueIterator;
 
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddConstraintParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.DelConstraintParameterNotification;
@@ -64,6 +65,13 @@ public class ChocoSolver extends ParameterSolver
 		// setup data structures
 		this.variables = new HashMap<>();
 		this.constraints = new HashMap<>();
+	}
+	
+	/**
+	 * 
+	 */
+	@PostConstruct
+	private void init() {
 		// build the model
 		this.build();
 	}

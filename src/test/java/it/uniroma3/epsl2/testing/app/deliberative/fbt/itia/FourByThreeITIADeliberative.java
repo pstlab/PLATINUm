@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.app.deliberative.fbt;
+package it.uniroma3.epsl2.testing.app.deliberative.fbt.itia;
 
 import it.uniroma3.epsl2.deliberative.Planner;
 import it.uniroma3.epsl2.deliberative.PlannerBuilder;
@@ -25,15 +25,15 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	heuristic = FlawSelectionHeuristicType.HFSH,
 	
 	// set search strategy
-	strategy = SearchStrategyType.DFS,
+	strategy = SearchStrategyType.DFCF,
 	
 	// set log level
 	logging = FrameworkLoggingLevel.DEBUG
 )
-public class FourByThreeDeliberative extends Planner
+public class FourByThreeITIADeliberative extends Planner
 {
-	private static final String DDL = "domains/fourbythree/fourbythree.ddl";
-	private static final String PDL = "domains/fourbythree/fourbythree.pdl";
+	private static final String DDL = "domains/fourbythree/itia/itia_v4.ddl";
+	private static final String PDL = "domains/fourbythree/itia/itia_v4.pdl";
 	
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class FourByThreeDeliberative extends Planner
 	{ 
 		try 
 		{
-			Planner planner = PlannerBuilder.build(FourByThreeDeliberative.class.getName(), DDL, PDL);	
+			Planner planner = PlannerBuilder.build(FourByThreeITIADeliberative.class.getName(), DDL, PDL);	
 			// start planning
 			SolutionPlan plan = planner.plan();
 			// solution found

@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.testing.app.deliberative.fbt;
+package it.uniroma3.epsl2.testing.app.deliberative.fbt.itia.cirp;
 
 import it.uniroma3.epsl2.deliberative.Planner;
 import it.uniroma3.epsl2.deliberative.PlannerBuilder;
@@ -11,29 +11,24 @@ import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerConfiguration;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
-/**
- * 
- * @author anacleto
- *
- */
 @PlannerConfiguration(
 		
-	// set solving strategy
-	solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
+		// set solving strategy
+		solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
+			
+		// set heuristic
+		heuristic = FlawSelectionHeuristicType.HFSH,
 		
-	// set heuristic
-	heuristic = FlawSelectionHeuristicType.HFSH,
-	
-	// set search strategy
-	strategy = SearchStrategyType.DFCF,
-	
-	// set log level
-	logging = FrameworkLoggingLevel.DEBUG
-)
-public class FourByThreeITIADeliberative extends Planner
+		// set search strategy
+		strategy = SearchStrategyType.DFCF,
+		
+		// set log level
+		logging = FrameworkLoggingLevel.INFO
+	)
+public class CirpDeliberative extends Planner 
 {
-	private static final String DDL = "domains/fourbythree/itia/itia_v4.ddl";
-	private static final String PDL = "domains/fourbythree/itia/itia_v4.pdl";
+	private static final String DDL = "domains/fourbythree/itia/cirp/cirp-a0-v1.ddl";
+	private static final String PDL = "domains/fourbythree/itia/cirp/cirp.pdl";
 	
 	/**
 	 * 
@@ -43,7 +38,7 @@ public class FourByThreeITIADeliberative extends Planner
 	{ 
 		try 
 		{
-			Planner planner = PlannerBuilder.build(FourByThreeITIADeliberative.class.getName(), DDL, PDL);	
+			Planner planner = PlannerBuilder.build(CirpDeliberative.class.getName(), DDL, PDL);	
 			// start planning
 			SolutionPlan plan = planner.plan();
 			// solution found

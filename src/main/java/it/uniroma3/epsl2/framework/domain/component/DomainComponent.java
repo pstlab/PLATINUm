@@ -59,9 +59,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	protected String name;
 	protected DomainComponentType type;
 	
-	// query factory
-//	protected TemporalQueryFactory queryFactory;
-	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
 	protected Map<PlanElementStatus, Set<Relation>> relations;
@@ -105,9 +102,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		// set up the list of resolvers
 		this.resolvers = new ArrayList<>();
 		this.index = new HashMap<>();
-		
-		// complete initialization
-//		this.queryFactory = TemporalQueryFactory.getInstance();
 	}
 	
 	/**
@@ -176,11 +170,13 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * 
 	 * @return
 	 */
-	public List<Decision> getActiveDecisions() {
+	public List<Decision> getActiveDecisions() 
+	{
 		// list of active decisions with schedule information
 		List<Decision> list = new ArrayList<>();
 		// get schedule information
-		for (Decision dec : this.decisions.get(PlanElementStatus.ACTIVE)) {
+		for (Decision dec : this.decisions.get(PlanElementStatus.ACTIVE)) 
+		{
 			// create query
 			CheckIntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.CHECK_SCHEDULE);
 			// set related temporal interval

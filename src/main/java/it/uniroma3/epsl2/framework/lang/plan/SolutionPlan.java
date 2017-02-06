@@ -107,6 +107,17 @@ public class SolutionPlan
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public List<Timeline> getAllTimelines() {
+		List<Timeline> list = new ArrayList<>();
+		list.addAll(this.timelines);
+		list.addAll(this.observations);
+		return list;
+	}
+	
+	/**
+	 * 
 	 * @param component
 	 */
 	public void add(DomainComponent component) {
@@ -138,7 +149,8 @@ public class SolutionPlan
 	 * 
 	 * @return
 	 */
-	public String export() {
+	public String export() 
+	{
 		// prepare plan description
 		String plan = "horizon = " + this.horizion + "\n";
 		plan += "plan {\n";
