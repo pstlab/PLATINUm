@@ -10,8 +10,8 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
  * @author anacleto
  *
  */
-public abstract class Flaw {
-	
+public abstract class Flaw 
+{
 	protected static int ID_COUNTER = 0;
 	private int id;
 	

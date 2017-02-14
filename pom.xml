@@ -3,6 +3,9 @@
   <groupId>epsl2</groupId>
   <artifactId>epsl2</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <properties>
+  	<maven.test.skip>true</maven.test.skip>
+  </properties>
   <build>
     <resources>
       <resource>
@@ -17,9 +20,30 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
+      </plugin>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <artifactSet>
+            <excludes>
+              <exclude>it.cnr.istc:moveitconnector:test</exclude>
+              <exclude>it.uniroma3.epsl2.testing</exclude>
+            </excludes>
+          </artifactSet>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -41,15 +65,15 @@
   		<version>1.0.19</version>
   	</dependency>
   	<dependency>
-  		<groupId>epsl</groupId>
-  		<artifactId>epsl</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
   		<groupId>org.apache.jena</groupId>
   		<artifactId>apache-jena-libs</artifactId>
   		<version>3.0.1</version>
   		<type>pom</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>epsl</groupId>
+  		<artifactId>epsl</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
 </project>

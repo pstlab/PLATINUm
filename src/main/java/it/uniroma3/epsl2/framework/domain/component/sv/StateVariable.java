@@ -50,9 +50,11 @@ public abstract class StateVariable extends DomainComponent
 	{
 		// issues
 		List<Decision> issues = new ArrayList<>();
-		for (Decision dec : this.getActiveDecisions()) {
+		for (Decision dec : this.getActiveDecisions()) 
+		{
 			// check if token is controllable
-			if (!dec.isControllable()) {
+			if (!dec.isControllable()) 
+			{
 				// check actual duration
 				CheckPseudoControllabilityQuery query = this.tdb.
 						createTemporalQuery(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);

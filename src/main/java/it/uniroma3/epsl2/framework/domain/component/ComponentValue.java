@@ -11,11 +11,12 @@ import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
  * @author anacleto
  *
  */
-public abstract class ComponentValue {
-
+public abstract class ComponentValue 
+{
 	private static int ID_COUNTER = 0;
 	protected int id;
 	protected String label;
+	protected ComponentValueType type;
 	private long[] duration;
 	private boolean controllable;
 	protected DomainComponent component;
@@ -24,12 +25,14 @@ public abstract class ComponentValue {
 	/**
 	 * 
 	 * @param value
+	 * @param type
 	 * @param duration
 	 * @param controllable
 	 * @param component
 	 */
-	protected ComponentValue(String value, long[] duration, boolean controllable, DomainComponent component) {
+	protected ComponentValue(String value, ComponentValueType type, long[] duration, boolean controllable, DomainComponent component) {
 		this.id = getNextId();
+		this.type = type;
 		this.duration = duration;
 		this.controllable = controllable;
 		this.label = value;
@@ -43,6 +46,14 @@ public abstract class ComponentValue {
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ComponentValueType getType() {
+		return type;
 	}
 	
 	/**

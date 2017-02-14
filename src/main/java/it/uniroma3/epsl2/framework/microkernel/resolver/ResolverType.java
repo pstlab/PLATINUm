@@ -1,25 +1,32 @@
 package it.uniroma3.epsl2.framework.microkernel.resolver;
 
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.microkernel.resolver.plan.PlanRefinementResolver;
-import it.uniroma3.epsl2.framework.microkernel.resolver.sv.behavior.ObservationBehaviorCheckingResolver;
-import it.uniroma3.epsl2.framework.microkernel.resolver.sv.behavior.BehaviorCheckingResolver;
-import it.uniroma3.epsl2.framework.microkernel.resolver.sv.gap.StateVariableGapResolver;
-import it.uniroma3.epsl2.framework.microkernel.resolver.sv.scheduling.StateVariableSchedulingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.planning.PlanRefinementResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.pcp.ResourceSchedulingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior.BehaviorCheckingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior.ObservationBehaviorCheckingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.gap.StateVariableGapResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.scheduling.StateVariableSchedulingResolver;
 
 /**
  * 
  * @author anacleto
  *
  */
-public enum ResolverType {
-	
+public enum ResolverType 
+{
 	/**
 	 * Special type of resolver responsible for managing 
 	 * synchronization rules and plan refinement
 	 */
 	PLAN_REFINEMENT(PlanRefinementResolver.class.getName(), 
 			FlawType.PLAN_REFINEMENT),
+	
+	/**
+	 * 
+	 */
+	RESOURCE_SCHEDULING_RESOLVER(ResourceSchedulingResolver.class.getName(), 
+			FlawType.RESOURCE_PEAK),
 
 	/**
 	 * 

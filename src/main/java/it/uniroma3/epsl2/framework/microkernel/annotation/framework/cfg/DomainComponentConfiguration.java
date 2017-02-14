@@ -28,5 +28,5 @@ public @interface DomainComponentConfiguration {
 	 * 
 	 * @return
 	 */
-	ComponentViewType view() default ComponentViewType.GANTT;
+	ComponentViewType view();
 }

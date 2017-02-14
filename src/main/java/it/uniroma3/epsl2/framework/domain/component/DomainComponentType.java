@@ -1,8 +1,9 @@
 package it.uniroma3.epsl2.framework.domain.component;
 
 import it.uniroma3.epsl2.framework.domain.component.pdb.PlanDataBaseComponent;
-import it.uniroma3.epsl2.framework.domain.component.resource.reservoir.ReservoirResource;
-import it.uniroma3.epsl2.framework.domain.component.resource.sharable.SharableResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.DiscreteResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.ReservoirResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.UnaryResource;
 import it.uniroma3.epsl2.framework.domain.component.sv.ExternalStateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.FunctionalStateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.PrimitiveStateVariable;
@@ -40,9 +41,14 @@ public enum DomainComponentType {
 	RESOURCE_RESERVOIR(ReservoirResource.class.getName()),
 	
 	/**
-	 * Sharable Resource type
+	 * Discrete Resource type
 	 */
-	RESOURCE_SHARABLE(SharableResource.class.getName());
+	RESOURCE_DISCRETE(DiscreteResource.class.getName()),
+	
+	/**
+	 * Binary Resource type
+	 */
+	RESOURCE_UNARY(UnaryResource.class.getName());
 	
 	private String cname;
 

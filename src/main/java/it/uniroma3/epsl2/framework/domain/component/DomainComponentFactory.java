@@ -46,7 +46,8 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 	@SuppressWarnings("unchecked")
 	public <T extends DomainComponent> T create(String name, DomainComponentType type) {
 		T component = null;
-		try {
+		try 
+		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getComponentClassName());
 			// check if configuration annotation exists
@@ -104,7 +105,7 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 		        component.getClass(),DomainComponentConfiguration.class);
 		
 		// list of resolvers
-		List<Resolver<?>> list = new ArrayList<>();
+		List<Resolver> list = new ArrayList<>();
 		for (ResolverType resvType : annot.resolvers()) {
 			// create resolver
 			list.add(this.resvFactory.create(resvType, component));

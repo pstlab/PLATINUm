@@ -3,8 +3,8 @@ package it.uniroma3.epsl2.framework.domain.component.sv;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
-import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
  * 
@@ -13,13 +13,11 @@ import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityC
  */
 @DomainComponentConfiguration(
 		
-		// set resolvers to manage functional variables
 		resolvers = {
-				
-				ResolverType.SV_SCHEDULING_RESOLVER,
-				
-				ResolverType.SV_GAP_RESOLVER
-		}
+				// no resolvers are needed for functional state variables
+		},
+		
+		view = ComponentViewType.GANTT
 )
 public class FunctionalStateVariable extends StateVariable {
 	

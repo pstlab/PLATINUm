@@ -73,8 +73,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	protected ParameterDataBaseFacade pdb;
 	
 	@ResolverReferences
-	protected List<Resolver<?>> resolvers;
-	protected Map<FlawType, Resolver<?>> index;
+	protected List<Resolver> resolvers;
+	protected Map<FlawType, Resolver> index;
 	
 	@FrameworkLoggerReference
 	protected FrameworkLogger logger;
@@ -112,7 +112,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		// set component view
 		this.view = new GanttComponentView(this);
 		// setup resolver index
-		for (Resolver<? extends DomainComponent> resv : this.resolvers) {
+		for (Resolver resv : this.resolvers) {
 			this.index.put(resv.getFlawType(), resv);
 		}
 	}
@@ -721,7 +721,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// call resolvers to detect flaws and possible solutions
-		for (Resolver<?> resv : this.resolvers) {
+		for (Resolver resv : this.resolvers) {
 			// add detected flaws
 			list.addAll(resv.findFlaws());
 		}

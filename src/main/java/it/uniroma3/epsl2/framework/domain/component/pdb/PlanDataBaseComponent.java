@@ -57,6 +57,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.query.ComputeSolutionParameter
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
  * 
@@ -64,21 +65,29 @@ import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityC
  *
  */
 @PlanDataBaseConfiguration(
-	
-	pdb = ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE,
 		
-	tdb = TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE
+		// parameter data manager
+		pdb = ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE,
+		
+		// temporal data manager
+		tdb = TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE
 )
+
 @DomainComponentConfiguration(
 		
 	resolvers = {
+			
+			// plan refinement resolver
 			ResolverType.PLAN_REFINEMENT
-	}
+	},
+	
+	view = ComponentViewType.GANTT
 )
 public class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
 	// list of observers
 	private List<PlanDataBaseObserver> observers;
+	
 	// see Composite design pattern
 	private Map<String, DomainComponent> components;
 	private DomainComponentFactory componentFactory;
@@ -1183,7 +1192,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// call resolvers to detect flaws and possible solutions
-		for (Resolver<?> resv : this.resolvers) {
+		for (Resolver resv : this.resolvers) {
 			// add detected flaws
 			list.addAll(resv.findFlaws());
 		}

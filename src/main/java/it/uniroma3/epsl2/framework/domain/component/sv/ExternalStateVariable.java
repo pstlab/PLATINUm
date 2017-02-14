@@ -10,6 +10,7 @@ import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckPseudoControllabilityQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
  * 
@@ -18,13 +19,16 @@ import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityC
  */
 @DomainComponentConfiguration(
 		
-		// set resolvers to manage external variables
 		resolvers = {
 				
+				// observation checking resolver
 				ResolverType.OBSERVATION_CHECKING_RESOLVER,
 				
+				// behavior checking resolver
 				ResolverType.BEHAVIOR_CHECKING_RESOLVER
-	}
+		},
+		
+		view = ComponentViewType.GANTT
 )
 public final class ExternalStateVariable extends StateVariable {
 	

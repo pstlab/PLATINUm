@@ -28,7 +28,7 @@ public class ResolverFactory extends ApplicationFrameworkFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resolver<?>> T create(ResolverType type, DomainComponent component) {
+	public <T extends Resolver> T create(ResolverType type, DomainComponent component) {
 		// resolver
 		T resv = null;
 		try {

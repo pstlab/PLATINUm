@@ -18,10 +18,10 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.SolverR
 public class Planner extends ApplicationFrameworkObject 
 {
 	@PlanDataBaseReference
-	private PlanDataBase pdb;
+	protected PlanDataBase pdb;
 	
 	@SolverReference
-	private Solver solver;
+	protected Solver solver;
 	
 	/**
 	 * 
@@ -63,14 +63,14 @@ public class Planner extends ApplicationFrameworkObject
 		return this.pdb.getSolutionPlan();
 	}
 	
-	/**
-	 * The method returns a text-based description of the current plan
-	 * 
-	 * @return
-	 */
-	public String export() {
-		return this.getCurrentPlan().export();
-	}
+//	/**
+//	 * The method returns a text-based description of the current plan
+//	 * 
+//	 * @return
+//	 */
+//	public String export() {
+//		return this.getCurrentPlan().export();
+//	}
 	
 	/**
 	 * 
