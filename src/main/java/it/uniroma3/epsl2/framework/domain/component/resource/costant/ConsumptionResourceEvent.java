@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.domain.component.resource;
+package it.uniroma3.epsl2.framework.domain.component.resource.costant;
 
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
@@ -18,7 +18,7 @@ public class ConsumptionResourceEvent extends ResourceEvent
 	 * @param event
 	 * @param amount
 	 */
-	protected ConsumptionResourceEvent(Decision activity, TimePoint event, long amount) {
-		super(activity, event, ResourceEventType.CONSUMPTION, amount);
+	protected ConsumptionResourceEvent(Decision activity, TimePoint event, int amount) {
+		super(ResourceEventType.CONSUMPTION, event, amount, activity);
 	}
 }

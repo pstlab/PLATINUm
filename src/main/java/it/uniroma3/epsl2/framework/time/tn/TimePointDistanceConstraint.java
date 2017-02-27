@@ -1,35 +1,36 @@
 package it.uniroma3.epsl2.framework.time.tn;
 
-import it.uniroma3.epsl2.framework.domain.component.Constraint;
-import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
+import it.uniroma3.epsl2.framework.time.lang.BinaryTemporalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class TimePointConstraint extends Constraint 
+public class TimePointDistanceConstraint extends BinaryTemporalConstraint<TimePoint, TimePoint> 
 {
-	private TimePoint reference;
-	private TimePoint target;
 	private long[] distance;
 	private boolean controllable;
 	
 	/**
 	 * 
-	 * @param from
-	 * @param to
-	 * @param distance
+	 */
+	protected TimePointDistanceConstraint() {
+		super(TemporalConstraintType.TIME_POINT_DISTANCE);
+		// default behavior
+		this.controllable = true;
+		this.distance = new long[2];
+	}
+	
+	/**
+	 * 
 	 * @param controllable
 	 */
-	protected TimePointConstraint(TimePoint from, TimePoint to, long[] distance, boolean controllable) {
-		super("TP_DISTANCE", ConstraintCategory.TEMPORAL_CONSTRAINT);
-		this.reference = from;
-		this.target = to;
-		this.distance = distance;
+	public void setControllable(boolean controllable) {
 		this.controllable = controllable;
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -40,18 +41,10 @@ public class TimePointConstraint extends Constraint
 	
 	/**
 	 * 
-	 * @return
+	 * @param distance
 	 */
-	public TimePoint getReference() {
-		return reference;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public TimePoint getTarget() {
-		return target;
+	public void setDistanceLowerBound(long distance) {
+		this.distance[0] = distance;
 	}
 	
 	/**
@@ -60,6 +53,14 @@ public class TimePointConstraint extends Constraint
 	 */
 	public long getDistanceLowerBound() {
 		return this.distance[0];
+	}
+	
+	/**
+	 * 
+	 * @param distance
+	 */
+	public void setDistanceUpperBound(long distance) {
+		this.distance[1] = distance;
 	}
 	
 	/**
@@ -75,7 +76,7 @@ public class TimePointConstraint extends Constraint
 	 */
 	@Override
 	public String toString() {
-		return "[DistanceConstraint id= (" + this.id + ":" + this.reference.getId() + "-" + this.target.getId() + ") "
+		return "[TimePointDistanceConstraint id= (" + this.id + ":" + this.reference.getId() + "-" + this.target.getId() + ") "
 				+ "<" + (this.controllable ? "c" : "u") + "> "
 				+ "duration= [" + this.distance[0] + ", " + this.distance[1] + "] "
 				+ "reference= " + this.reference + " "

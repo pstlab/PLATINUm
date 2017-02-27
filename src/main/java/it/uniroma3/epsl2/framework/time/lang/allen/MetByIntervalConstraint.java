@@ -1,6 +1,7 @@
 package it.uniroma3.epsl2.framework.time.lang.allen;
 
-import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.TemporalInterval;
+import it.uniroma3.epsl2.framework.time.lang.BinaryTemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 
 /**
@@ -8,7 +9,7 @@ import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
  * @author alessandroumbrico
  *
  */
-public final class MetByIntervalConstraint extends TemporalConstraint 
+public final class MetByIntervalConstraint extends BinaryTemporalConstraint<TemporalInterval, TemporalInterval> 
 {
 	private long lb;
 	private long ub;
@@ -24,18 +25,9 @@ public final class MetByIntervalConstraint extends TemporalConstraint
 	
 	/**
 	 * 
-	 */
-	@Override
-	public void setBounds(long[][] bounds) {
-		this.lb = 0;
-		this.ub = 0;
-	}
-	
-	/**
-	 * 
 	 * @return
 	 */
-	public long getLb() {
+	public long getLowerBound() {
 		return lb;
 	}
 	
@@ -43,7 +35,7 @@ public final class MetByIntervalConstraint extends TemporalConstraint
 	 * 
 	 * @return
 	 */
-	public long getUb() {
+	public long getUpperBound() {
 		return ub;
 	}
 }

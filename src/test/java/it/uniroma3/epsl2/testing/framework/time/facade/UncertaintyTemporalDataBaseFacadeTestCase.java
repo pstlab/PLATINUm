@@ -12,7 +12,7 @@ import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
-import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.ContainsIntervalConstraint;
@@ -34,7 +34,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 500;
 	private TemporalDataBaseFacade facade;
-	private IntervalConstraintFactory intervalFactory;
+	private TemporalConstraintFactory intervalFactory;
 	private TemporalQueryFactory queryFactory;
 	
 	/**
@@ -55,7 +55,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 		this.facade = factory.createSingleton(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
 		
 		// get interval factory
-		this.intervalFactory = IntervalConstraintFactory.getInstance();
+		this.intervalFactory = TemporalConstraintFactory.getInstance();
 		// get query factory
 		this.queryFactory = TemporalQueryFactory.getInstance();
 	}
@@ -216,7 +216,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			System.out.println(ex.getMessage());
 			// get actual duration of the contingent interval
 			CheckIntervalScheduleQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_SCHEDULE);
+					create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			// set interval
 			query.setInterval(i1);
 			this.facade.process(query);
@@ -274,7 +274,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			
 			// get actual duration of the contingent interval
 			CheckIntervalScheduleQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_SCHEDULE);
+					create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			// set interval
 			query.setInterval(i2);
 			this.facade.process(query);
@@ -388,8 +388,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			before.setReference(i1);
 			before.setTarget(i2);
 			// set bounds
-			before.setLb(10);
-			before.setUb(50);
+			before.setLowerBound(10);
+			before.setUpperBound(50);
 			// propagate constraint
 			facade.propagate(before);
 			
@@ -437,8 +437,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			before1.setReference(i2);
 			before1.setTarget(i1);
 			// set bounds
-			before1.setLb(10);
-			before1.setUb(50);
+			before1.setLowerBound(10);
+			before1.setUpperBound(50);
 			
 			// propagate constraint
 			facade.propagate(before1);
@@ -453,8 +453,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			try {
 
 				// set bounds
-				before2.setLb(23);
-				before2.setUb(45);
+				before2.setLowerBound(23);
+				before2.setUpperBound(45);
 				// propagate constraint
 				facade.propagate(before2);
 				// check consistency
@@ -504,15 +504,15 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 					create(TemporalConstraintType.DURING);
 			c2.setReference(i2);
 			c2.setTarget(i3);
-			c2.setStartTimeBounds(new long[] {1, 80});
-			c2.setEndTimeBounds(new long[] {1, 80});
+			c2.setFirstBound(new long[] {1, 80});
+			c2.setSecondBound(new long[] {1, 80});
 			// contains constraint
 			ContainsIntervalConstraint c3 = this.intervalFactory.
 					create(TemporalConstraintType.CONTAINS);
 			c3.setReference(i3);
 			c3.setTarget(i1);
-			c3.setStartTimeBounds(new long[] {1,100});
-			c3.setEndTimeBounds(new long[] {1, 100});
+			c3.setFirstBound(new long[] {1,100});
+			c3.setSecondBound(new long[] {1, 100});
 			
 			// propagate constraints
 			facade.propagate(c1);
@@ -568,15 +568,15 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 					create(TemporalConstraintType.DURING);
 			c2.setReference(i2);
 			c2.setTarget(i3);
-			c2.setStartTimeBounds(new long[] {1, 80});
-			c2.setEndTimeBounds(new long[] {1, 80});
+			c2.setFirstBound(new long[] {1, 80});
+			c2.setSecondBound(new long[] {1, 80});
 			// contains constraint
 			ContainsIntervalConstraint c3 = this.intervalFactory.
 					create(TemporalConstraintType.CONTAINS);
 			c3.setReference(i3);
 			c3.setTarget(i1);
-			c3.setStartTimeBounds(new long[] {1,100});
-			c3.setEndTimeBounds(new long[] {1, 100});
+			c3.setFirstBound(new long[] {1,100});
+			c3.setSecondBound(new long[] {1, 100});
 			
 			// propagate constraints
 			facade.propagate(c1);
@@ -600,7 +600,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			
 			// make duration query
 			CheckIntervalScheduleQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_SCHEDULE);
+					create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			query.setInterval(i3);
 			// process query
 			facade.process(query);

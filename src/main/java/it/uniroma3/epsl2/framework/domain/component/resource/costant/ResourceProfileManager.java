@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.domain.component.resource;
+package it.uniroma3.epsl2.framework.domain.component.resource.costant;
 
 import java.util.List;
 

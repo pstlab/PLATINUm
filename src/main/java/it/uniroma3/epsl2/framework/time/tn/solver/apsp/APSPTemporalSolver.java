@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolver;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.AddRelationTemporalNetworkNotification;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.AddTimePointTemporalNetworkNotification;
@@ -99,7 +99,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 				for (TimePoint reference : this.tn.getTimePoints()) 
 				{
 					// get related constraints
-					for (TimePointConstraint constraint : this.tn.getConstraints(reference)) 
+					for (TimePointDistanceConstraint constraint : this.tn.getConstraints(reference)) 
 					{
 						// get target
 						TimePoint target = constraint.getTarget();
@@ -120,7 +120,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 				// handle request
 				AddRelationTemporalNetworkNotification notif = (AddRelationTemporalNetworkNotification) info;
 				// add relations
-				for (TimePointConstraint constraint : notif.getRels()) 
+				for (TimePointDistanceConstraint constraint : notif.getRels()) 
 				{
 					// get edges' weights
 					long max = constraint.getDistanceUpperBound();
@@ -138,7 +138,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 				// handle request
 				DelRelationTemporalNetworkNotification notif = (DelRelationTemporalNetworkNotification) info;
 				// delete relations
-				for (TimePointConstraint constraint : notif.getRels()) 
+				for (TimePointDistanceConstraint constraint : notif.getRels()) 
 				{
 					// delete constraints in the distance graph
 					this.dg.delete(constraint.getReference(), constraint.getTarget());
@@ -172,7 +172,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 					this.dg.add(point);
 					
 					// add edges w.r.t. the origin
-					TimePointConstraint constraint = this.tn.getConstraintFromOrigin(point);
+					TimePointDistanceConstraint constraint = this.tn.getConstraintFromOrigin(point);
 					long max = constraint.getDistanceUpperBound();
 					long min = -constraint.getDistanceLowerBound();
 					this.dg.add(constraint.getReference(), constraint.getTarget(), max);

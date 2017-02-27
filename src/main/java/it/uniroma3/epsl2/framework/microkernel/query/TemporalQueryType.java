@@ -40,7 +40,7 @@ public enum TemporalQueryType
 	 * its schedule over time, i.e. compute the flexible start and 
 	 * end times of the interval
 	 */
-	CHECK_SCHEDULE(CheckIntervalScheduleQuery.class.getName()),
+	CHECK_INTERVAL_SCHEDULE(CheckIntervalScheduleQuery.class.getName()),
 	
 	/**
 	 * Check the flexible distance between two temporal intervals

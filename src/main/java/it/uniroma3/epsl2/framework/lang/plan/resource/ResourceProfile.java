@@ -9,14 +9,14 @@ import java.util.List;
  * @author anacleto
  *
  */
-public abstract class ResourceProfile 
+public class ResourceProfile 
 {
 	protected List<ProfileSample> samples;
 	
 	/**
 	 * 
 	 */
-	protected ResourceProfile() {
+	public ResourceProfile() {
 		this.samples = new ArrayList<>();
 	}
 	
@@ -36,16 +36,10 @@ public abstract class ResourceProfile
 	 * @param event
 	 * @param time
 	 */
-	public abstract void sample(ResourceEvent event);
-	
-	/**
-	 * 
-	 * @param event
-	 * @param time
-	 * @return
-	 */
-	protected ProfileSample createSample(ResourceEvent event, long time) {
+	public void addSample(ResourceEvent event, long time) {
+		// create sample
 		ProfileSample sample = new ProfileSample(event, time);
-		return sample;
+		// add sample
+		this.samples.add(sample);
 	}
 }

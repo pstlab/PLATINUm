@@ -251,7 +251,6 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			// delete pending decisions
 			this.component.delete(dec);
 		}
-		
 	}
 	
 	/**

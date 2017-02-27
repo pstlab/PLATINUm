@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import it.uniroma3.epsl2.framework.time.tn.TemporalData;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class TemporalInterval extends TemporalData
 	 * 
 	 * @param duration
 	 */
-	protected TemporalInterval(TimePointConstraint duration) {
+	protected TemporalInterval(TimePointDistanceConstraint duration) {
 		super(ID_COUNTER.getAndIncrement());
 		this.start = duration.getReference();
 		this.end = duration.getTarget();

@@ -19,11 +19,10 @@ import it.uniroma3.epsl2.framework.time.ex.InconsistentIntervalStartTimeExceptio
 import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationException;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.ex.TimePointCreationException;
-import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.FixStartTimeIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
+import it.uniroma3.epsl2.framework.time.lang.FixIntervalDurationConstraint;
+import it.uniroma3.epsl2.framework.time.lang.FixTimePointConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.allen.AfterIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
@@ -39,7 +38,7 @@ import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckPseudoControllabilityQuery;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentTpValueException;
 import it.uniroma3.epsl2.framework.time.tn.ex.TemporalConsistencyCheckException;
@@ -65,7 +64,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	protected FrameworkLogger logger;
 	
 	protected TemporalQueryFactory qf;						// temporal query factory
-	protected IntervalConstraintFactory icf;	 			// temporal interval constraint factory
+	protected TemporalConstraintFactory cf;	 			// temporal constraint factory
 	
 	/**
 	 * 
@@ -73,7 +72,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	protected TemporalDataBaseFacade() {
 		// get query factory instance
 		this.qf = TemporalQueryFactory.getInstance();
-		this.icf = IntervalConstraintFactory.getInstance();
+		this.cf = TemporalConstraintFactory.getInstance();
 	}
 	
 	/**
@@ -236,7 +235,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		
 		// interval's end time
 		TimePoint e = null;
-		try {
+		try 
+		{
 			// create flexible end time
 			e = this.tn.addTimePoint(end[0], end[1]);
 		} catch (InconsistentDistanceConstraintException | InconsistentTpValueException ex) {
@@ -247,11 +247,22 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		}
 		
 		// interval's duration
-		TimePointConstraint d = null;
-		try {
+		TimePointDistanceConstraint d = null;
+		try 
+		{
 			// create distance constraint
-			d = this.tn.addConstraint(s, e, duration, controllable);
-		} catch (InconsistentDistanceConstraintException ex) {
+			d = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+			d.setReference(s);
+			d.setTarget(e);
+			d.setDistanceLowerBound(duration[0]);
+			d.setDistanceUpperBound(duration[1]);
+			d.setControllable(controllable);
+			
+			// propagate distance constraint
+			this.tn.addDistanceConstraint(d);
+		} 
+		catch (InconsistentDistanceConstraintException ex) 
+		{
 			// remove start and end time points
 			this.tn.removeTimePoint(s);
 			this.tn.removeTimePoint(e);
@@ -307,9 +318,9 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @param type
 	 * @return
 	 */
-	public final <T extends TemporalConstraint> T createIntervalConstraint(TemporalConstraintType type) {
+	public final <T extends TemporalConstraint> T createTemporalConstraint(TemporalConstraintType type) {
 		// create constraint
-		T cons = this.icf.create(type);
+		T cons = this.cf.create(type);
 		// get created constraint
 		return cons;
 	}
@@ -324,7 +335,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		switch (query.getType()) 
 		{
 			// check distance between intervals
-			case CHECK_INTERVAL_DISTANCE : {
+			case CHECK_INTERVAL_DISTANCE : 
+			{
 				// get query
 				CheckIntervalDistanceQuery distanceQuery = (CheckIntervalDistanceQuery) query;
 				// get time points to analyze
@@ -345,7 +357,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 			break;
 			
 			// check interval schedule 
-			case CHECK_SCHEDULE : {
+			case CHECK_INTERVAL_SCHEDULE : 
+			{
 				// get query
 				CheckIntervalScheduleQuery scheduleQuery = (CheckIntervalScheduleQuery) query;
 				// get interval
@@ -385,7 +398,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 			break;
 			
 			// check if squeezed interval
-			case CHECK_PSEUDO_CONTROLLABILITY : {
+			case CHECK_PSEUDO_CONTROLLABILITY : 
+			{
 				// get query
 				CheckPseudoControllabilityQuery squeezedQuery = (CheckPseudoControllabilityQuery) query;
 				// get time points to analyze
@@ -409,7 +423,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 			case TP_BOUND :
 			case TP_DISTANCE : 
 			case TP_DISTANCE_FROM_ORIGIN : 
-			case TP_DISTANCE_TO_HORIZON : {
+			case TP_DISTANCE_TO_HORIZON : 
+			{
 				// propagate time point query to the reasoner
 				this.solver.process((TimePointQuery) query);
 			}
@@ -441,8 +456,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					BeforeIntervalConstraint before = (BeforeIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = new TimePointConstraint[] { 
-						this.doPropagateBeforeConstraint(before.getReference(), before.getTarget(), new long[] {before.getLb(), before.getUb()})
+					TimePointDistanceConstraint[] c = new TimePointDistanceConstraint[] { 
+						this.doPropagateBeforeConstraint(before)
 					};
 					// set propagated constraint
 					before.setPropagatedConstraints(c);
@@ -454,8 +469,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				{
 					AfterIntervalConstraint after = (AfterIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = new TimePointConstraint[] {
-						this.doPropagateBeforeConstraint(after.getTarget(), after.getReference(), new long[] {after.getLb(), after.getUb()})
+					TimePointDistanceConstraint[] c = new TimePointDistanceConstraint[] {
+						this.doPropagateAfterConstraint(after)
 					};
 					// set propagated constraint
 					after.setPropagatedConstraints(c);
@@ -468,8 +483,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					MeetsIntervalConstraint meets = (MeetsIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = new TimePointConstraint[] { 
-							this.doPropagateMeetsConstraint(meets.getReference(), meets.getTarget())
+					TimePointDistanceConstraint[] c = new TimePointDistanceConstraint[] { 
+							this.doPropagateMeetsConstraint(meets)	
 					};
 					// set propagated constraints
 					meets.setPropagatedConstraints(c);
@@ -482,8 +497,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					MetByIntervalConstraint metby = (MetByIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = new TimePointConstraint[] {
-							this.doPropagateMeetsConstraint(metby.getTarget(), metby.getReference())
+					TimePointDistanceConstraint[] c = new TimePointDistanceConstraint[] {
+							this.doPropagateMetByConstraint(metby)
 					};
 					// set propagated constraints
 					metby.setPropagatedConstraints(c);
@@ -496,7 +511,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					ContainsIntervalConstraint contains = (ContainsIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateContainsConstraint(contains.getReference(), contains.getTarget(), contains.getStartTimeBounds(), contains.getEndTimeBounds());
+					TimePointDistanceConstraint[] c = this.doPropagateContainsConstraint(contains);
 					// set propagated constraints
 					contains.setPropagatedConstraints(c);
 				}
@@ -508,7 +523,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					DuringIntervalConstraint during = (DuringIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateDuringConstraint(during.getReference(), during.getTarget(), during.getStartTimeBounds(), during.getEndTimeBounds());
+					TimePointDistanceConstraint[] c = this.doPropagateDuringConstraint(during);
 					// set propagated constraints
 					during.setPropagatedConstraints(c);
 				}
@@ -520,7 +535,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					StartsDuringIntervalConstraint sdc = (StartsDuringIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateStartsDuringConstraint(sdc.getReference(), sdc.getTarget(), sdc.getFirstTimeBound(), sdc.getSecondTimeBound());
+					TimePointDistanceConstraint[] c = this.doPropagateStartsDuringConstraint(sdc);
 					// set propagated constraints
 					sdc.setPropagatedConstraints(c);
 				}
@@ -532,7 +547,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					EndsDuringIntervalConstraint edc = (EndsDuringIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateEndsDuringConstraint(edc.getReference(), edc.getTarget(), edc.getFirstTimeBound(), edc.getSecondTimeBound());
+					TimePointDistanceConstraint[] c = this.doPropagateEndsDuringConstraint(edc);
 					// set propagated constraints
 					edc.setPropagatedConstraints(c);
 				}
@@ -544,44 +559,43 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 					// get constraint
 					EqualsIntervalConstraint equals = (EqualsIntervalConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateEqualsConstraint(equals.getReference(), equals.getTarget());
+					TimePointDistanceConstraint[] c = this.doPropagateEqualsConstraint(equals);
 					// set propagated constraint
 					equals.setPropagatedConstraints(c);
 				}
 				break;
 				
 				// set the duration of a temporal interval
-				case FIX_DURATION : {
+				case FIX_INTERVAL_DURATION : 
+				{
 					// get constraint
-					FixDurationIntervalConstraint fix = (FixDurationIntervalConstraint) constraint;
+					FixIntervalDurationConstraint fix = (FixIntervalDurationConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateFixDurationConstraint(fix.getReference(), fix.getDuration());
+					TimePointDistanceConstraint c = this.doPropagateFixIntervalDurationConstraint(fix);
 					// set propagate constraints
-					fix.setPropagatedConstraints(c);
+					fix.setPropagatedConstraints(new TimePointDistanceConstraint[] {c});
 				}
 				break;
 				
-				// set the start time of a temporal interval
-				case FIX_START_TIME : 
+				// schedule a time point at a given time
+				case FIX_TIME_POINT :
 				{
 					// get constraint
-					FixStartTimeIntervalConstraint fix = (FixStartTimeIntervalConstraint) constraint;
+					FixTimePointConstraint fix = (FixTimePointConstraint) constraint;
 					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateFixStartConstraint(fix.getReference(), fix.getStart());
-					// set propagate constraints
-					fix.setPropagatedConstraints(c);
+					TimePointDistanceConstraint c = this.doPropagateFixTimePointConstraint(fix);
+					// set propagated constraint
+					fix.setPropagatedConstraints(new TimePointDistanceConstraint[] {c});
 				}
 				break;
 				
-				// set the end time of a temporal interval
-				case FIX_END_TIME : 
+				// set a distance constraint between two time points
+				case TIME_POINT_DISTANCE :
 				{
 					// get constraint
-					FixEndTimeIntervalConstraint fix = (FixEndTimeIntervalConstraint) constraint;
-					// propagate constraint
-					TimePointConstraint[] c = this.doPropagateFixEndConstraint(fix.getReference(), fix.getEnd());
-					// set propagate constraints
-					fix.setPropagatedConstraints(c);
+					TimePointDistanceConstraint cons = (TimePointDistanceConstraint) constraint;
+					// directly propagate distance constraint to the temporal network
+					this.tn.addDistanceConstraint(cons);
 				}
 				break;
 			}
@@ -598,7 +612,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 */
 	public final void retract(TemporalConstraint constraint) {
 		// retract propagated constraints
-		TimePointConstraint[] toRetract = constraint.getPropagatedConstraints();
+		TimePointDistanceConstraint[] toRetract = constraint.getPropagatedConstraints();
 		this.tn.removeDistanceConstraint(Arrays.asList(toRetract));
 		// clear data structure
 		constraint.clear();
@@ -614,163 +628,287 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	
 	/**
 	 * 
-	 * @param reference
-	 * @param target
+	 * @param equals
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateEqualsConstraint(TemporalInterval reference, TemporalInterval target) 
+	protected TimePointDistanceConstraint[] doPropagateEqualsConstraint(EqualsIntervalConstraint equals) 
 			throws InconsistentDistanceConstraintException 
 	{
-		// create a distance constraint between start times
-		TimePointConstraint c1 = this.tn.addConstraint(reference.getStartTime(), target.getStartTime(), new long[] {0, 0}, true);
-		// create a distance constraint between end times
-		TimePointConstraint c2 = this.tn.addConstraint(target.getEndTime(), reference.getEndTime(), new long[] {0, 0}, true);
+		
+		// create distance constraint 
+		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		// set constraint data
+		c1.setReference(equals.getReference().getStartTime());
+		c1.setTarget(equals.getTarget().getStartTime());
+		c1.setDistanceLowerBound(0);
+		c1.setDistanceUpperBound(0);
+		c1.setControllable(true);
+		
+		// create distance constraint
+		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		// set constraint data
+		c2.setReference(equals.getReference().getEndTime());
+		c2.setTarget(equals.getTarget().getEndTime());
+		c2.setDistanceLowerBound(0);
+		c2.setDistanceUpperBound(0);
+		c2.setControllable(true);
+		
+		// add constraints
+		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
+		
 		// get added distance constraints
-		return new TimePointConstraint[] {c1, c2};
+		return new TimePointDistanceConstraint[] {c1, c2};
 	}
 
 	/**
 	 * 
-	 * @param reference
-	 * @param target
-	 * @param startTimeBounds
-	 * @param endTimeBounds
+	 * @param contains
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateContainsConstraint(TemporalInterval reference, TemporalInterval target, long[] startTimeBounds, long[] endTimeBounds) 
+	protected TimePointDistanceConstraint[] doPropagateContainsConstraint(ContainsIntervalConstraint contains) 
 			throws InconsistentDistanceConstraintException 
 	{
-		// create a distance constraint between reference's start time and target's start time 
-		TimePointConstraint c1 = this.tn.addConstraint(reference.getStartTime(), target.getStartTime(), startTimeBounds, true);
-		// crate a distance constraint between target's end time and reference's end time
-		TimePointConstraint c2 = this.tn.addConstraint(target.getEndTime(), reference.getEndTime(), endTimeBounds, true);
+		// create distance constraint
+		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		// set data
+		c1.setReference(contains.getReference().getStartTime());
+		c1.setTarget(contains.getTarget().getStartTime());
+		c1.setDistanceLowerBound(contains.getFirstBound()[0]);
+		c1.setDistanceUpperBound(contains.getFirstBound()[1]);
+		c1.setControllable(true);
+		
+		// create distance constraint
+		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		// set data
+		c2.setReference(contains.getReference().getEndTime());
+		c2.setTarget(contains.getTarget().getEndTime());
+		c2.setDistanceLowerBound(contains.getSecondBound()[0]);
+		c2.setDistanceUpperBound(contains.getSecondBound()[1]);
+		c2.setControllable(true);
+		
+		// add constraints
+		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
+		
 		// get added constraints
-		return new TimePointConstraint[] {c1, c2};
+		return new TimePointDistanceConstraint[] {c1, c2};
 	}
 
 	/**
 	 * 
-	 * @param reference
-	 * @param target
-	 * @param startTimeBounds
-	 * @param endTimeBounds
+	 * @param during
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateDuringConstraint(TemporalInterval reference, TemporalInterval target, long[] startTimeBounds, long[] endTimeBounds) 
+	protected TimePointDistanceConstraint[] doPropagateDuringConstraint(DuringIntervalConstraint during) 
 			throws InconsistentDistanceConstraintException 
 	{
-		// create a distance constraint between target's start time and reference's start time
-		TimePointConstraint c1 = this.tn.addConstraint(target.getStartTime(), reference.getStartTime(), startTimeBounds, true);
-		// create a distance constraint between reference's end time and target's end time
-		TimePointConstraint c2 = this.tn.addConstraint(reference.getEndTime(), target.getEndTime(), endTimeBounds, true);
+		// create constraint
+		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c1.setReference(during.getTarget().getStartTime());
+		c1.setTarget(during.getReference().getStartTime());
+		c1.setDistanceLowerBound(during.getFirstBound()[0]);
+		c1.setDistanceUpperBound(during.getFirstBound()[1]);
+		c1.setControllable(true);
+		
+		// create constraint
+		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c2.setReference(during.getReference().getEndTime());
+		c2.setTarget(during.getTarget().getEndTime());
+		c2.setDistanceLowerBound(during.getSecondBound()[0]);
+		c2.setDistanceUpperBound(during.getSecondBound()[1]);
+		c2.setControllable(true);
+				
+		// add constraint
+		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
+		
 		// get added constraints
-		return new TimePointConstraint[] {c1, c2};
+		return new TimePointDistanceConstraint[] {c1, c2};
 	}
 	
 	/**
 	 * 
-	 * @param reference
-	 * @param target
-	 * @param firstTimeBound
-	 * @param secondTimeBound
+	 * @param edc
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateEndsDuringConstraint(TemporalInterval reference, TemporalInterval target, long[] firstTimeBound, long[] secondTimeBound) 
+	protected TimePointDistanceConstraint[] doPropagateEndsDuringConstraint(EndsDuringIntervalConstraint edc) 
 			throws InconsistentDistanceConstraintException 
 	{
-		// create a distance constraint between target's start time and reference's start time
-		TimePointConstraint c1 = this.tn.addConstraint(target.getStartTime(), reference.getEndTime(), firstTimeBound, true);
-		// create a distance constraint between reference's end time and target's end time
-		TimePointConstraint c2 = this.tn.addConstraint(reference.getEndTime(), target.getEndTime(), secondTimeBound, true);
+		// create constraint
+		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c1.setReference(edc.getTarget().getStartTime());
+		c1.setTarget(edc.getReference().getEndTime());
+		c1.setDistanceLowerBound(edc.getFirstTimeBound()[0]);
+		c1.setDistanceUpperBound(edc.getFirstTimeBound()[1]);
+		c1.setControllable(true);
+		
+		// create constraint
+		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c2.setReference(edc.getReference().getEndTime());
+		c2.setTarget(edc.getTarget().getEndTime());
+		c2.setDistanceLowerBound(edc.getSecondTimeBound()[0]);
+		c2.setDistanceUpperBound(edc.getSecondTimeBound()[1]);
+		c2.setControllable(true);
+		
+		// add constraint 
+		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
+		
 		// propagate constraints
-		return new TimePointConstraint[] {c1, c2};
+		return new TimePointDistanceConstraint[] {c1, c2};
 	}
 
 	/**
 	 * 
-	 * @param reference
-	 * @param target
-	 * @param firstTimeBound
-	 * @param secondTimeBound
+	 * @param sdc
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateStartsDuringConstraint(TemporalInterval reference, TemporalInterval target, long[] firstTimeBound, long[] secondTimeBound) 
+	protected TimePointDistanceConstraint[] doPropagateStartsDuringConstraint(StartsDuringIntervalConstraint sdc) 
 			throws InconsistentDistanceConstraintException 
 	{
-		// create a distance constraint between target's start time and reference's start time
-		TimePointConstraint c1 = this.tn.addConstraint(target.getStartTime(), reference.getStartTime(), firstTimeBound, true);
-		// create a distance constraint between reference's end time and target's end time
-		TimePointConstraint c2 = this.tn.addConstraint(reference.getStartTime(), target.getEndTime(), secondTimeBound, true);
+		// create constraint
+		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c1.setReference(sdc.getTarget().getStartTime());
+		c1.setTarget(sdc.getReference().getStartTime());
+		c1.setDistanceLowerBound(sdc.getFirstTimeBound()[0]);
+		c1.setDistanceUpperBound(sdc.getFirstTimeBound()[1]);
+		c1.setControllable(true);
+		
+		// create constraint
+		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE); 
+		c2.setReference(sdc.getReference().getStartTime());
+		c2.setTarget(sdc.getTarget().getEndTime());
+		c2.setDistanceLowerBound(sdc.getSecondTimeBound()[0]);
+		c2.setDistanceUpperBound(sdc.getSecondTimeBound()[1]);
+		c2.setControllable(true);
+		
+		// add constraint
+		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
+		
 		// propagate constraints
-		return new TimePointConstraint[] {c1, c2};
+		return new TimePointDistanceConstraint[] {c1, c2};
 	}
 
 	/**
 	 * 
-	 * @param reference
-	 * @param target
-	 * @param lb
-	 * @param ub
+	 * @param before
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint doPropagateBeforeConstraint(TemporalInterval reference, TemporalInterval target, long[] distance) 
+	protected TimePointDistanceConstraint doPropagateBeforeConstraint(BeforeIntervalConstraint before)
 			throws InconsistentDistanceConstraintException 
 	{
-		// create a distance constraint between reference's end time and target's start time
-		return this.tn.addConstraint(reference.getEndTime(), target.getStartTime(), distance, true);
+		// create constraint
+		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c.setReference(before.getReference().getEndTime());
+		c.setTarget(before.getTarget().getStartTime());
+		c.setDistanceLowerBound(before.getLowerBound());
+		c.setDistanceUpperBound(before.getUpperBound());
+		c.setControllable(true);
+		
+		// add constraint
+		this.tn.addDistanceConstraint(c);
+		
+		// get propagated constraint
+		return c;
 	}
 	
 	/**
 	 * 
-	 * @param reference
-	 * @param target
+	 * @param meets
 	 * @return
-	 * @throws Exception
+	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint doPropagateMeetsConstraint(TemporalInterval reference, TemporalInterval target) 
+	protected TimePointDistanceConstraint doPropagateMeetsConstraint(MeetsIntervalConstraint meets) 
 			throws InconsistentDistanceConstraintException 
 	{
-		// create a distance constraint between reference's end time and target's start time
-		return this.tn.addConstraint(reference.getEndTime(), target.getStartTime(), 
-				new long[] {0, 0}, true);
+		// create constraint
+		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c.setReference(meets.getReference().getEndTime());
+		c.setTarget(meets.getTarget().getStartTime());
+		c.setDistanceLowerBound(0);
+		c.setDistanceUpperBound(0);
+		c.setControllable(true);
+		
+		// add constraint
+		this.tn.addDistanceConstraint(c);
+		
+		// get propagated constraint
+		return c;
 	}
 	
 	/**
 	 * 
-	 * @param reference
-	 * @param start
+	 * @param after
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateFixStartConstraint(TemporalInterval reference, long start) 
-			throws InconsistentDistanceConstraintException 
+	protected TimePointDistanceConstraint doPropagateAfterConstraint(AfterIntervalConstraint after) 
+			throws InconsistentDistanceConstraintException
 	{
-		return new TimePointConstraint[] {
-				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getStartTime(), 
-						new long[] {start, start}, true) 
-		};
+		// create constraint
+		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c.setReference(after.getTarget().getEndTime());
+		c.setTarget(after.getReference().getStartTime());
+		c.setDistanceLowerBound(after.getLowerBound());
+		c.setDistanceUpperBound(after.getUpperBound());
+		c.setControllable(true);
+		
+		// add constraint
+		this.tn.addDistanceConstraint(c);
+		
+		// get propagated constraint
+		return c;
 	}
 	
 	/**
 	 * 
-	 * @param reference
-	 * @param start
+	 * @param metby
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateFixEndConstraint(TemporalInterval reference, long end) 
+	protected TimePointDistanceConstraint doPropagateMetByConstraint(MetByIntervalConstraint metby) 
 			throws InconsistentDistanceConstraintException 
 	{
-		return new TimePointConstraint[] {
-				this.tn.addConstraint(this.tn.getOriginTimePoint(), reference.getEndTime(), 
-						new long[] {end, end}, true) 
-		};
+		// create constraint
+		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c.setReference(metby.getTarget().getEndTime());
+		c.setTarget(metby.getReference().getStartTime());
+		c.setDistanceLowerBound(metby.getLowerBound());
+		c.setDistanceUpperBound(metby.getUpperBound());
+		c.setControllable(true);
+		
+		// add constraint
+		this.tn.addDistanceConstraint(c);
+		
+		// get propagated constraint
+		return c;
+	}
+	
+	/**
+	 * 
+	 * @param fix
+	 * @return
+	 * @throws InconsistentDistanceConstraintException
+	 */
+	protected TimePointDistanceConstraint doPropagateFixTimePointConstraint(FixTimePointConstraint fix) 
+			throws InconsistentDistanceConstraintException
+	{
+		// create constraint
+		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c.setReference(this.tn.getOriginTimePoint());
+		c.setTarget(fix.getReference());
+		c.setDistanceLowerBound(fix.getTime());
+		c.setDistanceUpperBound(fix.getTime());
+		c.setControllable(true);
+		
+		// add constraint
+		this.tn.addDistanceConstraint(c);
+		
+		// get propagated constraint
+		return c;
 	}
 
 	/**
@@ -780,12 +918,21 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 	 * @return
 	 * @throws InconsistentDistanceConstraintException
 	 */
-	protected TimePointConstraint[] doPropagateFixDurationConstraint(TemporalInterval reference, long duration) 
+	protected TimePointDistanceConstraint doPropagateFixIntervalDurationConstraint(FixIntervalDurationConstraint fix) 
 			throws InconsistentDistanceConstraintException 
 	{
-		return new TimePointConstraint[] { 
-				this.tn.addConstraint(reference.getStartTime(), reference.getEndTime(), 
-						new long[] {duration, duration}, reference.isControllable()) 
-		};
+		// create constraint
+		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+		c.setReference(fix.getReference().getStartTime());
+		c.setTarget(fix.getReference().getEndTime());
+		c.setDistanceLowerBound(fix.getDuration());
+		c.setDistanceUpperBound(fix.getDuration());
+		c.setControllable(true);
+		
+		// add constraint
+		this.tn.addDistanceConstraint(c);
+		
+		// get propagated constraint
+		return c;
 	}
 }

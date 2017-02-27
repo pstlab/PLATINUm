@@ -7,7 +7,7 @@ import java.util.Map;
 
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.DistanceConstraintNotFoundException;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.IntervalDisjunctionException;
@@ -22,8 +22,8 @@ import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.UnableToHandleContinge
 public final class SimpleTemporalNetwork extends TemporalNetwork 
 {
 	private Map<Integer, TimePoint> points;
-	private Map<TimePoint, Map<TimePoint, List<TimePointConstraint>>> constraints;
-	private Map<TimePoint, Map<TimePoint, TimePointConstraint>> edges;
+	private Map<TimePoint, Map<TimePoint, List<TimePointDistanceConstraint>>> constraints;
+	private Map<TimePoint, Map<TimePoint, TimePointDistanceConstraint>> edges;
 	
 	/**
 	 * 
@@ -34,22 +34,29 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 		super(origin, horizon);
 		// initialize data structure
 		this.points = new HashMap<Integer, TimePoint>();
-		this.edges = new HashMap<TimePoint, Map<TimePoint, TimePointConstraint>>();
-		this.constraints = new HashMap<TimePoint, Map<TimePoint, List<TimePointConstraint>>>();
+		this.edges = new HashMap<TimePoint, Map<TimePoint, TimePointDistanceConstraint>>();
+		this.constraints = new HashMap<TimePoint, Map<TimePoint, List<TimePointDistanceConstraint>>>();
 		
 		// add the origin to the network
 		this.points.put(this.tpOrigin.getId(), this.tpOrigin);
-		this.edges.put(this.tpOrigin, new HashMap<TimePoint, TimePointConstraint>());
-		this.constraints.put(this.tpOrigin, new HashMap<TimePoint, List<TimePointConstraint>>());
+		this.edges.put(this.tpOrigin, new HashMap<TimePoint, TimePointDistanceConstraint>());
+		this.constraints.put(this.tpOrigin, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
 		
 		// add the horizon to the network
 		this.points.put(this.tpHorizion.getId(), this.tpHorizion);
-		this.edges.put(this.tpHorizion, new HashMap<TimePoint, TimePointConstraint>());
-		this.constraints.put(this.tpHorizion, new HashMap<TimePoint, List<TimePointConstraint>>());
+		this.edges.put(this.tpHorizion, new HashMap<TimePoint, TimePointDistanceConstraint>());
+		this.constraints.put(this.tpHorizion, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
 		
-		try {
-			// add constraint between origin and the horizon
-			this.addConstraint(this.tpOrigin, this.tpHorizion, new long[] {horizon, horizon}, true);
+		try 
+		{
+			// create constraint
+			TimePointDistanceConstraint c = this.createDistanceConstraint(
+					this.tpOrigin, 
+					this.tpHorizion, 
+					new long[] {horizon, horizon}, 
+					true);
+			// add constraint
+			this.addDistanceConstraint(c);
 		}
 		catch (InconsistentDistanceConstraintException ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -93,16 +100,16 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 	 * 
 	 */
 	@Override
-	public List<TimePointConstraint> getConstraints(TimePoint tp) {
-		return this.edges.containsKey(tp) ? new ArrayList<>(this.edges.get(tp).values()) : new ArrayList<TimePointConstraint>() ;
+	public List<TimePointDistanceConstraint> getConstraints(TimePoint tp) {
+		return this.edges.containsKey(tp) ? new ArrayList<>(this.edges.get(tp).values()) : new ArrayList<TimePointDistanceConstraint>() ;
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public List<TimePointConstraint> getConstraints(TimePoint tp1, TimePoint tp2) {
-		List<TimePointConstraint> list = new ArrayList<>();
+	public List<TimePointDistanceConstraint> getConstraints(TimePoint tp1, TimePoint tp2) {
+		List<TimePointDistanceConstraint> list = new ArrayList<>();
 		if (this.edges.containsKey(tp1) && this.edges.get(tp1).containsKey(tp2)) {
 			list.add(this.edges.get(tp1).get(tp2));
 		}
@@ -116,7 +123,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 	 * @return
 	 */
 	@Override
-	public TimePointConstraint getConstraintFromOrigin(TimePoint point) {
+	public TimePointDistanceConstraint getConstraintFromOrigin(TimePoint point) {
 		// get requirement constraint
 		return this.edges.get(this.tpOrigin).get(point);
 	}
@@ -125,7 +132,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 	 * 
 	 */
 	@Override
-	public TimePointConstraint getConstraintToHorizon(TimePoint point) {
+	public TimePointDistanceConstraint getConstraintToHorizon(TimePoint point) {
 		// get requirement constraint
 		return this.edges.get(point).get(this.tpHorizion);
 	}
@@ -139,7 +146,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 		String str = "- SimpleTemporalNetwork {\n";
 		for (TimePoint tp : this.points.values()) {
 			str += "\t" + tp + "\n";
-			for (TimePointConstraint rel : this.getConstraints(tp)) {
+			for (TimePointDistanceConstraint rel : this.getConstraints(tp)) {
 				str += "\t\t" + rel + "\n";
 			}
 		}
@@ -158,7 +165,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 		this.points.put(tp.getId(), tp);
 		
 		// create constraint from origin
-		TimePointConstraint c0P = this.createConstraint(
+		TimePointDistanceConstraint c0P = this.createDistanceConstraint(
 				this.tpOrigin, 
 				tp, 
 				new long[] {
@@ -168,7 +175,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 				true);
 		
 		// create constraint to horizon
-		TimePointConstraint cPH = this.createConstraint(
+		TimePointDistanceConstraint cPH = this.createDistanceConstraint(
 				tp, 
 				this.tpHorizion, 
 				new long[] {
@@ -179,14 +186,14 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 		
 		// add constraints
 		this.edges.get(this.tpOrigin).put(tp, c0P);
-		this.edges.put(tp, new HashMap<TimePoint, TimePointConstraint>());
+		this.edges.put(tp, new HashMap<TimePoint, TimePointDistanceConstraint>());
 		this.edges.get(tp).put(this.tpHorizion, cPH);
 		
-		this.constraints.get(this.tpOrigin).put(tp, new ArrayList<TimePointConstraint>());
+		this.constraints.get(this.tpOrigin).put(tp, new ArrayList<TimePointDistanceConstraint>());
 		this.constraints.get(this.tpOrigin).get(tp).add(c0P);
 		
-		this.constraints.put(tp, new HashMap<TimePoint, List<TimePointConstraint>>());
-		this.constraints.get(tp).put(this.tpHorizion, new ArrayList<TimePointConstraint>());
+		this.constraints.put(tp, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
+		this.constraints.get(tp).put(this.tpHorizion, new ArrayList<TimePointDistanceConstraint>());
 		this.constraints.get(tp).get(this.tpHorizion).add(cPH);
 	}
 	
@@ -230,7 +237,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 	 * 
 	 */
 	@Override
-	protected void doAddConstraint(TimePointConstraint c)
+	protected void doAddConstraint(TimePointDistanceConstraint c)
 			throws InconsistentDistanceConstraintException 
 	{
 		// check controllability
@@ -246,24 +253,24 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 		// check if a constraint already exists
 		if (!this.constraints.containsKey(c.getReference())) {
 			// add constraint
-			this.constraints.put(c.getReference(), new HashMap<TimePoint, List<TimePointConstraint>>());
-			this.constraints.get(c.getReference()).put(c.getTarget(), new ArrayList<TimePointConstraint>());
+			this.constraints.put(c.getReference(), new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
+			this.constraints.get(c.getReference()).put(c.getTarget(), new ArrayList<TimePointDistanceConstraint>());
 			this.constraints.get(c.getReference()).get(c.getTarget()).add(c);
 			
 			// no edges from "from" node exist
-			this.edges.put(c.getReference(), new HashMap<TimePoint, TimePointConstraint>());
+			this.edges.put(c.getReference(), new HashMap<TimePoint, TimePointDistanceConstraint>());
 			this.edges.get(c.getReference()).put(c.getTarget(), c);
 		}
 		else if (!this.constraints.get(c.getReference()).containsKey(c.getTarget())) {
 			// no edge <from, to> exists 
-			this.constraints.get(c.getReference()).put(c.getTarget(), new ArrayList<TimePointConstraint>());
+			this.constraints.get(c.getReference()).put(c.getTarget(), new ArrayList<TimePointDistanceConstraint>());
 			this.constraints.get(c.getReference()).get(c.getTarget()).add(c);
 			// add edge
 			this.edges.get(c.getReference()).put(c.getTarget(), c);
 		}
 		else {
 			// compute intersection of all propagated constraints
-			TimePointConstraint current = this.edges.get(c.getReference()).get(c.getTarget());
+			TimePointDistanceConstraint current = this.edges.get(c.getReference()).get(c.getTarget());
 			// compute intersection
 			long lb = Math.max(current.getDistanceLowerBound(), c.getDistanceLowerBound());
 			long ub = Math.min(current.getDistanceUpperBound(), c.getDistanceUpperBound());
@@ -279,7 +286,11 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 			// check if a change actually occurs and update the network's edge if needed
 			if (lb > current.getDistanceLowerBound() || ub < current.getDistanceUpperBound()) {
 				// create "intersecting" constraint to add
-				TimePointConstraint intersection = this.createConstraint(c.getReference(), c.getTarget(), new long[] {lb, ub}, true); 
+				TimePointDistanceConstraint intersection = this.createDistanceConstraint(
+						c.getReference(), 
+						c.getTarget(), 
+						new long[] {lb, ub}, 
+						true); 
 				this.edges.get(intersection.getReference()).put(intersection.getTarget(), intersection);
 			}
 		}
@@ -290,7 +301,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 	 * parameter if such a constraint exists
 	 */
 	@Override
-	protected void doRemoveDistanceConstraint(TimePointConstraint c)
+	protected void doRemoveDistanceConstraint(TimePointDistanceConstraint c)
 			throws DistanceConstraintNotFoundException 
 	{
 		// check if constraint exists
@@ -299,7 +310,7 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 				this.constraints.get(c.getReference()).get(c.getTarget()).contains(c)) {
 			
 			// remove constraint
-			List<TimePointConstraint> list = this.constraints.get(c.getReference()).get(c.getTarget());
+			List<TimePointDistanceConstraint> list = this.constraints.get(c.getReference()).get(c.getTarget());
 			list.remove(c);
 			
 			// check remaining constraints
@@ -307,16 +318,20 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 				// compute the new "tighter constraint" if possible
 				long lb = Long.MIN_VALUE;
 				long ub = Long.MAX_VALUE;
-				for (TimePointConstraint i : list) {
+				for (TimePointDistanceConstraint i : list) {
 					lb = i.getDistanceLowerBound() > lb ? i.getDistanceLowerBound() : lb;
 					ub = i.getDistanceUpperBound() < ub ? i.getDistanceUpperBound() : ub;
 				}
 				
 				// check if a change actually occurs
-				TimePointConstraint current = this.edges.get(c.getReference()).get(c.getTarget());
+				TimePointDistanceConstraint current = this.edges.get(c.getReference()).get(c.getTarget());
 				if (lb != current.getDistanceLowerBound() || ub != current.getDistanceUpperBound()) {
 					// set tighter constraint
-					TimePointConstraint intersection = this.createConstraint(c.getReference(), c.getTarget(), new long[] {lb, ub}, true); 
+					TimePointDistanceConstraint intersection = this.createDistanceConstraint(
+							c.getReference(), 
+							c.getTarget(), 
+							new long[] {lb, ub}, 
+							true); 
 					// update constraint 
 					this.edges.get(c.getReference()).put(c.getTarget(), intersection);
 				}

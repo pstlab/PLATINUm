@@ -10,6 +10,7 @@ import it.uniroma3.epsl2.framework.time.lang.allen.EqualsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MetByIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.StartsDuringIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 
 /**
  * 
@@ -73,21 +74,21 @@ public enum TemporalConstraintType
 			ConstraintCategory.TEMPORAL_CONSTRAINT),
 	
 	/**
-	 * Fix the start time of a flexible interval
+	 * 
 	 */
-	FIX_START_TIME(FixStartTimeIntervalConstraint.class.getName(),
-			ConstraintCategory.TEMPORAL_CONSTRAINT),
-	
-	/**
-	 * Fix the end time of a flexible interval
-	 */
-	FIX_END_TIME(FixEndTimeIntervalConstraint.class.getName(),
+	FIX_TIME_POINT(FixTimePointConstraint.class.getName(),
 			ConstraintCategory.TEMPORAL_CONSTRAINT),
 	
 	/**
 	 * Fix the duration of a flexible interval
 	 */
-	FIX_DURATION(FixDurationIntervalConstraint.class.getName(),
+	FIX_INTERVAL_DURATION(FixIntervalDurationConstraint.class.getName(),
+			ConstraintCategory.TEMPORAL_CONSTRAINT),
+	
+	/**
+	 * 
+	 */
+	TIME_POINT_DISTANCE(TimePointDistanceConstraint.class.getName(),
 			ConstraintCategory.TEMPORAL_CONSTRAINT);
 
 	// constraint class name

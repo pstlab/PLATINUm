@@ -1,6 +1,7 @@
 package it.uniroma3.epsl2.framework.time.lang.allen;
 
-import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.TemporalInterval;
+import it.uniroma3.epsl2.framework.time.lang.BinaryTemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 
 /**
@@ -8,7 +9,7 @@ import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
  * @author anacleto
  *
  */
-public final class BeforeIntervalConstraint extends TemporalConstraint 
+public final class BeforeIntervalConstraint extends BinaryTemporalConstraint<TemporalInterval, TemporalInterval> 
 {
 	private long lb;
 	private long ub;
@@ -20,20 +21,12 @@ public final class BeforeIntervalConstraint extends TemporalConstraint
 		super(TemporalConstraintType.BEFORE);
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void setBounds(long[][] bounds) {
-		this.lb = bounds[0][0];
-		this.ub = bounds[0][1];
-	}
 	
 	/**
 	 * 
 	 * @param lb
 	 */
-	public void setLb(long lb) {
+	public void setLowerBound(long lb) {
 		this.lb = lb;
 	}
 	
@@ -41,7 +34,7 @@ public final class BeforeIntervalConstraint extends TemporalConstraint
 	 * 
 	 * @return
 	 */
-	public long getLb() {
+	public long getLowerBound() {
 		return lb;
 	}
 	
@@ -50,7 +43,7 @@ public final class BeforeIntervalConstraint extends TemporalConstraint
 	 * 
 	 * @param ub
 	 */
-	public void setUb(long ub) {
+	public void setUpperBound(long ub) {
 		this.ub = ub;
 	}
 	
@@ -58,7 +51,7 @@ public final class BeforeIntervalConstraint extends TemporalConstraint
 	 * 
 	 * @return
 	 */
-	public long getUb() {
+	public long getUpperBound() {
 		return ub;
 	}
 }

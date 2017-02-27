@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.domain.component.resource;
+package it.uniroma3.epsl2.framework.domain.component.resource.costant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,12 @@ import java.util.List;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
+import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
+import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
+import it.uniroma3.epsl2.framework.parameter.lang.NumericParameter;
+import it.uniroma3.epsl2.framework.parameter.lang.query.CheckValuesParameterQuery;
+import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 
 /**
  * 
@@ -15,9 +20,9 @@ import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
  */
 public abstract class Resource extends DomainComponent implements ResourceProfileManager
 {	
-	protected long min;						// minimum resource capacity
-	protected long max;						// maximum resource capacity
-	protected long initial;					// initial resource capacity
+	protected int min;						// minimum resource capacity
+	protected int max;						// maximum resource capacity
+	protected int initial;					// initial resource capacity
 	protected List<ComponentValue> values;	// list of values
 	
 	/**
@@ -62,7 +67,7 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	 * 
 	 * @param min
 	 */
-	public void setMinCapacity(long min) {
+	public void setMinCapacity(int min) {
 		this.min = min;
 	}
 
@@ -70,7 +75,7 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	 * 
 	 * @param max
 	 */
-	public void setMaxCapacity(long max) { 
+	public void setMaxCapacity(int max) { 
 		this.max = max;
 	}
 	
@@ -78,7 +83,7 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	 * 
 	 * @param initial
 	 */
-	public void setInitialCapacity(long initial) {
+	public void setInitialCapacity(int initial) {
 		this.initial = initial;
 	}
 	
@@ -114,6 +119,15 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	
 	/**
 	 * 
+	 */
+	@Override
+	public void checkPseudoControllability() 
+			throws PseudoControllabilityCheckException {
+		// nothing to do
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	@Override
@@ -125,4 +139,22 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	 */
 	@Override
 	public abstract List<ResourceEvent> getConsumptions();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected int checkAmount(Decision dec)
+	{
+		// get value of resource
+		NumericParameter param = (NumericParameter) dec.getParameterByIndex(0);
+		// prepare query
+		CheckValuesParameterQuery query = this.pdb.createQuery(ParameterQueryType.CHECK_PARAMETER_VALUES);
+		// set parameter
+		query.setParameter(param);
+		// process query
+		this.pdb.process(query);
+		// get computed parameter
+		return param.getLowerBound();
+	}
 }

@@ -16,7 +16,7 @@ public final class CheckIntervalScheduleQuery extends TemporalIntervalQuery {
 	 * 
 	 */
 	protected CheckIntervalScheduleQuery() {
-		super(TemporalQueryType.CHECK_SCHEDULE);
+		super(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 	}
 	
 	/**

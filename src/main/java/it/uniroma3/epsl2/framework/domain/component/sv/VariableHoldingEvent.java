@@ -18,6 +18,6 @@ public class VariableHoldingEvent extends ResourceEvent
 	 * @param event
 	 */
 	protected VariableHoldingEvent(Decision activity, TimePoint event) {
-		super(activity, event, ResourceEventType.CONSUMPTION, 1);
+		super(ResourceEventType.CONSUMPTION, event, 1, activity);
 	}
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.DistanceConstraintNotFoundException;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.IntervalDisjunctionException;
@@ -23,11 +23,11 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 {
 	private Map<Integer, TimePoint> points;
 	// set of all constraints added to the network
-	private Map<TimePoint, Map<TimePoint, List<TimePointConstraint>>> constraints;
+	private Map<TimePoint, Map<TimePoint, List<TimePointDistanceConstraint>>> constraints;
 	// requirement edges
-	private Map<TimePoint, Map<TimePoint, TimePointConstraint>> requirements;
+	private Map<TimePoint, Map<TimePoint, TimePointDistanceConstraint>> requirements;
 	// contingent links
-	private Map<TimePoint, Map<TimePoint, TimePointConstraint>> contingents;
+	private Map<TimePoint, Map<TimePoint, TimePointDistanceConstraint>> contingents;
 	
 	/**
 	 * 
@@ -45,20 +45,28 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		
 		// add the origin to the network
 		this.points.put(this.tpOrigin.getId(), this.tpOrigin);
-		this.constraints.put(this.tpOrigin, new HashMap<TimePoint, List<TimePointConstraint>>());
-		this.contingents.put(this.tpOrigin, new HashMap<TimePoint, TimePointConstraint>());
-		this.requirements.put(this.tpOrigin, new HashMap<TimePoint, TimePointConstraint>());
+		this.constraints.put(this.tpOrigin, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
+		this.contingents.put(this.tpOrigin, new HashMap<TimePoint, TimePointDistanceConstraint>());
+		this.requirements.put(this.tpOrigin, new HashMap<TimePoint, TimePointDistanceConstraint>());
 		
 		// add the horizon to the network
 		this.points.put(this.tpHorizion.getId(), this.tpHorizion);
-		this.constraints.put(this.tpHorizion, new HashMap<TimePoint, List<TimePointConstraint>>());
-		this.contingents.put(this.tpHorizion, new HashMap<TimePoint, TimePointConstraint>());
-		this.requirements.put(this.tpHorizion, new HashMap<TimePoint, TimePointConstraint>());
+		this.constraints.put(this.tpHorizion, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
+		this.contingents.put(this.tpHorizion, new HashMap<TimePoint, TimePointDistanceConstraint>());
+		this.requirements.put(this.tpHorizion, new HashMap<TimePoint, TimePointDistanceConstraint>());
 		
-		try {
-			// add distance constraint between origin and the horizon
-			this.addConstraint(this.tpOrigin, this.tpHorizion, new long[] {horizon, horizon}, true);
-		} catch (InconsistentDistanceConstraintException ex) {
+		try 
+		{
+			// create constraint
+			TimePointDistanceConstraint oh = this.createDistanceConstraint(
+					this.tpOrigin, 
+					this.tpHorizion, 
+					new long[] {horizon,  horizon}, 
+					true);
+			// add constraint
+			this.addDistanceConstraint(oh);
+		} 
+		catch (InconsistentDistanceConstraintException ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
 	}
@@ -76,7 +84,8 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 */
 	@Override
 	public TimePoint getTimePoint(int id) 
-			throws TimePointNotFoundException {
+			throws TimePointNotFoundException 
+	{
 		// check network 
 		if (!this.points.containsKey(id)) {
 			throw new TimePointNotFoundException("The network does not contain any time point with id= " + id);
@@ -100,9 +109,10 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * contingent constraints starting from the time point.
 	 */
 	@Override
-	public List<TimePointConstraint> getConstraints(TimePoint tp) {
+	public List<TimePointDistanceConstraint> getConstraints(TimePoint tp) 
+	{
 		// list of constraints
-		List<TimePointConstraint> list = new ArrayList<>();
+		List<TimePointDistanceConstraint> list = new ArrayList<>();
 		if (this.requirements.containsKey(tp)) {
 			// get all requirement constraints
 			list.addAll(this.requirements.get(tp).values());
@@ -125,8 +135,8 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * constraint
 	 */
 	@Override
-	public List<TimePointConstraint> getConstraints(TimePoint tp1, TimePoint tp2) {
-		List<TimePointConstraint> list = new ArrayList<>();
+	public List<TimePointDistanceConstraint> getConstraints(TimePoint tp1, TimePoint tp2) {
+		List<TimePointDistanceConstraint> list = new ArrayList<>();
 		// check requirements 
 		if (this.requirements.containsKey(tp1) && this.requirements.get(tp1).containsKey(tp2)) {
 			// add requirement constraint
@@ -147,7 +157,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * and a time point.
 	 */
 	@Override
-	public TimePointConstraint getConstraintFromOrigin(TimePoint point) {
+	public TimePointDistanceConstraint getConstraintFromOrigin(TimePoint point) {
 		// get requirement constraint from the origin
 		return this.requirements.get(this.tpOrigin).get(point);
 	}
@@ -156,7 +166,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * 
 	 */
 	@Override
-	public TimePointConstraint getConstraintToHorizon(TimePoint point) {
+	public TimePointDistanceConstraint getConstraintToHorizon(TimePoint point) {
 		// get requirement constraint to the horizon
 		return this.requirements.get(point).get(this.tpHorizion);
 	}
@@ -166,8 +176,8 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * 
 	 * @return
 	 */
-	public List<TimePointConstraint> getContingetConstraints() {
-		List<TimePointConstraint> list = new ArrayList<>();
+	public List<TimePointDistanceConstraint> getContingetConstraints() {
+		List<TimePointDistanceConstraint> list = new ArrayList<>();
 		for (TimePoint point : this.contingents.keySet()) {
 			// add all contingent constraints
 			list.addAll(this.contingents.get(point).values());
@@ -184,7 +194,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		String str = "- SimpleTemporalNetworkWithUncertainty {\n";
 		for (TimePoint tp : this.points.values()) {
 			str += "\t" + tp + "\n";
-			for (TimePointConstraint rel : this.getConstraints(tp)) {
+			for (TimePointDistanceConstraint rel : this.getConstraints(tp)) {
 				str += "\t\t" + rel + "\n";
 			}
 		}
@@ -201,7 +211,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		// add the point to the network
 		this.points.put(tp.getId(), tp);
 		// create constraint from the origin
-		TimePointConstraint t0 = this.createConstraint(
+		TimePointDistanceConstraint t0 = this.createDistanceConstraint(
 				this.tpOrigin, 
 				tp, 
 				new long[] {
@@ -211,7 +221,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 				true);
 		
 		// create constraint to horizon
-		TimePointConstraint t1 = this.createConstraint(
+		TimePointDistanceConstraint t1 = this.createDistanceConstraint(
 				tp, 
 				this.tpHorizion, 
 				new long[] {
@@ -222,15 +232,15 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		
 		// add constraints
 		this.requirements.get(this.tpOrigin).put(tp, t0);
-		this.requirements.put(tp, new HashMap<TimePoint, TimePointConstraint>());
-		this.contingents.put(tp, new HashMap<TimePoint, TimePointConstraint>());
+		this.requirements.put(tp, new HashMap<TimePoint, TimePointDistanceConstraint>());
+		this.contingents.put(tp, new HashMap<TimePoint, TimePointDistanceConstraint>());
 		this.requirements.get(tp).put(this.tpHorizion, t1);
 		
 		// add general constraints
-		this.constraints.get(this.tpOrigin).put(tp, new ArrayList<TimePointConstraint>());
+		this.constraints.get(this.tpOrigin).put(tp, new ArrayList<TimePointDistanceConstraint>());
 		this.constraints.get(this.tpOrigin).get(tp).add(t0);
-		this.constraints.put(tp, new HashMap<TimePoint, List<TimePointConstraint>>());
-		this.constraints.get(tp).put(this.tpHorizion, new ArrayList<TimePointConstraint>());
+		this.constraints.put(tp, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
+		this.constraints.get(tp).put(this.tpHorizion, new ArrayList<TimePointDistanceConstraint>());
 		this.constraints.get(tp).get(this.tpHorizion).add(t1);
 	}
 
@@ -283,7 +293,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * constraint either by adding a contingent or a requirement constraint. 
 	 */
 	@Override
-	protected void doAddConstraint(TimePointConstraint c) 
+	protected void doAddConstraint(TimePointDistanceConstraint c) 
 			throws InconsistentDistanceConstraintException 
 	{
 		// get time point involved
@@ -307,12 +317,12 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			// set structures
 			if (!this.constraints.containsKey(reference)) {
 				// add entries
-				this.constraints.put(reference, new HashMap<TimePoint, List<TimePointConstraint>>());
+				this.constraints.put(reference, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
 			}
 			
 			if (!this.constraints.get(reference).containsKey(target)) {
 				// setup data structures
-				this.constraints.get(reference).put(target, new ArrayList<TimePointConstraint>());
+				this.constraints.get(reference).put(target, new ArrayList<TimePointDistanceConstraint>());
 			}
 			
 			// add constraint
@@ -320,27 +330,34 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			// setup requirements
 			if (!this.requirements.containsKey(reference)) {
 				// setup data structure
-				this.requirements.put(reference, new HashMap<TimePoint, TimePointConstraint>());
+				this.requirements.put(reference, new HashMap<TimePoint, TimePointDistanceConstraint>());
 			}
 			
  			// check if a requirement constraint already exists between points			
 			if (this.requirements.get(reference).containsKey(target)) 
 			{
 				// compute intersection of all propagated constraints
-				TimePointConstraint current = this.requirements.get(reference).get(target);
+				TimePointDistanceConstraint current = this.requirements.get(reference).get(target);
 				// compute intersection
 				long lb = Math.max(current.getDistanceLowerBound(), c.getDistanceLowerBound());
 				long ub = Math.min(current.getDistanceUpperBound(), c.getDistanceUpperBound());
 				// check if an intersection exists
 				if (lb > ub) {
-					// error - the STP does not handle disjunction among intervals
+					// error - the STP(U) does not handle disjunction among intervals
 					throw new IntervalDisjunctionException("Error while adding constraint. Disjunciton of intervals is not allowed\n- old= " + current + "\n- rel= " + c);
 				}
 				
 				// check if a change actually occurs and update the network's edge if needed
-				if (lb > current.getDistanceLowerBound() || ub < current.getDistanceUpperBound()) {
+				if (lb > current.getDistanceLowerBound() || ub < current.getDistanceUpperBound()) 
+				{
 					// create "intersecting" constraint to add
-					TimePointConstraint intersection = this.createConstraint(reference, target, new long[] {lb, ub}, true); 
+					TimePointDistanceConstraint intersection = this.createDistanceConstraint(
+							reference, 
+							target, 
+							new long[] {lb, ub}, 
+							true); 
+					
+					// add constraint among requirements
 					this.requirements.get(reference).put(target, intersection);
 				}
 			}
@@ -360,19 +377,19 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			// add constraint
 			if (!this.constraints.containsKey(reference)) {
 				// setup data structure
-				this.constraints.put(reference, new HashMap<TimePoint, List<TimePointConstraint>>());
+				this.constraints.put(reference, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
 			}
 		
 			if (!this.constraints.get(reference).containsKey(target)) {
 				// setup data structure
-				this.constraints.get(reference).put(target, new ArrayList<TimePointConstraint>());
+				this.constraints.get(reference).put(target, new ArrayList<TimePointDistanceConstraint>());
 			}
 			
 			// add constraint
 			this.constraints.get(reference).get(target).add(c);
 			// activate contingent link
 			if (!this.contingents.containsKey(reference)) {
-				this.contingents.put(reference, new HashMap<TimePoint, TimePointConstraint>());
+				this.contingents.put(reference, new HashMap<TimePoint, TimePointDistanceConstraint>());
 			}
 			
 			// set contingent link
@@ -384,7 +401,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * 
 	 */
 	@Override
-	protected void doRemoveDistanceConstraint(TimePointConstraint c) 
+	protected void doRemoveDistanceConstraint(TimePointDistanceConstraint c) 
 			throws DistanceConstraintNotFoundException 
 	{
 		// get time points involved
@@ -405,16 +422,23 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 					// compute the current intersection constraint
 					long lb = Long.MIN_VALUE + 1;
 					long ub = Long.MAX_VALUE - 1;
-					for (TimePointConstraint cons : this.constraints.get(reference).get(target)) {
+					for (TimePointDistanceConstraint cons : this.constraints.get(reference).get(target)) {
 						lb = Math.max(cons.getDistanceLowerBound(), lb);
 						ub = Math.min(cons.getDistanceUpperBound(), ub);
 					}
 					
 					// check if a change actually occurs
-					TimePointConstraint current = this.requirements.get(reference).get(target);
-					if (lb != current.getDistanceLowerBound() || ub != current.getDistanceUpperBound()) {
+					TimePointDistanceConstraint current = this.requirements.get(reference).get(target);
+					if (lb != current.getDistanceLowerBound() || ub != current.getDistanceUpperBound()) 
+					{
 						// create intersection
-						TimePointConstraint intersection = this.createConstraint(reference, target, new long[] {lb, ub}, true);
+						TimePointDistanceConstraint intersection = this.
+								createDistanceConstraint(
+										reference, 
+										target, 
+										new long[] {lb, ub}, 
+										true);
+						
 						// set intersection constraint
 						this.requirements.get(reference).put(target, intersection);
 					}
@@ -430,7 +454,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 					// remove constraint
 					this.contingents.get(reference).remove(target);
 					// set new constraint if any
-					List<TimePointConstraint> list = this.constraints.get(reference).get(target);
+					List<TimePointDistanceConstraint> list = this.constraints.get(reference).get(target);
 					// check list of remaining constraints
 					if (!list.isEmpty()) {
 						// set last added contingent constraint

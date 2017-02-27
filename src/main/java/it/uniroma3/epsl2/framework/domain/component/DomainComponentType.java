@@ -1,9 +1,9 @@
 package it.uniroma3.epsl2.framework.domain.component;
 
 import it.uniroma3.epsl2.framework.domain.component.pdb.PlanDataBaseComponent;
-import it.uniroma3.epsl2.framework.domain.component.resource.DiscreteResource;
-import it.uniroma3.epsl2.framework.domain.component.resource.ReservoirResource;
-import it.uniroma3.epsl2.framework.domain.component.resource.UnaryResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.costant.DiscreteResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.costant.ReservoirResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.costant.UnaryResource;
 import it.uniroma3.epsl2.framework.domain.component.sv.ExternalStateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.FunctionalStateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.PrimitiveStateVariable;

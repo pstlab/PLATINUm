@@ -18,6 +18,6 @@ public class VariableFreeEvent extends ResourceEvent
 	 * @param event
 	 */
 	protected VariableFreeEvent(Decision activity, TimePoint event) {
-		super(activity, event, ResourceEventType.PRODUCTION, 1);
+		super(ResourceEventType.PRODUCTION, event, 1, activity);
 	}
 }

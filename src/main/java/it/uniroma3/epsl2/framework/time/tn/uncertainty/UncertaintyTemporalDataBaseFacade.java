@@ -5,7 +5,7 @@ import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkType;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverType;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
 
@@ -61,7 +61,7 @@ public final class UncertaintyTemporalDataBaseFacade extends TemporalDataBaseFac
 		// hypothesis
 		boolean pseudoControllable = true;
 		// check contingent constraints
-		for (TimePointConstraint c : this.tn.getConstraints()) 
+		for (TimePointDistanceConstraint c : this.tn.getConstraints()) 
 		{
 			// check controllability
 			if (!c.isControllable()) {

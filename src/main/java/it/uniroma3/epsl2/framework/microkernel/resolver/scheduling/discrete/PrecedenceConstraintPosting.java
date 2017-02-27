@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.pcp;
+package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.discrete;
 
 import java.util.ArrayList;
 import java.util.List;

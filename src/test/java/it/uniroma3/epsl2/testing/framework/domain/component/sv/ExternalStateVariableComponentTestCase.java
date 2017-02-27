@@ -17,8 +17,8 @@ import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
-import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
+import it.uniroma3.epsl2.framework.time.lang.FixIntervalDurationConstraint;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
@@ -129,7 +129,7 @@ public class ExternalStateVariableComponentTestCase {
 			// check flexible schedule
 			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
 			// create flexible schedule query
-			CheckIntervalScheduleQuery query = qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+			CheckIntervalScheduleQuery query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);
@@ -143,7 +143,7 @@ public class ExternalStateVariableComponentTestCase {
 			Assert.assertTrue(d1.getDuration()[1] == 5);
 			
 			// create query
-			query = qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+			query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			query.setInterval(d2.getToken().getInterval());
 			// process query
 			this.facade.process(query);
@@ -194,7 +194,7 @@ public class ExternalStateVariableComponentTestCase {
 			// check flexible schedule
 			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
 			// create flexible schedule query
-			CheckIntervalScheduleQuery query = qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+			CheckIntervalScheduleQuery query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);
@@ -203,8 +203,8 @@ public class ExternalStateVariableComponentTestCase {
 			System.out.println(d1);
 			
 			
-			IntervalConstraintFactory iFactory = IntervalConstraintFactory.getInstance();
-			FixDurationIntervalConstraint constraint = iFactory.create(TemporalConstraintType.FIX_DURATION);
+			TemporalConstraintFactory iFactory = TemporalConstraintFactory.getInstance();
+			FixIntervalDurationConstraint constraint = iFactory.create(TemporalConstraintType.FIX_INTERVAL_DURATION);
 			constraint.setReference(d1.getToken().getInterval());
 			constraint.setDuration(7);
 			// propagate observation
@@ -214,7 +214,7 @@ public class ExternalStateVariableComponentTestCase {
 			this.facade.checkConsistency();
 			
 			// check schedule
-			query = qFactory.create(TemporalQueryType.CHECK_SCHEDULE);
+			query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);

@@ -25,7 +25,7 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 				ResolverType.OBSERVATION_CHECKING_RESOLVER,
 				
 				// behavior checking resolver
-				ResolverType.BEHAVIOR_CHECKING_RESOLVER
+				ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
 		},
 		
 		view = ComponentViewType.GANTT

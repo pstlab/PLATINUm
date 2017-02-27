@@ -7,22 +7,22 @@ import java.lang.reflect.Constructor;
  * @author anacleto
  *
  */
-public class IntervalConstraintFactory 
+public class TemporalConstraintFactory 
 {
-	private static IntervalConstraintFactory INSTANCE = null;
+	private static TemporalConstraintFactory INSTANCE = null;
 	
 	/*
 	 * Create Allen's language factory
 	 */
-	private IntervalConstraintFactory() {}
+	private TemporalConstraintFactory() {}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public static IntervalConstraintFactory getInstance() {
+	public static TemporalConstraintFactory getInstance() {
 		if (INSTANCE == null) {
-			INSTANCE = new IntervalConstraintFactory();
+			INSTANCE = new TemporalConstraintFactory();
 		}
 		return INSTANCE;
 	}

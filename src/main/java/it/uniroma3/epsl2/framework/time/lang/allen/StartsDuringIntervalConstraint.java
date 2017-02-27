@@ -1,6 +1,7 @@
 package it.uniroma3.epsl2.framework.time.lang.allen;
 
-import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.TemporalInterval;
+import it.uniroma3.epsl2.framework.time.lang.BinaryTemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 
 /**
@@ -8,7 +9,7 @@ import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
  * @author alessandroumbrico
  *
  */
-public class StartsDuringIntervalConstraint extends TemporalConstraint 
+public class StartsDuringIntervalConstraint extends BinaryTemporalConstraint<TemporalInterval, TemporalInterval> 
 {
 	private long[] firstTimeBounds;
 	private long[] secondTimeBounds;
@@ -20,15 +21,6 @@ public class StartsDuringIntervalConstraint extends TemporalConstraint
 		super(TemporalConstraintType.STARTS_DURING);
 		this.firstTimeBounds = new long[2];
 		this.secondTimeBounds = new long[2];
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void setBounds(long[][] bounds) {
-		this.firstTimeBounds = bounds[0];
-		this.secondTimeBounds = bounds[1];
 	}
 	
 	/**

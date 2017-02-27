@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.domain.component.resource;
+package it.uniroma3.epsl2.framework.domain.component.resource.costant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,6 @@ import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
@@ -21,7 +20,8 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 		
 		resolvers = {
 				
-			ResolverType.RESOURCE_SCHEDULING_RESOLVER
+			// resource scheduler
+			ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER
 		},
 		
 		/*
@@ -46,9 +46,13 @@ public class UnaryResource extends Resource
 	 * 
 	 */
 	@PostConstruct
-	protected void init() {
+	protected void init() 
+	{
+		super.init();
+		// create value - no parameters are needed for unary resources 
+		ResourceRequirement requirement = new ResourceRequirement(new long[] {1, this.tdb.getHorizon()}, this);
 		// add value
-		this.values.add(new ResourceRequirement(new long[] {1,this.tdb.getHorizon()}, this));
+		this.values.add(requirement);
 	}
 
 	/**
@@ -67,9 +71,9 @@ public class UnaryResource extends Resource
 			ResourceEvent cons = new ConsumptionResourceEvent(
 					dec, 
 					dec.getToken().getInterval().getStartTime(), 
-					1l);
+					1);
 			
-			// add events
+			// add event
 			list.add(cons);
 		}
 		
@@ -93,9 +97,9 @@ public class UnaryResource extends Resource
 			ResourceEvent prod = new ProductionResourceEvent(
 					dec, 
 					dec.getToken().getInterval().getEndTime(), 
-					1l);
+					1);
 			
-			// add events
+			// add event
 			list.add(prod);
 		}
 		
@@ -103,15 +107,4 @@ public class UnaryResource extends Resource
 		return list;
 	}
 
-	/**
-	 * 
-	 * @throws PseudoControllabilityCheckException
-	 */
-	@Override
-	public void checkPseudoControllability() 
-			throws PseudoControllabilityCheckException 
-	{
-		// nothing to do
-	}
-	
 }

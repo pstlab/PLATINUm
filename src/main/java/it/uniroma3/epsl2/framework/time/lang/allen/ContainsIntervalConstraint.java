@@ -1,6 +1,7 @@
 package it.uniroma3.epsl2.framework.time.lang.allen;
 
-import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.TemporalInterval;
+import it.uniroma3.epsl2.framework.time.lang.BinaryTemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 
 /**
@@ -8,7 +9,7 @@ import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
  * @author anacleto
  *
  */
-public final class ContainsIntervalConstraint extends TemporalConstraint 
+public final class ContainsIntervalConstraint extends BinaryTemporalConstraint<TemporalInterval, TemporalInterval>
 {
 	private long[] startTimeBounds;
 	private long[] endTimeBounds;
@@ -24,18 +25,9 @@ public final class ContainsIntervalConstraint extends TemporalConstraint
 	
 	/**
 	 * 
-	 */
-	@Override
-	public void setBounds(long[][] bounds) {
-		this.startTimeBounds = bounds[0];
-		this.endTimeBounds = bounds[1];
-	}
-	
-	/**
-	 * 
 	 * @param startTimeBounds
 	 */
-	public void setStartTimeBounds(long[] bounds) {
+	public void setFirstBound(long[] bounds) {
 		this.startTimeBounds[0] = bounds[0];
 		this.startTimeBounds[1] = bounds[1];
 	}
@@ -44,7 +36,7 @@ public final class ContainsIntervalConstraint extends TemporalConstraint
 	 * 
 	 * @return
 	 */
-	public long[] getStartTimeBounds() {
+	public long[] getFirstBound() {
 		return startTimeBounds;
 	}
 	
@@ -52,7 +44,7 @@ public final class ContainsIntervalConstraint extends TemporalConstraint
 	 * 
 	 * @param endTimeBounds
 	 */
-	public void setEndTimeBounds(long[] bounds) {
+	public void setSecondBound(long[] bounds) {
 		this.endTimeBounds[0] = bounds[0];
 		this.endTimeBounds[1] = bounds[1];
 	}
@@ -61,7 +53,7 @@ public final class ContainsIntervalConstraint extends TemporalConstraint
 	 * 
 	 * @return
 	 */
-	public long[] getEndTimeBounds() {
+	public long[] getSecondBound() {
 		return endTimeBounds;
 	}
 }

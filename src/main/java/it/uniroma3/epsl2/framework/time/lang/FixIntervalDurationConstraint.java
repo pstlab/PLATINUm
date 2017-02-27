@@ -7,55 +7,15 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public class FixDurationIntervalConstraint extends TemporalConstraint {
-
+public class FixIntervalDurationConstraint extends UnaryTemporalConstraint<TemporalInterval>
+{
 	private long duration;
 	
 	/**
 	 * 
 	 */
-	protected FixDurationIntervalConstraint() {
-		super(TemporalConstraintType.FIX_DURATION);
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void setReference(TemporalInterval reference) {
-		this.reference = reference;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void setTarget(TemporalInterval target) {
-		this.reference = target;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public TemporalInterval getReference() {
-		return this.reference;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public TemporalInterval getTarget() {
-		return this.reference;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void setBounds(long[][] bounds) {
-		this.duration = bounds[0][0];
+	protected FixIntervalDurationConstraint() {
+		super(TemporalConstraintType.FIX_INTERVAL_DURATION);
 	}
 	
 	/**

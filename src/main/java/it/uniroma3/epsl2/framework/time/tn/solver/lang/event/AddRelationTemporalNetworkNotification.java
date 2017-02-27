@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 
 /**
  * 
@@ -13,21 +13,21 @@ import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
  */
 public class AddRelationTemporalNetworkNotification extends TemporalNetworkNotification 
 {
-	private List<TimePointConstraint> rels;
+	private List<TimePointDistanceConstraint> rels;
 	
 	/**
 	 * 
 	 */
 	protected AddRelationTemporalNetworkNotification() {
 		super(TemporalNetworkNotificationTypes.ADD_REL);
-		this.rels = new LinkedList<TimePointConstraint>();
+		this.rels = new LinkedList<TimePointDistanceConstraint>();
 	}
 	
 	/**
 	 * 
 	 * @param rel
 	 */
-	public void addRelation(TimePointConstraint rel) {
+	public void addRelation(TimePointDistanceConstraint rel) {
 		this.rels.add(rel);
 	}
 	
@@ -35,7 +35,7 @@ public class AddRelationTemporalNetworkNotification extends TemporalNetworkNotif
 	 * 
 	 * @return
 	 */
-	public List<TimePointConstraint> getRels() {
+	public List<TimePointDistanceConstraint> getRels() {
 		return new ArrayList<>(this.rels);
 	}
 }

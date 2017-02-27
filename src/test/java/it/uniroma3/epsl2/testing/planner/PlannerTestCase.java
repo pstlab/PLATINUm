@@ -17,15 +17,14 @@ import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.ExternalStateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.PrimitiveStateVariable;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.problem.Problem;
 import it.uniroma3.epsl2.framework.lang.problem.ProblemFact;
 import it.uniroma3.epsl2.framework.lang.problem.ProblemFluent;
 import it.uniroma3.epsl2.framework.lang.problem.ProblemGoal;
 import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
-import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 
 /**
  * 
@@ -209,7 +208,7 @@ public class PlannerTestCase
 			// add values
 			ComponentValue idle = robot.addValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
 			ComponentValue goTo = robot.addValue("GoTo", new long[] {1, this.pdb.getHorizon()}, true);
-			goTo.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, locations);
+			goTo.addParameterPlaceHolder(locations);
 			// add transitions
 			robot.addValueTransition(idle, goTo);
 			robot.addValueTransition(goTo, idle);
@@ -220,7 +219,7 @@ public class PlannerTestCase
 			PrimitiveStateVariable robotBase = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMTIVE);
 			// add values
 			ComponentValue at = robotBase.addValue("At", new long[] {5, this.pdb.getHorizon()}, true);
-			at.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, locations);
+			at.addParameterPlaceHolder(locations);
 			ComponentValue moving = robotBase.addValue("Moving", new long[] {11, 16}, false);
 			// add transitions
 			robotBase.addValueTransition(at, moving);
@@ -443,8 +442,8 @@ public class PlannerTestCase
 			// add values
 			ComponentValue idle = rover.addValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
 			ComponentValue take = rover.addValue("TakePicture", new long[] {1, this.pdb.getHorizon()}, true);
-			take.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, targets);
-			take.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, locations);
+			take.addParameterPlaceHolder(targets);
+			take.addParameterPlaceHolder(locations);
 			// add transitions
 			rover.addValueTransition(idle, take);
 			rover.addValueTransition(take, idle);
@@ -455,7 +454,7 @@ public class PlannerTestCase
 			PrimitiveStateVariable base = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMTIVE);
 			// add values
 			ComponentValue at = base.addValue("At", new long[] {1, this.pdb.getHorizon()}, true);
-			at.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, locations);
+			at.addParameterPlaceHolder(locations);
 			ComponentValue moving = base.addValue("Moving", new long[] {10, 15}, false);
 			// add transitions
 			base.addValueTransition(at, moving);
@@ -467,7 +466,7 @@ public class PlannerTestCase
 			PrimitiveStateVariable camera = this.pdb.createDomainComponent("RobotCamera", DomainComponentType.SV_PRIMTIVE);
 			// add values
 			ComponentValue takingPicture = camera.addValue("TakingPicture", new long[] {7, 11}, false);
-			takingPicture.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, targets);
+			takingPicture.addParameterPlaceHolder(targets);
 			// add component
 			this.pdb.addDomainComponent(camera);
 			

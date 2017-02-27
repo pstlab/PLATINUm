@@ -17,16 +17,16 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 	private Decision activity;
 	private TimePoint event;
 	private ResourceEventType type;
-	private long amount;
+	private int amount;
 	
 	/**
 	 * 
-	 * @param activity
-	 * @param event
 	 * @param type
+	 * @param event
 	 * @param amount
+	 * @param activity
 	 */
-	protected ResourceEvent(Decision activity, TimePoint event, ResourceEventType type, long amount) 
+	protected ResourceEvent(ResourceEventType type, TimePoint event, int amount, Decision activity) 
 	{
 		// set id
 		this.id = ID_COUNTER.getAndIncrement();
@@ -64,7 +64,7 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 	 * 
 	 * @return
 	 */
-	public long getAmount() {
+	public int getAmount() {
 		return amount;
 	}
 	

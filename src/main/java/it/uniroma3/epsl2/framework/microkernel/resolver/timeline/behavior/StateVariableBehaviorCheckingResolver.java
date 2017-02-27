@@ -25,7 +25,7 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class BehaviorCheckingResolver <T extends StateVariable> extends Resolver implements Comparator<Decision> 
+public class StateVariableBehaviorCheckingResolver <T extends StateVariable> extends Resolver implements Comparator<Decision> 
 {
 	@ComponentReference
 	protected T component;
@@ -33,8 +33,8 @@ public class BehaviorCheckingResolver <T extends StateVariable> extends Resolver
 	/**
 	 * 
 	 */
-	protected BehaviorCheckingResolver() {
-		super(ResolverType.BEHAVIOR_CHECKING_RESOLVER);
+	protected StateVariableBehaviorCheckingResolver() {
+		super(ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER);
 	}
 	
 	/**

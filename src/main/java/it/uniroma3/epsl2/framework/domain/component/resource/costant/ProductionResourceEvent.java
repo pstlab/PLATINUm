@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.domain.component.resource;
+package it.uniroma3.epsl2.framework.domain.component.resource.costant;
 
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
@@ -18,7 +18,7 @@ public class ProductionResourceEvent extends ResourceEvent
 	 * @param event
 	 * @param amount
 	 */
-	protected ProductionResourceEvent(Decision activity, TimePoint event, long amount) {
-		super(activity, event, ResourceEventType.PRODUCTION, amount);
+	protected ProductionResourceEvent(Decision activity, TimePoint event, int amount) {
+		super(ResourceEventType.PRODUCTION, event, amount, activity);
 	}
 }

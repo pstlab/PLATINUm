@@ -178,7 +178,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		for (Decision dec : this.decisions.get(PlanElementStatus.ACTIVE)) 
 		{
 			// create query
-			CheckIntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.CHECK_SCHEDULE);
+			CheckIntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 			// set related temporal interval
 			query.setInterval(dec.getToken().getInterval());
 			// process 
@@ -269,7 +269,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 */
 	public Decision createDecision(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
 		// initialize decision
-		Decision dec = new Decision(value,labels,  start, end, duration);
+		Decision dec = new Decision(value, labels, start, end, duration);
 		// add decision the the agenda
 		this.decisions.get(PlanElementStatus.PENDING).add(dec);
 		// get initialized decision
@@ -533,7 +533,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			switch (rel.getCategory()) 
 			{
 				// temporal constraint
-				case TEMPORAL_CONSTRAINT : {
+				case TEMPORAL_CONSTRAINT : 
+				{
 					// get temporal relation
 					TemporalRelation trel = (TemporalRelation) rel;
 					// create interval constraint
@@ -580,7 +581,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	{
 		// list of committed relations
 		List<Relation> committed = new ArrayList<>();
-		try {
+		try 
+		{
 			// propagate relations
 			for (Relation rel : relations) {
 				// propagate relation

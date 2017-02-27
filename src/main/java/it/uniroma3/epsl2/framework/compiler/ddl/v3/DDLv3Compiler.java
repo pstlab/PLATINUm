@@ -58,7 +58,6 @@ import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.NumericParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
-import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 
 /**
@@ -1448,25 +1447,9 @@ public class DDLv3Compiler extends DomainCompiler
 						for (String pname : ddlValueType.getParameterTypes()) {
 							// get domain
 							ParameterDomain dom = pdb.getParameterDomainByName(pname);
-							// check domain parameter type
-							switch (dom.getType()) 
-							{
-								// enumeration parameter domain
-								case ENUMERATION_DOMAIN_PARAMETER_TYPE : {
-									// create enumeration place holder
-									val.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, dom);
-								}
-								break;
-							
-								// numeric parameter domain
-								case NUMERIC_DOMAIN_PARAMETER_TYPE : {
-									// create numeric parameter place-holder
-									val.addParameterPlaceHolder(ParameterType.NUMERIC_PARAMETER_TYPE, dom);
-								}
-								break;
-							}
+							// add parameter place holder
+							val.addParameterPlaceHolder(dom);
 						}
-						
 						
 						// add to local index
 						vindex.put(vname, val);

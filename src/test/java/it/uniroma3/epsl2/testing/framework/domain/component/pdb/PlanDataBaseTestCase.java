@@ -31,7 +31,6 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.scheduling.Peak
 import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
-import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 
 /**
  * 
@@ -87,7 +86,7 @@ public class PlanDataBaseTestCase {
 			ComponentValue v12 = c1.addValue("Val12", true);
 			ComponentValue v13 = c1.addValue("Val13", false);
 			// add parameter to value description
-			v13.addParameterPlaceHolder(ParameterType.NUMERIC_PARAMETER_TYPE, xAxis);
+			v13.addParameterPlaceHolder(xAxis);
 			
 			// add transitions
 			c1.addValueTransition(v11, v12);
@@ -102,7 +101,7 @@ public class PlanDataBaseTestCase {
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
 			// add values
 			ComponentValue v21 = c2.addValue("Val21", true);
-			v21.addParameterPlaceHolder(ParameterType.NUMERIC_PARAMETER_TYPE, xAxis);
+			v21.addParameterPlaceHolder(xAxis);
 			
 			ComponentValue v22 = c2.addValue("Val22", false);
 			ComponentValue v23 = c2.addValue("Val23", true);
@@ -908,7 +907,7 @@ public class PlanDataBaseTestCase {
 			PrimitiveStateVariable robotAction = this.pdb.createDomainComponent("RobotAction", DomainComponentType.SV_PRIMTIVE);
 			ComponentValue idle = robotAction.addValue("Idle", true);
 			ComponentValue go = robotAction.addValue("Go", true);
-			go.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, positions);
+			go.addParameterPlaceHolder(positions);
 			
 			// add transitions
 			robotAction.addValueTransition(idle, go);
@@ -919,10 +918,10 @@ public class PlanDataBaseTestCase {
 			// create state variables
 			PrimitiveStateVariable robotPosition = this.pdb.createDomainComponent("RobotPosition", DomainComponentType.SV_PRIMTIVE);
 			ComponentValue at = robotPosition.addValue("At", true);
-			at.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, positions);
+			at.addParameterPlaceHolder(positions);
 			
 			ComponentValue moving = robotPosition.addValue("Moving", new long[] {5, 11}, false);
-			moving.addParameterPlaceHolder(ParameterType.ENUMERATION_PARAMETER_TYPE, positions);
+			moving.addParameterPlaceHolder(positions);
 			// add transitions
 			robotPosition.addValueTransition(at, moving);
 			robotPosition.addValueTransition(moving, at);

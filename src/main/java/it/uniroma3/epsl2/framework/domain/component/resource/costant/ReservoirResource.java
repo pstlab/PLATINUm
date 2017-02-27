@@ -1,11 +1,10 @@
-package it.uniroma3.epsl2.framework.domain.component.resource;
+package it.uniroma3.epsl2.framework.domain.component.resource.costant;
 
 import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
@@ -33,16 +32,6 @@ public class ReservoirResource extends Resource
 	 */
 	protected ReservoirResource(String name) {
 		super(name, DomainComponentType.RESOURCE_RESERVOIR);
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public void checkPseudoControllability() 
-			throws PseudoControllabilityCheckException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

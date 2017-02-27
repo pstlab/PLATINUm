@@ -15,7 +15,6 @@ public class ParameterPlaceHolder
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private ComponentValue value;
-	private ParameterType type;
 	private ParameterDomain domain;
 	
 	/**
@@ -24,10 +23,9 @@ public class ParameterPlaceHolder
 	 * @param type
 	 * @param domain
 	 */
-	protected ParameterPlaceHolder(ComponentValue value, ParameterType type, ParameterDomain domain) {
+	protected ParameterPlaceHolder(ComponentValue value, ParameterDomain domain) {
 		this.id = ID_COUNTER.getAndIncrement();
 		this.value = value;
-		this.type = type;
 		this.domain = domain;
 	}
 	
@@ -52,7 +50,7 @@ public class ParameterPlaceHolder
 	 * @return
 	 */
 	public ParameterType getType() {
-		return type;
+		return this.domain.getParameterType();
 	
 	}
 	

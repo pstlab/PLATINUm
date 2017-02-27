@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
-import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 
 /**
  * 
@@ -106,11 +105,10 @@ public abstract class ComponentValue
 	
 	/**
 	 * 
-	 * @param type
-	 * @param domainType
+	 * @param domain
 	 */
-	public void addParameterPlaceHolder(ParameterType type, ParameterDomain domain) {
-		this.placeholders.add(new ParameterPlaceHolder(this, type, domain));
+	public void addParameterPlaceHolder(ParameterDomain domain) {
+		this.placeholders.add(new ParameterPlaceHolder(this, domain));
 	}
 	
 	/**

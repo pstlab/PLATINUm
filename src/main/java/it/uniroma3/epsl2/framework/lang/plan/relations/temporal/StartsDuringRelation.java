@@ -2,7 +2,7 @@ package it.uniroma3.epsl2.framework.lang.plan.relations.temporal;
 
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.RelationType;
-import it.uniroma3.epsl2.framework.time.lang.IntervalConstraintFactory;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.allen.StartsDuringIntervalConstraint;
 
@@ -16,7 +16,7 @@ public class StartsDuringRelation extends TemporalRelation
 	private long[] firstBound;
 	private long[] secondBound;
 	
-	protected IntervalConstraintFactory factory;
+	protected TemporalConstraintFactory factory;
 	
 	/**
 	 * 
@@ -28,7 +28,7 @@ public class StartsDuringRelation extends TemporalRelation
 		this.firstBound = new long[] {0, Long.MAX_VALUE - 1};
 		this.secondBound = new long[] {0, Long.MAX_VALUE - 1};
 		// get factory
-		this.factory = IntervalConstraintFactory.getInstance();
+		this.factory = TemporalConstraintFactory.getInstance();
 	}
 	
 	/**

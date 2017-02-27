@@ -11,15 +11,20 @@ import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
-import it.uniroma3.epsl2.framework.domain.component.resource.UnaryResource;
+import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
+import it.uniroma3.epsl2.framework.domain.component.resource.costant.UnaryResource;
+import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -41,7 +46,7 @@ public class UnaryResourceComponentTestCase
 	@Before
 	public void init() {
 		System.out.println("**********************************************************************************");
-		System.out.println("************************* State Variable Component Test Case ***********************");
+		System.out.println("************************* Unary Resource Component Test Case ***********************");
 		System.out.println("**********************************************************************************");
 		
 		// create logger
@@ -89,6 +94,10 @@ public class UnaryResourceComponentTestCase
 		List<ComponentValue> values = this.resource.getValues();
 		Assert.assertNotNull(values);
 		Assert.assertTrue(values.size() == 1);
+		// check min capacity
+		Assert.assertTrue(this.resource.getMinCapacity() == 0);
+		// check max capacity
+		Assert.assertTrue(this.resource.getMaxCapacity() == 1);
 		// add transitions
 		System.out.println(this.resource);
 	}
@@ -127,8 +136,8 @@ public class UnaryResourceComponentTestCase
 	 * 
 	 */
 	@Test
-	public void addDecisionsAndFindPeaksTest() {
-		System.out.println("[Test]: addDecisionsAndFindPeaksTest() --------------------");
+	public void addDecisionsAndFindPeaksTest1() {
+		System.out.println("[Test]: addDecisionsAndFindPeaksTest1() --------------------");
 		System.out.println();
 		
 		// get value
@@ -176,14 +185,157 @@ public class UnaryResourceComponentTestCase
 			List<Flaw> flaws = this.resource.detectFlaws();
 			Assert.assertNotNull(flaws);
 			Assert.assertTrue(flaws.size() == 2);
+			System.out.println("#" + flaws.size() + " peaks have been found");
 			for (Flaw flaw : flaws) {
 				// print flaw
-				System.out.println(flaw);
+				System.out.println("\n"+ flaw + "\n");
 			}
 		}
 		catch (DecisionPropagationException | UnsolvableFlawFoundException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void addDecisionsAndFindPeaksTest2() {
+		System.out.println("[Test]: addDecisionsAndFindPeaksTest2() --------------------");
+		System.out.println();
+		
+		// get value
+		ComponentValue requirement = this.resource.getValues().get(0);
+		Assert.assertNotNull(requirement);
+		Assert.assertTrue(requirement.getLabel().equals("REQUIREMENT"));
+		
+		try
+		{
+			// create decision
+			Decision a1 = this.resource.createDecision(
+					requirement, 
+					new String[] {});
+			// add decision
+			this.resource.addDecision(a1);
+			System.out.println("a1: " + a1);
+			
+			// create decision
+			Decision a2 = this.resource.createDecision(
+					requirement, 
+					new String[] {});
+			// add decision
+			this.resource.addDecision(a2);
+			System.out.println("a2: " + a2);
+			
+			// create decision
+			Decision a3 = this.resource.createDecision(
+					requirement, 
+					new String[] {});
+			// add decision
+			this.resource.addDecision(a3);
+			System.out.println("a3: " + a3);
+			
+			// check peak
+			List<Flaw> flaws = this.resource.detectFlaws();
+			Assert.assertNotNull(flaws);
+			Assert.assertTrue(flaws.size() == 1);
+			System.out.println("#" + flaws.size() + " peaks have been found");
+			for (Flaw flaw : flaws) {
+				// print flaw
+				System.out.println("\n" + flaw + "\n");
+			}
+		}
+		catch (DecisionPropagationException | UnsolvableFlawFoundException ex) {
+			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void detectAndSolvePeakTest() {
+		System.out.println("[Test]: detectAndSolvePeakTest() --------------------");
+		System.out.println();
+		
+		// get value
+		ComponentValue requirement = this.resource.getValues().get(0);
+		Assert.assertNotNull(requirement);
+		Assert.assertTrue(requirement.getLabel().equals("REQUIREMENT"));
+		
+		try
+		{
+			// create decision
+			Decision a1 = this.resource.createDecision(
+					requirement, 
+					new String[] {});
+			// add decision
+			this.resource.addDecision(a1);
+			System.out.println("a1: " + a1);
+			
+			// create decision
+			Decision a2 = this.resource.createDecision(
+					requirement, 
+					new String[] {});
+			// add decision
+			this.resource.addDecision(a2);
+			System.out.println("a2: " + a2);
+			
+			// check peak
+			List<Flaw> flaws = this.resource.detectFlaws();
+			Assert.assertNotNull(flaws);
+			Assert.assertTrue(flaws.size() == 1);
+			System.out.println("#" + flaws.size() + " peaks have been found");
+			
+			
+			// get flaw solution
+			Flaw flaw = flaws.get(0);
+			List<FlawSolution> solutions = flaw.getSolutions();
+			Assert.assertNotNull(solutions);
+			Assert.assertTrue(solutions.size() > 1);
+			System.out.println("#" + solutions.size() + " solutions available");
+			// select the first available solution
+			FlawSolution sol = solutions.get(1);
+			System.out.println("Selected solution\n- " + sol);
+			
+			try
+			{
+				// commit solution
+				this.resource.commit(sol);
+				// check consistency
+				this.facade.checkConsistency();
+				
+				CheckIntervalScheduleQuery query = this.facade.
+						createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+				
+				query.setInterval(a1.getToken().getInterval());
+				this.facade.process(query);
+				query.setInterval(a2.getToken().getInterval());
+				this.facade.process(query);
+				
+				// print resulting schedule
+				System.out.println("a1: " + a1);
+				System.out.println("a2: " + a2);
+				
+				// check current flaws
+				flaws = this.resource.detectFlaws();
+				System.out.println("#" + flaws.size() + " peaks have been found");
+				Assert.assertTrue(flaws.isEmpty());
+				Assert.assertTrue(flaws.size() == 0); 
+			}
+			catch (FlawSolutionApplicationException | ConsistencyCheckException ex) {
+				System.err.println(ex.getMessage());
+				Assert.assertTrue(false);
+			}
+			
+			
+		}
+		catch (DecisionPropagationException | UnsolvableFlawFoundException ex) {
+			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
+		}
+		
 	}
 }

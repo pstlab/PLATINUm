@@ -18,11 +18,17 @@ import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationException;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
-import it.uniroma3.epsl2.framework.time.lang.FixDurationIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.FixEndTimeIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.FixStartTimeIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.FixIntervalDurationConstraint;
+import it.uniroma3.epsl2.framework.time.lang.FixTimePointConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
+import it.uniroma3.epsl2.framework.time.lang.allen.AfterIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.allen.ContainsIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.allen.DuringIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.allen.EndsDuringIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.allen.EqualsIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.allen.StartsDuringIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
@@ -187,7 +193,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	{
 		// check resulting schedule of the interval
 		CheckIntervalScheduleQuery query = this.facade.
-				 createTemporalQuery(TemporalQueryType.CHECK_SCHEDULE);
+				 createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
 		query.setInterval(node.getInterval());
 		this.facade.process(query);
 	}
@@ -327,8 +333,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		}
 			
 		// fix start time first
-		FixDurationIntervalConstraint fix = this.facade.
-				createIntervalConstraint(TemporalConstraintType.FIX_DURATION);
+		FixIntervalDurationConstraint fix = this.facade.
+				createTemporalConstraint(TemporalConstraintType.FIX_INTERVAL_DURATION);
 		fix.setReference(node.getInterval());
 		fix.setDuration(duration);
 		// propagate constraint
@@ -348,17 +354,20 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	/**
 	 * 
 	 * @param node
-	 * @param start
+	 * @param time
 	 * @throws TemporalConstraintPropagationException
 	 */
-	public final void scheduleStartTime(ExecutionNode node, long start) 
+	public final void scheduleStartTime(ExecutionNode node, long time) 
 			throws TemporalConstraintPropagationException 
 	{
 		// create constraint
-		FixStartTimeIntervalConstraint fix = this.facade.
-				createIntervalConstraint(TemporalConstraintType.FIX_START_TIME);
-		fix.setReference(node.getInterval());
-		fix.setStart(start);
+		FixTimePointConstraint fix = this.facade.
+				createTemporalConstraint(TemporalConstraintType.FIX_TIME_POINT);
+		// set time point
+		fix.setReference(node.getInterval().getStartTime());
+		fix.setTime(time);
+//		fix.setReference(node.getInterval());
+//		fix.setStart(start);
 		// propagate constraint
 		this.facade.propagate(fix);
 		try {
@@ -368,7 +377,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		catch (ConsistencyCheckException ex) {
 			// retract propagated constraint and throw exception
 			this.facade.retract(fix);
-			throw new TemporalConstraintPropagationException("Error while propagating start constraint for node\n- start= " + start + "\n- node= " + node + "\n");
+			throw new TemporalConstraintPropagationException("Error while propagating start constraint for node\n- "
+					+ "time= " + time+ "\n- node= " + node + "\n");
 		}
 	}
 
@@ -378,14 +388,16 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param end
 	 * @throws TemporalConstraintPropagationException
 	 */
-	public void scheduleEndTime(ExecutionNode node, long end) 
+	public void scheduleEndTime(ExecutionNode node, long time) 
 			throws TemporalConstraintPropagationException 
 	{
 		// create constraint
-		FixEndTimeIntervalConstraint fix = this.facade.
-				createIntervalConstraint(TemporalConstraintType.FIX_END_TIME);
-		fix.setReference(node.getInterval());
-		fix.setEnd(end);
+		FixTimePointConstraint fix = this.facade.
+				createTemporalConstraint(TemporalConstraintType.FIX_TIME_POINT);
+		// set time point
+		fix.setReference(node.getInterval().getEndTime());
+		// set time
+		fix.setTime(time);
 		// propagate constraint
 		this.facade.propagate(fix);
 		try {
@@ -395,7 +407,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		catch (ConsistencyCheckException ex) {
 			// retract propagated constraint and throw exception
 			this.facade.retract(fix);
-			throw new TemporalConstraintPropagationException("Error while propagating end constraint for node\n- end= " + end + "\n- node= " + node + "\n");
+			throw new TemporalConstraintPropagationException("Error while propagating end constraint for node\n"
+					+ "- time= " + time+ "\n- node= " + node + "\n");
 		}
 	}
 	
@@ -410,12 +423,13 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception
 	{
 		// create and propagate temporal constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.BEFORE);
+		BeforeIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.BEFORE);
 		// set data
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
-		constraint.setBounds(bounds);
+		constraint.setLowerBound(bounds[0][0]);
+		constraint.setUpperBound(bounds[0][1]);
 		// propagate constraint
 		this.facade.propagate(constraint);
 		
@@ -435,12 +449,11 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception
 	{
 		// create and propagate temporal constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.MEETS);
+		MeetsIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.MEETS);
 		// set data
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
-		constraint.setBounds(bounds);
 		// propagate constraint
 		this.facade.propagate(constraint);
 		
@@ -460,12 +473,14 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.AFTER);
+		AfterIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.AFTER);
+		// set references
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
-		constraint.setBounds(bounds);
+		constraint.setLowerBound(bounds[0][0]);
+		constraint.setUpperBound(bounds[0][1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add execution dependencies
@@ -484,12 +499,14 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.DURING);
+		DuringIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.DURING);
+		// set references
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
-		constraint.setBounds(bounds);
+		constraint.setFirstBound(bounds[0]);
+		constraint.setSecondBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add execution dependencies
@@ -511,12 +528,14 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.CONTAINS);
+		ContainsIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.CONTAINS);
+		// set references
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
-		constraint.setBounds(bounds);
+		constraint.setFirstBound(bounds[0]);
+		constraint.setSecondBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add execution dependencies
@@ -538,12 +557,11 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.EQUALS);
+		EqualsIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.EQUALS);
+		// set references
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
-		// set bounds
-		constraint.setBounds(bounds);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add execution dependencies
@@ -565,12 +583,14 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.STARTS_DURING);
+		StartsDuringIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.STARTS_DURING);
+		// set references
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
-		constraint.setBounds(bounds);
+		constraint.setFirstBound(bounds[0]);
+		constraint.setSecondBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add start dependency
@@ -589,12 +609,14 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			throws Exception 
 	{
 		// create constraint
-		TemporalConstraint constraint = this.facade.
-				createIntervalConstraint(TemporalConstraintType.ENDS_DURING);
+		EndsDuringIntervalConstraint constraint = this.facade.
+				createTemporalConstraint(TemporalConstraintType.ENDS_DURING);
+		// set references
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
-		constraint.setBounds(bounds);
+		constraint.setFirstBound(bounds[0]);
+		constraint.setSecondBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add end dependency

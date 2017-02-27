@@ -1,20 +1,17 @@
 package it.uniroma3.epsl2.framework.time.lang;
 
 import it.uniroma3.epsl2.framework.domain.component.Constraint;
-import it.uniroma3.epsl2.framework.time.TemporalInterval;
-import it.uniroma3.epsl2.framework.time.tn.TimePointConstraint;
+import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class TemporalConstraint extends Constraint {
-
+public abstract class TemporalConstraint extends Constraint 
+{
 	protected TemporalConstraintType type;
-	protected TemporalInterval reference;
-	protected TemporalInterval target;
-	protected TimePointConstraint[] propagated;
+	protected TimePointDistanceConstraint[] propagated;
 	
 	/**
 	 * 
@@ -26,27 +23,7 @@ public abstract class TemporalConstraint extends Constraint {
 		this.propagated = null;
 	}
 	
-	/**
-	 * 
-	 * @param reference
-	 */
-	public void setReference(TemporalInterval reference) {
-		this.reference = reference;
-	}
 	
-	/**
-	 * 
-	 * @param target
-	 */
-	public void setTarget(TemporalInterval target) {
-		this.target = target;
-	}
-	
-	/**
-	 * 
-	 * @param bounds
-	 */
-	public abstract void setBounds(long[][] bounds);
 	
 	/**
 	 * 
@@ -58,25 +35,9 @@ public abstract class TemporalConstraint extends Constraint {
 	
 	/**
 	 * 
-	 * @return
-	 */
-	public TemporalInterval getReference() {
-		return reference;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public TemporalInterval getTarget() {
-		return target;
-	}
-	
-	/**
-	 * 
 	 * @param constraints
 	 */
-	public void setPropagatedConstraints(TimePointConstraint[] constraints) {
+	public void setPropagatedConstraints(TimePointDistanceConstraint[] constraints) {
 		this.propagated = constraints;
 	}
 	
@@ -84,7 +45,7 @@ public abstract class TemporalConstraint extends Constraint {
 	 * 
 	 * @return
 	 */
-	public TimePointConstraint[] getPropagatedConstraints() {
+	public TimePointDistanceConstraint[] getPropagatedConstraints() {
 		return propagated;
 	}
 	
@@ -100,6 +61,6 @@ public abstract class TemporalConstraint extends Constraint {
 	 */
 	@Override
 	public String toString() {
-		return "[" + this.type.getLabel() + ", reference= " + this.reference + ", target= " + this.target + "]";
+		return "[TemporalConstraint type= " + this.type.getLabel() + "]";
 	}
 }
