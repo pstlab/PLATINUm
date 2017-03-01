@@ -112,7 +112,7 @@ public class DDLNumericParameterConstraint extends DDLParameterConstraint {
     }
 
     public boolean isBinary() {
-        return rightVariables.size() == 1 && absoluteValue == 0;
+        return rightVariables.size() == 1 && absoluteValue == 0 && rightVariables.get(0) != null;
     }
 
     /**

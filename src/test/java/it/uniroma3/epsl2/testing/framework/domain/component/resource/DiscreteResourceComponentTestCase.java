@@ -69,6 +69,7 @@ public class DiscreteResourceComponentTestCase
 		this.resource.setMinCapacity(0);
 		this.resource.setMaxCapacity(10);
 		this.resource.setInitialCapacity(10);
+		this.resource.addRequirementValue("REQUIREMENT");
 	}
 	
 	/**

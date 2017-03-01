@@ -129,6 +129,14 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * 
 	 * @return
 	 */
+	public DomainComponentType getType() {
+		return this.type;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isExternal() {
 		return false;
 	}

@@ -13,6 +13,9 @@ import org.antlr.runtime.tree.Tree;
 
 import it.istc.pst.ddl.v3.parser.DDLComponent;
 import it.istc.pst.ddl.v3.parser.DDLComponentDecision;
+import it.istc.pst.ddl.v3.parser.DDLComponentType;
+import it.istc.pst.ddl.v3.parser.DDLConsumableResourceComponentDecision;
+import it.istc.pst.ddl.v3.parser.DDLConsumableResourceComponentType;
 import it.istc.pst.ddl.v3.parser.DDLDomain;
 import it.istc.pst.ddl.v3.parser.DDLEnumerationParameterConstraint;
 import it.istc.pst.ddl.v3.parser.DDLEnumerationParameterConstraint.DDLEnumerationParameterConstraintType;
@@ -24,6 +27,8 @@ import it.istc.pst.ddl.v3.parser.DDLNumericParameterType;
 import it.istc.pst.ddl.v3.parser.DDLParameterConstraint;
 import it.istc.pst.ddl.v3.parser.DDLParameterType;
 import it.istc.pst.ddl.v3.parser.DDLProblem;
+import it.istc.pst.ddl.v3.parser.DDLRenewableResourceComponentDecision;
+import it.istc.pst.ddl.v3.parser.DDLRenewableResourceComponentType;
 import it.istc.pst.ddl.v3.parser.DDLSimpleGroundStateVariableComponentDecision;
 import it.istc.pst.ddl.v3.parser.DDLSingletonStateVariableComponentDecision;
 import it.istc.pst.ddl.v3.parser.DDLSingletonStateVariableComponentDecisionType;
@@ -45,6 +50,8 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
+import it.uniroma3.epsl2.framework.domain.component.resource.costant.DiscreteResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.costant.ReservoirResource;
 import it.uniroma3.epsl2.framework.domain.component.sv.StateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.Transition;
 import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
@@ -100,10 +107,10 @@ public class DDLv3Compiler extends DomainCompiler
      */
 	@Override
     public PlanDataBase compileDomain() 
-    		throws SynchronizationCycleException {
-    	
-		try {
-    		
+    		throws SynchronizationCycleException 
+	{
+		try 
+		{
     		// parse domain
     		this.doParseDDLFile(this.ddlFilePath);
     	} 
@@ -119,10 +126,10 @@ public class DDLv3Compiler extends DomainCompiler
      * 
      */
 	@Override
-    public Problem compileProblem(PlanDataBase pdb) {
-		
-		try {
-	    
+    public Problem compileProblem(PlanDataBase pdb) 
+	{
+		try 
+		{
     		// parse problem
 	    	this.doParseDDLFile(this.pdlFilePath);
     	} 
@@ -151,17 +158,24 @@ public class DDLv3Compiler extends DomainCompiler
 		ddl3Parser parser = new ddl3Parser(tokens);
 		final ddl3Parser.ddl_return parserResult = parser.ddl();
 		Tree ddl = (Tree) parserResult.getTree();
-		if (ddl.getChild(0) instanceof DDLDomain) {
+		if (ddl.getChild(0) instanceof DDLDomain) 
+		{
 		    this.ddl_domain = (DDLDomain) ddl.getChild(0);
 		    this.ddl_domain.parse();
 		    
-		    if (ddl.getChild(1) instanceof DDLProblem) {
+		    // parse problem specification
+		    if (ddl.getChild(1) instanceof DDLProblem) 
+		    {
 				this.ddl_problem = (DDLProblem) ddl.getChild(1);
 				this.ddl_problem.parse();
-		    } else {
+		    } 
+		    else {
+		    	// error while parsing
 		    	this.ddl_problem = null;
 		    }
-		} else {
+		} 
+		else 
+		{
 		    this.ddl_problem = (DDLProblem) ddl.getChild(0);
 		    this.ddl_problem.parse();
 		    this.ddl_domain = null;
@@ -640,14 +654,27 @@ public class DDLv3Compiler extends DomainCompiler
 		// get domain components
 		for (DDLComponent ddlComponent : this.ddl_domain.getComponents().values()) 
 		{
-			// check component type
-			if (this.ddl_domain.getComponentTypes().
-					get(ddlComponent.getComponentType()) 
-					instanceof 
-					DDLSingletonStateVariableComponentType) 
+			// get component type
+			DDLComponentType ctype = this.ddl_domain.getComponentTypes().get(ddlComponent.getComponentType());
+			// check state variable type
+			if (ctype instanceof DDLSingletonStateVariableComponentType) 
 			{
 				// add state variable
 				this.addStateVariable(pdb, ddlComponent);
+			}
+			
+			// check discrete resource type
+			if (ctype instanceof DDLRenewableResourceComponentType)
+			{
+				// add discrete resource
+				this.addDiscreteResource(pdb, ddlComponent);
+			}
+			
+			// check reservoir resource type
+			if (ctype instanceof DDLConsumableResourceComponentType)
+			{
+				// add reservoir resource
+				this.addReservoirResource(pdb, ddlComponent);
 			}
 		}
 	}
@@ -1014,18 +1041,22 @@ public class DDLv3Compiler extends DomainCompiler
 		{
 			// get target component
 			DomainComponent targetComponent = pdb.getComponentByName(ddlTarget.getComponent());
-			// get target value
-			ComponentValue targetValue = targetComponent.getValueByName(ddlTarget.getComponentDecision().getName());
-
-			// check target decision
-			DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
-			// check type
-			switch (ddlTargetDecision.getDecisionType()) 
+			// check target component type
+			switch (targetComponent.getType())
 			{
-				// singleton target decision
-				case SINGLETON : {
+				// state variable component
+				case SV_EXTERNAL : 
+				case SV_FUNCTIONAL : 
+				case SV_PRIMTIVE : 
+				{
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
 					// cast decision
 					DDLSingletonStateVariableComponentDecision ddlSingletonTarget = (DDLSingletonStateVariableComponentDecision) ddlTargetDecision;
+					
+					// get target value
+					ComponentValue targetValue = targetComponent.getValueByName(ddlTarget.getComponentDecision().getName());
+					
 					// add token variable
 					TokenVariable target = rule.addTokenVariable(targetValue, 
 							ddlSingletonTarget.getParameterNames().toArray(new String[ddlSingletonTarget.getParameterNames().size()]));
@@ -1062,23 +1093,27 @@ public class DDLv3Compiler extends DomainCompiler
 				}
 				break;
 				
-				// ground target decision
-				case GROUND : {
+				// discrete resource component
+				case RESOURCE_DISCRETE : 
+				case RESOURCE_UNARY : 
+				{
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// cast decision
+					DDLRenewableResourceComponentDecision ddlRequirementTarget = (DDLRenewableResourceComponentDecision) ddlTargetDecision;
+					// get target component
+					DiscreteResource resource = (DiscreteResource) targetComponent;
+					 
+					// get target value 
+					ComponentValue targetValue = resource.getRequirementValue();
 					// add token variable
-					TokenVariable target = rule.addTokenVariable(targetValue, new String[] {});
+					TokenVariable target = rule.addTokenVariable(targetValue,
+							new String[] {ddlRequirementTarget.getRequirementName()});
 					
-					// check solving knowledge
-					if (!ddlTarget.getParameters().isEmpty()) {
-						// check mandatory expansion
-						if (ddlTarget.getParameters().contains("!")) {
-							// set knowledge
-							target.setMandatoryExpansion();
-						}
-						
-						// check mandatory unification
-						if (ddlTarget.getParameters().contains("?")) {
-							target.setMandatoryUnification();
-						}
+					// add entry to index
+					for (String label : target.getParameterLabels()) {
+						// add entry
+						label2variable.put(label, target);
 					}
 					
 					// get synchronization decision's ID
@@ -1093,15 +1128,88 @@ public class DDLv3Compiler extends DomainCompiler
 				}
 				break;
 				
+				// reservoir resource component
+				case RESOURCE_RESERVOIR : 
+				{
+					// get target component
+					ReservoirResource resource = (ReservoirResource) targetComponent;
+
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// cast decision
+					DDLConsumableResourceComponentDecision ddlConsumableTarget = (DDLConsumableResourceComponentDecision) ddlTargetDecision;
+					// check decision type
+					switch (ddlConsumableTarget.getComponentDecisionType())
+					{
+						// resource consumption
+						case Consumption : 
+						{
+							// get target value 
+							ComponentValue consumption = resource.getConsumptionValue();
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(consumption,
+									new String[] {ddlConsumableTarget.getParameterName()});
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						// resource production 
+						case Production : 
+						{
+							// get target value 
+							ComponentValue production = resource.getProductionValue();
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(production,
+									new String[] {ddlConsumableTarget.getParameterName()});
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+					}
+					
+					
+				}
+				break;
+				
 				default : {
-					// FIXME <<<<----- IMPLEMENTARE
-					throw new RuntimeException("Unknownw target decision found into synchronization " + ddlTarget);
+					// unknown target component type
+					throw new RuntimeException("Unknownw target component found into synchronization constraint" + ddlTarget);
 				}
 			}
 		}
 		
 		// set temporal relations
-		for (DDLTemporalRelation ddlRel : ddlSynch.getTemporalRelations()) {
+		for (DDLTemporalRelation ddlRel : ddlSynch.getTemporalRelations()) 
+		{
 			// check relation type
 			DDLTemporalRelationType ddlRelType = ddlRel.getRelationType();
 			
@@ -1240,9 +1348,11 @@ public class DDLv3Compiler extends DomainCompiler
 						int value = ddlNumericConstraint.getRightCoefficients().get(0);
 						// get relation type
 						RelationType relType;
-						switch (ddlNumericConstraint.getNumericConstraintType()) {
+						switch (ddlNumericConstraint.getNumericConstraintType()) 
+						{
 							// equal constraint
-							case EQ : {
+							case EQ : 
+							{
 								// set relation type
 								relType = RelationType.BIND_PARAMETER;
 							}
@@ -1394,6 +1504,60 @@ public class DDLv3Compiler extends DomainCompiler
 			throw new RuntimeException("Unknown temporal relation " + ddlRelType);
 		}
 	}
+	
+	/**
+	 * 
+	 * @param pdb
+	 * @param ddlComponent
+	 */
+	private void addDiscreteResource(PlanDataBase pdb, DDLComponent ddlComponent)
+	{
+		// get component name
+		String name = ddlComponent.getName();
+		// cast component
+		DDLRenewableResourceComponentType renewable = (DDLRenewableResourceComponentType) this.ddl_domain.getComponentTypes().get(ddlComponent.getComponentType());
+		// get resource capacity
+		int capacity = renewable.getCapacity();
+		
+		// create discrete resource
+		DiscreteResource resource = pdb.createDomainComponent(name, DomainComponentType.RESOURCE_DISCRETE);
+		// set capacity bounds
+		resource.setMinCapacity(0);
+		resource.setMaxCapacity(capacity);
+		resource.setInitialCapacity(capacity);
+		// add requirement value
+		resource.addRequirementValue("REQUIREMENT");
+		// add component 
+		pdb.addDomainComponent(resource);
+	}
+	
+	/**
+	 * 
+	 * @param pdb
+	 * @param ddlComponent
+	 */
+	private void addReservoirResource(PlanDataBase pdb, DDLComponent ddlComponent)
+	{
+		// get component name 
+		String name = ddlComponent.getName();
+		// cast component
+		DDLConsumableResourceComponentType consumable = (DDLConsumableResourceComponentType) this.ddl_domain.getComponentTypes().get(ddlComponent.getComponentType());
+		// get minimum capacity
+		int min = consumable.getMinCapacity();
+		int max = consumable.getCapacity();
+		// create reservoir resource
+		ReservoirResource resource = pdb.createDomainComponent(name, DomainComponentType.RESOURCE_RESERVOIR);
+		// set capacity bounds
+		resource.setMinCapacity(min);
+		resource.setMaxCapacity(max);
+		resource.setInitialCapacity(max);
+		// add consumption value
+		resource.addConsumptionValue("CONSUMPTION");
+		// add production value
+		resource.addProductionValue("PRODUCTION");
+		// add component
+		pdb.addDomainComponent(resource);
+	}
 
 	/**
 	 * 
@@ -1465,17 +1629,21 @@ public class DDLv3Compiler extends DomainCompiler
 				Map<String, Map<String, DDLNumericParameterConstraintType>> labels2constraint = new HashMap<>();
 				// get transition parameter constraints
 				List<DDLParameterConstraint> paramConstraints = ddlTransition.getConstraints();
-				for (DDLParameterConstraint cons : paramConstraints) {
+				for (DDLParameterConstraint cons : paramConstraints) 
+				{
 					// check constraint type
-					switch (cons.getConstraintType()) {
+					switch (cons.getConstraintType()) 
+					{
 						// enumeration parameter constraint
-						case ENUMERATION : {
+						case ENUMERATION : 
+						{
 							// not binary constraint
 							throw new RuntimeException("Only binary parameter constraints can be specifeid for variables' transitions");
 						}
 						
 						// numeric parameter constraint
-						case NUMERIC : {
+						case NUMERIC : 
+						{
 							// get numeric parameter constraint
 							DDLNumericParameterConstraint numConstraint = (DDLNumericParameterConstraint) cons;
 							// check if binary

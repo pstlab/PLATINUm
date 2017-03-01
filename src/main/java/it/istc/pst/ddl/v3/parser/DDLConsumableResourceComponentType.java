@@ -8,8 +8,8 @@ import org.antlr.runtime.Token;
  */
 public class DDLConsumableResourceComponentType extends DDLComponentType {
 
-    private long capacity;
-    private long minCapacity;
+    private int capacity;
+    private int minCapacity;
 
     public DDLConsumableResourceComponentType(Token payload) {
 	super(payload);
@@ -17,16 +17,16 @@ public class DDLConsumableResourceComponentType extends DDLComponentType {
 
     @Override
     void parse() {
-	name = getText();
-	minCapacity = Long.parseLong(getChild(0).getText());
-	capacity = Long.parseLong(getChild(1).getText());
+    	name = getText();
+    	minCapacity = Integer.parseInt(getChild(0).getText());
+    	capacity = Integer.parseInt(getChild(1).getText());
     }
 
-    public long getCapacity() {
+    public int getCapacity() {
 	return capacity;
     }
 
-    public long getMinCapacity() {
+    public int getMinCapacity() {
 	return minCapacity;
     }
 }

@@ -9,15 +9,16 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
  * @author anacleto
  *
  */
-public class ResourceProduction extends ComponentValue 
+public class ResourceConsumptionValue extends ComponentValue 
 {
+	
 	/**
 	 * 
 	 * @param value
 	 * @param duration
 	 * @param component
 	 */
-	protected ResourceProduction(long[] duration, DomainComponent component) {
-		super("PRODUCTION", ComponentValueType.RESOURCE_PRODUCTION, duration, true, component);
+	protected ResourceConsumptionValue(String value, long[] duration, DomainComponent component) {
+		super(value, ComponentValueType.RESOURCE_CONSUMPTION, duration, true, component);
 	}
 }

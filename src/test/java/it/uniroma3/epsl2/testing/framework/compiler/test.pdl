@@ -1,0 +1,6 @@
+PROBLEM Problem (DOMAIN Test) {
+
+	f0 <fact> BaseController.position.At(?initialLocation) AT [0, 0] [1, +INF] [1, +INF];
+
+	?initialLocation = location1;
+}

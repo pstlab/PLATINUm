@@ -3,7 +3,6 @@ package it.uniroma3.epsl2.framework.domain.component.resource.costant;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
@@ -34,7 +33,7 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 public class DiscreteResource extends Resource 
 {
 	// the only value allowed
-	private ResourceRequirement requirement;
+	private ResourceRequirementValue requirement;
 	
 	/**
 	 * 
@@ -50,49 +49,28 @@ public class DiscreteResource extends Resource
 	
 	/**
 	 * 
+	 * @param value
 	 */
-	@Override
-	public List<ComponentValue> getValues() {
-		// check data
-		if (this.requirement == null) 
-		{
-			// setup domain
-			NumericParameterDomain dom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
-			dom.setLowerBound(0);
-			dom.setUpperBound(this.max);
-			// create value
-			this.requirement = new ResourceRequirement(new long[] {1, this.tdb.getHorizon()}, this);
-			// set domain
-			this.requirement.addParameterPlaceHolder(dom);
-			// add value
-			this.values.add(this.requirement);
-		}
-		
-		// get all values
-		return super.getValues();
+	public void addRequirementValue(String value)
+	{
+		// setup domain
+		NumericParameterDomain dom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
+		dom.setLowerBound(0);
+		dom.setUpperBound(this.max);
+		// create value
+		this.requirement = new ResourceRequirementValue(value, new long[] {1, this.tdb.getHorizon()}, this);
+		// set domain
+		this.requirement.addParameterPlaceHolder(dom);
+		// add value
+		this.values.add(this.requirement);
 	}
 	
 	/**
 	 * 
+	 * @return
 	 */
-	@Override
-	public ComponentValue getValueByName(String name) {
-		// check data
-		if (this.requirement == null) {
-			// setup domain
-			NumericParameterDomain dom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
-			dom.setLowerBound(0);
-			dom.setUpperBound(this.max);
-			// create value
-			this.requirement = new ResourceRequirement(new long[] {1, this.tdb.getHorizon()}, this);
-			// set domain
-			this.requirement.addParameterPlaceHolder(dom);
-			// add value
-			this.values.add(this.requirement);
-		}
-		
-		// get value
-		return super.getValueByName(name);
+	public ResourceRequirementValue getRequirementValue() {
+		return this.requirement;
 	}
 
 	/**

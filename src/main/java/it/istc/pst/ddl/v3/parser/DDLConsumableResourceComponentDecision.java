@@ -27,27 +27,44 @@ public class DDLConsumableResourceComponentDecision extends DDLComponentDecision
 
     @Override
     void parse() {
-	if (getChild(0).getText().equals("PRODUCTION")) {
-	    type = DDLConsumableResourceComponentDecisionType.Production;
-	}
-	if (getChild(0).getText().equals("CONSUMPTION")) {
-	    type = DDLConsumableResourceComponentDecisionType.Consumption;
-	}
-	parName = getChild(1).getText();
-	if (getChild(1).getChildCount() > 0) {
-	    value = Long.parseLong(getChild(1).getChild(0).getText());
-	}
-	for (int i = 2; i < getChildCount(); i++) {
-	    parameters.add(getChild(i).getText());
-	}
+    	if (getText().equals("PRODUCTION")) {
+    		type = DDLConsumableResourceComponentDecisionType.Production;
+    	}
+    	if (getText().equals("CONSUMPTION")) {
+    		type = DDLConsumableResourceComponentDecisionType.Consumption;
+    	}
+    	
+    	// set par name
+    	parName = getChild(0).getText();
+    	if (getChild(0).getChildCount() > 0) {
+    		value = Long.parseLong(getChild(0).getChild(0).getText());
+    	}
+    	
+    	for (int i = 2; i < getChildCount(); i++) {
+    	    parameters.add(getChild(i).getText());
+    	}
+    	
+//		if (getChild(0).getText().equals("PRODUCTION")) {
+//		    type = DDLConsumableResourceComponentDecisionType.Production;
+//		}
+//		if (getChild(0).getText().equals("CONSUMPTION")) {
+//		    type = DDLConsumableResourceComponentDecisionType.Consumption;
+//		}
+//		parName = getChild(1).getText();
+//		if (getChild(1).getChildCount() > 0) {
+//		    value = Long.parseLong(getChild(1).getChild(0).getText());
+//		}
+//		for (int i = 2; i < getChildCount(); i++) {
+//		    parameters.add(getChild(i).getText());
+//		}
     }
 
     public DDLConsumableResourceComponentDecisionType getComponentDecisionType() {
-	return type;
+    	return type;
     }
 
     public String getParameterName() {
-	return parName;
+    	return parName;
     }
 
     public Object getValue() {

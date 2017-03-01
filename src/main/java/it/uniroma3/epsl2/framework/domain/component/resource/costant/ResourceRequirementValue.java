@@ -9,7 +9,7 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
  * @author anacleto
  *
  */
-public class ResourceRequirement extends ComponentValue 
+public class ResourceRequirementValue extends ComponentValue 
 {
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class ResourceRequirement extends ComponentValue
 	 * @param duration
 	 * @param component
 	 */
-	protected ResourceRequirement(long[] duration, DomainComponent component) {
-		super("REQUIREMENT", ComponentValueType.RESOURCE_REQUIREMENT, duration, true, component);
+	protected ResourceRequirementValue(String value, long[] duration, DomainComponent component) {
+		super(value, ComponentValueType.RESOURCE_REQUIREMENT, duration, true, component);
 	}
 }

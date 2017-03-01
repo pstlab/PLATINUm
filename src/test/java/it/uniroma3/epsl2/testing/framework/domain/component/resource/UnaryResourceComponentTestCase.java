@@ -65,6 +65,8 @@ public class UnaryResourceComponentTestCase
 		// create unary resource
 		DomainComponentFactory df = new DomainComponentFactory();
 		this.resource = df.create("Unary1", DomainComponentType.RESOURCE_UNARY);
+		// add requirement value
+		this.resource.addRequirementValue("REQUIREMENT");
 	}
 	
 	/**
