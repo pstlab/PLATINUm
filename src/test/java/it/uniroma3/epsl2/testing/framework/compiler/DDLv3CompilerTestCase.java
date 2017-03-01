@@ -10,8 +10,10 @@ import it.uniroma3.epsl2.framework.domain.PlanDataBaseBuilder;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ParameterPlaceHolder;
+import it.uniroma3.epsl2.framework.domain.component.pdb.ParameterSynchronizationConstraint;
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationConstraint;
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
+import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
 import it.uniroma3.epsl2.framework.domain.component.resource.costant.DiscreteResource;
 import it.uniroma3.epsl2.framework.domain.component.resource.costant.ReservoirResource;
 import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceConsumptionValue;
@@ -19,6 +21,7 @@ import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourcePro
 import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceRequirementValue;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.parameter.lang.NumericParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
 
@@ -122,8 +125,33 @@ public class DDLv3CompilerTestCase
 			SynchronizationRule rule = rules.get(0);
 			Assert.assertTrue(rule.getTokenVariables().size() == 2);
 			// check constraints 
-			List<SynchronizationConstraint> conss = rule.getConstraints();
-			Assert.assertTrue(conss.size() == 3);
+			List<SynchronizationConstraint> constraints = rule.getConstraints();
+			Assert.assertTrue(constraints.size() == 3);
+			// check constraints
+			for (SynchronizationConstraint constraint : constraints) 
+			{
+				// check type 
+				if (constraint.getType().equals(RelationType.BIND_PARAMETER))
+				{
+					// cast constraint
+					ParameterSynchronizationConstraint psc = (ParameterSynchronizationConstraint) constraint;
+					// check token variable
+					TokenVariable reference = psc.getTarget();
+					if (reference.getValue().equals(rr.getConsumptionValue()))
+					{
+						// check expected parameter constraint
+						Assert.assertTrue(psc.getReferenceLabel().equals("?cons"));
+						Assert.assertTrue(psc.getTargetLabel().equals("3"));
+					}
+					
+					if (reference.getValue().equals(resource.getRequirementValue()))
+					{
+						// check expected parameter constraint
+						Assert.assertTrue(psc.getReferenceLabel().equals("?amount"));
+						Assert.assertTrue(psc.getTargetLabel().equals("7"));
+					}
+				}
+			}
 		}
 		catch (ProblemInitializationException | SynchronizationCycleException ex) {
 			System.err.println(ex.getMessage());
