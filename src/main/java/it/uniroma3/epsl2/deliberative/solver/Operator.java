@@ -101,6 +101,6 @@ public class Operator implements Comparable<Operator>
 	 */
 	@Override
 	public String toString() {
-		return "[Operator id= " + this.id + " solution= " + this.solution + "]";
+		return "[Operator id= " + this.id + " cost= " + this.getCost() + " solution= " + this.solution + "]";
 	}
 }

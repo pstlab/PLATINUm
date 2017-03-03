@@ -18,6 +18,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	private int id;
 	private List<Operator> operators;	// node generation trace
 	private Operator generator;			// node generator operator
+	private double makespan;			// node makespan
+	private double distance;			// h - distance from solution node 
 	
 	/**
 	 * Create a root node
@@ -30,6 +32,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		// initialize operators
 		this.operators = new ArrayList<>();
 		this.generator = null;
+		this.makespan = Double.MAX_VALUE - 1;
+		this.distance = Double.MAX_VALUE - 1;
 	}
 	
 	/**
@@ -45,6 +49,9 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		// add generator
 		this.operators.add(op);
 		this.generator = op;
+		// inherit the makespan and the distance (i.e., the h-value) values from the parent node
+		this.makespan = parent.getMakespan();
+		this.distance = parent.getDistance();
 	}
 	
 	/**
@@ -61,6 +68,40 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	public int getDepth() {
 		return this.operators.size();
+	}
+	
+	/**
+	 * 
+	 * @param makespan
+	 */
+	public void setMakespan(double makespan) {
+		this.makespan = makespan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMakespan() {
+		return makespan;
+	}
+	
+	/**
+	 * Set the estimated distance from the solution node
+	 * 
+	 * @param distance
+	 */
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+	
+	/**
+	 * Get the estimated distance from the solution node
+	 * 
+	 * @return
+	 */
+	public double getDistance() {
+		return distance;
 	}
 	
 	/**
@@ -214,7 +255,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	@Override
 	public String toString() {
-//		return "[SearchSpaceNode id= " + this.id +" depth= " + this.getDepth() + " cost= " + this.getCost() +" " + (this.isRootNode() ? "" : "operator= " + this.getGenerator()) + "]";
-		return "[SearchSpaceNode id= " + this.id + "]";
+		return "[SearchSpaceNode id= " + this.id + " depth= " + this.getDepth() + " g(n)= " + this.getCost() + " h(n)= " + this.getDistance() + " mk(n)= " + this.getMakespan() + "]";
 	}
 }
