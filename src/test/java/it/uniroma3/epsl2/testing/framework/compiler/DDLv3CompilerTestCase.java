@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseBuilder;
+import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ParameterPlaceHolder;
@@ -51,10 +52,31 @@ public class DDLv3CompilerTestCase
 			List<DomainComponent> components = pdb.getComponents();
 			Assert.assertNotNull(components);
 			Assert.assertTrue(!components.isEmpty());
-			Assert.assertTrue(components.size() == 3);
+			Assert.assertTrue(components.size() == 5);
+			
+			// check functional variable
+			DomainComponent component = pdb.getComponentByName("RoverController");
+			Assert.assertNotNull(component);
+			Assert.assertTrue(component.getType().equals(DomainComponentType.SV_FUNCTIONAL));
+			
+			// check external variable
+			component = pdb.getComponentByName("Window");
+			Assert.assertNotNull(component);
+			Assert.assertTrue(component.getType().equals(DomainComponentType.SV_EXTERNAL));
+			// check external values
+			for (ComponentValue val : component.getValues()) {
+				// check controllability type
+				Assert.assertFalse(val.isControllable());
+			}
+			
+			// check primitive variable 
+			component = pdb.getComponentByName("BaseController");
+			Assert.assertNotNull(component);
+			Assert.assertTrue(component.getType().equals(DomainComponentType.SV_PRIMTIVE));
+			
 			
 			// check reservoir resource
-			DomainComponent component = pdb.getComponentByName("Battery");
+			component = pdb.getComponentByName("Battery");
 			Assert.assertNotNull(component);
 			Assert.assertTrue(component.getType().equals(DomainComponentType.RESOURCE_RESERVOIR));
 			
@@ -119,7 +141,7 @@ public class DDLv3CompilerTestCase
 			// check synchronization
 			List<SynchronizationRule> rules = pdb.getSynchronizationRules();
 			Assert.assertNotNull(rules);
-			Assert.assertTrue(rules.size() == 1);
+			Assert.assertTrue(rules.size() == 3);
 			
 			// get a rule
 			SynchronizationRule rule = rules.get(0);

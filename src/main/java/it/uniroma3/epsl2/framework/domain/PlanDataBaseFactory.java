@@ -17,8 +17,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
  * @author anacleto
  *
  */
-public class PlanDataBaseFactory extends ApplicationFrameworkFactory {
-
+public class PlanDataBaseFactory extends ApplicationFrameworkFactory 
+{
 	private static PlanDataBaseFactory INSTANCE = null;
 	private TemporalDataBaseFacadeFactory tdbFactory;
 	private ParameterDataBaseFacadeFactory pdbFactory;

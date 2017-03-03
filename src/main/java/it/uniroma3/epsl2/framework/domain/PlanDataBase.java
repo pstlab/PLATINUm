@@ -1,6 +1,8 @@
 package it.uniroma3.epsl2.framework.domain;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
@@ -205,4 +207,16 @@ public interface PlanDataBase
 	 * @param single
 	 */
 	public void display();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<DomainComponent, Set<DomainComponent>> getDependencyGraph();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree();
 }

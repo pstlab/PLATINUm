@@ -3,9 +3,12 @@ package it.uniroma3.epsl2.framework.domain.component.pdb;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import it.uniroma3.epsl2.deliberative.heuristic.filter.ex.HierarchyCycleException;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseObserver;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
@@ -98,6 +101,10 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	private Map<String, ParameterDomain> parameterDomains;
 	private Map<DomainComponent, Map<ComponentValue, List<SynchronizationRule>>> rules;
 	
+	// additional knowledge
+	private Map<DomainComponent, Set<DomainComponent>> dg;		// dependency graph (as incident graph on components)
+	private Map<ComponentValue, Set<ComponentValue>> tree;		// decomposition tree
+	
 	/**
 	 * 
 	 * @param name
@@ -109,6 +116,9 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		this.parameterDomains = new HashMap<>();
 		this.rules = new HashMap<>();
 		this.componentFactory = new DomainComponentFactory();
+		// initialize additional data
+		this.dg = new HashMap<>();
+		this.tree = new HashMap<>();
 		// initialize problem
 		this.problem = null;
 	}
@@ -120,178 +130,55 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	public void setup(Problem problem) 
 			throws ProblemInitializationException 
 	{
-		// check if a problem has been already set up
-		if (this.problem == null) 
-		{
-			// list of committed decisions
-			List<Decision> committedDecisions = new ArrayList<>();
-			// list of committed relations
-			List<Relation> committedRelations = new ArrayList<>();
-			// index fluent to added decisions
-			Map<ProblemFluent, Decision> fluent2decisions = new HashMap<>();
-			
-			try 
-			{
-				// get facts 
-				for (ProblemFact fact : problem.getFacts()) {
-					// create decision
-					Decision dec = this.createDecision(
-							fact.getValue(), 
-							fact.getParameterLabels(), 
-							fact.getStart(), 
-							fact.getEnd(), 
-							fact.getDuration());
-					
-					// add decision
-					this.addDecision(dec);
-					// add committed decision
-					committedDecisions.add(dec);
-					// add entry
-					fluent2decisions.put(fact, dec);
-				}
+		// setup problem
+		this.doSetupProblem(problem);
+		// analyze synchronization to extract dependencies among components
+		this.computeDependencyGraph();
+		// print computed dependencies
+		String str = "Dependency graph:\n-----------------------------------\n";
+		for (DomainComponent key : this.dg.keySet()) {
+			str += "- " + key.getName() + ":\n";
+			for (DomainComponent target : this.dg.get(key)) {
+				str += "\t- " + target.getName() + "\n";
 			}
-			catch (Exception ex) {
-				// roll-back committed decisions
-				for (Decision dec : committedDecisions) {
-					try {
-						// retract decision
-						this.delete(dec);
-					} catch (Exception exx) {
-						throw new RuntimeException(exx.getMessage());
-					}
-				}
-				// throw exception
-				throw new ProblemInitializationException(ex.getMessage());
-			}
-			
-			// create goals
-			for (ProblemGoal goal : problem.getGoals()) {
-				// create related decisions
-				Decision dec = this.createDecision(
-						goal.getValue(), 
-						goal.getParameterLabels(), 
-						goal.getStart(), 
-						goal.getEnd(), 
-						goal.getDuration());
-				
-				// set mandatory expansion
-				dec.setMandatoryExpansion();
-				// add entry
-				fluent2decisions.put(goal, dec);
-			}
-			
-			try 
-			{
-				// check constraints
-				for (ProblemConstraint constraint : problem.getConstraints()) {
-					// get related decisions
-					Decision reference = fluent2decisions.get(constraint.getReference());
-					Decision target = fluent2decisions.get(constraint.getTarget());
-					
-					// check relation type
-					switch (constraint.getCategory()) 
-					{
-						// temporal constraint
-						case TEMPORAL_CONSTRAINT : {
-							// get temporal constraint
-							TemporalProblemConstraint tc = (TemporalProblemConstraint) constraint;
-							// create relation
-							TemporalRelation rel = this.createRelation(constraint.getType(), reference, target);
-							rel.setBounds(tc.getBounds());
-							
-							// check if relation can be activated
-							if (reference.isActive() && target.isActive()) {
-								// add relation 
-								this.addRelation(rel);
-								committedRelations.add(rel);
-							}
-						}
-						break;
-						
-						// parameter constraint
-						case PARAMETER_CONSTRAINT : 
-						{
-							// get parameter constraint
-							ParameterProblemConstraint pc = (ParameterProblemConstraint) constraint;
-							// create relation
-							ParameterRelation rel = this.createRelation(constraint.getType(), reference, target);
-							// set labels
-							rel.setReferenceParameterLabel(pc.getReferenceParameterLabel());
-							
-							// check relation type
-							switch (rel.getType())
-							{
-								// bind parameter relation
-								case BIND_PARAMETER :
-								{
-									// get relation
-									BindParameterRelation bind = (BindParameterRelation) rel;
-									// set the binding value
-									bind.setValue(pc.getTargetParameterLabel());
-								}
-								break;
-								
-								// equal parameter relation
-								case EQUAL_PARAMETER :  
-								{
-									// get relation
-									EqualParameterRelation eq = (EqualParameterRelation) rel;
-									// set target label
-									eq.setTargetParameterLabel(pc.getTargetParameterLabel());
-								}
-								break; 
-								
-								// not equal parameter relation
-								case NOT_EQUAL_PARAMETER : 
-								{
-									// get relation
-									NotEqualParameterRelation neq = (NotEqualParameterRelation) rel;
-									// set also the target label
-									neq.setTargetParameterLabel(pc.getTargetParameterLabel());
-								}
-								break;
-								
-								default : {
-									throw new RuntimeException("Unknown parameter relation type - " + rel.getType());
-								}
-							}
-							
-							// check if relation can be activated
-							if (reference.isActive() && target.isActive()) {
-								// add relation
-								this.addRelation(rel);
-								committedRelations.add(rel);
-							}
-						}
-						break;
-					}
-				}
-			}
-			catch (RelationPropagationException ex) {
-				// roll-back committed relations
-				for (Relation rel : committedRelations) {
-					// retract 
-					this.free(rel);
-				}
-				
-				// throw exception
-				throw new ProblemInitializationException(ex.getMessage());
-			}
-			
-			try {
-				// check unsolvable flaws
-				this.detectFlaws();
-			} catch (UnsolvableFlawFoundException ex) {
-				// unsolvable flaws found
-				throw new ProblemInitializationException("Inconsistent Problem description\n- Unsolvable flaws have been found\n" + ex.getMessage());
-			}
-			
-			this.problem = problem;
 		}
-		else {
-			// a problem already exists
-			throw new ProblemInitializationException("A problem instace has been already set up... try clear() before setting up a new problem instance");
+		str += "-----------------------------------";
+		// print dependency graph
+		this.logger.info(str);
+		
+		// analyze synchronization to extract the decomposition tree
+		this.computeDecompositionTree();
+		// print decomposition tree
+		str = "Decomposition tree:\n-----------------------------------\n";
+		for (ComponentValue val : this.tree.keySet()) {
+			str += "- " + val.getLabel() + ":\n";
+			for (ComponentValue tar : this.tree.get(val)) {
+				str += "\t- " + tar.getLabel() + "\n";
+			}
 		}
+		str += "-----------------------------------";
+		// print resulting decomposition tree
+		this.logger.info(str);
+	}
+	
+	/**
+	 * Get the dependency graph as incident graph on domain components. Each component 
+	 * is related to other components it depends on. For example, A -> B means that 
+	 * component A is dependent from component B.
+	 */
+	@Override
+	public Map<DomainComponent, Set<DomainComponent>> getDependencyGraph() {
+		// get the dependency graph
+		return new HashMap<DomainComponent, Set<DomainComponent>>(this.dg);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree() {
+		// get the decomposition tree
+		return new HashMap<ComponentValue, Set<ComponentValue>>(this.tree);
 	}
 	
 	/**
@@ -1306,5 +1193,328 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		}
 		str += "]";
 		return str;
+	}
+	
+	/**
+	 * 
+	 * @param problem
+	 * @throws ProblemInitializationException
+	 */
+	private void doSetupProblem(Problem problem) 
+			throws ProblemInitializationException
+	{
+		// check if a problem has been already set up
+		if (this.problem == null) 
+		{
+			// initialize incident graph
+			this.dg = new HashMap<>();
+			// initialize the decomposition tree
+			this.tree = new HashMap<>();
+			
+			// list of committed decisions
+			List<Decision> committedDecisions = new ArrayList<>();
+			// list of committed relations
+			List<Relation> committedRelations = new ArrayList<>();
+			// index fluent to added decisions
+			Map<ProblemFluent, Decision> fluent2decisions = new HashMap<>();
+			
+			try 
+			{
+				// get facts 
+				for (ProblemFact fact : problem.getFacts()) {
+					// create decision
+					Decision dec = this.createDecision(
+							fact.getValue(), 
+							fact.getParameterLabels(), 
+							fact.getStart(), 
+							fact.getEnd(), 
+							fact.getDuration());
+					
+					// add decision
+					this.addDecision(dec);
+					// add committed decision
+					committedDecisions.add(dec);
+					// add entry
+					fluent2decisions.put(fact, dec);
+				}
+			}
+			catch (Exception ex) {
+				// roll-back committed decisions
+				for (Decision dec : committedDecisions) {
+					try {
+						// retract decision
+						this.delete(dec);
+					} catch (Exception exx) {
+						throw new RuntimeException(exx.getMessage());
+					}
+				}
+				// throw exception
+				throw new ProblemInitializationException(ex.getMessage());
+			}
+			
+			// create goals
+			for (ProblemGoal goal : problem.getGoals()) {
+				// create related decisions
+				Decision dec = this.createDecision(
+						goal.getValue(), 
+						goal.getParameterLabels(), 
+						goal.getStart(), 
+						goal.getEnd(), 
+						goal.getDuration());
+				
+				// set mandatory expansion
+				dec.setMandatoryExpansion();
+				// add entry
+				fluent2decisions.put(goal, dec);
+			}
+			
+			try 
+			{
+				// check constraints
+				for (ProblemConstraint constraint : problem.getConstraints()) 
+				{
+					// get related decisions
+					Decision reference = fluent2decisions.get(constraint.getReference());
+					Decision target = fluent2decisions.get(constraint.getTarget());
+					
+					// check relation type
+					switch (constraint.getCategory()) 
+					{
+						// temporal constraint
+						case TEMPORAL_CONSTRAINT : 
+						{
+							// get temporal constraint
+							TemporalProblemConstraint tc = (TemporalProblemConstraint) constraint;
+							// create relation
+							TemporalRelation rel = this.createRelation(constraint.getType(), reference, target);
+							rel.setBounds(tc.getBounds());
+							
+							// check if relation can be activated
+							if (reference.isActive() && target.isActive()) {
+								// add relation 
+								this.addRelation(rel);
+								committedRelations.add(rel);
+							}
+						}
+						break;
+						
+						// parameter constraint
+						case PARAMETER_CONSTRAINT : 
+						{
+							// get parameter constraint
+							ParameterProblemConstraint pc = (ParameterProblemConstraint) constraint;
+							// create relation
+							ParameterRelation rel = this.createRelation(constraint.getType(), reference, target);
+							// set labels
+							rel.setReferenceParameterLabel(pc.getReferenceParameterLabel());
+							
+							// check relation type
+							switch (rel.getType())
+							{
+								// bind parameter relation
+								case BIND_PARAMETER :
+								{
+									// get relation
+									BindParameterRelation bind = (BindParameterRelation) rel;
+									// set the binding value
+									bind.setValue(pc.getTargetParameterLabel());
+								}
+								break;
+								
+								// equal parameter relation
+								case EQUAL_PARAMETER :  
+								{
+									// get relation
+									EqualParameterRelation eq = (EqualParameterRelation) rel;
+									// set target label
+									eq.setTargetParameterLabel(pc.getTargetParameterLabel());
+								}
+								break; 
+								
+								// not equal parameter relation
+								case NOT_EQUAL_PARAMETER : 
+								{
+									// get relation
+									NotEqualParameterRelation neq = (NotEqualParameterRelation) rel;
+									// set also the target label
+									neq.setTargetParameterLabel(pc.getTargetParameterLabel());
+								}
+								break;
+								
+								default : {
+									throw new RuntimeException("Unknown parameter relation type - " + rel.getType());
+								}
+							}
+							
+							// check if relation can be activated
+							if (reference.isActive() && target.isActive()) {
+								// add relation
+								this.addRelation(rel);
+								committedRelations.add(rel);
+							}
+						}
+						break;
+					}
+				}
+			}
+			catch (RelationPropagationException ex) {
+				// roll-back committed relations
+				for (Relation rel : committedRelations) {
+					// retract 
+					this.free(rel);
+				}
+				
+				// throw exception
+				throw new ProblemInitializationException(ex.getMessage());
+			}
+			
+			try {
+				// check unsolvable flaws
+				this.detectFlaws();
+			} 
+			catch (UnsolvableFlawFoundException ex) {
+				// unsolvable flaws found
+				throw new ProblemInitializationException("Inconsistent Problem description\n- Unsolvable flaws have been found\n" + ex.getMessage());
+			}
+			
+			this.problem = problem;
+		}
+		else {
+			// a problem already exists
+			throw new ProblemInitializationException("A problem instace has been already set up... try clear() before setting up a new problem instance");
+		}
+	}
+	
+	/**
+	 * Compute an acyclic Dependency Graph by analyzing the temporal constraints
+	 * of the synchronization rules in the domain specification.
+	 * 
+	 * The dependency graph represents a relaxed view of the temporal dependencies 
+	 * among domain components. Namely, if a cycle exists it is ignored by the
+	 * dependency graph representation. Thus, only the sub-set of acyclic relations
+	 * are considered for inferring dependencies between components.
+	 */
+	private void computeDependencyGraph() 
+	{
+		// initialize the dependency graph
+		for (DomainComponent node : this.getComponents()) {
+			// initialize DG 
+			this.dg.put(node, new HashSet<DomainComponent>());
+		}
+			
+		// check synchronization and build the graph as "incident" matrix
+		for (SynchronizationRule rule : this.getSynchronizationRules()) 
+		{
+			// check constraints
+			for (SynchronizationConstraint ruleConstraint : rule.getConstraints()) 
+			{
+				// consider only temporal constraint to build the dependency graph
+				if (ruleConstraint.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) 
+				{
+					// get related token variables
+					TokenVariable source = ruleConstraint.getSource();
+					TokenVariable target = ruleConstraint.getTarget();
+					// check related values' components
+					DomainComponent master = source.getValue().getComponent();
+					DomainComponent slave = target.getValue().getComponent();
+					// check if "external" constraint
+					if (!master.equals(slave)) 
+					{
+						try 
+						{
+							// update the dependency graph - recall: the dg is an incident graph
+							this.dg.get(slave).add(master);
+							// check hierarchy cycle
+							this.checkHiearchyCycle(slave, master);
+						}
+						catch (HierarchyCycleException ex) {
+							// a cycle into the hierarchy has been found
+							this.logger.warning(ex.getMessage() + "\nIgnore dependency relation between component=" + master + " and component=" + slave);
+							// remove dependency relation
+							this.dg.get(slave).remove(master);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param reference
+	 * @param target
+	 * @throws HierarchyCycleException
+	 */
+	private void checkHiearchyCycle(DomainComponent reference, DomainComponent target) 
+			throws HierarchyCycleException
+	{
+		// check direct cycle
+		if (this.dg.get(reference).contains(target) &&
+				this.dg.get(target).contains(reference)) {
+			// cycle detected
+			throw new HierarchyCycleException("A direct cycle has been detected in the Dependency Graph between component= " + reference + " and component= " + target);
+		}
+		else {
+			// check paths
+			this.findCycle(reference, new HashSet<DomainComponent>());
+		}
+	}
+	
+	/**
+	 * 
+	 * @param comp
+	 * @param visited
+	 * @throws HierarchyCycleException
+	 */
+	private void findCycle(DomainComponent comp, Set<DomainComponent> visited) 
+			throws HierarchyCycleException
+	{
+		// add component to visited
+		visited.add(comp);
+		// check component's successors
+		for (DomainComponent next : this.dg.get(comp)) {
+			// check if visited
+			if (!visited.contains(next)) {
+				// recursive call
+				this.findCycle(next, new HashSet<DomainComponent>(visited));
+			}
+			else {
+				// throw exception
+				throw new HierarchyCycleException("A cycle has been introduced in the Dependency Graph between component= " + comp + " and component= " + next);
+			}
+		}
+	}
+	
+	/**
+	 * Analyze synchronization rule constraints to generate and extract the 
+	 * decomposition tree of the domain
+	 */
+	private void computeDecompositionTree()
+	{
+		// initialize the decomposition tree
+		for (DomainComponent component : this.getComponents()) {
+			// check component values
+			for (ComponentValue value : component.getValues()) {
+				// add entry to the tree
+				this.tree.put(value, new HashSet<>());
+			}
+		}
+		
+		// get synchronization domains
+		for (SynchronizationRule rule : this.getSynchronizationRules()) 
+		{
+			// get trigger value 
+			ComponentValue reference = rule.getTriggerer().getValue();
+			// check synchronization target
+			for (SynchronizationConstraint constraint : rule.getConstraints())
+			{
+				// get target value
+				ComponentValue target = constraint.getTarget().getValue();
+				// avoid reflexive references
+				if (!reference.equals(target)) {
+					this.tree.get(reference).add(target);
+				}
+			}
+		}
 	}
 }

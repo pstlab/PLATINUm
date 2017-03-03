@@ -70,39 +70,49 @@ public final class ObservationBehaviorCheckingResolver <T extends StateVariable>
 	 * @return
 	 */
 	@Override
-	protected List<Flaw> doFindFlaws() {
+	protected List<Flaw> doFindFlaws() 
+	{
 		// list of gaps
 		List<Flaw> issues = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
 		List<Decision> decs = this.component.getActiveDecisions();
-		
-		// sort decisions
-		Collections.sort(decs, this);
-		
-		// look for gaps
-		for (int index = 0; index <= decs.size() - 2; index++) {
-			// get two adjacent tokens
-			Decision left = decs.get(index);
-			Decision right = decs.get(index + 1);
-			
-			// check distance between related temporal intervals
-			CheckIntervalDistanceQuery query = this.tdb.
-					createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
-			
-			// set intervals
-			query.setSource(left.getToken().getInterval());
-			query.setTarget(right.getToken().getInterval());
-			// process query
-			this.tdb.process(query);
-			// get result
-			long lb = query.getDistanceLowerBound();
-			long ub = query.getDistanceUpperBound();
-			// check distance bounds
-			if (lb > 0 || (lb == 0 && ub > 0)) {
-				// we've got a gap
-				IncompleteBehavior issue = new IncompleteBehavior(this.component, left, right);
-				// add the gap
-				issues.add(issue);
+		// check decisions
+		if (decs.isEmpty()) 
+		{
+			// missing external variable observations
+			issues.add(new MissingObservation(this.component));
+		}
+		else
+		{
+			// sort decisions
+			Collections.sort(decs, this);
+			// look for gaps
+			for (int index = 0; index <= decs.size() - 2; index++) 
+			{
+				// get two adjacent tokens
+				Decision left = decs.get(index);
+				Decision right = decs.get(index + 1);
+				
+				// check distance between related temporal intervals
+				CheckIntervalDistanceQuery query = this.tdb.
+						createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+				
+				// set intervals
+				query.setSource(left.getToken().getInterval());
+				query.setTarget(right.getToken().getInterval());
+				// process query
+				this.tdb.process(query);
+				// get result
+				long lb = query.getDistanceLowerBound();
+				long ub = query.getDistanceUpperBound();
+				// check distance bounds
+				if (lb > 0 || (lb == 0 && ub > 0)) 
+				{
+					// we've got a gap
+					IncompleteBehavior issue = new IncompleteBehavior(this.component, left, right);
+					// add the gap
+					issues.add(issue);
+				}
 			}
 		}
 		

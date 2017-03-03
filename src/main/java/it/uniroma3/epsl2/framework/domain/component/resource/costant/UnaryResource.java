@@ -22,9 +22,7 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 			ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER
 		},
 		
-		/*
-		 *  TODO - change visualization type for resources
-		 */
+		// two-dimensional view of component activities
 		view = ComponentViewType.GANTT
 	)
 public class UnaryResource extends DiscreteResource 

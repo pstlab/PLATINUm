@@ -27,7 +27,7 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 		ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER
 	},
 	
-	// TODO - change visualization type
+	// two-dimensional view of component activities 
 	view = ComponentViewType.GANTT
 )
 public class ReservoirResource extends Resource

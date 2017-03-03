@@ -3,8 +3,9 @@ package it.uniroma3.epsl2.framework.microkernel.resolver;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.planning.PlanRefinementResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.discrete.DiscreteResourceSchedulingResolver;
-import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior.StateVariableBehaviorCheckingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.reservoir.ReservoirResourceSchedulingResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior.ObservationBehaviorCheckingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior.StateVariableBehaviorCheckingResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.gap.StateVariableGapResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.scheduling.StateVariableSchedulingResolver;
 
@@ -28,6 +29,12 @@ public enum ResolverType
 	 * and posts precedence constraints to solve peaks. 
 	 */
 	DISCRETE_RESOURCE_SCHEDULING_RESOLVER(DiscreteResourceSchedulingResolver.class.getName(), 
+			FlawType.RESOURCE_PEAK),
+	
+	/**
+	 * 
+	 */
+	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(ReservoirResourceSchedulingResolver.class.getName(),
 			FlawType.RESOURCE_PEAK),
 
 	/**

@@ -21,7 +21,8 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 		resolvers = {
 		
 				// scheduling resolver
-				ResolverType.SV_SCHEDULING_RESOLVER,	// or  ResolverType.RESOURCE_SCHEDULING_RESOLVER
+				ResolverType.SV_SCHEDULING_RESOLVER,
+				//ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER,
 				
 				// time-line gap resolver
 				ResolverType.SV_GAP_RESOLVER,

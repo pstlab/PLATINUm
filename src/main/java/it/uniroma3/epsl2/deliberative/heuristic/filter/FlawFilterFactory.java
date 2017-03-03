@@ -25,10 +25,12 @@ public class FlawFilterFactory extends ApplicationFrameworkFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends FlawFilter> T create(FlawFilterType type) {
+	public <T extends FlawFilter> T create(FlawFilterType type) 
+	{
 		// filter instance reference
 		T filter = null;
-		try {
+		try 
+		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getFilterClassName());
 			// get constructor

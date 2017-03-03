@@ -700,7 +700,8 @@ public class DDLv3Compiler extends DomainCompiler
 					// get synchronization's reference
 					DDLComponentDecision ddlReference = ddlSynch.getReference();
 					// check type
-					switch (ddlReference.getDecisionType()) {
+					switch (ddlReference.getDecisionType()) 
+					{
 						// singleton decision
 						case SINGLETON : {
 							// create synchronization 
@@ -715,6 +716,19 @@ public class DDLv3Compiler extends DomainCompiler
 						}
 						break;
 						
+						// reservoir resource usage
+						case CONSUMABLE_RESOURCE_REQUIREMENT : {
+							// create synchronization
+							this.doCreateSynchronizationFromConsumableResourceValue(ddlSynch, (ReservoirResource) comp, pdb);
+						}
+						break;
+						
+						// discrete resource usage
+						case RENEWABLE_RESOURCE_REQUIREMENT : {
+							 // create synchronization
+							this.doCreateSynchronizationFromRenewableResourceValue(ddlSynch, (DiscreteResource) comp, pdb);
+						}
+						
 						default : {
 							throw new RuntimeException("Synchronization on unknown type of value " + ddlReference.getDecisionType());
 						}
@@ -725,6 +739,859 @@ public class DDLv3Compiler extends DomainCompiler
 		catch (DomainComponentNotFoundException ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
+	}
+
+	/**
+	 * 
+	 * @param ddlSynch
+	 * @param comp
+	 * @param pdb
+	 * @throws DomainComponentNotFoundException
+	 * @throws SynchronizationCycleException
+	 */
+	private void doCreateSynchronizationFromRenewableResourceValue(DDLSynchronization ddlSynch, DiscreteResource comp, PlanDataBase pdb) 
+			throws DomainComponentNotFoundException, SynchronizationCycleException
+	{
+		// setup auxiliary data structures
+		Map<String, TokenVariable> label2variable = new HashMap<>();
+		Map<String, TokenVariable> decId2variable = new HashMap<>();
+		
+		// get reference decision
+		DDLRenewableResourceComponentDecision ddlDec = (DDLRenewableResourceComponentDecision) ddlSynch.getReference();
+		
+		// get trigger value
+		ComponentValue valTrigger = comp.getRequirementValue();
+		
+		// create synchronization
+		SynchronizationRule rule = pdb.createSynchronizationRule(valTrigger, new String[] {ddlDec.getRequirementName()}); 
+		// add entry to parameter label index
+		for (String label : rule.getTriggerer().getParameterLabels()) {
+			label2variable.put(label, rule.getTriggerer());
+		}
+		
+		// check target values
+		for (DDLInstantiatedComponentDecision ddlTarget : ddlSynch.getTargets().values()) 
+		{
+			// get target component
+			DomainComponent targetComponent = pdb.getComponentByName(ddlTarget.getComponent());
+			// check target component type
+			switch (targetComponent.getType())
+			{
+				// state variable component
+				case SV_EXTERNAL : 
+				case SV_FUNCTIONAL : 
+				case SV_PRIMTIVE : 
+				{
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// check decision type
+					switch (ddlTargetDecision.getDecisionType())
+					{
+						// decision with parameters
+						case SINGLETON :
+						{
+							// cast decision
+							DDLSingletonStateVariableComponentDecision ddlSingletonTarget = (DDLSingletonStateVariableComponentDecision) ddlTargetDecision;
+							
+							// get target value
+							ComponentValue targetValue = targetComponent.getValueByName(ddlSingletonTarget.getName());
+							
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(targetValue, 
+									ddlSingletonTarget.getParameterNames().toArray(new String[ddlSingletonTarget.getParameterNames().size()]));
+							
+							// check solving knowledge
+							if (!ddlTarget.getParameters().isEmpty()) {
+								// check mandatory expansion
+								if (ddlTarget.getParameters().contains("!")) {
+									// set knowledge
+									target.setMandatoryExpansion();
+								}
+								
+								// check mandatory unification
+								if (ddlTarget.getParameters().contains("?")) {
+									target.setMandatoryUnification();
+								}
+							}
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						// ground decision
+						case GROUND : 
+						{
+							// cast decision
+							DDLSimpleGroundStateVariableComponentDecision ddlGroundTarget = (DDLSimpleGroundStateVariableComponentDecision) ddlTargetDecision;
+							// get target value
+							ComponentValue targetValue = targetComponent.getValueByName(ddlGroundTarget.getName());
+							
+							// add token variable with no parameter labels
+							TokenVariable target = rule.addTokenVariable(targetValue, new String[] {}); 
+							
+							// check solving knowledge
+							if (!ddlTarget.getParameters().isEmpty()) {
+								// check mandatory expansion
+								if (ddlTarget.getParameters().contains("!")) {
+									// set knowledge
+									target.setMandatoryExpansion();
+								}
+								
+								// check mandatory unification
+								if (ddlTarget.getParameters().contains("?")) {
+									target.setMandatoryUnification();
+								}
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						default : {
+							throw new RuntimeException("Unknown state variable decision type - " + ddlTargetDecision.getDecisionType());
+						}
+					}
+					
+					
+				}
+				break;
+				
+				// discrete resource component
+				case RESOURCE_DISCRETE : 
+				case RESOURCE_UNARY : 
+				{
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// cast decision
+					DDLRenewableResourceComponentDecision ddlRequirementTarget = (DDLRenewableResourceComponentDecision) ddlTargetDecision;
+					// get target component
+					DiscreteResource resource = (DiscreteResource) targetComponent;
+					 
+					// get target value 
+					ComponentValue targetValue = resource.getRequirementValue();
+					// add token variable
+					TokenVariable target = rule.addTokenVariable(targetValue,
+							new String[] {ddlRequirementTarget.getRequirementName()});
+					
+					// add entry to index
+					for (String label : target.getParameterLabels()) {
+						// add entry
+						label2variable.put(label, target);
+					}
+					
+					// get synchronization decision's ID
+					String id = ddlTarget.getId();
+					// check if target id already exists 
+					if (decId2variable.containsKey(id)) {
+						throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+					}
+					
+					// add entry 
+					decId2variable.put(id, target);
+				}
+				break;
+				
+				// reservoir resource component
+				case RESOURCE_RESERVOIR : 
+				{
+					// get target component
+					ReservoirResource resource = (ReservoirResource) targetComponent;
+
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// cast decision
+					DDLConsumableResourceComponentDecision ddlConsumableTarget = (DDLConsumableResourceComponentDecision) ddlTargetDecision;
+					// check decision type
+					switch (ddlConsumableTarget.getComponentDecisionType())
+					{
+						// resource consumption
+						case Consumption : 
+						{
+							// get target value 
+							ComponentValue consumption = resource.getConsumptionValue();
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(consumption,
+									new String[] {ddlConsumableTarget.getParameterName()});
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						// resource production 
+						case Production : 
+						{
+							// get target value 
+							ComponentValue production = resource.getProductionValue();
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(production,
+									new String[] {ddlConsumableTarget.getParameterName()});
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+					}
+					
+					
+				}
+				break;
+				
+				default : {
+					// unknown target component type
+					throw new RuntimeException("Unknownw target component found into synchronization constraint" + ddlTarget);
+				}
+			}
+		}
+		
+		// set temporal relations
+		for (DDLTemporalRelation ddlRel : ddlSynch.getTemporalRelations()) 
+		{
+			// check relation type
+			DDLTemporalRelationType ddlRelType = ddlRel.getRelationType();
+			
+			// get constraint reference
+			TokenVariable cref;
+			// check reference's ID
+			if (ddlRel.getFrom() == null) {
+				cref = rule.getTriggerer();
+			}
+			else {
+				// check if reference exists
+				if (!decId2variable.containsKey(ddlRel.getFrom())) {
+					throw new RuntimeException("Unknown decision ID found <" + ddlRel.getFrom() + "> on synchronization " + rule);
+				}
+				
+				// get reference decision
+				cref = decId2variable.get(ddlRel.getFrom());
+			}
+			
+			// check if target exists
+			if (!decId2variable.containsKey(ddlRel.getTo())) {
+				throw new RuntimeException("Unknown decision ID found <" + ddlRel.getTo() + "> on synchronization " + rule);
+			}
+			
+			// get constraint target
+			TokenVariable ctarget = decId2variable.get(ddlRel.getTo());
+			
+			// create constraint
+			this.addConstraintToSynchronization(rule, cref, ctarget, ddlRelType);
+		}
+		
+		// set parameter relations
+		List<DDLParameterConstraint> ddlParameterConstraints = ddlSynch.getParameterConstraints();
+		for (DDLParameterConstraint ddlpc : ddlParameterConstraints) 
+		{
+			// check constraint type
+			switch (ddlpc.getConstraintType()) 
+			{
+				// enumeration parameter constraint
+				case ENUMERATION : 
+				{
+					// get enumeration constraint
+					DDLEnumerationParameterConstraint ddlEnumerationConstraint = (DDLEnumerationParameterConstraint) ddlpc;
+					// get reference variable
+					String leftTerm = ddlEnumerationConstraint.getLeftTerm();
+					
+					// check if parameter exists
+					if (!label2variable.containsKey(leftTerm)) {
+						throw new RuntimeException("Unknown reference parameter found <" + leftTerm + "> on synchronization " + rule);
+					}
+					
+					// get reference
+					TokenVariable pcReference = label2variable.get(leftTerm);
+					
+					// get value
+					String value = ddlEnumerationConstraint.getValue();
+					// get relation type
+					RelationType relType;
+					switch (ddlEnumerationConstraint.getEnumerationConstraintType()) {
+						// equal constraint
+						case EQ : {
+							// set relation type
+							relType = RelationType.BIND_PARAMETER;
+						}
+						break;
+						
+						default : {
+							// FIXME : <------- MANAGE MISSING CASES
+							throw new RuntimeException("Unknownw enumeration constraint type " + ddlEnumerationConstraint.getEnumerationConstraintType());
+						}
+					}
+					
+					// create binding constraint
+					rule.addBindingConstraint(pcReference, relType, leftTerm, value);
+				}
+				break;
+				
+				// binary parameter constraint
+				case NUMERIC : 
+				{
+					// get numeric constraint
+					DDLNumericParameterConstraint ddlNumericConstraint = (DDLNumericParameterConstraint) ddlpc;
+					// get reference variable
+					String leftTerm = ddlNumericConstraint.getLeftTerm();
+					
+					// check if parameter exists
+					if (!label2variable.containsKey(leftTerm)) {
+						throw new RuntimeException("Unknown reference parameter found <" + leftTerm + "> on synchronization " + rule);
+					}
+					
+					// get reference
+					TokenVariable pcReference = label2variable.get(leftTerm);
+					
+					// check if binary
+					if (ddlNumericConstraint.isBinary()) 
+					{
+						// get relation type
+						RelationType relType;
+						switch (ddlNumericConstraint.getNumericConstraintType()) {
+							// equal constraint
+							case EQ : {
+								// set relation type
+								relType = RelationType.EQUAL_PARAMETER;
+							}
+							break;
+							
+							// not equal constraint
+							case NEQ : {
+								// set relation type
+								relType = RelationType.NOT_EQUAL_PARAMETER;
+							}
+							break;
+							
+							default : {
+								// FIXME : <------- MANAGE MISSING CASES
+								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
+							}
+						}
+						
+						// check targets
+						for (String rightTerm : ddlNumericConstraint.getRightVariables()) {
+							// check if parameter exists
+							if (!label2variable.containsKey(rightTerm)) {
+								throw new RuntimeException("Unknown target found <" + rightTerm + "> on synchronization " + rule);
+							}
+							
+							// get target variable
+							TokenVariable pcTarget = label2variable.get(rightTerm);
+							
+							// create constraint
+							rule.addParameterConstraint(pcReference, pcTarget, relType, leftTerm, rightTerm);
+						}
+					}
+					else {
+						// not binary constraint, set bind constraint
+						int value = ddlNumericConstraint.getRightCoefficients().get(0);
+						// get relation type
+						RelationType relType;
+						switch (ddlNumericConstraint.getNumericConstraintType()) 
+						{
+							// equal constraint
+							case EQ : 
+							{
+								// set relation type
+								relType = RelationType.BIND_PARAMETER;
+							}
+							break;
+							
+							default : {
+								// FIXME : <------- MANAGE MISSING CASES
+								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
+							}
+						}
+						
+						// create constraint
+						rule.addBindingConstraint(pcReference, relType, leftTerm, Integer.toString(value));
+					}
+				}
+			}
+		}
+		
+		// add synchronization rule
+		pdb.addSynchronizationRule(rule);
+	}
+	
+	/**
+	 * 
+	 * @param ddlSynch
+	 * @param comp
+	 * @param pdb
+	 * @throws DomainComponentNotFoundException
+	 * @throws SynchronizationCycleException
+	 */
+	private void doCreateSynchronizationFromConsumableResourceValue(DDLSynchronization ddlSynch, ReservoirResource comp, PlanDataBase pdb) 
+			throws DomainComponentNotFoundException, SynchronizationCycleException
+	{
+		// setup auxiliary data structures
+		Map<String, TokenVariable> label2variable = new HashMap<>();
+		Map<String, TokenVariable> decId2variable = new HashMap<>();
+		
+		// get reference decision
+		DDLConsumableResourceComponentDecision ddlDec = (DDLConsumableResourceComponentDecision) ddlSynch.getReference();
+		
+		// get trigger value
+		ComponentValue valTrigger = null;
+		// check decision type 
+		switch (ddlDec.getComponentDecisionType())
+		{
+			case Consumption : {
+				// set trigger value to consumption
+				valTrigger = comp.getConsumptionValue();
+			}
+			break;
+			
+			case Production : {
+				// set trigger value to production
+				valTrigger = comp.getProductionValue();
+			}
+			break;
+		}
+		
+		// create synchronization
+		SynchronizationRule rule = pdb.createSynchronizationRule(valTrigger, new String[] {ddlDec.getParameterName()}); 
+		// add entry to parameter label index
+		for (String label : rule.getTriggerer().getParameterLabels()) {
+			label2variable.put(label, rule.getTriggerer());
+		}
+		
+		// check target values
+		for (DDLInstantiatedComponentDecision ddlTarget : ddlSynch.getTargets().values()) 
+		{
+			// get target component
+			DomainComponent targetComponent = pdb.getComponentByName(ddlTarget.getComponent());
+			// check target component type
+			switch (targetComponent.getType())
+			{
+				// state variable component
+				case SV_EXTERNAL : 
+				case SV_FUNCTIONAL : 
+				case SV_PRIMTIVE : 
+				{
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// check decision type
+					switch (ddlTargetDecision.getDecisionType())
+					{
+						// decision with parameters
+						case SINGLETON :
+						{
+							// cast decision
+							DDLSingletonStateVariableComponentDecision ddlSingletonTarget = (DDLSingletonStateVariableComponentDecision) ddlTargetDecision;
+							
+							// get target value
+							ComponentValue targetValue = targetComponent.getValueByName(ddlSingletonTarget.getName());
+							
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(targetValue, 
+									ddlSingletonTarget.getParameterNames().toArray(new String[ddlSingletonTarget.getParameterNames().size()]));
+							
+							// check solving knowledge
+							if (!ddlTarget.getParameters().isEmpty()) {
+								// check mandatory expansion
+								if (ddlTarget.getParameters().contains("!")) {
+									// set knowledge
+									target.setMandatoryExpansion();
+								}
+								
+								// check mandatory unification
+								if (ddlTarget.getParameters().contains("?")) {
+									target.setMandatoryUnification();
+								}
+							}
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						// ground decision
+						case GROUND : 
+						{
+							// cast decision
+							DDLSimpleGroundStateVariableComponentDecision ddlGroundTarget = (DDLSimpleGroundStateVariableComponentDecision) ddlTargetDecision;
+							// get target value
+							ComponentValue targetValue = targetComponent.getValueByName(ddlGroundTarget.getName());
+							
+							// add token variable with no parameter labels
+							TokenVariable target = rule.addTokenVariable(targetValue, new String[] {}); 
+							
+							// check solving knowledge
+							if (!ddlTarget.getParameters().isEmpty()) {
+								// check mandatory expansion
+								if (ddlTarget.getParameters().contains("!")) {
+									// set knowledge
+									target.setMandatoryExpansion();
+								}
+								
+								// check mandatory unification
+								if (ddlTarget.getParameters().contains("?")) {
+									target.setMandatoryUnification();
+								}
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						default : {
+							throw new RuntimeException("Unknown state variable decision type - " + ddlTargetDecision.getDecisionType());
+						}
+					}
+					
+					
+				}
+				break;
+				
+				// discrete resource component
+				case RESOURCE_DISCRETE : 
+				case RESOURCE_UNARY : 
+				{
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// cast decision
+					DDLRenewableResourceComponentDecision ddlRequirementTarget = (DDLRenewableResourceComponentDecision) ddlTargetDecision;
+					// get target component
+					DiscreteResource resource = (DiscreteResource) targetComponent;
+					 
+					// get target value 
+					ComponentValue targetValue = resource.getRequirementValue();
+					// add token variable
+					TokenVariable target = rule.addTokenVariable(targetValue,
+							new String[] {ddlRequirementTarget.getRequirementName()});
+					
+					// add entry to index
+					for (String label : target.getParameterLabels()) {
+						// add entry
+						label2variable.put(label, target);
+					}
+					
+					// get synchronization decision's ID
+					String id = ddlTarget.getId();
+					// check if target id already exists 
+					if (decId2variable.containsKey(id)) {
+						throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+					}
+					
+					// add entry 
+					decId2variable.put(id, target);
+				}
+				break;
+				
+				// reservoir resource component
+				case RESOURCE_RESERVOIR : 
+				{
+					// get target component
+					ReservoirResource resource = (ReservoirResource) targetComponent;
+
+					// check target decision
+					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
+					// cast decision
+					DDLConsumableResourceComponentDecision ddlConsumableTarget = (DDLConsumableResourceComponentDecision) ddlTargetDecision;
+					// check decision type
+					switch (ddlConsumableTarget.getComponentDecisionType())
+					{
+						// resource consumption
+						case Consumption : 
+						{
+							// get target value 
+							ComponentValue consumption = resource.getConsumptionValue();
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(consumption,
+									new String[] {ddlConsumableTarget.getParameterName()});
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						// resource production 
+						case Production : 
+						{
+							// get target value 
+							ComponentValue production = resource.getProductionValue();
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(production,
+									new String[] {ddlConsumableTarget.getParameterName()});
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+					}
+					
+					
+				}
+				break;
+				
+				default : {
+					// unknown target component type
+					throw new RuntimeException("Unknownw target component found into synchronization constraint" + ddlTarget);
+				}
+			}
+		}
+		
+		// set temporal relations
+		for (DDLTemporalRelation ddlRel : ddlSynch.getTemporalRelations()) 
+		{
+			// check relation type
+			DDLTemporalRelationType ddlRelType = ddlRel.getRelationType();
+			
+			// get constraint reference
+			TokenVariable cref;
+			// check reference's ID
+			if (ddlRel.getFrom() == null) {
+				cref = rule.getTriggerer();
+			}
+			else {
+				// check if reference exists
+				if (!decId2variable.containsKey(ddlRel.getFrom())) {
+					throw new RuntimeException("Unknown decision ID found <" + ddlRel.getFrom() + "> on synchronization " + rule);
+				}
+				
+				// get reference decision
+				cref = decId2variable.get(ddlRel.getFrom());
+			}
+			
+			// check if target exists
+			if (!decId2variable.containsKey(ddlRel.getTo())) {
+				throw new RuntimeException("Unknown decision ID found <" + ddlRel.getTo() + "> on synchronization " + rule);
+			}
+			
+			// get constraint target
+			TokenVariable ctarget = decId2variable.get(ddlRel.getTo());
+			
+			// create constraint
+			this.addConstraintToSynchronization(rule, cref, ctarget, ddlRelType);
+		}
+		
+		// set parameter relations
+		List<DDLParameterConstraint> ddlParameterConstraints = ddlSynch.getParameterConstraints();
+		for (DDLParameterConstraint ddlpc : ddlParameterConstraints) 
+		{
+			// check constraint type
+			switch (ddlpc.getConstraintType()) 
+			{
+				// enumeration parameter constraint
+				case ENUMERATION : 
+				{
+					// get enumeration constraint
+					DDLEnumerationParameterConstraint ddlEnumerationConstraint = (DDLEnumerationParameterConstraint) ddlpc;
+					// get reference variable
+					String leftTerm = ddlEnumerationConstraint.getLeftTerm();
+					
+					// check if parameter exists
+					if (!label2variable.containsKey(leftTerm)) {
+						throw new RuntimeException("Unknown reference parameter found <" + leftTerm + "> on synchronization " + rule);
+					}
+					
+					// get reference
+					TokenVariable pcReference = label2variable.get(leftTerm);
+					
+					// get value
+					String value = ddlEnumerationConstraint.getValue();
+					// get relation type
+					RelationType relType;
+					switch (ddlEnumerationConstraint.getEnumerationConstraintType()) {
+						// equal constraint
+						case EQ : {
+							// set relation type
+							relType = RelationType.BIND_PARAMETER;
+						}
+						break;
+						
+						default : {
+							// FIXME : <------- MANAGE MISSING CASES
+							throw new RuntimeException("Unknownw enumeration constraint type " + ddlEnumerationConstraint.getEnumerationConstraintType());
+						}
+					}
+					
+					// create binding constraint
+					rule.addBindingConstraint(pcReference, relType, leftTerm, value);
+				}
+				break;
+				
+				// binary parameter constraint
+				case NUMERIC : 
+				{
+					// get numeric constraint
+					DDLNumericParameterConstraint ddlNumericConstraint = (DDLNumericParameterConstraint) ddlpc;
+					// get reference variable
+					String leftTerm = ddlNumericConstraint.getLeftTerm();
+					
+					// check if parameter exists
+					if (!label2variable.containsKey(leftTerm)) {
+						throw new RuntimeException("Unknown reference parameter found <" + leftTerm + "> on synchronization " + rule);
+					}
+					
+					// get reference
+					TokenVariable pcReference = label2variable.get(leftTerm);
+					
+					// check if binary
+					if (ddlNumericConstraint.isBinary()) 
+					{
+						// get relation type
+						RelationType relType;
+						switch (ddlNumericConstraint.getNumericConstraintType()) {
+							// equal constraint
+							case EQ : {
+								// set relation type
+								relType = RelationType.EQUAL_PARAMETER;
+							}
+							break;
+							
+							// not equal constraint
+							case NEQ : {
+								// set relation type
+								relType = RelationType.NOT_EQUAL_PARAMETER;
+							}
+							break;
+							
+							default : {
+								// FIXME : <------- MANAGE MISSING CASES
+								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
+							}
+						}
+						
+						// check targets
+						for (String rightTerm : ddlNumericConstraint.getRightVariables()) {
+							// check if parameter exists
+							if (!label2variable.containsKey(rightTerm)) {
+								throw new RuntimeException("Unknown target found <" + rightTerm + "> on synchronization " + rule);
+							}
+							
+							// get target variable
+							TokenVariable pcTarget = label2variable.get(rightTerm);
+							
+							// create constraint
+							rule.addParameterConstraint(pcReference, pcTarget, relType, leftTerm, rightTerm);
+						}
+					}
+					else {
+						// not binary constraint, set bind constraint
+						int value = ddlNumericConstraint.getRightCoefficients().get(0);
+						// get relation type
+						RelationType relType;
+						switch (ddlNumericConstraint.getNumericConstraintType()) 
+						{
+							// equal constraint
+							case EQ : 
+							{
+								// set relation type
+								relType = RelationType.BIND_PARAMETER;
+							}
+							break;
+							
+							default : {
+								// FIXME : <------- MANAGE MISSING CASES
+								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
+							}
+						}
+						
+						// create constraint
+						rule.addBindingConstraint(pcReference, relType, leftTerm, Integer.toString(value));
+					}
+				}
+			}
+		}
+		
+		// add synchronization rule
+		pdb.addSynchronizationRule(rule);
 	}
 	
 	/**
@@ -769,7 +1636,8 @@ public class DDLv3Compiler extends DomainCompiler
 			switch (ddlTargetDecision.getDecisionType()) 
 			{
 				// singleton target decision
-				case SINGLETON : {
+				case SINGLETON : 
+				{
 					// cast decision
 					DDLSingletonStateVariableComponentDecision ddlSingletonTarget = (DDLSingletonStateVariableComponentDecision) ddlTargetDecision;
 					// add token variable
@@ -809,7 +1677,8 @@ public class DDLv3Compiler extends DomainCompiler
 				break;
 				
 				// ground target decision
-				case GROUND : {
+				case GROUND : 
+				{
 					// add token variable
 					TokenVariable target = rule.addTokenVariable(targetValue, new String[] {});
 					
@@ -887,7 +1756,8 @@ public class DDLv3Compiler extends DomainCompiler
 			switch (ddlpc.getConstraintType()) 
 			{
 				// enumeration parameter constraint
-				case ENUMERATION : {
+				case ENUMERATION : 
+				{
 					// get enumeration constraint
 					DDLEnumerationParameterConstraint ddlEnumerationConstraint = (DDLEnumerationParameterConstraint) ddlpc;
 					// get reference variable
@@ -923,7 +1793,8 @@ public class DDLv3Compiler extends DomainCompiler
 				break;
 				
 				// binary parameter constraint
-				case NUMERIC : {
+				case NUMERIC : 
+				{
 					// get numeric constraint
 					DDLNumericParameterConstraint ddlNumericConstraint = (DDLNumericParameterConstraint) ddlpc;
 					// get reference variable
@@ -1051,45 +1922,97 @@ public class DDLv3Compiler extends DomainCompiler
 				{
 					// check target decision
 					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
-					// cast decision
-					DDLSingletonStateVariableComponentDecision ddlSingletonTarget = (DDLSingletonStateVariableComponentDecision) ddlTargetDecision;
-					
-					// get target value
-					ComponentValue targetValue = targetComponent.getValueByName(ddlTarget.getComponentDecision().getName());
-					
-					// add token variable
-					TokenVariable target = rule.addTokenVariable(targetValue, 
-							ddlSingletonTarget.getParameterNames().toArray(new String[ddlSingletonTarget.getParameterNames().size()]));
-					
-					// check solving knowledge
-					if (!ddlTarget.getParameters().isEmpty()) {
-						// check mandatory expansion
-						if (ddlTarget.getParameters().contains("!")) {
-							// set knowledge
-							target.setMandatoryExpansion();
+					// check decision type
+					switch (ddlTargetDecision.getDecisionType())
+					{
+						// decision with parameters
+						case SINGLETON :
+						{
+							// cast decision
+							DDLSingletonStateVariableComponentDecision ddlSingletonTarget = (DDLSingletonStateVariableComponentDecision) ddlTargetDecision;
+							
+							// get target value
+							ComponentValue targetValue = targetComponent.getValueByName(ddlSingletonTarget.getName());
+							
+							// add token variable
+							TokenVariable target = rule.addTokenVariable(targetValue, 
+									ddlSingletonTarget.getParameterNames().toArray(new String[ddlSingletonTarget.getParameterNames().size()]));
+							
+							// check solving knowledge
+							if (!ddlTarget.getParameters().isEmpty()) {
+								// check mandatory expansion
+								if (ddlTarget.getParameters().contains("!")) {
+									// set knowledge
+									target.setMandatoryExpansion();
+								}
+								
+								// check mandatory unification
+								if (ddlTarget.getParameters().contains("?")) {
+									target.setMandatoryUnification();
+								}
+							}
+							
+							// add entry to index
+							for (String label : target.getParameterLabels()) {
+								// add entry
+								label2variable.put(label, target);
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
 						}
+						break;
 						
-						// check mandatory unification
-						if (ddlTarget.getParameters().contains("?")) {
-							target.setMandatoryUnification();
+						// ground decision
+						case GROUND : 
+						{
+							// cast decision
+							DDLSimpleGroundStateVariableComponentDecision ddlGroundTarget = (DDLSimpleGroundStateVariableComponentDecision) ddlTargetDecision;
+							// get target value
+							ComponentValue targetValue = targetComponent.getValueByName(ddlGroundTarget.getName());
+							
+							// add token variable with no parameter labels
+							TokenVariable target = rule.addTokenVariable(targetValue, new String[] {}); 
+							
+							// check solving knowledge
+							if (!ddlTarget.getParameters().isEmpty()) {
+								// check mandatory expansion
+								if (ddlTarget.getParameters().contains("!")) {
+									// set knowledge
+									target.setMandatoryExpansion();
+								}
+								
+								// check mandatory unification
+								if (ddlTarget.getParameters().contains("?")) {
+									target.setMandatoryUnification();
+								}
+							}
+							
+							// get synchronization decision's ID
+							String id = ddlTarget.getId();
+							// check if target id already exists 
+							if (decId2variable.containsKey(id)) {
+								throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+							}
+							
+							// add entry 
+							decId2variable.put(id, target);
+						}
+						break;
+						
+						default : {
+							throw new RuntimeException("Unknown state variable decision type - " + ddlTargetDecision.getDecisionType());
 						}
 					}
 					
-					// add entry to index
-					for (String label : target.getParameterLabels()) {
-						// add entry
-						label2variable.put(label, target);
-					}
 					
-					// get synchronization decision's ID
-					String id = ddlTarget.getId();
-					// check if target id already exists 
-					if (decId2variable.containsKey(id)) {
-						throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
-					}
-					
-					// add entry 
-					decId2variable.put(id, target);
 				}
 				break;
 				
@@ -1571,14 +2494,21 @@ public class DDLv3Compiler extends DomainCompiler
 		{
 			// component's name
 			String name = ddlComponent.getName();
-			// check if external
-			boolean external = ddlTimeline.getParameters().contains("uncontrollable");
-			// create state variable (cast needed for Java7 compatibility)
-			StateVariable sv = external ?
-					// external variable
-					(StateVariable) pdb.createDomainComponent(name, DomainComponentType.SV_EXTERNAL) :
-					// programmable variable
-					(StateVariable) pdb.createDomainComponent(name, DomainComponentType.SV_PRIMTIVE);
+			// set state variable 
+			StateVariable sv;
+			// check state variable type
+			if (ddlTimeline.getParameters().contains("uncontrollable")) {
+				// external variable
+				sv = pdb.createDomainComponent(name, DomainComponentType.SV_EXTERNAL);
+			}
+			else if (ddlTimeline.getParameters().contains("functional")) {
+				// functional variable
+				sv = pdb.createDomainComponent(name, DomainComponentType.SV_FUNCTIONAL);
+			}
+			else {
+				// primitive variable
+				sv = pdb.createDomainComponent(name, DomainComponentType.SV_PRIMTIVE);
+			}
 
 			// get component type
 			DDLSingletonStateVariableComponentType ddlComponentType = (DDLSingletonStateVariableComponentType) this.ddl_domain.getComponentTypes().get(ddlComponent.getComponentType());
@@ -1590,6 +2520,7 @@ public class DDLv3Compiler extends DomainCompiler
 			{
 				// add value
 				String vname = ddlValueType.getName();
+				// check controllability property of the value
 				boolean controllable = !vname.startsWith("_");
 				
 				// set duration constraints
@@ -1673,11 +2604,8 @@ public class DDLv3Compiler extends DomainCompiler
 						}
 						break;
 							
-						// unknown parameter constraint
 						default : {
-							/*
-							 * TODO : <<<<<----- VERIFICARE SE SERVE GESTIRE ALTRI TIPI DI PARAMETRI
-							 */
+							// unknown parameter type
 							throw new RuntimeException("Unknown parameter constraint type on transition " + cons.getConstraintType());
 						}
 					}
@@ -1687,18 +2615,22 @@ public class DDLv3Compiler extends DomainCompiler
 				// get related values
 				DDLSingletonStateVariableComponentDecision source = ddlTransition.getFrom();
 				ComponentValue from = vindex.get(source.getName());
-				for (DDLSingletonStateVariableComponentDecision target : ddlTransition.getTo()) {
+				for (DDLSingletonStateVariableComponentDecision target : ddlTransition.getTo()) 
+				{
 					// get target value
 					ComponentValue to = vindex.get(target.getName());
 					// add transition constraint
 					Transition t = sv.addValueTransition(from, to);
 					
 					// add parameter constraints
-					for (String referenceParName : source.getParameterNames()) {
+					for (String referenceParName : source.getParameterNames()) 
+					{
 						// check target parameters
-						for (String targetParName : target.getParameterNames()) {
+						for (String targetParName : target.getParameterNames()) 
+						{
 							// check if constraints exists
-							if (labels2constraint.containsKey(referenceParName) && labels2constraint.get(referenceParName).containsKey(targetParName)) {
+							if (labels2constraint.containsKey(referenceParName) && labels2constraint.get(referenceParName).containsKey(targetParName)) 
+							{
 								// get parameter
 								DDLNumericParameterConstraintType ddlConsType = labels2constraint.get(referenceParName).get(targetParName);
 								// get parameters's indexes
@@ -1708,21 +2640,34 @@ public class DDLv3Compiler extends DomainCompiler
 								// get type of constraint
 								ParameterConstraintType consType;
 								// check constraint type
-								switch (ddlConsType) {
+								switch (ddlConsType) 
+								{
 									case EQ : {
+										// equals constraint
 										consType = ParameterConstraintType.EQUAL;
 									}
 									break;
 									
 									case NEQ : {
+										// not equal constraint
 										consType = ParameterConstraintType.NOT_EQUAL;
 									}
 									break;
 									
-									default : {
+									case GE : 
+									case GT : 
+									case LE : 
+									case LT : {
+										
 										/*
-										 * TODO: <<<<----- AGGIUNGERE ALTRI TIPI DI PARAMETRI 
+										 * FIXME -> VERIFICARE GESTIONE PARAMETRI "bind" 
 										 */
+										
+										throw new RuntimeException("Manage GE|GT|LE|LT parameter constraint");
+									}
+									
+									default : {
+										// unknown parameter constraint type
 										throw new RuntimeException("Unknown parameter constraint type into transition " + ddlConsType);
 									}
 								}
@@ -1730,10 +2675,8 @@ public class DDLv3Compiler extends DomainCompiler
 								// add parameter constraint
 								t.addParameterConstraint(referenceIndex, targetIndex, consType);
 							}
-							
 						}
 					}
-					
 				}
 			}
 			

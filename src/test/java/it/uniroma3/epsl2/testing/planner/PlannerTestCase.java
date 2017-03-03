@@ -748,37 +748,4 @@ public class PlannerTestCase
 			Assert.assertTrue(false);
 		}
 	}
-	
-	/**
-	 * 
-	 */
-	@Test
-	public void buildPlannerOnDummyDomainTest() { 
-		System.out.println("[Test]: buildPlannerOnDummyDomainTest() --------------------");
-		System.out.println();
-		try 
-		{	
-			// domain file
-			final String DDL = "domains/dummyRobot/dummy.ddl";
-			final String PDL = "domains/dummyRobot/dummy.pdl";
-			
-			// build the planner
-			Planner planner = PlannerBuilder.build(DDL, PDL);
-			// get solution plan
-			SolutionPlan plan = planner.plan();
-			Assert.assertNotNull(plan);
-			System.out.println(plan);
-			// export plan
-			System.out.println();
-			System.out.println(plan.export());
-			System.out.println();
-			// display plan
-			planner.display();
-			Thread.sleep(5000);
-		}
-		catch (Exception ex) {
-			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
-		}
-	}
 }

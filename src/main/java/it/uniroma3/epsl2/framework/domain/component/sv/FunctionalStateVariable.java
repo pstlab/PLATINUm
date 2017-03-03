@@ -19,8 +19,8 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 		
 		view = ComponentViewType.GANTT
 )
-public class FunctionalStateVariable extends StateVariable {
-	
+public class FunctionalStateVariable extends StateVariable 
+{
 	/**
 	 * 
 	 * @param name
@@ -35,7 +35,7 @@ public class FunctionalStateVariable extends StateVariable {
 	@Override
 	public ComponentValue addValue(String value, long[] duration, boolean controllable) {
 		// create an uncontrollable value
-		return this.doCreateValue(value, duration, true);
+		return super.addValue(value, duration, true);
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class FunctionalStateVariable extends StateVariable {
 	@Override
 	public ComponentValue addValue(String value, boolean controllable) {
 		// create uncontrollable value
-		return this.doCreateValue(value, new long[] {1, this.tdb.getHorizon()}, true);
+		return super.addValue(value, true);
 	}
 	
 	/**
