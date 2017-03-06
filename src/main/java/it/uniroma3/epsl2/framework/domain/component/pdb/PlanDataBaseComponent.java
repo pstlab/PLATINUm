@@ -22,11 +22,11 @@ import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationExcept
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.ConstraintPropagationException;
 import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
@@ -229,9 +229,14 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			plan.add(rel);
 		}
 		
+		// compute the resulting plan makespan
+		double mk = this.computeMakespan();
+		plan.setMakespan(mk);
+		
 		// computer parameter solutions
 		ComputeSolutionParameterQuery query = this.pdb.
 				createQuery(ParameterQueryType.COMPUTE_SOLUTION);
+		// process query
 		this.pdb.process(query);
 		// get current plan
 		return plan;
@@ -1074,8 +1079,8 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public List<Flaw> detectFlaws() 
-			throws UnsolvableFlawFoundException {
-		
+			throws UnsolvableFlawFoundException 
+	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// call resolvers to detect flaws and possible solutions
@@ -1098,11 +1103,38 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public void rollback(FlawSolution solution) { 
+	public List<Flaw> detectFlaws(FlawType type) 
+			throws UnsolvableFlawFoundException 
+	{
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		// get resolver capable to handle the desired set of flaws, if any
+		if (this.flawType2resolver.containsKey(type))
+		{
+			// get related resolver and detect flaws
+			list.addAll(this.flawType2resolver.get(type).findFlaws());
+		}
+		
+		// check components
+		for (DomainComponent comp : this.components.values()) {
+			// detect flaws on component
+			list.addAll(comp.detectFlaws(type));
+		}
+		
+		// get the list of detected flaws
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void rollback(FlawSolution solution) 
+	{ 
 		// check if the request must be dispatched to the correct component
-		if (this.index.containsKey(solution.getFlaw().getType())) {
+		if (this.flawType2resolver.containsKey(solution.getFlaw().getType())) {
 			// solve flaw
-			this.index.get(solution.getFlaw().getType()).retract(solution);
+			this.flawType2resolver.get(solution.getFlaw().getType()).retract(solution);
 		}
 		else {
 			// dispatch flaw
@@ -1123,9 +1155,9 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			throws FlawSolutionApplicationException 
 	{
 		// check if the request must be dispatched to the correct component
-		if (this.index.containsKey(solution.getFlaw().getType())) {
+		if (this.flawType2resolver.containsKey(solution.getFlaw().getType())) {
 			// solve flaw
-			this.index.get(solution.getFlaw().getType()).apply(solution);
+			this.flawType2resolver.get(solution.getFlaw().getType()).apply(solution);
 		}
 		else {
 			// dispatch flaw
@@ -1139,10 +1171,10 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public void propagete(FlawSolution solution) 
-			throws PlanRefinementException 
+			throws FlawSolutionApplicationException 
 	{
-		try 
-		{
+//		try 
+//		{
 			// apply solution
 			this.commit(solution);
 			// notify update to observers
@@ -1152,10 +1184,10 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				// notify event
 				observer.notify(event);
 			}
-		} 
-		catch (FlawSolutionApplicationException ex) {
-			throw new PlanRefinementException(ex.getMessage());
-		}
+//		} 
+//		catch (FlawSolutionApplicationException ex) {
+//			throw new PlanRefinementException(ex.getMessage());
+//		}
 	}
 	
 	/**
@@ -1163,7 +1195,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public void retract(FlawSolution solution) 
-			throws FlawSolutionApplicationException 
+//			throws FlawSolutionApplicationException 
 	{
 		// roll-back flaw solution
 		this.rollback(solution);
@@ -1174,6 +1206,32 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			// notify retraction
 			observer.notify(event);
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public double computeMakespan() 
+	{
+		// initialize the makespan
+		double mk = this.getOrigin();
+		// get domain components
+		for (DomainComponent component : this.getComponents())
+		{
+			// check component type
+			if (component.getType().equals(DomainComponentType.SV_PRIMITIVE) || 
+					component.getType().equals(DomainComponentType.SV_FUNCTIONAL))
+			{
+				// compute the makespan of the component  
+				double cmk = component.computeMakespan();
+				// compare makespan with the current maximum
+				mk = Math.max(mk, cmk);
+			}
+		}
+		
+		// get computed makespan
+		return mk;
 	}
 	
 	/**

@@ -80,7 +80,7 @@ public class PlanDataBaseTestCase {
 			ParameterDomain xAxis = this.pdb.createParameterDomain("x-axis", ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
 			
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue v11 = c1.addValue("Val11", false);
 			ComponentValue v12 = c1.addValue("Val12", true);
@@ -98,7 +98,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(c1);		
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue v21 = c2.addValue("Val21", true);
 			v21.addParameterPlaceHolder(xAxis);
@@ -209,7 +209,7 @@ public class PlanDataBaseTestCase {
 			System.out.println(this.pdb);
 			
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
 			ComponentValue v11 = c1.addValue("Val11", false);
@@ -230,7 +230,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(c1);
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
 			ComponentValue v21 = c2.addValue("Val21", true);
@@ -293,7 +293,7 @@ public class PlanDataBaseTestCase {
 			System.out.println(this.pdb);
 			
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
 			ComponentValue v11 = c1.addValue("Val11", true);
@@ -312,7 +312,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(c1);
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
 			ComponentValue v21 = c2.addValue("Val21", false);
@@ -438,7 +438,7 @@ public class PlanDataBaseTestCase {
 			Assert.assertNotNull(this.pdb);
 			
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
 			ComponentValue v11 = c1.addValue("Val11", true);
@@ -457,7 +457,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(c1);
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
 			ComponentValue v21 = c2.addValue("Val21", true);
@@ -557,7 +557,7 @@ public class PlanDataBaseTestCase {
 			Assert.assertNotNull(this.pdb);
 			
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
 			ComponentValue v11 = c1.addValue("Val11", true);
@@ -576,7 +576,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(c1);		
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
 			ComponentValue v21 = c2.addValue("Val21", true);
@@ -680,7 +680,7 @@ public class PlanDataBaseTestCase {
 			System.out.println(this.pdb);
 			
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			ComponentValue v11 = c1.addValue("Val11", false);
 			ComponentValue v12 = c1.addValue("Val12", true);
 			ComponentValue v13 = c1.addValue("Val13", true);
@@ -694,7 +694,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(c1);		
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			ComponentValue v21 = c2.addValue("Val21", true);
 			ComponentValue v22 = c2.addValue("Val22", false);
 			ComponentValue v23 = c2.addValue("Val23", true);
@@ -778,7 +778,7 @@ public class PlanDataBaseTestCase {
 			System.out.println(this.pdb);
 			
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			ComponentValue v11 = c1.addValue("Val11", false);
 			ComponentValue v12 = c1.addValue("Val12", true);
 			ComponentValue v13 = c1.addValue("Val13", true);
@@ -792,7 +792,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(c1);		
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			ComponentValue v21 = c2.addValue("Val21", true);
 			ComponentValue v22 = c2.addValue("Val22", false);
 			ComponentValue v23 = c2.addValue("Val23", true);
@@ -904,7 +904,7 @@ public class PlanDataBaseTestCase {
 			});
 			
 			// create state variable 
-			PrimitiveStateVariable robotAction = this.pdb.createDomainComponent("RobotAction", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable robotAction = this.pdb.createDomainComponent("RobotAction", DomainComponentType.SV_PRIMITIVE);
 			ComponentValue idle = robotAction.addValue("Idle", true);
 			ComponentValue go = robotAction.addValue("Go", true);
 			go.addParameterPlaceHolder(positions);
@@ -916,7 +916,7 @@ public class PlanDataBaseTestCase {
 			this.pdb.addDomainComponent(robotAction);		
 			
 			// create state variables
-			PrimitiveStateVariable robotPosition = this.pdb.createDomainComponent("RobotPosition", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable robotPosition = this.pdb.createDomainComponent("RobotPosition", DomainComponentType.SV_PRIMITIVE);
 			ComponentValue at = robotPosition.addValue("At", true);
 			at.addParameterPlaceHolder(positions);
 			

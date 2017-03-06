@@ -11,7 +11,7 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ex.TransitionNotFoundException;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckPseudoControllabilityQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 
 /**
@@ -56,8 +56,8 @@ public abstract class StateVariable extends DomainComponent
 			if (!dec.isControllable()) 
 			{
 				// check actual duration
-				CheckPseudoControllabilityQuery query = this.tdb.
-						createTemporalQuery(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);
+				IntervalPseudoControllabilityQuery query = this.tdb.
+						createTemporalQuery(TemporalQueryType.INTERVAL_PSEUDO_CONTROLLABILITY);
 				
 				// set related temporal interval
 				query.setInterval(dec.getToken().getInterval());

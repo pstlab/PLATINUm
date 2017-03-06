@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 
 /**
  * 
@@ -18,8 +19,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	private int id;
 	private List<Operator> operators;	// node generation trace
 	private Operator generator;			// node generator operator
+	private Agenda agenda;				// plan agenda
 	private double makespan;			// node makespan
-	private double distance;			// h - distance from solution node 
 	
 	/**
 	 * Create a root node
@@ -33,7 +34,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.operators = new ArrayList<>();
 		this.generator = null;
 		this.makespan = Double.MAX_VALUE - 1;
-		this.distance = Double.MAX_VALUE - 1;
+		this.agenda = new Agenda();
 	}
 	
 	/**
@@ -49,9 +50,9 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		// add generator
 		this.operators.add(op);
 		this.generator = op;
-		// inherit the makespan and the distance (i.e., the h-value) values from the parent node
+		// inherit the makespan and the agenda 
 		this.makespan = parent.getMakespan();
-		this.distance = parent.getDistance();
+		this.agenda = parent.getAgenda();
 	}
 	
 	/**
@@ -87,21 +88,19 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	}
 	
 	/**
-	 * Set the estimated distance from the solution node
 	 * 
-	 * @param distance
+	 * @param agenda
 	 */
-	public void setDistance(double distance) {
-		this.distance = distance;
+	public void setAgenda(Agenda agenda) {
+		this.agenda = agenda;
 	}
 	
 	/**
-	 * Get the estimated distance from the solution node
 	 * 
 	 * @return
 	 */
-	public double getDistance() {
-		return distance;
+	public Agenda getAgenda() {
+		return this.agenda; 
 	}
 	
 	/**
@@ -255,6 +254,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	@Override
 	public String toString() {
-		return "[SearchSpaceNode id= " + this.id + " depth= " + this.getDepth() + " g(n)= " + this.getCost() + " h(n)= " + this.getDistance() + " mk(n)= " + this.getMakespan() + "]";
+		return "[SearchSpaceNode depth= " + this.getDepth() + " cost= " + this.getCost() + " makespan= " + this.makespan + " agenda= " + this.agenda + "]";
 	}
 }

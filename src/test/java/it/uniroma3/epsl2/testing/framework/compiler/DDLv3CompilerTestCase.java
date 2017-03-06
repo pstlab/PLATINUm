@@ -72,7 +72,7 @@ public class DDLv3CompilerTestCase
 			// check primitive variable 
 			component = pdb.getComponentByName("BaseController");
 			Assert.assertNotNull(component);
-			Assert.assertTrue(component.getType().equals(DomainComponentType.SV_PRIMTIVE));
+			Assert.assertTrue(component.getType().equals(DomainComponentType.SV_PRIMITIVE));
 			
 			
 			// check reservoir resource

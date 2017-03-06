@@ -8,7 +8,7 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public final class CheckIntervalDistanceQuery extends TemporalIntervalQuery {
+public final class IntervalDistanceQuery extends TemporalIntervalQuery {
 
 	private TemporalInterval source;
 	private TemporalInterval target;
@@ -17,8 +17,8 @@ public final class CheckIntervalDistanceQuery extends TemporalIntervalQuery {
 	/**
 	 * 
 	 */
-	protected CheckIntervalDistanceQuery() {
-		super(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+	protected IntervalDistanceQuery() {
+		super(TemporalQueryType.INTERVAL_DISTANCE);
 		this.distance = new long[2];
 	}
 	

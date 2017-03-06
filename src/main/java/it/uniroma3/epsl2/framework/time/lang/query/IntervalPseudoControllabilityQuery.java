@@ -8,15 +8,15 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public class CheckPseudoControllabilityQuery extends TemporalIntervalQuery {
+public class IntervalPseudoControllabilityQuery extends TemporalIntervalQuery {
 
 	private TemporalInterval interval;
 	
 	/**
 	 * 
 	 */
-	protected CheckPseudoControllabilityQuery() {
-		super(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);
+	protected IntervalPseudoControllabilityQuery() {
+		super(TemporalQueryType.INTERVAL_PSEUDO_CONTROLLABILITY);
 	}
 	
 	/**

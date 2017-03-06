@@ -114,42 +114,45 @@ public abstract class Solver extends ApplicationFrameworkObject
 
 		// check if to retract
 		List<Operator> toRetract = new ArrayList<>();
-		if (retract) {
+		if (retract) 
+		{
 			// retract operators of the last propagate node till the last common operator
 			toRetract.addAll(last.getOperatorsUpTo(lastCommonOperator));
-			for (Operator op : toRetract) {
-				try {
+			for (Operator op : toRetract) 
+			{
+//				try {
 					// undo applied flaw solution
 					this.pdb.retract(op.getFlawSolution());
-				}
-				catch (FlawSolutionApplicationException ex) {
-					// error while backtracking
-					this.logger.error(ex.getMessage());
-					throw new RuntimeException(ex.getMessage());
-				}
+//				}
+//				catch (FlawSolutionApplicationException ex) {
+//					this.logger.error(ex.getMessage());
+//					throw new RuntimeException(ex.getMessage());
+//				}
 			}
 		}
 		
 		// propagate operators of the extracted node (starting from the last common operator)
 		List<Operator> toPropagate = extracted.getOperatorsFrom(lastCommonOperator);
 		List<Operator> committed = new ArrayList<>();
-		for (Operator op : toPropagate) {
-			try {
+		for (Operator op : toPropagate) 
+		{
+			try 
+			{
 				// apply flaw solution
 				this.pdb.propagete(op.getFlawSolution());
 				committed.add(op);
 			}
-			catch (PlanRefinementException ex) {
-				try {
+			catch (FlawSolutionApplicationException ex) {
+//				try {
 					// undo committed operators
 					for (Operator comm : committed) {
 						this.pdb.retract(comm.getFlawSolution());
 					}
-				} 
-				catch (FlawSolutionApplicationException exx) {
-					this.logger.error(exx.getMessage());
-					throw new RuntimeException(exx.getMessage());
-				}
+//				} 
+//				catch (FlawSolutionApplicationException exx) {
+//					this.logger.error(exx.getMessage());
+//					throw new RuntimeException(exx.getMessage());
+//				}
 				
 				// forward exception
 				throw new PlanRefinementException(ex.getMessage());

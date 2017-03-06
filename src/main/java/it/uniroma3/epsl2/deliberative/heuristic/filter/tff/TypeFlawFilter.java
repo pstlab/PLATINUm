@@ -10,6 +10,7 @@ import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 
 /**
  * 
@@ -45,16 +46,41 @@ public class TypeFlawFilter extends FlawFilter
 	 * 
 	 */
 	@Override
-	public Set<Flaw> filter(Collection<Flaw> flaws) {
+	public Set<Flaw> filter() 
+			throws UnsolvableFlawFoundException 
+	{
+		// filtered set
+		Set<Flaw> set = new HashSet<>();
+		// look for flaws of a given type
+		for (int index = 0; index < this.preferences.length && set.isEmpty(); index++)
+		{
+			// get type of flaw
+			FlawType type = this.preferences[index];
+			// detect flaws
+			set = new HashSet<>(this.pdb.detectFlaws(type));
+		}
+		
+		// get flaws
+		return set;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Set<Flaw> filter(Collection<Flaw> flaws) 
+	{
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// look for flaw of a given type
-		for (int index = 0; index < this.preferences.length && set.isEmpty(); index++) {
+		for (int index = 0; index < this.preferences.length && set.isEmpty(); index++) 
+		{
 			// get current type
 			FlawType type = this.preferences[index];
 			// check flaws
 			Iterator<Flaw> it = flaws.iterator();
-			while(it.hasNext()) {
+			while(it.hasNext()) 
+			{
 				// get next flaw
 				Flaw flaw = it.next();
 				// check 

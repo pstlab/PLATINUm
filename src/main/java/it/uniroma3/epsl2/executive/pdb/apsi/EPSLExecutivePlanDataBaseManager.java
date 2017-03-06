@@ -35,7 +35,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 
 /**
  * 
@@ -246,7 +246,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			for (ExecutionNode node : dictionary.values()) 
 			{
 				// check node schedule
-				CheckIntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+				IntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
 				query.setInterval(node.getInterval());
 				this.facade.process(query);
 			}
@@ -427,7 +427,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			for (ExecutionNode node : dictionary.values()) 
 			{
 				// check node schedule
-				CheckIntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+				IntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
 				query.setInterval(node.getInterval());
 				this.facade.process(query);
 			}

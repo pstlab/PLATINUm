@@ -8,7 +8,7 @@ import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckPseudoControllabilityQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
@@ -77,8 +77,8 @@ public final class ExternalStateVariable extends StateVariable {
 		// check every value of the state variable
 		for (Decision dec : this.getActiveDecisions()) {
 			// create query
-			CheckPseudoControllabilityQuery query = this.tdb.
-					createTemporalQuery(TemporalQueryType.CHECK_PSEUDO_CONTROLLABILITY);
+			IntervalPseudoControllabilityQuery query = this.tdb.
+					createTemporalQuery(TemporalQueryType.INTERVAL_PSEUDO_CONTROLLABILITY);
 			
 			// set related temporal interval
 			query.setInterval(dec.getToken().getInterval());

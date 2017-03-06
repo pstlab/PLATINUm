@@ -24,7 +24,7 @@ import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -309,8 +309,8 @@ public class UnaryResourceComponentTestCase
 				// check consistency
 				this.facade.checkConsistency();
 				
-				CheckIntervalScheduleQuery query = this.facade.
-						createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+				IntervalScheduleQuery query = this.facade.
+						createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
 				
 				query.setInterval(a1.getToken().getInterval());
 				this.facade.process(query);

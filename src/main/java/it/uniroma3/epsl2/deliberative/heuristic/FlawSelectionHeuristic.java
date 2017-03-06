@@ -1,6 +1,5 @@
 package it.uniroma3.epsl2.deliberative.heuristic;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -51,6 +50,8 @@ public abstract class FlawSelectionHeuristic extends ApplicationFrameworkObject
 	}
 
 	/**
+	 * Return a set of equivalent flaws to solve for plan refinement. Each solution of a 
+	 * flaw determines a branch in the resulting search space of the planner.
 	 * 
 	 * @return
 	 * @throws UnsolvableFlawFoundException
@@ -59,25 +60,56 @@ public abstract class FlawSelectionHeuristic extends ApplicationFrameworkObject
 	public final Set<Flaw> choose() 
 			throws UnsolvableFlawFoundException, NoFlawFoundException 
 	{
-		// initial set of flaws
-		Set<Flaw> flaws = new HashSet<>(this.pdb.detectFlaws());
+//		// initial set of flaws
+//		Set<Flaw> flaws = new HashSet<>(this.pdb.detectFlaws());
+//		
+//		// check flaws
+//		if (flaws.isEmpty()) {
+//			throw new NoFlawFoundException("No flaw to solve on the current plan");
+//		}
+//
+//		// initial size
+//		int initSize = flaws.size();
+//		// iteratively filter flaws
+//		for(FlawFilter f : this.filters) {
+//			// filter flaws
+//			flaws = f.filter(flaws);
+//		}
 		
-		// check flaws
-		if (flaws.isEmpty()) {
-			throw new NoFlawFoundException("No flaw to solve on the current plan");
-		}
-
-		// initial size
-		int initSize = flaws.size();
-		// iteratively filter flaws
-		for(FlawFilter f : this.filters) {
-			// filter flaws
-			flaws = f.filter(flaws);
+		/*
+		 *	FIXME -> VERIFICARE/TESTARE 
+		 */
+		
+//		
+//		// print the size of equivalent flaws found
+//		this.logger.debug("The heuristic has found " + flaws.size() + " equivalent flaws to solve from the "
+//				+ "initial set of " + initSize + " flaws");
+		
+		// set of detected flaws
+		Set<Flaw> flaws = null;
+		// iteratively find and filter flaws
+		for (FlawFilter ff : this.filters) 
+		{
+			// check if first filter to be applied
+			if (flaws == null) {
+				// apply filter
+				flaws = ff.filter();
+			}
+			else {
+				// apply filter
+				flaws = ff.filter(flaws);
+			}
 		}
 		
-		// print the size of equivalent flaws found
-		this.logger.debug("The heuristic has found " + flaws.size() + " equivalent flaws to solve from the "
-				+ "initial set of " + initSize + " flaws");
+		// check if any flaw has been found
+		if (flaws == null || flaws.isEmpty()) {
+			// throw exception
+			throw new NoFlawFoundException("No flaw has been found in the current plan");
+		}
+		else {
+			// print the size of equivalent flaws found
+			this.logger.debug("The heuristic has found/filtered " + flaws.size() + " flaws to solve");
+		}
 		
 		// get "equivalent" flaws to solve
 		return flaws;

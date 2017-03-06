@@ -29,7 +29,7 @@ import it.uniroma3.epsl2.framework.time.lang.allen.EndsDuringIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.EqualsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.StartsDuringIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -192,8 +192,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	public void checkSchedule(ExecutionNode node) 
 	{
 		// check resulting schedule of the interval
-		CheckIntervalScheduleQuery query = this.facade.
-				 createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+		IntervalScheduleQuery query = this.facade.
+				 createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
 		query.setInterval(node.getInterval());
 		this.facade.process(query);
 	}

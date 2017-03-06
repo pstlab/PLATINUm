@@ -11,12 +11,11 @@ import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationEx
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
@@ -181,26 +180,34 @@ public interface PlanDataBase
 	 * 
 	 * @return
 	 * @throws UnsolvableFlawFoundException
-	 * @throws NoFlawFoundException
 	 */
 	public List<Flaw> detectFlaws() 
-			throws UnsolvableFlawFoundException, NoFlawFoundException;
+			throws UnsolvableFlawFoundException;
 	
 	/**
 	 * 
-	 * @param solution
-	 * @throws Exception
+	 * @param type
+	 * @return
+	 * @throws UnsolvableFlawFoundException
 	 */
-	public void propagete(FlawSolution solution) 
-			throws PlanRefinementException;
+	public List<Flaw> detectFlaws(FlawType type) 
+			throws UnsolvableFlawFoundException;
 	
 	/**
 	 * 
 	 * @param solution
 	 * @throws FlawSolutionApplicationException
 	 */
-	public void retract(FlawSolution solution) 
+	public void propagete(FlawSolution solution) 
 			throws FlawSolutionApplicationException;
+	
+	/**
+	 * 
+	 * @param solution
+	 * @throws FlawSolutionApplicationException
+	 */
+	public void retract(FlawSolution solution); 
+			//throws FlawSolutionApplicationException;
 	
 	/**
 	 * 
@@ -219,4 +226,11 @@ public interface PlanDataBase
 	 * @return
 	 */
 	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree();
+	
+	/**
+	 * Compute the makespan of the plan
+	 * 
+	 * @return
+	 */
+	public double computeMakespan();
 }

@@ -33,9 +33,9 @@ import it.uniroma3.epsl2.framework.time.lang.allen.EqualsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MetByIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.StartsDuringIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalDistanceQuery;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckPseudoControllabilityQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
@@ -43,7 +43,7 @@ import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintExce
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentTpValueException;
 import it.uniroma3.epsl2.framework.time.tn.ex.TemporalConsistencyCheckException;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolver;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointBoundQuery;
+import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
@@ -335,10 +335,10 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		switch (query.getType()) 
 		{
 			// check distance between intervals
-			case CHECK_INTERVAL_DISTANCE : 
+			case INTERVAL_DISTANCE : 
 			{
 				// get query
-				CheckIntervalDistanceQuery distanceQuery = (CheckIntervalDistanceQuery) query;
+				IntervalDistanceQuery distanceQuery = (IntervalDistanceQuery) query;
 				// get time points to analyze
 				TimePoint source = distanceQuery.getSource().getEndTime();
 				TimePoint target = distanceQuery.getTarget().getStartTime();
@@ -357,15 +357,15 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 			break;
 			
 			// check interval schedule 
-			case CHECK_INTERVAL_SCHEDULE : 
+			case INTERVAL_SCHEDULE : 
 			{
 				// get query
-				CheckIntervalScheduleQuery scheduleQuery = (CheckIntervalScheduleQuery) query;
+				IntervalScheduleQuery scheduleQuery = (IntervalScheduleQuery) query;
 				// get interval
 				TemporalInterval i = scheduleQuery.getInterval();
 				
 				// create time point bound query
-				TimePointBoundQuery tpQuery = this.qf.create(TemporalQueryType.TP_BOUND);
+				TimePointScheduleQuery tpQuery = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 				// set point 
 				tpQuery.setTimePoint(i.getStartTime());
 				// process query
@@ -398,10 +398,10 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 			break;
 			
 			// check if squeezed interval
-			case CHECK_PSEUDO_CONTROLLABILITY : 
+			case INTERVAL_PSEUDO_CONTROLLABILITY : 
 			{
 				// get query
-				CheckPseudoControllabilityQuery squeezedQuery = (CheckPseudoControllabilityQuery) query;
+				IntervalPseudoControllabilityQuery squeezedQuery = (IntervalPseudoControllabilityQuery) query;
 				// get time points to analyze
 				TimePoint source = squeezedQuery.getInterval().getStartTime();
 				TimePoint target = squeezedQuery.getInterval().getEndTime();
@@ -420,7 +420,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 			break;
 			
 			// time point queries
-			case TP_BOUND :
+			case TP_SCHEDULE :
 			case TP_DISTANCE : 
 			case TP_DISTANCE_FROM_ORIGIN : 
 			case TP_DISTANCE_TO_HORIZON : 

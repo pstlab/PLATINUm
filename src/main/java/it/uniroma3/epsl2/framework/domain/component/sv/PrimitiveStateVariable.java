@@ -40,7 +40,7 @@ public final class PrimitiveStateVariable extends StateVariable implements Resou
 	 * @param name
 	 */
 	protected PrimitiveStateVariable(String name) {
-		super(name, DomainComponentType.SV_PRIMTIVE);
+		super(name, DomainComponentType.SV_PRIMITIVE);
 	}
 
 	/**

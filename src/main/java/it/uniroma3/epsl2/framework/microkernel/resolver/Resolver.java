@@ -76,7 +76,8 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 		// list of flaws on the related component
 		List<Flaw> flaws = new ArrayList<>();
 		// find flaws on component
-		for (Flaw flaw :  this.doFindFlaws()) {
+		for (Flaw flaw :  this.doFindFlaws()) 
+		{
 			// compute possible solutions
 			this.doComputeFlawSolutions(flaw);
 			// add flaw

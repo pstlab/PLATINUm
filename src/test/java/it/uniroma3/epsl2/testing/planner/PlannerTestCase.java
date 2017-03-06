@@ -88,7 +88,7 @@ public class PlannerTestCase
 		try 
 		{
 			// create state variable 
-			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue v11 = c1.addValue("Val11", new long[] {3, this.pdb.getHorizon()}, true);
 			ComponentValue v12 = c1.addValue("Val12", new long[] {3, 11}, false);
@@ -102,7 +102,7 @@ public class PlannerTestCase
 			this.pdb.addDomainComponent(c1);		
 			
 			// create state variables
-			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue v21 = c2.addValue("Val21", new long[] {5, 45}, true);
 			ComponentValue v22 = c2.addValue("Val22", new long[] {7, 11}, true);
@@ -204,7 +204,7 @@ public class PlannerTestCase
 			});
 			
 			// create state variable 
-			PrimitiveStateVariable robot = this.pdb.createDomainComponent("Robot", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable robot = this.pdb.createDomainComponent("Robot", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue idle = robot.addValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
 			ComponentValue goTo = robot.addValue("GoTo", new long[] {1, this.pdb.getHorizon()}, true);
@@ -216,7 +216,7 @@ public class PlannerTestCase
 			this.pdb.addDomainComponent(robot);		
 			
 			// create state variables
-			PrimitiveStateVariable robotBase = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable robotBase = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue at = robotBase.addValue("At", new long[] {5, this.pdb.getHorizon()}, true);
 			at.addParameterPlaceHolder(locations);
@@ -299,7 +299,7 @@ public class PlannerTestCase
 		try 
 		{
 			// create state variable 
-			PrimitiveStateVariable satellite = this.pdb.createDomainComponent("Satellite", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable satellite = this.pdb.createDomainComponent("Satellite", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue earth = satellite.addValue("Earth", new long[] {1, this.pdb.getHorizon()}, true);
 			ComponentValue slewing = satellite.addValue("Slewing", new long[] {10, 15}, true);
@@ -438,7 +438,7 @@ public class PlannerTestCase
 			locations.setValues(new String[] {"location1", "location2", "location3"});
 			
 			// create state variable 
-			PrimitiveStateVariable rover = this.pdb.createDomainComponent("Rover", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable rover = this.pdb.createDomainComponent("Rover", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue idle = rover.addValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
 			ComponentValue take = rover.addValue("TakePicture", new long[] {1, this.pdb.getHorizon()}, true);
@@ -451,7 +451,7 @@ public class PlannerTestCase
 			this.pdb.addDomainComponent(rover);		
 			
 			// create state variables
-			PrimitiveStateVariable base = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable base = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue at = base.addValue("At", new long[] {1, this.pdb.getHorizon()}, true);
 			at.addParameterPlaceHolder(locations);
@@ -463,7 +463,7 @@ public class PlannerTestCase
 			this.pdb.addDomainComponent(base);		
 			
 			// create state variables
-			PrimitiveStateVariable camera = this.pdb.createDomainComponent("RobotCamera", DomainComponentType.SV_PRIMTIVE);
+			PrimitiveStateVariable camera = this.pdb.createDomainComponent("RobotCamera", DomainComponentType.SV_PRIMITIVE);
 			// add values
 			ComponentValue takingPicture = camera.addValue("TakingPicture", new long[] {7, 11}, false);
 			takingPicture.addParameterPlaceHolder(targets);

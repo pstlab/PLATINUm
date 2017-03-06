@@ -12,7 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
-import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseObserver;
 import it.uniroma3.epsl2.framework.domain.component.pdb.PlanDataBaseEvent;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
@@ -22,7 +21,6 @@ import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.microkernel.resolver.planning.Goal;
 
@@ -33,12 +31,9 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.planning.Goal;
  */
 public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanDataBaseObserver
 {
-	@PlanDataBaseReference
-	private PlanDataBase pdb;
-	
 	private BlockingQueue<PlanDataBaseEvent> queue;			// event queue
 	private Thread process;									// knowledge update process
-	private final TemporalSemanticReasoner reasoner;				// temporal reasoner
+	private final TemporalSemanticReasoner reasoner;		// temporal reasoner
 	
 	/**
 	 * 
@@ -134,6 +129,15 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 		catch (InterruptedException ex) {
 			System.err.println(ex.getMessage());
 		}
+	}
+	
+	/**
+	 * FIXME 
+	 */
+	@Override
+	public Set<Flaw> filter() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/**

@@ -113,30 +113,6 @@ public abstract class FlawSolution
 		this.dActivated.addAll(decs);
 	}
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public List<Decision> getAddedDecisions() {
-//		return new ArrayList<>(this.dAdded);
-//	}
-//	
-//	/**
-//	 * 
-//	 * @param dec
-//	 */
-//	public void addAddedDecision(Decision dec) {
-//		this.dAdded.add(dec);
-//	}
-//	
-//	/**
-//	 * 
-//	 * @param decs
-//	 */
-//	public void addAddedDecisions(Collection<Decision> decs) {
-//		this.dAdded.addAll(decs);
-//	}
-	
 	/**
 	 * 
 	 * @return

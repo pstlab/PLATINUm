@@ -40,7 +40,7 @@ import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentView;
@@ -74,7 +74,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	
 	@ResolverReferences
 	protected List<Resolver> resolvers;
-	protected Map<FlawType, Resolver> index;
+	protected Map<FlawType, Resolver> flawType2resolver;
 	
 	@FrameworkLoggerReference
 	protected FrameworkLogger logger;
@@ -101,7 +101,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		
 		// set up the list of resolvers
 		this.resolvers = new ArrayList<>();
-		this.index = new HashMap<>();
+		this.flawType2resolver = new HashMap<>();
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		this.view = new GanttComponentView(this);
 		// setup resolver index
 		for (Resolver resv : this.resolvers) {
-			this.index.put(resv.getFlawType(), resv);
+			this.flawType2resolver.put(resv.getFlawType(), resv);
 		}
 	}
 	
@@ -158,6 +158,27 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	}
 	
 	/**
+	 * Compute the makespan of the component
+	 *  
+	 * @return
+	 */
+	public double computeMakespan() 
+	{
+		// initialize the makespan to the temporal origin
+		double mk = this.getOrigin();
+		// get active decisions
+		List<Decision> list = this.getActiveDecisions();
+		// check scheduled end-times 
+		for (Decision a : list) {
+			// compare makespan with the end-time lower bound
+			mk = Math.max(mk, a.getEnd()[0]);
+		}
+		
+		// get computed makespan
+		return mk;
+	}
+	
+	/**
 	 * 
 	 */
 	public void display() {
@@ -186,7 +207,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		for (Decision dec : this.decisions.get(PlanElementStatus.ACTIVE)) 
 		{
 			// create query
-			CheckIntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			IntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
 			// set related temporal interval
 			query.setInterval(dec.getToken().getInterval());
 			// process 
@@ -726,8 +747,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @throws UnsolvableFlawException
 	 */
 	public List<Flaw> detectFlaws() 
-			throws UnsolvableFlawFoundException {
-		
+			throws UnsolvableFlawFoundException 
+	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// call resolvers to detect flaws and possible solutions
@@ -736,6 +757,30 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			list.addAll(resv.findFlaws());
 		}
 
+		// get the list of detected flaws
+		return list;
+	}
+
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 * @throws UnsolvableFlawFoundException
+	 */
+	public List<Flaw> detectFlaws(FlawType type) 
+			throws UnsolvableFlawFoundException
+	{
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		// get resolver capable to handle the desired set of flaws, if any
+		if (this.flawType2resolver.containsKey(type))
+		{
+			// get related resolver
+			Resolver resv = this.flawType2resolver.get(type);
+			// detect flaws
+			list.addAll(resv.findFlaws());
+		}
+		
 		// get the list of detected flaws
 		return list;
 	}
@@ -750,7 +795,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	public void commit(FlawSolution solution) 
 			throws FlawSolutionApplicationException {
 		// dispatch the flaw to the correct resolver
-		this.index.get(solution.getFlaw().getType()).apply(solution);
+		this.flawType2resolver.get(solution.getFlaw().getType()).apply(solution);
 	}
 	
 	/**
@@ -759,7 +804,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 */
 	public void rollback(FlawSolution solution) {
 		// dispatch to the correct resolver
-		this.index.get(solution.getFlaw().getType()).retract(solution);
+		this.flawType2resolver.get(solution.getFlaw().getType()).retract(solution);
 	}
 
 	/**

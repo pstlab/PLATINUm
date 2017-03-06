@@ -1,6 +1,5 @@
 package it.uniroma3.epsl2.deliberative.heuristic.filter;
 
-import it.uniroma3.epsl2.deliberative.heuristic.filter.fff.FailFirstFlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.hff.HierarchyFlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.sff.SemanticFlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.tff.TypeFlawFilter;
@@ -16,11 +15,6 @@ public enum FlawFilterType
 	 * Type-based Flaw Filter
 	 */
 	TFF(TypeFlawFilter.class.getName()),
-	
-	/**
-	 * Fail First Flaw Filter
-	 */
-	FFF(FailFirstFlawFilter.class.getName()),
 	
 	/**
 	 * Dependency Graph Flaw Filter

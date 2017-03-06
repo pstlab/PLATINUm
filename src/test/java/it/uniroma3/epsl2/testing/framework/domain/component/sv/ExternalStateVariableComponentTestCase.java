@@ -20,7 +20,7 @@ import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.FixIntervalDurationConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -129,7 +129,7 @@ public class ExternalStateVariableComponentTestCase {
 			// check flexible schedule
 			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
 			// create flexible schedule query
-			CheckIntervalScheduleQuery query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			IntervalScheduleQuery query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);
@@ -143,7 +143,7 @@ public class ExternalStateVariableComponentTestCase {
 			Assert.assertTrue(d1.getDuration()[1] == 5);
 			
 			// create query
-			query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d2.getToken().getInterval());
 			// process query
 			this.facade.process(query);
@@ -194,7 +194,7 @@ public class ExternalStateVariableComponentTestCase {
 			// check flexible schedule
 			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
 			// create flexible schedule query
-			CheckIntervalScheduleQuery query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			IntervalScheduleQuery query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);
@@ -214,7 +214,7 @@ public class ExternalStateVariableComponentTestCase {
 			this.facade.checkConsistency();
 			
 			// check schedule
-			query = qFactory.create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);

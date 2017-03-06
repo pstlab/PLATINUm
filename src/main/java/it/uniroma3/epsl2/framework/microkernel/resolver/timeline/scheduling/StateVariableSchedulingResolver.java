@@ -22,7 +22,7 @@ import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalDistanceQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 
 /**
@@ -84,17 +84,21 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			this.logger.debug("Applying flaw solution\n- " + solution + "\nthrough before constraint " + rel);
 		}
 		
-		try {
+		try 
+		{
 			// propagate relations
 			this.component.addRelations(relations);
 			// set added relations
 			solution.addAddedRelations(relations);
 		}
-		catch (RelationPropagationException ex) {
+		catch (RelationPropagationException ex) 
+		{
 			// free all relations
 			for (Relation rel : relations) {
 				this.component.free(rel);
 			}
+			
+			// throw exception
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
 	}
@@ -125,8 +129,8 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 						!this.checkInScheduled(scheduled, source, target)) 
 				{
 					// check flexibility
-					CheckIntervalDistanceQuery query = this.tdb.
-							createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+					IntervalDistanceQuery query = this.tdb.
+							createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
 					
 					// set intervals
 					query.setSource(source.getToken().getInterval());
@@ -194,7 +198,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			// add a possible 
 			DecisionSchedule solution = new DecisionSchedule(peak, ordering);
 			// compute precedence constraints and check their temporal consistency
-			if (this.checkScheduleConsistency(solution)) 
+			if (this.isConsistentSchedule(solution)) 
 			{
 				// feasible solution of the peak
 				this.logger.debug("Feasible solution of the peak\n" + solution);
@@ -211,7 +215,8 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		// check available solutions
 		if (!peak.isSolvable()) {
 			// throw exception
-			throw new UnsolvableFlawFoundException("Unsolvable Peak found on state variable " + this.component.getName() + ":\n" + flaw);
+			throw new UnsolvableFlawFoundException("Unsolvable Peak found on state variable "
+					+ "" + this.component.getName() + ":\n" + flaw);
 		}
 	}
 	
@@ -296,7 +301,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 	 * 
 	 * @param solution
 	 */
-	private boolean checkScheduleConsistency(DecisionSchedule solution) 
+	private boolean isConsistentSchedule(DecisionSchedule solution) 
 	{
 		// consistency flag of the schedule
 		boolean consistent = true;
@@ -311,8 +316,8 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 					get(index + 1).getToken();
 			
 			// check interval distance
-			CheckIntervalDistanceQuery query = this.tdb.
-					createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+			IntervalDistanceQuery query = this.tdb.
+					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
 			
 			// set parameters
 			query.setSource(i.getInterval());

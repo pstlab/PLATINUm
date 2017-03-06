@@ -13,7 +13,7 @@ import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.DelRelationTemporal
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.DelTimePointTemporalNetworkNotification;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.TemporalNetworkNotification;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.ex.NotificationPropagationFailureException;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointBoundQuery;
+import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceFromOriginQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceToHorizonQuery;
@@ -239,10 +239,10 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 		switch (query.getType()) 
 		{
 			// handle time point bound query
-			case TP_BOUND : 
+			case TP_SCHEDULE : 
 			{
 				// get query
-				TimePointBoundQuery tpBoundQuery = (TimePointBoundQuery) query;
+				TimePointScheduleQuery tpBoundQuery = (TimePointScheduleQuery) query;
 				// get time point
 				TimePoint point = tpBoundQuery.getTimePoint();
 				// get distance between the origin and the time point

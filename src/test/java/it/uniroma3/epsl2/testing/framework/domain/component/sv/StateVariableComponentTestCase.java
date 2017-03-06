@@ -64,7 +64,7 @@ public class StateVariableComponentTestCase {
 		
 		// create State Variable
 		DomainComponentFactory df = new DomainComponentFactory();
-		this.psv = df.create("SV1", DomainComponentType.SV_PRIMTIVE);
+		this.psv = df.create("SV1", DomainComponentType.SV_PRIMITIVE);
 	}
 	
 	/**

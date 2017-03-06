@@ -25,10 +25,10 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 	heuristic = FlawSelectionHeuristicType.HFSH,
 	
 	// set strategy
-	strategy = SearchStrategyType.DFCF,
+	strategy = SearchStrategyType.DFS,
 	
 	// log level
-	logging = FrameworkLoggingLevel.OFF
+	logging = FrameworkLoggingLevel.DEBUG
 )
 public class SatelliteDeliberative extends Planner
 {

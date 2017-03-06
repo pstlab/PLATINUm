@@ -1,9 +1,9 @@
 package it.uniroma3.epsl2.framework.microkernel.query;
 
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalDistanceQuery;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckPseudoControllabilityQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointBoundQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
+import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceFromOriginQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceToHorizonQuery;
@@ -31,28 +31,28 @@ public enum TemporalQueryType
 	TP_DISTANCE_TO_HORIZON(TimePointDistanceToHorizonQuery.class.getName()),
 	
 	/**
-	 * 
+	 * Check the schedule of a time point 
 	 */
-	TP_BOUND(TimePointBoundQuery.class.getName()),
+	TP_SCHEDULE(TimePointScheduleQuery.class.getName()),
 	
 	/**
 	 * Check the actual flexible duration of a temporal interval and 
 	 * its schedule over time, i.e. compute the flexible start and 
 	 * end times of the interval
 	 */
-	CHECK_INTERVAL_SCHEDULE(CheckIntervalScheduleQuery.class.getName()),
+	INTERVAL_SCHEDULE(IntervalScheduleQuery.class.getName()),
 	
 	/**
 	 * Check the flexible distance between two temporal intervals
 	 */
-	CHECK_INTERVAL_DISTANCE(CheckIntervalDistanceQuery.class.getName()),
+	INTERVAL_DISTANCE(IntervalDistanceQuery.class.getName()),
 	
 	/**
 	 * Check if the temporal interval has been squeezed, i.e. if the
 	 * actual duration of the interval is tighter than the "domain"
 	 * duration
 	 */
-	CHECK_PSEUDO_CONTROLLABILITY(CheckPseudoControllabilityQuery.class.getName());
+	INTERVAL_PSEUDO_CONTROLLABILITY(IntervalPseudoControllabilityQuery.class.getName());
 	
 	// query class name
 	private String className;

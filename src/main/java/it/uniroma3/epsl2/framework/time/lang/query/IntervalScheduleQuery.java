@@ -8,15 +8,15 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public final class CheckIntervalScheduleQuery extends TemporalIntervalQuery {
+public final class IntervalScheduleQuery extends TemporalIntervalQuery {
 
 	private TemporalInterval interval;
 	
 	/**
 	 * 
 	 */
-	protected CheckIntervalScheduleQuery() {
-		super(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+	protected IntervalScheduleQuery() {
+		super(TemporalQueryType.INTERVAL_SCHEDULE);
 	}
 	
 	/**

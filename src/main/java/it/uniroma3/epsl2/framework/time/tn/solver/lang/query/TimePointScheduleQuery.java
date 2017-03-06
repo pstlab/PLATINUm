@@ -8,15 +8,15 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public final class TimePointBoundQuery extends TimePointQuery {
+public final class TimePointScheduleQuery extends TimePointQuery {
 
 	protected TimePoint point;
 	
 	/**
 	 * 
 	 */
-	protected TimePointBoundQuery() {
-		super(TemporalQueryType.TP_BOUND);
+	protected TimePointScheduleQuery() {
+		super(TemporalQueryType.TP_SCHEDULE);
 	}
 	
 	/**

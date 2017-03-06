@@ -18,8 +18,8 @@ import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.ContainsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.DuringIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalDistanceQuery;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
@@ -215,8 +215,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			// the network is not pseudo-controllable
 			System.out.println(ex.getMessage());
 			// get actual duration of the contingent interval
-			CheckIntervalScheduleQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			IntervalScheduleQuery query = this.queryFactory.
+					create(TemporalQueryType.INTERVAL_SCHEDULE);
 			// set interval
 			query.setInterval(i1);
 			this.facade.process(query);
@@ -273,8 +273,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			this.facade.checkConsistency();
 			
 			// get actual duration of the contingent interval
-			CheckIntervalScheduleQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			IntervalScheduleQuery query = this.queryFactory.
+					create(TemporalQueryType.INTERVAL_SCHEDULE);
 			// set interval
 			query.setInterval(i2);
 			this.facade.process(query);
@@ -589,7 +589,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			System.out.println(facade.getTemporalNetworkDescription());
 			
 			// make distance query
-			CheckIntervalDistanceQuery distanceQuery = this.queryFactory.create(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+			IntervalDistanceQuery distanceQuery = this.queryFactory.create(TemporalQueryType.INTERVAL_DISTANCE);
 			distanceQuery.setSource(i1);
 			distanceQuery.setTarget(i2);
 			// process query
@@ -599,8 +599,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			Assert.assertTrue(distanceQuery.getDistanceUpperBound() == 0);
 			
 			// make duration query
-			CheckIntervalScheduleQuery query = this.queryFactory.
-					create(TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+			IntervalScheduleQuery query = this.queryFactory.
+					create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(i3);
 			// process query
 			facade.process(query);

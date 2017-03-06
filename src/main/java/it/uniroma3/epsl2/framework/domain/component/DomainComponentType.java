@@ -28,7 +28,7 @@ public enum DomainComponentType {
 	/**
 	 * Primitive State Variable type
 	 */
-	SV_PRIMTIVE(PrimitiveStateVariable.class.getName()), 
+	SV_PRIMITIVE(PrimitiveStateVariable.class.getName()), 
 	
 	/**
 	 * External State Variable type

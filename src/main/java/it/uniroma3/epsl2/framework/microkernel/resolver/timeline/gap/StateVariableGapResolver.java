@@ -27,7 +27,7 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalDistanceQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 
 /**
@@ -229,8 +229,8 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 			Decision right = decs.get(index + 1);
 			
 			// check distance between related temporal intervals
-			CheckIntervalDistanceQuery query = this.tdb.
-					createTemporalQuery(TemporalQueryType.CHECK_INTERVAL_DISTANCE);
+			IntervalDistanceQuery query = this.tdb.
+					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
 			
 			// set intervals
 			query.setSource(left.getToken().getInterval());

@@ -19,7 +19,7 @@ import it.uniroma3.epsl2.framework.time.tn.simple.SimpleTemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverFactory;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverType;
 import it.uniroma3.epsl2.framework.time.tn.solver.apsp.APSPTemporalSolver;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointBoundQuery;
+import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.SimpleTemporalNetworkWithUncertainty;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
@@ -144,7 +144,7 @@ public class APSPSolverTestCase
 		System.out.println(solver);
 		
 		// get distance between origin and tp1
-		TimePointBoundQuery oquery = this.qf.create(TemporalQueryType.TP_BOUND);
+		TimePointScheduleQuery oquery = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 		// set point
 		oquery.setTimePoint(this.tp1);
 		// process query
@@ -286,7 +286,7 @@ public class APSPSolverTestCase
 			// check information
 			Assert.assertTrue(solver.isConsistent());
 			// create query
-			TimePointBoundQuery query = this.qf.create(TemporalQueryType.TP_BOUND);
+			TimePointScheduleQuery query = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 			// set point
 			TimePoint p = tps.get(0);
 			query.setTimePoint(p);
@@ -359,7 +359,7 @@ public class APSPSolverTestCase
 			// print distance matrix
 			System.out.println(solver);
 			// get distance between origin and p1
-			TimePointBoundQuery query1 = this.qf.create(TemporalQueryType.TP_BOUND);
+			TimePointScheduleQuery query1 = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 			query1.setTimePoint(p1);
 			// process 
 			solver.process(query1);
@@ -428,7 +428,7 @@ public class APSPSolverTestCase
 			Assert.assertTrue(solver.isConsistent());
 			
 			// get distance between origin and tp1
-			TimePointBoundQuery query1 = this.qf.create(TemporalQueryType.TP_BOUND);
+			TimePointScheduleQuery query1 = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 			// set point
 			query1.setTimePoint(this.tp1);
 			// process
@@ -499,7 +499,7 @@ public class APSPSolverTestCase
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			// check distances
-			TimePointBoundQuery query = this.qf.create(TemporalQueryType.TP_BOUND);
+			TimePointScheduleQuery query = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 			// set point
 			query.setTimePoint(this.tp4);
 			// process query

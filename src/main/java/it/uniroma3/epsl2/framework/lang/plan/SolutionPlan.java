@@ -25,6 +25,7 @@ public class SolutionPlan
 	private Set<Timeline> observations;
 	private List<Relation> relations;
 	private PlanControllabilityType controllability;
+	private double makespan;
 	
 	/**
 	 * 
@@ -39,6 +40,7 @@ public class SolutionPlan
 		this.observations = new HashSet<>();
 		this.relations = new ArrayList<>();
 		this.controllability = PlanControllabilityType.UNKNOWN;
+		this.makespan = horizon;
 	}
 	
 	/**
@@ -55,6 +57,22 @@ public class SolutionPlan
 	 */
 	public long getHorizon() {
 		return this.horizion;
+	}
+	
+	/**
+	 * 
+	 * @param makespan
+	 */
+	public void setMakespan(double makespan) {
+		this.makespan = makespan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMakespan() {
+		return makespan;
 	}
 	
 	/**
@@ -269,7 +287,7 @@ public class SolutionPlan
 	 */
 	@Override
 	public String toString() {
-		String description = "Plan (H= " + this.horizion + ", controllability= " + this.controllability + " #timelines= " + this.timelines.size() + ", #observations= " + this.observations.size() + ", #relations= " + this.relations.size() + ") {\n";
+		String description = "Plan (H= " + this.horizion + ", makespan= " + this.makespan +" controllability= " + this.controllability + " #timelines= " + this.timelines.size() + ", #observations= " + this.observations.size() + ", #relations= " + this.relations.size() + ") {\n";
 		// print decisions 
 		description += "\tdecisions {\n";
 		for (Timeline tl : this.timelines) {

@@ -9,11 +9,11 @@ import java.util.Set;
 
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
-import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
+import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 
 /**
  * 
@@ -22,9 +22,6 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.Po
  */
 public class HierarchyFlawFilter extends FlawFilter 
 {
-	@PlanDataBaseReference
-	private PlanDataBase pdb;
-
 	// domain hierarchy
 	private List<DomainComponent>[] hierarchy;
 
@@ -47,6 +44,56 @@ public class HierarchyFlawFilter extends FlawFilter
 		Map<DomainComponent, Set<DomainComponent>> dg = this.pdb.getDependencyGraph();
 		// compute the resulting hierarchy 
 		this.computeHierarchy(dg);
+		// print hierarchy information
+		String str = "Computed hierarchy:\n";
+		for (int index = 0; index < this.hierarchy.length; index++)
+		{
+			// check if the current level contains elements
+			if (!this.hierarchy[index].isEmpty())
+			{
+				// print the current hierarchical level
+				str += "[" + index + "] -> {";
+				for (DomainComponent component : this.hierarchy[index]) {
+					str += " " + component.getName() + " ";
+				}
+				str += "}\n";
+			}
+		}
+		str += "\n";
+		// print computed hierarchy
+		this.logger.info(str);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Set<Flaw> filter() 
+			throws UnsolvableFlawFoundException 
+	{
+		// filtered set
+		Set<Flaw> set = new HashSet<>();
+		// get goals 
+		List<Flaw> goals = this.pdb.detectFlaws(FlawType.PLAN_REFINEMENT);
+		// detect flaws according to the computed hierarchy of the domain
+		for (int index = 0; index < this.hierarchy.length && set.isEmpty(); index++)
+		{
+			// extract flaws of equivalent components
+			for (DomainComponent component : this.hierarchy[index])
+			{
+				// add related goals
+				for (Flaw goal : goals) {
+					if (goal.getComponent().equals(component)) {
+						set.add(goal);
+					}
+				}
+				// add flaws of the specific component
+				set.addAll(component.detectFlaws());
+			}
+		}
+		
+		// get flaws
+		return set;
 	}
 	
 	/**
@@ -56,9 +103,9 @@ public class HierarchyFlawFilter extends FlawFilter
 	public Set<Flaw> filter(Collection<Flaw> flaws) 
 	{
 		// filtered set
-		Set<Flaw> filtered = new HashSet<>();
+		Set<Flaw> set = new HashSet<>();
 		// filter flaws according to the hierarchy of the related component
-		for (int hlevel = 0; hlevel < this.hierarchy.length; hlevel++)
+		for (int hlevel = 0; hlevel < this.hierarchy.length && set.isEmpty(); hlevel++)
 		{
 			// extract flaws of equivalent components
 			for (DomainComponent c : this.hierarchy[hlevel]) 
@@ -69,14 +116,14 @@ public class HierarchyFlawFilter extends FlawFilter
 					// check flaw's component
 					if (flaw.getComponent().equals(c)) {
 						// add flaw
-						filtered.add(flaw);
+						set.add(flaw);
 					}
 				}
 			}
 		}
 		
 		// get filtered set
-		return filtered;
+		return set;
 	}
 	
 	/**
@@ -111,22 +158,30 @@ public class HierarchyFlawFilter extends FlawFilter
 		// start building hierarchy
 		while (!S.isEmpty()) 
 		{
-			// get current root component
-			DomainComponent root = S.remove(0);
-			// add component
-			this.hierarchy[hlevel].add(root);
+			// get all root components
+			for (DomainComponent root : S) 
+			{
+				// add component
+				this.hierarchy[hlevel].add(root);
+				// remove current root from the graph
+				graph.remove(root);
+				// remove "edges" to 
+				for (DomainComponent other : graph.keySet())
+				{
+					if (graph.get(other).contains(root)) {
+						graph.get(other).remove(root);
+					}
+				}
+			}
+			
+			// clear the set of root node
+			S.clear();
 			// update hierarchy degree
 			hlevel++;
 			
-			// update the graph and look for new roots
-			graph.remove(root);
+			// look for new roots
 			for (DomainComponent c : graph.keySet()) 
 			{
-				// remove node
-				if (graph.get(c).contains(root)) {
-					graph.get(c).remove(root);
-				}
-				
 				// check if root
 				if (graph.get(c).isEmpty() && !S.contains(c)) {
 					// add root

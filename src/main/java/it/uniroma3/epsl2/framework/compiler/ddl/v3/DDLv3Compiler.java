@@ -780,7 +780,7 @@ public class DDLv3Compiler extends DomainCompiler
 				// state variable component
 				case SV_EXTERNAL : 
 				case SV_FUNCTIONAL : 
-				case SV_PRIMTIVE : 
+				case SV_PRIMITIVE : 
 				{
 					// check target decision
 					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
@@ -1214,7 +1214,7 @@ public class DDLv3Compiler extends DomainCompiler
 				// state variable component
 				case SV_EXTERNAL : 
 				case SV_FUNCTIONAL : 
-				case SV_PRIMTIVE : 
+				case SV_PRIMITIVE : 
 				{
 					// check target decision
 					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
@@ -1918,7 +1918,7 @@ public class DDLv3Compiler extends DomainCompiler
 				// state variable component
 				case SV_EXTERNAL : 
 				case SV_FUNCTIONAL : 
-				case SV_PRIMTIVE : 
+				case SV_PRIMITIVE : 
 				{
 					// check target decision
 					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
@@ -2507,7 +2507,7 @@ public class DDLv3Compiler extends DomainCompiler
 			}
 			else {
 				// primitive variable
-				sv = pdb.createDomainComponent(name, DomainComponentType.SV_PRIMTIVE);
+				sv = pdb.createDomainComponent(name, DomainComponentType.SV_PRIMITIVE);
 			}
 
 			// get component type

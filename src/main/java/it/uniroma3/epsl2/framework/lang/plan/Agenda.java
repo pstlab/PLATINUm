@@ -54,4 +54,12 @@ public class Agenda
 	public void add(Relation rel) {
 		this.relations.add(rel);
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[Agenda #goals= " + this.goals.size() + " #relations= " + this.relations.size() + "]";
+	}
 }

@@ -28,7 +28,7 @@ import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationExceptio
 import it.uniroma3.epsl2.framework.time.lang.FixTimePointConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
-import it.uniroma3.epsl2.framework.time.lang.query.CheckIntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 
 /**
@@ -214,8 +214,8 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 			for (ResourceEvent event : events) 
 			{
 				// check decision schedule
-				CheckIntervalScheduleQuery query = this.tdb.createTemporalQuery(
-						TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
+						TemporalQueryType.INTERVAL_SCHEDULE);
 				// set interval
 				query.setInterval(event.getDecision().getToken().getInterval());
 				// process query
@@ -308,8 +308,8 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 			for (ResourceEvent event : events) 
 			{
 				// check decision schedule
-				CheckIntervalScheduleQuery query = this.tdb.createTemporalQuery(
-						TemporalQueryType.CHECK_INTERVAL_SCHEDULE);
+				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
+						TemporalQueryType.INTERVAL_SCHEDULE);
 				// set interval
 				query.setInterval(event.getDecision().getToken().getInterval());
 				// process query
