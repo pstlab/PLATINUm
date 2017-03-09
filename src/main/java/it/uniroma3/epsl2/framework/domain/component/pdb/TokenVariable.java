@@ -174,6 +174,6 @@ public class TokenVariable
 	 */
 	@Override
 	public String toString() {
-		return "[TokenVariable id= " + this.id +  " value= " + this.value + "]";
+		return "[TokenVariable " + this.id +  ":" + this.value + "]";
 	}
 }

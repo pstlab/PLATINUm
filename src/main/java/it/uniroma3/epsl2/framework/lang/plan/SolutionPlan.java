@@ -286,23 +286,26 @@ public class SolutionPlan
 	 * 
 	 */
 	@Override
-	public String toString() {
-		String description = "Plan (H= " + this.horizion + ", makespan= " + this.makespan +" controllability= " + this.controllability + " #timelines= " + this.timelines.size() + ", #observations= " + this.observations.size() + ", #relations= " + this.relations.size() + ") {\n";
-		// print decisions 
-		description += "\tdecisions {\n";
-		for (Timeline tl : this.timelines) {
-			description += "\t\ttimeline." + tl.getComponent().getName() + " {\n";
+	public String toString() 
+	{
+		// initialize solution plan description
+		String description = "Plan (H= " + this.horizion + ", makespan= " + this.makespan +" controllability= " + this.controllability + " #timelines= " + this.timelines.size() + ", #observations= " + this.observations.size() + ", #relations= " + this.relations.size() + ")\n";
+		// print timelines 
+		description += "timelines {\n";
+		for (Timeline tl : this.timelines) 
+		{
+			description += "\t" + tl.getComponent().getName() + " {\n";
 			// get tokens
 			for (Token token : tl.getTokens()) {
-				description += "\t\t\t" + token + "\n";
+				description += "\t\t" + token + "\n";
 			}
-			description += "\t\t}\n";
+			description += "\t}\n";
  		}
 		// end decisions
-		description	+= "\t}\n";
+		description	+= "}\n\n";
 		
 		// print observations
-		description += "\tobservations {\n";
+		description += "observations {\n";
 		for (Timeline tl : this.observations) {
 			description += "\t\tobservation." + tl.getComponent().getName() + " {\n";
 			// get tokens 
@@ -311,15 +314,15 @@ public class SolutionPlan
 			}
 			description += "\t\t}\n";
 		}
-		description += "\t}\n";
+		description += "}\n";
 		
 		// print relations
-		description += "\trelations {\n";
+		description += "relations {\n";
 		for (Relation rel : this.relations) {
-			description += "\t\t" + rel + "\n";
+			description += "\t " + rel.getType() +  " {"
+					+ "" + rel.getReference().getToken().getId() + ":" + rel.getReference().getToken().getPredicate().getGroundSignature()+", "
+					+ "" + rel.getTarget().getToken().getId() + ":" + rel.getTarget().getToken().getPredicate().getGroundSignature() +"}\n";
 		}
-		description += "\t}\n";
-		// close plan description
 		description += "}\n";
 		// get description
 		return description;

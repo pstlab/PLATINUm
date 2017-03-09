@@ -33,6 +33,14 @@ public interface FlawManager
 	/**
 	 * 
 	 * @param solution
+	 * @throws Exception
+	 */
+	public void restore(FlawSolution solution) 
+			throws Exception;
+	
+	/**
+	 * 
+	 * @param solution
 	 */
 	public void retract(FlawSolution solution);
 }

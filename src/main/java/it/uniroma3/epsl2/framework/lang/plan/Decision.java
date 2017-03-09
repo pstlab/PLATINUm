@@ -18,7 +18,6 @@ public class Decision
 	private int id;
 	private Decision causalLink;		// set "generator" decision
 	private ComponentValue value;
-//	private PlanElementStatus status;
 	private String[] labels;
 	private long[] start;
 	private long[] end;
@@ -50,8 +49,6 @@ public class Decision
 		this.start = start;
 		this.end = end;
 		this.nominalDuration = nominalDuration;
-		// set initial status
-//		this.status = PlanElementStatus.PENDING;
 		this.token = null;
 		
 		// set solving knowledge
@@ -246,29 +243,12 @@ public class Decision
 		return this.value.isControllable();
 	}
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public boolean isActive() {
-//		return this.status.equals(PlanElementStatus.ACTIVE);
-//	}
-//	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public boolean isPending() {
-//		return this.status.equals(PlanElementStatus.PENDING);
-//	}
-	
 	/**
 	 * 
 	 * @param token
 	 */
 	public void setToken(Token token) {
 		this.token = token;
-//		this.status = PlanElementStatus.ACTIVE;
 	}
 	
 	/**
@@ -276,7 +256,6 @@ public class Decision
 	 */
 	public void clear() {
 		this.token = null;
-//		this.status = PlanElementStatus.PENDING;
 	}
 	
 	/**
@@ -327,20 +306,11 @@ public class Decision
 		return true;
 	}
 	
-
 	/**
 	 * 
-	 * @return
 	 */
 	@Override
 	public String toString() {
-		return "[Decision <" + (this.value.isControllable() ? "c" : "u") + "> "
-				+ "id= " + this.id + " "
-				+ "value= " + this.value.getLabel() +" "
-//				+ "status= " + this.status + " "
-				+ "start= [" + this.getStart()[0] + ", " + this.getStart()[1] + "] "
-				+ "duration= [" + this.getDuration()[0] + ", " + this.getDuration()[1] + "] "
-				+ "nominal-duration= [" + this.getNominalDuration()[0] + ", " + this.getNominalDuration()[1] + "] "
-				+ "end= [" + this.getEnd()[0] + ", " + this.getEnd()[1] + "]]";
+		return "[Decision " + this.id + ":" + this.value.getLabel() + "]";
 	}
 }

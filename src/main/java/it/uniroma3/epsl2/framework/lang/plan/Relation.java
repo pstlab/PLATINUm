@@ -140,12 +140,12 @@ public abstract class Relation
 			return false;
 		return true;
 	}
-
+	
 	/**
 	 * 
 	 */
 	@Override
 	public String toString() {
-		return "[Relation id= " + this.id + " type= " + this.type + " reference= " + this.reference.getId() + ":" + this.reference.getValue().getLabel() + " target= " + this.target.getId() + ":" + this.target.getValue().getLabel()+ "]";
+		return "[Relation " + this.reference + " " + this.type + " " + this.target +" active= " + (this.constraint != null) + "]";
 	}
 }

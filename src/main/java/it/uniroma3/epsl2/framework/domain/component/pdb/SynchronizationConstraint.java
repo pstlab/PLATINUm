@@ -57,4 +57,12 @@ public abstract class SynchronizationConstraint
 	public ConstraintCategory getCategory() {
 		return this.type.getCategory();
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[SynchronizationConstraint " + this.source + " " + this.type + " " + this.target + "]";
+	}
 }

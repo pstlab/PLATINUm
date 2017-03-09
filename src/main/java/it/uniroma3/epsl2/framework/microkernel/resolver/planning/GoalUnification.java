@@ -1,6 +1,11 @@
 package it.uniroma3.epsl2.framework.microkernel.resolver.planning;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**
@@ -10,7 +15,8 @@ import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
  */
 public class GoalUnification extends GoalJustification 
 {
-	private Decision unification;	// merging decision
+	private Decision unification;		// merging decision
+	private Set<Relation> toTranslate;	// list of translated relations
 	
 	/**
 	 * 
@@ -20,6 +26,7 @@ public class GoalUnification extends GoalJustification
 	protected GoalUnification(Goal goal, Decision dec) {
 		super(goal, JustificationType.UNIFICATION);
 		this.unification = dec;
+		this.toTranslate = new HashSet<>();
 	}
 	
 	/**
@@ -33,6 +40,22 @@ public class GoalUnification extends GoalJustification
 		String cost = property.getProperty("unification-cost");
 		// parse and get double value
 		return Double.parseDouble(cost);
+	}
+	
+	/**
+	 * 
+	 * @param translated
+	 */
+	public void setTranslatedRelations(List<Relation> translated) {
+		this.toTranslate = new HashSet<>(translated);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Set<Relation> getToTranslate() {
+		return toTranslate;
 	}
 	
 	/**

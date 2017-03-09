@@ -6,9 +6,10 @@ import java.util.List;
 import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristic;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
-import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
+import it.uniroma3.epsl2.framework.lang.ex.OperatorPropagationException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
+import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
@@ -118,18 +119,9 @@ public abstract class Solver extends ApplicationFrameworkObject
 		{
 			// retract operators of the last propagate node till the last common operator
 			toRetract.addAll(last.getOperatorsUpTo(lastCommonOperator));
-			for (Operator op : toRetract) 
-			{
-//				try {
-					// undo applied flaw solution
-					this.pdb.retract(op);
-//					// clear flaw solution 
-//					op.getFlawSolution().clear();
-//				}
-//				catch (FlawSolutionApplicationException ex) {
-//					this.logger.error(ex.getMessage());
-//					throw new RuntimeException(ex.getMessage());
-//				}
+			for (Operator op : toRetract) {
+				// undo applied flaw solution
+				this.pdb.retract(op);
 			}
 		}
 		
@@ -144,17 +136,11 @@ public abstract class Solver extends ApplicationFrameworkObject
 				this.pdb.propagate(op);
 				committed.add(op);
 			}
-			catch (FlawSolutionApplicationException ex) {
-//				try {
-					// undo committed operators
-					for (Operator comm : committed) {
-						this.pdb.retract(comm);
-					}
-//				} 
-//				catch (FlawSolutionApplicationException exx) {
-//					this.logger.error(exx.getMessage());
-//					throw new RuntimeException(exx.getMessage());
-//				}
+			catch (OperatorPropagationException ex) {
+				// undo committed operators
+				for (Operator comm : committed) {
+					this.pdb.retract(comm);
+				}
 				
 				// forward exception
 				throw new PlanRefinementException(ex.getMessage());

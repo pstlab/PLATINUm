@@ -15,7 +15,6 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.allen.ContainsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.DuringIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
@@ -507,12 +506,12 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			c2.setFirstBound(new long[] {1, 80});
 			c2.setSecondBound(new long[] {1, 80});
 			// contains constraint
-			ContainsIntervalConstraint c3 = this.intervalFactory.
-					create(TemporalConstraintType.CONTAINS);
-			c3.setReference(i3);
-			c3.setTarget(i1);
-			c3.setFirstBound(new long[] {1,100});
-			c3.setSecondBound(new long[] {1, 100});
+			DuringIntervalConstraint c3 = this.intervalFactory.
+					create(TemporalConstraintType.DURING);
+			c3.setReference(i1);
+			c3.setTarget(i3);
+			c3.setFirstBound(new long[] {1,10});
+			c3.setSecondBound(new long[] {1, 10});
 			
 			// propagate constraints
 			facade.propagate(c1);
@@ -542,6 +541,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
 		}
 	}
 	
@@ -552,7 +552,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 	public void createIntervalsAndProcessQuery() {
 		System.out.println("[Test]: createIntervalsAndProcessQuery() --------------------");
 		System.out.println();
-		try {
+		try 
+		{
 			// create temporal intervals
 			TemporalInterval i1 = facade.createTemporalInterval(new long[] {10, 10}, true);
 			TemporalInterval i2 = facade.createTemporalInterval(new long[] {5, 8}, true);
@@ -571,18 +572,21 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 			c2.setFirstBound(new long[] {1, 80});
 			c2.setSecondBound(new long[] {1, 80});
 			// contains constraint
-			ContainsIntervalConstraint c3 = this.intervalFactory.
-					create(TemporalConstraintType.CONTAINS);
-			c3.setReference(i3);
-			c3.setTarget(i1);
-			c3.setFirstBound(new long[] {1,100});
-			c3.setSecondBound(new long[] {1, 100});
+			DuringIntervalConstraint c3 = this.intervalFactory.
+					create(TemporalConstraintType.DURING);
+			c3.setReference(i1);
+			c3.setTarget(i3);
+			c3.setFirstBound(new long[] {1,10});
+			c3.setSecondBound(new long[] {1, 10});
 			
 			// propagate constraints
-			facade.propagate(c1);
-			facade.propagate(c2);
-			facade.propagate(c3);
-			
+			this.facade.propagate(c1);
+			// check consistency
+			this.facade.checkConsistency();
+			this.facade.propagate(c2);
+			// check consistency
+			this.facade.checkConsistency();
+			this.facade.propagate(c3);
 			// check consistency
 			this.facade.checkConsistency();
 			// print network
@@ -611,6 +615,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
 		}
 	}
 

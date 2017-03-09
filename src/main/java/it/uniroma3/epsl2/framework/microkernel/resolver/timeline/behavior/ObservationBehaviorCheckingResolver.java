@@ -59,6 +59,14 @@ public final class ObservationBehaviorCheckingResolver <T extends StateVariable>
 	 * 
 	 */
 	@Override
+	protected void doRestore(FlawSolution solution) throws Exception {
+		// nothing to do
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
 			throws UnsolvableFlawFoundException {
 		// simply throw exception

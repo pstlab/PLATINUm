@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.component.Token;
+import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.sv.StateVariable;
@@ -80,7 +81,6 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			rel.setBound(new long[] {0, this.component.getHorizon()});
 			// add reference, target and constraint
 			relations.add(rel);
-			
 			this.logger.debug("Applying flaw solution\n- " + solution + "\nthrough before constraint " + rel);
 		}
 		
@@ -88,17 +88,18 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		{
 			// propagate relations
 			this.component.add(relations);
-			// set added relations
-			solution.addAddedRelations(relations);
+			// set relation as activated
+			solution.addActivatedRelations(relations);
 		}
 		catch (RelationPropagationException ex) 
 		{
 			// free all relations
 			for (Relation rel : relations) {
+				// clear memory from relation
 				this.component.free(rel);
 			}
 			
-			// throw exception
+			// not feasible solution
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
 	}
@@ -155,15 +156,13 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 						// add peak
 						peaks.add(peak);
 					}
-					else 
+					else	// scheduled decisions 
 					{
 						// add decisions to scheduled set
 						Set<Decision> sset = new HashSet<>();
 						sset.add(source);
 						sset.add(target);
 						scheduled.add(sset);
-						// already scheduled decision
-						this.logger.debug("Already scheduled decisions [dmin= " + dmin +", dmax= " + dmax + "]\n- source: " + source + "\n- target: " + target);
 					}
 				}
 			}
@@ -226,35 +225,94 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 	@Override
 	protected void doRetract(FlawSolution solution) 
 	{
-		// manage added relations
-		for (Relation rel : solution.getAddedRelations()) {
-			// completely delete relation 
-			this.component.free(rel);
-		}
-		
 		// manage activated relations
 		for (Relation rel : solution.getActivatedRelations()) {
 			// deactivate relation
 			this.component.delete(rel);
 		}
 		
-		
-		// manage created relations
-		for (Relation rel : solution.getCreatedRelations()) {
-			// delete pending relation
-			this.component.delete(rel);
-		}
-		
-		// delete activated decisions
+		// delete activated decisions: ACTIVE -> PENDING
 		for (Decision dec : solution.getActivatedDecisisons()) {
 			// deactivate decision
 			this.component.delete(dec);
 		}
 		
-		// delete pending decisions
+		// delete pending decisions: PENDING -> SILENT
 		for (Decision dec : solution.getCreatedDecisions()) {
 			// delete pending decisions
 			this.component.delete(dec);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected void doRestore(FlawSolution solution) 
+			throws Exception 
+	{
+		// get created decisions 
+		List<Decision> dCreated = solution.getCreatedDecisions();
+		// restore created decisions
+		for (Decision dec : dCreated) {
+			// restore decision
+			this.component.restore(dec);
+		}
+		
+		// get activated decisions
+		List<Decision> dActivated = solution.getActivatedDecisisons();
+		List<Decision> commitDecs = new ArrayList<>();
+		// activate decisions
+		for (Decision dec : dActivated) 
+		{
+			try
+			{
+				// activate decision
+				this.component.add(dec);
+				commitDecs.add(dec);
+			}
+			catch (DecisionPropagationException ex) 
+			{
+				// deactivate committed decisions
+				for (Decision d : commitDecs) {
+					// deactivate decision
+					this.component.delete(d);
+				}
+
+				// error while resetting flaw solution
+				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+			}
+		}
+		
+		// get activated relations
+		List<Relation> rActivated = solution.getActivatedRelations();
+		// list of committed relations
+		List<Relation> commitRels = new ArrayList<>();
+		// activate relations
+		for (Relation rel : rActivated) 
+		{
+			try
+			{
+				// activate relation
+				this.component.add(rel);
+				commitRels.add(rel);
+			}
+			catch (RelationPropagationException ex) {
+				// deactivate committed relations
+				for (Relation r : commitRels) {
+					// deactivate relation
+					this.component.delete(r);
+				}
+				
+				// deactivate committed decisions
+				for (Decision d : commitDecs) {
+					// deactivate 
+					this.component.delete(d);
+				}
+				
+				// error while restoring flaw solution
+				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+			}
 		}
 	}
 	

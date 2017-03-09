@@ -375,7 +375,7 @@ public class PlanDataBaseTestCase {
 			// add pending decision
 			Decision dec = ((PlanDataBaseComponent) this.pdb).create(v13, new String[] {});
 			Assert.assertNotNull(dec);
-			Assert.assertTrue(dec.isPending());
+			Assert.assertTrue(this.pdb.isPending(dec));
 			Assert.assertFalse(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
 			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().size() == 1);
 			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());

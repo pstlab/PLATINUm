@@ -20,14 +20,14 @@ public abstract class FlawSolution
 	private int id;
 	protected Flaw flaw;
 	
-	// decisions managed during solution application
+	// decisions managed during the application of the solution
 	protected Set<Decision> dCreated;					// decisions added to plan as pending
 	protected Set<Decision> dActivated;					// pending decisions added to plan
 	
-	// relations managed during solution application
-	protected Set<Relation> rCreated;					// relations added to plan as pending
-	protected Set<Relation> rActivated;					// pending relations added to plan
-	protected Set<Relation> rAdded;						// relations created and activated
+	// relations managed during the application of the solution
+	protected Set<Relation> rCreated;					// relation created 
+	protected Set<Relation> rActivated;					// relation activated
+//	protected Set<Relation> rAdded;						// relations created and activated
 	
 	/**
 	 * 
@@ -42,7 +42,7 @@ public abstract class FlawSolution
 		this.dActivated = new HashSet<>();
 		this.rCreated = new HashSet<>();
 		this.rActivated = new HashSet<>();
-		this.rAdded = new HashSet<>();
+//		this.rAdded = new HashSet<>();
 	}
 	
 //	/**
@@ -175,29 +175,29 @@ public abstract class FlawSolution
 		this.rActivated.addAll(rels);
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public List<Relation> getAddedRelations() {
-		return new ArrayList<>(this.rAdded);
-	}
-	
-	/**
-	 * 
-	 * @param rel
-	 */
-	public void addAddedRelation(Relation rel) {
-		this.rAdded.add(rel);
-	}
-
-	/**
-	 * 
-	 * @param rels
-	 */
-	public void addAddedRelations(Collection<Relation> rels) {
-		this.rAdded.addAll(rels);
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public List<Relation> getAddedRelations() {
+//		return new ArrayList<>(this.rAdded);
+//	}
+//	
+//	/**
+//	 * 
+//	 * @param rel
+//	 */
+//	public void addAddedRelation(Relation rel) {
+//		this.rAdded.add(rel);
+//	}
+//
+//	/**
+//	 * 
+//	 * @param rels
+//	 */
+//	public void addAddedRelations(Collection<Relation> rels) {
+//		this.rAdded.addAll(rels);
+//	}
 	
 	/**
 	 * 

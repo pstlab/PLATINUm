@@ -10,6 +10,7 @@ import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;

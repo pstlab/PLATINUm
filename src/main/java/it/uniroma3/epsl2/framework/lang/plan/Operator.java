@@ -1,10 +1,9 @@
-package it.uniroma3.epsl2.deliberative.solver;
+package it.uniroma3.epsl2.framework.lang.plan;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 
 /**
  * 
@@ -24,7 +23,7 @@ public class Operator implements Comparable<Operator>
 	 * 
 	 * @param solution
 	 */
-	protected Operator(FlawSolution solution) {
+	public Operator(FlawSolution solution) {
 		this.id = ID_COUNTER.getAndIncrement();
 		this.solution = solution;
 		this.applied = false;

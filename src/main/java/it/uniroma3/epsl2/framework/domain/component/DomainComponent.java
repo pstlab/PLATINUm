@@ -12,9 +12,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import it.istc.pst.epsl.microkernel.internal.engine.exception.UnsolvableFlawException;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionNotFoundException;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
+import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
 import it.uniroma3.epsl2.framework.lang.ex.ConstraintPropagationException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
@@ -61,7 +63,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
-//	protected Map<PlanElementStatus, Set<Relation>> relations;
 	protected Set<Relation> relations;
 	
 	@ComponentViewReference
@@ -95,13 +96,9 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		for (PlanElementStatus status : PlanElementStatus.values()) {
 			this.decisions.put(status, new HashSet<>());
 		}
+		
 		// initialize relations of the (local) plan
 		this.relations = new HashSet<>();
-//		this.relations = new HashMap<>();
-//		for (PlanElementStatus status : PlanElementStatus.values()) {
-//			this.relations.put(status, new HashSet<>());
-//		}
-		
 		// set up the list of resolvers
 		this.resolvers = new ArrayList<>();
 		this.flawType2resolver = new HashMap<>();
@@ -158,6 +155,26 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 */
 	public long getHorizon() {
 		return this.tdb.getHorizon();
+	}
+	
+	/**
+	 * 
+	 */
+	public void clear() 
+	{
+		// delete all active relations
+		for (Relation rel : this.getActiveRelations()) {
+			this.delete(rel);
+		}
+		
+		// delete all active decisions
+		for (Decision dec : this.getActiveDecisions()) {
+			this.delete(dec);
+		}
+		
+		// clear data structures
+		this.decisions.clear();
+		this.relations.clear();
 	}
 	
 	/**
@@ -236,7 +253,13 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @param dec
 	 */
 	public void restore(Decision dec) {
-		this.decisions.get(PlanElementStatus.PENDING).add(dec);
+		// check if silent decision
+		if (this.decisions.get(PlanElementStatus.SILENT).contains(dec)) {
+			// remove from silent set
+			this.decisions.get(PlanElementStatus.SILENT).remove(dec);
+			// add to pending set
+			this.decisions.get(PlanElementStatus.PENDING).add(dec);
+		}
 	}
 	
 	/**
@@ -403,8 +426,10 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			// delete related token
 			Token token = dec.getToken();
 			// delete parameters of token predicate
-			for (Parameter<?> param : token.getPredicate().getParameters()) {
-				try {
+			for (Parameter<?> param : token.getPredicate().getParameters()) 
+			{
+				try 
+				{
 					// delete parameter
 					this.pdb.deleteParameter(param);
 				}
@@ -457,7 +482,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			rel = c.newInstance(reference, target);
 			// add relation
 			this.relations.add(rel);
-//			this.relations.get(PlanElementStatus.PENDING).add(rel);
 		}
 		catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -465,70 +489,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		// get created relation
 		return rel;
 	}
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public List<Relation> getPendingRelations() 
-//	{
-//		// list of relations
-//		List<Relation> list = new ArrayList<>();
-//		for (Relation rel : this.relations) {
-//			// check status of reference and target decisions
-//			if (this.isPending(rel)) {
-//				// add pending relation
-//				list.add(rel);
-//			}
-//		}
-//		
-//		// get list 
-//		return list;
-////		return new ArrayList<>(this.relations.get(PlanElementStatus.PENDING));
-//	}
-//	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public List<Relation> getActiveRelations() 
-//	{
-//		// list of relations
-//		List<Relation> list = new ArrayList<>();
-//		for (Relation rel : this.relations) {
-//			// check status of reference and target decisions
-//			if (this.isActive(rel) && rel.getConstraint() != null) {
-//				// add pending relation
-//				list.add(rel);
-//			}
-//		}
-//		
-//		// get list 
-//		return list;
-////		return new ArrayList<>(this.relations.get(PlanElementStatus.ACTIVE));
-//	}
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public List<Relation> getSilentRelations() 
-//	{
-//		// list of relations
-//		List<Relation> list = new ArrayList<>();
-//		for (Relation rel : this.relations) 
-//		{
-//			// check if relation is silent
-//			if (this.isSilent(rel)) {
-//				// add pending relation
-//				list.add(rel);
-//			}
-//		}
-//		
-//		// get list 
-//		return list;
-////		return new ArrayList<>(this.relations.get(PlanElementStatus.ACTIVE));
-//	}
 	
 	/**
 	 * 
@@ -544,76 +504,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		// check condition
 		return (this.isSilent(reference) || this.isSilent(target)) && rel.getConstraint() == null;
 	}
-	
-//	/**
-//	 * 
-//	 * @param reference
-//	 * @param target
-//	 */
-//	public List<Relation> getExistingRelations(Decision reference, Decision target) 
-//	{
-//		// list of relation concerning the decisions
-//		List<Relation> list = new ArrayList<>();
-//		// check pending relations
-//		for (Relation rel : this.relations.get(PlanElementStatus.PENDING)) {
-//			// check related decisions
-//			if (rel.getReference().equals(reference) && rel.getTarget().equals(target)) {
-//				list.add(rel);
-//			}
-//		}
-//		
-//		// check active relations
-//		for (Relation rel : this.relations.get(PlanElementStatus.ACTIVE)) {
-//			// check related decisions
-//			if (rel.getReference().equals(reference) && rel.getTarget().equals(target)) {
-//				list.add(rel);
-//			}
-//		}
-//		
-//		// get list
-//		return list;
-//	}
-//	
-//	/**
-//	 * Get the list of pending relations concerning a particular decision
-//	 * 
-//	 * @param dec
-//	 * @return
-//	 */
-//	public List<Relation> getPendingRelations(Decision dec) 
-//	{
-//		// list of relations
-//		List<Relation> list = new ArrayList<>();
-//		for (Relation rel : this.relations) 
-//		{
-//			// get reference
-//			Decision reference = rel.getReference();
-//			// get target
-//			Decision target = rel.getTarget();
-//			// check status of reference and target decisions
-//			if ((dec.equals(reference) || dec.equals(target)) && this.isPending(rel))
-//			{
-//				// add pending relation
-//				list.add(rel);
-//			}
-//		}
-//		
-//		// get list 
-//		return list;
-		
-		
-//		// list of relations
-//		List<Relation> list = new ArrayList<>();
-//		for (Relation rel : this.relations.get(PlanElementStatus.PENDING)) {
-//			// check reference and target
-//			if (rel.getReference().equals(dec) || rel.getTarget().equals(dec)) {
-//				// add relation
-//				list.add(rel);
-//			}
-//		}
-//		// get list
-//		return list;
-//	}
 	
 	/**
 	 * 
@@ -676,6 +566,30 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	
 	/**
 	 * 
+	 * @param reference
+	 * @param target
+	 * @return
+	 */
+	public List<Relation> getActiveRelations(Decision reference, Decision target)
+	{
+		// list of active relations
+		List<Relation> list = new ArrayList<>();
+		for (Relation rel : this.relations)
+		{
+			// check decisions and relation status
+			if (reference.equals(rel.getReference()) && target.equals(rel.getTarget()) && this.isActive(rel)) 
+			{
+				// add relation
+				list.add(rel);
+			}
+		}
+		
+		// get the list
+		return list;
+	}
+	
+	/**
+	 * 
 	 * @param dec
 	 * @return
 	 */
@@ -706,17 +620,9 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	{
 		// list of relations
 		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations) 
-		{
-			// get reference
-			Decision reference = rel.getReference();
-			// get target
-			Decision target = rel.getTarget();
+		for (Relation rel : this.relations) {
 			// check decisions and relation status
-			if ((dec.equals(reference) && this.isActive(target)) || 
-					(dec.equals(target) && this.isActive(reference)) && 
-					rel.getConstraint() == null)
-			{
+			if (this.isToActivate(rel) && (dec.equals(rel.getReference()) || dec.equals(rel.getTarget()))) {
 				// add pending relation
 				list.add(rel);
 			}
@@ -803,6 +709,15 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public List<Relation> getRelations() 
+	{
+		return new ArrayList<>(this.relations);
+	}
+	
+	/**
+	 * 
 	 * @param rel
 	 * @return
 	 */
@@ -841,6 +756,49 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 */
 	public boolean isSilent(Decision dec) {
 		return this.decisions.get(PlanElementStatus.SILENT).contains(dec);
+	}
+	
+	/**
+	 * 
+	 * @param relation
+	 */
+	public void free(Relation relation) 
+	{
+		// check relation
+		if (this.relations.contains(relation)) {
+			// deactivate relation if necessary
+			if (this.isActive(relation)) {
+				// deactivate relation
+				this.delete(relation);
+			}
+			
+			// completely remove data structure
+			this.relations.remove(relation);
+		}
+	}
+	
+	/**
+	 * Only for debugging 
+	 * 
+	 * @return
+	 */
+	public List<Decision> getSilentDecisions() {
+		return new ArrayList<>(this.decisions.get(PlanElementStatus.SILENT));
+	}
+	
+	/**
+	 * Only for debugging 
+	 * 
+	 * @return
+	 */
+	public List<Relation> getSilentRelations() {
+		List<Relation> list = new ArrayList<>();
+		for (Relation rel : this.relations) {
+			if (this.isSilent(rel)) {
+				list.add(rel);
+			}
+		}
+		return list;
 	}
 	
 	/**
@@ -899,7 +857,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			}
 			else {
 				// already propagated constraint
-				this.logger.warning("Already propagated local relation\n- " + rel + "\n");
+				this.logger.debug("Already propagated local relation\n- " + rel + "\n");
 			}
 		}
 		catch (ConstraintPropagationException ex) {
@@ -940,49 +898,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			throw new RelationPropagationException(ex.getMessage());
 		}
 	}
-	
-//	/**
-//	 * This method completely remove a relation from the plan whatever state 
-//	 * the relation belongs to
-//	 * 
-//	 * @param rel
-//	 */
-//	public void free(Relation rel) 
-//	{
-//		// retract constraint if active
-//		if (this.relations.contains(rel) && this.isActive(rel)) 
-//		{
-//			// check relation type
-//			switch (rel.getCategory()) 
-//			{
-//				// retract temporal constraint
-//				case TEMPORAL_CONSTRAINT : 
-//				{
-//					// get temporal relation
-//					TemporalRelation trel = (TemporalRelation) rel;
-//					// retract constraint
-//					this.tdb.retract(trel.getConstraint());
-//					trel.clear();
-//				}
-//				break;
-//				
-//				// retract parameter constraint
-//				case PARAMETER_CONSTRAINT : 
-//				{
-//					// get parameter relation
-//					ParameterRelation prel = (ParameterRelation) rel;
-//					// retract constraint
-//					this.pdb.retract(prel.getConstraint());
-//					prel.clear();
-//				}
-//				break;
-//			}
-//		}
-//		else {
-//			// relation not found
-//			this.logger.debug("Relation not found in the plan " + rel);
-//		}
-//	}
 	
 	/**
 	 * 
@@ -1087,27 +1002,38 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		return list;
 	}
 	
-//	/**
-//	 * Solve a flaw by applying the selected solution
-//	 * 
-//	 * @param flaw
-//	 * @param sol
-//	 * @throws FlawSolutionApplicationException
-//	 */
-//	public void commit(FlawSolution solution) 
-//			throws FlawSolutionApplicationException {
-//		// dispatch the flaw to the correct resolver
-//		this.flawType2resolver.get(solution.getFlaw().getType()).apply(solution);
-//	}
+	/**
+	 * Solve a flaw by applying the selected solution
+	 * 
+	 * @param flaw
+	 * @param sol
+	 * @throws FlawSolutionApplicationException
+	 */
+	public void commit(FlawSolution solution) 
+			throws FlawSolutionApplicationException {
+		// dispatch the flaw to the correct resolver
+		this.flawType2resolver.get(solution.getFlaw().getType()).apply(solution);
+	}
 	
-//	/**
-//	 * 
-//	 * @param solution
-//	 */
-//	public void rollback(FlawSolution solution) {
-//		// dispatch to the correct resolver
-//		this.flawType2resolver.get(solution.getFlaw().getType()).retract(solution);
-//	}
+	/**
+	 * 
+	 * @param solution
+	 * @throws Exception
+	 */
+	public void restore(FlawSolution solution) 
+			throws Exception {
+		// dispatch the flaw to the correct resolver
+		this.flawType2resolver.get(solution.getFlaw().getType()).restore(solution);
+	}
+	
+	/**
+	 * 
+	 * @param solution
+	 */
+	public void rollback(FlawSolution solution) {
+		// dispatch to the correct resolver
+		this.flawType2resolver.get(solution.getFlaw().getType()).retract(solution);
+	}
 
 	/**
 	 * 

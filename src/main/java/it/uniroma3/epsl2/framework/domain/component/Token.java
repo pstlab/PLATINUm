@@ -31,6 +31,14 @@ public final class Token
 	 * 
 	 * @return
 	 */
+	public int getId() {
+		return id;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public TemporalInterval getInterval() {
 		return interval;
 	}
@@ -101,9 +109,9 @@ public final class Token
 	 */
 	@Override
 	public String toString() {
-		return "[Token id=" + this.id + " predicate= " + this.predicate + ""
-				+ " start= [" + this.interval.getStartTime().getLowerBound() + ", " + this.interval.getStartTime().getUpperBound() + "]"
-				+ " end= [" + this.interval.getEndTime().getLowerBound() + ", " + this.interval.getEndTime().getUpperBound() + "]"
-				+ " duration= [" + this.interval.getDurationLowerBound() + ", " + this.interval.getDurationUpperBound() + "]]";
+		return "[Token " + this.id + ":" + this.predicate.getGroundSignature() + " "
+				+ "start= [" + this.interval.getStartTime().getLowerBound() + "," + this.interval.getStartTime().getUpperBound() + "] "
+				+ "end= [" + this.interval.getEndTime().getLowerBound() + "," + this.interval.getEndTime().getUpperBound() + "] "
+				+ "duration= [" + this.interval.getDurationLowerBound() + "," + this.interval.getDurationUpperBound() + "]]";
 	}
 }

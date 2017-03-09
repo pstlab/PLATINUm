@@ -10,6 +10,7 @@ import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.Token;
+import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.TransitionNotFoundException;
@@ -67,6 +68,77 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 	 * 
 	 */
 	@Override
+	protected void doRestore(FlawSolution solution) 
+			throws Exception 
+	{
+		// get created decisions 
+		List<Decision> dCreated = solution.getCreatedDecisions();
+		// restore created decisions
+		for (Decision dec : dCreated) {
+			// restore decision
+			this.component.restore(dec);
+		}
+		
+		// get activated decisions
+		List<Decision> dActivated = solution.getActivatedDecisisons();
+		List<Decision> commitDecs = new ArrayList<>();
+		// activate decisions
+		for (Decision dec : dActivated) 
+		{
+			try
+			{
+				// activate decision
+				this.component.add(dec);
+				commitDecs.add(dec);
+			}
+			catch (DecisionPropagationException ex) 
+			{
+				// deactivate committed decisions
+				for (Decision d : commitDecs) {
+					// deactivate decision
+					this.component.delete(d);
+				}
+
+				// error while resetting flaw solution
+				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+			}
+		}
+		
+		// get activated relations
+		List<Relation> rActivated = solution.getActivatedRelations();
+		// list of committed relations
+		List<Relation> commitRels = new ArrayList<>();
+		// activate relations
+		for (Relation rel : rActivated) 
+		{
+			try
+			{
+				// activate relation
+				this.component.add(rel);
+				commitRels.add(rel);
+			}
+			catch (RelationPropagationException ex) {
+				// deactivate committed relations
+				for (Relation r : commitRels) {
+					// deactivate relation
+					this.component.delete(r);
+				}
+				
+				// deactivate committed decisions
+				for (Decision d : commitDecs) {
+					// deactivate 
+					this.component.delete(d);
+				}
+				
+				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
 	protected void doApply(FlawSolution solution) 
 			throws FlawSolutionApplicationException 
 	{
@@ -88,8 +160,8 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				// propagate relation
 				this.component.add(meets);
 				committed.add(meets);
-				// add added relation
-				solution.addAddedRelation(meets);
+				// add activated relation to solution
+				solution.addActivatedRelation(meets);
 				
 				// check if parameter constraints must be added
 				try 
@@ -99,21 +171,24 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 					// propagate relation
 					this.component.add(pRels);
 					committed.addAll(pRels);
-					// add relation to solution
-					solution.addAddedRelations(pRels);
+					// add activated relation to solution
+					solution.addActivatedRelations(pRels);
 				}
 				catch (TransitionNotFoundException ex) {
 					this.logger.error(ex.getMessage());
 				}
 			}
-			catch (RelationPropagationException ex) {
+			catch (RelationPropagationException ex) 
+			{
 				// retract committed relations if needed
 				for (Relation cr : committed) {
-					// free added relation
+					// deactivate relation
+					this.component.delete(cr);
+					// clear memory from relation
 					this.component.free(cr);
 				}
 				
-				// throw exception
+				// not feasible solution
 				throw new FlawSolutionApplicationException(ex.getMessage());
 			}
 		}
@@ -135,6 +210,8 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				
 				// create pending decision
 				Decision dec = this.component.create(value, labels);
+				// these decisions can be set as mandatory expansion
+				dec.setMandatoryExpansion();
 				transition.add(dec);
 				// add pending decision
 				solution.addCreatedDecision(dec);
@@ -144,8 +221,8 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 			transition.add(completion.getRightDecision());
 			
 			// prepare relations
-			for (int index = 0; index <= transition.size() - 2; index++) {
-				
+			for (int index = 0; index <= transition.size() - 2; index++) 
+			{
 				// get adjacent decisions
 				Decision reference = transition.get(index);
 				Decision target = transition.get(index + 1);
@@ -153,9 +230,8 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				// create pending relation
 				MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 				solution.addCreatedRelation(meets);
-				
-				try {
-					
+				try 
+				{
 					// create parameter relations
 					Set<Relation> pRels = this.createParameterRelations(reference, target);
 					// add relation to solution
@@ -174,37 +250,23 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 	@Override
 	protected void doRetract(FlawSolution solution) 
 	{
-		// manage added relations
-		for (Relation rel : solution.getAddedRelations()) {
-			// completely delete relation 
-			this.component.free(rel);
-		}
-		
 		// manage activated relations
 		for (Relation rel : solution.getActivatedRelations()) {
 			// deactivate relation
 			this.component.delete(rel);
 		}
 		
-		
-		// manage created relations
-		for (Relation rel : solution.getCreatedRelations()) {
-			// delete pending relation
-			this.component.delete(rel);
-		}
-		
-		// delete activated decisions
+		// delete activated decisions: ACTIVE -> PENDING
 		for (Decision dec : solution.getActivatedDecisisons()) {
 			// deactivate decision
 			this.component.delete(dec);
 		}
 		
-		// delete pending decisions
+		// delete pending decisions: PENDING -> SILENT
 		for (Decision dec : solution.getCreatedDecisions()) {
 			// delete pending decisions
 			this.component.delete(dec);
 		}
-		
 	}
 
 	/**
@@ -266,7 +328,7 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 			{
 				// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
 				boolean connected = false;
-				Iterator<Relation> it = this.component.getExistingRelations(left, right).iterator();
+				Iterator<Relation> it = this.component.getActiveRelations(left, right).iterator();
 				while (it.hasNext() && !connected) {
 					// next relation
 					Relation rel = it.next();
@@ -307,11 +369,11 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		// get the gap
 		Gap gap = (Gap) flaw;
 		// check gap type
-		switch (gap.getGapType()) {
-		
+		switch (gap.getGapType()) 
+		{
 			// incomplete time-line
-			case INCOMPLETE_TIMELINE : {
-				
+			case INCOMPLETE_TIMELINE : 
+			{
 				// get gap's tokens
 				Token left = gap.getLeftDecision().getToken();
 				Token right = gap.getRightDecision().getToken();
@@ -338,9 +400,10 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 						// add solution to the flaw
 						gap.addSolution(sol);
 					}
-					else {
+					else 
+					{
 						// path too long to be a feasible solution for the gap
-						this.logger.warning("The found path is too long to be a feasible solution for the gap "
+						this.logger.warning("Path too long to be a feasible solution for the gap "
 								+ "[dmin= " + gap.getDmin() + ", dmax= " + gap.getDmax() + "]:\n"
 								+ "- left= " + gap.getLeftDecision() + "\n"
 								+ "- right= " + gap.getRightDecision() + "\n"
@@ -351,8 +414,8 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 			break;
 		
 			// semantic connection missing
-			case SEMANTIC_CONNECTION : {
-				
+			case SEMANTIC_CONNECTION : 
+			{
 				// direct connection between decisions
 				GapCompletion sol = new GapCompletion(gap, new ArrayList<ComponentValue>());
 				gap.addSolution(sol);

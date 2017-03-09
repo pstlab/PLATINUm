@@ -107,6 +107,21 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 * 
 	 */
 	@Override
+	public final void restore(FlawSolution solution) 
+			throws Exception {
+		// check flaw type
+		if (!solution.getFlaw().getType().equals(this.type.getFlawType())) {
+			throw new FlawSolutionApplicationException("Impossible to restore solution for flaws of type type " + solution.getFlaw().getType());
+		}
+		
+		// apply flaw solution
+		this.doRestore(solution);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
 	public final void retract(FlawSolution solution) {
 		// check flaw type
 		if (!solution.getFlaw().getType().equals(this.type.getFlawType())) {
@@ -192,6 +207,14 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 */
 	protected abstract void doApply(FlawSolution solution) 
 			throws FlawSolutionApplicationException;
+	
+	/**
+	 * 
+	 * @param solution
+	 * @throws Exception
+	 */
+	protected abstract void doRestore(FlawSolution solution) 
+			throws Exception;
 	
 	/**
 	 * 

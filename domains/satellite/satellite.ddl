@@ -48,7 +48,7 @@ DOMAIN SATELLITE_Domain
 	}
 	
 	COMPONENT PointingMode {FLEXIBLE pm(trex_internal_dispatch_asap)} : PointingModeType;
-	COMPONENT GroundStationVisibility {FLEXIBLE gv(uncontrollable)} : GroundStationVisibilityType;
+	COMPONENT Window {FLEXIBLE channel(uncontrollable)} : GroundStationVisibilityType;
 		
 	SYNCHRONIZE PointingMode.pm
 	{
@@ -58,10 +58,10 @@ DOMAIN SATELLITE_Domain
 			
 			BEFORE [0, +INF] cd0; 
 		}
-	
+		
 		VALUE _Comm()
 		{
-			cd0 <?> GroundStationVisibility.gv.Visible();
+			cd0 <?> Window.channel.Visible();
 			
 			DURING [0, +INF] [0, +INF] cd0;
 		}

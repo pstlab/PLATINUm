@@ -90,11 +90,6 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 			this.doComputeExpansionSolutions(goal);
 		}
 		
-		/*
-		 * FIXME -> TOGLIERE PUNTI INTERROGATIVI ED ESCLAMATIVI -> gestire le scelte durante la search con 
-		 * la gestione della frontiera
-		 */
-		
 		// check solving information
 		if (!goal.isMandatoryExpansion()) {
 			// compute unification solutions
@@ -116,13 +111,13 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	 */
 	@Override
 	protected void doApply(FlawSolution solution) 
-			throws FlawSolutionApplicationException {
-
+			throws FlawSolutionApplicationException 
+	{
 		// get goal justification
 		GoalJustification just = (GoalJustification) solution;
 		// check type 
-		switch (just.getJustificationType()) {
-		
+		switch (just.getJustificationType()) 
+		{
 			// expansion step
 			case EXPANSION : {
 				// apply solution
@@ -136,6 +131,151 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 				this.doApplyUnification((GoalUnification) just);
 			}
 			break;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected void doRestore(FlawSolution solution) 
+			throws Exception 
+	{
+		// get goal justification
+		GoalJustification just = (GoalJustification) solution;
+		// check type 
+		switch (just.getJustificationType())
+		{
+			// restore expansion
+			case EXPANSION : {
+				// restore solution
+				this.doRestoreExpansion((GoalExpansion) just);
+			}
+			break;
+			
+			// restore unification
+			case UNIFICATION : {
+				// restore unification
+				this.doRestoreUnification((GoalUnification) just);
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param solution
+	 * @throws Exception
+	 */
+	private void doRestoreUnification(GoalUnification solution) 
+			throws Exception
+	{
+		// get original goal
+		Decision goal = solution.getGoalDecision();
+		// get unification decision
+		Decision unif = solution.getUnificationDecision();
+		
+		// get relations to translate
+		Set<Relation> toTranslate = solution.getToTranslate();
+		// translate goal relations
+		for (Relation rel : toTranslate) {
+			// translate relation
+			this.translateRelationFromGoalToUnification(unif, goal, rel);
+		}
+		
+		// get to activate relations
+		Set<Relation> toActivate = new HashSet<>(solution.getActivatedRelations());
+		try	
+		{
+			// remove original goal: PENDING -> SILENT
+			this.component.delete(goal);
+			// activate relations
+			this.component.add(toActivate);
+		}
+		catch (RelationPropagationException ex) 
+		{
+			// restore goal: SILENT -> PENDING
+			this.component.restore(goal);
+			// translated back relations
+			for (Relation rel : toTranslate) {
+				this.translateRelationFromUnificationToOriginalGoal(unif, goal, rel);
+			}
+			
+			// not feasible solution
+			throw new Exception(ex.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param solution
+	 * @throws Exception
+	 */
+	private void doRestoreExpansion(GoalExpansion solution) 
+			throws Exception 
+	{
+		// get created decisions 
+		List<Decision> dCreated = solution.getCreatedDecisions();
+		// restore created decisions
+		for (Decision dec : dCreated) {
+			// restore decision
+			this.component.restore(dec);
+		}
+		
+		// get activated decisions
+		List<Decision> dActivated = solution.getActivatedDecisisons();
+		List<Decision> commitDecs = new ArrayList<>();
+		// activate decisions
+		for (Decision dec : dActivated) 
+		{
+			try
+			{
+				// activate decision
+				this.component.add(dec);
+				commitDecs.add(dec);
+			}
+			catch (DecisionPropagationException ex) 
+			{
+				// deactivate committed decisions
+				for (Decision d : commitDecs) {
+					// deactivate decision
+					this.component.delete(d);
+				}
+
+				// error while resetting flaw solution
+				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+			}
+		}
+		
+		// get activated relations
+		List<Relation> rActivated = solution.getActivatedRelations();
+		// list of committed relations
+		List<Relation> commitRels = new ArrayList<>();
+		// activate relations
+		for (Relation rel : rActivated) 
+		{
+			try
+			{
+				// activate relation
+				this.component.add(rel);
+				commitRels.add(rel);
+			}
+			catch (RelationPropagationException ex) {
+				// deactivate committed relations
+				for (Relation r : commitRels) {
+					// deactivate relation
+					this.component.delete(r);
+				}
+				
+				// deactivate committed decisions
+				for (Decision d : commitDecs) {
+					// deactivate 
+					this.component.delete(d);
+				}
+				
+				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+			}
 		}
 	}
 	
@@ -172,39 +312,33 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	private void doComputeUnificationSolutions(Goal goal) 
 	{ 
 		// get goal-related component
-		DomainComponent comp = goal.getComponent();
+		DomainComponent component = goal.getComponent();
 		// get decision
 		Decision goalDecision = goal.getDecision();
 
-		// get (pending) relations related to the goal
-		List<Relation> list = this.component.getActivableRelation(goalDecision);
+		// get (all) relations related to the goal
+		List<Relation> toTranslate = this.component.getRelations(goalDecision);
 		// search active decisions compatible for unification
-		for (Decision unif : comp.getActiveDecisions()) 
+		for (Decision unif : component.getActiveDecisions()) 
 		{
-			// list of relations to propagate for unification
-			List<Relation> toActivate = new ArrayList<>();
 			// check decisions' values
 			if (unif.getValue().equals(goalDecision.getValue())) 
 			{
-				// print debug information
-				String msg = "Trying to unify goal= " + goalDecision + " with decision= " + unif;
 				// prepare constraints to propagate
-				for (Relation rel : list) 
-				{
+				for (Relation rel : toTranslate) {
 					// translate relation from goal to unification
 					this.translateRelationFromGoalToUnification(unif, goalDecision, rel);
-					toActivate.add(rel);
 				}
 				
 				// try to propagate constraints
-				List<Relation> committed = new ArrayList<>();
+				List<Relation> activated = new ArrayList<>();
 				try 
 				{
-					// propagate translated relations
-					for (Relation rel : toActivate) {
+					// propagate to activate relations
+					for (Relation rel : this.component.getToActivateRelations(unif)) {
 						// activate relation
 						this.component.add(rel);
-						committed.add(rel);
+						activated.add(rel);
 					}
 					
 					// check temporal consistency
@@ -215,21 +349,22 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 					// if everything goes right we've found a possible unification
 					GoalUnification unification = new GoalUnification(goal, unif);
 					goal.addSolution(unification);
-					// decisions can unify
-					msg += "\nDecisions can unify!";
+					this.logger.debug("It is possible to unify goal= " + goalDecision + " with decision= " + unif + "\n");
 				} 
 				catch (RelationPropagationException | ConsistencyCheckException ex) {
-					// error while propagating constraints for unification
-					this.logger.debug(msg);
-					// inconsistent network - not a valid unification
-					msg += "\nDecisions cannot unify\n" + ex.getMessage();
+					// not feasible unification
+					this.logger.debug("Cannot unify/merge goal= " + goalDecision + " with decision= " + unif + "\n");
 				}
-				finally {
-					// retract committed relations
-					for (Relation rel : committed) {
+				finally 
+				{
+					// deactivate activated relations
+					for (Relation rel : activated) {
 						// delete relation
 						this.component.delete(rel);
-						
+					}
+					
+					// translate back all translated relations
+					for (Relation rel : toTranslate) {
 						// translate back relation
 						this.translateRelationFromUnificationToOriginalGoal(unif, goalDecision, rel);
 					}
@@ -254,6 +389,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 			GoalExpansion expansion = new GoalExpansion(goal);
 			// add solution
 			goal.addSolution(expansion);
+			this.logger.debug("Found simple pending goal decision\n- goal= " + goal.getDecision() + "\n");
 		}
 		else 
 		{
@@ -264,6 +400,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 				GoalExpansion expansion = new GoalExpansion(goal, rule);
 				// add solution
 				goal.addSolution(expansion);
+				this.logger.debug("Found goal decision\n- goal= " + goal.getDecision() + "\n-rule = " + rule + "\n");
 			}
 		}
 	}
@@ -280,35 +417,38 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 		Decision goal = unification.getGoalDecision();
 		// get unifying decision
 		Decision unif = unification.getUnificationDecision();
-		// pending relations translated
-		Set<Relation> translated = new HashSet<>();
-		// check relations to activate
-		Set<Relation> toActivate = new HashSet<>();
+		
+		// get relations to translate
+		List<Relation> toTranslate = this.component.getRelations(goal);
 		// translate goal relations
-		for (Relation rel : this.component.getRelations(goal)) 
-		{
+		for (Relation rel : toTranslate) {
 			// translate relation
 			this.translateRelationFromGoalToUnification(unif, goal, rel);
-			// add to pending
-			translated.add(rel);
 		}
 		
 		// get to activate relations after translation
-		toActivate.addAll(this.component.getToActivateRelations(unif));
-		// remove to activate relations from pending
-		translated.removeAll(toActivate);
+		Set<Relation> toActivate = new HashSet<>(this.component.getToActivateRelations(unif));
 		try	
 		{
-			// remove original goal
+			// remove original goal: PENDING -> SILENT
 			this.component.delete(goal);
-			// propagate relations
+			// activate relations
 			this.component.add(toActivate);
 			// add activated relations
 			unification.addActivatedRelations(toActivate);
 			// add translated pending relations as created
-			unification.addCreatedRelations(translated);
+			unification.setTranslatedRelations(toTranslate);
 		}
-		catch (RelationPropagationException ex) {
+		catch (RelationPropagationException ex) 
+		{
+			// restore goal: SILENT -> PENDING
+			this.component.restore(goal);
+			// translated back relations
+			for (Relation rel : toTranslate) {
+				this.translateRelationFromUnificationToOriginalGoal(unif, goal, rel);
+			}
+			
+			// not feasible solution
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
 	}
@@ -533,28 +673,18 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	 */
 	private void doRetractExpansion(GoalExpansion expansion) 
 	{
-		// free added relations
-		for (Relation rel : expansion.getAddedRelations()) {
-			this.component.free(rel);
-		}
-		
 		// deactivate relations
 		for (Relation rel : expansion.getActivatedRelations()) {
 			this.component.delete(rel);
 		}
 		
-		// delete pending relations created
-		for (Relation rel : expansion.getCreatedRelations()) {
-			this.component.delete(rel);
-		}
-		
-		// delete activated decisions
+		// delete activated decisions: ACTIVE -> PENDING
 		for (Decision dec : expansion.getActivatedDecisisons()) {
 			// deactivate decision
 			this.component.delete(dec);
 		}
 		
-		// delete pending decisions
+		// delete pending decisions: PENDING -> SILENT
 		for (Decision dec : expansion.getCreatedDecisions()) {
 			// delete pending decisions
 			this.component.delete(dec);
@@ -567,40 +697,24 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	 */
 	private void doRetractUnification(GoalUnification unification) 
 	{
-		// restore pending goal 
+		// original goal 
 		Decision goal = unification.getGoalDecision();
-		// ensure pending status of the goal
-		goal.clear();
+		// merged decision 
+		Decision unif = unification.getUnificationDecision();
 		
-		// set back "original" goal as pending goal
-		this.component.restore(goal);
-		
-		// delete added relations - unification do no add any relation actually
-		for (Relation rel : unification.getAddedRelations()) {
-			this.component.free(rel);
-		}
-		
-		// translate and deactivated relations
-		for (Relation rel : unification.getActivatedRelations()) 
-		{
-			// delete relation - set back to pending
+		// deactivate activated relations
+		for (Relation rel : unification.getActivatedRelations()) {
 			this.component.delete(rel);
-			// translate relation
-			this.translateRelationFromUnificationToOriginalGoal(unification.getUnificationDecision(), goal, rel);
 		}
 		
-		/*
-		 *  delete pending relations
-		 *  
-		 *  In this specific case created relations have been translated. Namely 
-		 *  they do not represent relations that have been introduced into the plan, but 
-		 *  simply existing pending relations that have been translated in order to 
-		 *  refer to unifying decision.
-		 */
-		for (Relation rel : unification.getCreatedRelations()) {
+		// translate back relations
+		for (Relation rel : unification.getToTranslate()) {
 			// translate relation
-			this.translateRelationFromUnificationToOriginalGoal(unification.getUnificationDecision(), goal, rel);
+			this.translateRelationFromUnificationToOriginalGoal(unif, goal, rel);
 		}
+		
+		// restore original planning goal
+		this.component.restore(goal);
 	}
 	
 	/**

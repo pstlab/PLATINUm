@@ -12,7 +12,7 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelect
 	// set pipeline of filters
 	pipeline = {
 		FlawFilterType.HFF,			// hierarchy-based flaw filter
-		FlawFilterType.TFF,			// type-based flaw filter
+		FlawFilterType.TFF			// type-based flaw filter
 	}
 )
 public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic {

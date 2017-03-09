@@ -114,7 +114,14 @@ public class StateVariableBehaviorCheckingResolver <T extends StateVariable> ext
 	@Override
 	protected void doRetract(FlawSolution solution) {
 		// nothing to do
-		
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	protected void doRestore(FlawSolution solution) throws Exception {
+		// nothing to do
 	}
 	
 	/**

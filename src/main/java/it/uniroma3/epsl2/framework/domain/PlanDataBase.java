@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.uniroma3.epsl2.deliberative.solver.Operator;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
-import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
+import it.uniroma3.epsl2.framework.lang.ex.OperatorPropagationException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.lang.plan.Agenda;
+import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.lang.problem.Problem;
@@ -31,11 +31,11 @@ import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
  */
 public interface PlanDataBase 
 {
-	/**
-	 * 
-	 * @param observer
-	 */
-	public void subscribe(PlanDataBaseObserver observer);
+//	/**
+//	 * 
+//	 * @param observer
+//	 */
+//	public void subscribe(PlanDataBaseObserver observer);
 	
 	/**
 	 * 
@@ -196,31 +196,16 @@ public interface PlanDataBase
 	/**
 	 * 
 	 * @param operator
-	 * @throws FlawSolutionApplicationException
+	 * @throws OperatorPropagationException
 	 */
 	public void propagate(Operator operator) 
-			throws FlawSolutionApplicationException;
+			throws OperatorPropagationException;
 	
 	/**
 	 * 
 	 * @param operator
 	 */
 	public void retract(Operator operator);
-	
-//	/**
-//	 * 
-//	 * @param solution
-//	 * @throws FlawSolutionApplicationException
-//	 */
-//	public void propagete(FlawSolution solution) 
-//			throws FlawSolutionApplicationException;
-//	
-//	/**
-//	 * 
-//	 * @param solution
-//	 * @throws FlawSolutionApplicationException
-//	 */
-//	public void retract(FlawSolution solution); 
 	
 	/**
 	 * 
@@ -246,4 +231,11 @@ public interface PlanDataBase
 	 * @return
 	 */
 	public double computeMakespan();
+
+	/**
+	 * Only for debugging
+	 * 
+	 * @return
+	 */
+	public String printSilentPlan();
 }

@@ -53,7 +53,7 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 	protected void init() 
 	{
 		// subscribe to the plan data base
-		this.pdb.subscribe(this);
+//		this.pdb.subscribe(this);
 		// setup the knowledge on the initial plan and the initial agenda
 		Plan plan = this.pdb.getPlan();
 		for (Decision decision : plan.getDecisions()) {

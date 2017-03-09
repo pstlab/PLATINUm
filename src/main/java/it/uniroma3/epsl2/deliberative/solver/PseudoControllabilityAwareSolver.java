@@ -7,13 +7,14 @@ import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyFactory;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.search.ex.EmptyFringeException;
-import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
+import it.uniroma3.epsl2.framework.lang.ex.OperatorPropagationException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
@@ -82,8 +83,6 @@ public class PseudoControllabilityAwareSolver extends Solver
 				
 				// extract next node from the fringe
 				extracted = this.strategy.dequeue();
-				// propagate node
-				this.logger.debug("Propagating node:\n" + extracted + "\nof " + this.strategy.getFringeSize() + " available in the fringe");
 				// context switch
 				this.contextSwitch(last, extracted);
 				// updated last propagated node
@@ -93,7 +92,14 @@ public class PseudoControllabilityAwareSolver extends Solver
 				{
 					// consistency check
 					this.pdb.check();
-					this.logger.debug("Plan refinement successfully done...");
+					this.logger.debug("Plan refinement:\n- applied operator= "  + extracted.getGenerator() + "\n\n"
+							+ "- current plan:\n"
+							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
+							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n"
+							+ "- agenda:\n"
+							+ "---- goals= " + this.pdb.getAgenda().getGoals() + "\n"
+							+ "---- relations= " + this.pdb.getAgenda().getRelations() + "\n\n"
+							+ "- silent plan:\n" + this.pdb.printSilentPlan());
 				}
 				catch (PseudoControllabilityCheckException ex) 
 				{
@@ -105,24 +111,15 @@ public class PseudoControllabilityAwareSolver extends Solver
 						// skip
 						skip = true;
 						// warning
-						this.logger.warning("Controllability issues during plan refinement:\n- " + ex.getPseudoControllabilityIssues());
+						this.logger.warning("Controllability issues fund during plan refinement:\n- " + ex.getPseudoControllabilityIssues());
 					}
 				}
 				
 				// check solving flags
 				if (!skip) 
 				{
-					// looks for flaws
-					String info = "[step= " + this.stepCounter + "] Looking for flaws on the current plan...\n";
 	 				// choose the best flaws to solve
 					List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
-					info += "Selected Flaw(s) to solve:\n";
-					for (Flaw flaw : flaws) {
-						info += "- " + flaw + "\n";
-					}
-					// print info
-					this.logger.info(info);
-					
 					// create a branch for each "equivalent" flaw to solve next
 					for (Flaw flaw : flaws)
 					{
@@ -137,9 +134,6 @@ public class PseudoControllabilityAwareSolver extends Solver
 								this.pdb.propagate(op);
 								// retract flaw solution
 								this.pdb.retract(op);
-//								// clear flaw solution
-//								flawSolution.clear();
-								
 								
 								// create child node
 								SearchSpaceNode child = new SearchSpaceNode(extracted, op);
@@ -148,17 +142,17 @@ public class PseudoControllabilityAwareSolver extends Solver
 								// expand the search space
 								this.logger.debug("Search tree expansion:\nChild-node= " + child);
 							}
-							catch (FlawSolutionApplicationException ex) 
+							catch (OperatorPropagationException ex) 
 							{
-								// unfeasible solution found
-								this.logger.warning("Unfeasible flaw solution found.\n- solution" + flawSolution + "\n Skip related child node");
+								// not feasible solution found
+								this.logger.error("Not feasible flaw solution found\n- solution" + flawSolution + "\n Skip related child node");
 							}
 						}
 					}
 				}
 				else {
 					// skipping current plan
-					this.logger.info("Skipping current plan for controllability issues...");
+					this.logger.debug("Skipping current plan for controllability issues...");
 				}
 			}
 			catch (PlanRefinementException | ConsistencyCheckException | UnsolvableFlawFoundException ex) {
@@ -174,14 +168,16 @@ public class PseudoControllabilityAwareSolver extends Solver
 					// enqueue not pseudo-controllable node
 					this.strategy.enqueue(this.blacklist.dequeue());
 					// notify changing modality
-					this.logger.warning("No more node in the fringe but still flaws to solve [" + this.blacklist.getFringeSize() +  "] ...\nEntering in no pseudo-controllability mode\n");
+					this.logger.info("No more node in the fringe but still flaws to solve [" + this.blacklist.getFringeSize() +  "] ...\n"
+							+ "- Entering in not pseudo-controllability mode\n");
 				}
 				catch (EmptyFringeException exx) 
 				{
 					// get solving time
 					this.time = System.currentTimeMillis() - start;
 					// no solution found
-					throw new NoSolutionFoundException("No solution found after " + this.time  + " msecs and " + this.stepCounter  + " solving steps");
+					throw new NoSolutionFoundException("No solution found after " + this.time  + " (msecs) "
+							+ "and " + this.stepCounter  + " solving steps\n");
 				}
 			}
 			catch (NoFlawFoundException ex) 
@@ -198,7 +194,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 					plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABLE);
 					plan.setSolvingTime(this.time);
 					// pseudo-controllable solution found
-					this.logger.info("Pseudo-controllable solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
+					this.logger.info("Pseudo-controllable solution found after " + this.time + " (msecs) "
+							+ "and " + this.stepCounter + " solving steps\n");
 				}
 				else 
 				{
@@ -207,7 +204,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 					plan.setControllability(PlanControllabilityType.NOT_PSEUDO_CONTROLLABLE);
 					plan.setSolvingTime(this.time);
 					// not pseudo-controllable solution found
-					this.logger.info("Not pseudo-controllable solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
+					this.logger.info("Not pseudo-controllable solution found after " + this.time + " (msecs) "
+							+ "and " + this.stepCounter + " solving steps\n");
 				}
 			}
 			
