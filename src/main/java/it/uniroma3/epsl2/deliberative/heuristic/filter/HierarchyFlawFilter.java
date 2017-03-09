@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.filter.hff;
+package it.uniroma3.epsl2.deliberative.heuristic.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
-import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;

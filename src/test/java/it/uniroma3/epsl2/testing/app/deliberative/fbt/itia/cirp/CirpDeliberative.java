@@ -20,7 +20,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 		heuristic = FlawSelectionHeuristicType.HFSH,
 		
 		// set search strategy
-		strategy = SearchStrategyType.DFCF,
+		strategy = SearchStrategyType.DFS,
 		
 		// set log level
 		logging = FrameworkLoggingLevel.INFO

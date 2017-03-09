@@ -118,14 +118,14 @@ public class UnaryResourceComponentTestCase
 		Assert.assertTrue(requirement.getLabel().equals("REQUIREMENT"));
 		
 		// create decision
-		Decision dec = this.resource.createDecision(requirement, new String[] {});
+		Decision dec = this.resource.create(requirement, new String[] {});
 		Assert.assertNotNull(dec);
 		Assert.assertNull(dec.getToken());
 		System.out.println(dec);
 		try
 		{
 			// add decision
-			this.resource.addDecision(dec);
+			this.resource.add(dec);
 			Assert.assertNotNull(dec.getToken());
 		}
 		catch (DecisionPropagationException ex) {
@@ -150,36 +150,36 @@ public class UnaryResourceComponentTestCase
 		try
 		{
 			// create decision
-			Decision a1 = this.resource.createDecision(
+			Decision a1 = this.resource.create(
 					requirement, 
 					new String[] {},
 					new long[] {2, 4},
 					new long[] {8, 10},
 					new long[] {1, HORIZON});
 			// add decision
-			this.resource.addDecision(a1);
+			this.resource.add(a1);
 			System.out.println("a1: " + a1);
 			
 			// create decision
-			Decision a2 = this.resource.createDecision(
+			Decision a2 = this.resource.create(
 					requirement, 
 					new String[] {},
 					new long[] {4, 6},
 					new long[] {16, 18},
 					new long[] {1, HORIZON});
 			// add decision
-			this.resource.addDecision(a2);
+			this.resource.add(a2);
 			System.out.println("a2: " + a2);
 			
 			// create decision
-			Decision a3 = this.resource.createDecision(
+			Decision a3 = this.resource.create(
 					requirement, 
 					new String[] {},
 					new long[] {11, 13},
 					new long[] {21, 23},
 					new long[] {1, HORIZON});
 			// add decision
-			this.resource.addDecision(a3);
+			this.resource.add(a3);
 			System.out.println("a3: " + a3);
 			
 			
@@ -215,27 +215,27 @@ public class UnaryResourceComponentTestCase
 		try
 		{
 			// create decision
-			Decision a1 = this.resource.createDecision(
+			Decision a1 = this.resource.create(
 					requirement, 
 					new String[] {});
 			// add decision
-			this.resource.addDecision(a1);
+			this.resource.add(a1);
 			System.out.println("a1: " + a1);
 			
 			// create decision
-			Decision a2 = this.resource.createDecision(
+			Decision a2 = this.resource.create(
 					requirement, 
 					new String[] {});
 			// add decision
-			this.resource.addDecision(a2);
+			this.resource.add(a2);
 			System.out.println("a2: " + a2);
 			
 			// create decision
-			Decision a3 = this.resource.createDecision(
+			Decision a3 = this.resource.create(
 					requirement, 
 					new String[] {});
 			// add decision
-			this.resource.addDecision(a3);
+			this.resource.add(a3);
 			System.out.println("a3: " + a3);
 			
 			// check peak
@@ -270,19 +270,19 @@ public class UnaryResourceComponentTestCase
 		try
 		{
 			// create decision
-			Decision a1 = this.resource.createDecision(
+			Decision a1 = this.resource.create(
 					requirement, 
 					new String[] {});
 			// add decision
-			this.resource.addDecision(a1);
+			this.resource.add(a1);
 			System.out.println("a1: " + a1);
 			
 			// create decision
-			Decision a2 = this.resource.createDecision(
+			Decision a2 = this.resource.create(
 					requirement, 
 					new String[] {});
 			// add decision
-			this.resource.addDecision(a2);
+			this.resource.add(a2);
 			System.out.println("a2: " + a2);
 			
 			// check peak

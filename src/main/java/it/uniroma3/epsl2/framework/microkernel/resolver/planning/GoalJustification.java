@@ -8,8 +8,8 @@ import it.uniroma3.epsl2.framework.lang.plan.Decision;
  * @author anacleto
  *
  */
-public abstract class GoalJustification extends FlawSolution {
-
+public abstract class GoalJustification extends FlawSolution 
+{
 	protected Decision decision;
 	protected JustificationType type; 
 	

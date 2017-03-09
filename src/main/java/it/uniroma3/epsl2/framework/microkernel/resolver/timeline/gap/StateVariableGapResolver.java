@@ -3,8 +3,10 @@ package it.uniroma3.epsl2.framework.microkernel.resolver.timeline.gap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.Token;
@@ -82,9 +84,9 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				Decision target = completion.getRightDecision();
 				
 				// create constraint
-				MeetsRelation meets = this.component.createRelation(RelationType.MEETS, reference, target);
+				MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 				// propagate relation
-				this.component.addRelation(meets);
+				this.component.add(meets);
 				committed.add(meets);
 				// add added relation
 				solution.addAddedRelation(meets);
@@ -93,9 +95,9 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				try 
 				{
 					// create parameter relations
-					List<Relation> pRels = this.createParameterRelations(reference, target);
+					Set<Relation> pRels = this.createParameterRelations(reference, target);
 					// propagate relation
-					this.component.addRelations(pRels);
+					this.component.add(pRels);
 					committed.addAll(pRels);
 					// add relation to solution
 					solution.addAddedRelations(pRels);
@@ -132,7 +134,7 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				}
 				
 				// create pending decision
-				Decision dec = this.component.createDecision(value, labels);
+				Decision dec = this.component.create(value, labels);
 				transition.add(dec);
 				// add pending decision
 				solution.addCreatedDecision(dec);
@@ -149,13 +151,13 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				Decision target = transition.get(index + 1);
 				
 				// create pending relation
-				MeetsRelation meets = this.component.createRelation(RelationType.MEETS, reference, target);
+				MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 				solution.addCreatedRelation(meets);
 				
 				try {
 					
 					// create parameter relations
-					List<Relation> pRels = this.createParameterRelations(reference, target);
+					Set<Relation> pRels = this.createParameterRelations(reference, target);
 					// add relation to solution
 					solution.addCreatedRelations(pRels);
 				}
@@ -371,11 +373,11 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 	 * @return
 	 * @throws TransitionNotFoundException
 	 */
-	private List<Relation> createParameterRelations(Decision reference, Decision target) 
-			throws TransitionNotFoundException {
-		
+	private Set<Relation> createParameterRelations(Decision reference, Decision target) 
+			throws TransitionNotFoundException 
+	{
 		// relations
-		List<Relation> rels = new ArrayList<>();
+		Set<Relation> rels = new HashSet<>();
 		// get transition between values
 		Transition t = this.component.getTransition(reference.getValue(), target.getValue());
 		
@@ -399,7 +401,7 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 						case EQUAL : {
 							
 							// create (pending) local relation
-							EqualParameterRelation equal = (EqualParameterRelation) this.component.createRelation(RelationType.EQUAL_PARAMETER, reference, target);
+							EqualParameterRelation equal = (EqualParameterRelation) this.component.create(RelationType.EQUAL_PARAMETER, reference, target);
 							// set reference parameter label
 							equal.setReferenceParameterLabel(reference.getParameterLabelByIndex(referenceParameterIndex));
 							// set target parameter label
@@ -413,7 +415,7 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 						case NOT_EQUAL : {
 							
 							// create (pending) local relation
-							NotEqualParameterRelation notEqual = (NotEqualParameterRelation) this.component.createRelation(RelationType.NOT_EQUAL_PARAMETER, reference, target);
+							NotEqualParameterRelation notEqual = (NotEqualParameterRelation) this.component.create(RelationType.NOT_EQUAL_PARAMETER, reference, target);
 							// set reference parameter label
 							notEqual.setReferenceParameterLabel(reference.getParameterLabelByIndex(referenceParameterIndex));
 							notEqual.setTargetParameterLabel(target.getParameterLabelByIndex(targetParameterIndex));

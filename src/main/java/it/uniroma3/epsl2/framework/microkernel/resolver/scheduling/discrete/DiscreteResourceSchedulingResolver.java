@@ -2,7 +2,9 @@ package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.discrete;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
@@ -122,7 +124,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		// get the flaw solution to consider
 		PrecedenceConstraintPosting pcp = (PrecedenceConstraintPosting) solution;
 		// prepare relations
-		List<Relation> relations = new ArrayList<>();
+		Set<Relation> relations = new HashSet<>();
 		// setup relations
 		for (int index = 0; index <= pcp.getPrecedences().size() - 2; index++) 
 		{
@@ -131,7 +133,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 			Decision target = pcp.getPrecedences().get(index + 1);
 			
 			// create relation
-			BeforeRelation rel = this.component.createRelation(RelationType.BEFORE, reference, target);
+			BeforeRelation rel = this.component.create(RelationType.BEFORE, reference, target);
 			// set bounds
 			rel.setBound(new long[] {1, this.component.getHorizon()});
 			// add reference, target and constraint
@@ -143,7 +145,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		try 
 		{
 			// propagate relations
-			this.component.addRelations(relations);
+			this.component.add(relations);
 			// set added relations
 			solution.addAddedRelations(relations);
 		}

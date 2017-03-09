@@ -66,7 +66,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		// get the flaw solution to consider
 		DecisionSchedule ordering = (DecisionSchedule) solution;
 		// prepare relations
-		List<Relation> relations = new ArrayList<>();
+		Set<Relation> relations = new HashSet<>();
 		// setup relations
 		for (int index = 0; index <= ordering.getSchedule().size() - 2; index++) 
 		{
@@ -75,7 +75,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			Decision target = ordering.getSchedule().get(index + 1);
 			
 			// create relation
-			BeforeRelation rel = this.component.createRelation(RelationType.BEFORE, reference, target);
+			BeforeRelation rel = this.component.create(RelationType.BEFORE, reference, target);
 			// set bounds
 			rel.setBound(new long[] {0, this.component.getHorizon()});
 			// add reference, target and constraint
@@ -87,7 +87,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		try 
 		{
 			// propagate relations
-			this.component.addRelations(relations);
+			this.component.add(relations);
 			// set added relations
 			solution.addAddedRelations(relations);
 		}
@@ -189,7 +189,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		// cast flaw
 		Peak peak = (Peak) flaw;
 		// compute all possible orderings of the tokens
-		List<List<Decision>> orderings = this.schedule(peak.getDecisions());
+		List<List<Decision>> orderings = this.schedule(new HashSet<>(peak.getDecisions()));
 		// compute solutions
 		for (List<Decision> ordering : orderings) 
 		{
@@ -261,7 +261,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 	/**
 	 * 
 	 */
-	private List<List<Decision>> schedule(List<Decision> decisions) {
+	private List<List<Decision>> schedule(Set<Decision> decisions) {
 		// initialize permutations
 		List<List<Decision>> result = new ArrayList<>();
 		// compute permutations
@@ -276,7 +276,7 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 	 * @param current
 	 * @param result
 	 */
-	private void computePermutations(List<Decision> decisions, List<Decision> current, List<List<Decision>> result) {
+	private void computePermutations(Set<Decision> decisions, List<Decision> current, List<List<Decision>> result) {
 		// base step
 		if (current.size() == decisions.size()) {
 			result.add(current);

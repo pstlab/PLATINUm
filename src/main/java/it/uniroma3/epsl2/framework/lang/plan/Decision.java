@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
-import it.uniroma3.epsl2.framework.domain.component.PlanElementStatus;
 import it.uniroma3.epsl2.framework.domain.component.Token;
 import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 
@@ -19,7 +18,7 @@ public class Decision
 	private int id;
 	private Decision causalLink;		// set "generator" decision
 	private ComponentValue value;
-	private PlanElementStatus status;
+//	private PlanElementStatus status;
 	private String[] labels;
 	private long[] start;
 	private long[] end;
@@ -52,7 +51,7 @@ public class Decision
 		this.end = end;
 		this.nominalDuration = nominalDuration;
 		// set initial status
-		this.status = PlanElementStatus.PENDING;
+//		this.status = PlanElementStatus.PENDING;
 		this.token = null;
 		
 		// set solving knowledge
@@ -247,21 +246,21 @@ public class Decision
 		return this.value.isControllable();
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isActive() {
-		return this.status.equals(PlanElementStatus.ACTIVE);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isPending() {
-		return this.status.equals(PlanElementStatus.PENDING);
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public boolean isActive() {
+//		return this.status.equals(PlanElementStatus.ACTIVE);
+//	}
+//	
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public boolean isPending() {
+//		return this.status.equals(PlanElementStatus.PENDING);
+//	}
 	
 	/**
 	 * 
@@ -269,7 +268,7 @@ public class Decision
 	 */
 	public void setToken(Token token) {
 		this.token = token;
-		this.status = PlanElementStatus.ACTIVE;
+//		this.status = PlanElementStatus.ACTIVE;
 	}
 	
 	/**
@@ -277,7 +276,7 @@ public class Decision
 	 */
 	public void clear() {
 		this.token = null;
-		this.status = PlanElementStatus.PENDING;
+//		this.status = PlanElementStatus.PENDING;
 	}
 	
 	/**
@@ -338,7 +337,7 @@ public class Decision
 		return "[Decision <" + (this.value.isControllable() ? "c" : "u") + "> "
 				+ "id= " + this.id + " "
 				+ "value= " + this.value.getLabel() +" "
-				+ "status= " + this.status + " "
+//				+ "status= " + this.status + " "
 				+ "start= [" + this.getStart()[0] + ", " + this.getStart()[1] + "] "
 				+ "duration= [" + this.getDuration()[0] + ", " + this.getDuration()[1] + "] "
 				+ "nominal-duration= [" + this.getNominalDuration()[0] + ", " + this.getNominalDuration()[1] + "] "

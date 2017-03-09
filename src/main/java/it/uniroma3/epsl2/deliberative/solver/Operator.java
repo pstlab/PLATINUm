@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 
 /**
  * 
@@ -15,6 +16,9 @@ public class Operator implements Comparable<Operator>
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private FlawSolution solution;
+	private boolean applied;						// application flag
+	private double makespan;						// resulting makespan
+	private Agenda agenda;							// resulting agenda
 	
 	/**
 	 * 
@@ -23,6 +27,9 @@ public class Operator implements Comparable<Operator>
 	protected Operator(FlawSolution solution) {
 		this.id = ID_COUNTER.getAndIncrement();
 		this.solution = solution;
+		this.applied = false;
+		this.makespan = Double.MAX_VALUE - 1;
+		this.agenda = new Agenda();
 	}
 	
 	/**
@@ -31,6 +38,53 @@ public class Operator implements Comparable<Operator>
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	/**
+	 * 
+	 * @param makespan
+	 */
+	public void setMakespan(double makespan) {
+		this.makespan = makespan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMakespan() {
+		return makespan;
+	}
+	
+	/**
+	 * 
+	 * @param agenda
+	 */
+	public void setAgenda(Agenda agenda) {
+		this.agenda = agenda;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Agenda getAgenda() {
+		return agenda;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setApplied() {
+		this.applied = true;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isApplied() {
+		return this.applied;
 	}
 	
 	/**

@@ -1,8 +1,6 @@
 package it.uniroma3.epsl2.deliberative.heuristic.filter;
 
-import it.uniroma3.epsl2.deliberative.heuristic.filter.hff.HierarchyFlawFilter;
-import it.uniroma3.epsl2.deliberative.heuristic.filter.sff.SemanticFlawFilter;
-import it.uniroma3.epsl2.deliberative.heuristic.filter.tff.TypeFlawFilter;
+import it.uniroma3.epsl2.deliberative.heuristic.filter.semantic.SemanticFlawFilter;
 
 /**
  * 

@@ -25,10 +25,12 @@ public class SearchStrategyFactory extends ApplicationFrameworkFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends SearchStrategy> T create(SearchStrategyType type) {
+	public <T extends SearchStrategy> T create(SearchStrategyType type) 
+	{
 		// strategy
 		T strategy = null;
-		try {
+		try 
+		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getStrategyClassName());
 			// get constructor

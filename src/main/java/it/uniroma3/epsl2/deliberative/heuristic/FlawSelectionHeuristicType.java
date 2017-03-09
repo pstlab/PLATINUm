@@ -1,8 +1,5 @@
 package it.uniroma3.epsl2.deliberative.heuristic;
 
-import it.uniroma3.epsl2.deliberative.heuristic.hfsh.HierarchicalFlawSelectionHeuristic;
-import it.uniroma3.epsl2.deliberative.heuristic.shfsh.SemanticHierarchyFLawSelectionHeuristic;
-
 /**
  * 
  * @author anacleto

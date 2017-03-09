@@ -143,11 +143,12 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	 * 
 	 */
 	@Override
-	protected void doRetract(FlawSolution solution) {
+	protected void doRetract(FlawSolution solution) 
+	{
 		// check solution type
 		GoalJustification justif = (GoalJustification) solution;
-		switch (justif.type) {
-		
+		switch (justif.type) 
+		{
 			// retract expansion
 			case EXPANSION : {
 				// do retract expansion
@@ -168,42 +169,28 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	 * 
 	 * @param goal
 	 */
-	private void doComputeUnificationSolutions(Goal goal) { 
-		
+	private void doComputeUnificationSolutions(Goal goal) 
+	{ 
 		// get goal-related component
 		DomainComponent comp = goal.getComponent();
 		// get decision
 		Decision goalDecision = goal.getDecision();
 
 		// get (pending) relations related to the goal
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.component.getPendingRelations(goalDecision)) {
-		
-			// check if relation would be activated
-			if (rel.getTarget().equals(goalDecision) && rel.getReference().isActive() || 
-					rel.getReference().equals(goalDecision) && rel.getTarget().isActive() ||
-					// check reflexive relations
-					rel.getReference().equals(goalDecision) && rel.getTarget().equals(goalDecision)) {
-				
-				// add relation
-				list.add(rel);
-			}
-		}
-		
-		// get active decisions on goal related component
-		for (Decision unif : comp.getActiveDecisions()) {
-			
+		List<Relation> list = this.component.getActivableRelation(goalDecision);
+		// search active decisions compatible for unification
+		for (Decision unif : comp.getActiveDecisions()) 
+		{
 			// list of relations to propagate for unification
 			List<Relation> toActivate = new ArrayList<>();
-			
 			// check decisions' values
-			if (unif.getValue().equals(goalDecision.getValue())) {
-				
+			if (unif.getValue().equals(goalDecision.getValue())) 
+			{
 				// print debug information
 				String msg = "Trying to unify goal= " + goalDecision + " with decision= " + unif;
 				// prepare constraints to propagate
-				for (Relation rel : list) {
-					
+				for (Relation rel : list) 
+				{
 					// translate relation from goal to unification
 					this.translateRelationFromGoalToUnification(unif, goalDecision, rel);
 					toActivate.add(rel);
@@ -211,12 +198,12 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 				
 				// try to propagate constraints
 				List<Relation> committed = new ArrayList<>();
-				try {
-					
+				try 
+				{
 					// propagate translated relations
 					for (Relation rel : toActivate) {
 						// activate relation
-						this.component.addRelation(rel);
+						this.component.add(rel);
 						committed.add(rel);
 					}
 					
@@ -294,43 +281,32 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 		// get unifying decision
 		Decision unif = unification.getUnificationDecision();
 		// pending relations translated
-		List<Relation> pendingTranslated = new ArrayList<>();
+		Set<Relation> translated = new HashSet<>();
 		// check relations to activate
-		List<Relation> toActivate = new ArrayList<>();
-		// translate decision's pending relations
-		for (Relation rel : this.component.getPendingRelations(goal)) 
+		Set<Relation> toActivate = new HashSet<>();
+		// translate goal relations
+		for (Relation rel : this.component.getRelations(goal)) 
 		{
 			// translate relation
 			this.translateRelationFromGoalToUnification(unif, goal, rel);
 			// add to pending
-			pendingTranslated.add(rel);
+			translated.add(rel);
 		}
 		
-		// check pending relations to activate after translation
-		for (Relation rel : this.component.getPendingRelations(unif)) 
-		{
-			if (rel.getReference().equals(unif) && rel.getTarget().isActive() || 
-					rel.getTarget().equals(unif) && rel.getReference().isActive() ||
-					// check reflexive relations
-					rel.getReference().equals(unif) && rel.getTarget().equals(unif)) 
-			{
-				// add relation
-				toActivate.add(rel);
-			}
-		}
-		
+		// get to activate relations after translation
+		toActivate.addAll(this.component.getToActivateRelations(unif));
 		// remove to activate relations from pending
-		pendingTranslated.removeAll(toActivate);
+		translated.removeAll(toActivate);
 		try	
 		{
-			// propagate relations
-			this.component.addRelations(toActivate);
-			// remove goal
+			// remove original goal
 			this.component.delete(goal);
+			// propagate relations
+			this.component.add(toActivate);
 			// add activated relations
 			unification.addActivatedRelations(toActivate);
 			// add translated pending relations as created
-			unification.addCreatedRelations(pendingTranslated);
+			unification.addCreatedRelations(translated);
 		}
 		catch (RelationPropagationException ex) {
 			throw new FlawSolutionApplicationException(ex.getMessage());
@@ -362,7 +338,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 			for (TokenVariable var : rule.getTokenVariables()) 
 			{
 				// create a pending decision
-				Decision pending = this.component.createDecision(
+				Decision pending = this.component.create(
 						var.getValue(),
 						var.getParameterLabels());
 				
@@ -399,7 +375,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 						Decision reference = var2dec.get(tc.getSource());
 						Decision target = var2dec.get(tc.getTarget());
 						// create pending relation
-						TemporalRelation rel = (TemporalRelation) this.component.createRelation(tc.getType(), reference, target);
+						TemporalRelation rel = (TemporalRelation) this.component.create(tc.getType(), reference, target);
 						rel.setBounds(tc.getBounds());
 						// add created relation
 						rCreated.add(rel);
@@ -416,7 +392,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 						Decision target = var2dec.get(pc.getTarget());
 						
 						// create pending relation
-						ParameterRelation rel = (ParameterRelation) this.component.createRelation(pc.getType(), reference, target);
+						ParameterRelation rel = (ParameterRelation) this.component.create(pc.getType(), reference, target);
 						
 						// check parameter relation type
 						switch (rel.getType())
@@ -535,7 +511,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 		try 
 		{
 			// activate decision
-			List<Relation> rActivated = this.component.addDecision(goal);
+			Set<Relation> rActivated = this.component.add(goal);
 			// set information to flaw solution
 			expansion.addActivatedDecision(goal);
 			expansion.addCreatedDecisions(dCreated);
@@ -597,7 +573,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 		goal.clear();
 		
 		// set back "original" goal as pending goal
-		this.component.restorePendingDecision(goal);
+		this.component.restore(goal);
 		
 		// delete added relations - unification do no add any relation actually
 		for (Relation rel : unification.getAddedRelations()) {

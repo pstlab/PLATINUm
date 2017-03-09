@@ -44,6 +44,7 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 		if (this.fringe.isEmpty()) {
 			throw new EmptyFringeException("No more nodes in the fringe");
 		}
+		
 		// remove the first element of the queue
 		return this.fringe.poll();
 	}
@@ -63,6 +64,7 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 	@Override
 	public int compare(SearchSpaceNode o1, SearchSpaceNode o2) {
 		// compare the costs of the nodes
-		return o1.getCost() <= o2.getCost() ? -1 : 1;
+		return o1.getCost() < o2.getCost() ? -1 : 
+			o1.getCost() == o2.getCost() && o1.getDepth() >= o2.getDepth() ? -1 : 1;
 	}
 }

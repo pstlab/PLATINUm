@@ -146,6 +146,6 @@ public abstract class Relation
 	 */
 	@Override
 	public String toString() {
-		return "[Relation type= " + this.type + " reference= " + this.reference.getId() + ":" + this.reference.getValue().getLabel() + " target= " + this.target.getId() + ":" + this.target.getValue().getLabel()+ "]";
+		return "[Relation id= " + this.id + " type= " + this.type + " reference= " + this.reference.getId() + ":" + this.reference.getValue().getLabel() + " target= " + this.target.getId() + ":" + this.target.getValue().getLabel()+ "]";
 	}
 }

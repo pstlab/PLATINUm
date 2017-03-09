@@ -1,7 +1,5 @@
-package it.uniroma3.epsl2.deliberative.heuristic.shfsh;
+package it.uniroma3.epsl2.deliberative.heuristic;
 
-import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristic;
-import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelectionHeuristicConfiguration;
 

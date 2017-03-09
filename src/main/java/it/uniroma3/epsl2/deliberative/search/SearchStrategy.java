@@ -2,8 +2,10 @@ package it.uniroma3.epsl2.deliberative.search;
 
 import it.uniroma3.epsl2.deliberative.search.ex.EmptyFringeException;
 import it.uniroma3.epsl2.deliberative.solver.SearchSpaceNode;
+import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
 /**
@@ -11,12 +13,15 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
  * @author anacleto
  *
  */
-public abstract class SearchStrategy extends ApplicationFrameworkObject {
-
-	protected SearchStrategyType type;
-	
+public abstract class SearchStrategy extends ApplicationFrameworkObject 
+{
 	@FrameworkLoggerReference
 	protected FrameworkLogger logger;
+	
+	@PlanDataBaseReference
+	protected PlanDataBase pdb;
+	
+	protected SearchStrategyType type;
 	
 	/**
 	 * 

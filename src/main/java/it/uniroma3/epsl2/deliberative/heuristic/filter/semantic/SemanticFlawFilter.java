@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.deliberative.heuristic.filter.sff;
+package it.uniroma3.epsl2.deliberative.heuristic.filter.semantic;
 
 import java.util.ArrayList;
 import java.util.Collection;

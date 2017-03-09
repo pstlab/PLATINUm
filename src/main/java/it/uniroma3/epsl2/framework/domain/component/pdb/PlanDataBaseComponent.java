@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import it.uniroma3.epsl2.deliberative.heuristic.filter.ex.HierarchyCycleException;
+import it.uniroma3.epsl2.deliberative.solver.Operator;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseObserver;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
-import it.uniroma3.epsl2.framework.domain.component.PlanElementStatus;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
@@ -25,7 +25,6 @@ import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
@@ -201,6 +200,10 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			this.delete(dec);
 		}
 		
+		/*
+		 * FIXME - RISTRUTTURARE QUESTO METODO DOPO ULTIME MODIFICHE
+		 */
+		
 		// remove active decisions
 		for (Decision dec : this.getActiveDecisions()) {
 			// delete decision
@@ -219,10 +222,12 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	{
 		// create a plan
 		SolutionPlan plan = new SolutionPlan(this.name, this.getHorizon());
+		// set components
 		for (DomainComponent component : this.components.values()) {
 			// add a component to the plan
 			plan.add(component);
 		}
+		
 		// add active relations
 		for (Relation rel : this.getActiveRelations()) {
 			// add relation
@@ -277,6 +282,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		for (Decision goal : this.getActiveDecisions()) {
 			plan.add(goal);
 		}
+		
 		// get relations
 		for (Relation rel : this.getActiveRelations()) {
 			plan.add(rel);
@@ -627,21 +633,68 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	/**
 	 * 
 	 */
+	@Override
+	public List<Relation> getPendingRelations() 
+	{
+		// list of relations
+		List<Relation> list = new ArrayList<>();
+		// get global relations
+		for (Relation rel : this.relations) {
+			if (this.isPending(rel)) {
+				list.add(rel);
+			}
+		}
+		
+		// get relations from components
+		for (DomainComponent component : this.components.values()) {
+			list.addAll(component.getPendingRelations());
+		}
+		
+		// get list
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<Relation> getPendingRelations(Decision dec) 
+	{
+		// list of relations
+		List<Relation> list = new ArrayList<>();
+		// get global relations
+		for (Relation rel : this.relations) {
+			if ((dec.equals(rel.getReference()) || dec.equals(rel.getTarget())) && this.isPending(rel)) {
+				list.add(rel);
+			}
+		}
+		
+		// get local relations from component
+		DomainComponent component = dec.getComponent();
+		list.addAll(component.getPendingRelations(dec));
+		
+		// get list
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
 	@Override 
-	public void restorePendingDecision(Decision dec) {
+	public void restore(Decision dec) {
 		// dispatch request to the related component
-		dec.getComponent().restorePendingDecision(dec);
+		dec.getComponent().restore(dec);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public Decision createDecision(ComponentValue value, String[] labels) {
+	public Decision create(ComponentValue value, String[] labels) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
-		Decision dec = comp.createDecision(value, labels);
+		Decision dec = comp.create(value, labels);
 		// get created decision
 		return dec;
 	}
@@ -650,11 +703,11 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public Decision createDecision(ComponentValue value, String[] labels, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] duration) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
-		Decision dec = comp.createDecision(value, labels, duration);
+		Decision dec = comp.create(value, labels, duration);
 		// get created decision
 		return dec;
 	}
@@ -663,11 +716,11 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public Decision createDecision(ComponentValue value, String[] labels, long[] end, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
-		Decision dec = comp.createDecision(value, labels, end, duration);
+		Decision dec = comp.create(value, labels, end, duration);
 		// get created decision
 		return dec;
 	}
@@ -676,11 +729,11 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public Decision createDecision(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
-		Decision dec = comp.createDecision(value, labels, start, end, duration);
+		Decision dec = comp.create(value, labels, start, end, duration);
 		// get created decision
 		return dec;
 	}
@@ -689,32 +742,43 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public List<Relation> addDecision(Decision dec) 
+	public Set<Relation> add(Decision dec) 
 			throws DecisionPropagationException 
 	{
 		// get the component the decision belongs to
 		DomainComponent c = dec.getComponent();
-		// add decision and get the list of local  relations propagated
-		List<Relation> local = c.addDecision(dec);
+		// add decision and get the list of local relations propagated
+		Set<Relation> local = c.add(dec);
 		
-		// get global pending relations to propagate
-		List<Relation> global = new ArrayList<>();
-		for (Relation rel : this.getPendingRelations(dec)) {
-			// check relations to activate
-			if (rel.getReference().equals(dec) && rel.getTarget().isActive() || 
-					rel.getTarget().equals(dec) && rel.getReference().isActive() ||
-					// check reflexive relations
-					rel.getReference().equals(dec) && rel.getTarget().equals(dec)) {
-				// add relation to propagate
+		// get global relations to activate
+		Set<Relation> global = new HashSet<>();
+		for (Relation rel : this.relations) 
+		{
+			// get reference
+			Decision reference = rel.getReference();
+			// get target
+			Decision target = rel.getTarget();
+			// check status of reference and target decisions
+			if ((dec.equals(reference) && this.isActive(target)) || 
+					(dec.equals(target) && this.isActive(reference)) && 
+					rel.getConstraint() == null)
+			{
+				// add pending relation
 				global.add(rel);
 			}
 		}
 		
-		try {
+		try 
+		{
 			// propagate relations
-			this.addRelations(global);
+			this.add(global);
 		}
-		catch (RelationPropagationException ex) {
+		catch (RelationPropagationException ex) 
+		{
+			// deactivate local relations
+			for (Relation rel : local) {
+				c.delete(rel);
+			}
 			// deactivate decision
 			c.delete(dec);
 			// throw exception
@@ -722,9 +786,98 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		}
 		
 		// get the list of local and global relations propagated
+		Set<Relation> set = new HashSet<>(local);
+		set.addAll(global);
+		// get relations
+		return set;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<Relation> getActiveRelations() 
+	{
+		// list of active decisions 
 		List<Relation> list = new ArrayList<>();
-		list.addAll(local);
-		list.addAll(global);
+		// check global relations
+		for (Relation rel : this.relations) {
+			// check if active relation
+			if (this.isActive(rel)) {
+				list.add(rel);
+			}
+		}
+		
+		// add local active decisions
+		for (DomainComponent component : this.components.values()) {
+			// get component active relations
+			list.addAll(component.getActiveRelations());
+		}
+		
+		// get list of active relations
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<Relation> getActiveRelations(Decision dec) 
+	{
+		// list of active relations
+		List<Relation> list = new ArrayList<>();
+		// check global relations
+		for (Relation rel : this.relations)
+		{
+			// get reference
+			Decision reference = rel.getReference();
+			// get target 
+			Decision target = rel.getTarget();
+			// check decisions and relation status
+			if ((dec.equals(reference) || dec.equals(target)) && this.isActive(rel)) {
+				// add relation
+				list.add(rel);
+			}
+		}
+		
+		// get local active relations
+		DomainComponent component = dec.getComponent();
+		// add local relations
+		list.addAll(component.getActiveRelations(dec));
+		
+		// get list
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<Relation> getToActivateRelations(Decision dec) 
+	{
+		// list of relations
+		List<Relation> list = new ArrayList<>();
+		// check global relations
+		for (Relation rel : this.relations) 
+		{
+			// get reference
+			Decision reference = rel.getReference();
+			// get target
+			Decision target = rel.getTarget();
+			// check decisions and relation status
+			if ((dec.equals(reference) && this.isActive(target)) || 
+					(dec.equals(target) && this.isActive(reference)) && 
+					rel.getConstraint() == null)
+			{
+				// add pending relation
+				list.add(rel);
+			}
+		}
+		
+		// add local relations
+		DomainComponent component = dec.getComponent();
+		list.addAll(component.getToActivateRelations(dec));
+		// get list of to activate relations
 		return list;
 	}
 	
@@ -734,37 +887,31 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * @throws Exception
 	 */
 	@Override
-	public void delete(Decision dec) {
-		// list of related relations to delete
-		List<Relation> toDelete = new ArrayList<>();
-		// check decision status
-		if (dec.isActive()) {
-			// deactivate global decisions
-			for (Relation rel : this.relations.get(PlanElementStatus.ACTIVE)) {
-				if (rel.getReference().equals(dec) || rel.getTarget().equals(dec)) {
-					// delete global active relation
-					toDelete.add(rel);
-				}
-			}
-		}
-		else {
-			// delete pending global decisions
-			for (Relation rel : this.relations.get(PlanElementStatus.PENDING)) {
-				if (rel.getReference().equals(dec) || rel.getTarget().equals(dec)) {
-					// delete global pending relation
-					toDelete.add(rel);
+	public void delete(Decision dec) 
+	{
+		// check if active
+		if (this.isActive(dec))
+		{
+			// delete global relations involving decision
+			for (Relation rel : this.relations)
+			{
+				// get reference
+				Decision reference = rel.getReference();
+				// get target 
+				Decision target = rel.getTarget();
+				// check decisions and relation status
+				if ((dec.equals(reference) || dec.equals(target)) && this.isActive(rel)) 
+				{
+					// delete (deactivate) global relation
+					this.delete(rel);
 				}
 			}
 		}
 		
-		// delete relations
-		for (Relation rel : toDelete) {
-			// delete relation
-			this.delete(rel);
-		}
-		
-		// manage locally to the component
-		dec.getComponent().delete(dec);
+		// get component decision
+		DomainComponent component = dec.getComponent();
+		// delete decision from component
+		component.delete(dec);
 	}
 	
 	/**
@@ -772,7 +919,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Relation> T createRelation(RelationType type, Decision reference, Decision target) 
+	public <T extends Relation> T create(RelationType type, Decision reference, Decision target) 
 	{
 		// pending relation
 		T rel = null;
@@ -781,19 +928,22 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			// dispatch request to the related component
 			DomainComponent comp = reference.getComponent();
 			// create relation
-			rel = comp.createRelation(type, reference, target);
+			rel = comp.create(type, reference, target);
 		}
-		else {
+		else 
+		{
 			// global pending relation
-			try {
+			try 
+			{
 				Class<T> clazz = (Class<T>) Class.forName(type.getRelationClassName());
 				// get constructor
 				Constructor<T> c = clazz.getDeclaredConstructor(Decision.class, Decision.class);
 				c.setAccessible(true);
 				// create instance
 				rel = c.newInstance(reference, target);
-				// add pending relation
-				this.relations.get(PlanElementStatus.PENDING).add(rel);
+				// add global relation
+				this.relations.add(rel);
+//				this.relations.get(PlanElementStatus.PENDING).add(rel);
 			}
 			catch (Exception ex) {
 				throw new RuntimeException(ex.getMessage());
@@ -803,101 +953,248 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		return rel;
 	}
 	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public List<Relation> getPendingRelations() {
+//		// list of pending relations
+//		List<Relation> list = new ArrayList<>();
+//		// get all local pending relations
+//		for (DomainComponent comp : this.components.values()) {
+//			list.addAll(comp.getPendingRelations());
+//		}
+//		// get all global pending relation
+//		list.addAll(this.relations.get(PlanElementStatus.PENDING));
+//		// get list of pending relations
+//		return list;
+//	}
+	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public List<Relation> getActiveRelations() {
+//		// list of pending relations
+//		List<Relation> list = new ArrayList<>();
+//		// get all local pending relations
+//		for (DomainComponent comp : this.components.values()) {
+//			list.addAll(comp.getActiveRelations());
+//		}
+//		// get all global pending relation
+//		list.addAll(this.relations.get(PlanElementStatus.ACTIVE));
+//		// get list of pending relations
+//		return list;
+//	}
+	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public List<Relation> getExistingRelations(Decision reference, Decision target) {
+//		// list of existing relations
+//		List<Relation> list = new ArrayList<>();
+//		for (DomainComponent comp : this.components.values()) {
+//			// check local relations
+//			list.addAll(comp.getExistingRelations(reference, target));
+//		}
+//		
+//		// check pending global relations
+//		for (Relation rel : this.relations.get(PlanElementStatus.PENDING)) {
+//			if (rel.getReference().equals(reference) && rel.getTarget().equals(target)) {
+//				list.add(rel);
+//			}
+//		}
+//		
+//		// check active global relations
+//		for (Relation rel : this.relations.get(PlanElementStatus.ACTIVE)) {
+//			if (rel.getReference().equals(reference) && rel.getTarget().equals(target)) {
+//				list.add(rel);
+//			}
+//		}
+//		
+//		// get list
+//		return list;
+//	}
+	
+//	/**
+//	 * Get the list of pending relations concerning a particular decision
+//	 * 
+//	 * @param dec
+//	 * @return
+//	 */
+//	@Override
+//	public List<Relation> getPendingRelations(Decision dec) 
+//	{
+//		// list of pending relations
+//		List<Relation> list = new ArrayList<>();
+//		// get local pending relations
+//		list.addAll(dec.getComponent().getPendingRelations(dec));
+//		// get global pending relation
+//		for (Relation rel : this.relations) 
+//		{
+//			// get reference
+//			Decision reference = rel.getReference();
+//			// get target
+//			Decision target = rel.getTarget();
+//			// check status of reference and target decisions
+//			if ((dec.equals(reference) || dec.equals(target)) && this.isPending(rel))
+//			{
+//				// add pending relation
+//				list.add(rel);
+//			}
+//		}
+//
+//		// get list of pending relations
+//		return list;
+//	}
+	
 	/**
 	 * 
 	 */
 	@Override
-	public List<Relation> getPendingRelations() {
-		// list of pending relations
-		List<Relation> list = new ArrayList<>();
-		// get all local pending relations
-		for (DomainComponent comp : this.components.values()) {
-			list.addAll(comp.getPendingRelations());
-		}
-		// get all global pending relation
-		list.addAll(this.relations.get(PlanElementStatus.PENDING));
-		// get list of pending relations
-		return list;
+	public boolean isActive(Decision dec) {
+		return dec.getComponent().isActive(dec);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public List<Relation> getActiveRelations() {
-		// list of pending relations
-		List<Relation> list = new ArrayList<>();
-		// get all local pending relations
-		for (DomainComponent comp : this.components.values()) {
-			list.addAll(comp.getActiveRelations());
+	public boolean isActive(Relation rel) 
+	{
+		// flag
+		boolean active = false;
+		// check if local
+		if (rel.isLocal()) {
+			// get component 
+			DomainComponent comp = rel.getReference().getComponent();
+			active = comp.isActive(rel);
 		}
-		// get all global pending relation
-		list.addAll(this.relations.get(PlanElementStatus.ACTIVE));
-		// get list of pending relations
-		return list;
+		else 
+		{
+			// get reference
+			Decision reference = rel.getReference();
+			// get target
+			Decision target = rel.getTarget();
+			// check condition
+			active = reference.getComponent().isActive(reference) && 
+					target.getComponent().isActive(target) && 
+					rel.getConstraint() != null;
+		}
+		
+		// get result
+		return active;
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public List<Relation> getExistingRelations(Decision reference, Decision target) {
-		// list of existing relations
-		List<Relation> list = new ArrayList<>();
-		for (DomainComponent comp : this.components.values()) {
-			// check local relations
-			list.addAll(comp.getExistingRelations(reference, target));
-		}
-		
-		// check pending global relations
-		for (Relation rel : this.relations.get(PlanElementStatus.PENDING)) {
-			if (rel.getReference().equals(reference) && rel.getTarget().equals(target)) {
-				list.add(rel);
-			}
-		}
-		
-		// check active global relations
-		for (Relation rel : this.relations.get(PlanElementStatus.ACTIVE)) {
-			if (rel.getReference().equals(reference) && rel.getTarget().equals(target)) {
-				list.add(rel);
-			}
-		}
-		
-		// get list
-		return list;
-	}
-	
-	/**
-	 * Get the list of pending relations concerning a particular decision
-	 * 
-	 * @param dec
-	 * @return
-	 */
-	@Override
-	public List<Relation> getPendingRelations(Decision dec) {
-		
-		// list of pending relations
-		List<Relation> list = new ArrayList<>();
-		// get local pending relations
-		list.addAll(dec.getComponent().getPendingRelations(dec));
-		
-		// add global pending relation
-		for (Relation rel : this.relations.get(PlanElementStatus.PENDING)) {
-			// check reference and target
-			if (rel.getReference().equals(dec) || rel.getTarget().equals(dec)) {
-				// add relation
-				list.add(rel);
-			}
-		}
-		// get list of pending relations
-		return list;
+	public boolean isPending(Decision dec) {
+		// forward to component
+		return dec.getComponent().isPending(dec);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void addRelation(Relation rel) 
+	public boolean isPending(Relation rel) 
+	{
+		// flag
+		boolean pending = false;
+		// check if local
+		if (rel.isLocal()) {
+			// get component 
+			DomainComponent comp = rel.getReference().getComponent();
+			pending = comp.isPending(rel);
+		}
+		else 
+		{
+			// get reference
+			Decision reference = rel.getReference();
+			// get target
+			Decision target = rel.getTarget();
+			// check condition
+			pending = (reference.getComponent().isPending(reference) || target.getComponent().isPending(target)) && 
+					!(reference.getComponent().isSilent(reference) || target.getComponent().isSilent(target)) && 
+					rel.getConstraint() == null;
+		}
+		
+		// get result
+		return pending;
+	}
+	
+	/**
+	 * 
+	 */
+	public boolean isToActivate(Relation rel)
+	{
+		// flag
+		boolean toActivate = false;
+		// check if local
+		if (rel.isLocal()) {
+			// get component 
+			DomainComponent comp = rel.getReference().getComponent();
+			toActivate = comp.isToActivate(rel);
+		}
+		else 
+		{
+			// get reference
+			Decision reference = rel.getReference();
+			// get target
+			Decision target = rel.getTarget();
+			// check condition
+			toActivate = this.isActive(reference) && this.isActive(target) && rel.getConstraint() == null;
+		}
+		
+		// get result
+		return toActivate;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public boolean isSilent(Decision dec) {
+		// forward to component
+		return dec.getComponent().isSilent(dec);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public boolean isSilent(Relation rel) {
+		// flag
+		boolean active = false;
+		// check if local
+		if (rel.isLocal()) {
+			// get component 
+			DomainComponent comp = rel.getReference().getComponent();
+			active = comp.isActive(rel);
+		}
+		else 
+		{
+			// get reference
+			Decision reference = rel.getReference();
+			// get target
+			Decision target = rel.getTarget();
+			// check condition
+			active = (reference.getComponent().isSilent(reference) || target.getComponent().isSilent(target)) && 
+					rel.getConstraint() == null;
+		}
+		
+		// get result
+		return active;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void add(Relation rel) 
 			throws RelationPropagationException 
 	{
 		// check if local relation
@@ -905,47 +1202,51 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			// dispatch request to the component
 			DomainComponent comp = rel.getReference().getComponent();
 			// add relation
-			comp.addRelation(rel);
+			comp.add(rel);
 		}
-		else {
-			// global relation
-			if (!this.relations.get(PlanElementStatus.PENDING).contains(rel)) {
-				throw new RuntimeException("Trying to propagate a not pending relation " + rel);
-			}
-			
+		else 
+		{
 			try 
 			{
-				// check relation type
-				switch (rel.getCategory()) 
+				if (!this.isActive(rel.getReference()) || !this.isActive(rel.getTarget())) {
+					// not active decisions
+					throw new RelationPropagationException("Trying to propagate global relation between not active decisions\n"
+							+ "- reference= " + rel.getReference() + "\n"
+							+ "- target= " + rel.getTarget() + "\n");
+				}
+				else if (!this.isActive(rel))
 				{
-					// temporal constraint
-					case TEMPORAL_CONSTRAINT : {
-						// get temporal relation
-						TemporalRelation trel = (TemporalRelation) rel;
+					// check relation type
+					switch (rel.getCategory()) 
+					{
+						// temporal constraint
+						case TEMPORAL_CONSTRAINT : 
+						{
+							// get temporal relation
+							TemporalRelation trel = (TemporalRelation) rel;
 							// create interval constraint
 							TemporalConstraint constraint = trel.create();
 							// propagate constraint
 							this.tdb.propagate(constraint);
-							// set relation as activated
-							this.relations.get(PlanElementStatus.PENDING).remove(rel);
-							this.relations.get(PlanElementStatus.ACTIVE).add(rel);
-					}
-					break;
-					
-					// parameter constraint
-					case PARAMETER_CONSTRAINT : {
-						// get parameter relation
-						ParameterRelation prel = (ParameterRelation) rel;
+						}
+						break;
+						
+						// parameter constraint
+						case PARAMETER_CONSTRAINT : 
+						{
+							// get parameter relation
+							ParameterRelation prel = (ParameterRelation) rel;
 							// create constraint
 							ParameterConstraint constraint = prel.create();
 							// propagate constraint
 							this.pdb.propagate(constraint);
-							// set relation as activated
-							this.relations.get(PlanElementStatus.PENDING).remove(rel);
-							this.relations.get(PlanElementStatus.ACTIVE).add(rel);
-						
+						}
+						break;
 					}
-					break;
+				}
+				else {
+					// already propagated constraint
+					this.logger.warning("Already propagated global relation\n- " + rel + "\n");
 				}
 			}
 			catch (ConstraintPropagationException ex) {
@@ -957,118 +1258,119 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void free(Relation rel) {
-		// get decisions
-		Decision reference = rel.getReference();
-		Decision target = rel.getTarget();
-		// check if local relation
-		if (reference.getComponent().equals(target.getComponent())) {
-			// dispatch request
-			DomainComponent comp = reference.getComponent();
-			comp.delete(rel);
-		}
-		else {
-			// retract global relation if active
-			if (this.relations.get(PlanElementStatus.ACTIVE).contains(rel)) {
-				// check relation type
-				switch (rel.getCategory()) 
-				{
-					// retract temporal constraint
-					case TEMPORAL_CONSTRAINT : {
-						// get temporal relation
-						TemporalRelation trel = (TemporalRelation) rel;
-						// retract constraint
-						this.tdb.retract(trel.getConstraint());
-						trel.clear();
-					}
-					break;
-					
-					// retract parameter constraint
-					case PARAMETER_CONSTRAINT : {
-						// get parameter relation
-						ParameterRelation prel = (ParameterRelation) rel;
-						// retract constraint
-						this.pdb.retract(prel.getConstraint());
-						prel.clear();
-					}
-					break;
-				}
-				
-				// remove from active relations
-				this.relations.get(PlanElementStatus.ACTIVE).remove(rel);
-			}
-			else if (this.relations.get(PlanElementStatus.PENDING).contains(rel)) {
-				// remove from pending relations
-				this.relations.get(PlanElementStatus.PENDING).remove(rel);
-			}
-			else {
-				// relation not found
-				this.logger.debug("Relation not found in the plan " + rel);
-			}
-		}
-	}
+//	/**
+//	 * This method completely remove a relation from the plan
+//	 */
+//	@Override
+//	public void free(Relation rel) 
+//	{
+//		// get decisions
+//		Decision reference = rel.getReference();
+//		Decision target = rel.getTarget();
+//		// check if local relation
+//		if (reference.getComponent().equals(target.getComponent())) 
+//		{
+//			// dispatch request
+//			DomainComponent comp = reference.getComponent();
+//			comp.delete(rel);
+//		}
+//		else 
+//		{
+//			// retract global relation if active
+//			if (this.relations.get(PlanElementStatus.ACTIVE).contains(rel)) 
+//			{
+//				// check relation type
+//				switch (rel.getCategory()) 
+//				{
+//					// retract temporal constraint
+//					case TEMPORAL_CONSTRAINT : 
+//					{
+//						// get temporal relation
+//						TemporalRelation trel = (TemporalRelation) rel;
+//						// retract constraint
+//						this.tdb.retract(trel.getConstraint());
+//						trel.clear();
+//					}
+//					break;
+//					
+//					// retract parameter constraint
+//					case PARAMETER_CONSTRAINT : 
+//					{
+//						// get parameter relation
+//						ParameterRelation prel = (ParameterRelation) rel;
+//						// retract constraint
+//						this.pdb.retract(prel.getConstraint());
+//						prel.clear();
+//					}
+//					break;
+//				}
+//				
+//				// remove from active relations
+//				this.relations.get(PlanElementStatus.ACTIVE).remove(rel);
+//			}
+//			else if (this.relations.get(PlanElementStatus.PENDING).contains(rel)) {
+//				// remove from pending relations
+//				this.relations.get(PlanElementStatus.PENDING).remove(rel);
+//			}
+//			else {
+//				// relation not found
+//				this.logger.debug("Relation not found in the plan " + rel);
+//			}
+//		}
+//	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void delete(Relation rel) {
-		// get decisions
-		Decision reference = rel.getReference();
-		Decision target = rel.getTarget();
-		// check if local relation
-		if (reference.getComponent().equals(target.getComponent())) {
-			// dispatch request
-			DomainComponent comp = reference.getComponent();
-			comp.delete(rel);
+	public void delete(Relation rel) 
+	{
+		// check if local
+		if (rel.isLocal()) {
+			// forward request to component
+			DomainComponent component = rel.getReference().getComponent();
+			component.delete(rel);
 		}
-		else {
-			// global relation
-			if (this.relations.get(PlanElementStatus.ACTIVE).contains(rel)) {
+		else 
+		{
+			// check global relation
+			if (!this.relations.contains(rel)) {
+				// relation not found
+				this.logger.warning("Global relation not found\n- relation= " + rel + "\n");
+			}
+			else if (this.isActive(rel))
+			{
 				// check relation type
 				switch (rel.getCategory()) 
 				{
 					// temporal constraint
-					case TEMPORAL_CONSTRAINT : {
+					case TEMPORAL_CONSTRAINT : 
+					{
 						// get temporal relation
 						TemporalRelation trel = (TemporalRelation) rel;
 						// retract the related constraint
 						TemporalConstraint constraint =  trel.getConstraint();
 						this.tdb.retract(constraint);
-						// remove relation
-						this.relations.get(PlanElementStatus.ACTIVE).remove(trel);
-						// add back to pending
-						this.relations.get(PlanElementStatus.PENDING).add(trel);
-						
+						trel.clear();
 					}
 					break;
 					
 					// parameter constraint
-					case PARAMETER_CONSTRAINT : {
+					case PARAMETER_CONSTRAINT : 
+					{
 						// get parameter relation
 						ParameterRelation prel = (ParameterRelation) rel;
 						// retract the related constraint
 						ParameterConstraint constraint = prel.getConstraint();
 						this.pdb.retract(constraint);
-						// remove relation
-						this.relations.get(PlanElementStatus.ACTIVE).remove(prel);
-						// add back to pending
-						this.relations.get(PlanElementStatus.PENDING).add(prel);
+						prel.clear();
 					}
 					break;
 				}
 			}
-			else if (this.relations.get(PlanElementStatus.PENDING).contains(rel)) {
-				// remove pending relation
-				this.relations.get(PlanElementStatus.PENDING).remove(rel);
-			}
 			else {
-				// relation not found
-				this.logger.debug("Relation not found in the plan " + rel);
+				// deleting a not propagated constraint
+				this.logger.warning("Trying to delete a not propagated global relation\n- relation= " + rel + "\n");
 			}
 		}
 	}
@@ -1125,88 +1427,122 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		return list;
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void rollback(FlawSolution solution) 
-	{ 
-		// check if the request must be dispatched to the correct component
-		if (this.flawType2resolver.containsKey(solution.getFlaw().getType())) {
-			// solve flaw
-			this.flawType2resolver.get(solution.getFlaw().getType()).retract(solution);
-		}
-		else {
-			// dispatch flaw
-			DomainComponent component = solution.getFlaw().getComponent();
-			component.rollback(solution);
-		}
-	}
-	
-	/**
-	 * Solve a flaw by applying the selected solution
-	 * 
-	 * @param flaw
-	 * @param sol
-	 * @throws Exception
-	 */
-	@Override
-	public void commit(FlawSolution solution) 
-			throws FlawSolutionApplicationException 
-	{
-		// check if the request must be dispatched to the correct component
-		if (this.flawType2resolver.containsKey(solution.getFlaw().getType())) {
-			// solve flaw
-			this.flawType2resolver.get(solution.getFlaw().getType()).apply(solution);
-		}
-		else {
-			// dispatch flaw
-			DomainComponent component = solution.getFlaw().getComponent();
-			component.commit(solution);
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void propagete(FlawSolution solution) 
-			throws FlawSolutionApplicationException 
-	{
-//		try 
-//		{
-			// apply solution
-			this.commit(solution);
-			// notify update to observers
-			for (PlanDataBaseObserver observer : this.observers) {
-				// create event
-				PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.PROPAGATE, solution);
-				// notify event
-				observer.notify(event);
-			}
-//		} 
-//		catch (FlawSolutionApplicationException ex) {
-//			throw new PlanRefinementException(ex.getMessage());
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void rollback(FlawSolution solution) 
+//	{ 
+//		// check if the request must be dispatched to the correct component
+//		if (this.flawType2resolver.containsKey(solution.getFlaw().getType())) {
+//			// solve flaw
+//			this.flawType2resolver.get(solution.getFlaw().getType()).retract(solution);
 //		}
+//		else {
+//			// dispatch flaw
+//			DomainComponent component = solution.getFlaw().getComponent();
+//			component.rollback(solution);
+//		}
+//	}
+	
+//	/**
+//	 * Solve a flaw by applying the selected solution
+//	 * 
+//	 * @param flaw
+//	 * @param sol
+//	 * @throws Exception
+//	 */
+//	@Override
+//	public void commit(FlawSolution solution) 
+//			throws FlawSolutionApplicationException 
+//	{
+//		// check if the request must be dispatched to the correct component
+//		if (this.flawType2resolver.containsKey(solution.getFlaw().getType())) {
+//			// solve flaw
+//			this.flawType2resolver.get(solution.getFlaw().getType()).apply(solution);
+//		}
+//		else {
+//			// dispatch flaw
+//			DomainComponent component = solution.getFlaw().getComponent();
+//			component.commit(solution);
+//		}
+//	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void propagate(Operator operator) 
+			throws FlawSolutionApplicationException 
+	{
+		// get related flaw solution
+		
+		/*
+		 * TODO
+		 */
+		
+		// set applied
+		operator.setApplied();
+		// compute the resulting makespan
+		double makespan = this.computeMakespan();
+		// get resulting agenda
+		Agenda agenda = this.getAgenda();
+		// set makespan 
+		operator.setMakespan(makespan);
+		// set agenda
+		operator.setAgenda(agenda);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void retract(FlawSolution solution) 
-//			throws FlawSolutionApplicationException 
-	{
-		// roll-back flaw solution
-		this.rollback(solution);
-		// notify update to observers
-		for (PlanDataBaseObserver observer : this.observers) {
-			// create event
-			PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.RETRACT, solution);
-			// notify retraction
-			observer.notify(event);
-		}
+	public void retract(Operator operator) {
+		// TODO Auto-generated method stub
+		
 	}
+	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void propagete(FlawSolution solution) 
+//			throws FlawSolutionApplicationException 
+//	{
+////		try 
+////		{
+//			// apply solution
+//			this.commit(solution);
+//			// notify update to observers
+//			for (PlanDataBaseObserver observer : this.observers) {
+//				// create event
+//				PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.PROPAGATE, solution);
+//				// notify event
+//				observer.notify(event);
+//			}
+////		} 
+////		catch (FlawSolutionApplicationException ex) {
+////			throw new PlanRefinementException(ex.getMessage());
+////		}
+//	}
+	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void retract(FlawSolution solution) 
+////			throws FlawSolutionApplicationException 
+//	{
+//		// roll-back flaw solution
+//		this.rollback(solution);
+//		// notify update to observers
+//		for (PlanDataBaseObserver observer : this.observers) {
+//			// create event
+//			PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.RETRACT, solution);
+//			// notify retraction
+//			observer.notify(event);
+//		}
+//	}
 	
 	/**
 	 * 
@@ -1281,7 +1617,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				// get facts 
 				for (ProblemFact fact : problem.getFacts()) {
 					// create decision
-					Decision dec = this.createDecision(
+					Decision dec = this.create(
 							fact.getValue(), 
 							fact.getParameterLabels(), 
 							fact.getStart(), 
@@ -1289,7 +1625,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 							fact.getDuration());
 					
 					// add decision
-					this.addDecision(dec);
+					this.add(dec);
 					// add committed decision
 					committedDecisions.add(dec);
 					// add entry
@@ -1313,7 +1649,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			// create goals
 			for (ProblemGoal goal : problem.getGoals()) {
 				// create related decisions
-				Decision dec = this.createDecision(
+				Decision dec = this.create(
 						goal.getValue(), 
 						goal.getParameterLabels(), 
 						goal.getStart(), 
@@ -1344,13 +1680,12 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 							// get temporal constraint
 							TemporalProblemConstraint tc = (TemporalProblemConstraint) constraint;
 							// create relation
-							TemporalRelation rel = this.createRelation(constraint.getType(), reference, target);
+							TemporalRelation rel = this.create(constraint.getType(), reference, target);
 							rel.setBounds(tc.getBounds());
-							
 							// check if relation can be activated
-							if (reference.isActive() && target.isActive()) {
+							if (this.isToActivate(rel)) {
 								// add relation 
-								this.addRelation(rel);
+								this.add(rel);
 								committedRelations.add(rel);
 							}
 						}
@@ -1362,7 +1697,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 							// get parameter constraint
 							ParameterProblemConstraint pc = (ParameterProblemConstraint) constraint;
 							// create relation
-							ParameterRelation rel = this.createRelation(constraint.getType(), reference, target);
+							ParameterRelation rel = this.create(constraint.getType(), reference, target);
 							// set labels
 							rel.setReferenceParameterLabel(pc.getReferenceParameterLabel());
 							
@@ -1405,9 +1740,9 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 							}
 							
 							// check if relation can be activated
-							if (reference.isActive() && target.isActive()) {
+							if (this.isToActivate(rel)) {
 								// add relation
-								this.addRelation(rel);
+								this.add(rel);
 								committedRelations.add(rel);
 							}
 						}
@@ -1419,7 +1754,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				// roll-back committed relations
 				for (Relation rel : committedRelations) {
 					// retract 
-					this.free(rel);
+					this.delete(rel);
 				}
 				
 				// throw exception

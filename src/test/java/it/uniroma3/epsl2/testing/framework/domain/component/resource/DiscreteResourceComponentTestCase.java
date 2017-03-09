@@ -121,23 +121,23 @@ public class DiscreteResourceComponentTestCase
 		Assert.assertTrue(requirement.getLabel().equals("REQUIREMENT"));
 		
 		// create decision
-		Decision dec = this.resource.createDecision(requirement, new String[] {"?a0"});
+		Decision dec = this.resource.create(requirement, new String[] {"?a0"});
 		Assert.assertNotNull(dec);
 		Assert.assertNull(dec.getToken());
 		System.out.println(dec);
 		try
 		{
 			// add decision
-			this.resource.addDecision(dec);
+			this.resource.add(dec);
 			Assert.assertNotNull(dec.getToken());
 			
 			// bind parameter
-			BindParameterRelation bind = this.resource.createRelation(RelationType.BIND_PARAMETER, dec, dec);
+			BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, dec, dec);
 			bind.setReference(dec);
 			bind.setReferenceParameterLabel(dec.getParameterLabelByIndex(0));
 			bind.setValue("3");
 			// add relation
-			this.resource.addRelation(bind);
+			this.resource.add(bind);
 
 			// get parameter
 			NumericParameter param = (NumericParameter) dec.getParameterByIndex(0);
@@ -173,62 +173,62 @@ public class DiscreteResourceComponentTestCase
 		try
 		{
 			// create decision
-			Decision a1 = this.resource.createDecision(
+			Decision a1 = this.resource.create(
 					requirement, 
 					new String[] {"?a0"},
 					new long[] {2, 4},
 					new long[] {8, 10},
 					new long[] {1, this.tdb.getHorizon()});
 			// add decision
-			this.resource.addDecision(a1);
+			this.resource.add(a1);
 			
 			
 			// bind parameter
-			BindParameterRelation bind = this.resource.createRelation(RelationType.BIND_PARAMETER, a1, a1);
+			BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, a1, a1);
 			bind.setReference(a1);
 			bind.setReferenceParameterLabel(a1.getParameterLabelByIndex(0));
 			bind.setValue("5");
 			// add relation
-			this.resource.addRelation(bind);
+			this.resource.add(bind);
 			System.out.println("a1: " + a1);
 			
 			// create decision
-			Decision a2 = this.resource.createDecision(
+			Decision a2 = this.resource.create(
 					requirement, 
 					new String[] {"?a1"},
 					new long[] {4, 6},
 					new long[] {16, 18},
 					new long[] {1, this.tdb.getHorizon()});
 			// add decision
-			this.resource.addDecision(a2);
+			this.resource.add(a2);
 			
 			
 			// bind parameter
-			bind = this.resource.createRelation(RelationType.BIND_PARAMETER, a2, a2);
+			bind = this.resource.create(RelationType.BIND_PARAMETER, a2, a2);
 			bind.setReference(a2);
 			bind.setReferenceParameterLabel(a2.getParameterLabelByIndex(0));
 			bind.setValue("5");
 			// add relation
-			this.resource.addRelation(bind);
+			this.resource.add(bind);
 			System.out.println("a2: " + a2);
 			
 			// create decision
-			Decision a3 = this.resource.createDecision(
+			Decision a3 = this.resource.create(
 					requirement, 
 					new String[] {"?a2"},
 					new long[] {11, 13},
 					new long[] {21, 23},
 					new long[] {1, this.tdb.getHorizon()});
 			// add decision
-			this.resource.addDecision(a3);
+			this.resource.add(a3);
 			
 			// bind relation
-			bind = this.resource.createRelation(RelationType.BIND_PARAMETER, a3, a3);
+			bind = this.resource.create(RelationType.BIND_PARAMETER, a3, a3);
 			bind.setReference(a3);
 			bind.setReferenceParameterLabel(a3.getParameterLabelByIndex(0));
 			bind.setValue("7");
 			// add relation
-			this.resource.addRelation(bind);
+			this.resource.add(bind);
 			System.out.println("a3: " + a3);
 			
 			

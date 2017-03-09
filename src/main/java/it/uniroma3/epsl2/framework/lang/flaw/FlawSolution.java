@@ -2,7 +2,9 @@ package it.uniroma3.epsl2.framework.lang.flaw;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
@@ -19,13 +21,13 @@ public abstract class FlawSolution
 	protected Flaw flaw;
 	
 	// decisions managed during solution application
-	protected List<Decision> dCreated;					// decisions added to plan as pending
-	protected List<Decision> dActivated;				// pending decisions added to plan
+	protected Set<Decision> dCreated;					// decisions added to plan as pending
+	protected Set<Decision> dActivated;					// pending decisions added to plan
 	
 	// relations managed during solution application
-	protected List<Relation> rCreated;					// relations added to plan as pending
-	protected List<Relation> rActivated;				// pending relations added to plan
-	protected List<Relation> rAdded;					// relations created and activated
+	protected Set<Relation> rCreated;					// relations added to plan as pending
+	protected Set<Relation> rActivated;					// pending relations added to plan
+	protected Set<Relation> rAdded;						// relations created and activated
 	
 	/**
 	 * 
@@ -36,12 +38,24 @@ public abstract class FlawSolution
 		this.id = getNextId();
 		this.flaw = flaw;
 		// initialize data structures
-		this.dCreated = new ArrayList<>();
-		this.dActivated = new ArrayList<>();
-		this.rCreated = new ArrayList<>();
-		this.rActivated = new ArrayList<>();
-		this.rAdded = new ArrayList<>();
+		this.dCreated = new HashSet<>();
+		this.dActivated = new HashSet<>();
+		this.rCreated = new HashSet<>();
+		this.rActivated = new HashSet<>();
+		this.rAdded = new HashSet<>();
 	}
+	
+//	/**
+//	 * 
+//	 */
+//	public final void clear() {
+//		// decision and relation data
+//		this.dCreated = new HashSet<>();
+//		this.dActivated = new HashSet<>();
+//		this.rCreated = new HashSet<>();
+//		this.rActivated = new HashSet<>();
+//		this.rAdded = new HashSet<>();
+//	}
 	
 	/**
 	 * 

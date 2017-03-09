@@ -12,8 +12,8 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundEx
  * @author anacleto
  *
  */
-public interface FlawManager {
-
+public interface FlawManager 
+{
 	/**
 	 * 
 	 * @return

@@ -373,7 +373,7 @@ public class PlanDataBaseTestCase {
 			
 			
 			// add pending decision
-			Decision dec = ((PlanDataBaseComponent) this.pdb).createDecision(v13, new String[] {});
+			Decision dec = ((PlanDataBaseComponent) this.pdb).create(v13, new String[] {});
 			Assert.assertNotNull(dec);
 			Assert.assertTrue(dec.isPending());
 			Assert.assertFalse(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
@@ -509,12 +509,12 @@ public class PlanDataBaseTestCase {
 			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
 		
 			// add pending decision
-			Decision dec1 = ((PlanDataBaseComponent) this.pdb).createDecision(v13, new String[] {});
+			Decision dec1 = ((PlanDataBaseComponent) this.pdb).create(v13, new String[] {});
 			// add decisions
-			Decision dec2 = ((PlanDataBaseComponent) this.pdb).createDecision(v21, new String[] {});
-			((PlanDataBaseComponent) this.pdb).addDecision(dec2);
-			Decision dec3 = ((PlanDataBaseComponent) this.pdb).createDecision(v22, new String[] {});
-			((PlanDataBaseComponent) this.pdb).addDecision(dec3);
+			Decision dec2 = ((PlanDataBaseComponent) this.pdb).create(v21, new String[] {});
+			((PlanDataBaseComponent) this.pdb).add(dec2);
+			Decision dec3 = ((PlanDataBaseComponent) this.pdb).create(v22, new String[] {});
+			((PlanDataBaseComponent) this.pdb).add(dec3);
 			
 			// check flaws
 			List<Flaw> flaws = this.pdb.detectFlaws();
@@ -627,34 +627,34 @@ public class PlanDataBaseTestCase {
 		
 		
 			Decision dec1 = ((PlanDataBaseComponent) this.pdb).
-					createDecision(v13, new String[] {}, 
+					create(v13, new String[] {}, 
 							new long[] {11, 23}, new long[] {5, 5});
-			((PlanDataBaseComponent) this.pdb).addDecision(dec1);
+			((PlanDataBaseComponent) this.pdb).add(dec1);
 
 			Decision dec2 = ((PlanDataBaseComponent) this.pdb).
-					createDecision(v21, new String[] {}, 
+					create(v21, new String[] {}, 
 							new long[] {5, 5}, v21.getDurationBounds());
-			((PlanDataBaseComponent) this.pdb).addDecision(dec2);
+			((PlanDataBaseComponent) this.pdb).add(dec2);
 			
 			Decision dec3 = ((PlanDataBaseComponent) this.pdb).
-					createDecision(v22, new String[] {}, 
+					create(v22, new String[] {}, 
 							new long[] {11, 11}, new long[] {5, 5});
-			((PlanDataBaseComponent) this.pdb).addDecision(dec3);
+			((PlanDataBaseComponent) this.pdb).add(dec3);
 			
 			Decision dec4 = ((PlanDataBaseComponent) this.pdb).
-					createDecision(v12, new String[] {}, 
+					create(v12, new String[] {}, 
 							new long[] {5, 5});
-			((PlanDataBaseComponent) this.pdb).addDecision(dec4);
+			((PlanDataBaseComponent) this.pdb).add(dec4);
 			
 			Decision dec5 = ((PlanDataBaseComponent) this.pdb).
-					createDecision(v12, new String[] {}, 
+					create(v12, new String[] {}, 
 							new long[] {15, 18}, new long[] {5, 5});
-			((PlanDataBaseComponent) this.pdb).addDecision(dec5);
+			((PlanDataBaseComponent) this.pdb).add(dec5);
 			
 			Decision dec6 = ((PlanDataBaseComponent) this.pdb).
-					createDecision(v22, new String[] {}, 
+					create(v22, new String[] {}, 
 							new long[] {23, 23}, new long[] {5, 5});
-			((PlanDataBaseComponent) this.pdb).addDecision(dec6);
+			((PlanDataBaseComponent) this.pdb).add(dec6);
 			
 			// display plan data-base
 			this.pdb.display();
@@ -715,15 +715,15 @@ public class PlanDataBaseTestCase {
 			this.pdb.addSynchronizationRule(rule);
 			
 			// add a decision
-			Decision fact = this.pdb.createDecision(v22, new String[] {}, new long[] {0, 0}, new long[] {10, 10}, new long[] {10, 10});
-			this.pdb.addDecision(fact);
-			fact = this.pdb.createDecision(v22, new String[] {}, new long[] {22, 22}, new long[] {25, 25}, new long[] {3, 3});
-			this.pdb.addDecision(fact);
-			fact = this.pdb.createDecision(v13, new String[] {});
-			this.pdb.addDecision(fact);
+			Decision fact = this.pdb.create(v22, new String[] {}, new long[] {0, 0}, new long[] {10, 10}, new long[] {10, 10});
+			this.pdb.add(fact);
+			fact = this.pdb.create(v22, new String[] {}, new long[] {22, 22}, new long[] {25, 25}, new long[] {3, 3});
+			this.pdb.add(fact);
+			fact = this.pdb.create(v13, new String[] {});
+			this.pdb.add(fact);
 			
 			// add pending decision
-			Decision g1 = this.pdb.createDecision(v22, new String[] {});
+			Decision g1 = this.pdb.create(v22, new String[] {});
 			
 			// print data
 			System.out.println("PDB Agenda:");
@@ -820,19 +820,19 @@ public class PlanDataBaseTestCase {
 			this.pdb.addSynchronizationRule(rule);
 			
 			// add facts
-			Decision f0 = this.pdb.createDecision(v11, new String[] {});
-			this.pdb.addDecision(f0);
+			Decision f0 = this.pdb.create(v11, new String[] {});
+			this.pdb.add(f0);
 			
-			Decision f1 = this.pdb.createDecision(
+			Decision f1 = this.pdb.create(
 					v21,
 					new String[] {},
 					new long[] {22, 22}, 
 					new long[] {25, 25}, 
 					v21.getDurationBounds());
-			this.pdb.addDecision(f1);
+			this.pdb.add(f1);
 			
 			// add goal
-			Decision g1 = this.pdb.createDecision(v13, new String[] {});
+			Decision g1 = this.pdb.create(v13, new String[] {});
 			g1.setMandatoryExpansion();
 			
 			// check flaws
@@ -945,11 +945,11 @@ public class PlanDataBaseTestCase {
 			this.pdb.addSynchronizationRule(rule);
 			
 			// add facts
-			Decision f0 = this.pdb.createDecision(idle, new String[] {});
-			this.pdb.addDecision(f0);
+			Decision f0 = this.pdb.create(idle, new String[] {});
+			this.pdb.add(f0);
 			
 			// add goal
-			Decision g1 = this.pdb.createDecision(go, new String[] {"?destination"});
+			Decision g1 = this.pdb.create(go, new String[] {"?destination"});
 			g1.setMandatoryExpansion();
 			
 			// check flaws

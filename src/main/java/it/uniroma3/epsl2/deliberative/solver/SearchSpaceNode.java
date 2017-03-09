@@ -51,8 +51,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.operators.add(op);
 		this.generator = op;
 		// inherit the makespan and the agenda 
-		this.makespan = parent.getMakespan();
-		this.agenda = parent.getAgenda();
+		this.makespan = op.getMakespan();
+		this.agenda = op.getAgenda();
 	}
 	
 	/**

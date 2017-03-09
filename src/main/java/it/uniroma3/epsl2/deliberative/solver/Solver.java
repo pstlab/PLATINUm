@@ -97,24 +97,24 @@ public abstract class Solver extends ApplicationFrameworkObject
 		}
 		List<Operator> to = extracted.getOperators();
 		
-		// check if retraction is needed
-		boolean retract = false;
+		// check if backtrack is needed
+		boolean backtrack = false;
 		int threshold = Math.min(from.size(), to.size());
 		Operator lastCommonOperator = null;
-		for (int index = 0; index < threshold && !retract; index++) {
+		for (int index = 0; index < threshold && !backtrack; index++) {
 			// compare operators
 			if (from.get(index).equals(to.get(index))) {
 				// update last common operator
 				lastCommonOperator = from.get(index);
 			} else {
 				// different operators - retraction is needed
-				retract = true;
+				backtrack = true;
 			}
 		}
 
 		// check if to retract
 		List<Operator> toRetract = new ArrayList<>();
-		if (retract) 
+		if (backtrack) 
 		{
 			// retract operators of the last propagate node till the last common operator
 			toRetract.addAll(last.getOperatorsUpTo(lastCommonOperator));
@@ -122,7 +122,9 @@ public abstract class Solver extends ApplicationFrameworkObject
 			{
 //				try {
 					// undo applied flaw solution
-					this.pdb.retract(op.getFlawSolution());
+					this.pdb.retract(op);
+//					// clear flaw solution 
+//					op.getFlawSolution().clear();
 //				}
 //				catch (FlawSolutionApplicationException ex) {
 //					this.logger.error(ex.getMessage());
@@ -138,15 +140,15 @@ public abstract class Solver extends ApplicationFrameworkObject
 		{
 			try 
 			{
-				// apply flaw solution
-				this.pdb.propagete(op.getFlawSolution());
+				// propagate operator
+				this.pdb.propagate(op);
 				committed.add(op);
 			}
 			catch (FlawSolutionApplicationException ex) {
 //				try {
 					// undo committed operators
 					for (Operator comm : committed) {
-						this.pdb.retract(comm.getFlawSolution());
+						this.pdb.retract(comm);
 					}
 //				} 
 //				catch (FlawSolutionApplicationException exx) {

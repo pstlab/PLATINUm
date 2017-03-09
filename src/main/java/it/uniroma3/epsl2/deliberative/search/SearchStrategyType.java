@@ -5,31 +5,37 @@ package it.uniroma3.epsl2.deliberative.search;
  * @author anacleto
  *
  */
-public enum SearchStrategyType {
-
-	/**
-	 * "Classical" Depth First search strategy
-	 */
-	DFS(DepthFirstSearchStrategy.class.getName()),
-	
+public enum SearchStrategyType 
+{
 	/**
 	 * 
 	 */
-	DFCF(DepthFirstCostFirstStrategy.class.getName()),
+	ASTAR(AStarSearchStrategy.class.getName()),
 	
 	/**
+	 * Dijkstra search strategy. 
 	 * 
+	 * The strategy selects the nodes with the lowest generation cost. If two 
+	 * nodes have the same cost then the strategy selects the node which is 
+	 * deeper in the search space.
 	 */
-	DIJKSTRA(DijkstraSearchStrategy.class.getName());
+	DIJKSTRA(DijkstraSearchStrategy.class.getName()),
 	
-	private String cname;
+	/**
+	 * Depth First search strategy. 
+	 * 
+	 * The strategy selects the nodes at the higher depth in the search space 
+	 */
+	DFS(DepthFirstSearchStrategy.class.getName());;
+	
+	private String className;
 	
 	/**
 	 * 
 	 * @param cname
 	 */
 	private SearchStrategyType(String cname) {
-		this.cname = cname;
+		this.className = cname;
 	}
 	
 	/**
@@ -37,6 +43,6 @@ public enum SearchStrategyType {
 	 * @return
 	 */
 	public String getStrategyClassName() {
-		return this.cname;
+		return this.className;
 	}
 }

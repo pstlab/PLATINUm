@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.uniroma3.epsl2.deliberative.solver.Operator;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
@@ -14,7 +15,6 @@ import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
@@ -195,19 +195,32 @@ public interface PlanDataBase
 	
 	/**
 	 * 
-	 * @param solution
+	 * @param operator
 	 * @throws FlawSolutionApplicationException
 	 */
-	public void propagete(FlawSolution solution) 
+	public void propagate(Operator operator) 
 			throws FlawSolutionApplicationException;
 	
 	/**
 	 * 
-	 * @param solution
-	 * @throws FlawSolutionApplicationException
+	 * @param operator
 	 */
-	public void retract(FlawSolution solution); 
-			//throws FlawSolutionApplicationException;
+	public void retract(Operator operator);
+	
+//	/**
+//	 * 
+//	 * @param solution
+//	 * @throws FlawSolutionApplicationException
+//	 */
+//	public void propagete(FlawSolution solution) 
+//			throws FlawSolutionApplicationException;
+//	
+//	/**
+//	 * 
+//	 * @param solution
+//	 * @throws FlawSolutionApplicationException
+//	 */
+//	public void retract(FlawSolution solution); 
 	
 	/**
 	 * 
