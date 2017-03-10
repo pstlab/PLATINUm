@@ -388,7 +388,7 @@ public class StateVariableComponentTestCase {
 			// print the network
 			System.out.println("Before propagation of flaw solution");
 			System.out.println(this.facade);
-			// apply 
+			// apply
 			this.psv.commit(solution);
 			// print the network
 			System.out.println("After propagation of flaw solution");
@@ -447,7 +447,8 @@ public class StateVariableComponentTestCase {
 			// get peak
 			Flaw flaw = flaws.get(0);
 			int schedulingStepCounter = 0;
-			do {
+			do 
+			{
 				// get peak
 				Peak peak = (Peak) flaw;
 				// check solutions
@@ -477,14 +478,13 @@ public class StateVariableComponentTestCase {
 				Thread.sleep(3000);
 				
 				// detect flaws
-				flaws = this.psv.detectFlaws();
+				flaws = this.psv.detectFlaws(FlawType.SV_SCHEDULING);
 				Assert.assertNotNull(flaws);
-				Assert.assertTrue(!flaws.isEmpty());
-				// get peak
-				flaw = flaws.get(0);
+				if (!flaws.isEmpty()) {
+					flaw = flaws.get(0);
+				}
 			}
-			while (!flaws.isEmpty() && flaw.getType().equals(FlawType.SV_SCHEDULING));
-			
+			while (!flaws.isEmpty());
 			// check number of scheduling steps done
 			System.out.println("Scheduling done in " + schedulingStepCounter + " steps");
 			Assert.assertTrue(schedulingStepCounter > 0);

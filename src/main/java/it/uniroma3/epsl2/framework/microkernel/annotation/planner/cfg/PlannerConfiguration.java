@@ -29,7 +29,7 @@ public @interface PlannerConfiguration {
 	 * 
 	 * @return
 	 */
-	FlawSelectionHeuristicType heuristic() default FlawSelectionHeuristicType.HFSH;
+	FlawSelectionHeuristicType heuristic() default FlawSelectionHeuristicType.PIPELINE;
 	
 	/**
 	 * 

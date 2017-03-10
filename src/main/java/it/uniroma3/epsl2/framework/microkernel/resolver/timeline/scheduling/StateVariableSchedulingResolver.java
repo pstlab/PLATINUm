@@ -1,8 +1,6 @@
 package it.uniroma3.epsl2.framework.microkernel.resolver.timeline.scheduling;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,14 +22,13 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
-import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 
 /**
  * 
  * @author anacleto
  *
  */
-public final class StateVariableSchedulingResolver <T extends StateVariable> extends Resolver implements Comparator<Decision>
+public final class StateVariableSchedulingResolver <T extends StateVariable> extends Resolver
 {
 	@ComponentReference
 	private T component;
@@ -43,20 +40,6 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		super(ResolverType.SV_SCHEDULING_RESOLVER);
 	}
 	
-	/**
-	 * Compare two decisions according to their tokens
-	 */
-	@Override
-	public int compare(Decision d1, Decision d2) 
-	{
-		// get start times
-		TimePoint s1 = d1.getToken().getInterval().getStartTime();
-		TimePoint s2 = d2.getToken().getInterval().getStartTime();
-		// compare start times w.r.t lower and upper bounds
-		return s1.getLowerBound() < s2.getLowerBound() ? -1 : 
-			s1.getLowerBound() == s2.getLowerBound() && s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
-	}
-
 	/**
 	 * 
 	 */
@@ -112,58 +95,35 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 	{
 		// list of peaks
 		Set<Peak> peaks = new HashSet<>();
-		// set of scheduled decisions
-		Set<Set<Decision>> scheduled = new HashSet<>();
-		
 		// list of active decisions
 		List<Decision> decisions = this.component.getActiveDecisions();
-		// sort decisions
-		Collections.sort(decisions, this);
-
+		this.logger.debug("Check overlapping decisions on component= " + this.component.getName() + "\n"
+				+ "- " + decisions + "\n");
 		// look for peaks
-		for (Decision source : decisions) 
+		for (int index = 0; index < decisions.size() - 1; index++)
 		{
-			for (Decision target : decisions) 
+			// get active decision A 
+			Decision a = decisions.get(index);
+			for (int jndex = index + 1; jndex < decisions.size(); jndex++)
 			{
-				// check decisions and if a peak with them already exists
-				if (!source.equals(target) && !this.checkInPeak(peaks, source, target) &&
-						!this.checkInScheduled(scheduled, source, target)) 
+				// get active decision B
+				Decision b = decisions.get(jndex);
+				// check overlapping decisions on both bounds
+				if (this.overlaps(a, b)) 
 				{
-					// check flexibility
-					IntervalDistanceQuery query = this.tdb.
-							createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
+					// we've got a peak
+					Peak peak = new Peak(this.component);
+					// set related decisions
+					peak.add(a);
+					peak.add(b);
+					// add peak
+					peaks.add(peak);
 					
-					// set intervals
-					query.setSource(source.getToken().getInterval());
-					query.setTarget(target.getToken().getInterval());
-					//process query
-					this.tdb.process(query);
-
-					// get bounds
-					long dmin = query.getDistanceLowerBound();
-					long dmax = query.getDistanceUpperBound();
-					
-					// check distance bounds
-					if (dmin < 0 && dmax > 0) 
-					{
-						// overlapping decisions
-						this.logger.debug("Overlapping decisions found [dmin= " + dmin +", dmax= " + dmax + "]\n" + source + "\n" + target);
-						// we've got a peak
-						Peak peak = new Peak(this.component);
-						// set related decisions
-						peak.add(source);
-						peak.add(target);
-						// add peak
-						peaks.add(peak);
-					}
-					else	// scheduled decisions 
-					{
-						// add decisions to scheduled set
-						Set<Decision> sset = new HashSet<>();
-						sset.add(source);
-						sset.add(target);
-						scheduled.add(sset);
-					}
+					// overlapping decisions
+					this.logger.debug("Overlapping decisions found:\n"
+							+ "- A= " + a + "\n"
+							+ "- B= " + b + "\n"
+							+ "-peak= " + peak);
 				}
 			}
 		}
@@ -401,7 +361,6 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			long dmin = query.getDistanceLowerBound();
 			long dmax = query.getDistanceUpperBound();
 			
-//			consistent = query.getDistanceLowerBound() >= 0 || query.getDistanceUpperBound() >= 0;
 			consistent = !(dmin < 0 && dmax < 0);
 			// next precedence constraint
 			index++;
@@ -410,43 +369,5 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		// get consistency result
 		return consistent;
 	}
-	
-	/**
-	 * 
-	 * @param peaks
-	 * @param source
-	 * @param target
-	 * @return
-	 */
-	private boolean checkInPeak(Set<Peak> peaks, Decision source, Decision target) {
-		boolean exist = false;
-		for (Peak peak : peaks) {
-			exist = peak.contains(source) && peak.contains(target);
-			if (exist) {
-				break;
-			}
-		}
-		return exist;
-	}
-	
-	/**
-	 * 
-	 * @param peaks
-	 * @param source
-	 * @param target
-	 * @return
-	 */
-	private boolean checkInScheduled(Set<Set<Decision>> scheduled, Decision source, Decision target) {
-		boolean exist = false;
-		for (Set<Decision> set : scheduled) {
-			exist = set.contains(source) && set.contains(target);
-			if (exist) {
-				break;
-			}
-		}
-		return exist;
-	}
-
-	
 }
 

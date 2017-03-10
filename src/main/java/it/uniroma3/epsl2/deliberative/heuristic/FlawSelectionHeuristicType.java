@@ -8,14 +8,14 @@ package it.uniroma3.epsl2.deliberative.heuristic;
 public enum FlawSelectionHeuristicType 
 {
 	/**
-	 * Semantic and Hierarchy-based Flaw Selection Heuristic
+	 * (optimized) Hierarchical flaw selection heuristic
 	 */
-	SHFSH(SemanticHierarchyFLawSelectionHeuristic.class.getName()),
+	HFS(HierarchicalFlawSelectionHeuristic.class.getName()),
 	
 	/**
-	 * Hierarchy-based Flaw Selection Heuristic
+	 * Pipeline-based Filter flaw selection heuristic
 	 */
-	HFSH(HierarchicalFlawSelectionHeuristic.class.getName());
+	PIPELINE(PipelineFlawSelectionHeuristic.class.getName());
 	
 	private String cname;
 	

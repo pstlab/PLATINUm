@@ -43,34 +43,29 @@ public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory
 		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getHeuristicClassName());
-			// check annotation
-			if (clazz.isAnnotationPresent(FlawSelectionHeuristicConfiguration.class)) 
-			{
-				// get constructor
-				Constructor<T> c = clazz.getDeclaredConstructor();
-				c.setAccessible(true);
-				// create instance
-				heuristic = c.newInstance();
-				
+			// get constructor
+			Constructor<T> c = clazz.getDeclaredConstructor();
+			c.setAccessible(true);
+			// create instance
+			heuristic = c.newInstance();
+			
+			// check configuration annotation
+			if (clazz.isAnnotationPresent(FlawSelectionHeuristicConfiguration.class)) {
 				// get configuration annotation
 				FlawSelectionHeuristicConfiguration cfg = clazz.getAnnotation(FlawSelectionHeuristicConfiguration.class);
 
 				// inject filters
 				this.injectFilters(cfg.pipeline(), heuristic);
-				// inject logger
-				this.injectPlannerLoggerReference(heuristic);
-
-				// inject plan data base reference
-				this.injectSingletonPlanDataBaseReference(heuristic, false);
-				// complete initialization if needed
-				this.doCompleteApplicationObjectInitialization(heuristic);
-				// add to registry
-				this.doRegister(heuristic);
 			}
-			else {
-				// error
-				throw new RuntimeException("FlawSelectionHeuristicConfiguration annotation not found on class " + clazz);
-			}
+			
+			// inject logger
+			this.injectPlannerLoggerReference(heuristic);
+			// inject plan data base reference
+			this.injectSingletonPlanDataBaseReference(heuristic, false);
+			// complete initialization if needed
+			this.doCompleteApplicationObjectInitialization(heuristic);
+			// add to registry
+			this.doRegister(heuristic);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

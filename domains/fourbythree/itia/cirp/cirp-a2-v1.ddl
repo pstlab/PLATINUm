@@ -231,13 +231,13 @@ DOMAIN FourByThree_Domain
 	}
 
 
-	COMPONENT HRC {FLEXIBLE process(trex_internal_dispatch_asap)} : HRCType;
-	COMPONENT Human {FLEXIBLE operator(trex_internal_dispatch_asap)} : HumanType;
-	COMPONENT RobotController {FLEXIBLE controller(trex_internal_dispatch_asap)} : RobotControllerType;
-	COMPONENT RobotArm {FLEXIBLE motion(trex_internal_dispatch_asap)} : ArmControllerType;
-	COMPONENT ArmTool {FLEXIBLE status(trex_internal_dispatch_asap)} : ArmToolHandlerType;
-	COMPONENT T1 {FLEXIBLE tool(trex_internal_dispatch_asap)} : ToolControllerType;
-	COMPONENT T3 {FLEXIBLE tool3(trex_internal_dispatch_asap)} : PassiveToolType;
+	COMPONENT HRC {FLEXIBLE process(functional)} : HRCType;
+	COMPONENT Human {FLEXIBLE operator(primitive)} : HumanType;
+	COMPONENT RobotController {FLEXIBLE controller(functional)} : RobotControllerType;
+	COMPONENT RobotArm {FLEXIBLE motion(primitive)} : ArmControllerType;
+	COMPONENT ArmTool {FLEXIBLE status(primitive)} : ArmToolHandlerType;
+	COMPONENT T1 {FLEXIBLE tool(primitive)} : ToolControllerType;
+	COMPONENT T3 {FLEXIBLE tool3(primitive)} : PassiveToolType;
 	
 	SYNCHRONIZE HRC.process
 	{

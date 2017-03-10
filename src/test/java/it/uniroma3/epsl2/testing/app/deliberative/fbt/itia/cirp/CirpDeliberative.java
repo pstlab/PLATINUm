@@ -17,13 +17,13 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 		solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE,
 			
 		// set heuristic
-		heuristic = FlawSelectionHeuristicType.HFSH,
+		heuristic = FlawSelectionHeuristicType.PIPELINE,
 		
 		// set search strategy
 		strategy = SearchStrategyType.DFS,
 		
 		// set log level
-		logging = FrameworkLoggingLevel.INFO
+		logging = FrameworkLoggingLevel.DEBUG
 	)
 public class CirpDeliberative extends Planner 
 {

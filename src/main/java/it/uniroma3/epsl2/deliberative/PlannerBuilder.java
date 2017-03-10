@@ -56,8 +56,8 @@ public class PlannerBuilder {
 	 * @throws ProblemInitializationException
 	 */
 	public static Planner build(String ddlFile, String pdlFile) 
-			throws SynchronizationCycleException, ProblemInitializationException {
-		
+			throws SynchronizationCycleException, ProblemInitializationException 
+	{
 		// check input
 		if (ddlFile == null || pdlFile == null) {
 			throw new RuntimeException("Specify valid DDL and PDL files...");

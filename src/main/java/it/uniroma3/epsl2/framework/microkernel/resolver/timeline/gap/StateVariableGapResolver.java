@@ -31,7 +31,6 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
-import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 
 /**
  * 
@@ -56,12 +55,25 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 	@Override
 	public int compare(Decision d1, Decision d2) 
 	{
-		// get start times
-		TimePoint s1 = d1.getToken().getInterval().getStartTime();
-		TimePoint s2 = d2.getToken().getInterval().getStartTime();
-		// compare start times w.r.t. lower and upper bounds
-		return s1.getLowerBound() < s2.getLowerBound() ? -1 :
-			s1.getLowerBound() == s2.getLowerBound() && s1.getUpperBound() <= s2.getUpperBound() ? -1 : 1;
+		// check distance again between temporal intervals
+		IntervalDistanceQuery query = this.tdb.
+				createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
+		// set intervals
+		query.setSource(d1.getToken().getInterval());
+		query.setTarget(d2.getToken().getInterval());
+		// process query
+		this.tdb.process(query);
+		// get result
+		long dmin = query.getDistanceLowerBound();
+		long dmax = query.getDistanceUpperBound();
+		
+		// check temporal ordering
+		if (dmin >= 0 && dmax >= 0) { return -1;}
+		else if (dmin < 0 && dmax < 0) { return 1; }
+		else { throw new RuntimeException("Unknown ordering of decisions\n"
+				+ "- distance= [" + dmin + ", " + dmax + "]\n"
+				+ "- d1= " + d1 + "" + d1.getToken() +"\n"
+				+ "- d2= " + d2 + "" + d2.getToken() + "\n"); } 
 	}
 	
 	/**
@@ -279,80 +291,83 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		// list of gaps
 		List<Flaw> flaws = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
-		List<Decision> decs = this.component.getActiveDecisions();
-		
-		// sort decisions
-		Collections.sort(decs, this);
-		// hypothesis for gap detection
-		boolean scheduled = true;
-		// look for gaps
-		for (int index = 0; index <= decs.size() - 2 && scheduled; index++) 
+		List<Decision> list = this.component.getActiveDecisions();
+		this.logger.debug("Check timeline gaps on component= " + this.component.getName() + "\n"
+				+ "- " + list + "\n");
+		// check scheduled decisions
+		boolean isScheduled = true;
+		for (int index = 0; index < list.size() - 1 && isScheduled; index++) 
 		{
-			// get two adjacent decisions
-			Decision left = decs.get(index);
-			Decision right = decs.get(index + 1);
-			
-			// check distance between related temporal intervals
-			IntervalDistanceQuery query = this.tdb.
-					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-			
-			// set intervals
-			query.setSource(left.getToken().getInterval());
-			query.setTarget(right.getToken().getInterval());
-			// process query
-			this.tdb.process(query);
-			// get result
-			long dmin = query.getDistanceLowerBound();
-			long dmax = query.getDistanceUpperBound();
-			
-			// check distance bound
-			if (dmin < 0 && dmax <= 0) 
+			// get decision A
+			Decision a = list.get(index);
+			for (int jndex = index +1; jndex < list.size() && isScheduled; jndex++)
 			{
-				// we've got an inverted gap
-				Gap gap = new Gap(this.component, right, left, new long[] {
-						-dmax, -dmin
-				});
-				// add the gap
-				flaws.add(gap);
-				this.logger.error("(Inverted) Gap found on [dmin= " + -dmax + ", dmax= " + -dmin + "] " + this.component + " between:\n- " + right + "\n- " + left);
+				// get a decision B
+				Decision b = list.get(jndex);
+				// check if scheduled
+				isScheduled = !this.overlaps(a, b);
 			}
-			else if (dmin >= 0 && dmax > 0) 
+		}
+		
+		// if scheduled decisions look for gaps
+		if (isScheduled) 
+		{
+			// sort decisions
+			Collections.sort(list, this);
+			// look for gaps
+			for (int index = 0; index < list.size() - 1; index++) 
 			{
-				// we've got a gap
-				Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
-				// add the gap
-				flaws.add(gap);
-				this.logger.debug("Gap found on [dmin= " + dmin + ", dmax= " + dmax + "] " + this.component + " between:\n- " + left + "\n- " + right);
-			}
-			else if (dmin == 0 && dmax == 0) 
-			{
-				// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
-				boolean connected = false;
-				Iterator<Relation> it = this.component.getActiveRelations(left, right).iterator();
-				while (it.hasNext() && !connected) {
-					// next relation
-					Relation rel = it.next();
-					// check type
-					connected = rel.getType().equals(RelationType.MEETS);
-				}
+				// get two adjacent decisions
+				Decision left = list.get(index);
+				Decision right = list.get(index + 1);
+				// check distance again between temporal intervals
+				IntervalDistanceQuery query = this.tdb.
+						createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
+				// set intervals
+				query.setSource(left.getToken().getInterval());
+				query.setTarget(right.getToken().getInterval());
+				// process query
+				this.tdb.process(query);
+				// get result
+				long dmin = query.getDistanceLowerBound();
+				long dmax = query.getDistanceUpperBound();
 				
-				// check if decisions are linked
-				if (!connected) {
-					// create semantic compliant flaw
-					this.logger.debug("Ensure timeline semantics on " + this.component + " between:\n- " + left + "\n- " + right);
-					Gap gap = new Gap(this.component, left, right);
+				// check gap
+				if (dmin >= 0 && dmax > 0) 
+				{
+					// we've got a gap
+					Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
+					// add the gap
 					flaws.add(gap);
+					this.logger.debug("Gap found on component= " + this.component.getName() + ":\n-distance= [dmin= " + dmin + ", dmax= " + dmax + "]\n- left-decision= " + left + "\n- right-deicision= " + right + "\n");
+				}
+				else if (dmin == 0 && dmax == 0) 
+				{
+					// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
+					boolean connected = false;
+					Iterator<Relation> it = this.component.getActiveRelations(left, right).iterator();
+					while (it.hasNext() && !connected) {
+						// next relation
+						Relation rel = it.next();
+						// check type
+						connected = rel.getType().equals(RelationType.MEETS);
+					}
+					
+					// check if decisions are linked
+					if (!connected) {
+						// create semantic compliant flaw
+						this.logger.debug("Ensure timeline semantics on " + this.component + " between:\n- " + left + "\n- " + right);
+						Gap gap = new Gap(this.component, left, right);
+						flaws.add(gap);
+					}
 				}
 			}
-			else 
-			{
-				// set scheduling flag to false
-				scheduled = false;
-				// clear gaps detected till now
-				flaws = new ArrayList<>();
-				// not scheduled decisions
-				this.logger.info("Not scheduled decisions [" + dmin +  ", " + dmax + "] gaps cannot be detected:\n- " + left + "\n- " + right);
-			}
+		}
+		else {
+			// not scheduled decisions on component
+			this.logger.debug("No gaps can be detected\nNot scheduled decisions on component= " + this.component.getName() + "\n");
+			// clear gaps detected till now
+			flaws = new ArrayList<>();
 		}
 		
 		// get detected gaps
@@ -379,36 +394,15 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				Token right = gap.getRightDecision().getToken();
 				// get available paths
 				for (List<ComponentValue> path : this.component.
-						getPaths(left.getPredicate().getValue(), right.getPredicate().getValue())) {
-					
+						getPaths(left.getPredicate().getValue(), right.getPredicate().getValue())) 
+				{
 					// remove the source and destination values from the path
 					path.remove(path.size() - 1);
 					path.remove(0);
-					
-					// estimate path duration
-					long pathDmin = 0;
-					long pathDmax = 0;
-					for (ComponentValue pathValue : path) { 
-						pathDmin += pathValue.getDurationLowerBound();
-						pathDmax += pathValue.getDurationUpperBound();
-					}
-					
-					// check feasibility of the path
-					if (gap.getDmin() <= pathDmin || gap.getDmax() <= pathDmax) { 
-						// feasible solution
-						GapCompletion sol = new GapCompletion(gap, path);
-						// add solution to the flaw
-						gap.addSolution(sol);
-					}
-					else 
-					{
-						// path too long to be a feasible solution for the gap
-						this.logger.warning("Path too long to be a feasible solution for the gap "
-								+ "[dmin= " + gap.getDmin() + ", dmax= " + gap.getDmax() + "]:\n"
-								+ "- left= " + gap.getLeftDecision() + "\n"
-								+ "- right= " + gap.getRightDecision() + "\n"
-								+ "- path[dmin= " + pathDmin + ",dmax= " + pathDmax + "]= " + path);
-					}
+					// feasible solution
+					GapCompletion sol = new GapCompletion(gap, path);
+					// add solution to the flaw
+					gap.addSolution(sol);
 				}
 			}
 			break;

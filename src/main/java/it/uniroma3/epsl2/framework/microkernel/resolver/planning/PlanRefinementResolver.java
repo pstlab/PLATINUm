@@ -602,7 +602,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 							case NOT_EQUAL_PARAMETER : 
 							{
 								// get relation
-								EqualParameterRelation neq = (EqualParameterRelation) rel;
+								NotEqualParameterRelation neq = (NotEqualParameterRelation) rel;
 								
 								// check if source is the trigger
 								if (pc.getSource().equals(rule.getTriggerer())) 

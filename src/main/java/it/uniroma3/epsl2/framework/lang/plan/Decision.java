@@ -311,6 +311,6 @@ public class Decision
 	 */
 	@Override
 	public String toString() {
-		return "[Decision " + this.id + ":" + this.value.getLabel() + "]";
+		return "[Decision " + this.id + ":" + this.value.getComponent().getName() + "." + this.value.getLabel() + "]";
 	}
 }

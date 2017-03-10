@@ -110,18 +110,18 @@ DOMAIN GOAC_Domain {
 	COMPONENT Platine {FLEXIBLE platine(trex_external)} : PlatineType;
 	COMPONENT Camera {FLEXIBLE camera(trex_external)} : CameraType;
 	COMPONENT Communication {FLEXIBLE communication(trex_external)} : CommunicationType;
-	COMPONENT MissionTimeline {FLEXIBLE mission_timeline(trex_internal,dispatch_asap)} : MissionTimelineType;
+	COMPONENT MissionTimeline {FLEXIBLE mission_timeline(functional)} : MissionTimelineType;
 	COMPONENT CommunicationVW {FLEXIBLE communication_windows(uncontrollable)} : CommunicationVWType;
 
-	SYNCHRONIZE MissionTimeline.mission_timeline {
-	
-		VALUE TakingPicture(?file_id1, ?x1, ?y1, ?pan1, ?tilt1) {
+	SYNCHRONIZE MissionTimeline.mission_timeline 
+	{
+		VALUE TakingPicture(?file_id1, ?x1, ?y1, ?pan1, ?tilt1) 
+		{
+			cd1 Camera.camera.TakingPicture(?file_id2, ?x2, ?y2, ?pan2, ?tilt2);
+			cd5 Communication.communication.Communicating(?file_id3);
 		
-			cd1 <!> Camera.camera.TakingPicture(?file_id2, ?x2, ?y2, ?pan2, ?tilt2);
-			cd5 <!> Communication.communication.Communicating(?file_id3);
-		
-			CONTAINS [0,+INF] [0,+INF] cd1;
-			CONTAINS [0,+INF] [0,0] cd5;
+			//CONTAINS [0,+INF] [0,+INF] cd1;
+			//CONTAINS [0,+INF] [0,0] cd5;
 			cd1 BEFORE [0, +INF] cd5;
 		
 			?x1 = ?x2;
@@ -131,27 +131,18 @@ DOMAIN GOAC_Domain {
 			?file_id1 = ?file_id2;
 			?file_id1 = ?file_id3;
 		}
-		
-		
-		VALUE At(?x3, ?y3) {
-		
-			cd1 RobotBase.robot_base.At(?x4, ?y4);
-		
-			EQUALS cd1;
-		
-			?x3 = ?x4;
-			?y3 = ?y4;
-		}
-		
 	}
 
 	SYNCHRONIZE RobotBase.robot_base {
 		
 		VALUE GoingTo(?x1, ?y1) {
 		
-			cd2 Platine.platine.PointingAt(?pan1 = 0, ?tilt1 = 0);
+			cd2 Platine.platine.PointingAt(?pan1, ?tilt1);
 		
 			DURING [0, +INF] [0, +INF] cd2;
+			
+			?pan1 = 0;
+			?tilt1 = 0;
 		}
 	}
 
@@ -160,8 +151,8 @@ DOMAIN GOAC_Domain {
 		
 		VALUE TakingPicture(?file_id1, ?x1, ?y1, ?pan1, ?tilt1) {
 		
-			cd3 <!> Platine.platine.PointingAt(?pan2, ?tilt2);
-			cd2 <!> RobotBase.robot_base.At(?x2, ?y2);
+			cd3 Platine.platine.PointingAt(?pan2, ?tilt2);
+			cd2 RobotBase.robot_base.At(?x2, ?y2);
 		
 			DURING [0, +INF] [0, +INF] cd2;
 			DURING [0, +INF] [0, +INF] cd3;

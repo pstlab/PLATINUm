@@ -473,9 +473,9 @@ public class PlannerTestCase
 			// create synchronization
 			SynchronizationRule rule = this.pdb.createSynchronizationRule(take, new String[] {"?target", "?position"});
 			TokenVariable trigger = rule.getTriggerer();
-			TokenVariable v1 = rule.addTokenVariable(at, new String[] {"?location"});
-			TokenVariable v2 = rule.addTokenVariable(takingPicture, new String[] {"?object"});
-			TokenVariable v3 = rule.addTokenVariable(at, new String[] {"?location"});
+			TokenVariable v1 = rule.addTokenVariable(at, new String[] {"?location1"});
+			TokenVariable v2 = rule.addTokenVariable(takingPicture, new String[] {"?object2"});
+			TokenVariable v3 = rule.addTokenVariable(at, new String[] {"?location3"});
 			
 			// add synchronization constraint
 			rule.addTemporalConstraint(
@@ -507,9 +507,9 @@ public class PlannerTestCase
 					});
 			
 			// add parameter constraints
-			rule.addParameterConstraint(trigger, v1, RelationType.EQUAL_PARAMETER, "?position", "?location");
-			rule.addParameterConstraint(trigger, v2, RelationType.EQUAL_PARAMETER, "?target", "?object");
-			rule.addParameterConstraint(v3, v1, RelationType.NOT_EQUAL_PARAMETER, "?location", "?location");
+			rule.addParameterConstraint(trigger, v1, RelationType.EQUAL_PARAMETER, "?position", "?location1");
+			rule.addParameterConstraint(trigger, v2, RelationType.EQUAL_PARAMETER, "?target", "?object2");
+			rule.addParameterConstraint(v3, v1, RelationType.NOT_EQUAL_PARAMETER, "?location3", "?location1");
 			
 			// add synchronization
 			this.pdb.addSynchronizationRule(rule);

@@ -10,8 +10,8 @@ PROBLEM GOAC-Problem (DOMAIN GOAC_Domain)
 	comvw2 <fact> CommunicationVW.communication_windows.None() AT [500, 500] [550, 550] [50, 50];
 
 
-	g0 <goal,!> MissionTimeline.mission_timeline.TakingPicture(?gfile_id1, ?gx1, ?gy1, ?gpan1, ?gtilt1) AT [0, +INF] [1, +INF] [1, +INF];
-	g1 <goal,!> MissionTimeline.mission_timeline.TakingPicture(?gfile_id2, ?gx2, ?gy2, ?gpan2, ?gtilt2) AT [0, +INF] [1, +INF] [1, +INF];
+	g0 <goal> MissionTimeline.mission_timeline.TakingPicture(?gfile_id1, ?gx1, ?gy1, ?gpan1, ?gtilt1) AT [0, +INF] [1, +INF] [1, +INF];
+	g1 <goal> MissionTimeline.mission_timeline.TakingPicture(?gfile_id2, ?gx2, ?gy2, ?gpan2, ?gtilt2) AT [0, +INF] [1, +INF] [1, +INF];
 	
 
 	?x1 = 0;

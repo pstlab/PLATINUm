@@ -1,7 +1,7 @@
 DOMAIN FourByThree_Domain
 {
 	// one unit is one second
-	TEMPORAL_MODULE temporal_module = [0, 300], 300;
+	TEMPORAL_MODULE temporal_module = [0, 100], 300;
 	
 	PAR_TYPE EnumerationParameterType position = {
 		P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14
@@ -231,13 +231,13 @@ DOMAIN FourByThree_Domain
 	}
 
 
-	COMPONENT HRC {FLEXIBLE process(trex_internal_dispatch_asap)} : HRCType;
-	COMPONENT Human {FLEXIBLE operator(trex_internal_dispatch_asap)} : HumanType;
-	COMPONENT RobotController {FLEXIBLE controller(trex_internal_dispatch_asap)} : RobotControllerType;
-	COMPONENT RobotArm {FLEXIBLE motion(trex_internal_dispatch_asap)} : ArmControllerType;
-	COMPONENT ArmTool {FLEXIBLE status(trex_internal_dispatch_asap)} : ArmToolHandlerType;
-	COMPONENT T1 {FLEXIBLE tool(trex_internal_dispatch_asap)} : ToolControllerType;
-	COMPONENT T3 {FLEXIBLE tool3(trex_internal_dispatch_asap)} : PassiveToolType;
+	COMPONENT HRC {FLEXIBLE process(functional)} : HRCType;
+	COMPONENT Human {FLEXIBLE operator(primitive)} : HumanType;
+	COMPONENT RobotController {FLEXIBLE functional(functional)} : RobotControllerType;
+	COMPONENT RobotArm {FLEXIBLE motion(primitive)} : ArmControllerType;
+	COMPONENT ArmTool {FLEXIBLE status(primitive)} : ArmToolHandlerType;
+	COMPONENT T1 {FLEXIBLE tool(primitive)} : ToolControllerType;
+	COMPONENT T3 {FLEXIBLE tool3(primitive)} : PassiveToolType;
 	
 	SYNCHRONIZE HRC.process
 	{

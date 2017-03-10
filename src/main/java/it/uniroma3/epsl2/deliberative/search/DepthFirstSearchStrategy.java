@@ -10,8 +10,8 @@ import it.uniroma3.epsl2.deliberative.solver.SearchSpaceNode;
  * @author anacleto
  *
  */
-public class DepthFirstSearchStrategy extends SearchStrategy {
-
+public class DepthFirstSearchStrategy extends SearchStrategy 
+{
 	private Stack<SearchSpaceNode> fringe;
 	
 	/**

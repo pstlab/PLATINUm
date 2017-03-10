@@ -1,6 +1,6 @@
 DOMAIN GECKO_Domain
 {
-	TEMPORAL_MODULE temporal_module = [0, 500], 500;
+	TEMPORAL_MODULE temporal_module = [0, 100], 500;
 	
 	COMP_TYPE SingletonStateVariable ChannelFunctionalityType (
 		Idle(), 
@@ -440,7 +440,7 @@ DOMAIN GECKO_Domain
 		}
 	}
 	
-	COMPONENT TM_Channel {FLEXIBLE channel(trex_internal_dispatch_asap)} : ChannelFunctionalityType;
+	COMPONENT TM_Channel {FLEXIBLE channel(functional)} : ChannelFunctionalityType;
 	COMPONENT TM_ChangeOverTrace {FLEXIBLE change_over(trex_internal_dispatch_asap)} : ChangeOverEngineType;
 	COMPONENT TM_NeighborF {FLEXIBLE neighborF(uncontrollable)} : NeighborStatusType;
 	COMPONENT TM_NeighborB {FLEXIBLE neighborB(uncontrollable)} : NeighborStatusType;
