@@ -9,10 +9,10 @@ import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.TemporalDataBaseConfiguration;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalReasonerReference;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkFactory;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolver;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverFactory;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverType;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointQuery;
 import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
 
 /**

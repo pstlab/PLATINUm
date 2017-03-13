@@ -15,12 +15,12 @@ import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkType;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.simple.SimpleTemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverFactory;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverType;
 import it.uniroma3.epsl2.framework.time.tn.solver.apsp.APSPTemporalSolver;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.SimpleTemporalNetworkWithUncertainty;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
@@ -161,8 +161,8 @@ public class APSPSolverTestCase
 		// process query
 		solver.process(dquery);
 		// check bounds
-		Assert.assertTrue(dquery.getDistance()[0] == 40);
-		Assert.assertTrue(dquery.getDistance()[1] == 50);
+		Assert.assertTrue(dquery.getDistanceLowerBound() == 40);
+		Assert.assertTrue(dquery.getDistanceUpperBound() == 50);
 		
 		// check distances between origin and tp2
 		oquery.setTimePoint(this.tp2);
@@ -382,8 +382,8 @@ public class APSPSolverTestCase
 			// process
 			solver.process(query2);
 			// check bounds
-			Assert.assertTrue(query2.getDistance()[0] == 20);
-			Assert.assertTrue(query2.getDistance()[1] == 20);
+			Assert.assertTrue(query2.getDistanceLowerBound() == 20);
+			Assert.assertTrue(query2.getDistanceUpperBound() == 20);
 			
 			// check number of propagations
 			Assert.assertTrue(solver.getPropagationCounter() == 1);
@@ -445,8 +445,8 @@ public class APSPSolverTestCase
 			// process 
 			solver.process(query2);
 			// check bounds
-			Assert.assertTrue(query2.getDistance()[0] == 40);
-			Assert.assertTrue(query2.getDistance()[1] == 50);
+			Assert.assertTrue(query2.getDistanceLowerBound() == 40);
+			Assert.assertTrue(query2.getDistanceUpperBound() == 50);
 			
 			// check distances between origin and tp2
 			query1.setTimePoint(this.tp2);

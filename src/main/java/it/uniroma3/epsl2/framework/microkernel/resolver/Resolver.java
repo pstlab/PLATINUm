@@ -9,18 +9,15 @@ import it.uniroma3.epsl2.framework.lang.ex.ConstraintPropagationException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterDataBaseFacadeReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
-import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
 /**
@@ -232,45 +229,4 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 */
 	protected abstract void doComputeFlawSolutions(Flaw flaw) 
 			throws UnsolvableFlawFoundException;
-	
-	/**
-	 * 
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	protected boolean overlaps(Decision a, Decision b)
-	{
-		// check distance between the end of A and the start of B
-		IntervalDistanceQuery eAsB = this.tdb.
-				createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-		// set intervals
-		eAsB.setSource(a.getToken().getInterval());
-		eAsB.setTarget(b.getToken().getInterval());
-		//process query
-		this.tdb.process(eAsB);
-
-		
-		// check distance between the end of B and the start of A
-		IntervalDistanceQuery eBsA = this.tdb.
-				createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-		// set intervals
-		eBsA.setSource(b.getToken().getInterval());
-		eBsA.setTarget(a.getToken().getInterval());
-		//process query
-		this.tdb.process(eBsA);
-		
-		// print distance information
-		this.logger.debug("Check overlapping decisions:\n"
-				+ "- A= " + a + "\n"
-				+ "- B= " + b + "\n"
-				+ "- (A -> B) = ["+ eAsB.getDistanceLowerBound() + ", " + eAsB.getDistanceUpperBound() + "]\n"
-				+ "- (B -> A) = [" + eBsA.getDistanceLowerBound() +  ", " + eBsA.getDistanceUpperBound() + "]\n");
-		
-		// check overlapping decision
-		return (eAsB.getDistanceLowerBound() < 0 && eAsB.getDistanceUpperBound() > 0) ||
-				(eBsA.getDistanceLowerBound() < 0 && eBsA.getDistanceUpperBound() > 0) ||
-				(eAsB.getDistanceLowerBound() < 0 && eAsB.getDistanceUpperBound() < 0 && eBsA.getDistanceLowerBound() < 0 && eBsA.getDistanceUpperBound() < 0) ||
-				(eAsB.getDistanceLowerBound() > 0 && eAsB.getDistanceUpperBound() > 0 && eBsA.getDistanceLowerBound() > 0 && eBsA.getDistanceUpperBound() > 0);
-	}
 }

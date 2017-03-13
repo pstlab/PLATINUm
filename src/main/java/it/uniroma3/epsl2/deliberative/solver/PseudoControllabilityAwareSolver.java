@@ -10,11 +10,8 @@ import it.uniroma3.epsl2.deliberative.search.ex.EmptyFringeException;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.OperatorPropagationException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
@@ -123,30 +120,12 @@ public class PseudoControllabilityAwareSolver extends Solver
 					// create a branch for each "equivalent" flaw to solve next
 					for (Flaw flaw : flaws)
 					{
-						// create a branch for each possible solution of the flaw
-						for (FlawSolution flawSolution : flaw.getSolutions()) 
-						{
-							try
-							{
-								// create operator
-								Operator op = new Operator(flawSolution);
-								// try apply flaw solution
-								this.pdb.propagate(op);
-								// retract flaw solution
-								this.pdb.retract(op);
-								
-								// create child node
-								SearchSpaceNode child = new SearchSpaceNode(extracted, op);
-								// enqueue node
-								this.strategy.enqueue(child);
-								// expand the search space
-								this.logger.debug("Search tree expansion:\nChild-node= " + child);
-							}
-							catch (OperatorPropagationException ex) 
-							{
-								// not feasible solution found
-								this.logger.error("Not feasible flaw solution found\n- solution" + flawSolution + "\n Skip related child node");
-							}
+						// expand the search space with the available solutions of the flaw
+						for (SearchSpaceNode child : this.expand(extracted, flaw)) {
+							// add the node to the fringe
+							this.strategy.enqueue(child);
+							// expand the search space
+							this.logger.debug("Search tree expansion:\nChild-node= " + child + "\n");
 						}
 					}
 				}

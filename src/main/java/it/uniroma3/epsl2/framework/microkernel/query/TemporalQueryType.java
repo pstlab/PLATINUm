@@ -1,12 +1,14 @@
 package it.uniroma3.epsl2.framework.microkernel.query;
 
+import it.uniroma3.epsl2.framework.time.lang.query.ComputeMakespanQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
-import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalOverlapQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceFromOriginQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceToHorizonQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceFromOriginQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceToHorizonQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointScheduleQuery;
 
 /**
  * 
@@ -43,6 +45,11 @@ public enum TemporalQueryType
 	INTERVAL_SCHEDULE(IntervalScheduleQuery.class.getName()),
 	
 	/**
+	 * Check if two flexible temporal intervals overlap
+	 */
+	INTERVAL_OVERLAP(IntervalOverlapQuery.class.getName()),
+	
+	/**
 	 * Check the flexible distance between two temporal intervals
 	 */
 	INTERVAL_DISTANCE(IntervalDistanceQuery.class.getName()),
@@ -52,7 +59,16 @@ public enum TemporalQueryType
 	 * actual duration of the interval is tighter than the "domain"
 	 * duration
 	 */
-	INTERVAL_PSEUDO_CONTROLLABILITY(IntervalPseudoControllabilityQuery.class.getName());
+	INTERVAL_PSEUDO_CONTROLLABILITY(IntervalPseudoControllabilityQuery.class.getName()),
+	
+	/**
+	 * Compute the makespan of the temporal network by taking into account
+	 * controllable events of the network.
+	 * 
+	 * It is possible to specify a subset of temporal intervals for computing the 
+	 * makespan on.
+	 */
+	COMPUTE_MAKESPAN(ComputeMakespanQuery.class.getName());
 	
 	// query class name
 	private String className;

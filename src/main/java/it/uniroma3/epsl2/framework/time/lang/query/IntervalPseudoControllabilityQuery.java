@@ -8,15 +8,17 @@ import it.uniroma3.epsl2.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public class IntervalPseudoControllabilityQuery extends TemporalIntervalQuery {
-
+public class IntervalPseudoControllabilityQuery extends TemporalIntervalQuery 
+{
 	private TemporalInterval interval;
+	private boolean pseudoControllable;
 	
 	/**
 	 * 
 	 */
 	protected IntervalPseudoControllabilityQuery() {
 		super(TemporalQueryType.INTERVAL_PSEUDO_CONTROLLABILITY);
+		this.pseudoControllable = true;
 	}
 	
 	/**
@@ -39,9 +41,17 @@ public class IntervalPseudoControllabilityQuery extends TemporalIntervalQuery {
 	 * 
 	 * @param duration
 	 */
-	public void setDuration(long[] duration) {
-		this.interval.setDurationLowerBound(duration[0]);
-		this.interval.setDurationUpperBound(duration[1]);
+//	public void setDuration(long[] duration) {
+//		this.interval.setDurationLowerBound(duration[0]);
+//		this.interval.setDurationUpperBound(duration[1]);
+//	}
+
+	/**
+	 * 
+	 * @param pseudoControllable
+	 */
+	public void setPseudoControllable(boolean pseudoControllable) {
+		this.pseudoControllable = pseudoControllable;
 	}
 	
 	/**
@@ -50,7 +60,6 @@ public class IntervalPseudoControllabilityQuery extends TemporalIntervalQuery {
 	 */
 	public boolean isPseudoControllable() {
 		// check interval duration w.r.t. to domain specification
-		return this.interval.getDurationLowerBound() == this.interval.getNominalDurationLowerBound() &&
-				this.interval.getDurationUpperBound() == this.interval.getNominalDurationUpperBound();
+		return this.pseudoControllable;
 	}
 }

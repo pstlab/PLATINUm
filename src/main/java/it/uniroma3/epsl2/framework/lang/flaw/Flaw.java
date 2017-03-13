@@ -51,6 +51,14 @@ public abstract class Flaw
 	 * 
 	 * @return
 	 */
+	public final FlawCategoryType getCategory() {
+		return this.type.getCategory();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public DomainComponent getComponent() {
 		return component;
 	}

@@ -6,8 +6,8 @@ import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkType;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverType;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
 
 /**
  * 
@@ -77,8 +77,8 @@ public final class UncertaintyTemporalDataBaseFacade extends TemporalDataBaseFac
 				this.solver.process(query);
 
 				// get actual bounds
-				long dmin = query.getDistance()[0];
-				long dmax = query.getDistance()[1];
+				long dmin = query.getDistanceLowerBound();
+				long dmax = query.getDistanceUpperBound();
 				// check duration
 				if (dmin < c.getDistanceLowerBound() && dmax < c.getDistanceUpperBound()) {
 					// contingent link change

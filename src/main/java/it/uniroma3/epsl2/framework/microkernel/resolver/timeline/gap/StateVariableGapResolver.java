@@ -31,6 +31,7 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraintType;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalOverlapQuery;
 
 /**
  * 
@@ -304,8 +305,15 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 			{
 				// get a decision B
 				Decision b = list.get(jndex);
+				// check overlapping intervals
+				IntervalOverlapQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_OVERLAP);
+				// set intervals
+				query.setReference(a.getToken().getInterval());
+				query.setTarget(b.getToken().getInterval());
+				// process query
+				this.tdb.process(query);
 				// check if scheduled
-				isScheduled = !this.overlaps(a, b);
+				isScheduled = !query.isOverlapping();
 			}
 		}
 		

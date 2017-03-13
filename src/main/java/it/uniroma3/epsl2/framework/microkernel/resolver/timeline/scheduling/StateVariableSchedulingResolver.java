@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.uniroma3.epsl2.framework.domain.component.Token;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.sv.StateVariable;
+import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
@@ -21,7 +21,12 @@ import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
+import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationException;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
+import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.query.ComputeMakespanQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalOverlapQuery;
 
 /**
  * 
@@ -108,8 +113,16 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			{
 				// get active decision B
 				Decision b = decisions.get(jndex);
+				// check overlapping intervals
+				IntervalOverlapQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_OVERLAP);
+				// set intervals
+				query.setReference(a.getToken().getInterval());
+				query.setTarget(b.getToken().getInterval());
+				// process query
+				this.tdb.process(query);
+				
 				// check overlapping decisions on both bounds
-				if (this.overlaps(a, b)) 
+				if (query.isOverlapping()) 
 				{
 					// we've got a peak
 					Peak peak = new Peak(this.component);
@@ -121,9 +134,8 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 					
 					// overlapping decisions
 					this.logger.debug("Overlapping decisions found:\n"
-							+ "- A= " + a + "\n"
-							+ "- B= " + b + "\n"
-							+ "-peak= " + peak);
+							+ "- A= " + a + " -> " + a.getToken() +  "\n"
+							+ "- B= " + b + " -> " + b.getToken() + "\n");
 				}
 			}
 		}
@@ -152,22 +164,21 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 		// compute solutions
 		for (List<Decision> ordering : orderings) 
 		{
-			// check consistency of possible schedule
-			this.logger.debug("Check consistency of possible schedule\n" + ordering);
-			// add a possible 
+			// check possible schedule 
 			DecisionSchedule solution = new DecisionSchedule(peak, ordering);
-			// compute precedence constraints and check their temporal consistency
-			if (this.isConsistentSchedule(solution)) 
+			try
 			{
-				// feasible solution of the peak
-				this.logger.debug("Feasible solution of the peak\n" + solution);
-				// add solution
+				// propagate solution and compute the resulting makespan
+				double makespan = this.checkScheduleFeasibility(solution.getSchedule());
+				// set the resulting makespan
+				solution.setMakespan(makespan);
+				// add feasible solution to the peak
 				peak.addSolution(solution);
+				this.logger.debug("Feasible solution of the peak:\n- solution= " + solution + "\n");
 			}
-			else 
-			{
-				// not feasible solution 
-				this.logger.debug("Discarding not feasible solution of the peak:\n" + solution);
+			catch (TemporalConstraintPropagationException ex) {
+				// not feasible schedule, discard the related schedule
+				this.logger.debug("Not feasible solution of the peak:\n- solution= " + solution + "\n... discarding solution\n");
 			}
 		}
 		
@@ -177,6 +188,64 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			throw new UnsolvableFlawFoundException("Unsolvable Peak found on state variable "
 					+ "" + this.component.getName() + ":\n" + flaw);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param schedule
+	 * @return
+	 * @throws TemporalConstraintPropagationException
+	 */
+	private double checkScheduleFeasibility(List<Decision>schedule) 
+			throws TemporalConstraintPropagationException
+	{
+		// computed makespan 
+		double makespan = this.tdb.getOrigin();
+		// list of propagate precedence constraints
+		List<TemporalConstraint> committed = new ArrayList<>();
+		try
+		{
+			for (int index = 0; index < schedule.size() - 1; index++) 
+			{
+				// get decisions
+				Decision a = schedule.get(index);
+				Decision b = schedule.get(index + 1);
+				
+				// create temporal constraint
+				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+				before.setReference(a.getToken().getInterval());
+				before.setTarget(b.getToken().getInterval());
+				// propagate temporal constraint
+				this.tdb.propagate(before);
+				// add committed constraint
+				committed.add(before);
+			}
+			
+			// check feasibility 
+			this.tdb.checkConsistency();
+			
+			// feasible solution - compute the resulting makespan
+			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+			this.tdb.process(query);
+			// get computed makespan
+			makespan = query.getMakespan();
+		}
+		catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+			// not feasible schedule
+			this.logger.debug("Not feasible schedule constraint found\n- " + ex.getMessage() + "\n");
+			// forward exception
+			throw new TemporalConstraintPropagationException(ex.getMessage());
+		}
+		finally {
+			// restore initial state
+			for (TemporalConstraint cons : committed) {
+				// remove constraint from network
+				this.tdb.retract(cons);
+			}
+		}
+		
+		// get resulting makespan
+		return makespan;
 	}
 	
 	/**
@@ -277,7 +346,12 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 	}
 	
 	/**
+	 * Given a set of decisions to be scheduled, the method returns all the 
+	 * possible sequences of decisions i.e., all the possible ways to schedule
+	 * decisions
 	 * 
+	 * @param decisions
+	 * @return
 	 */
 	private List<List<Decision>> schedule(Set<Decision> decisions) {
 		// initialize permutations
@@ -311,63 +385,6 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Given a possible schedule of tokens to solve a peak, the method checks
-	 * if the schedule is consistent 
-	 * 
-	 * @param solution
-	 */
-	private boolean isConsistentSchedule(DecisionSchedule solution) 
-	{
-		// consistency flag of the schedule
-		boolean consistent = true;
-		int index = 0;
-		int size = solution.getSchedule().size();
-		while (index <= size - 2 && consistent) 
-		{
-			// get related tokens
-			Token i = solution.getSchedule().
-					get(index).getToken();
-			Token j = solution.getSchedule().
-					get(index + 1).getToken();
-			
-			// check interval distance
-			IntervalDistanceQuery query = this.tdb.
-					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-			
-			// set parameters
-			query.setSource(i.getInterval());
-			query.setTarget(j.getInterval());
-			// process query
-			this.tdb.process(query);
-			
-			/* 
-			 * Check the consistency of the precedence constraint, pc(i,j), that 
-			 * we are going to add in the network.
-			 * 
-			 * - If distance(i,j) = [-d, +d] then the precedence constraint will actually
-			 * schedule the two intervals
-			 * 
-			 * - If distance(i,j) = [d, D] then the precedence constraint is redundant 
-			 * because tokens are already scheduled 
-			 * 
-			 * - If distance(i,j) = [-D, -d] then the precedence constraint will cause a 
-			 * temporal inconsistency because the interval j precedes interval i,
-			 * i.e. j is before i actually
-			 */
-			
-			long dmin = query.getDistanceLowerBound();
-			long dmax = query.getDistanceUpperBound();
-			
-			consistent = !(dmin < 0 && dmax < 0);
-			// next precedence constraint
-			index++;
-		}
-		
-		// get consistency result
-		return consistent;
 	}
 }
 

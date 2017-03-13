@@ -38,9 +38,6 @@ public class TemporalInterval extends TemporalData
 		// initialize actual lower and upper distances
 		this.durationLowerBound = this.nominalDurationLowerBound;
 		this.durationUpperBound = this.nominalDurationUpperBound;
-		
-//		this.durationLowerBound = Long.MIN_VALUE + 1;
-//		this.durationUpperBound = Long.MAX_VALUE - 1;
 	}
 	
 	/**
@@ -126,7 +123,7 @@ public class TemporalInterval extends TemporalData
 				+ "{" + (this.controllable ? "c" : "u") + "} "
 				+ "duration= [" + this.durationLowerBound + ", " + this.durationUpperBound + "] "
 				+ "nominal-duration= [" + this.nominalDurationLowerBound + ", " + this.nominalDurationUpperBound + "]"
-				+ "start= " + this.start + " "
-				+ "end= " + this.end + "]";
+				+ "start= [" + this.start.getLowerBound() + ", " + this.start.getUpperBound() + "] "
+				+ "end= [" + this.end.getLowerBound() + ", " + this.end.getUpperBound() + "]]";
 	}
 }

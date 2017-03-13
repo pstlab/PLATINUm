@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.time.tn.solver.lang.event.ex;
+package it.uniroma3.epsl2.framework.time.tn.lang.event.ex;
 
 /**
  * 

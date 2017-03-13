@@ -49,6 +49,7 @@ import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.PlanDataBaseConfiguration;
 import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
+import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
@@ -59,6 +60,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstrain
 import it.uniroma3.epsl2.framework.parameter.lang.query.ComputeSolutionParameterQuery;
 import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.query.ComputeMakespanQuery;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
@@ -1480,72 +1482,18 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		this.rollback(solution);
 	}
 	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public void propagete(FlawSolution solution) 
-//			throws FlawSolutionApplicationException 
-//	{
-////		try 
-////		{
-//			// apply solution
-//			this.commit(solution);
-//			// notify update to observers
-//			for (PlanDataBaseObserver observer : this.observers) {
-//				// create event
-//				PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.PROPAGATE, solution);
-//				// notify event
-//				observer.notify(event);
-//			}
-////		} 
-////		catch (FlawSolutionApplicationException ex) {
-////			throw new PlanRefinementException(ex.getMessage());
-////		}
-//	}
-	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public void retract(FlawSolution solution) 
-////			throws FlawSolutionApplicationException 
-//	{
-//		// roll-back flaw solution
-//		this.rollback(solution);
-//		// notify update to observers
-//		for (PlanDataBaseObserver observer : this.observers) {
-//			// create event
-//			PlanDataBaseEvent event = new PlanDataBaseEvent(PlanDataBaseEventType.RETRACT, solution);
-//			// notify retraction
-//			observer.notify(event);
-//		}
-//	}
-	
 	/**
 	 * 
 	 */
 	@Override
 	public double computeMakespan() 
 	{
-		// initialize the makespan
-		double mk = this.getOrigin();
-		// get domain components
-		for (DomainComponent component : this.getComponents())
-		{
-			// check component type
-			if (component.getType().equals(DomainComponentType.SV_PRIMITIVE) || 
-					component.getType().equals(DomainComponentType.SV_FUNCTIONAL))
-			{
-				// compute the makespan of the component  
-				double cmk = component.computeMakespan();
-				// compare makespan with the current maximum
-				mk = Math.max(mk, cmk);
-			}
-		}
-		
-		// get computed makespan
-		return mk;
+		// query the temporal facade
+		ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+		// process query
+		this.tdb.process(query);
+		// get computed value
+		return query.getMakespan();
 	}
 	
 	/**

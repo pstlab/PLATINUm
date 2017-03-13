@@ -10,26 +10,40 @@ public enum FlawType
 	/**
 	 * Plan refinement goal
 	 */
-	PLAN_REFINEMENT,
+	PLAN_REFINEMENT(FlawCategoryType.PLANNING),
 	
 	/**
 	 * State Variable scheduling threat
 	 */
-	SV_SCHEDULING,
+	SV_SCHEDULING(FlawCategoryType.SCHEDULING),
 	
 	/**
 	 * State Variable gap threat
 	 */
-	SV_GAP,
+	SV_GAP(FlawCategoryType.PLANNING),
 	
 	/**
 	 * Issue concerning the temporal behavior of a component. It represents 
 	 * an inconsistency which generates an unsolvable flaw
 	 */
-	INVALID_BEHAVIOR,
+	INVALID_BEHAVIOR(FlawCategoryType.UNSOLVABLE),
 	
 	/**
 	 * Resource peak threat
 	 */
-	RESOURCE_PEAK;
+	RESOURCE_PEAK(FlawCategoryType.SCHEDULING);
+	
+	private FlawCategoryType category;
+	
+	private FlawType(FlawCategoryType category) {
+		this.category = category;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public FlawCategoryType getCategory() {
+		return category;
+	}
 }

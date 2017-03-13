@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
 
@@ -27,7 +28,9 @@ public abstract class FlawSolution
 	// relations managed during the application of the solution
 	protected Set<Relation> rCreated;					// relation created 
 	protected Set<Relation> rActivated;					// relation activated
-//	protected Set<Relation> rAdded;						// relations created and activated
+	
+	private Agenda agenda;							// agenda resulting from the application of the solution
+	private double makespan;						// makespan resulting from the application of the solution
 	
 	/**
 	 * 
@@ -42,20 +45,7 @@ public abstract class FlawSolution
 		this.dActivated = new HashSet<>();
 		this.rCreated = new HashSet<>();
 		this.rActivated = new HashSet<>();
-//		this.rAdded = new HashSet<>();
 	}
-	
-//	/**
-//	 * 
-//	 */
-//	public final void clear() {
-//		// decision and relation data
-//		this.dCreated = new HashSet<>();
-//		this.dActivated = new HashSet<>();
-//		this.rCreated = new HashSet<>();
-//		this.rActivated = new HashSet<>();
-//		this.rAdded = new HashSet<>();
-//	}
 	
 	/**
 	 * 
@@ -175,29 +165,37 @@ public abstract class FlawSolution
 		this.rActivated.addAll(rels);
 	}
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public List<Relation> getAddedRelations() {
-//		return new ArrayList<>(this.rAdded);
-//	}
-//	
-//	/**
-//	 * 
-//	 * @param rel
-//	 */
-//	public void addAddedRelation(Relation rel) {
-//		this.rAdded.add(rel);
-//	}
-//
-//	/**
-//	 * 
-//	 * @param rels
-//	 */
-//	public void addAddedRelations(Collection<Relation> rels) {
-//		this.rAdded.addAll(rels);
-//	}
+	/**
+	 * 
+	 * @return
+	 */
+	public Agenda getAgenda() {
+		return agenda;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMakespan() {
+		return makespan;
+	}
+	
+	/**
+	 * 
+	 * @param agenda
+	 */
+	public void setAgenda(Agenda agenda) {
+		this.agenda = agenda;
+	}
+	
+	/**
+	 * 
+	 * @param makespan
+	 */
+	public void setMakespan(double makespan) {
+		this.makespan = makespan;
+	}
 	
 	/**
 	 * 

@@ -40,14 +40,6 @@ public final class IntervalDistanceQuery extends TemporalIntervalQuery {
 	
 	/**
 	 * 
-	 * @param distance
-	 */
-	public void setIntervalDistance(long[] distance) {
-		this.distance = distance;
-	}
-	
-	/**
-	 * 
 	 * @return
 	 */
 	public TemporalInterval getSource() {
@@ -64,10 +56,26 @@ public final class IntervalDistanceQuery extends TemporalIntervalQuery {
 	
 	/**
 	 * 
+	 * @param value
+	 */
+	public void setDistanceLowerBound(long value) {
+		this.distance[0] = value;
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public long getDistanceLowerBound() {
 		return this.distance[0];
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 */
+	public void setDistanceUpperBOund(long value) {
+		this.distance[1] = value;
 	}
 	
 	/**

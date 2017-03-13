@@ -9,8 +9,6 @@ import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
@@ -96,17 +94,10 @@ public class BestFirstSolver extends Solver implements Comparator<SearchSpaceNod
 				for (Flaw flaw : flaws) 
 				{ 
 					// create a branch for each possible solution of a flaw
-					for (FlawSolution flawSolution : flaw.getSolutions()) 
-					{
-						// expand the search tree
-						this.logger.debug("Expanding the search tree with flaw to solve:\n" + flaw + "\n- #solutions= " + flaw.getSolutions().size());
-						// create operator
-						Operator op = new Operator(flawSolution);
-						// create child node
-						SearchSpaceNode child = new SearchSpaceNode(extracted, op);
+					for (SearchSpaceNode child : this.expand(extracted, flaw)) {
 						// enqueue node
 						this.strategy.enqueue(child);
-						this.logger.debug("Child-node= " + child + ":\n- operator= " + op + "\n- flaw= " + flaw + "\n- solution= " + flawSolution);
+						this.logger.debug("Expanding the search space with:\n- node= " + child + "\n");
 					}
 				}
 				

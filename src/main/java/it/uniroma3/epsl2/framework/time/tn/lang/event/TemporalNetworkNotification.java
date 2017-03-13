@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.time.tn.solver.lang.event;
+package it.uniroma3.epsl2.framework.time.tn.lang.event;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

@@ -7,9 +7,9 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.Po
 import it.uniroma3.epsl2.framework.microkernel.query.Query;
 import it.uniroma3.epsl2.framework.microkernel.query.QueryManager;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetwork;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.TemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.TemporalNetworkObserver;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.ex.NotificationPropagationFailureException;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.TemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.TemporalNetworkObserver;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
 /**

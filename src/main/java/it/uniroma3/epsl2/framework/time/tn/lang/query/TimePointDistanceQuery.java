@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.time.tn.solver.lang.query;
+package it.uniroma3.epsl2.framework.time.tn.lang.query;
 
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
@@ -54,11 +54,35 @@ public final class TimePointDistanceQuery extends TimePointQuery {
 		return target;
 	}
 	
-	public long[] getDistance() {
-		return distance;
+	/**
+	 * 
+	 * @param value
+	 */
+	public void setDistanceLowerBound(long value) {
+		this.distance[0] = value;
 	}
 	
-	public void setDistance(long[] distance) {
-		this.distance = distance;
+	/**
+	 * 
+	 * @param value
+	 */
+	public void setDistanceUpperBound(long value) {
+		this.distance[1] = value;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getDistanceLowerBound() { 
+		return this.distance[0];
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getDistanceUpperBound() {
+		return this.distance[1];
 	}
 }

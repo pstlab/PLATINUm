@@ -35,30 +35,30 @@ public final class IntervalScheduleQuery extends TemporalIntervalQuery {
 		return interval;
 	}
 	
-	/**
-	 * 
-	 * @param duration
-	 */
-	public void setDuration(long[] duration) {
-		this.interval.setDurationLowerBound(duration[0]);
-		this.interval.setDurationUpperBound(duration[1]);
-	}
-	
-	/**
-	 * 
-	 * @param start
-	 */
-	public void setStartTimeSchedule(long[] start) {
-		this.interval.getStartTime().setLowerBound(start[0]);
-		this.interval.getStartTime().setUpperBound(start[1]);
-	}
-	
-	/**
-	 * 
-	 * @param end
-	 */
-	public void setEndTimeSchedule(long[] end) {
-		this.interval.getEndTime().setLowerBound(end[0]);
-		this.interval.getEndTime().setUpperBound(end[1]);
-	}
+//	/**
+//	 * 
+//	 * @param duration
+//	 */
+//	public void setDuration(long[] duration) {
+//		this.interval.setDurationLowerBound(duration[0]);
+//		this.interval.setDurationUpperBound(duration[1]);
+//	}
+//	
+//	/**
+//	 * 
+//	 * @param start
+//	 */
+//	public void setStartTimeSchedule(long[] start) {
+//		this.interval.getStartTime().setLowerBound(start[0]);
+//		this.interval.getStartTime().setUpperBound(start[1]);
+//	}
+//	
+//	/**
+//	 * 
+//	 * @param end
+//	 */
+//	public void setEndTimeSchedule(long[] end) {
+//		this.interval.getEndTime().setLowerBound(end[0]);
+//		this.interval.getEndTime().setUpperBound(end[1]);
+//	}
 }

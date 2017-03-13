@@ -6,18 +6,18 @@ import java.util.Map;
 
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.AddRelationTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.AddTimePointTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.DelRelationTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.DelTimePointTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.TemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceFromOriginQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceToHorizonQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolver;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.AddRelationTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.AddTimePointTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.DelRelationTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.DelTimePointTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.TemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.ex.NotificationPropagationFailureException;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceFromOriginQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceToHorizonQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointQuery;
 
 /**
  * 
@@ -248,8 +248,10 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 				// get distance between the origin and the time point
 				long[] distance = this.getDistance(this.tn.getOriginTimePoint(), point); 
 				// set information 
-				tpBoundQuery.setLb(distance[0]);
-				tpBoundQuery.setUb(distance[1]);
+				point.setLowerBound(distance[0]);
+				point.setUpperBound(distance[1]);
+//				tpBoundQuery.setLb(distance[0]);
+//				tpBoundQuery.setUb(distance[1]);
 			}
 			break;
 			
@@ -265,7 +267,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 				// get distance between points
 				long[] distance = this.getDistance(source, target);
 				// set information
-				tpDistanceQuery.setDistance(distance);
+				tpDistanceQuery.setDistanceLowerBound(distance[0]);
+				tpDistanceQuery.setDistanceUpperBound(distance[1]);
 			}
 			break;
 			

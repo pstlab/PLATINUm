@@ -9,6 +9,8 @@ import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.OperatorPropagationException;
 import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
+import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
@@ -71,14 +73,14 @@ public abstract class Solver extends ApplicationFrameworkObject
 		return "[Solver type= " + this.type + " strategy= " + this.strategy + " heuristic= " + this.heuristic + "]";
 	}
 	
-	/**
-	 * 
-	 * @param depth
-	 * @return
-	 */
-	protected SearchSpaceNode createNode() {
-		return new SearchSpaceNode();
-	}
+//	/**
+//	 * 
+//	 * @param depth
+//	 * @return
+//	 */
+//	protected SearchSpaceNode createNode() {
+//		return new SearchSpaceNode();
+//	}
 	
 	/**
 	 * 
@@ -146,5 +148,65 @@ public abstract class Solver extends ApplicationFrameworkObject
 				throw new PlanRefinementException(ex.getMessage());
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @param current
+	 * @param flaw
+	 * @return
+	 */
+	protected List<SearchSpaceNode> expand(SearchSpaceNode current, Flaw flaw)
+	{
+		// list of child nodes
+		List<SearchSpaceNode> list = new ArrayList<>();
+		// check flaw category
+		switch (flaw.getCategory())
+		{
+			// planning flaw 
+			case PLANNING : 
+			{
+				// check flaw solutions
+				for (FlawSolution solution : flaw.getSolutions()) 
+				{
+					// create operator
+					Operator op = new Operator(solution);
+					// set the makespan according to the current node
+					op.setMakespan(current.getMakespan());
+					// set agenda according to the solution
+					op.setAgenda(solution.getAgenda());
+					// add child node
+					list.add(new SearchSpaceNode(current, op));
+				}
+			}
+			break;
+			
+			// scheduling flaw
+			case SCHEDULING : 
+			{
+				// check flaw solutions
+				for (FlawSolution solution : flaw.getSolutions()) 
+				{
+					// create operator
+					Operator op = new Operator(solution);
+					// set the agenda according to the current node
+					op.setAgenda(current.getAgenda());
+					// set the makespan according to the solution
+					op.setMakespan(op.getMakespan());
+					// add child node
+					list.add(new SearchSpaceNode(current, op));
+					
+				}
+			}
+			break;
+			
+			// unsolvable flaw 
+			case UNSOLVABLE : {
+				throw new RuntimeException("Impossible to expand the search space with unsolvable flaws\n- flaw= " + flaw + "\n");
+			}
+		}
+		
+		// get children
+		return list;
 	}
 }

@@ -14,7 +14,7 @@ import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
  */
 public final class DecisionSchedule extends FlawSolution 
 {
-	private List<Decision> schedule;
+	private List<Decision> schedule;		// computed solution of the peak
 	
 	/**
 	 * 

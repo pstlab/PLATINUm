@@ -1,6 +1,6 @@
-package it.uniroma3.epsl2.framework.time.tn.solver.lang.event;
+package it.uniroma3.epsl2.framework.time.tn.lang.event;
 
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.ex.NotificationPropagationFailureException;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
 
 
 /**

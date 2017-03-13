@@ -14,14 +14,14 @@ import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintExce
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentTpValueException;
 import it.uniroma3.epsl2.framework.time.tn.ex.TemporalNetworkTransactionFailureException;
 import it.uniroma3.epsl2.framework.time.tn.ex.TimePointNotFoundException;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.AddRelationTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.AddTimePointTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.DelRelationTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.DelTimePointTemporalNetworkNotification;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.TemporalNetworkNotificationFactory;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.TemporalNetworkNotificationTypes;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.TemporalNetworkObserver;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.event.ex.NotificationPropagationFailureException;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.AddRelationTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.AddTimePointTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.DelRelationTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.DelTimePointTemporalNetworkNotification;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.TemporalNetworkNotificationFactory;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.TemporalNetworkNotificationTypes;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.TemporalNetworkObserver;
+import it.uniroma3.epsl2.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
 /**

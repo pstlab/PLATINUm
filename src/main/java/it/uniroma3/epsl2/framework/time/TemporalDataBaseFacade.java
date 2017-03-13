@@ -2,7 +2,9 @@ package it.uniroma3.epsl2.framework.time;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
@@ -33,19 +35,21 @@ import it.uniroma3.epsl2.framework.time.lang.allen.EqualsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MetByIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.StartsDuringIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.query.ComputeMakespanQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
-import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalOverlapQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
+import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetwork;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentTpValueException;
 import it.uniroma3.epsl2.framework.time.tn.ex.TemporalConsistencyCheckException;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointQuery;
+import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolver;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointDistanceQuery;
-import it.uniroma3.epsl2.framework.time.tn.solver.lang.query.TimePointQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
 /**
@@ -55,15 +59,16 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject implements QueryManager<TemporalQuery>
 {
 	@TemporalNetworkReference
-	protected TemporalNetwork tn;							// temporal network
+	protected TemporalNetwork tn;						// temporal network
 
 	@TemporalReasonerReference
-	protected TemporalSolver<TimePointQuery> solver;		// time point reasoner
+	protected TemporalSolver<TimePointQuery> solver;	// time point reasoner
 	
 	@FrameworkLoggerReference
 	protected FrameworkLogger logger;
 	
-	protected TemporalQueryFactory qf;						// temporal query factory
+	protected Set<TemporalInterval> intervals;			// set of created temporal intervals
+	protected TemporalQueryFactory qf;					// temporal query factory
 	protected TemporalConstraintFactory cf;	 			// temporal constraint factory
 	
 	/**
@@ -73,6 +78,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		// get query factory instance
 		this.qf = TemporalQueryFactory.getInstance();
 		this.cf = TemporalConstraintFactory.getInstance();
+		this.intervals = new HashSet<>();
 	}
 	
 	/**
@@ -270,13 +276,16 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		}
 		
 		// create temporal interval 
-		return new TemporalInterval(d);
+		TemporalInterval interval = new TemporalInterval(d);
+		// record interval
+		this.intervals.add(interval);
+		// get created interval
+		return interval;
 	}
 	
 	/**
 	 * 
 	 * @param i
-	 * @throws Exception
 	 */
 	public final void deleteTemporalInterval(TemporalInterval i) {
 		// list of time points to remove
@@ -287,6 +296,8 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		list.add(i.getEndTime());
 		// the network will automatically remove all constraints concerning the two time points
 		this.tn.removeTimePoints(list);
+		// remove interval 
+		this.intervals.remove(i);
 	}
 	
 	/**
@@ -334,25 +345,72 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		// check query type
 		switch (query.getType()) 
 		{
+			// compute the makespan of the temporal network
+			case COMPUTE_MAKESPAN : 
+			{
+				// get query
+				ComputeMakespanQuery mkQuery = (ComputeMakespanQuery) query;
+				// get subset of intervals if any
+				double mk = this.computeMakespan(mkQuery.getSubset());
+				// set the value
+				mkQuery.setMakespan(mk);
+			}
+			break;
+		
 			// check distance between intervals
 			case INTERVAL_DISTANCE : 
 			{
 				// get query
-				IntervalDistanceQuery distanceQuery = (IntervalDistanceQuery) query;
-				// get time points to analyze
-				TimePoint source = distanceQuery.getSource().getEndTime();
-				TimePoint target = distanceQuery.getTarget().getStartTime();
-				
+				IntervalDistanceQuery dQuery = (IntervalDistanceQuery) query;
+				// get intervals
+				TemporalInterval a = dQuery.getSource();
+				TemporalInterval b = dQuery.getTarget();
 				// create time point query
-				TimePointDistanceQuery tpDistanceQuery = this.qf.create(TemporalQueryType.TP_DISTANCE);
+				TimePointDistanceQuery tpQuery = this.qf.create(TemporalQueryType.TP_DISTANCE);
 				// set source and target
-				tpDistanceQuery.setSource(source);
-				tpDistanceQuery.setTarget(target);
-				
+				tpQuery.setSource(a.getEndTime());
+				tpQuery.setTarget(b.getStartTime());
 				// process query
-				this.solver.process(tpDistanceQuery);
+				this.solver.process(tpQuery);
 				// set bounds
-				distanceQuery.setIntervalDistance(tpDistanceQuery.getDistance());
+				dQuery.setDistanceLowerBound(tpQuery.getDistanceLowerBound());
+				dQuery.setDistanceUpperBOund(tpQuery.getDistanceUpperBound());
+			}
+			break;
+			
+			// check overlapping intervals
+			case INTERVAL_OVERLAP :
+			{
+				// get query
+				IntervalOverlapQuery overlap = (IntervalOverlapQuery) query;
+				// get intervals
+				TemporalInterval a = overlap.getReference();
+				TemporalInterval b = overlap.getTarget();
+				
+				// check distance between the end of A and the start of B
+				IntervalDistanceQuery eAsB = this.qf.
+						create(TemporalQueryType.INTERVAL_DISTANCE);
+				// set intervals
+				eAsB.setSource(a);
+				eAsB.setTarget(b);
+				//process query
+				this.process(eAsB);
+
+				
+				// check distance between the end of B and the start of A
+				IntervalDistanceQuery eBsA = this.qf.
+						create(TemporalQueryType.INTERVAL_DISTANCE);
+				// set intervals
+				eBsA.setSource(b);
+				eBsA.setTarget(a);
+				//process query
+				this.process(eBsA);
+				
+				// set overlapping condition
+				overlap.setOverlapping((eAsB.getDistanceLowerBound() < 0 && eAsB.getDistanceUpperBound() > 0) ||
+						(eBsA.getDistanceLowerBound() < 0 && eBsA.getDistanceUpperBound() > 0) ||
+						(eAsB.getDistanceLowerBound() < 0 && eAsB.getDistanceUpperBound() < 0 && eBsA.getDistanceLowerBound() < 0 && eBsA.getDistanceUpperBound() < 0) ||
+						(eAsB.getDistanceLowerBound() > 0 && eAsB.getDistanceUpperBound() > 0 && eBsA.getDistanceLowerBound() > 0 && eBsA.getDistanceUpperBound() > 0));
 			}
 			break;
 			
@@ -365,35 +423,30 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 				TemporalInterval i = scheduleQuery.getInterval();
 				
 				// create time point bound query
-				TimePointScheduleQuery tpQuery = this.qf.create(TemporalQueryType.TP_SCHEDULE);
+				TimePointScheduleQuery sQuery = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 				// set point 
-				tpQuery.setTimePoint(i.getStartTime());
-				// process query
-				this.solver.process(tpQuery);
-				// set result
-				scheduleQuery.setStartTimeSchedule(new long[] {
-						i.getStartTime().getLowerBound(),
-						i.getStartTime().getUpperBound()
-				});
+				sQuery.setTimePoint(i.getStartTime());
+				// check start schedule
+				this.solver.process(sQuery);
 				
-				tpQuery.setTimePoint(i.getEndTime());
-				// process query
-				this.solver.process(tpQuery);
-				// set result
-				scheduleQuery.setEndTimeSchedule(new long[] {
-						i.getEndTime().getLowerBound(),
-						i.getEndTime().getUpperBound()
-				});
+				// process end time
+				TimePointScheduleQuery eQuery = this.qf.create(TemporalQueryType.TP_SCHEDULE);
+				// set point
+				eQuery.setTimePoint(i.getEndTime());
+				// check end schedule
+				this.solver.process(eQuery);
 				
-				// check distance
-				TimePointDistanceQuery dquery= this.qf.create(TemporalQueryType.TP_DISTANCE);
+				// check time point distance
+				TimePointDistanceQuery dQuery= this.qf.create(TemporalQueryType.TP_DISTANCE);
 				// set points
-				dquery.setSource(i.getStartTime());
-				dquery.setTarget(i.getEndTime());
+				dQuery.setSource(i.getStartTime());
+				dQuery.setTarget(i.getEndTime());
 				// process query
-				this.solver.process(dquery);
-				// set result
-				scheduleQuery.setDuration(dquery.getDistance());
+				this.solver.process(dQuery);
+				
+				// set interval duration
+				i.setDurationLowerBound(dQuery.getDistanceLowerBound());
+				i.setDurationUpperBound(dQuery.getDistanceUpperBound());
 			}
 			break;
 			
@@ -401,21 +454,16 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 			case INTERVAL_PSEUDO_CONTROLLABILITY : 
 			{
 				// get query
-				IntervalPseudoControllabilityQuery squeezedQuery = (IntervalPseudoControllabilityQuery) query;
-				// get time points to analyze
-				TimePoint source = squeezedQuery.getInterval().getStartTime();
-				TimePoint target = squeezedQuery.getInterval().getEndTime();
-				
-				// create time point query
-				TimePointDistanceQuery tpDistanceQuery = this.qf.create(TemporalQueryType.TP_DISTANCE);
-				// set source and target
-				tpDistanceQuery.setSource(source);
-				tpDistanceQuery.setTarget(target);
-				
-				// process query
-				this.solver.process(tpDistanceQuery);
-				// set bounds
-				squeezedQuery.setDuration(tpDistanceQuery.getDistance());
+				IntervalPseudoControllabilityQuery pseudoQuery = (IntervalPseudoControllabilityQuery) query;
+				// get temporal interval
+				TemporalInterval i = pseudoQuery.getInterval();
+				// check the schedule
+				IntervalScheduleQuery squery = this.qf.create(TemporalQueryType.INTERVAL_SCHEDULE);
+				squery.setInterval(i);
+				this.process(squery);
+				// check if pseudo-controllability condition
+				pseudoQuery.setPseudoControllable(i.getDurationLowerBound() == i.getNominalDurationLowerBound() && 
+						i.getDurationUpperBound() == i.getNominalDurationUpperBound());
 			}
 			break;
 			
@@ -934,5 +982,41 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		
 		// get propagated constraint
 		return c;
+	}
+	
+	/**
+	 * 
+	 * @param subset
+	 * @return
+	 */
+	private double computeMakespan(Set<TemporalInterval> subset)
+	{
+		// initialize the makespan
+		double makespan = this.getOrigin();
+		// get the list of intervals to take into account
+		List<TemporalInterval> data = new ArrayList<>(this.intervals);
+		if (subset.isEmpty()) {
+			// take into account only a subset of intervals
+			data = new ArrayList<>(subset);
+		}
+		
+		// compute the makespan
+		for (TemporalInterval i : data) 
+		{
+			// check if controllable
+			if (i.isControllable()) 
+			{
+				// check interval schedule
+				IntervalScheduleQuery query = this.qf.create(TemporalQueryType.INTERVAL_SCHEDULE);
+				query.setInterval(i);
+				// process
+				this.process(query);
+				// update makespan
+				makespan = Math.max(makespan, i.getEndTime().getLowerBound());
+			}
+		}
+		
+		// get the computed value
+		return makespan;
 	}
 }
