@@ -14,7 +14,6 @@ import it.uniroma3.epsl2.deliberative.search.ex.EmptyFringeException;
 import it.uniroma3.epsl2.deliberative.solver.SearchSpaceNode;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
 
 /**
@@ -117,10 +116,10 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 		// initialize distance
 		double distance = 0.0;
 		// check goals of the agenda
-		for (Decision goal : node.getAgenda().getGoals())
+		for (ComponentValue goal : node.getAgenda().getGoals())
 		{
 			// check reachable sub-tree from the decomposition graph
-			Set<ComponentValue> subtree = this.computeReachableSubTree(this.tree, goal.getValue());
+			Set<ComponentValue> subtree = this.computeReachableSubTree(this.tree, goal);
 			// organize values by components
 			Map<DomainComponent, Set<ComponentValue>> comp2value = new HashMap<>();
 			// check hierarchy of the reachable values
@@ -141,7 +140,7 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 				// get hierarchical value of the component
 				double level = this.getHierarchicalLevelValue(component);
 				// get values
-				distance += ((1.0 / level) * comp2value.get(component).size());
+				distance += Math.abs(level * comp2value.get(component).size());
 			}
 		}
 		
@@ -268,7 +267,7 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 			found = this.hierarchy[level].contains(component);
 		}
 		
-		// get level
-		return level + 1;
+		// get level value (inverted with respect to the position into the array
+		return (this.hierarchy.length - level) + 1;
 	}
 }

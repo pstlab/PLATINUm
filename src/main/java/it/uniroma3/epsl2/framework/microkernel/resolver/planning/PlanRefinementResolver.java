@@ -348,6 +348,8 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 					
 					// if everything goes right we've found a possible unification
 					GoalUnification unification = new GoalUnification(goal, unif);
+					// add solved goal
+					unification.addSolvedGoal(goal.getDecision().getValue());
 					goal.addSolution(unification);
 					this.logger.debug("It is possible to unify goal= " + goalDecision + " with decision= " + unif + "\n");
 				} 
@@ -387,6 +389,8 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 		{
 			// the goal can be justified without applying synchronization rules
 			GoalExpansion expansion = new GoalExpansion(goal);
+			// add solved goal
+			expansion.addSolvedGoal(goal.getDecision().getValue());
 			// add solution
 			goal.addSolution(expansion);
 			this.logger.debug("Found simple pending goal decision\n- goal= " + goal.getDecision() + "\n");
@@ -398,6 +402,12 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 			{
 				// expansion solution
 				GoalExpansion expansion = new GoalExpansion(goal, rule);
+				// add solved goal
+				expansion.addSolvedGoal(goal.getDecision().getValue());
+				// add subgoals
+				for (TokenVariable var : rule.getTokenVariables()) {
+					expansion.addCreatedSubGoal(var.getValue());
+				}
 				// add solution
 				goal.addSolution(expansion);
 				this.logger.debug("Found goal decision\n- goal= " + goal.getDecision() + "\n-rule = " + rule + "\n");

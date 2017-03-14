@@ -63,13 +63,13 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 			this.reasoner.add(rel);
 		}
 		
-		Agenda agenda = this.pdb.getAgenda();
-		for (Decision goal : agenda.getGoals()) {
-			this.reasoner.add(goal);
-		}
-		for (Relation rel : agenda.getRelations()) {
-			this.reasoner.add(rel);
-		}
+//		Agenda agenda = this.pdb.getAgenda();
+//		for (Decision goal : agenda.getGoals()) {
+//			this.reasoner.add(goal);
+//		}
+//		for (Relation rel : agenda.getRelations()) {
+//			this.reasoner.add(rel);
+//		}
 		
 		// start knowledge update process
 		this.process.start();

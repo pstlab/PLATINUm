@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.uniroma3.epsl2.framework.lang.plan.Agenda;
+import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Relation;
 
@@ -29,8 +29,10 @@ public abstract class FlawSolution
 	protected Set<Relation> rCreated;					// relation created 
 	protected Set<Relation> rActivated;					// relation activated
 	
-	private Agenda agenda;							// agenda resulting from the application of the solution
-	private double makespan;						// makespan resulting from the application of the solution
+	// abstract/relaxed level needed for strategies and heuristic evaluations
+	private double makespan;							// makespan resulting from the application of the solution
+	private List<ComponentValue> createdSubGoals;		// list of subgoals created
+	private List<ComponentValue> solvedGoals;			// list of goals solved
 	
 	/**
 	 * 
@@ -45,6 +47,8 @@ public abstract class FlawSolution
 		this.dActivated = new HashSet<>();
 		this.rCreated = new HashSet<>();
 		this.rActivated = new HashSet<>();
+		this.createdSubGoals = new ArrayList<>();
+		this.solvedGoals = new ArrayList<>();
 	}
 	
 	/**
@@ -169,32 +173,48 @@ public abstract class FlawSolution
 	 * 
 	 * @return
 	 */
-	public Agenda getAgenda() {
-		return agenda;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
 	public double getMakespan() {
 		return makespan;
 	}
-	
-	/**
-	 * 
-	 * @param agenda
-	 */
-	public void setAgenda(Agenda agenda) {
-		this.agenda = agenda;
-	}
-	
+
 	/**
 	 * 
 	 * @param makespan
 	 */
 	public void setMakespan(double makespan) {
 		this.makespan = makespan;
+	}
+	
+	/**
+	 * 
+	 * @param goal
+	 */
+	public void addCreatedSubGoal(ComponentValue goal) {
+		this.createdSubGoals.add(goal);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<ComponentValue> getCreatedSubGoals() {
+		return new ArrayList<>(this.createdSubGoals);
+	}
+	
+	/**
+	 * 
+	 * @param goal
+	 */
+	public void addSolvedGoal(ComponentValue goal) {
+		this.solvedGoals.add(goal);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<ComponentValue> getSolvedGoals() {
+		return new ArrayList<>(this.solvedGoals);
 	}
 	
 	/**

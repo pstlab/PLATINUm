@@ -1,7 +1,12 @@
 package it.uniroma3.epsl2.framework.lang.plan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
+import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 
 /**
  * 
@@ -10,8 +15,7 @@ import java.util.List;
  */
 public class Agenda 
 {
-	private List<Decision> goals;
-	private List<Relation> relations;
+	private Map<DomainComponent, List<ComponentValue>> goals;
 	
 	/**
 	 * 
@@ -19,40 +23,30 @@ public class Agenda
 	 * @param horizon
 	 */
 	public Agenda() {
-		this.goals = new ArrayList<>();
-		this.relations = new ArrayList<>();
+		this.goals = new HashMap<>();
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public List<Decision> getGoals() {
-		return new ArrayList<>(this.goals);
+	public List<ComponentValue> getGoals() {
+		List<ComponentValue> list = new ArrayList<>();
+		for (List<ComponentValue> goals : this.goals.values()) {
+			list.addAll(goals);
+		}
+		return list;
 	}
 	
 	/**
 	 * 
 	 * @param goal
 	 */
-	public void add(Decision goal) {
-		this.goals.add(goal);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public List<Relation> getRelations() {
-		return relations;
-	}
-	
-	/**
-	 * 
-	 * @param rel
-	 */
-	public void add(Relation rel) {
-		this.relations.add(rel);
+	public void add(ComponentValue goal) {
+		if (!this.goals.containsKey(goal.getComponent())) {
+			this.goals.put(goal.getComponent(),	new ArrayList<>());
+		}
+		this.goals.get(goal.getComponent()).add(goal);
 	}
 	
 	/**
@@ -60,6 +54,6 @@ public class Agenda
 	 */
 	@Override
 	public String toString() {
-		return "[Agenda #goals= " + this.goals.size() + " #relations= " + this.relations.size() + "]";
+		return "[Agenda #goals= " + this.goals.size() + "]";
 	}
 }

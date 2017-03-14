@@ -170,10 +170,10 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 			{
 				// propagate solution and compute the resulting makespan
 				double makespan = this.checkScheduleFeasibility(solution.getSchedule());
-				// set the resulting makespan
-				solution.setMakespan(makespan);
 				// add feasible solution to the peak
 				peak.addSolution(solution);
+				// set the resulting makespan
+				solution.setMakespan(makespan);
 				this.logger.debug("Feasible solution of the peak:\n- solution= " + solution + "\n");
 			}
 			catch (TemporalConstraintPropagationException ex) {

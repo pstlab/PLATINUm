@@ -7,6 +7,7 @@ import java.util.Set;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
+import it.uniroma3.epsl2.framework.domain.component.PlanElementStatus;
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
@@ -15,7 +16,6 @@ import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
 import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
 import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
@@ -68,17 +68,24 @@ public interface PlanDataBase
 	 */
 	public SolutionPlan getSolutionPlan();
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public Agenda getAgenda();
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public Agenda getAgenda();
 	
 	/**
 	 * 
 	 * @return
 	 */
 	public Plan getPlan();
+	
+	/**
+	 * 
+	 * @param status
+	 * @return
+	 */
+	public Plan getPlan(PlanElementStatus status);
 	
 	/**
 	 * 
@@ -231,11 +238,11 @@ public interface PlanDataBase
 	 * @return
 	 */
 	public double computeMakespan();
-
-	/**
-	 * Only for debugging
-	 * 
-	 * @return
-	 */
-	public String printSilentPlan();
+//
+//	/**
+//	 * Only for debugging
+//	 * 
+//	 * @return
+//	 */
+//	public String printSilentPlan();
 }

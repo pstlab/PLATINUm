@@ -22,11 +22,19 @@ public enum SearchStrategyType
 	DIJKSTRA(DijkstraSearchStrategy.class.getName()),
 	
 	/**
+	 * Depth First Cost First strategy.
+	 * 
+	 * The strategy selects the nodes at the higher depth in the search space and 
+	 * with the lowest cost function. 
+	 */
+	DFCF(DepthFirstCostFirstSearchStrategy.class.getName()),
+	
+	/**
 	 * Depth First search strategy. 
 	 * 
 	 * The strategy selects the nodes at the higher depth in the search space 
 	 */
-	DFS(DepthFirstSearchStrategy.class.getName());;
+	DFS(DepthFirstSearchStrategy.class.getName());
 	
 	private String className;
 	

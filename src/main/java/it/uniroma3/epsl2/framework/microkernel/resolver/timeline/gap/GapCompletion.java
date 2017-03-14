@@ -13,8 +13,8 @@ import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
  * @author anacleto
  *
  */
-public class GapCompletion extends FlawSolution {
-
+public class GapCompletion extends FlawSolution 
+{
 	private Decision left;
 	private Decision right;
 	private List<ComponentValue> path;

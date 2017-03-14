@@ -20,7 +20,7 @@ public final class ComputeMakespanQuery extends TemporalIntervalQuery
 	 * 
 	 */
 	protected ComputeMakespanQuery() {
-		super(TemporalQueryType.INTERVAL_SCHEDULE);
+		super(TemporalQueryType.COMPUTE_MAKESPAN);
 		this.makespan = Double.MAX_VALUE - 1;
 		this.subset = new HashSet<>();
 	}

@@ -409,6 +409,10 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 					path.remove(0);
 					// feasible solution
 					GapCompletion sol = new GapCompletion(gap, path);
+					// set created subgoals
+					for (ComponentValue subgoal : path) {
+						sol.addCreatedSubGoal(subgoal);
+					}
 					// add solution to the flaw
 					gap.addSolution(sol);
 				}

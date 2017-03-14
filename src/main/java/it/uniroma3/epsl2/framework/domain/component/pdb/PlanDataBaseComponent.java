@@ -14,6 +14,7 @@ import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
+import it.uniroma3.epsl2.framework.domain.component.PlanElementStatus;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
@@ -26,7 +27,6 @@ import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.lang.plan.Agenda;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.lang.plan.Operator;
 import it.uniroma3.epsl2.framework.lang.plan.Plan;
@@ -245,28 +245,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * @return
 	 */
 	@Override
-	public Agenda getAgenda() 
-	{
-		// initialize the agenda
-		Agenda agenda = new Agenda();
-		// get pending decisions
-		for (Decision goal : this.getPendingDecisions()) {
-			agenda.add(goal);
-		}
-		// get pending relations
-		for (Relation rel : this.getPendingRelations()) {
-			agenda.add(rel);
-		}
-		
-		// get the agenda
-		return agenda;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	@Override
 	public Plan getPlan() 
 	{
 		// initialize the agenda
@@ -282,6 +260,52 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		}
 		
 		// get the plan
+		return plan;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Plan getPlan(PlanElementStatus status) { 
+		// prepare the plan
+		Plan plan = new Plan();
+		// check desired level
+		switch (status) 
+		{
+			// get the plan
+			case ACTIVE : {
+				// get currently active plan
+				plan = this.getPlan();
+			}
+			break;
+			
+			// get the pending plan
+			case PENDING : {
+				// get pending decisions
+				for (Decision goal : this.getPendingDecisions()) {
+					plan.add(goal);
+				}
+				// get pending relations
+				for (Relation rel : this.getPendingRelations()) {
+					plan.add(rel);
+				}
+			}
+			break;
+			
+			// get silent plan
+			case SILENT : {
+				// get silent decisions
+				for (Decision dec : this.getSilentDecisions()) {
+					plan.add(dec);
+				}
+				// get silent relations
+				for (Relation rel : this.getSilentRelations()) {
+					plan.add(rel);
+				}
+			}
+			break;
+		}
 		return plan;
 	}
 	
@@ -965,16 +989,16 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public String printSilentPlan() {
-		String str = "";
-		str += "- decisions= " + this.getSilentDecisions() + "\n";
-		str += "- relations= " + this.getSilentRelations() + "\n";
-		return str;
-	}
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public String printSilentPlan() {
+//		String str = "";
+//		str += "- decisions= " + this.getSilentDecisions() + "\n";
+//		str += "- relations= " + this.getSilentRelations() + "\n";
+//		return str;
+//	}
 	
 	/**
 	 * Only for debugging
@@ -1441,14 +1465,14 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				this.commit(solution);
 				// set applied
 				operator.setApplied();
-				// compute the resulting makespan
-				double makespan = this.computeMakespan();
-				// get resulting agenda
-				Agenda agenda = this.getAgenda();
-				// set makespan
-				operator.setMakespan(makespan);
-				// set agenda
-				operator.setAgenda(agenda);
+//				// compute the resulting makespan
+//				double makespan = this.computeMakespan();
+//				// get resulting agenda
+//				Agenda agenda = this.getAgenda();
+//				// set makespan
+//				operator.setMakespan(makespan);
+//				// set agenda
+//				operator.setAgenda(agenda);
 			}
 			catch (FlawSolutionApplicationException ex) {
 				// error while applying flaw solution

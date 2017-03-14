@@ -7,6 +7,7 @@ import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyFactory;
 import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.search.ex.EmptyFringeException;
+import it.uniroma3.epsl2.framework.domain.component.PlanElementStatus;
 import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
 import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
@@ -92,11 +93,13 @@ public class PseudoControllabilityAwareSolver extends Solver
 					this.logger.debug("Plan refinement:\n- applied operator= "  + extracted.getGenerator() + "\n\n"
 							+ "- current plan:\n"
 							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
-							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n"
-							+ "- agenda:\n"
-							+ "---- goals= " + this.pdb.getAgenda().getGoals() + "\n"
-							+ "---- relations= " + this.pdb.getAgenda().getRelations() + "\n\n"
-							+ "- silent plan:\n" + this.pdb.printSilentPlan());
+							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n\n"
+							+ "- pending plan:\n"
+							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
+							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n"
+							+ "- silent plan:\n"
+							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.SILENT).getDecisions() + "\n"
+							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.SILENT).getRelations() + "\n\n");
 				}
 				catch (PseudoControllabilityCheckException ex) 
 				{
