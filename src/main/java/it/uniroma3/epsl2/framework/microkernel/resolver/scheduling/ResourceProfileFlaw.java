@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.discrete;
+package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -21,10 +21,8 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 		
 	resolvers = {
 			
-		/*
-		 * FIXME - IMPLEMENTARE ALTRO TIPO DI RESOLVER
-		 */
-		ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER
+			// resource scheduling
+			ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER
 	},
 	
 	// two-dimensional view of component activities 

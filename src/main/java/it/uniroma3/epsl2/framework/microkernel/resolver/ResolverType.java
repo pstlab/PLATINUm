@@ -2,8 +2,8 @@ package it.uniroma3.epsl2.framework.microkernel.resolver;
 
 import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.planning.PlanRefinementResolver;
-import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.discrete.DiscreteResourceSchedulingResolver;
-import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.reservoir.ReservoirResourceSchedulingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.DiscreteResourceSchedulingResolver;
+import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.ReservoirResourceSchedulingResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior.ObservationBehaviorCheckingResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior.StateVariableBehaviorCheckingResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.gap.StateVariableGapResolver;

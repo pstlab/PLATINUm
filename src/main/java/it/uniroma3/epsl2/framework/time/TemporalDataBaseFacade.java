@@ -995,7 +995,7 @@ public abstract class TemporalDataBaseFacade extends ApplicationFrameworkObject 
 		double makespan = this.getOrigin();
 		// get the list of intervals to take into account
 		List<TemporalInterval> data = new ArrayList<>(this.intervals);
-		if (subset.isEmpty()) {
+		if (!subset.isEmpty()) {
 			// take into account only a subset of intervals
 			data = new ArrayList<>(subset);
 		}

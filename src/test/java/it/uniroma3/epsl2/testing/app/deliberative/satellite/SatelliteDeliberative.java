@@ -32,8 +32,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 )
 public class SatelliteDeliberative extends Planner
 {
-	private static final String DDL = "domains/satellite/satellite.ddl";
-	private static final String PDL = "domains/satellite/satellite.pdl";
+	private static final String DDL = "domains/satellite/reservoir/satellite.ddl";
+	private static final String PDL = "domains/satellite/reservoir/satellite.pdl";
 	
 	/**
 	 * 

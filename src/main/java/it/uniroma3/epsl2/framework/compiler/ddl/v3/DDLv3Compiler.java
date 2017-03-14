@@ -1627,17 +1627,97 @@ public class DDLv3Compiler extends DomainCompiler
 		{
 			// get target component
 			DomainComponent targetComponent = pdb.getComponentByName(ddlTarget.getComponent());
-			// get target value
-			ComponentValue targetValue = targetComponent.getValueByName(ddlTarget.getComponentDecision().getName());
-
 			// check target decision
 			DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
 			// check type
 			switch (ddlTargetDecision.getDecisionType()) 
 			{
+				// consumable resource
+				case CONSUMABLE_RESOURCE_REQUIREMENT :
+				{
+					// get target value
+					ReservoirResource resource = (ReservoirResource) targetComponent;
+					// cast decision
+					DDLConsumableResourceComponentDecision ddlDecisionTarget = (DDLConsumableResourceComponentDecision) ddlTargetDecision;
+					// target token variable
+					TokenVariable target = null;
+					// check decision type
+					switch (ddlDecisionTarget.getComponentDecisionType())
+					{
+						case Consumption : {
+							// add consumption token variable
+							target = rule.addTokenVariable(resource.getConsumptionValue(), new String[] {
+								ddlDecisionTarget.getParameterName()	
+							});
+						}
+						break;
+						
+						case Production : {
+							// add production token variable
+							target = rule.addTokenVariable(resource.getProductionValue(), new String[] {
+								ddlDecisionTarget.getParameterName()
+							});
+						}
+						break;
+					}
+					
+					// set as mandatory expansion
+					target.setMandatoryExpansion();
+					// add entry to index
+					for (String label : target.getParameterLabels()) {
+						// add entry
+						label2variable.put(label, target);
+					}
+					
+					// get synchronization decision's ID
+					String id = ddlTarget.getId();
+					// check if target id already exists 
+					if (decId2variable.containsKey(id)) {
+						throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+					}
+					
+					// add entry 
+					decId2variable.put(id, target);
+				}
+				break;
+			
+				// discrete resource target
+				case RENEWABLE_RESOURCE_REQUIREMENT :
+				{
+					// get target value
+					ComponentValue targetValue = ((DiscreteResource) targetComponent).getRequirementValue();
+					// cast decision
+					DDLRenewableResourceComponentDecision ddlRequirementTarget = (DDLRenewableResourceComponentDecision) ddlTargetDecision;
+					// add token variable
+					TokenVariable target = rule.addTokenVariable(targetValue, new String[] {
+							ddlRequirementTarget.getRequirementName()
+					});
+					
+					// set as mandatory expansion
+					target.setMandatoryExpansion();
+					// add entry to index
+					for (String label : target.getParameterLabels()) {
+						// add entry
+						label2variable.put(label, target);
+					}
+					
+					// get synchronization decision's ID
+					String id = ddlTarget.getId();
+					// check if target id already exists 
+					if (decId2variable.containsKey(id)) {
+						throw new RuntimeException("Duplicated decision ID <" + id + "> on synchronization " + rule);
+					}
+					
+					// add entry 
+					decId2variable.put(id, target);
+				}
+				break;
+			
 				// singleton target decision
 				case SINGLETON : 
 				{
+					// get target value
+					ComponentValue targetValue = targetComponent.getValueByName(ddlTarget.getComponentDecision().getName());
 					// cast decision
 					DDLSingletonStateVariableComponentDecision ddlSingletonTarget = (DDLSingletonStateVariableComponentDecision) ddlTargetDecision;
 					// add token variable
@@ -1679,6 +1759,8 @@ public class DDLv3Compiler extends DomainCompiler
 				// ground target decision
 				case GROUND : 
 				{
+					// get target value
+					ComponentValue targetValue = targetComponent.getValueByName(ddlTarget.getComponentDecision().getName());
 					// add token variable
 					TokenVariable target = rule.addTokenVariable(targetValue, new String[] {});
 					

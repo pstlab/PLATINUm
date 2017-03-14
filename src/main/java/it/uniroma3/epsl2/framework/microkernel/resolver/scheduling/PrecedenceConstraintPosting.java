@@ -1,10 +1,11 @@
-package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.discrete;
+package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -30,8 +31,12 @@ public class PrecedenceConstraintPosting extends FlawSolution
 	 */
 	@Override
 	public double getCost() {
-		// TODO Auto-generated method stub
-		return 0;
+		// get property file 
+		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
+		// read property
+		String cost = property.getProperty("scheduling-cost");
+		// parse and get double value
+		return Double.parseDouble(cost);
 	}
 	
 	/**

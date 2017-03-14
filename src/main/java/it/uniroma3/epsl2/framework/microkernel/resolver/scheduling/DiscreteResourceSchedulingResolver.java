@@ -1,4 +1,4 @@
-package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.discrete;
+package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationExcept
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceProfileManager;
+import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.lang.plan.Decision;
@@ -31,6 +32,8 @@ import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationExceptio
 import it.uniroma3.epsl2.framework.time.lang.FixTimePointConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
+import it.uniroma3.epsl2.framework.time.lang.allen.BeforeIntervalConstraint;
+import it.uniroma3.epsl2.framework.time.lang.query.ComputeMakespanQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 
@@ -61,19 +64,19 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		List<Flaw> flaws = new ArrayList<>();
 		try
 		{
-			// get pessimistic resource profile 
+			// get consumption events 
 			List<ResourceEvent> events = this.component.getConsumptions();
-			// get optimistic resource profile
+			// get production events
 			events.addAll(this.component.getProductions());
 			
-			// get optimistic resource profile
+			// compute optimistic resource profile
 			ResourceProfile orp = this.computeOptimisticResourceProfile(events);
 			// compute flaws
 			flaws.addAll(this.computeProfilePeaks(orp));
 			
 			// check results
 			if (flaws.isEmpty()) {
-				// get pessimistic resource profile
+				// compute pessimistic resource profile
 				ResourceProfile prp = this.computePessimisticResourceProfile(events);
 				// compute flaws
 				flaws.addAll(this.computeProfilePeaks(prp));
@@ -81,7 +84,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		}
 		catch (ResourceProfileComputationException ex) {
 			// profile computation error
-			this.logger.error(ex.getMessage());
+			throw new RuntimeException("Resource profile computation error:\n- " + ex.getMessage() + "\n");
 		}
 		
 		// get computed flaws
@@ -104,7 +107,19 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		{
 			// add a possible 
 			FlawSolution solution = new PrecedenceConstraintPosting(profileFlaw, ordering);
-			profileFlaw.addSolution(solution);
+			try
+			{
+				// propagate solution and compute the resulting makespan
+				double makespan = this.checkScheduleFeasibility(ordering);
+				// set resulting makespan
+				solution.setMakespan(makespan);
+				profileFlaw.addSolution(solution);
+				this.logger.debug("Feasible solution of the peak:\n- solution= " + solution + "\n");
+			}
+			catch (TemporalConstraintPropagationException ex) {
+				// not feasible schedule, discard the related schedule
+				this.logger.debug("Not feasible solution of the peak:\n- solution= " + solution + "\n... discarding solution\n");
+			}
 		}
 		
 		// check available solutions
@@ -553,5 +568,63 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @param schedule
+	 * @return
+	 * @throws TemporalConstraintPropagationException
+	 */
+	private double checkScheduleFeasibility(List<Decision>schedule) 
+			throws TemporalConstraintPropagationException
+	{
+		// computed makespan 
+		double makespan = this.tdb.getOrigin();
+		// list of propagate precedence constraints
+		List<TemporalConstraint> committed = new ArrayList<>();
+		try
+		{
+			for (int index = 0; index < schedule.size() - 1; index++) 
+			{
+				// get decisions
+				Decision a = schedule.get(index);
+				Decision b = schedule.get(index + 1);
+				
+				// create temporal constraint
+				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+				before.setReference(a.getToken().getInterval());
+				before.setTarget(b.getToken().getInterval());
+				// propagate temporal constraint
+				this.tdb.propagate(before);
+				// add committed constraint
+				committed.add(before);
+			}
+			
+			// check feasibility 
+			this.tdb.checkConsistency();
+			
+			// feasible solution - compute the resulting makespan
+			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+			this.tdb.process(query);
+			// get computed makespan
+			makespan = query.getMakespan();
+		}
+		catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+			// not feasible schedule
+			this.logger.debug("Not feasible schedule constraint found\n- " + ex.getMessage() + "\n");
+			// forward exception
+			throw new TemporalConstraintPropagationException(ex.getMessage());
+		}
+		finally {
+			// restore initial state
+			for (TemporalConstraint cons : committed) {
+				// remove constraint from network
+				this.tdb.retract(cons);
+			}
+		}
+		
+		// get resulting makespan
+		return makespan;
 	}
 }
