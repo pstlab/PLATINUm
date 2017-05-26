@@ -1,4 +1,4 @@
-PROBLEM NEPTUS_1auv_3phen_3task (DOMAIN NEPTUS)
+PROBLEM NEPTUS_1auv_3phen_3task (DOMAIN NEPTUS_2a3p)
 {
 	// AUV1 initial state
 	f00 <fact> AUV1Controller.auv1.Idle() AT [0, 0] [0, +INF] [0, +INF];

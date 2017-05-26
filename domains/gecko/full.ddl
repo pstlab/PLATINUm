@@ -1,4 +1,4 @@
-DOMAIN full_Domain {
+DOMAIN GECKO_full {
 
 	TEMPORAL_MODULE temporal_module = [0, 1000], 500;
 

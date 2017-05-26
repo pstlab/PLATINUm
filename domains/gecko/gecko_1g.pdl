@@ -1,4 +1,4 @@
-PROBLEM GECKO_Problem (DOMAIN GECKO_Domain) 
+PROBLEM GECKO_Problem (DOMAIN GECKO) 
 {
 	f0 <fact> TM_Channel.channel.Idle() AT [0, 0] [1, +INF] [1, +INF];
 	f1 <fact> TM_ChangeOverTrace.change_over.CO_FB() AT [0, 0] [1, +INF] [1, +INF];

@@ -1,4 +1,4 @@
-DOMAIN NEPTUS
+DOMAIN NEPTUS_1a3p
 {
 	TEMPORAL_MODULE temporal_module = [0, 100], 500;
 	PAR_TYPE EnumerationParameterType location = {base, location1, location2, location3, location4, location5};

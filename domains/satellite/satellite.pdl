@@ -1,4 +1,4 @@
-PROBLEM SATELLITE_Problem (DOMAIN SATELLITE_Domain) 
+PROBLEM SATELLITE_Problem (DOMAIN SATELLITE) 
 {
 	f0 <fact> PointingMode.pm.Earth() AT [0, 0] [1, +INF] [1, +INF];
 	

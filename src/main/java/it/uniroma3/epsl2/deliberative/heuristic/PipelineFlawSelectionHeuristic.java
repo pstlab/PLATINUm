@@ -19,8 +19,8 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundEx
 @FlawSelectionHeuristicConfiguration(
 	// set pipeline of filters
 	pipeline = {
-		FlawFilterType.TFF,			// hierarchy-based flaw filter
-		FlawFilterType.HFF,			// type-based flaw filter
+		FlawFilterType.HFF,			// hierarchy-based flaw filter
+		FlawFilterType.TFF,			// type-based flaw filter
 	}
 )
 public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic

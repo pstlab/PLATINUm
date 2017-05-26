@@ -1,4 +1,4 @@
-DOMAIN ICO_Domain {
+DOMAIN ICO_causal {
 
 	TEMPORAL_MODULE temporal_module = [0, 100], 300;
 

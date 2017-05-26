@@ -1,4 +1,4 @@
-PROBLEM FourByThree_Problem (DOMAIN FourByThree_Domain) 
+PROBLEM FourByThree_CIRP_Problem (DOMAIN FourByThree_CIRPa1) 
 {
 	f0 <fact> Human.operator.Idle() AT [0, 0] [1, +INF] [1, +INF];
 	f1 <fact> RobotController.controller.Idle() AT [0, 0] [1, +INF] [1, +INF];

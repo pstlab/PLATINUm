@@ -1,4 +1,4 @@
-DOMAIN FourByThree_Domain
+DOMAIN FourByThree_ETFA16_m50e
 {
 	TEMPORAL_MODULE temporal_module = [0, 70], 200;
 

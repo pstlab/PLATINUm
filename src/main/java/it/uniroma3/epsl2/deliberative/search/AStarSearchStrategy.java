@@ -95,8 +95,8 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 		double h2 = this.computeHeuristicDistance(o2);
 		
 		// compute (absolute) costs
-		double g1 = Math.abs(o1.getCost() + o1.getMakespan());
-		double g2 = Math.abs(o2.getCost() + o2.getMakespan());
+		double g1 = o1.getMakespan();
+		double g2 = o2.getMakespan();
 		
 		// compute (absolute) values
 		double f1 = Math.abs(g1 + h1);

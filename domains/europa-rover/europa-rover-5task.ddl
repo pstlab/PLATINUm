@@ -1,4 +1,4 @@
-DOMAIN Rover {
+DOMAIN Rover_EUROPA_5task {
 	
 	TEMPORAL_MODULE tm = [0, 150], 100;
 	PAR_TYPE NumericParameterType location = [0, 100];	// location 0 is the lander

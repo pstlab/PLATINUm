@@ -1,4 +1,4 @@
-DOMAIN FourByThree_Domain
+DOMAIN FourByThree_CIRPa1
 {
 	// one unit is one second
 	TEMPORAL_MODULE temporal_module = [0, 300], 300;

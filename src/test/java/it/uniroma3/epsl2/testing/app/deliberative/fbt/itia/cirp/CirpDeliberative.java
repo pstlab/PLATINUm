@@ -24,7 +24,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 		
 		// set log level
 		logging = FrameworkLoggingLevel.DEBUG
-	)
+)
 public class CirpDeliberative extends Planner 
 {
 	private static final String DDL = "domains/fourbythree/itia/cirp/cirp-a0-v1.ddl";

@@ -1,19 +1,7 @@
-DOMAIN FourByThree_Domain
+DOMAIN FourByThree_ITIA
 {
-	// one unit is one second
-	TEMPORAL_MODULE temporal_module = [0, 300], 300;
-	
-	PAR_TYPE EnumerationParameterType position = {
-		P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12
-	};
-	
-	PAR_TYPE EnumerationParameterType tool = {
-		none, T1, T2, T3 
-	};
-	
-	PAR_TYPE EnumerationParameterType level = {
-		green, yellow, red
-	};
+	// one unit is half-second
+	TEMPORAL_MODULE temporal_module = [0, 50], 300;
 	
 	COMP_TYPE SingletonStateVariable HRCType (
 		None(),
@@ -32,7 +20,7 @@ DOMAIN FourByThree_Domain
 	
 	COMP_TYPE SingletonStateVariable HumanType (
 		Idle(),
-		_H1(), _H2(), _H3(), _H4(), _H5(), _H6(), _H7(), _H8(), _H9())
+		_H1(), _H2(), _H3(), _H4())
 	{
 		VALUE Idle() [1, +INF]
 		MEETS {
@@ -40,63 +28,24 @@ DOMAIN FourByThree_Domain
 			_H2();
 			_H3();
 			_H4();
-			_H5();
-			_H6();
-			_H7();
-			_H8();
-			_H9();
 		}
 		
-		// 64
-		VALUE _H1() [5, 70]
-		MEETS {
-			Idle();
-		}
-		
-		// 22.2
-		VALUE _H2() [6, 28]
+		VALUE _H1() [4, 8]
 		MEETS {
 			Idle();			
 		}
-
-		// 29.7
-		VALUE _H3() [8, 35]
+		
+		VALUE _H2() [13, 18]
 		MEETS {
 			Idle();
 		}
 		
-		// 6.5
-		VALUE _H4() [2, 10]
+		VALUE _H3() [3, 7]
 		MEETS {
 			Idle();
 		}
 		
-		// 13.8
-		VALUE _H5() [4, 22]
-		MEETS {
-			Idle();
-		}
-		
-		// 13.5
-		VALUE _H6() [5, 18]
-		MEETS {
-			Idle();
-		}
-		
-		// 17.5
-		VALUE _H7() [4, 23]
-		MEETS {
-			Idle();
-		}
-		
-		// 5.5
-		VALUE _H8() [1, 8]
-		MEETS {
-			Idle();
-		}
-		
-		// 18.5
-		VALUE _H9() [3, 25]
+		VALUE _H4() [3, 7]
 		MEETS {
 			Idle();
 		}
@@ -104,295 +53,255 @@ DOMAIN FourByThree_Domain
 	
 	COMP_TYPE SingletonStateVariable RobotControllerType (
 		Idle(), 
-		R0(level), R1(level), R2(level), R3(level), R4(level), R5(level), R6(level)) 
+		R1(), R2(), R3(), R4()) 
 	{
 		VALUE Idle() [1, +INF] 
 		MEETS {
-			R0(?level);
-			R1(?level);
-			R2(?level);
-			R3(?level);
-			R4(?level);
-			R5(?level);
-			R6(?level);
+			R1();
+			R2();
+			R3();
+			R4();
 		}
 		
-		VALUE R0(?level) [1, +INF]
+		VALUE R1() [1, +INF]
 		MEETS {
 			Idle();
 		}
 		
-		VALUE R1(?level) [2, +INF]
+		VALUE R2() [1, +INF]
 		MEETS {
 			Idle();
 		}
 		
-		VALUE R2(?level) [6, +INF]
+		VALUE R3() [1, +INF]
 		MEETS {
 			Idle();
 		}
 		
-		VALUE R3(?level) [2, +INF]
-		MEETS {
-			Idle();
-		}
-		
-		VALUE R4(?level) [5, +INF]
-		MEETS {
-			Idle();
-		}
-		
-		VALUE R5(?level) [3, +INF]
-		MEETS {
-			Idle();
-		}
-		
-		VALUE R6(?level) [6, +INF]
+		VALUE R4() [1, +INF]
 		MEETS {
 			Idle();
 		}
 	}
 	
-	COMP_TYPE SingletonStateVariable ArmToolHandlerType (
-		Mounted(tool), Mounting(tool, tool))
+	COMP_TYPE SingletonStateVariable HRInteractionType (
+		None(),
+		Interaction-H1(), Interaction-H2(), Interaction-H3(), Interaction-H4())
 	{
-		VALUE Mounting(?old, ?new) [1, 70]
+		VALUE None() [1, +INF]
 		MEETS {
-			Mounted(?tool);
-			?tool = ?new;
-			?tool != ?old;
+			Interaction-H1(); 
+			Interaction-H2(); 
+			Interaction-H3(); 
+			Interaction-H4();
 		}
 		
-		VALUE Mounted(?tool) [1, +INF]
+		VALUE Interaction-H1() [1, +INF]
 		MEETS {
-			Mounting(?old, ?new);
-			?old = ?tool;
-			?new != ?tool;
+			None();
+		}
+		
+		VALUE Interaction-H2() [1, +INF]
+		MEETS {
+			None();
+		}
+		
+		VALUE Interaction-H3() [1, +INF]
+		MEETS {
+			None();
+		}
+		
+		VALUE Interaction-H4() [1, +INF]
+		MEETS {
+			None();
 		}
 	}
 	
-	COMP_TYPE SingletonStateVariable ToolControllerType (
-		Idle(), _Activate(), Operating(), _Deactivate())
+	COMP_TYPE SingletonStateVariable RobotToolHandlerType (
+		Changing(),
+		Mounted-T1(), Mounted-T2())
 	{
-		VALUE Idle() [1, +INF]
+		VALUE Mounted-T1() [1, +INF]
 		MEETS {
-			_Activate();
-		}
-	
-		VALUE _Activate() [1, 5]
-		MEETS {
-			Operating();
+			Changing();
 		}
 		
-		VALUE Operating() [1, +INF]
+		VALUE Mounted-T2() [1, +INF]
 		MEETS {
-			_Deactivate();
+			Changing();
 		}
 		
-		VALUE _Deactivate() [1, 5]
+		VALUE Changing() [1, 5]
 		MEETS {
-			Idle();
+			Mounted-T1();
+			Mounted-T2();
 		}
 	}
 	
-	COMP_TYPE SingletonStateVariable ArmControllerType (
-		At(position, level), _MotionTask(position, position, level))
-	{
-		VALUE At(?position, ?level) [1, +INF]
-		MEETS {
-			_MotionTask(?from, ?to, ?l);
-			?from = ?position;
-			?to != ?position;
-		}
-		
-		VALUE _MotionTask(?from, ?to, ?level) [1, 35]
-		MEETS {
-			At(?position, ?l);
-			?from != ?position;
-			?to = ?position;
-			?l = ?level;
-		}
-	}
-	
-	COMP_TYPE SingletonStateVariable PassiveToolType (
-		Idle(), Analyze())
-	{
-		VALUE  Idle() [1, +INF]
-		MEETS {
-			Analyze();
-		}
-		
-		VALUE Analyze() [3, 3]
-		MEETS {
-			Idle();
-		}
-	}
-
-
-	COMPONENT HRC {FLEXIBLE process(trex_internal_dispatch_asap)} : HRCType;
+	COMPONENT HRC {FLEXIBLE process(trex_internal_dispatch_asap)} : HRCType;	
 	COMPONENT Human {FLEXIBLE operator(trex_internal_dispatch_asap)} : HumanType;
 	COMPONENT RobotController {FLEXIBLE controller(trex_internal_dispatch_asap)} : RobotControllerType;
-	COMPONENT RobotArm {FLEXIBLE motion(trex_internal_dispatch_asap)} : ArmControllerType;
-	COMPONENT ArmTool {FLEXIBLE status(trex_internal_dispatch_asap)} : ArmToolHandlerType;
-	COMPONENT T1 {FLEXIBLE tool(trex_internal_dispatch_asap)} : ToolControllerType;
-	COMPONENT T3 {FLEXIBLE tool3(trex_internal_dispatch_asap)} : PassiveToolType;
+	COMPONENT HRInteraction {FLEXIBLE monitoring(trex_internal_dispatch_asap)} : HRInteractionType;
+	COMPONENT RobotToolHandler {FLEXIBLE status(trex_internal_dispatch_asap)} : RobotToolHandlerType;
 	
 	SYNCHRONIZE HRC.process
 	{
 		// process description
 		VALUE HRC_ITIA()
 		{
-			h6 Human.operator._H6();
-			h3 Human.operator._H3();
-			h2 Human.operator._H2();
-			h7 Human.operator._H7();
+			h1 <!> Human.operator._H1();
+			h3 <!> Human.operator._H3();
+			h4 <!> Human.operator._H4();
 			
-			r2 RobotController.controller.R2(?levelR2);
-			r6 RobotController.controller.R6(?levelR6);
-			r1 RobotController.controller.R1(?levelR1);
-			r3 RobotController.controller.R3(?levelR3);
-			r0 RobotController.controller.R0(?levelR0);
-			
-			// operative constraints
-			r2 BEFORE [0, +INF] h3;
-			
-			CONTAINS [0, +INF] [0, +INF] h2;
-			CONTAINS [0, +INF] [0, +INF] h3;
-			CONTAINS [0, +INF] [0, +INF] h6;
-			CONTAINS [0, +INF] [0, +INF] h7;
-			
-			CONTAINS [0, +INF] [0, +INF] r2;
-			CONTAINS [0, +INF] [0, +INF] r6;
+			r3 <!> RobotController.controller.R3();
+			r2 <!> RobotController.controller.R2();
+			r1 <!> RobotController.controller.R1();
+				
 			CONTAINS [0, +INF] [0, +INF] r1;
+			CONTAINS [0, +INF] [0, +INF] r2;
 			CONTAINS [0, +INF] [0, +INF] r3;
-			CONTAINS [0, +INF] [0, +INF] r0;
+			CONTAINS [0, +INF] [0, +INF] h1;
+			CONTAINS [0, +INF] [0, +INF] h3;
+			CONTAINS [0, +INF] [0, +INF] h4;
 			
-			// optional
-			r2 BEFORE [0, +INF] r6;
-			r6 BEFORE [0, +INF] r1;
-			r1 BEFORE [0, +INF] r3;
-			r3 BEFORE [0, +INF] r0;
+			h3 BEFORE [0, +INF] h4;
+			h4 BEFORE [0, +INF] h1;
 			
-			// optional
-			h6 BEFORE [0, +INF] h3;
-			h3 BEFORE [0, +INF] h2;
-			h2 BEFORE [0, +INF] h7;
+			r3 BEFORE [0, +INF] r1;
+			r1 BEFORE [0, +INF] r2;
+			
+			// process' constraints inferred from collaboration types
+			r3 BEFORE [0, +INF] h1;
 		}
 	}
+	
+	SYNCHRONIZE Human.operator
+	{
+		VALUE _H1()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H1();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+		}
+		
+		VALUE _H2()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H2();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+		}
+		
+		VALUE _H3()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H3();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+		}
+		
+		VALUE _H4()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H4();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+		}
+	}
+	
 	
 	SYNCHRONIZE RobotController.controller
 	{
-		VALUE R0(?level)
+		VALUE R1()
 		{
-			cd1 RobotArm.motion.At(?finalPosition, ?level1);
-			
-			ENDS-DURING [0, +INF] [0, +INF] cd1;
-			
-			?finalPosition = P4;
-			?level = green;
-			?level1 = ?level;
-		}
-	
-		VALUE R1(?level)
-		{
-			cd1 RobotArm.motion.At(?finalPosition, ?level1);
-			cd2 ArmTool.status.Mounted(?tool);
-			cd3 T3.tool3.Analyze();
-			
-			CONTAINS [0, +INF] [0, +INF] cd3;
-			cd3 DURING [0, +INF] [0, +INF] cd1;
-			cd3 DURING [0, +INF] [0, +INF] cd2;
-			
-			?finalPosition = P3;
-			?level = green;
-			?tool = T3;
-			?level1 = ?level;
-		}
-		
-		VALUE R2(?level)
-		{
-			cd0 <?> ArmTool.status.Mounted(?tool);
-			 
-			cd1 RobotArm.motion.At(?initialPosition, ?level1);
-			cd2 T1.tool._Activate();
-			cd3 RobotArm.motion.At(?finalPosition, ?level3);
-			cd4 T1.tool._Deactivate();
+			cd0 HRInteraction.monitoring.Interaction-H1();
+			cd1 <?> RobotToolHandler.status.Mounted-T1();
 			
 			DURING [0, +INF] [0, +INF] cd0;
-			CONTAINS [0, +INF] [0, +INF] cd2;
-			CONTAINS [0, +INF] [0, +INF] cd4;
-			
-			cd2 DURING [0, +INF] [0, +INF] cd1;
-			cd4 DURING [0, +INF] [0, +INF] cd3;
-			cd2 BEFORE [0, +INF] cd4;
-			
-			?initialPosition = P1;
-			?finalPosition = P2;
-			?tool = T1;
-			?level = yellow;
-			?level1 = ?level;
-			?level3 = ?level;
+			DURING [0, +INF] [0, +INF] cd1;
 		}
 		
-		VALUE R3(?level)
+		VALUE R1()
 		{
-			cd1 RobotArm.motion.At(?finalPosition, ?level1);
-			cd2 ArmTool.status.Mounted(?tool);
-			cd3 T3.tool3.Analyze();
-			
-			CONTAINS [0, +INF] [0, +INF] cd3;
-			cd3 DURING [0, +INF] [0, +INF] cd1;
-			cd3 DURING [0, +INF] [0, +INF] cd2;
-			
-			?finalPosition = P6;
-			?level = green;
-			?tool = T3;
-			?level1 = ?level;
-		}
-		
-		VALUE R6(?level)
-		{
-			cd0 <?> ArmTool.status.Mounted(?tool);
-			
-			cd1 RobotArm.motion.At(?initialPosition, ?level1);
-			cd2 T1.tool._Activate();
-			cd3 RobotArm.motion.At(?finalPosition, ?level3);
-			cd4 T1.tool._Deactivate();
-			
-			cd5 Human.operator._H9();
+			cd0 HRInteraction.monitoring.Interaction-H3();
+			cd1 <?> RobotToolHandler.status.Mounted-T1();
 			
 			DURING [0, +INF] [0, +INF] cd0;
-			CONTAINS [0, +INF] [0, +INF] cd2;
-			CONTAINS [0, +INF] [0, +INF] cd4;
-			CONTAINS [0, +INF] [0, +INF] cd5;
-			
-			cd5 DURING [0, +INF] [0, +INF] cd1;
-			cd2 DURING [0, +INF] [0, +INF] cd1;
-			cd4 DURING [0, +INF] [0, +INF] cd3;
-			cd2 BEFORE [0, +INF] cd5;
-			cd5 BEFORE [0, +INF] cd4;
-			
-			?initialPosition = P10;
-			?finalPosition = P9;
-			?tool = T1;
-			?level = red;
-			?level1 = ?level;
-			?level3 = ?level;
+			DURING [0, +INF] [0, +INF] cd1;
 		}
-	}
-	
-	SYNCHRONIZE ArmTool.status
-	{
-		VALUE Mounting(?old, ?new)
+		
+		VALUE R1()
 		{
-			cd0 Human.operator._H1();
-			cd1 RobotArm.motion.At(?position, ?level);
+			cd0 HRInteraction.monitoring.Interaction-H4();
+			cd1 <?> RobotToolHandler.status.Mounted-T1();
 			
-			CONTAINS [0, +INF] [0, +INF] cd0;
-			cd0 DURING [0, +INF] [0, +INF] cd1;
-
-			?position = P4;
-			?level = red;
-		}		
+			DURING [0, +INF] [0, +INF] cd0;
+			DURING [0, +INF] [0, +INF] cd1;
+		}
+		
+		VALUE R2()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H3();
+			cd1 <?> RobotToolHandler.status.Mounted-T2();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+			DURING [0, +INF] [0, +INF] cd1;
+		}
+		
+		VALUE R2()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H3();
+			cd1 <!> RobotToolHandler.status.Mounted-T2();
+			cd2 <!> RobotController.controller.R4();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+			DURING [0, +INF] [0, +INF] cd1;
+			AFTER [0, +INF] cd2;
+		}
+		
+		VALUE R2()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H4();
+			cd1 <?> RobotToolHandler.status.Mounted-T2();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+			DURING [0, +INF] [0, +INF] cd1;
+		}
+		
+		VALUE R2()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H4();
+			cd1 <!> RobotToolHandler.status.Mounted-T2();
+			cd2 <!> RobotController.controller.R4();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+			DURING [0, +INF] [0, +INF] cd1;
+			AFTER [0, +INF] cd2;
+		}
+		
+		VALUE R3()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H3();
+			cd1 <?> RobotToolHandler.status.Mounted-T1();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+			DURING [0, +INF] [0, +INF] cd1;
+		}
+		
+		VALUE R3()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H4();
+			cd1 <?> RobotToolHandler.status.Mounted-T1();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+			DURING [0, +INF] [0, +INF] cd1;
+		}
+		
+		
+		VALUE R4()
+		{
+			cd0 HRInteraction.monitoring.Interaction-H2();
+			cd1 <!> Human.operator._H2();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+			EQUALS cd1;
+		}
 	}
 }

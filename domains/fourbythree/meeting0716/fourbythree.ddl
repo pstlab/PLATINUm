@@ -1,4 +1,4 @@
-DOMAIN FourByThree_Domain
+DOMAIN FourByThree_M0716
 {
 	// one unit is half-second
 	TEMPORAL_MODULE temporal_module = [0, 200], 300;

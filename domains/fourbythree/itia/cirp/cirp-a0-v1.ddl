@@ -1,4 +1,4 @@
-DOMAIN FourByThree_Domain
+DOMAIN FourByThree_CIRPa0
 {
 	// one unit is one second
 	TEMPORAL_MODULE temporal_module = [0, 100], 300;
@@ -233,7 +233,7 @@ DOMAIN FourByThree_Domain
 
 	COMPONENT HRC {FLEXIBLE process(functional)} : HRCType;
 	COMPONENT Human {FLEXIBLE operator(primitive)} : HumanType;
-	COMPONENT RobotController {FLEXIBLE functional(functional)} : RobotControllerType;
+	COMPONENT RobotController {FLEXIBLE controller(functional)} : RobotControllerType;
 	COMPONENT RobotArm {FLEXIBLE motion(primitive)} : ArmControllerType;
 	COMPONENT ArmTool {FLEXIBLE status(primitive)} : ArmToolHandlerType;
 	COMPONENT T1 {FLEXIBLE tool(primitive)} : ToolControllerType;

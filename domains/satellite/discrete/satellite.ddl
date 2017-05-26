@@ -1,4 +1,4 @@
-DOMAIN SATELLITE_Domain
+DOMAIN SATELLITE_Discrete
 {
 	TEMPORAL_MODULE temporal_module = [0, 200], 100;
 	

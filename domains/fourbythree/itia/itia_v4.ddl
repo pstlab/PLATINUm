@@ -1,4 +1,4 @@
-DOMAIN FourByThree_Domain
+DOMAIN FourByThree_ITIAv4
 {
 	// one unit is one second
 	TEMPORAL_MODULE temporal_module = [0, 300], 300;

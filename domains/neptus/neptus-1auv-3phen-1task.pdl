@@ -1,4 +1,4 @@
-PROBLEM NEPTUS_1auv_3phen_1task (DOMAIN NEPTUS)
+PROBLEM NEPTUS_1auv_3phen_1task (DOMAIN NEPTUS_1a3p)
 {
 	f00 <fact> AUV1Controller.auv1.Idle() AT [0, 0] [0, +INF] [0, +INF];
 	f01 <fact> AUV1NavigationController.auv1_navigator.At(?lf01) AT [0, 0] [0, +INF] [0, +INF];

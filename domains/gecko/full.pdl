@@ -1,4 +1,4 @@
-PROBLEM full_Problem (DOMAIN full_Domain)
+PROBLEM GECKO_full_Problem (DOMAIN GECKO_full)
 {
 	f0 <fact> full_Channel.full_Channel_timeline.Idle() AT [0, 0] [1, 1000] [1, 1000];
 	f1 <fact> full_Cross_Conveyor_2.full_Cross_Conveyor_2_timeline.Cross_Conveyor_2_Still() AT [0, 0] [1, 1000] [1, 1000];

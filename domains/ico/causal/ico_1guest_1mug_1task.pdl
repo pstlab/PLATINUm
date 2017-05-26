@@ -1,4 +1,4 @@
-PROBLEM ICO_Problem (DOMAIN ICO_Domain) 
+PROBLEM ICO_Problem (DOMAIN ICO_causal) 
 {
 	// guest position
 	f0 <fact> Guest1.guest1_position.At(?guest1Location) AT [0, 0] [0, +INF] [0, +INF];
