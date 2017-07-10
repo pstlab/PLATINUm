@@ -2,7 +2,7 @@ package it.uniroma3.epsl2.executive.est;
 
 import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
-import it.uniroma3.epsl2.framework.microkernel.annotation.executive.cfg.ExecutiveConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.executive.ExecutiveConfiguration;
 import it.uniroma3.epsl2.framework.utils.view.executive.ExecutiveWindow;
 
 /**

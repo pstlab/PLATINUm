@@ -3,8 +3,8 @@ package it.uniroma3.epsl2.deliberative.heuristic.filter.semantic;
 import java.util.List;
 import java.util.Map;
 
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
 
 /**
  * 

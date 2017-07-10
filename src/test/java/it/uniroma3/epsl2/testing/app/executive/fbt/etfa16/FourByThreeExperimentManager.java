@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import it.uniroma3.epsl2.deliberative.PlannerBuilder;
+import it.uniroma3.epsl2.deliberative.app.PlannerBuilder;
 import it.uniroma3.epsl2.framework.domain.component.Token;
-import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
-import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
-import it.uniroma3.epsl2.framework.lang.plan.timeline.Timeline;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.NoSolutionFoundException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ProblemInitializationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.timeline.Timeline;
 
 /**
  * 

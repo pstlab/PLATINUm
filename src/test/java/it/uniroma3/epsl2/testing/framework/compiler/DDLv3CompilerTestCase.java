@@ -15,14 +15,14 @@ import it.uniroma3.epsl2.framework.domain.component.pdb.ParameterSynchronization
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationConstraint;
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.DiscreteResource;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.ReservoirResource;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceConsumptionValue;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceProductionValue;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceRequirementValue;
-import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
-import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.domain.component.resource.DiscreteResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.ReservoirResource;
+import it.uniroma3.epsl2.framework.domain.component.resource.ResourceConsumptionValue;
+import it.uniroma3.epsl2.framework.domain.component.resource.ResourceProductionValue;
+import it.uniroma3.epsl2.framework.domain.component.resource.ResourceRequirementValue;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ProblemInitializationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
 import it.uniroma3.epsl2.framework.parameter.lang.NumericParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
 

@@ -7,8 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
 import it.uniroma3.epsl2.framework.time.tn.ex.DistanceConstraintNotFoundException;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentTpValueException;
@@ -31,7 +32,7 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
  */
 public abstract class TemporalNetwork extends ApplicationFrameworkObject 
 {
-	@FrameworkLoggerReference
+	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
 	protected FrameworkLogger logger;
 	
 	private int counter;				// time point ID counter

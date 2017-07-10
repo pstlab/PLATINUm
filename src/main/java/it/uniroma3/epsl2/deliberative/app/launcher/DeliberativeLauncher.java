@@ -5,13 +5,13 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import it.uniroma3.epsl2.deliberative.Planner;
-import it.uniroma3.epsl2.deliberative.PlannerBuilder;
-import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
-import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
-import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
+import it.uniroma3.epsl2.deliberative.app.Planner;
+import it.uniroma3.epsl2.deliberative.app.PlannerBuilder;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.NoSolutionFoundException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ProblemInitializationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.PlanControllabilityType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
 
 /**
  * This program takes as input the paths to DDL and PDL files respectively and
@@ -124,3 +124,6 @@ public class DeliberativeLauncher
 		}
 	}
 }
+
+
+

@@ -4,10 +4,11 @@ import java.util.Collection;
 import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
@@ -18,28 +19,28 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
  */
 public abstract class FlawFilter extends ApplicationFrameworkObject 
 {
-	@FrameworkLoggerReference
+	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER)
 	protected FrameworkLogger logger;
 	
-	@PlanDataBaseReference
+	@PlanDataBasePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
 	protected PlanDataBase pdb;
 	
-	private FlawFilterType type;
+	private String label;
 	
 	/**
 	 * 
 	 * @param type
 	 */
-	protected FlawFilter(FlawFilterType type) {
-		this.type = type;
+	protected FlawFilter(String label) {
+		this.label = label;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public FlawFilterType getType() {
-		return this.type;
+	public String getLabel() {
+		return this.label;
 	}
 	
 	/**
@@ -66,6 +67,6 @@ public abstract class FlawFilter extends ApplicationFrameworkObject
 	 */
 	@Override
 	public String toString() {
-		return "[FlawFilter type= " +  this.type + "]";
+		return "[FlawFilter label= " +  this.label + "]";
 	}
 }

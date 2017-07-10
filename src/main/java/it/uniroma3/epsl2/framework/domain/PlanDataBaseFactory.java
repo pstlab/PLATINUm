@@ -1,15 +1,19 @@
 package it.uniroma3.epsl2.framework.domain;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.pdb.PlanDataBaseComponent;
+import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.PlanDataBaseConfiguration;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.deliberative.ParameterFacadeConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.deliberative.TemporalFacadeConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeFactory;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 
 /**
@@ -20,8 +24,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 public class PlanDataBaseFactory extends ApplicationFrameworkFactory 
 {
 	private static PlanDataBaseFactory INSTANCE = null;
-	private TemporalDataBaseFacadeFactory tdbFactory;
-	private ParameterDataBaseFacadeFactory pdbFactory;
+	private TemporalFacadeFactory tdbFactory;
+	private ParameterFacadeFactory pdbFactory;
 	private DomainComponentFactory cFactory;
 	private FrameworkLoggerFactory lFactory;
 	
@@ -30,8 +34,8 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory
 	 */
 	private PlanDataBaseFactory() {
 		super();
-		this.tdbFactory = new TemporalDataBaseFacadeFactory();
-		this.pdbFactory = new ParameterDataBaseFacadeFactory();
+		this.tdbFactory = new TemporalFacadeFactory();
+		this.pdbFactory = new ParameterFacadeFactory();
 		this.cFactory = new DomainComponentFactory();
 		this.lFactory = new FrameworkLoggerFactory();
 	}
@@ -55,34 +59,38 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory
 	@SuppressWarnings("unchecked")
 	public PlanDataBase create(String name, long origin, long horizon) 
 	{
-		PlanDataBase pdb = null;
+		PlanDataBaseComponent pdb = null;
 		try 
 		{
 			// get class
 			Class<PlanDataBase> clazz = (Class<PlanDataBase>) Class.
 					forName(DomainComponentType.PDB.getComponentClassName());
-			// check annotation
-			if (clazz.isAnnotationPresent(PlanDataBaseConfiguration.class)) 
+			// get declared constructor
+			Constructor<PlanDataBase> c = clazz.getDeclaredConstructor();
+			// check whether constructor configuration annotations are present
+			if (c.isAnnotationPresent(TemporalFacadeConfiguration.class) && 
+					c.isAnnotationPresent(ParameterFacadeConfiguration.class) && 
+					c.isAnnotationPresent(FrameworkLoggerConfiguration.class) && 
+					c.isAnnotationPresent(DomainComponentConfiguration.class)) 
 			{
-				// get annotation
-				PlanDataBaseConfiguration cfg = AnnotationUtils.
-				        getDeclaredAnnotation(clazz, PlanDataBaseConfiguration.class);
-			
+				// get logger annotation
+				FrameworkLoggerConfiguration lannot = c.getAnnotation(FrameworkLoggerConfiguration.class);
 				// create logger
-				this.lFactory.createFrameworkLogger(cfg.logging());
+				this.lFactory.createFrameworkLogger(lannot.level());
+				// get temporal facade annotation
+				TemporalFacadeConfiguration tannot = c.getAnnotation(TemporalFacadeConfiguration.class);
+				// create facade
+				this.tdbFactory.create(tannot.facade(), origin, horizon);
+				// get parameter facade annotation
+				ParameterFacadeConfiguration pannot = c.getAnnotation(ParameterFacadeConfiguration.class);
+				this.pdbFactory.create(pannot.facade());
 				
-				// create temporal data base facade
-				this.tdbFactory.createSingleton(cfg.tdb(), origin, horizon);
-				
-				// create parameter data base facade
-				this.pdbFactory.createSingleton(cfg.pdb());
-				
-				// create component (cast needed for Java7 compatibility)
-				pdb = (PlanDataBase) this.cFactory.create(name, DomainComponentType.PDB);
+				// create component
+				pdb = this.cFactory.create(name, DomainComponentType.PDB);
 				// complete initialization
 				this.doCompleteApplicationObjectInitialization((PlanDataBaseComponent) pdb);
 				// add instance to framework registry
-				this.register(SINGLETON_PLAN_DATA_BASE_REFERENCE, (PlanDataBaseComponent) pdb);
+				this.register(ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE, pdb);
 			}
 			else {
 				// configuration annotation not found
@@ -92,7 +100,7 @@ public class PlanDataBaseFactory extends ApplicationFrameworkFactory
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  
 		} 
-		catch (SecurityException | ClassNotFoundException ex) {
+		catch (NoSuchMethodException | SecurityException | ClassNotFoundException ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
 		// get plan data-base

@@ -1,0 +1,1006 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ddl="http://pst.istc.cnr.it/keen/Ddl" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
+  <viewpoint:DAnalysis xmi:id="_cisX8EIWEeeqWsm0nP27nA" selectedViews="_dHZAcEIWEeeqWsm0nP27nA" version="11.1.0.201608251200">
+    <semanticResources>platform:/plugin/it.cnr.istc.keen/model/generated/Ddl.ecore</semanticResources>
+    <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
+    <semanticResources>virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl</semanticResources>
+    <ownedViews xmi:type="viewpoint:DView" xmi:id="_dHZAcEIWEeeqWsm0nP27nA">
+      <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']"/>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_eZW-oEIWEeeqWsm0nP27nA" name="FourByThree_AIIA17" representation="_eZXlsEIWEeeqWsm0nP27nA">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']"/>
+        <target xmi:type="ddl:Ddl" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#/"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_e2gWMEItEeeqWsm0nP27nA" name="FbTAIIA17Model" representation="_e2gWMUItEeeqWsm0nP27nA">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']"/>
+        <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+      </ownedRepresentationDescriptors>
+    </ownedViews>
+  </viewpoint:DAnalysis>
+  <diagram:DSemanticDiagram xmi:id="_eZXlsEIWEeeqWsm0nP27nA" name="FourByThree_AIIA17">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_eZXlsUIWEeeqWsm0nP27nA" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_eZXlskIWEeeqWsm0nP27nA"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_eaHMkEIWEeeqWsm0nP27nA" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_eaHMkUIWEeeqWsm0nP27nA" type="Sirius" element="_eZXlsEIWEeeqWsm0nP27nA" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_eahcQEIWEeeqWsm0nP27nA" type="2002" element="_eZXls0IWEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_ebJHUEIWEeeqWsm0nP27nA" type="5006"/>
+          <children xmi:type="notation:Node" xmi:id="_ebLjkEIWEeeqWsm0nP27nA" type="7001">
+            <children xmi:type="notation:Node" xmi:id="_ebY-8EIWEeeqWsm0nP27nA" type="3008" element="_eZXltUIWEeeqWsm0nP27nA">
+              <children xmi:type="notation:Node" xmi:id="_ebZmAEIWEeeqWsm0nP27nA" type="5005"/>
+              <children xmi:type="notation:Node" xmi:id="_ebaNEEIWEeeqWsm0nP27nA" type="7002">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_ebaNEUIWEeeqWsm0nP27nA"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_ebaNEkIWEeeqWsm0nP27nA"/>
+                <styles xmi:type="notation:DrawerStyle" xmi:id="_ebbbMEIWEeeqWsm0nP27nA"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_ebY-8UIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ebY-8kIWEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_ebcCQEIWEeeqWsm0nP27nA" type="3008" element="_eZXlt0IWEeeqWsm0nP27nA">
+              <children xmi:type="notation:Node" xmi:id="_ebdQYEIWEeeqWsm0nP27nA" type="5005"/>
+              <children xmi:type="notation:Node" xmi:id="_ebdQYUIWEeeqWsm0nP27nA" type="7002">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_ebdQYkIWEeeqWsm0nP27nA"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_ebdQY0IWEeeqWsm0nP27nA"/>
+                <styles xmi:type="notation:DrawerStyle" xmi:id="_ebdQZEIWEeeqWsm0nP27nA"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_ebcCQUIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ebcCQkIWEeeqWsm0nP27nA" x="40"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_ebLjkUIWEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_ebMKoEIWEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_eahcQUIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_eahcQkIWEeeqWsm0nP27nA" x="135" y="153"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_ebV7oEIWEeeqWsm0nP27nA" type="2003" element="_eZXluUIWEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_ebWisEIWEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_ebXJwEIWEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_ebfFkEIWEeeqWsm0nP27nA" type="3010" element="_eZXlu0IWEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_ebfFkUIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_ebfFkkIWEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_ebgTsEIWEeeqWsm0nP27nA" type="3010" element="_eZXlvUIWEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_ebgTsUIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_ebgTskIWEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_ebg6wEIWEeeqWsm0nP27nA" type="3010" element="_eZXlv0IWEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_ebg6wUIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_ebg6wkIWEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_ebXJwUIWEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_ebXJwkIWEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_ebV7oUIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ebV7okIWEeeqWsm0nP27nA" x="144" y="27"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_eaHMkkIWEeeqWsm0nP27nA"/>
+        <edges xmi:type="notation:Edge" xmi:id="_ecBREEIWEeeqWsm0nP27nA" type="4001" element="_eZXlwUIWEeeqWsm0nP27nA" source="_eahcQEIWEeeqWsm0nP27nA" target="_ebV7oEIWEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_ecDGQEIWEeeqWsm0nP27nA" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ecDGQUIWEeeqWsm0nP27nA" y="-1"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_ecGJkEIWEeeqWsm0nP27nA" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ecGJkUIWEeeqWsm0nP27nA" x="1" y="-1"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_ecGwoEIWEeeqWsm0nP27nA" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ecGwoUIWEeeqWsm0nP27nA" x="1"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_ecBREUIWEeeqWsm0nP27nA"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_ecB4IEIWEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_ecB4IUIWEeeqWsm0nP27nA" points="[0, 0, 10, 67]$[-10, -67, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_ecekEEIWEeeqWsm0nP27nA" id="(0.4966442953020134,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_ecekEUIWEeeqWsm0nP27nA" id="(0.4954954954954955,1.0)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_eZXls0IWEeeqWsm0nP27nA" name="FourByThree_AIIA17" outgoingEdges="_eZXlwUIWEeeqWsm0nP27nA" childrenPresentation="HorizontalStack">
+      <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+      <semanticElements xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_eZXltEIWEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/domain.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']"/>
+      <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_eZXltUIWEeeqWsm0nP27nA" name="Domain Model">
+        <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+        <semanticElements xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_eZXltkIWEeeqWsm0nP27nA" showIcon="false" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='domModelContainer']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='domModelContainer']"/>
+      </ownedDiagramElements>
+      <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_eZXlt0IWEeeqWsm0nP27nA" name="Component Diagram">
+        <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+        <semanticElements xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_eZXluEIWEeeqWsm0nP27nA" showIcon="false" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='compDiagramContainer']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='compDiagramContainer']"/>
+      </ownedDiagramElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_eZXluUIWEeeqWsm0nP27nA" name="temporal_module" incomingEdges="_eZXlwUIWEeeqWsm0nP27nA">
+      <target xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+      <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_eZXlukIWEeeqWsm0nP27nA" iconPath="/it.cnr.istc.keen.ui/icons/module.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_eZXlu0IWEeeqWsm0nP27nA" name="origin: 0">
+        <target xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+        <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_eZXlvEIWEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='originNode']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='originNode']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_eZXlvUIWEeeqWsm0nP27nA" name="horizon: 200">
+        <target xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+        <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_eZXlvkIWEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='horizonNode']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='horizonNode']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_eZXlv0IWEeeqWsm0nP27nA" name="time points: 300">
+        <target xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+        <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@module"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_eZXlwEIWEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='timePointsNode']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='timePointsNode']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_eZXlwUIWEeeqWsm0nP27nA" sourceNode="_eZXls0IWEeeqWsm0nP27nA" targetNode="_eZXluUIWEeeqWsm0nP27nA">
+      <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_eZXlwkIWEeeqWsm0nP27nA" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@edgeMappings[name='temporalModuleRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_eZXlw0IWEeeqWsm0nP27nA"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@edgeMappings[name='temporalModuleRelation']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_eZXlxEIWEeeqWsm0nP27nA"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer"/>
+    <target xmi:type="ddl:Ddl" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#/"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_e2gWMUItEeeqWsm0nP27nA" name="FbTAIIA17Model">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_e2gWMkItEeeqWsm0nP27nA" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_e2gWM0ItEeeqWsm0nP27nA"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_e2iLYEItEeeqWsm0nP27nA" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_e2iLYUItEeeqWsm0nP27nA" type="Sirius" element="_e2gWMUItEeeqWsm0nP27nA" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_e2iLY0ItEeeqWsm0nP27nA" type="2003" element="_e2gWNEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2iLZkItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2iycEItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e2o5FEItEeeqWsm0nP27nA" type="3010" element="_e2gWNkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2o5FUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2o5FkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2pgIEItEeeqWsm0nP27nA" type="3010" element="_e2gWOEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2pgIUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2pgIkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2qHMEItEeeqWsm0nP27nA" type="3010" element="_e2gWOkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2qHMUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2qHMkItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2iycUItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2iyckItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2iLZEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2iLZUItEeeqWsm0nP27nA" x="11" y="10"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2iyc0ItEeeqWsm0nP27nA" type="2003" element="_e2gWPEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2iydkItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2iyd0ItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e2qHM0ItEeeqWsm0nP27nA" type="3010" element="_e2gWPkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2qHNEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2qHNUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2quQEItEeeqWsm0nP27nA" type="3010" element="_e2gWQEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2quQUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2quQkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2quQ0ItEeeqWsm0nP27nA" type="3010" element="_e2gWQkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2quREItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2quRUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2rVUEItEeeqWsm0nP27nA" type="3010" element="_e2gWREItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2rVUUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2rVUkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2rVU0ItEeeqWsm0nP27nA" type="3010" element="_e2gWRkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2rVVEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2rVVUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2r8YEItEeeqWsm0nP27nA" type="3010" element="_e2gWSEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2r8YUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2r8YkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2r8Y0ItEeeqWsm0nP27nA" type="3010" element="_e2gWSkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2r8ZEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2r8ZUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2sjcEItEeeqWsm0nP27nA" type="3010" element="_e2gWTEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2sjcUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2sjckItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2iyeEItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2iyeUItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2iydEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2iydUItEeeqWsm0nP27nA" x="270" y="9"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2jZgEItEeeqWsm0nP27nA" type="2003" element="_e2gWTkItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2kAkEItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2knoEItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e2tKgEItEeeqWsm0nP27nA" type="3010" element="_e2gWUEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2tKgUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2tKgkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2uYoEItEeeqWsm0nP27nA" type="3010" element="_e2gWUkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2uYoUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2uYokItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2uYo0ItEeeqWsm0nP27nA" type="3010" element="_e2gWVEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2uYpEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2uYpUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2u_sEItEeeqWsm0nP27nA" type="3010" element="_e2gWVkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2u_sUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2u_skItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2u_s0ItEeeqWsm0nP27nA" type="3010" element="_e2gWWEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2u_tEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2u_tUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2vmwEItEeeqWsm0nP27nA" type="3010" element="_e2gWWkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2vmwUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2vmwkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2vmw0ItEeeqWsm0nP27nA" type="3010" element="_e2gWXEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2vmxEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2vmxUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2wN0EItEeeqWsm0nP27nA" type="3010" element="_e2gWXkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2wN0UItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2wN0kItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2knoUItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2knokItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2jZgUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2jZgkItEeeqWsm0nP27nA" x="11" y="180"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2kno0ItEeeqWsm0nP27nA" type="2003" element="_e2gWYEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2knpkItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2lOsEItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e2w04EItEeeqWsm0nP27nA" type="3010" element="_e2gWYkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2w04UItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2w04kItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2w040ItEeeqWsm0nP27nA" type="3010" element="_e2gWZEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2w05EItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2w05UItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2xb8EItEeeqWsm0nP27nA" type="3010" element="_e2gWZkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2xb8UItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2xb8kItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2xb80ItEeeqWsm0nP27nA" type="3010" element="_e2gWaEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2xb9EItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2xb9UItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2yDAEItEeeqWsm0nP27nA" type="3010" element="_e2gWakItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2yDAUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2yDAkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2yDA0ItEeeqWsm0nP27nA" type="3010" element="_e2gWbEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2yDBEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2yDBUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2yqEEItEeeqWsm0nP27nA" type="3010" element="_e2gWbkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2yqEUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2yqEkItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2lOsUItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2lOskItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2knpEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2knpUItEeeqWsm0nP27nA" x="270" y="180"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2lOs0ItEeeqWsm0nP27nA" type="2003" element="_e2gWcEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2lOtkItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2l1wEItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e2yqE0ItEeeqWsm0nP27nA" type="3010" element="_e2gWckItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2yqFEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2yqFUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2zRIEItEeeqWsm0nP27nA" type="3010" element="_e2gWdEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2zRIUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2zRIkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2zRI0ItEeeqWsm0nP27nA" type="3010" element="_e2gWdkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2zRJEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2zRJUItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2l1wUItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2l1wkItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2lOtEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2lOtUItEeeqWsm0nP27nA" x="11" y="351"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2l1w0ItEeeqWsm0nP27nA" type="2003" element="_e2gWeEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2l1xkItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2mc0EItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e2z4MEItEeeqWsm0nP27nA" type="3010" element="_e2gWekItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2z4MUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2z4MkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e2z4M0ItEeeqWsm0nP27nA" type="3010" element="_e2gWfEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e2z4NEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e2z4NUItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2mc0UItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2mc0kItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2l1xEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2l1xUItEeeqWsm0nP27nA" x="270" y="356"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2mc00ItEeeqWsm0nP27nA" type="2003" element="_e2gWfkItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2mc1kItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2mc10ItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e20fQEItEeeqWsm0nP27nA" type="3010" element="_e2gWgEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e20fQUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e20fQkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e20fQ0ItEeeqWsm0nP27nA" type="3010" element="_e2gWgkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e20fREItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e20fRUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e21GUEItEeeqWsm0nP27nA" type="3010" element="_e2gWhEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e21GUUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e21GUkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e21tYEItEeeqWsm0nP27nA" type="3010" element="_e2gWhkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e21tYUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e21tYkItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2nD4EItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2nD4UItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2mc1EItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2mc1UItEeeqWsm0nP27nA" x="11" y="477"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2nD4kItEeeqWsm0nP27nA" type="2003" element="_e2gWiEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2nD5UItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2nD5kItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e22UcEItEeeqWsm0nP27nA" type="3010" element="_e2gWikItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e22UcUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e22UckItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e22Uc0ItEeeqWsm0nP27nA" type="3010" element="_e2gWjEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e22UdEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e22UdUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e22UdkItEeeqWsm0nP27nA" type="3010" element="_e2gWjkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e22Ud0ItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e22UeEItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e227gEItEeeqWsm0nP27nA" type="3010" element="_e2gWkEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e227gUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e227gkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e227g0ItEeeqWsm0nP27nA" type="3010" element="_e2gWkkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e227hEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e227hUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e23ikEItEeeqWsm0nP27nA" type="3010" element="_e2gWlEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e23ikUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e23ikkItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e23ik0ItEeeqWsm0nP27nA" type="3010" element="_e2gWlkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e23ilEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e23ilUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e24JoEItEeeqWsm0nP27nA" type="3010" element="_e2gWmEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e24JoUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e24JokItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e24Jo0ItEeeqWsm0nP27nA" type="3010" element="_e2gWmkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e24JpEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e24JpUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e24JpkItEeeqWsm0nP27nA" type="3010" element="_e2gWnEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e24Jp0ItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e24JqEItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e24wsEItEeeqWsm0nP27nA" type="3010" element="_e2gWnkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e24wsUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e24wskItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e24ws0ItEeeqWsm0nP27nA" type="3010" element="_e2gWoEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e24wtEItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e24wtUItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e25XwEItEeeqWsm0nP27nA" type="3010" element="_e2gWokItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e25XwUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e25XwkItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2nD50ItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2nD6EItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2nD40ItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2nD5EItEeeqWsm0nP27nA" x="270" y="477"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2nq8EItEeeqWsm0nP27nA" type="2003" element="_e2gWpEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2nq80ItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2nq9EItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e25-0EItEeeqWsm0nP27nA" type="3010" element="_e2gWpkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e25-0UItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e25-0kItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e25-00ItEeeqWsm0nP27nA" type="3010" element="_e2gWqEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e25-1EItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e25-1UItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e26l4EItEeeqWsm0nP27nA" type="3010" element="_e2gWqkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e26l4UItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e26l4kItEeeqWsm0nP27nA"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_e26l40ItEeeqWsm0nP27nA" type="3010" element="_e2gWrEItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e26l5EItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e26l5UItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2nq9UItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2nq9kItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2nq8UItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2nq8kItEeeqWsm0nP27nA" x="11" y="693"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_e2oSAEItEeeqWsm0nP27nA" type="2003" element="_e2g9QEItEeeqWsm0nP27nA">
+          <children xmi:type="notation:Node" xmi:id="_e2o5EEItEeeqWsm0nP27nA" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_e2o5EUItEeeqWsm0nP27nA" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_e26l5kItEeeqWsm0nP27nA" type="3010" element="_e2g9QkItEeeqWsm0nP27nA">
+              <styles xmi:type="notation:FontStyle" xmi:id="_e26l50ItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_e26l6EItEeeqWsm0nP27nA"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_e2o5EkItEeeqWsm0nP27nA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_e2o5E0ItEeeqWsm0nP27nA"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_e2oSAUItEeeqWsm0nP27nA" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_e2oSAkItEeeqWsm0nP27nA" x="270" y="693"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_e2iLYkItEeeqWsm0nP27nA"/>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWNEItEeeqWsm0nP27nA" name="ALFAUseCaseType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWNUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWNkItEeeqWsm0nP27nA" name="Idle()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWN0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWOEItEeeqWsm0nP27nA" name="Assembly(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWOUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWOkItEeeqWsm0nP27nA" name="RemoveTopCover(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3/@decTypes.2"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.3/@decTypes.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWO0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWPEItEeeqWsm0nP27nA" name="AssemblyDiscretizedProcessType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWPUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWPkItEeeqWsm0nP27nA" name="None()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWP0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWQEItEeeqWsm0nP27nA" name="SetTheWorkPiece(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWQUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWQkItEeeqWsm0nP27nA" name="RemoveTopCover(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.2"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWQ0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWREItEeeqWsm0nP27nA" name="TurnPiece(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.3"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWRUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWRkItEeeqWsm0nP27nA" name="RemoveBottomCover(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.4"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.4"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWR0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWSEItEeeqWsm0nP27nA" name="RemoveTheInsert(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.5"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.5"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWSUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWSkItEeeqWsm0nP27nA" name="RebuildThePiece(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.6"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.6"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWS0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWTEItEeeqWsm0nP27nA" name="CoverPlacement(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.7"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.4/@decTypes.7"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWTUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWTkItEeeqWsm0nP27nA" name="AssemblyProcessType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWT0ItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWUEItEeeqWsm0nP27nA" name="None()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWUUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWUkItEeeqWsm0nP27nA" name="SetTheWorkPiece(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWU0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWVEItEeeqWsm0nP27nA" name="RemoveTopCover(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.2"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWVUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWVkItEeeqWsm0nP27nA" name="TurnPiece(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.3"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWV0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWWEItEeeqWsm0nP27nA" name="RemoveBottomCover(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.4"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.4"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWWUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWWkItEeeqWsm0nP27nA" name="RemoveTheInsert(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.5"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.5"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWW0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWXEItEeeqWsm0nP27nA" name="RebuildThePiece(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.6"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.6"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWXUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWXkItEeeqWsm0nP27nA" name="CoverPlacement(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.7"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.5/@decTypes.7"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWX0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWYEItEeeqWsm0nP27nA" name="HumanOperatorFunctionType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWYUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWYkItEeeqWsm0nP27nA" name="Idle()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWY0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWZEItEeeqWsm0nP27nA" name="_Place(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWZUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWZkItEeeqWsm0nP27nA" name="_Screw(workpiece_id, location)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.2"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWZ0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWaEItEeeqWsm0nP27nA" name="_Unscrew(workpiece_id, location)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.3"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWaUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWakItEeeqWsm0nP27nA" name="_Rotate(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.4"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.4"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWa0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWbEItEeeqWsm0nP27nA" name="_RemovePart(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.5"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.5"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWbUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWbkItEeeqWsm0nP27nA" name="_RebuildPart(workpiece_id)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.6"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.6/@decTypes.6"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWb0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWcEItEeeqWsm0nP27nA" name="RobotFunctionType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWcUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWckItEeeqWsm0nP27nA" name="Idle()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWc0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWdEItEeeqWsm0nP27nA" name="Screw(workpiece_id, location, modality)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWdUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWdkItEeeqWsm0nP27nA" name="Unscrew(workpiece_id, location, modality)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7/@decTypes.2"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.7/@decTypes.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWd0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWeEItEeeqWsm0nP27nA" name="RobotArmMotionType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.8"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.8"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWeUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWekItEeeqWsm0nP27nA" name="SetOn(location, modality)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.8/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.8/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWe0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWfEItEeeqWsm0nP27nA" name="_MovingTo(location, modality)">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.8/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.8/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWfUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWfkItEeeqWsm0nP27nA" name="RobotToolType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWf0ItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWgEItEeeqWsm0nP27nA" name="Unset()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWgUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWgkItEeeqWsm0nP27nA" name="Activate()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWg0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWhEItEeeqWsm0nP27nA" name="Deactivate()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.2"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWhUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWhkItEeeqWsm0nP27nA" name="Operating()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.3"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9/@decTypes.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWh0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWiEItEeeqWsm0nP27nA" name="location">
+      <target xmi:type="ddl:EnumerationParameterType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1"/>
+      <semanticElements xmi:type="ddl:EnumerationParameterType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWiUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/enumtype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWikItEeeqWsm0nP27nA" name="home">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.0"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWi0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWjEItEeeqWsm0nP27nA" name="block1">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.1"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWjUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWjkItEeeqWsm0nP27nA" name="block2">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.2"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWj0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWkEItEeeqWsm0nP27nA" name="block3">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.3"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWkUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWkkItEeeqWsm0nP27nA" name="block4">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.4"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.4"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWk0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWlEItEeeqWsm0nP27nA" name="block5">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.5"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.5"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWlUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWlkItEeeqWsm0nP27nA" name="block6">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.6"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.6"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWl0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWmEItEeeqWsm0nP27nA" name="block7">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.7"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.7"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWmUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWmkItEeeqWsm0nP27nA" name="block8">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.8"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.8"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWm0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWnEItEeeqWsm0nP27nA" name="block9">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.9"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.9"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWnUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWnkItEeeqWsm0nP27nA" name="block10">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.10"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.10"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWn0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWoEItEeeqWsm0nP27nA" name="block11">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.11"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.11"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWoUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWokItEeeqWsm0nP27nA" name="block12">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.12"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.1/@values.12"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWo0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWpEItEeeqWsm0nP27nA" name="modality">
+      <target xmi:type="ddl:EnumerationParameterType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2"/>
+      <semanticElements xmi:type="ddl:EnumerationParameterType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWpUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/enumtype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWpkItEeeqWsm0nP27nA" name="independent">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.0"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWp0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWqEItEeeqWsm0nP27nA" name="simultaneous">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.1"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWqUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWqkItEeeqWsm0nP27nA" name="supportive">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.2"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWq0ItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2gWrEItEeeqWsm0nP27nA" name="synchronous">
+        <target xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.3"/>
+        <semanticElements xmi:type="ddl:EnumLiteral" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.2/@values.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2gWrUItEeeqWsm0nP27nA" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='EnumType']/@subNodeMappings[name='enumLiteral']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2g9QEItEeeqWsm0nP27nA" name="workpiece_id">
+      <target xmi:type="ddl:NumericParameterType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.0"/>
+      <semanticElements xmi:type="ddl:NumericParameterType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2g9QUItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/numerictype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='NumericType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='NumericType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_e2g9QkItEeeqWsm0nP27nA" name="[0,100]">
+        <target xmi:type="ddl:URange" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.0/@range"/>
+        <semanticElements xmi:type="ddl:URange" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.0/@range"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_e2g9Q0ItEeeqWsm0nP27nA" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='NumericType']/@subNodeMappings[name='numTypeRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']/@containerMappings[name='NumericType']/@subNodeMappings[name='numTypeRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_e2g9REItEeeqWsm0nP27nA"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@defaultLayer"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']"/>
+    <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+  </diagram:DSemanticDiagram>
+</xmi:XMI>

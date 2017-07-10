@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterType;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeFactory;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalConstraintPropagationException;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
@@ -47,7 +47,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	private final Object[] locks;
 //	protected TemporalQueryFactory qFactory;			// interval query factory
 //	protected IntervalConstraintFactory iFactory;		// interval constraint factory
-	protected TemporalDataBaseFacade facade;			// temporal data base
+	protected TemporalFacade facade;			// temporal data base
 	
 	// plan's nodes
 	protected Map<ExecutionNodeStatus, List<ExecutionNode>> nodes;
@@ -82,8 +82,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
 		lf.createFrameworkLogger(FrameworkLoggingLevel.OFF);
 		// create temporal facade
-		TemporalDataBaseFacadeFactory factory = new TemporalDataBaseFacadeFactory();
-		this.facade = factory.create(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, origin, horizon);
+		TemporalFacadeFactory factory = new TemporalFacadeFactory();
+		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, origin, horizon);
 		// unregister facade
 		factory.unregister(this.facade);
 

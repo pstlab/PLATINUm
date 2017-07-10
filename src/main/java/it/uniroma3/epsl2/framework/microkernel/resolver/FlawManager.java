@@ -3,8 +3,8 @@ package it.uniroma3.epsl2.framework.microkernel.resolver;
 import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 
 /**

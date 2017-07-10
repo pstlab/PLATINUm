@@ -13,7 +13,7 @@ import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.iterators.DisposableValueIterator;
 
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddConstraintParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.DelConstraintParameterNotification;

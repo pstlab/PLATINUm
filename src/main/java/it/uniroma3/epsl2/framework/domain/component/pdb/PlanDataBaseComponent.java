@@ -18,76 +18,59 @@ import it.uniroma3.epsl2.framework.domain.component.PlanElementStatus;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.ex.ConstraintPropagationException;
-import it.uniroma3.epsl2.framework.lang.ex.DomainComponentNotFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.OperatorPropagationException;
-import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
-import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Operator;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.BindParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.EqualParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.NotEqualParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.ParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.TemporalRelation;
-import it.uniroma3.epsl2.framework.lang.problem.ParameterProblemConstraint;
-import it.uniroma3.epsl2.framework.lang.problem.Problem;
-import it.uniroma3.epsl2.framework.lang.problem.ProblemConstraint;
-import it.uniroma3.epsl2.framework.lang.problem.ProblemFact;
-import it.uniroma3.epsl2.framework.lang.problem.ProblemFluent;
-import it.uniroma3.epsl2.framework.lang.problem.ProblemGoal;
-import it.uniroma3.epsl2.framework.lang.problem.TemporalProblemConstraint;
 import it.uniroma3.epsl2.framework.microkernel.ConstraintCategory;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.PlanDataBaseConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.deliberative.ParameterFacadeConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.deliberative.TemporalFacadeConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConstraintPropagationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.DomainComponentNotFoundException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.OperatorPropagationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ProblemInitializationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Operator;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.BindParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.EqualParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.NotEqualParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.ParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.temporal.TemporalRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.ParameterProblemConstraint;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.Problem;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.ProblemConstraint;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.ProblemFact;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.ProblemFluent;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.ProblemGoal;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.TemporalProblemConstraint;
 import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeType;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
 import it.uniroma3.epsl2.framework.parameter.lang.query.ComputeSolutionParameterQuery;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.ComputeMakespanQuery;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
-import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
+import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
  * @author anacleto
  *
  */
-@PlanDataBaseConfiguration(
-		
-		// parameter data manager
-		pdb = ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE,
-		
-		// temporal data manager
-		tdb = TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE
-)
-
-@DomainComponentConfiguration(
-		
-	resolvers = {
-			
-			// plan refinement resolver
-			ResolverType.PLAN_REFINEMENT
-	},
-	
-	view = ComponentViewType.GANTT
-)
 public class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
 	// see Composite design pattern
@@ -108,8 +91,16 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 * @param name
 	 */
-	protected PlanDataBaseComponent(String name) {
-		super(name, DomainComponentType.PDB);
+	@TemporalFacadeConfiguration(facade = TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE)
+	@ParameterFacadeConfiguration(facade = ParameterFacadeType.CSP_PARAMETER_FACADE)
+	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
+	@DomainComponentConfiguration(resolvers = { 
+			// plan refinement resolver
+			ResolverType.PLAN_REFINEMENT 
+	})
+	protected PlanDataBaseComponent(String name) 
+	{
+		super(name, DomainComponentType.PDB.getLabel());
 		this.components = new HashMap<>();
 		this.parameterDomains = new HashMap<>();
 		this.rules = new HashMap<>();

@@ -1,6 +1,6 @@
 package it.uniroma3.epsl2.framework.parameter.ex;
 
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
 
 /**
  * 

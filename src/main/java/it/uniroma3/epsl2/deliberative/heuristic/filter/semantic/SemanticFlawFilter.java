@@ -14,14 +14,13 @@ import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.domain.PlanDataBaseObserver;
 import it.uniroma3.epsl2.framework.domain.component.pdb.PlanDataBaseEvent;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.lang.plan.Agenda;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Plan;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Plan;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.microkernel.resolver.planning.Goal;
 
 /**
@@ -39,7 +38,7 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 	 * 
 	 */
 	protected SemanticFlawFilter() {
-		super(FlawFilterType.SFF);
+		super(FlawFilterType.SFF.getLabel());
 		this.process = new Thread(this);
 		this.queue = new LinkedBlockingQueue<>();
 		// setup knowledge reasoner

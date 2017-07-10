@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
 
 /**
  * 

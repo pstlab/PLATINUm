@@ -4,41 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
-import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
+import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
  * @author anacleto
  *
  */
-@DomainComponentConfiguration(
-		
-		resolvers = {
-				
-				// observation checking resolver
-				ResolverType.OBSERVATION_CHECKING_RESOLVER,
-				
-				// behavior checking resolver
-				ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
-		},
-		
-		view = ComponentViewType.GANTT
-)
-public final class ExternalStateVariable extends StateVariable {
-	
+public final class ExternalStateVariable extends StateVariable 
+{
 	/**
 	 * 
 	 * @param name
-	 * @param tdb
 	 */
+	@DomainComponentConfiguration(resolvers = {
+			// observation checking resolver
+			ResolverType.OBSERVATION_CHECKING_RESOLVER,
+			// behavior checking resolver
+			ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
+	})
 	protected ExternalStateVariable(String name) {
-		super(name, DomainComponentType.SV_EXTERNAL);
+		super(name, DomainComponentType.SV_EXTERNAL.getLabel());
 	}
 
 	/**

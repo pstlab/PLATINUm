@@ -1,6 +1,6 @@
 package it.uniroma3.epsl2.framework.domain.component.pdb;
 
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
 
 /**
  * 

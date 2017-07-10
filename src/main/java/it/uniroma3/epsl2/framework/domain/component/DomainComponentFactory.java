@@ -7,16 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentViewReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ResolverReferences;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ResolverListPlaceholder;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverFactory;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
-import it.uniroma3.epsl2.framework.utils.compat.AnnotationUtils;
-import it.uniroma3.epsl2.framework.utils.view.component.ComponentView;
-import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewFactory;
-import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
  * 
@@ -26,7 +21,6 @@ import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 public class DomainComponentFactory extends ApplicationFrameworkFactory {
 
 	private ResolverFactory resvFactory;
-	private ComponentViewFactory viewFactory;
 	
 	/**
 	 * 
@@ -34,7 +28,6 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 	public DomainComponentFactory() {
 		super();
 		this.resvFactory = new ResolverFactory();
-		this.viewFactory = new ComponentViewFactory(); 
 	}
 	
 	/**
@@ -50,32 +43,47 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getComponentClassName());
-			// check if configuration annotation exists
-			if (clazz.isAnnotationPresent(DomainComponentConfiguration.class)) {
+			// check whether constructor configuration annotation is present
+			Constructor<T> c = clazz.getDeclaredConstructor(String.class);
+			if (c.isAnnotationPresent(DomainComponentConfiguration.class)) 
+			{
 				// constructor
-				Constructor<T> c = clazz.getDeclaredConstructor(String.class);
 				c.setAccessible(true);
 				// create instance
 				component = c.newInstance(name);
 
-				// get configuration annotation
-				DomainComponentConfiguration cfg = clazz.getAnnotation(DomainComponentConfiguration.class);
-				
 				// inject logger
-				this.injectFrameworkLoggerReference(component);
-				// inject resolvers
-				this.injectResolvers(component);
-				// inject component view
-				this.injectComponentView(cfg.view(), component);
-				// inject temporal data base reference
-				this.injectSingletonTemporalDataBaseFacadeReference(component, false);
-				// inject parameter data base reference
-				this.injectSingletonParameterDataBaseFacadeReference(component);
+				this.injectFrameworkLogger(component);
+				// inject temporal facade
+				this.injectTemporalFacade(component);
+				// inject parameter facade
+				this.injectParameterFacade(component);
+				
+				// get configuration annotation
+				DomainComponentConfiguration annotation = clazz.getAnnotation(DomainComponentConfiguration.class);
+				// prepare list of resolvers
+				List<Resolver> list = new ArrayList<Resolver>();
+				// check resolver
+				for (ResolverType rtype : annotation.resolvers())
+				{
+					// create resolver
+					Resolver resv = this.resvFactory.create(rtype, component);
+					// add resolver
+					list.add(resv);
+				}
+				// set reference to resolvers
+				Field f = this.findFieldAnnotatedBy(clazz, ResolverListPlaceholder.class);
+				// set the field accessible
+				f.setAccessible(true);
+				// set reference
+				f.set(component, list);
+				
+				
 				// complete initialization
 				this.doCompleteApplicationObjectInitialization(component);
 				
 				// add entry to registry
-				this.doRegister(component);
+				this.register(component);
 			}
 			else {
 				// configuration annotation not found
@@ -90,50 +98,5 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 		}
 		// get component
 		return component;
-	}
-	
-	/**
-	 * 
-	 * @param component
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	private void injectResolvers(DomainComponent component) 
-			throws IllegalArgumentException, IllegalAccessException {
-		// get annotation
-		DomainComponentConfiguration annot = AnnotationUtils.getDeclaredAnnotation(
-		        component.getClass(),DomainComponentConfiguration.class);
-		
-		// list of resolvers
-		List<Resolver> list = new ArrayList<>();
-		for (ResolverType resvType : annot.resolvers()) {
-			// create resolver
-			list.add(this.resvFactory.create(resvType, component));
-		}
-		
-		// set resolvers
-		Field field = this.findFieldAnnotatedBy(component.getClass(), ResolverReferences.class);
-		// set reference
-		field.setAccessible(true);
-		field.set(component, list);
-	}
-	
-	/**
-	 * 
-	 * @param type
-	 * @param component
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	private void injectComponentView(ComponentViewType type, DomainComponent component) 
-			throws IllegalArgumentException, IllegalAccessException {
-		// get component type 
-		ComponentView view = this.viewFactory.create(type, component);
-		// set component view
-		Field field = this.findFieldAnnotatedBy(component.getClass(), ComponentViewReference.class);
-		// set reference
-		field.setAccessible(true);
-		// inject
-		field.set(component, view);
 	}
  }

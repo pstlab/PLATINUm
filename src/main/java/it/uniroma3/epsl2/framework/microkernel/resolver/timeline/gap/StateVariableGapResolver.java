@@ -16,15 +16,15 @@ import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationExcept
 import it.uniroma3.epsl2.framework.domain.component.ex.TransitionNotFoundException;
 import it.uniroma3.epsl2.framework.domain.component.sv.StateVariable;
 import it.uniroma3.epsl2.framework.domain.component.sv.Transition;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.EqualParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.NotEqualParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.MeetsRelation;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.EqualParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.NotEqualParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.temporal.MeetsRelation;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
@@ -40,14 +40,15 @@ import it.uniroma3.epsl2.framework.time.lang.query.IntervalOverlapQuery;
  */
 public final class StateVariableGapResolver <T extends StateVariable> extends Resolver implements Comparator<Decision> 
 {
-	@ComponentReference
+	@ComponentPlaceholder
 	protected T component;
 	
 	/**
 	 * 
 	 */
 	protected StateVariableGapResolver() {
-		super(ResolverType.SV_GAP_RESOLVER);
+		super(ResolverType.SV_GAP_RESOLVER.getLabel(), 
+				ResolverType.SV_GAP_RESOLVER.getFlawType());
 	}
 	
 	/**
@@ -69,12 +70,18 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		long dmax = query.getDistanceUpperBound();
 		
 		// check temporal ordering
-		if (dmin >= 0 && dmax >= 0) { return -1;}
-		else if (dmin < 0 && dmax < 0) { return 1; }
-		else { throw new RuntimeException("Unknown ordering of decisions\n"
+		if (dmin >= 0 && dmax >= 0) { 
+			return -1;
+		}
+		else if (dmin < 0 && dmax <= 0) { 
+			return 1; 
+		}
+		else { 
+			throw new RuntimeException("Unknown ordering of decisions\n"
 				+ "- distance= [" + dmin + ", " + dmax + "]\n"
 				+ "- d1= " + d1 + "" + d1.getToken() +"\n"
-				+ "- d2= " + d2 + "" + d2.getToken() + "\n"); } 
+				+ "- d2= " + d2 + "" + d2.getToken() + "\n"); 
+		} 
 	}
 	
 	/**

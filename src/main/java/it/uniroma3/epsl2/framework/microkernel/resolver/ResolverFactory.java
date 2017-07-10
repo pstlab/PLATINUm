@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 
 /**
  * 
@@ -28,10 +28,12 @@ public class ResolverFactory extends ApplicationFrameworkFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resolver> T create(ResolverType type, DomainComponent component) {
+	public <T extends Resolver> T create(ResolverType type, DomainComponent component) 
+	{
 		// resolver
 		T resv = null;
-		try {
+		try 
+		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getClassName());
 			// get constructor
@@ -41,22 +43,22 @@ public class ResolverFactory extends ApplicationFrameworkFactory {
 			resv = c.newInstance();
 			
 			// set reference to component
-			Field field = this.findFieldAnnotatedBy(clazz, ComponentReference.class);
+			Field field = this.findFieldAnnotatedBy(clazz, ComponentPlaceholder.class);
 			// inject reference
 			field.setAccessible(true);
 			field.set(resv, component);
 			
-			// inject reference to temporal data base
-			this.injectSingletonTemporalDataBaseFacadeReference(resv, false);
+			// inject reference to temporal facade
+			this.injectTemporalFacade(resv);
 			// inject parameter data base reference
-			this.injectSingletonParameterDataBaseFacadeReference(resv);
+			this.injectParameterFacade(resv);
 			// inject logger
-			this.injectFrameworkLoggerReference(resv);
+			this.injectFrameworkLogger(resv);
 			// complete initialization
 			this.doCompleteApplicationObjectInitialization(resv);
 			
 			// add entry to the registry
-			this.doRegister(resv);
+			this.register(resv);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

@@ -14,83 +14,18 @@ DOMAIN FourByThree_AIIA17
 	
 	COMP_TYPE SingletonStateVariable ALFAUseCaseType (
 		Idle(), 
-		Assembly(workpiece_id), 
-		RemoveTopCover(workpiece_id))
+		Assembly(workpiece_id))
 	{
 		VALUE Idle() [1, +INF]
 		MEETS {
 			Assembly(?piece0);
-			RemoveTopCover(?piece1);
 		}
 		
 		VALUE Assembly(?piece) [2, +INF]
 		MEETS {
 			Idle();
 		}
-		
-		VALUE RemoveTopCover(?piece) [2, +INF]
-		MEETS {
-			Idle();
-		}
 	}
-	
-	COMP_TYPE SingletonStateVariable AssemblyDiscretizedProcessType (
-		None(),
-		SetTheWorkPiece(workpiece_id), 
-		RemoveTopCover(workpiece_id), 
-		TurnPiece(workpiece_id), 
-		RemoveBottomCover(workpiece_id),
-		RemoveTheInsert(workpiece_id),
-		RebuildThePiece(workpiece_id), 
-		CoverPlacement(workpiece_id))
-	{
-		VALUE None() [2, +INF]
-		MEETS {
-			SetTheWorkPiece(?p0); 
-			RemoveTopCover(?p1); 
-			TurnPiece(?p2); 
-			RemoveBottomCover(?p3);
-			RemoveTheInsert(?p4);
-			RebuildThePiece(?p5); 
-			CoverPlacement(?p6);
-		}
-	
-		VALUE SetTheWorkPiece(?piece) [2, +INF]
-		MEETS {
-			None();
-		}
-		 
-		VALUE RemoveTopCover(?piece) [2, +INF]
-		MEETS {
-			None();
-		}
-		
-		VALUE TurnPiece(?piece) [2, +INF]
-		MEETS {
-			None();
-		} 
-		
-		VALUE RemoveBottomCover(?piece) [2, +INF]
-		MEETS {
-			None();
-		}
-		
-		VALUE RemoveTheInsert(?piece) [2, +INF]
-		MEETS {
-			None();
-		} 
-		
-		VALUE RebuildThePiece(?piece) [2, +INF]
-		MEETS {
-			None();
-		} 
-		
-		VALUE CoverPlacement(?piece) [2, +INF]
-		MEETS {
-			None();
-		}
-	}
-	
 	
 	COMP_TYPE SingletonStateVariable AssemblyProcessType (
 		None(),
@@ -271,7 +206,6 @@ DOMAIN FourByThree_AIIA17
 	// factory work-flow components
 	COMPONENT ALFA {FLEXIBLE use_case(trex_internal_dispatch_asap) } : ALFAUseCaseType;
 	COMPONENT AssemblyProcess {FLEXIBLE tasks(trex_internal_dispatch_asap)} : AssemblyProcessType;
-	COMPONENT AssemblyDiscreteProcess {FLEXIBLE discrete_tasks(trex_internal_dispatch_asap)} : AssemblyDiscretizedProcessType;
 	
 	// human operator component
 	COMPONENT Human {FLEXIBLE operator(trex_internal_dispatch_asap)} : HumanOperatorFunctionType;
@@ -295,76 +229,6 @@ DOMAIN FourByThree_AIIA17
 			?piece0 = ?piece;
 			?piece7 = ?piece;
 		}
-		
-		VALUE RemoveTopCover(?piece)
-		{
-			task0 <!> AssemblyDiscreteProcess.discrete_tasks.RemoveTopCover(?piece0);
-			
-			CONTAINS [0, +INF] [0, +INF] task0;
-			
-			?piece0 = ?piece;
-		}
-	}
-	
-	SYNCHRONIZE AssemblyDiscreteProcess.discrete_tasks 
-	{
-		VALUE RemoveTopCover(?piece)
-		{
-			cd0 <!> Human.operator._Unscrew(?piece0, ?location0);
-			cd1 <!> Human.operator._Unscrew(?piece1, ?location1);
-			cd2 <!> Human.operator._Unscrew(?piece2, ?location2);
-			cd3 <!> Human.operator._Unscrew(?piece3, ?location3);
-			
-			cd0 BEFORE [0, +INF] cd1;
-			cd1 BEFORE [0, +INF] cd2;
-			cd2 BEFORE [0, +INF] cd3;
-			
-			cd4 <!> RobotController.functions.Unscrew(?piece4, ?location4, ?modality4);
-			cd5 <!> RobotController.functions.Unscrew(?piece5, ?location5, ?modality5);
-			cd6 <!> RobotController.functions.Unscrew(?piece6, ?location6, ?modality6);
-			cd7 <!> RobotController.functions.Unscrew(?piece7, ?location7, ?modality7);
-			
-			cd4 BEFORE [0, +INF] cd5;
-			cd5 BEFORE [0, +INF] cd6;
-			cd6 BEFORE [0, +INF] cd7;
-			
-			CONTAINS [0, +INF] [0, +INF] cd0;
-			CONTAINS [0, +INF] [0, +INF] cd1;
-			CONTAINS [0, +INF] [0, +INF] cd2;
-			CONTAINS [0, +INF] [0, +INF] cd3;
-			CONTAINS [0, +INF] [0, +INF] cd4;
-			CONTAINS [0, +INF] [0, +INF] cd5;
-			CONTAINS [0, +INF] [0, +INF] cd6;
-			CONTAINS [0, +INF] [0, +INF] cd7;
-			
-			?piece0 = ?piece;
-			?location0 = block7;
-			
-			?piece1 = ?piece;
-			?location1 = block8;
-			
-			?piece2 = ?piece;
-			?location2 = block11;
-			
-			?piece3 = ?piece;
-			?location3 = block12;
-
-			?piece4 = ?piece;			
-			?location4 = block1;
-			?modality4 = simultaneous;
-			
-			?piece5 = ?piece;			
-			?location5 = block2;
-			?modality5 = simultaneous;
-			
-			?piece6 = ?piece;			
-			?location6 = block3;
-			?modality6 = simultaneous;
-			
-			?piece7 = ?piece;			
-			?location7 = block4;
-			?modality7 = simultaneous;
-		} 
 	}
 	
 	SYNCHRONIZE AssemblyProcess.tasks
@@ -459,41 +323,31 @@ DOMAIN FourByThree_AIIA17
 		VALUE Unscrew(?piece, ?location, ?modality) 
 		{
 			cd0 <!> RobotArmController.motion.SetOn(?location0, ?modality0);
-			cd1 <!> RobotArmController.motion.SetOn(?location1, ?modality1);
 			cd2 <!> ScrewDriverController.driver.Activate();
 			cd3 <!> ScrewDriverController.driver.Deactivate();
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
-			ENDS-DURING [0, +INF] [0, +INF] cd1;
 			cd0 CONTAINS [0, +INF] [0, +INF] cd2;
 			cd0 CONTAINS [0, +INF] [0, +INF] cd3;
 			cd2 BEFORE [0, +INF] cd3;
 			
 			?location0 = ?location;
 			?modality0 = ?modality;
-			
-			?location1 = home;
-			?modality1 = ?modality;
 		}
 		
 		VALUE Screw(?piece, ?location, ?modality) 
 		{
 			cd0 <!> RobotArmController.motion.SetOn(?location0, ?modality0);
-			cd1 <!> RobotArmController.motion.SetOn(?location1, ?modality1);
 			cd2 <!> ScrewDriverController.driver.Activate();
 			cd3 <!> ScrewDriverController.driver.Deactivate();
 			
 			CONTAINS [0, +INF] [0, +INF] cd0;
-			ENDS-DURING [0, +INF] [0, +INF] cd1;
 			cd0 CONTAINS [0, +INF] [0, +INF] cd2;
 			cd0 CONTAINS [0, +INF] [0, +INF] cd3;
 			cd2 BEFORE [0, +INF] cd3;
 			
 			?location0 = ?location;
 			?modality0 = ?modality;
-			
-			?location1 = home;
-			?modality1 = ?modality;
 		}
 	}
 }

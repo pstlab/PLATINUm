@@ -4,43 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceProfileManager;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.domain.component.resource.ResourceProfileManager;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.resource.ResourceEvent;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
-import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
 
 /**
  * 
  * @author anacleto
  *
  */
-@DomainComponentConfiguration(
-
-		resolvers = {
-		
-				// scheduling resolver
-				ResolverType.SV_SCHEDULING_RESOLVER,
-//				ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER,
-				
-				// time-line gap resolver
-				ResolverType.SV_GAP_RESOLVER,
-				
-				// behavior checking resolver
-				ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
-		},
-		
-		view = ComponentViewType.GANTT
-)
 public final class PrimitiveStateVariable extends StateVariable implements ResourceProfileManager
 {
 	/**
 	 * 
 	 * @param name
 	 */
+	@DomainComponentConfiguration(resolvers = {
+			// scheduling resolver
+			ResolverType.SV_SCHEDULING_RESOLVER,	// or DISCRETE_RESOURCE_SCHEDULING_RESOLVER
+			// time-line gap resolver
+			ResolverType.SV_GAP_RESOLVER,
+			// behavior checking resolver
+			ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
+	})
 	protected PrimitiveStateVariable(String name) {
-		super(name, DomainComponentType.SV_PRIMITIVE);
+		super(name, DomainComponentType.SV_PRIMITIVE.getLabel());
 	}
 
 	/**

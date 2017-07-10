@@ -8,13 +8,13 @@ import org.junit.Test;
 
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
+import it.uniroma3.epsl2.framework.time.tn.SimpleTemporalNetworkWithUncertainty;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkFactory;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkType;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
 import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.ex.IntervalDisjunctionException;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.SimpleTemporalNetworkWithUncertainty;
 
 /**
  * 

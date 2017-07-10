@@ -11,20 +11,20 @@ import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.sv.PrimitiveStateVariable;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.gap.Gap;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.gap.GapCompletion;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.scheduling.DecisionSchedule;
 import it.uniroma3.epsl2.framework.microkernel.resolver.timeline.scheduling.Peak;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeFactory;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeType;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeFactory;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeType;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -33,11 +33,11 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public class StateVariableComponentTestCase {
-	
+public class StateVariableComponentTestCase 
+{
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 100;
-	private TemporalDataBaseFacade facade;
+	private TemporalFacade facade;
 	private PrimitiveStateVariable psv;
 
 	/**
@@ -54,13 +54,13 @@ public class StateVariableComponentTestCase {
 		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
 		// get temporal facade
-		TemporalDataBaseFacadeFactory factory = new TemporalDataBaseFacadeFactory();
+		TemporalFacadeFactory factory = new TemporalFacadeFactory();
 		// create temporal facade
-		this.facade = factory.createSingleton(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
+		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
 		
 		// get parameter facade
-		ParameterDataBaseFacadeFactory pf = new ParameterDataBaseFacadeFactory();
-		pf.createSingleton(ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE);
+		ParameterFacadeFactory pf = new ParameterFacadeFactory();
+		pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create State Variable
 		DomainComponentFactory df = new DomainComponentFactory();

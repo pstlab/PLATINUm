@@ -9,10 +9,10 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNode;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanDispatcherReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.executive.inject.PlanMonitorReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.executive.PlanDispatcherReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.executive.PlanMonitorReference;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**

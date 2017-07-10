@@ -2,8 +2,8 @@ package it.uniroma3.epsl2.framework.compiler;
 
 import it.uniroma3.epsl2.framework.compiler.ex.PDLFileMissingException;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
-import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.problem.Problem;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.Problem;
 
 /**
  * 

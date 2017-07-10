@@ -1,7 +1,7 @@
 package it.uniroma3.epsl2.framework.microkernel.resolver.planning;
 
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**

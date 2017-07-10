@@ -1,6 +1,6 @@
 package it.uniroma3.epsl2.framework.time.ex;
 
-import it.uniroma3.epsl2.framework.lang.ex.ConstraintPropagationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConstraintPropagationException;
 
 /**
  * 

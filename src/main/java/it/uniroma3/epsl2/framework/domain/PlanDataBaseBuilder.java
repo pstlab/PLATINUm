@@ -4,9 +4,9 @@ import it.uniroma3.epsl2.framework.compiler.DomainCompilerFactory;
 import it.uniroma3.epsl2.framework.compiler.DomainCompilerType;
 import it.uniroma3.epsl2.framework.compiler.ddl.v3.DDLv3Compiler;
 import it.uniroma3.epsl2.framework.compiler.ex.PDLFileMissingException;
-import it.uniroma3.epsl2.framework.lang.ex.ProblemInitializationException;
-import it.uniroma3.epsl2.framework.lang.ex.SynchronizationCycleException;
-import it.uniroma3.epsl2.framework.lang.problem.Problem;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ProblemInitializationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.SynchronizationCycleException;
+import it.uniroma3.epsl2.framework.microkernel.lang.problem.Problem;
 
 /**
  * 

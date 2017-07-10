@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 
 /**
@@ -27,7 +27,7 @@ public class HierarchyFlawFilter extends FlawFilter
 	 * 
 	 */
 	protected HierarchyFlawFilter() {
-		super(FlawFilterType.HFF);
+		super(FlawFilterType.HFF.getLabel());
 		// initialize hierarchy
 		this.hierarchy = null;
 	}

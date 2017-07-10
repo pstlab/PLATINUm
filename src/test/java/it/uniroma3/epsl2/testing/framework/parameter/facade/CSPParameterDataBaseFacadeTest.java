@@ -5,11 +5,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacade;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeFactory;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeType;
 import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.EnumerationParameterDomain;
 import it.uniroma3.epsl2.framework.parameter.lang.ParameterDomainType;
@@ -29,8 +29,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  */
 public class CSPParameterDataBaseFacadeTest 
 {
-	private ParameterDataBaseFacade facade;
-	private ParameterDataBaseFacadeFactory factory;
+	private ParameterFacade facade;
+	private ParameterFacadeFactory factory;
 	private ParameterConstraintFactory cFactory;
 	
 	/**
@@ -46,7 +46,7 @@ public class CSPParameterDataBaseFacadeTest
 		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
 		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
-		this.factory = new ParameterDataBaseFacadeFactory();
+		this.factory = new ParameterFacadeFactory();
 		this.cFactory = ParameterConstraintFactory.getInstance();
 	}
 	
@@ -71,7 +71,7 @@ public class CSPParameterDataBaseFacadeTest
 		System.out.println("[Test]: createFacadeTest() --------------------");
 		System.out.println();
 		// create facade
-		this.facade = this.factory.createSingleton(ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE);
+		this.facade = this.factory.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		Assert.assertNotNull(this.facade);
 		try
 		{
@@ -96,7 +96,7 @@ public class CSPParameterDataBaseFacadeTest
 		System.out.println();
 		
 		// create facade
-		this.facade = this.factory.createSingleton(ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE);
+		this.facade = this.factory.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create parameter domains
 		EnumerationParameterDomain location = this.facade.

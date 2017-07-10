@@ -12,18 +12,18 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.UnaryResource;
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.domain.component.resource.UnaryResource;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeFactory;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeType;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeFactory;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
@@ -37,7 +37,7 @@ public class UnaryResourceComponentTestCase
 {
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 100;
-	private TemporalDataBaseFacade facade;
+	private TemporalFacade facade;
 	private UnaryResource resource;
 	
 	/**
@@ -54,13 +54,13 @@ public class UnaryResourceComponentTestCase
 		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
 		// get temporal facade
-		TemporalDataBaseFacadeFactory factory = new TemporalDataBaseFacadeFactory();
+		TemporalFacadeFactory factory = new TemporalFacadeFactory();
 		// create temporal facade
-		this.facade = factory.createSingleton(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
+		this.facade = factory.createSingleton(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
 		
 		// get parameter facade
-		ParameterDataBaseFacadeFactory pf = new ParameterDataBaseFacadeFactory();
-		pf.createSingleton(ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE);
+		ParameterFacadeFactory pf = new ParameterFacadeFactory();
+		pf.createSingleton(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create unary resource
 		DomainComponentFactory df = new DomainComponentFactory();

@@ -5,10 +5,9 @@ import java.util.Set;
 
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
-import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelectionHeuristicConfiguration;
-import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.FilterPipelineReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.FlawFilterPipelineModule;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.NoFlawFoundException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 
 /**
@@ -16,23 +15,19 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundEx
  * @author anacleto
  *
  */
-@FlawSelectionHeuristicConfiguration(
-	// set pipeline of filters
-	pipeline = {
-		FlawFilterType.HFF,			// hierarchy-based flaw filter
-		FlawFilterType.TFF,			// type-based flaw filter
-	}
-)
 public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 {
-	@FilterPipelineReference
+	@FlawFilterPipelineModule(pipeline= {
+			FlawFilterType.HFF,
+			FlawFilterType.TFF,
+	})
 	private List<FlawFilter> filters;
 	
 	/**
 	 * 
 	 */
 	protected PipelineFlawSelectionHeuristic() {
-		super(FlawSelectionHeuristicType.PIPELINE);
+		super(FlawSelectionHeuristicType.PIPELINE.getLabel());
 	}
 	
 	/**

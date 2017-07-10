@@ -3,21 +3,23 @@ package it.uniroma3.epsl2.deliberative.solver;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
-import it.uniroma3.epsl2.deliberative.search.SearchStrategyFactory;
-import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
-import it.uniroma3.epsl2.deliberative.search.ex.EmptyFringeException;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristic;
+import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
+import it.uniroma3.epsl2.deliberative.strategy.SearchStrategy;
+import it.uniroma3.epsl2.deliberative.strategy.SearchStrategyType;
+import it.uniroma3.epsl2.deliberative.strategy.ex.EmptyFringeException;
 import it.uniroma3.epsl2.framework.domain.component.PlanElementStatus;
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.ex.NoFlawFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.plan.PlanControllabilityType;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.FlawSelectionHeuristicModule;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.SearchStrategyModule;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.NoFlawFoundException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.NoSolutionFoundException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.PlanRefinementException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.PlanControllabilityType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
@@ -26,24 +28,20 @@ import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityC
  */
 public class PseudoControllabilityAwareSolver extends Solver 
 {
-	private long time;
-	private long stepCounter;
+	@SearchStrategyModule(strategy= SearchStrategyType.DFCF)
+	private SearchStrategy strategy;
+
+	@SearchStrategyModule(strategy = SearchStrategyType.DFS)
 	private SearchStrategy blacklist;
+	
+	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.HFS)
+	private FlawSelectionHeuristic heuristic;
 	
 	/**
 	 * 
 	 */
 	protected PseudoControllabilityAwareSolver() {
-		super(SolverType.PSEUDO_CONTROLLABILITY_AWARE);
-	}
-	
-	/**
-	 * 
-	 */
-	@PostConstruct
-	protected void init() {
-		SearchStrategyFactory sf = new SearchStrategyFactory();
-		this.blacklist = sf.create(SearchStrategyType.DFS);
+		super(SolverType.PSEUDO_CONTROLLABILITY_AWARE.getLabel());
 	}
 	
 	/**

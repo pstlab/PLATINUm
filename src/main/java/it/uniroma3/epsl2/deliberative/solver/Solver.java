@@ -3,23 +3,20 @@ package it.uniroma3.epsl2.deliberative.solver;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristic;
-import it.uniroma3.epsl2.deliberative.search.SearchStrategy;
 import it.uniroma3.epsl2.framework.domain.PlanDataBase;
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
-import it.uniroma3.epsl2.framework.lang.ex.NoSolutionFoundException;
-import it.uniroma3.epsl2.framework.lang.ex.OperatorPropagationException;
-import it.uniroma3.epsl2.framework.lang.ex.PlanRefinementException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Agenda;
-import it.uniroma3.epsl2.framework.lang.plan.Operator;
-import it.uniroma3.epsl2.framework.lang.plan.SolutionPlan;
+import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.FlawSelectionHeuristicReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.SearchStrategyReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.NoSolutionFoundException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.OperatorPropagationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.PlanRefinementException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Agenda;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Operator;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
 /**
@@ -29,35 +26,31 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
  */
 public abstract class Solver extends ApplicationFrameworkObject 
 {
-	@PlanDataBaseReference
-	protected PlanDataBase pdb;
-	
-	@SearchStrategyReference
-	protected SearchStrategy strategy;
-	
-	@FlawSelectionHeuristicReference
-	protected FlawSelectionHeuristic heuristic;
-	
-	@FrameworkLoggerReference
+	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER)
 	protected FrameworkLogger logger;
 	
-	private SolverType type;
+	@PlanDataBasePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE)
+	protected PlanDataBase pdb;
+	
+	protected long time;
+	protected long stepCounter;
+	protected String label;
 	
 	/**
 	 * 
-	 * @param type
+	 * @param label
 	 */
-	protected Solver(SolverType type) {
+	protected Solver(String label) {
 		super();
-		this.type = type;
+		this.label = label;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public SolverType getType() {
-		return type;
+	public String getLabel() {
+		return label;
 	}
 	
 	/**
@@ -69,10 +62,11 @@ public abstract class Solver extends ApplicationFrameworkObject
 	
 	/**
 	 * 
+	 * @return
 	 */
 	@Override
 	public String toString() {
-		return "[Solver type= " + this.type + " strategy= " + this.strategy + " heuristic= " + this.heuristic + "]";
+		return "[Solver label= " + this.label + "]";
 	}
 	
 //	/**

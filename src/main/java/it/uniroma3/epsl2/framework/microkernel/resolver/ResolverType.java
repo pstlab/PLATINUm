@@ -1,6 +1,6 @@
 package it.uniroma3.epsl2.framework.microkernel.resolver;
 
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.planning.PlanRefinementResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.DiscreteResourceSchedulingResolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.scheduling.ReservoirResourceSchedulingResolver;
@@ -21,6 +21,7 @@ public enum ResolverType
 	 * synchronization rules and plan refinement
 	 */
 	PLAN_REFINEMENT(PlanRefinementResolver.class.getName(), 
+			"Plan Refinement", 
 			FlawType.PLAN_REFINEMENT),
 	
 	/**
@@ -28,13 +29,15 @@ public enum ResolverType
 	 * resolver analyzes optimistic and pessimistic profiles of a resource
 	 * and posts precedence constraints to solve peaks. 
 	 */
-	DISCRETE_RESOURCE_SCHEDULING_RESOLVER(DiscreteResourceSchedulingResolver.class.getName(), 
+	DISCRETE_RESOURCE_SCHEDULING_RESOLVER(DiscreteResourceSchedulingResolver.class.getName(),
+			"Discrete Resource Scheduler",
 			FlawType.RESOURCE_PEAK),
 	
 	/**
 	 * 
 	 */
 	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(ReservoirResourceSchedulingResolver.class.getName(),
+			"Reservoir Resource Scheduler",
 			FlawType.RESOURCE_PEAK),
 
 	/**
@@ -42,7 +45,8 @@ public enum ResolverType
 	 * continuous sequence of not overlapping tokens. Specifically, 
 	 * the resolver is responsible for managing token overlaps.
 	 */
-	SV_SCHEDULING_RESOLVER(StateVariableSchedulingResolver.class.getName(), 
+	SV_SCHEDULING_RESOLVER(StateVariableSchedulingResolver.class.getName(),
+			"State Variable Scheduler",
 			FlawType.SV_SCHEDULING),
 	
 	/**
@@ -51,7 +55,8 @@ public enum ResolverType
 	 * resolver is responsible for managing gaps on a timeline and 
 	 * complete its (temporal) behavior.
 	 */
-	SV_GAP_RESOLVER(StateVariableGapResolver.class.getName(), 
+	SV_GAP_RESOLVER(StateVariableGapResolver.class.getName(),
+			"Timeline Gap Manager",
 			FlawType.SV_GAP),
 	
 	/**
@@ -60,6 +65,7 @@ public enum ResolverType
 	 * with the state variable specification.
 	 */
 	SV_BEHAVIOR_CHECKING_RESOLVER(StateVariableBehaviorCheckingResolver.class.getName(),
+			"State Variable Behavior Checker",
 			FlawType.INVALID_BEHAVIOR),
 	
 	/**
@@ -68,21 +74,25 @@ public enum ResolverType
 	 * variables of the domain (given as input of the problem specification) is complete 
 	 * and valid with respect to the domain specification.
 	 */
-	OBSERVATION_CHECKING_RESOLVER(ObservationBehaviorCheckingResolver.class.getName(), 
+	OBSERVATION_CHECKING_RESOLVER(ObservationBehaviorCheckingResolver.class.getName(),
+			"Observation Checker",
 			FlawType.INVALID_BEHAVIOR);
 	
 	// resolver class name
 	private String cname;
+	private String label;
 	// represents the type of flaw the resolver can handle
 	private FlawType flawType;
 	
 	/**
 	 * 
 	 * @param cname
+	 * @param label
 	 * @param ftype
 	 */
-	private ResolverType(String cname, FlawType ftype) {
+	private ResolverType(String cname, String label, FlawType ftype) {
 		this.cname = cname;
+		this.label = label;
 		this.flawType = ftype;
 	}
 	
@@ -92,6 +102,14 @@ public enum ResolverType
 	 */
 	public String getClassName() {
 		return this.cname;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getLabel() {
+		return label;
 	}
 	
 	/**

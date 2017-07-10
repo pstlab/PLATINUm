@@ -9,14 +9,14 @@ import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationExcept
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.sv.StateVariable;
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
-import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.BeforeRelation;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.temporal.BeforeRelation;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
@@ -35,14 +35,15 @@ import it.uniroma3.epsl2.framework.time.lang.query.IntervalOverlapQuery;
  */
 public final class StateVariableSchedulingResolver <T extends StateVariable> extends Resolver
 {
-	@ComponentReference
+	@ComponentPlaceholder
 	private T component;
 	
 	/**
 	 * 
 	 */
 	protected StateVariableSchedulingResolver() {
-		super(ResolverType.SV_SCHEDULING_RESOLVER);
+		super(ResolverType.SV_SCHEDULING_RESOLVER.getLabel(), 
+				ResolverType.SV_SCHEDULING_RESOLVER.getFlawType());
 	}
 	
 	/**

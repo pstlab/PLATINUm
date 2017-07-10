@@ -10,6 +10,16 @@ import java.util.Map;
  */
 public final class ApplicationFrameworkContainer 
 {
+	public static final String FRAMEWORK_SINGLETON_PLANDATABASE = "/platinum/framework/pdb";
+	public static final String FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER = "/platinum/framework/pdb/logger";
+	public static final String FRAMEWORK_SINGLETON_TEMPORAL_FACADE = "/platinum/framework/temporal/facade";
+	public static final String FRAMEWORK_SINGLETON_PARAMETER_FACADE = "/platinum/framework/parameter/facade";
+	public static final String FRAMEWORK_SINGLETON_DELIBERATIVE = "/platinum/deliberative";
+	public static final String FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER = "/platinum/deliberative/logger";
+	public static final String FRAMEWORK_SINGLETON_EXECUTIVE = "/platinum/executive";
+	public static final String FRAMEWORK_SINGLETON_EXECUTIVE_LOGGER = "/platinum/executive/logger";
+	
+	
 	private static ApplicationFrameworkContainer CONTAINER = null;
 	private static int counter = 0;
 	private Map<String, ApplicationFrameworkObject> registry;

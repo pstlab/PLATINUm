@@ -9,14 +9,14 @@ import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.sv.ExternalStateVariable;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeFactory;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeType;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeFactory;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeType;
 import it.uniroma3.epsl2.framework.time.lang.FixIntervalDurationConstraint;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
@@ -33,7 +33,7 @@ public class ExternalStateVariableComponentTestCase {
 	
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 100;
-	private TemporalDataBaseFacade facade;
+	private TemporalFacade facade;
 	private ExternalStateVariable psv;
 
 	/**
@@ -50,13 +50,13 @@ public class ExternalStateVariableComponentTestCase {
 		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
 		// get temporal facade
-		TemporalDataBaseFacadeFactory factory = new TemporalDataBaseFacadeFactory();
+		TemporalFacadeFactory factory = new TemporalFacadeFactory();
 		// create temporal facade
-		this.facade = factory.createSingleton(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
+		this.facade = factory.createSingleton(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
 		
 		// get parameter facade
-		ParameterDataBaseFacadeFactory pf = new ParameterDataBaseFacadeFactory();
-		pf.createSingleton(ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE);
+		ParameterFacadeFactory pf = new ParameterFacadeFactory();
+		pf.createSingleton(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create State Variable
 		DomainComponentFactory df = new DomainComponentFactory();

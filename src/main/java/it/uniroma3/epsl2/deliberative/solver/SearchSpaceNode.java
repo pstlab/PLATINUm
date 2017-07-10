@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.plan.Agenda;
-import it.uniroma3.epsl2.framework.lang.plan.Operator;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Agenda;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Operator;
 
 /**
  * 

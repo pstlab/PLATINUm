@@ -10,8 +10,8 @@ import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilter;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterFactory;
 import it.uniroma3.epsl2.deliberative.heuristic.filter.FlawFilterType;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.FilterPipelineReference;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.FlawSelectionHeuristicConfiguration;
-import it.uniroma3.epsl2.framework.microkernel.annotation.planner.inject.FilterPipelineReference;
 
 /**
  * 

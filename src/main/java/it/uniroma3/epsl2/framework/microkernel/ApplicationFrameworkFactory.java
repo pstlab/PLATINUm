@@ -5,13 +5,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterReasonerReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.PlanDataBaseReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalNetworkReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.lifecycle.PostConstruct;
 
 /**
  * 
@@ -20,18 +18,6 @@ import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.Po
  */
 public abstract class ApplicationFrameworkFactory 
 {
-	protected static final String SINGLETON_TEMPORAL_NETWORK_REFERENCE = "singleton://application/framework/time/network";
-	protected static final String SINGLETON_TEMPORAL_FACADE_REFERENCE = "singleton://application/framework/time/facade";
-
-	protected static final String SINGLETON_PARAMETER_SOLVER_REFERENCE = "singleton://application/framework/parameter/solver";
-	protected static final String SINGLETON_PARAMETER_FACADE_REFERENCE = "singleton://application/framework/parameter/facade";
-	
-	protected static final String SINGLETON_PLAN_DATA_BASE_REFERENCE = "singleton://application/framework/pdb";
-	
-	protected static final String SINGLETON_FRAMEWORK_LOGGER_REFERENCE = "singleton//application/framework/logger";	
-	protected static final String SINGLETON_PLANNER_LOGGER_REFERENCE = "singleton://application/planner/logger";
-	protected static final String SINGLETON_EXECUTIVE_LOGGER_REFERNECE = "singleton://application/executive/logger";
-	
 	// application container
 	private ApplicationFrameworkContainer container;
 	
@@ -44,9 +30,18 @@ public abstract class ApplicationFrameworkFactory
 	
 	/**
 	 * 
+	 * @param key
 	 * @param obj
 	 */
-	protected void doRegister(ApplicationFrameworkObject obj) {
+	protected void register(String key, ApplicationFrameworkObject obj) {
+		this.container.save(key, obj);
+	}
+	
+	/**
+	 * 
+	 * @param obj
+	 */
+	protected void register(ApplicationFrameworkObject obj) {
 		this.container.save(obj);
 	}
 	
@@ -54,18 +49,9 @@ public abstract class ApplicationFrameworkFactory
 	 * 
 	 * @param obj
 	 */
-	protected void doUnregister(ApplicationFrameworkObject obj) {
-		// check if object in container
+	public void unregister(ApplicationFrameworkObject obj) {
+		// clear container
 		this.container.cancel(obj);
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @param obj
-	 */
-	protected void register(String key, ApplicationFrameworkObject obj) {
-		this.container.save(key, obj);
 	}
 	
 	/**
@@ -123,35 +109,35 @@ public abstract class ApplicationFrameworkFactory
 		}
 	}
 	
-	/**
-	 * 
-	 * @param clazz
-	 * @param obj
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectSingletonTemporalNetworkReference(T obj, boolean optional) 
-			throws IllegalArgumentException, IllegalAccessException 
-	{ 
-		// get class
-		Class<T> clazz = (Class<T>) obj.getClass();
-		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, TemporalNetworkReference.class);
-		// check if field has been found
-		if (field != null) {
-			// get temporal network reference
-			ApplicationFrameworkObject network = this.container.lookup(SINGLETON_TEMPORAL_NETWORK_REFERENCE);
-			// set network
-			field.setAccessible(true);
-			field.set(obj, network);
-		}
-		
-		// throw exception if a not optional field has not been found
-		if (field == null && !optional) {
-			throw new RuntimeException("Field tagged by TemporalNetworkReference annotation has not been found in class " + obj.getClass());
-		}
-	}
+//	/**
+//	 * 
+//	 * @param clazz
+//	 * @param obj
+//	 * @throws IllegalArgumentException
+//	 * @throws IllegalAccessException
+//	 */
+//	@SuppressWarnings("unchecked")
+//	protected <T extends ApplicationFrameworkObject> void injectSingletonTemporalNetworkReference(T obj, boolean optional) 
+//			throws IllegalArgumentException, IllegalAccessException 
+//	{ 
+//		// get class
+//		Class<T> clazz = (Class<T>) obj.getClass();
+//		// find annotated field
+//		Field field = this.findFieldAnnotatedBy(clazz, TemporalNetworkReference.class);
+//		// check if field has been found
+//		if (field != null) {
+//			// get temporal network reference
+//			ApplicationFrameworkObject network = this.container.lookup(SINGLETON_TEMPORAL_NETWORK_REFERENCE);
+//			// set network
+//			field.setAccessible(true);
+//			field.set(obj, network);
+//		}
+//		
+//		// throw exception if a not optional field has not been found
+//		if (field == null && !optional) {
+//			throw new RuntimeException("Field tagged by TemporalNetworkReference annotation has not been found in class " + obj.getClass());
+//		}
+//	}
 	
 	/**
 	 * 
@@ -160,49 +146,20 @@ public abstract class ApplicationFrameworkFactory
 	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectPlannerLoggerReference(T obj) 
+	protected <T extends ApplicationFrameworkObject> void injectFrameworkLogger(T obj) 
 			throws IllegalArgumentException, IllegalAccessException 
 	{ 
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, FrameworkLoggerReference.class);
-		// check if field has been found
-		if (field != null) {
-			// get logger reference
-			// create logger
-			ApplicationFrameworkObject	logger = this.container.lookup(SINGLETON_PLANNER_LOGGER_REFERENCE);
-			// set network
-			field.setAccessible(true);
-			field.set(obj, logger);
-		}
-		
-		// throw exception if a not optional field has not been found
-		if (field == null) {
-			throw new RuntimeException("Field tagged by FrameworkLoggerReference annotation has not been found in class " + obj.getClass());
-		}
-	}
-	
-	/**
-	 * 
-	 * @param obj
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectFrameworkLoggerReference(T obj) 
-			throws IllegalArgumentException, IllegalAccessException 
-	{ 
-		// get class
-		Class<T> clazz = (Class<T>) obj.getClass();
-		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, FrameworkLoggerReference.class);
+		Field field = this.findFieldAnnotatedBy(clazz, FrameworkLoggerPlaceholder.class);
 		// check if field has been found
 		if (field != null) 
 		{
-			// get logger reference
+			// get annotation
+			FrameworkLoggerPlaceholder placeholder = field.getAnnotation(FrameworkLoggerPlaceholder.class);
 			// create logger
-			ApplicationFrameworkObject	logger = this.container.lookup(SINGLETON_FRAMEWORK_LOGGER_REFERENCE);
+			ApplicationFrameworkObject	logger = this.container.lookup(placeholder.lookup());
 			// set network
 			field.setAccessible(true);
 			field.set(obj, logger);
@@ -222,20 +179,23 @@ public abstract class ApplicationFrameworkFactory
 	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectSingletonPlanDataBaseReference(T obj, boolean optional) 
+	protected <T extends ApplicationFrameworkObject> void injectPlanDataBase(T obj, boolean optional) 
 			throws IllegalArgumentException, IllegalAccessException 
 	{ 
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, PlanDataBaseReference.class);
+		Field field = this.findFieldAnnotatedBy(clazz, PlanDataBasePlaceholder.class);
 		// check field
-		if (field != null) {
+		if (field != null) 
+		{
+			// get annotation
+			PlanDataBasePlaceholder placeholder = field.getAnnotation(PlanDataBasePlaceholder.class);
 			// get temporal network reference
-			ApplicationFrameworkObject network = this.container.lookup(SINGLETON_PLAN_DATA_BASE_REFERENCE);
-			// set network
+			ApplicationFrameworkObject pdb = this.container.lookup(placeholder.lookup());
+			// set plan data-based reference
 			field.setAccessible(true);
-			field.set(obj, network);
+			field.set(obj, pdb);
 		}
 		
 		// throw exception if a not optional field has not been found
@@ -252,24 +212,22 @@ public abstract class ApplicationFrameworkFactory
 	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectSingletonTemporalDataBaseFacadeReference(T obj, boolean optional) 
+	protected <T extends ApplicationFrameworkObject> void injectTemporalFacade(T obj) 
 			throws IllegalArgumentException, IllegalAccessException 
 	{
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, TemporalDataBaseFacadeReference.class);
-		if (field != null) {
+		Field field = this.findFieldAnnotatedBy(clazz, TemporalFacadePlaceholder.class);
+		if (field != null) 
+		{
+			// get annotation
+			TemporalFacadePlaceholder placeholder = field.getAnnotation(TemporalFacadePlaceholder.class);
 			// get temporal data-base facade reference
-			ApplicationFrameworkObject tdb = this.container.lookup(SINGLETON_TEMPORAL_FACADE_REFERENCE);
+			ApplicationFrameworkObject tdb = this.container.lookup(placeholder.lookup());
 			// set reference
 			field.setAccessible(true);
 			field.set(obj, tdb);
-		}
-		
-		// throw exception if a not optional field has not been found
-		if (field == null && !optional) {
-			throw new RuntimeException("Field tagged by TemporalDataBaseFacadeReference annotation has not been found in class " + obj.getClass());
 		}
 	}
 	
@@ -281,16 +239,19 @@ public abstract class ApplicationFrameworkFactory
 	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectSingletonParameterDataBaseFacadeReference(T obj) 
+	protected <T extends ApplicationFrameworkObject> void injectParameterFacade(T obj) 
 			throws IllegalArgumentException, IllegalAccessException 
 	{
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, ParameterDataBaseFacadeReference.class);
-		if (field != null) {
+		Field field = this.findFieldAnnotatedBy(clazz, ParameterFacadePlaceholder.class);
+		if (field != null) 
+		{
+			// get annotation
+			ParameterFacadePlaceholder placeholder = field.getAnnotation(ParameterFacadePlaceholder.class);
 			// get temporal data-base facade reference
-			ApplicationFrameworkObject tdb = this.container.lookup(SINGLETON_PARAMETER_FACADE_REFERENCE);
+			ApplicationFrameworkObject tdb = this.container.lookup(placeholder.lookup());
 			// set reference
 			field.setAccessible(true);
 			field.set(obj, tdb);
@@ -299,36 +260,6 @@ public abstract class ApplicationFrameworkFactory
 		// throw exception if a not optional field has not been found
 		if (field == null) {
 			throw new RuntimeException("Field tagged by TemporalDataBaseFacadeReference annotation has not been found in class " + obj.getClass());
-		}
-	}
-	
-	/**
-	 * 
-	 * @param obj
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectSingletonParameterReasonerReference(T obj) 
-			throws IllegalArgumentException, IllegalAccessException 
-	{ 
-		// get class
-		Class<T> clazz = (Class<T>) obj.getClass();
-		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, ParameterReasonerReference.class);
-		// check if field has been found
-		if (field != null) {
-			// get logger reference
-			// create logger
-			ApplicationFrameworkObject	logger = this.container.lookup(SINGLETON_PARAMETER_SOLVER_REFERENCE);
-			// set network
-			field.setAccessible(true);
-			field.set(obj, logger);
-		}
-		
-		// throw exception if a not optional field has not been found
-		if (field == null) {
-			throw new RuntimeException("Field tagged by FrameworkLoggerReference annotation has not been found in class " + obj.getClass());
 		}
 	}
 	

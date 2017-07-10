@@ -1,9 +1,9 @@
 package it.uniroma3.epsl2.testing.app.executive.satellite;
 
-import it.uniroma3.epsl2.deliberative.Planner;
+import it.uniroma3.epsl2.deliberative.app.Planner;
 import it.uniroma3.epsl2.deliberative.heuristic.FlawSelectionHeuristicType;
-import it.uniroma3.epsl2.deliberative.search.SearchStrategyType;
 import it.uniroma3.epsl2.deliberative.solver.SolverType;
+import it.uniroma3.epsl2.deliberative.strategy.SearchStrategyType;
 import it.uniroma3.epsl2.framework.microkernel.annotation.planner.cfg.PlannerConfiguration;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 

@@ -37,11 +37,11 @@ public class ParameterSolverFactory extends ApplicationFrameworkFactory
 			reasoner = c.newInstance();
 			
 			// inject logger
-			this.injectFrameworkLoggerReference(reasoner);
+			this.injectFrameworkLogger(reasoner);
 			// complete initialization
 			this.doCompleteApplicationObjectInitialization(reasoner);
 			// add (singleton) entry to the registry
-			this.register(SINGLETON_PARAMETER_SOLVER_REFERENCE, reasoner);
+			this.register(reasoner);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

@@ -1,5 +1,6 @@
 package it.uniroma3.epsl2.framework.utils.log;
 
+import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
 
 /**
@@ -7,8 +8,8 @@ import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
  * @author anacleto
  *
  */
-public class FrameworkLoggerFactory extends ApplicationFrameworkFactory {
-
+public class FrameworkLoggerFactory extends ApplicationFrameworkFactory 
+{
 	/**
 	 * 
 	 */
@@ -21,11 +22,11 @@ public class FrameworkLoggerFactory extends ApplicationFrameworkFactory {
 	 * @param level
 	 * @return
 	 */
-	public FrameworkLogger createPlannerLogger(FrameworkLoggingLevel level) {
+	public FrameworkLogger createDeliberativeLogger(FrameworkLoggingLevel level) {
 		// create logger
 		FrameworkLogger logger = new FrameworkLogger(level);
 		// register instance
-		this.register(SINGLETON_PLANNER_LOGGER_REFERENCE, logger);
+		this.register(ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER, logger);
 		return logger;
 	}
 	
@@ -38,7 +39,7 @@ public class FrameworkLoggerFactory extends ApplicationFrameworkFactory {
 		// create logger
 		FrameworkLogger logger = new FrameworkLogger(level);
 		// register instance
-		this.register(SINGLETON_FRAMEWORK_LOGGER_REFERENCE, logger);
+		this.register(ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER, logger);
 		return logger;
 	}
 }

@@ -3,11 +3,11 @@ package it.uniroma3.epsl2.framework.parameter.csp;
 import java.util.LinkedList;
 import java.util.List;
 
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.ParameterDataBaseFacadeConfiguration;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.microkernel.query.ParameterQuery;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacade;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddConstraintParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.AddParameterNotification;
 import it.uniroma3.epsl2.framework.parameter.csp.event.DelConstraintParameterNotification;
@@ -28,12 +28,7 @@ import it.uniroma3.epsl2.framework.parameter.lang.query.CheckValuesParameterQuer
  * @author anacleto
  *
  */
-@ParameterDataBaseFacadeConfiguration(
-
-	solver = ParameterSolverType.CHOCHO_SOLVER
-
-)
-public final class CSPParameterDataBaseFacade extends ParameterDataBaseFacade 
+public final class CSPParameterDataBaseFacade extends ParameterFacade 
 {
 	private List<ParameterNotificationObserver> observers;
 	
@@ -42,6 +37,7 @@ public final class CSPParameterDataBaseFacade extends ParameterDataBaseFacade
 	/**
 	 * 
 	 */
+	@ParameterFacadeConfiguration(solver = ParameterSolverType.CHOCHO_SOLVER)
 	protected CSPParameterDataBaseFacade() {
 		super();
 		// initialize observers

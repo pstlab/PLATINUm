@@ -12,21 +12,21 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponentFactory;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.DiscreteResource;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.BindParameterRelation;
+import it.uniroma3.epsl2.framework.domain.component.resource.DiscreteResource;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.BindParameterRelation;
 import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacade;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeFactory;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacadeType;
 import it.uniroma3.epsl2.framework.parameter.lang.NumericParameter;
 import it.uniroma3.epsl2.framework.parameter.lang.query.CheckValuesParameterQuery;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeFactory;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeType;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -37,8 +37,8 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  */
 public class DiscreteResourceComponentTestCase 
 {
-	private TemporalDataBaseFacade tdb;
-	private ParameterDataBaseFacade pdb;
+	private TemporalFacade tdb;
+	private ParameterFacade pdb;
 	private DiscreteResource resource;
 	
 	/**
@@ -55,12 +55,12 @@ public class DiscreteResourceComponentTestCase
 		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
 		// create temporal facade
-		TemporalDataBaseFacadeFactory tf = new TemporalDataBaseFacadeFactory();
-		this.tdb = tf.createSingleton(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, 0, 100);
+		TemporalFacadeFactory tf = new TemporalFacadeFactory();
+		this.tdb = tf.createSingleton(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, 0, 100);
 		
 		// get parameter facade
-		ParameterDataBaseFacadeFactory pf = new ParameterDataBaseFacadeFactory();
-		this.pdb = pf.createSingleton(ParameterDataBaseFacadeType.CSP_PARAMETER_FACADE);
+		ParameterFacadeFactory pf = new ParameterFacadeFactory();
+		this.pdb = pf.createSingleton(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create unary resource
 		DomainComponentFactory df = new DomainComponentFactory();

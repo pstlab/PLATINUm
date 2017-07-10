@@ -10,17 +10,24 @@ public enum FlawSelectionHeuristicType
 	/**
 	 * (optimized) Hierarchical flaw selection heuristic
 	 */
-	HFS(HierarchicalFlawSelectionHeuristic.class.getName()),
+	HFS(HierarchicalFlawSelectionHeuristic.class.getName(), "Hierarchical flaw selection heuristics"),
 	
 	/**
 	 * Pipeline-based Filter flaw selection heuristic
 	 */
-	PIPELINE(PipelineFlawSelectionHeuristic.class.getName());
+	PIPELINE(PipelineFlawSelectionHeuristic.class.getName(), "General Pipeline-based flaw selection heuristics");
 	
 	private String cname;
+	private String label;
 	
-	private FlawSelectionHeuristicType(String cname) {
+	/**
+	 * 
+	 * @param cname
+	 * @param label
+	 */
+	private FlawSelectionHeuristicType(String cname, String label) {
 		this.cname = cname;
+		this.label = label;
 	}
 	
 	/**
@@ -29,5 +36,13 @@ public enum FlawSelectionHeuristicType
 	 */
 	public String getHeuristicClassName() {
 		return this.cname;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getLabel() {
+		return label;
 	}
 }

@@ -1,8 +1,8 @@
 package it.uniroma3.epsl2.framework.microkernel.resolver.timeline.behavior;
 
 import it.uniroma3.epsl2.framework.domain.component.sv.StateVariable;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
 
 /**
  * 

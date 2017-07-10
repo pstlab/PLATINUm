@@ -10,19 +10,19 @@ import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
-import it.uniroma3.epsl2.framework.domain.component.resource.costant.ResourceProfileManager;
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
-import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.BeforeRelation;
-import it.uniroma3.epsl2.framework.lang.plan.resource.ProfileSample;
-import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEvent;
-import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceEventType;
-import it.uniroma3.epsl2.framework.lang.plan.resource.ResourceProfile;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentReference;
+import it.uniroma3.epsl2.framework.domain.component.resource.ResourceProfileManager;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.temporal.BeforeRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.resource.ProfileSample;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.resource.ResourceEvent;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.resource.ResourceEventType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.resource.ResourceProfile;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
@@ -44,14 +44,15 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
  */
 public class DiscreteResourceSchedulingResolver <T extends DomainComponent & ResourceProfileManager> extends Resolver 
 { 
-	@ComponentReference
+	@ComponentPlaceholder
 	protected T component;
 
 	/**
 	 * 
 	 */
 	protected DiscreteResourceSchedulingResolver() {
-		super(ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER);
+		super(ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getLabel(), 
+				ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getFlawType());
 	}
 
 	/**

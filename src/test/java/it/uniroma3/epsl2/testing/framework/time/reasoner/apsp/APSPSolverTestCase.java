@@ -10,6 +10,11 @@ import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
+import it.uniroma3.epsl2.framework.time.solver.TemporalSolverFactory;
+import it.uniroma3.epsl2.framework.time.solver.TemporalSolverType;
+import it.uniroma3.epsl2.framework.time.solver.apsp.APSPTemporalSolver;
+import it.uniroma3.epsl2.framework.time.tn.SimpleTemporalNetwork;
+import it.uniroma3.epsl2.framework.time.tn.SimpleTemporalNetworkWithUncertainty;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkFactory;
 import it.uniroma3.epsl2.framework.time.tn.TemporalNetworkType;
 import it.uniroma3.epsl2.framework.time.tn.TimePoint;
@@ -17,11 +22,6 @@ import it.uniroma3.epsl2.framework.time.tn.TimePointDistanceConstraint;
 import it.uniroma3.epsl2.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointDistanceQuery;
 import it.uniroma3.epsl2.framework.time.tn.lang.query.TimePointScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.simple.SimpleTemporalNetwork;
-import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverFactory;
-import it.uniroma3.epsl2.framework.time.tn.solver.TemporalSolverType;
-import it.uniroma3.epsl2.framework.time.tn.solver.apsp.APSPTemporalSolver;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.SimpleTemporalNetworkWithUncertainty;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -63,7 +63,7 @@ public class APSPSolverTestCase
 			this.factory = new TemporalSolverFactory();
 			// create temporal network
 			TemporalNetworkFactory tnFactory = new TemporalNetworkFactory();
-			this.tn = tnFactory.createSingleton(TemporalNetworkType.STNU, ORIGIN, HORIZON);
+			this.tn = tnFactory.create(TemporalNetworkType.STNU, ORIGIN, HORIZON);
 			
 			// get query factory
 			this.qf = TemporalQueryFactory.getInstance();
@@ -136,7 +136,7 @@ public class APSPSolverTestCase
 		System.out.println("[Test]: init() --------------------");
 		// create APSP solver
 		APSPTemporalSolver solver = this.factory.create(TemporalSolverType.APSP);
-		
+		solver.setTemporalNetwork(this.tn);
 		// check initialization
 		Assert.assertNotNull(solver);
 		// print initial matrix
@@ -197,7 +197,8 @@ public class APSPSolverTestCase
 			
 			// create APSP solver
 			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP, itn);
+					create(TemporalSolverType.APSP);
+			solver.setTemporalNetwork(itn);
 			
 			// create time points
 			List<TimePoint> tps = itn.addTimePoints(3);
@@ -278,7 +279,8 @@ public class APSPSolverTestCase
 			
 			// create APSP solver
 			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP, exTn);
+					create(TemporalSolverType.APSP);
+			solver.setTemporalNetwork(exTn);
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			System.out.println(solver);
@@ -326,8 +328,8 @@ public class APSPSolverTestCase
 			SimpleTemporalNetwork exTn = tnFactory.create(TemporalNetworkType.STN, ORIGIN, HORIZON);
 			// create APSP solver
 			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP, exTn);
-			
+					create(TemporalSolverType.APSP);
+			solver.setTemporalNetwork(exTn);
 			// create time points
 			TimePoint p1 = exTn.addTimePoint();
 			TimePoint p2 = exTn.addTimePoint();
@@ -402,7 +404,8 @@ public class APSPSolverTestCase
 		try {
 			// create APSP solver
 			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP, this.tn);
+					create(TemporalSolverType.APSP);
+			solver.setTemporalNetwork(this.tn);
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			
@@ -482,7 +485,8 @@ public class APSPSolverTestCase
 			System.out.println("[Test]: updateTemporalNetworkEdges() --------------------");
 			// create APSP solver
 			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP, this.tn);
+					create(TemporalSolverType.APSP);
+			solver.setTemporalNetwork(this.tn);
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			

@@ -5,18 +5,19 @@ import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.Constraint;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
-import it.uniroma3.epsl2.framework.lang.ex.ConstraintPropagationException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
+import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConstraintPropagationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacade;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 
@@ -28,34 +29,35 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
  */
 public abstract class Resolver extends ApplicationFrameworkObject implements FlawManager 
 {
-	@TemporalDataBaseFacadeReference
-	protected TemporalDataBaseFacade tdb;
-	
-	@ParameterDataBaseFacadeReference
-	protected ParameterDataBaseFacade pdb;
-	
-	@FrameworkLoggerReference
+	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
 	protected FrameworkLogger logger;
 	
-	protected ResolverType type;
+	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
+	protected TemporalFacade tdb;
+	
+	@ParameterFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PARAMETER_FACADE)
+	protected ParameterFacade pdb;
+	
+	protected String label;
+	protected FlawType flawType;
 	
 	/**
 	 * 
-	 * @param component
-	 * @param type
-	 * @param tdb
+	 * @param label
+	 * @param flawType
 	 */
-	protected Resolver(ResolverType type) {
+	protected Resolver(String label, FlawType flawType) {
 		super();
-		this.type = type;
+		this.label = label;
+		this.flawType = flawType;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public ResolverType getType() {
-		return type;
+	public String getLabel() {
+		return label;
 	}
 	
 	/**
@@ -63,7 +65,7 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 * @return
 	 */
 	public FlawType getFlawType() {
-		return this.type.getFlawType();
+		return this.flawType;
 	}
 	
 	/**
@@ -93,9 +95,10 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 */
 	@Override
 	public final void apply(FlawSolution solution) 
-			throws FlawSolutionApplicationException {
+			throws FlawSolutionApplicationException 
+	{
 		// check flaw type
-		if (!solution.getFlaw().getType().equals(this.type.getFlawType())) {
+		if (!solution.getFlaw().getType().equals(this.flawType)) {
 			throw new FlawSolutionApplicationException("Impossible to apply solution for flaws of type type " + solution.getFlaw().getType());
 		}
 		
@@ -108,9 +111,10 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 */
 	@Override
 	public final void restore(FlawSolution solution) 
-			throws Exception {
+			throws Exception 
+	{
 		// check flaw type
-		if (!solution.getFlaw().getType().equals(this.type.getFlawType())) {
+		if (!solution.getFlaw().getType().equals(this.flawType)) {
 			throw new FlawSolutionApplicationException("Impossible to restore solution for flaws of type type " + solution.getFlaw().getType());
 		}
 		
@@ -122,9 +126,10 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 * 
 	 */
 	@Override
-	public final void retract(FlawSolution solution) {
+	public final void retract(FlawSolution solution) 
+	{
 		// check flaw type
-		if (!solution.getFlaw().getType().equals(this.type.getFlawType())) {
+		if (!solution.getFlaw().getType().equals(this.flawType)) {
 			throw new RuntimeException("Impossible to retract solution for flaws of type " + solution.getFlaw().getType());
 		}
 		

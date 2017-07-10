@@ -7,10 +7,10 @@ import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.sv.StateVariable;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
@@ -26,14 +26,15 @@ import it.uniroma3.epsl2.framework.time.tn.TimePoint;
  */
 public final class ObservationBehaviorCheckingResolver <T extends StateVariable> extends Resolver implements Comparator<Decision> 
 {
-	@ComponentReference
+	@ComponentPlaceholder
 	protected T component;
 	
 	/**
 	 * 
 	 */
 	protected ObservationBehaviorCheckingResolver() {
-		super(ResolverType.OBSERVATION_CHECKING_RESOLVER);
+		super(ResolverType.OBSERVATION_CHECKING_RESOLVER.getLabel(),
+				ResolverType.OBSERVATION_CHECKING_RESOLVER.getFlawType());
 	}
 	
 	/**

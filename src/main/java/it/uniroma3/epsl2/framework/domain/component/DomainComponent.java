@@ -14,36 +14,36 @@ import it.uniroma3.epsl2.framework.domain.component.ex.DecisionNotFoundException
 import it.uniroma3.epsl2.framework.domain.component.ex.DecisionPropagationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.uniroma3.epsl2.framework.domain.component.ex.RelationPropagationException;
-import it.uniroma3.epsl2.framework.lang.ex.ConstraintPropagationException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawType;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.lang.plan.RelationType;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.ParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.TemporalRelation;
+import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentViewReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.FrameworkLoggerReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ParameterDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ResolverReferences;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.TemporalDataBaseFacadeReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ResolverListPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.lifecycle.PostConstruct;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConstraintPropagationException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.RelationType;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.ParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.temporal.TemporalRelation;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.uniroma3.epsl2.framework.parameter.ParameterDataBaseFacade;
+import it.uniroma3.epsl2.framework.parameter.ParameterFacade;
 import it.uniroma3.epsl2.framework.parameter.ex.ParameterCreationException;
 import it.uniroma3.epsl2.framework.parameter.ex.ParameterNotFoundException;
 import it.uniroma3.epsl2.framework.parameter.lang.Parameter;
 import it.uniroma3.epsl2.framework.parameter.lang.constraints.ParameterConstraint;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.ex.TemporalIntervalCreationException;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLogger;
 import it.uniroma3.epsl2.framework.utils.view.component.ComponentView;
 import it.uniroma3.epsl2.framework.utils.view.component.gantt.GanttComponentView;
@@ -55,40 +55,39 @@ import it.uniroma3.epsl2.framework.utils.view.component.gantt.GanttComponentView
  */
 public abstract class DomainComponent extends ApplicationFrameworkObject 
 {
-	private static AtomicInteger PREDICATE_COUNTER = new AtomicInteger(0);
+	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
+	protected TemporalFacade tdb;
+	
+	@ParameterFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PARAMETER_FACADE)
+	protected ParameterFacade pdb;
+	
+	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
+	protected FrameworkLogger logger;
+	
+	@ResolverListPlaceholder
+	protected List<Resolver> resolvers;
+	protected Map<FlawType, Resolver> flawType2resolver;
 	
 	// component's name
 	protected String name;
-	protected DomainComponentType type;
+	protected String label;
 	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
 	protected Set<Relation> relations;
 	
-	@ComponentViewReference
+	// display data concerning this component
 	private ComponentView view;
-	
-	@TemporalDataBaseFacadeReference
-	protected TemporalDataBaseFacade tdb;
-	
-	@ParameterDataBaseFacadeReference
-	protected ParameterDataBaseFacade pdb;
-	
-	@ResolverReferences
-	protected List<Resolver> resolvers;
-	protected Map<FlawType, Resolver> flawType2resolver;
-	
-	@FrameworkLoggerReference
-	protected FrameworkLogger logger;
+	private static AtomicInteger PREDICATE_COUNTER = new AtomicInteger(0);
 	
 	/**
 	 * 
 	 * @param name
-	 * @param type
+	 * @param label
 	 */
-	protected DomainComponent(String name, DomainComponentType type) {
+	protected DomainComponent(String name, String label) {
 		super();
-		this.type = type;
+		this.label = label;
 		this.name = name;
 		
 		// initialize decisions of the (local) plan
@@ -129,8 +128,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * 
 	 * @return
 	 */
-	public DomainComponentType getType() {
-		return this.type;
+	public String getLabel() {
+		return this.label;
 	}
 	
 	/**

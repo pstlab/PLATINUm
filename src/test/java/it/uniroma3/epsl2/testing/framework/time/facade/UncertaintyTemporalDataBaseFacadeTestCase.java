@@ -5,12 +5,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryFactory;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacade;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeFactory;
-import it.uniroma3.epsl2.framework.time.TemporalDataBaseFacadeType;
+import it.uniroma3.epsl2.framework.time.TemporalFacade;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeFactory;
+import it.uniroma3.epsl2.framework.time.TemporalFacadeType;
 import it.uniroma3.epsl2.framework.time.TemporalInterval;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintFactory;
 import it.uniroma3.epsl2.framework.time.lang.TemporalConstraintType;
@@ -19,7 +19,7 @@ import it.uniroma3.epsl2.framework.time.lang.allen.DuringIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalDistanceQuery;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalScheduleQuery;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckException;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggerFactory;
 import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
 
@@ -28,11 +28,11 @@ import it.uniroma3.epsl2.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public class UncertaintyTemporalDataBaseFacadeTestCase {
-	
+public class UncertaintyTemporalDataBaseFacadeTestCase 
+{
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 500;
-	private TemporalDataBaseFacade facade;
+	private TemporalFacade facade;
 	private TemporalConstraintFactory intervalFactory;
 	private TemporalQueryFactory queryFactory;
 	
@@ -50,8 +50,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase {
 		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
 		// create temporal network
-		TemporalDataBaseFacadeFactory factory = new TemporalDataBaseFacadeFactory();
-		this.facade = factory.createSingleton(TemporalDataBaseFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
+		TemporalFacadeFactory factory = new TemporalFacadeFactory();
+		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
 		
 		// get interval factory
 		this.intervalFactory = TemporalConstraintFactory.getInstance();

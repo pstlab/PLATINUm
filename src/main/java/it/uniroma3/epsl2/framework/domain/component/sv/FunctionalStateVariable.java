@@ -2,31 +2,25 @@ package it.uniroma3.epsl2.framework.domain.component.sv;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.cfg.DomainComponentConfiguration;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
-import it.uniroma3.epsl2.framework.utils.view.component.ComponentViewType;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
  * @author anacleto
  *
  */
-@DomainComponentConfiguration(
-		
-		resolvers = {
-				// no resolvers are needed for functional state variables
-		},
-		
-		view = ComponentViewType.GANTT
-)
 public class FunctionalStateVariable extends StateVariable 
 {
 	/**
 	 * 
 	 * @param name
 	 */
+	@DomainComponentConfiguration(resolvers = {
+			// no resolvers needed for functional state variables
+	})
 	protected FunctionalStateVariable(String name) {
-		super(name, DomainComponentType.SV_FUNCTIONAL);
+		super(name, DomainComponentType.SV_FUNCTIONAL.getLabel());
 	}
 	
 	/**

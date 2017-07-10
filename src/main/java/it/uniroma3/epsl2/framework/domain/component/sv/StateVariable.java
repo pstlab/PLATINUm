@@ -7,12 +7,11 @@ import java.util.Map;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
-import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ex.TransitionNotFoundException;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
 import it.uniroma3.epsl2.framework.time.lang.query.IntervalPseudoControllabilityQuery;
-import it.uniroma3.epsl2.framework.time.tn.uncertainty.ex.PseudoControllabilityCheckException;
+import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
@@ -28,13 +27,11 @@ public abstract class StateVariable extends DomainComponent
 	
 	/**
 	 * 
-	 * @param id
 	 * @param name
-	 * @param type
-	 * @param tdb
+	 * @param label
 	 */
-	protected StateVariable(String name, DomainComponentType type) {
-		super(name, type);
+	protected StateVariable(String name, String label) {
+		super(name, label);
 		// initialize the list of values
 		this.values = new ArrayList<>();
 		// initialize transition function
@@ -220,7 +217,7 @@ public abstract class StateVariable extends DomainComponent
 	 */
 	@Override
 	public String toString() {
-		return "[StateVariable type= " + this.type + " name= " + this.name + "]";
+		return "[StateVariable name= " + this.name + " label= " + this.label+ "]";
 	}
 	
 	/**

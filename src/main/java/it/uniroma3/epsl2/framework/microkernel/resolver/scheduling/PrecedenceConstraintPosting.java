@@ -3,8 +3,8 @@ package it.uniroma3.epsl2.framework.microkernel.resolver.scheduling;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
 /**

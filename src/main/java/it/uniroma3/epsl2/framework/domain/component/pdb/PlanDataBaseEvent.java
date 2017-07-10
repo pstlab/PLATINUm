@@ -2,7 +2,7 @@ package it.uniroma3.epsl2.framework.domain.component.pdb;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
 
 /**
  * 

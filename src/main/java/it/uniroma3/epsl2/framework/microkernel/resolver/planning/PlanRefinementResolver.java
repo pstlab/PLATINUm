@@ -17,17 +17,17 @@ import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationConstrain
 import it.uniroma3.epsl2.framework.domain.component.pdb.SynchronizationRule;
 import it.uniroma3.epsl2.framework.domain.component.pdb.TemporalSynchronizationConstraint;
 import it.uniroma3.epsl2.framework.domain.component.pdb.TokenVariable;
-import it.uniroma3.epsl2.framework.lang.ex.ConsistencyCheckException;
-import it.uniroma3.epsl2.framework.lang.flaw.Flaw;
-import it.uniroma3.epsl2.framework.lang.flaw.FlawSolution;
-import it.uniroma3.epsl2.framework.lang.plan.Decision;
-import it.uniroma3.epsl2.framework.lang.plan.Relation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.BindParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.EqualParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.NotEqualParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.parameter.ParameterRelation;
-import it.uniroma3.epsl2.framework.lang.plan.relations.temporal.TemporalRelation;
-import it.uniroma3.epsl2.framework.microkernel.annotation.framework.inject.ComponentReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.lang.ex.ConsistencyCheckException;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.Flaw;
+import it.uniroma3.epsl2.framework.microkernel.lang.flaw.FlawSolution;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.Relation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.BindParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.EqualParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.NotEqualParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.parameter.ParameterRelation;
+import it.uniroma3.epsl2.framework.microkernel.lang.plan.relations.temporal.TemporalRelation;
 import it.uniroma3.epsl2.framework.microkernel.resolver.Resolver;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ResolverType;
 import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
@@ -39,14 +39,14 @@ import it.uniroma3.epsl2.framework.microkernel.resolver.ex.UnsolvableFlawFoundEx
  */
 public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Resolver 
 {
-	@ComponentReference
+	@ComponentPlaceholder
 	protected T component;
 	
 	/**
 	 * 
 	 */
 	protected PlanRefinementResolver() {
-		super(ResolverType.PLAN_REFINEMENT);
+		super(ResolverType.PLAN_REFINEMENT.getLabel(), ResolverType.PLAN_REFINEMENT.getFlawType());
 	}
 	
 	/**
