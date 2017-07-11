@@ -1,0 +1,44 @@
+package it.istc.pst.platinum.deliberative.heuristic.filter.semantic;
+
+import java.util.List;
+import java.util.Map;
+
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
+
+/**
+ * 
+ * @author anacleto
+ *
+ */
+public interface TemporalSemanticReasoner 
+{
+	/**
+	 * 
+	 * @param decision
+	 */
+	public void add(Decision decision);
+
+	/**
+	 * 
+	 * @param relation
+	 */
+	public void add(Relation relation);
+	
+	/**
+	 * 
+	 * @param relation
+	 */
+	void delete(Relation relation);
+
+	/**
+	 * 
+	 * @param decision
+	 */
+	void delete(Decision decision);
+	
+	/**
+	 * 
+	 */
+	public Map<Decision, List<Decision>> getOrderingGraph();
+}
