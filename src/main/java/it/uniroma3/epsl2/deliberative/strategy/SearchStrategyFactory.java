@@ -39,14 +39,14 @@ public class SearchStrategyFactory extends ApplicationFrameworkFactory {
 			// create instance
 			strategy = c.newInstance();
 			
-			// inject plan data base reference
-			this.injectSingletonPlanDataBaseReference(strategy, true);
 			// inject logger
-			this.injectPlannerLoggerReference(strategy);
+			this.injectFrameworkLogger(strategy);
+			// inject plan data-base
+			this.injectPlanDataBase(strategy);
 			// complete initialization if needed
 			this.doCompleteApplicationObjectInitialization(strategy);
 			// add to registry
-			this.doRegister(strategy);
+			this.register(strategy);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

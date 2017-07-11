@@ -52,11 +52,11 @@ public class ExternalStateVariableComponentTestCase {
 		// get temporal facade
 		TemporalFacadeFactory factory = new TemporalFacadeFactory();
 		// create temporal facade
-		this.facade = factory.createSingleton(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
+		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
 		
 		// get parameter facade
 		ParameterFacadeFactory pf = new ParameterFacadeFactory();
-		pf.createSingleton(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create State Variable
 		DomainComponentFactory df = new DomainComponentFactory();
@@ -172,7 +172,7 @@ public class ExternalStateVariableComponentTestCase {
 	 */
 	@Test
 	public void addObservationTest() {
-		System.out.println("[Test]: addDecisionsTest() --------------------");
+		System.out.println("[Test]: addObservationTest() --------------------");
 		System.out.println();
 		// check state variable object
 		Assert.assertNotNull(this.psv);
@@ -186,7 +186,7 @@ public class ExternalStateVariableComponentTestCase {
 			Decision d1 = this.psv.create(v1, new String[] {}, new long[] {15, 15}, v1.getDurationBounds());
 			this.psv.add(d1);
 			// print decision
-			System.out.println(d1);
+			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 			
 			// check consistency
 			this.facade.checkConsistency();
@@ -198,17 +198,22 @@ public class ExternalStateVariableComponentTestCase {
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);
-			
 			// print decision
-			System.out.println(d1);
+			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 			
-			
-			TemporalConstraintFactory iFactory = TemporalConstraintFactory.getInstance();
-			FixIntervalDurationConstraint constraint = iFactory.create(TemporalConstraintType.FIX_INTERVAL_DURATION);
-			constraint.setReference(d1.getToken().getInterval());
-			constraint.setDuration(7);
-			// propagate observation
-			this.facade.propagate(constraint);
+			try 
+			{
+				TemporalConstraintFactory iFactory = TemporalConstraintFactory.getInstance();
+				FixIntervalDurationConstraint constraint = iFactory.create(TemporalConstraintType.FIX_INTERVAL_DURATION);
+				constraint.setReference(d1.getToken().getInterval());
+				constraint.setDuration(7);
+				// propagate observation
+				this.facade.propagate(constraint);
+				Assert.assertTrue(false);
+			}
+			catch (Exception ex) {
+				System.out.println("\n> " + ex.getMessage() + "\n");
+			}
 			
 			// check consistency
 			this.facade.checkConsistency();
@@ -218,7 +223,7 @@ public class ExternalStateVariableComponentTestCase {
 			query.setInterval(d1.getToken().getInterval());
 			// process query
 			this.facade.process(query);
-			System.out.println(d1);
+			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());

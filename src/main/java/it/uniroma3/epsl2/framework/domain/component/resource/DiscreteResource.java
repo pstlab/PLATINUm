@@ -30,7 +30,7 @@ public class DiscreteResource extends Resource
 			ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER
 	})
 	protected DiscreteResource(String name) {
-		super(name, DomainComponentType.RESOURCE_DISCRETE.getLabel());
+		super(name, DomainComponentType.RESOURCE_DISCRETE);
 		this.min = Integer.MIN_VALUE + 1;
 		this.max = Integer.MAX_VALUE - 1;
 		this.initial = this.max;

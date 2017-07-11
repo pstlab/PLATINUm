@@ -5,6 +5,7 @@ import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
+import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.lang.plan.resource.ResourceEvent;
 import it.uniroma3.epsl2.framework.microkernel.query.ParameterQueryType;
@@ -27,10 +28,10 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	/**
 	 * 
 	 * @param name
-	 * @param label
+	 * @param type
 	 */
-	protected Resource(String name, String label) {
-		super(name, label);
+	protected Resource(String name, DomainComponentType type) {
+		super(name, type);
 		this.values = new ArrayList<>();
 	}
 	

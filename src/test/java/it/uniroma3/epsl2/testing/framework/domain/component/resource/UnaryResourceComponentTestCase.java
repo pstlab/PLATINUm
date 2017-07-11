@@ -56,11 +56,11 @@ public class UnaryResourceComponentTestCase
 		// get temporal facade
 		TemporalFacadeFactory factory = new TemporalFacadeFactory();
 		// create temporal facade
-		this.facade = factory.createSingleton(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
+		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
 		
 		// get parameter facade
 		ParameterFacadeFactory pf = new ParameterFacadeFactory();
-		pf.createSingleton(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create unary resource
 		DomainComponentFactory df = new DomainComponentFactory();

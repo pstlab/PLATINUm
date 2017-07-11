@@ -56,11 +56,11 @@ public class DiscreteResourceComponentTestCase
 		
 		// create temporal facade
 		TemporalFacadeFactory tf = new TemporalFacadeFactory();
-		this.tdb = tf.createSingleton(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, 0, 100);
+		this.tdb = tf.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, 0, 100);
 		
 		// get parameter facade
 		ParameterFacadeFactory pf = new ParameterFacadeFactory();
-		this.pdb = pf.createSingleton(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		this.pdb = pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
 		
 		// create unary resource
 		DomainComponentFactory df = new DomainComponentFactory();

@@ -37,7 +37,8 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DomainComponent> T create(String name, DomainComponentType type) {
+	public <T extends DomainComponent> T create(String name, DomainComponentType type) 
+	{
 		T component = null;
 		try 
 		{
@@ -60,7 +61,7 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 				this.injectParameterFacade(component);
 				
 				// get configuration annotation
-				DomainComponentConfiguration annotation = clazz.getAnnotation(DomainComponentConfiguration.class);
+				DomainComponentConfiguration annotation = c.getAnnotation(DomainComponentConfiguration.class);
 				// prepare list of resolvers
 				List<Resolver> list = new ArrayList<Resolver>();
 				// check resolver
@@ -71,17 +72,18 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 					// add resolver
 					list.add(resv);
 				}
-				// set reference to resolvers
-				Field f = this.findFieldAnnotatedBy(clazz, ResolverListPlaceholder.class);
-				// set the field accessible
-				f.setAccessible(true);
-				// set reference
-				f.set(component, list);
 				
+				// set reference to resolvers
+				List<Field> fields = this.findFieldsAnnotatedBy(clazz, ResolverListPlaceholder.class);
+				for (Field field : fields) {
+					// set the field accessible
+					field.setAccessible(true);
+					// set reference
+					field.set(component, list);
+				}
 				
 				// complete initialization
 				this.doCompleteApplicationObjectInitialization(component);
-				
 				// add entry to registry
 				this.register(component);
 			}

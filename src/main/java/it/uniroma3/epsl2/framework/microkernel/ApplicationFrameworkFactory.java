@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.uniroma3.epsl2.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
 import it.uniroma3.epsl2.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
@@ -109,36 +111,6 @@ public abstract class ApplicationFrameworkFactory
 		}
 	}
 	
-//	/**
-//	 * 
-//	 * @param clazz
-//	 * @param obj
-//	 * @throws IllegalArgumentException
-//	 * @throws IllegalAccessException
-//	 */
-//	@SuppressWarnings("unchecked")
-//	protected <T extends ApplicationFrameworkObject> void injectSingletonTemporalNetworkReference(T obj, boolean optional) 
-//			throws IllegalArgumentException, IllegalAccessException 
-//	{ 
-//		// get class
-//		Class<T> clazz = (Class<T>) obj.getClass();
-//		// find annotated field
-//		Field field = this.findFieldAnnotatedBy(clazz, TemporalNetworkReference.class);
-//		// check if field has been found
-//		if (field != null) {
-//			// get temporal network reference
-//			ApplicationFrameworkObject network = this.container.lookup(SINGLETON_TEMPORAL_NETWORK_REFERENCE);
-//			// set network
-//			field.setAccessible(true);
-//			field.set(obj, network);
-//		}
-//		
-//		// throw exception if a not optional field has not been found
-//		if (field == null && !optional) {
-//			throw new RuntimeException("Field tagged by TemporalNetworkReference annotation has not been found in class " + obj.getClass());
-//		}
-//	}
-	
 	/**
 	 * 
 	 * @param obj
@@ -152,10 +124,9 @@ public abstract class ApplicationFrameworkFactory
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, FrameworkLoggerPlaceholder.class);
+		List<Field> fields = this.findFieldsAnnotatedBy(clazz, FrameworkLoggerPlaceholder.class);
 		// check if field has been found
-		if (field != null) 
-		{
+		for (Field field : fields) {
 			// get annotation
 			FrameworkLoggerPlaceholder placeholder = field.getAnnotation(FrameworkLoggerPlaceholder.class);
 			// create logger
@@ -165,30 +136,25 @@ public abstract class ApplicationFrameworkFactory
 			field.set(obj, logger);
 		}
 		
-		// throw exception if a not optional field has not been found
-		if (field == null) {
-			throw new RuntimeException("Field tagged by FrameworkLoggerReference annotation has not been found in class " + obj.getClass());
-		}
+	
 	}
 	
 	/**
 	 * 
 	 * @param obj
-	 * @param optional
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends ApplicationFrameworkObject> void injectPlanDataBase(T obj, boolean optional) 
+	protected <T extends ApplicationFrameworkObject> void injectPlanDataBase(T obj) 
 			throws IllegalArgumentException, IllegalAccessException 
 	{ 
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, PlanDataBasePlaceholder.class);
+		List<Field> fields = this.findFieldsAnnotatedBy(clazz, PlanDataBasePlaceholder.class);
 		// check field
-		if (field != null) 
-		{
+		for (Field field : fields) {
 			// get annotation
 			PlanDataBasePlaceholder placeholder = field.getAnnotation(PlanDataBasePlaceholder.class);
 			// get temporal network reference
@@ -196,11 +162,6 @@ public abstract class ApplicationFrameworkFactory
 			// set plan data-based reference
 			field.setAccessible(true);
 			field.set(obj, pdb);
-		}
-		
-		// throw exception if a not optional field has not been found
-		if (field == null && !optional) {
-			throw new RuntimeException("Field tagged by PlanDataBaseReference annotation has not been found in class " + obj.getClass());
 		}
 	}
 	
@@ -218,9 +179,8 @@ public abstract class ApplicationFrameworkFactory
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, TemporalFacadePlaceholder.class);
-		if (field != null) 
-		{
+		List<Field> fields = this.findFieldsAnnotatedBy(clazz, TemporalFacadePlaceholder.class);
+		for (Field field : fields) {
 			// get annotation
 			TemporalFacadePlaceholder placeholder = field.getAnnotation(TemporalFacadePlaceholder.class);
 			// get temporal data-base facade reference
@@ -245,9 +205,9 @@ public abstract class ApplicationFrameworkFactory
 		// get class
 		Class<T> clazz = (Class<T>) obj.getClass();
 		// find annotated field
-		Field field = this.findFieldAnnotatedBy(clazz, ParameterFacadePlaceholder.class);
-		if (field != null) 
-		{
+		List<Field> fields = this.findFieldsAnnotatedBy(clazz, ParameterFacadePlaceholder.class);
+		// set fields 
+		for (Field field : fields) {
 			// get annotation
 			ParameterFacadePlaceholder placeholder = field.getAnnotation(ParameterFacadePlaceholder.class);
 			// get temporal data-base facade reference
@@ -255,11 +215,6 @@ public abstract class ApplicationFrameworkFactory
 			// set reference
 			field.setAccessible(true);
 			field.set(obj, tdb);
-		}
-		
-		// throw exception if a not optional field has not been found
-		if (field == null) {
-			throw new RuntimeException("Field tagged by TemporalDataBaseFacadeReference annotation has not been found in class " + obj.getClass());
 		}
 	}
 	
@@ -270,38 +225,33 @@ public abstract class ApplicationFrameworkFactory
 	 * @param optional
 	 * @return
 	 */
-	protected Field findFieldAnnotatedBy(Class<? extends ApplicationFrameworkObject> objClass, Class<? extends Annotation> annot) 
+	protected List<Field> findFieldsAnnotatedBy(Class<? extends ApplicationFrameworkObject> objClass, Class<? extends Annotation> annot) 
 	{
 		// inject temporal network reference
-		Field field = null;
-		for (Field f : objClass.getDeclaredFields()) {
+		List<Field> list = new ArrayList<Field>();
+		for (Field field : objClass.getDeclaredFields()) {
 			// check annotation
-			if (f.isAnnotationPresent(annot)) {
-				field = f;
-				break;
+			if (field.isAnnotationPresent(annot)) {
+				list.add(field);
 			}
 		}
 		
-		// check if injection has been done
-		if (field == null) {
-			// check super classes
-			Class<?> current = objClass;
-			while (current.getSuperclass() != null && field == null) {
-				// check fields
-				for (Field f : current.getSuperclass().getDeclaredFields()) {
-					// check annotation
-					if (f.isAnnotationPresent(annot)) {
-						field = f;
-						break;	// exit cycle
-					}
+		// check super classes
+		Class<?> current = objClass;
+		while (current.getSuperclass() != null) {
+			// check fields
+			for (Field field : current.getSuperclass().getDeclaredFields()) {
+				// check annotation
+				if (field.isAnnotationPresent(annot)) {
+					list.add(field);
 				}
-				
-				// update current
-				current = current.getSuperclass();
 			}
+			
+			// update current
+			current = current.getSuperclass();
 		}
 		
 		// get field
-		return field;
+		return list;
 	}
 }

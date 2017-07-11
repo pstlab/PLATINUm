@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.uniroma3.epsl2.deliberative.app.DefaultPlanner;
 import it.uniroma3.epsl2.deliberative.app.Planner;
 import it.uniroma3.epsl2.deliberative.app.PlannerBuilder;
 import it.uniroma3.epsl2.deliberative.app.PlannerFactory;
@@ -74,7 +75,7 @@ public class PlannerTestCase
 		System.out.println();
 		
 		// create Planner
-		Planner planner = this.plannerFactory.create();
+		DefaultPlanner planner = this.plannerFactory.create(DefaultPlanner.class.getName());
 		Assert.assertNotNull(planner);
 	}
 	
@@ -169,7 +170,7 @@ public class PlannerTestCase
 			this.pdb.setup(problem);
 			
 			// create planner
-			Planner planner = this.plannerFactory.create();
+			DefaultPlanner planner = this.plannerFactory.create(DefaultPlanner.class.getName());
 			// try to solve the plan
 			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
@@ -272,7 +273,7 @@ public class PlannerTestCase
 			this.pdb.setup(problem);
 			
 			// create planner
-			Planner planner = this.plannerFactory.create();
+			DefaultPlanner planner = this.plannerFactory.create(DefaultPlanner.class.getName());
 			// get initial plan
 			System.out.println(planner.getCurrentPlan());
 			// try to solve the plan
@@ -407,7 +408,7 @@ public class PlannerTestCase
 			this.pdb.setup(problem);
 			
 			// create planner
-			Planner planner = this.plannerFactory.create();
+			DefaultPlanner planner = this.plannerFactory.create(DefaultPlanner.class.getName());
 			// try to solve the plan
 			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
@@ -543,7 +544,7 @@ public class PlannerTestCase
 			this.pdb.setup(problem);
 			
 			// create planner
-			Planner planner = this.plannerFactory.create();
+			DefaultPlanner planner = this.plannerFactory.create(DefaultPlanner.class.getName());
 			// try to solve the plan
 			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
@@ -572,7 +573,7 @@ public class PlannerTestCase
 			// compile the plan database
 			PlanDataBase pdb = PlanDataBaseBuilder.build(DDL, PDL);
 			// create planner by means of factory
-			Planner planner = PlannerFactory.getInstance().create();
+			DefaultPlanner planner = PlannerFactory.getInstance().create(DefaultPlanner.class.getName());
 			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);
@@ -602,7 +603,7 @@ public class PlannerTestCase
 			PlanDataBase pdb = PlanDataBaseBuilder.build(DDL, PDL);
 			
 			// create a planner instance
-			Planner planner = PlannerFactory.getInstance().create();
+			DefaultPlanner planner = PlannerFactory.getInstance().create(DefaultPlanner.class.getName());
 			SolutionPlan plan = planner.plan();
 			Assert.assertNotNull(plan);
 			System.out.println(plan);

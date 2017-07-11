@@ -2,7 +2,8 @@ package it.uniroma3.epsl2.executive.est;
 
 import it.uniroma3.epsl2.executive.Executive;
 import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
-import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.executive.ExecutiveConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.executive.ExecutiveDispatcherConfiguration;
+import it.uniroma3.epsl2.framework.microkernel.annotation.cfg.executive.ExecutiveMonitorConfiguration;
 import it.uniroma3.epsl2.framework.utils.view.executive.ExecutiveWindow;
 
 /**
@@ -10,14 +11,6 @@ import it.uniroma3.epsl2.framework.utils.view.executive.ExecutiveWindow;
  * @author anacleto
  *
  */
-@ExecutiveConfiguration(
-
-	// set dispatcher
-	dispatcher = EarliesStartTimePlanDispatcher.class,
-	
-	// set monitor
-	monitor = EarliestStartTimePlanMonitor.class
-)
 public class EarliestStartTimeExecutive extends Executive
 {
 	private ExecutiveWindow window;				// executive window
@@ -25,13 +18,15 @@ public class EarliestStartTimeExecutive extends Executive
 	/**
 	 * 
 	 */
+	@ExecutiveMonitorConfiguration(monitor = EarliestStartTimePlanMonitor.class)
+	@ExecutiveDispatcherConfiguration(dispatcher = EarliestStartTimePlanDispatcher.class)
 	public EarliestStartTimeExecutive() 
 	{
 		super();
 		// create plan monitor
 		this.monitor = new EarliestStartTimePlanMonitor(this);
 		// create dispatcher
-		this.dispatcher = new EarliesStartTimePlanDispatcher(this);
+		this.dispatcher = new EarliestStartTimePlanDispatcher(this);
 		// create executive window
 		this.window = new ExecutiveWindow("Executive Window");
 	}

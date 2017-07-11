@@ -3,6 +3,7 @@ package it.uniroma3.epsl2.framework.microkernel.resolver;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
@@ -42,21 +43,23 @@ public class ResolverFactory extends ApplicationFrameworkFactory {
 			c.setAccessible(true);
 			resv = c.newInstance();
 			
-			// set reference to component
-			Field field = this.findFieldAnnotatedBy(clazz, ComponentPlaceholder.class);
-			// inject reference
-			field.setAccessible(true);
-			field.set(resv, component);
-			
+			// inject logger
+			this.injectFrameworkLogger(resv);
 			// inject reference to temporal facade
 			this.injectTemporalFacade(resv);
 			// inject parameter data base reference
 			this.injectParameterFacade(resv);
-			// inject logger
-			this.injectFrameworkLogger(resv);
+			
+			// set reference to component
+			List<Field> fields = this.findFieldsAnnotatedBy(clazz, ComponentPlaceholder.class);
+			for (Field field : fields) {
+				// inject reference
+				field.setAccessible(true);
+				field.set(resv, component);
+			}
+			
 			// complete initialization
 			this.doCompleteApplicationObjectInitialization(resv);
-			
 			// add entry to the registry
 			this.register(resv);
 		}

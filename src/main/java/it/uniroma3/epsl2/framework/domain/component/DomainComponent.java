@@ -70,7 +70,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	
 	// component's name
 	protected String name;
-	protected String label;
+	protected DomainComponentType type;
 	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
@@ -83,11 +83,11 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	/**
 	 * 
 	 * @param name
-	 * @param label
+	 * @param type
 	 */
-	protected DomainComponent(String name, String label) {
+	protected DomainComponent(String name, DomainComponentType type) {
 		super();
-		this.label = label;
+		this.type = type;
 		this.name = name;
 		
 		// initialize decisions of the (local) plan
@@ -128,8 +128,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * 
 	 * @return
 	 */
-	public String getLabel() {
-		return this.label;
+	public DomainComponentType getType() {
+		return type;
 	}
 	
 	/**

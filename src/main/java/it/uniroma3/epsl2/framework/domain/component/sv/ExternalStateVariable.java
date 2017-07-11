@@ -29,7 +29,7 @@ public final class ExternalStateVariable extends StateVariable
 			ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
 	})
 	protected ExternalStateVariable(String name) {
-		super(name, DomainComponentType.SV_EXTERNAL.getLabel());
+		super(name, DomainComponentType.SV_EXTERNAL);
 	}
 
 	/**

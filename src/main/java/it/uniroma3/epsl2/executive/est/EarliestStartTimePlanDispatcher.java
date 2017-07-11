@@ -9,7 +9,7 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
  * @author anacleto
  *
  */
-public class EarliesStartTimePlanDispatcher implements PlanDispatcher 
+public class EarliestStartTimePlanDispatcher implements PlanDispatcher 
 {
 	private EarliestStartTimeExecutive executive;
 	
@@ -17,7 +17,7 @@ public class EarliesStartTimePlanDispatcher implements PlanDispatcher
 	 * 
 	 * @param exec
 	 */
-	public EarliesStartTimePlanDispatcher(EarliestStartTimeExecutive exec) {
+	public EarliestStartTimePlanDispatcher(EarliestStartTimeExecutive exec) {
 		this.executive = exec;
 	}
 	

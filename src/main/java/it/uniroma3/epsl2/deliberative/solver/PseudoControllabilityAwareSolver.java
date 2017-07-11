@@ -28,7 +28,7 @@ import it.uniroma3.epsl2.framework.time.tn.ex.PseudoControllabilityCheckExceptio
  */
 public class PseudoControllabilityAwareSolver extends Solver 
 {
-	@SearchStrategyModule(strategy= SearchStrategyType.DFCF)
+	@SearchStrategyModule(strategy= SearchStrategyType.DFS)
 	private SearchStrategy strategy;
 
 	@SearchStrategyModule(strategy = SearchStrategyType.DFS)

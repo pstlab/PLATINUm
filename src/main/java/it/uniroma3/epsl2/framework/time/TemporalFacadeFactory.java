@@ -3,6 +3,7 @@ package it.uniroma3.epsl2.framework.time;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
@@ -61,30 +62,35 @@ public final class TemporalFacadeFactory extends ApplicationFrameworkFactory
 				// create new instance
 				tdb = c.newInstance();
 				
+
+				// inject singleton framework logger
+				this.injectFrameworkLogger(tdb);
+				
 				// get constructor annotation
 				TemporalFacadeConfiguration annotation = c.getAnnotation(TemporalFacadeConfiguration.class);
 				
 				// create the temporal network 
 				TemporalNetwork tn = this.tnFactory.create(annotation.network(), origin, horizon);
 				// inject reference to the network
-				Field f = this.findFieldAnnotatedBy(clazz, TemporalNetworkPlaceholder.class);
-				// set accessible
-				f.setAccessible(true);
-				// set reference
-				f.set(tdb, tn);
+				List<Field> fields = this.findFieldsAnnotatedBy(clazz, TemporalNetworkPlaceholder.class);
+				for (Field field : fields) {
+					// set accessible
+					field.setAccessible(true);
+					// set reference
+					field.set(tdb, tn);
+				}
 				
 				// create the temporal reasoner
 				TemporalSolver<?> solver = this.trfactory.create(annotation.solver());
 				// inject reference to the solver
-				f = this.findFieldAnnotatedBy(clazz, TemporalSolverPlaceholder.class);
-				// set accessible 
-				f.setAccessible(true);
-				// set reference
-				f.set(tdb, solver);
-	
-				// inject singleton framework logger
-				this.injectFrameworkLogger(tdb);
-	
+				fields = this.findFieldsAnnotatedBy(clazz, TemporalSolverPlaceholder.class);
+				for (Field field : fields) {
+					// set accessible 
+					field.setAccessible(true);
+					// set reference
+					field.set(tdb, solver);
+				}
+
 				// complete initialization
 				this.doCompleteApplicationObjectInitialization(tdb);
 				// add entry to the registry

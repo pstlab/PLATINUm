@@ -20,7 +20,7 @@ public class FunctionalStateVariable extends StateVariable
 			// no resolvers needed for functional state variables
 	})
 	protected FunctionalStateVariable(String name) {
-		super(name, DomainComponentType.SV_FUNCTIONAL.getLabel());
+		super(name, DomainComponentType.SV_FUNCTIONAL);
 	}
 	
 	/**

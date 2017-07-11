@@ -30,7 +30,7 @@ public class ReservoirResource extends Resource
 			ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER
 	})
 	protected ReservoirResource(String name) {
-		super(name, DomainComponentType.RESOURCE_RESERVOIR.getLabel());
+		super(name, DomainComponentType.RESOURCE_RESERVOIR);
 		this.min = Integer.MIN_VALUE + 1;
 		this.max = Integer.MAX_VALUE - 1;
 		this.initial = this.max;

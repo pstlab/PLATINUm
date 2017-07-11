@@ -7,6 +7,7 @@ import java.util.Map;
 
 import it.uniroma3.epsl2.framework.domain.component.ComponentValue;
 import it.uniroma3.epsl2.framework.domain.component.DomainComponent;
+import it.uniroma3.epsl2.framework.domain.component.DomainComponentType;
 import it.uniroma3.epsl2.framework.domain.component.ex.TransitionNotFoundException;
 import it.uniroma3.epsl2.framework.microkernel.lang.plan.Decision;
 import it.uniroma3.epsl2.framework.microkernel.query.TemporalQueryType;
@@ -28,10 +29,10 @@ public abstract class StateVariable extends DomainComponent
 	/**
 	 * 
 	 * @param name
-	 * @param label
+	 * @param type
 	 */
-	protected StateVariable(String name, String label) {
-		super(name, label);
+	protected StateVariable(String name, DomainComponentType type) {
+		super(name, type);
 		// initialize the list of values
 		this.values = new ArrayList<>();
 		// initialize transition function
@@ -217,7 +218,7 @@ public abstract class StateVariable extends DomainComponent
 	 */
 	@Override
 	public String toString() {
-		return "[StateVariable name= " + this.name + " label= " + this.label+ "]";
+		return "[StateVariable name= " + this.name + " label= " + this.type.getLabel()+ "]";
 	}
 	
 	/**

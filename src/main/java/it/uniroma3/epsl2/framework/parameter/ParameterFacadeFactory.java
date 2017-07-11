@@ -3,6 +3,7 @@ package it.uniroma3.epsl2.framework.parameter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkContainer;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkFactory;
@@ -52,19 +53,22 @@ public class ParameterFacadeFactory extends ApplicationFrameworkFactory
 				// create instance
 				facade = c.newInstance();
 				
+				// inject logger
+				this.injectFrameworkLogger(facade);
+				
 				// get annotation
 				ParameterFacadeConfiguration annotation = c.getAnnotation(ParameterFacadeConfiguration.class);
 				// create parameter solver
 				ParameterSolver solver = this.pFactory.create(annotation.solver());
 				// set reference
-				Field f = this.findFieldAnnotatedBy(clazz, ParameterSolverPlaceholder.class);
-				// set accessible
-				f.setAccessible(true);
-				// set reference to solver
-				f.set(facade, solver);
+				List<Field> fields = this.findFieldsAnnotatedBy(clazz, ParameterSolverPlaceholder.class);
+				for (Field field : fields) {
+					// set accessible
+					field.setAccessible(true);
+					// set reference to solver
+					field.set(facade, solver);
+				}
 				
-				// inject logger
-				this.injectFrameworkLogger(facade);
 				// complete initialization
 				this.doCompleteApplicationObjectInitialization(facade);
 				// add entry to the registry

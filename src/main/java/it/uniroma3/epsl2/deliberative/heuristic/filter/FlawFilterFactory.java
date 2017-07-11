@@ -39,14 +39,14 @@ public class FlawFilterFactory extends ApplicationFrameworkFactory {
 			// create instance
 			filter = c.newInstance();
 			
-			// inject plan data base reference if needed
-			this.injectSingletonPlanDataBaseReference(filter, true);
-			// inject logger
-			this.injectPlannerLoggerReference(filter);
+			// inject framework logger if needed
+			this.injectFrameworkLogger(filter);
+			// inject plan data-base if needed
+			this.injectPlanDataBase(filter);
 			// complete initialization if needed
 			this.doCompleteApplicationObjectInitialization(filter);
 			// add to registry
-			this.doRegister(filter);
+			this.register(filter);
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 			throw new RuntimeException(ex.getMessage());  

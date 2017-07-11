@@ -100,7 +100,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	})
 	protected PlanDataBaseComponent(String name) 
 	{
-		super(name, DomainComponentType.PDB.getLabel());
+		super(name, DomainComponentType.PDB);
 		this.components = new HashMap<>();
 		this.parameterDomains = new HashMap<>();
 		this.rules = new HashMap<>();

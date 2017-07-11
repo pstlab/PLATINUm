@@ -30,7 +30,7 @@ public final class PrimitiveStateVariable extends StateVariable implements Resou
 			ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
 	})
 	protected PrimitiveStateVariable(String name) {
-		super(name, DomainComponentType.SV_PRIMITIVE.getLabel());
+		super(name, DomainComponentType.SV_PRIMITIVE);
 	}
 
 	/**

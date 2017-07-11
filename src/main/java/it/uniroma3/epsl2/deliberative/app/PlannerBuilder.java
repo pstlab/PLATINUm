@@ -68,7 +68,7 @@ public class PlannerBuilder
 		// get planner factory
 		PlannerFactory factory = PlannerFactory.getInstance();
 		// create planner
-		Planner planner = factory.create();
+		Planner planner = factory.create(DefaultPlanner.class.getName());
 		// get created planning instance
 		return planner;
 	}

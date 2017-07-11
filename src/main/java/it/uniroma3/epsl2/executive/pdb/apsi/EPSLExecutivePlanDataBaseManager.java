@@ -63,7 +63,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 		{
 			// map tokens to nodes
 			Map<Token, ExecutionNode> dictionary = new HashMap<>();
-			// setup timelines
+			// setup time-lines
 			for (Timeline tl : plan.getTimelines())
 			{
 				// get tokens

@@ -10,8 +10,8 @@ import it.uniroma3.epsl2.executive.pdb.ExecutionNodeStatus;
 import it.uniroma3.epsl2.executive.pdb.ExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;
 import it.uniroma3.epsl2.framework.microkernel.ApplicationFrameworkObject;
-import it.uniroma3.epsl2.framework.microkernel.annotation.inject.executive.PlanDispatcherReference;
-import it.uniroma3.epsl2.framework.microkernel.annotation.inject.executive.PlanMonitorReference;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.executive.ExecutionDispatcherPlaceholder;
+import it.uniroma3.epsl2.framework.microkernel.annotation.inject.executive.ExecutionMonitorPlaceholder;
 import it.uniroma3.epsl2.framework.microkernel.lang.plan.SolutionPlan;
 import it.uniroma3.epsl2.framework.utils.properties.FilePropertyReader;
 
@@ -28,10 +28,10 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 	private ExecutionStatus status;												// executive's operating status
 	private ClockManager clock;													// execution clock controller
 	
-	@PlanMonitorReference
+	@ExecutionMonitorPlaceholder
 	protected PlanMonitor monitor;						// plan monitor
 	
-	@PlanDispatcherReference
+	@ExecutionDispatcherPlaceholder
 	protected PlanDispatcher dispatcher;				// dispatching process
 	
 	protected ExecutivePlanDataBaseManager pdb;			// the plan to execute

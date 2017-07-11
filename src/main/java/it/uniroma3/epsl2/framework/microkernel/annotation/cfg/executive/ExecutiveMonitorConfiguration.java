@@ -5,7 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.uniroma3.epsl2.executive.PlanDispatcher;
 import it.uniroma3.epsl2.executive.PlanMonitor;
 
 /**
@@ -13,15 +12,9 @@ import it.uniroma3.epsl2.executive.PlanMonitor;
  * @author anacleto
  *
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.CONSTRUCTOR)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ExecutiveConfiguration {
-
-	/**
-	 * 
-	 * @return
-	 */
-	Class<? extends PlanDispatcher> dispatcher();
+public @interface ExecutiveMonitorConfiguration {
 
 	/**
 	 * 

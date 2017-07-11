@@ -22,7 +22,7 @@ public abstract class FlawFilter extends ApplicationFrameworkObject
 	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER)
 	protected FrameworkLogger logger;
 	
-	@PlanDataBasePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
+	@PlanDataBasePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE)
 	protected PlanDataBase pdb;
 	
 	private String label;
