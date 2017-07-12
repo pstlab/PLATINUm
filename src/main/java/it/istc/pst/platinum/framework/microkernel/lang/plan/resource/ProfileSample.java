@@ -7,7 +7,6 @@ package it.istc.pst.platinum.framework.microkernel.lang.plan.resource;
  */
 public class ProfileSample implements Comparable<ProfileSample> 
 {
-
 	private ResourceEvent event;
 	private long time;
 	
@@ -76,4 +75,11 @@ public class ProfileSample implements Comparable<ProfileSample>
 		return true;
 	}
 	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[ResourceProfileSample time= " + this.time + " type= " + this.event.getType() + "(" + this.event.getAmount() + ")]";
+	}
 }

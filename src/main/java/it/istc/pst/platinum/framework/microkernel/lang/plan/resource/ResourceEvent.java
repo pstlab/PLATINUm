@@ -81,7 +81,8 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 	 */
 	@Override
 	public int compareTo(ResourceEvent o) {
-		return this.event.getLowerBound() <= o.event.getLowerBound() ? -1 : 1;
+		// compare related time points
+		return this.event.compareTo(o.event);
 	}
 
 	/**
@@ -119,10 +120,8 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 	 * 
 	 */
 	@Override
-	public String toString() 
-	{
+	public String toString() {
 		// get event description
-		return "[ResourceEvent id= " + this.id +  " type= " + this.type + " amount= " + this.amount + "\n"
-				+ "- activity= " + this.activity.getValue().getLabel() + "\n- event= " + this.event + "\n]";
+		return "[ResourceEvent id= " + this.id +  " type= " + this.type + "(" + this.amount + ") time= [" + this.event.getLowerBound() + ", " + this.event.getUpperBound() + "]]";
 	}
 }

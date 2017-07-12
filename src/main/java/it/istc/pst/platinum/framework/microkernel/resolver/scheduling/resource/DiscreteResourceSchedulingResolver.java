@@ -294,12 +294,6 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 			// check resource events
 			for (ResourceEvent event : events) 
 			{
-				// check the schedule of the event
-				TimePointScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.TP_SCHEDULE);
-				query.setTimePoint(event.getEvent());
-				// process query
-				this.tdb.process(query);
-				
 				// check event and set the optimistic schedule
 				switch (event.getType())
 				{
@@ -346,6 +340,15 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 						toRetract.add(cons);
 					}
 					break;
+				}
+				
+				// check updated schedules
+				for (ResourceEvent e : events) {
+					// check event schedule
+					TimePointScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.TP_SCHEDULE);
+					query.setTimePoint(e.getEvent());
+					// process query
+					this.tdb.process(query);
 				}
 			}
 		}
@@ -477,7 +480,8 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		// prepare a peak
 		ResourceProfileFlaw peak = new ResourceProfileFlaw(this.component);
 		// check profile samples
-		for (ProfileSample sample : profile.getProfileSamples()) 
+		List<ProfileSample> samples = profile.getProfileSamples();
+		for (ProfileSample sample : samples) 
 		{
 			// get event
 			ResourceEvent event = sample.getEvent();

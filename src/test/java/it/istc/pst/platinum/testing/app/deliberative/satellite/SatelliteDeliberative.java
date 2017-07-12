@@ -22,7 +22,6 @@ public class SatelliteDeliberative extends Planner
 //	private static final String DDL = "domains/satellite/satellite.ddl";
 //	private static final String PDL = "domains/satellite/satellite.pdl";
 	
-	
 	// discrete resource
 	private static final String DDL = "domains/satellite/discrete/satellite.ddl";
 	private static final String PDL = "domains/satellite/discrete/satellite.pdl";

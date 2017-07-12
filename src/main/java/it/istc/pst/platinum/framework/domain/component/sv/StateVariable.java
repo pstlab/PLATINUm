@@ -179,12 +179,13 @@ public abstract class StateVariable extends DomainComponent
 		// list of available paths
 		List<List<ComponentValue>> result = new ArrayList<>();
 		// check source and target
-		if (source.equals(target)) {
+		if (source.equals(target)) 
+		{
+			// initialize the path
+			List<ComponentValue> path = new ArrayList<>();
+			path.add(source);
 			// get successors
 			for (ComponentValue value : this.getDirectSuccessors(source)) {
-				// initialize the path
-				List<ComponentValue> path = new ArrayList<>();
-				path.add(source);
 				// directly calls
 				this.computePaths(path, value, target, result);
 			}

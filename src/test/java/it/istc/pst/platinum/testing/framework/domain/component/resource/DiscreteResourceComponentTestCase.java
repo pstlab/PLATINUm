@@ -176,8 +176,8 @@ public class DiscreteResourceComponentTestCase
 			Decision a1 = this.resource.create(
 					requirement, 
 					new String[] {"?a0"},
-					new long[] {2, 4},
-					new long[] {8, 10},
+					new long[] {2, 5},
+					new long[] {8, 23},
 					new long[] {1, this.tdb.getHorizon()});
 			// add decision
 			this.resource.add(a1);
@@ -196,8 +196,8 @@ public class DiscreteResourceComponentTestCase
 			Decision a2 = this.resource.create(
 					requirement, 
 					new String[] {"?a1"},
-					new long[] {4, 6},
-					new long[] {16, 18},
+					new long[] {4, 11},
+					new long[] {16, 33},
 					new long[] {1, this.tdb.getHorizon()});
 			// add decision
 			this.resource.add(a2);
@@ -216,8 +216,8 @@ public class DiscreteResourceComponentTestCase
 			Decision a3 = this.resource.create(
 					requirement, 
 					new String[] {"?a2"},
-					new long[] {11, 13},
-					new long[] {21, 23},
+					new long[] {11, 45},
+					new long[] {55, 60},
 					new long[] {1, this.tdb.getHorizon()});
 			// add decision
 			this.resource.add(a3);

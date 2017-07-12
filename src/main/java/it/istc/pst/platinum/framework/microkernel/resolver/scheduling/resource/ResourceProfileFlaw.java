@@ -1,6 +1,8 @@
 package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
@@ -16,7 +18,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEve
  */
 public class ResourceProfileFlaw extends Flaw 
 {
-	private Set<ResourceEvent> events;			// resource demand events
+	private List<ResourceEvent> events;			// resource demand events
 	private Set<Decision> peak;					// conflicting decisions
 	
 	/**
@@ -25,7 +27,7 @@ public class ResourceProfileFlaw extends Flaw
 	 */
 	protected ResourceProfileFlaw(DomainComponent component) {
 		super(component, FlawType.RESOURCE_PEAK);
-		this.events = new HashSet<>();
+		this.events = new ArrayList<>();
 		this.peak = new HashSet<>();
 	}
 	
