@@ -103,7 +103,8 @@ public class DiscreteResource extends Resource
 			int amount = this.checkAmount(dec);
 			// create consumption event
 			ResourceEvent cons = new ConsumptionResourceEvent(
-					dec, dec.getToken().getInterval().getStartTime(), 
+					dec, 
+					dec.getToken().getInterval().getStartTime(), 
 					amount);
 			// add event
 			list.add(cons);

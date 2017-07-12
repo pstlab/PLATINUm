@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,20 +12,20 @@ import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
  * @author anacleto
  *
  */
-public final class DecisionSchedule extends FlawSolution 
+public class PrecedenceConstraintPosting extends FlawSolution 
 {
-	private List<Decision> schedule;		// computed solution of the peak
+	private List<Decision> precedence;
 	
 	/**
 	 * 
-	 * @param peak
-	 * @param schedule
+	 * @param flaw
+	 * @param precedences
 	 */
-	protected DecisionSchedule(Peak peak, List<Decision> schedule) {
-		super(peak);
-		this.schedule= new ArrayList<>(schedule);
+	protected PrecedenceConstraintPosting(ResourceProfileFlaw flaw, List<Decision> precedences) {
+		super(flaw);
+		this.precedence = new ArrayList<>(precedences);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -43,8 +43,8 @@ public final class DecisionSchedule extends FlawSolution
 	 * 
 	 * @return
 	 */
-	public List<Decision> getSchedule() {
-		return new ArrayList<>(this.schedule);
+	public List<Decision> getPrecedences() {
+		return new ArrayList<>(this.precedence);
 	}
 
 	/**
@@ -52,7 +52,6 @@ public final class DecisionSchedule extends FlawSolution
 	 */
 	@Override
 	public String toString() {
-		return "[DecisionSchedule schedule= " + this.schedule + "]";
+		return "[PrecedenceConstraintPosting\n- constraint= " + this.precedence + "\n]";
 	}
-	
 }

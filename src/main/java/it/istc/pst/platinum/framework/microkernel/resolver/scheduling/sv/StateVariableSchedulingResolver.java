@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,7 +10,6 @@ import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicatio
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
@@ -18,14 +17,10 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.BeforeRelation;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
-import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.SchedulingResolver;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 
 /**
@@ -33,7 +28,7 @@ import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
  * @author anacleto
  *
  */
-public final class StateVariableSchedulingResolver <T extends StateVariable> extends Resolver
+public final class StateVariableSchedulingResolver <T extends StateVariable> extends SchedulingResolver
 {
 	@ComponentPlaceholder
 	private T component;
@@ -193,64 +188,6 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 	
 	/**
 	 * 
-	 * @param schedule
-	 * @return
-	 * @throws TemporalConstraintPropagationException
-	 */
-	private double checkScheduleFeasibility(List<Decision>schedule) 
-			throws TemporalConstraintPropagationException
-	{
-		// computed makespan 
-		double makespan = this.tdb.getOrigin();
-		// list of propagate precedence constraints
-		List<TemporalConstraint> committed = new ArrayList<>();
-		try
-		{
-			for (int index = 0; index < schedule.size() - 1; index++) 
-			{
-				// get decisions
-				Decision a = schedule.get(index);
-				Decision b = schedule.get(index + 1);
-				
-				// create temporal constraint
-				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-				before.setReference(a.getToken().getInterval());
-				before.setTarget(b.getToken().getInterval());
-				// propagate temporal constraint
-				this.tdb.propagate(before);
-				// add committed constraint
-				committed.add(before);
-			}
-			
-			// check feasibility 
-			this.tdb.checkConsistency();
-			
-			// feasible solution - compute the resulting makespan
-			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-			this.tdb.process(query);
-			// get computed makespan
-			makespan = query.getMakespan();
-		}
-		catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
-			// not feasible schedule
-			this.logger.debug("Not feasible schedule constraint found\n- " + ex.getMessage() + "\n");
-			// forward exception
-			throw new TemporalConstraintPropagationException(ex.getMessage());
-		}
-		finally {
-			// restore initial state
-			for (TemporalConstraint cons : committed) {
-				// remove constraint from network
-				this.tdb.retract(cons);
-			}
-		}
-		
-		// get resulting makespan
-		return makespan;
-	}
-	
-	/**
-	 * 
 	 */
 	@Override
 	protected void doRetract(FlawSolution solution) 
@@ -342,48 +279,6 @@ public final class StateVariableSchedulingResolver <T extends StateVariable> ext
 				
 				// error while restoring flaw solution
 				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
-			}
-		}
-	}
-	
-	/**
-	 * Given a set of decisions to be scheduled, the method returns all the 
-	 * possible sequences of decisions i.e., all the possible ways to schedule
-	 * decisions
-	 * 
-	 * @param decisions
-	 * @return
-	 */
-	private List<List<Decision>> schedule(Set<Decision> decisions) {
-		// initialize permutations
-		List<List<Decision>> result = new ArrayList<>();
-		// compute permutations
-		this.computePermutations(decisions, new ArrayList<Decision>(), result);
-		// get permutations
-		return result;
-	}
-	
-	/**
-	 * 
-	 * @param decisions
-	 * @param current
-	 * @param result
-	 */
-	private void computePermutations(Set<Decision> decisions, List<Decision> current, List<List<Decision>> result) {
-		// base step
-		if (current.size() == decisions.size()) {
-			result.add(current);
-		}
-		else {
-			// recursive step
-			for (Decision dec : decisions) {
-				if (!current.contains(dec)) {
-					// create a new current list
-					List<Decision> list = new ArrayList<>(current);
-					list.add(dec);
-					// recursive call
-					this.computePermutations(decisions, list, result);
-				}
 			}
 		}
 	}

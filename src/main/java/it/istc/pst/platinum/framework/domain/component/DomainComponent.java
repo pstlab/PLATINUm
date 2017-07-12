@@ -2,6 +2,7 @@ package it.istc.pst.platinum.framework.domain.component;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +54,7 @@ import it.istc.pst.platinum.framework.utils.view.component.gantt.GanttComponentV
  * @author anacleto
  *
  */
-public abstract class DomainComponent extends ApplicationFrameworkObject 
+public abstract class DomainComponent extends ApplicationFrameworkObject
 {
 	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
 	protected TemporalFacade tdb;
@@ -234,7 +235,10 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			// add the updated token to the list
 			list.add(dec);
 		}
-		// get list
+
+		// sort decisions
+		Collections.sort(list);
+		// get sorted list of active decisions
 		return list;
 	}
 	

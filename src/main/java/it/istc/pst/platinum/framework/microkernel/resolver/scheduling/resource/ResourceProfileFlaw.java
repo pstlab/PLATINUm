@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.scheduling;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource;
 
 import java.util.HashSet;
 import java.util.Set;

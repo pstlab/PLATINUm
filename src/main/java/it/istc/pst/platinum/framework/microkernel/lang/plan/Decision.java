@@ -12,7 +12,7 @@ import it.istc.pst.platinum.framework.parameter.lang.Parameter;
  * @author anacleto
  *
  */
-public class Decision 
+public class Decision implements Comparable<Decision>
 {
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
@@ -273,6 +273,16 @@ public class Decision
 	 */
 	public Parameter<?> getParameterByIndex(int index) {
 		return this.token.getPredicate().getParameterByIndex(index);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public int compareTo(Decision o) {
+		// check tokens if not null, the IDs otherwise
+		return this.token != null && o.token != null ? this.token.compareTo(o.token) :
+			this.id <= o.id ? -1 : 1;
 	}
 
 	/**

@@ -27,7 +27,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
 import it.istc.pst.platinum.framework.microkernel.resolver.planning.Goal;
 import it.istc.pst.platinum.framework.microkernel.resolver.planning.GoalExpansion;
 import it.istc.pst.platinum.framework.microkernel.resolver.planning.GoalUnification;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.Peak;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.Peak;
 import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;

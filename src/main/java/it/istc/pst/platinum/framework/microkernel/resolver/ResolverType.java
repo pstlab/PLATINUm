@@ -2,12 +2,12 @@ package it.istc.pst.platinum.framework.microkernel.resolver;
 
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.resolver.planning.PlanRefinementResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.DiscreteResourceSchedulingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.ReservoirResourceSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource.DiscreteResourceSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource.ReservoirResourceSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.StateVariableSchedulingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.ObservationBehaviorCheckingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.StateVariableBehaviorCheckingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap.StateVariableGapResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.StateVariableSchedulingResolver;
 
 /**
  * 

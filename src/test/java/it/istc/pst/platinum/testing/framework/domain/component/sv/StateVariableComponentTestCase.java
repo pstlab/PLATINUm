@@ -16,10 +16,10 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.DecisionSchedule;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.Peak;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap.Gap;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap.GapCompletion;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.DecisionSchedule;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.Peak;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
@@ -234,6 +234,7 @@ public class StateVariableComponentTestCase
 		ComponentValue v5 = this.psv.addValue("Val-5", new long[] {5, 20}, false);
 		ComponentValue v6 = this.psv.addValue("Val-6", true);
 		ComponentValue v7 = this.psv.addValue("Val-7", true);
+		ComponentValue v8 = this.psv.addValue("Val-8", false);
 		
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
@@ -244,35 +245,48 @@ public class StateVariableComponentTestCase
 		this.psv.addValueTransition(v3, v4);
 		this.psv.addValueTransition(v2, v4);
 		this.psv.addValueTransition(v4, v6);
-		this.psv.addValueTransition(v7, v6);
+		this.psv.addValueTransition(v7, v8);
+		this.psv.addValueTransition(v6, v1);
+		this.psv.addValueTransition(v5, v1);
 		System.out.println(this.psv);
 		
 		// get paths between v1 and v6
 		List<List<ComponentValue>> paths = this.psv.getPaths(v1, v6);
 		Assert.assertNotNull(paths);
+		System.out.println("Two paths expected [" + paths.size() + "]:\n-source: " + v1 + "\n- target: " + v6);
 		Assert.assertTrue(paths.size() == 2);
+		System.out.println("path(0):\n" + paths.get(0));
 		Assert.assertTrue(paths.get(0).size() == 4);
+		System.out.println("path(1):\n" + paths.get(1));
 		Assert.assertTrue(paths.get(1).size() == 4);
 		System.out.println("Paths available from " + v1 + " to " + v6);
-		for (List<ComponentValue> path : paths) {
-			System.out.println("\t- path: " + path);
-		}
-		
 		
 		// get paths between v1 and v6
 		paths = this.psv.getPaths(v1, v1);
 		Assert.assertNotNull(paths);
-		Assert.assertTrue(paths.size() == 1);
-		Assert.assertTrue(paths.get(0).size() == 3);
-		System.out.println("Paths available from " + v1 + " to " + v1);
-		for (List<ComponentValue> path : paths) {
-			System.out.println("\t- path: " + path);
-		}
+		System.out.println("Four paths expected [" + paths.size() + "]:\n- source: " + v1 + "\n- target: " + v1);
+		Assert.assertTrue(paths.size() == 4);
+		System.out.println("path(0):\n" + paths.get(0));
+		Assert.assertTrue(paths.get(0).size() >= 3 && paths.get(0).size() <= 5);
+		System.out.println("path(1):\n" + paths.get(1));
+		Assert.assertTrue(paths.get(1).size() >= 3 && paths.get(1).size() <= 5);
+		System.out.println("path(2):\n" + paths.get(2));
+		Assert.assertTrue(paths.get(2).size() >= 3 && paths.get(2).size() <= 5);
+		System.out.println("path(3):\n" + paths.get(3));
+		Assert.assertTrue(paths.get(3).size() >= 3 && paths.get(3).size() <= 5);
 		
-		// get paths between v1 and v7 (no path exists)
-		paths = this.psv.getPaths(v1, v7);
+		// check no path case
+		paths = this.psv.getPaths(v7, v1);
 		Assert.assertNotNull(paths);
+		System.out.println("No paths expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v1);
 		Assert.assertTrue(paths.isEmpty());
+		Assert.assertTrue(paths.size() == 0);
+		
+		paths = this.psv.getPaths(v7, v7);
+		Assert.assertNotNull(paths);
+		System.out.println("No paths expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v7);
+		Assert.assertTrue(paths.isEmpty());
+		Assert.assertTrue(paths.size() == 0);
 	}
 	
 	/**

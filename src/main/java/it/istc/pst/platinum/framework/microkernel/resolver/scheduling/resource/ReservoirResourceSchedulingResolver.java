@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.scheduling;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +21,10 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEve
 import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEventType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceProfile;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
-import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.ResourceProfileComputationException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.SchedulingResolver;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.lang.FixTimePointConstraint;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
@@ -38,7 +38,7 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class ReservoirResourceSchedulingResolver <T extends ReservoirResource> extends Resolver 
+public class ReservoirResourceSchedulingResolver <T extends ReservoirResource> extends SchedulingResolver 
 {
 	@ComponentPlaceholder
 	protected T component;

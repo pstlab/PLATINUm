@@ -1,7 +1,7 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.scheduling;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +12,6 @@ import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicatio
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceProfileManager;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
@@ -24,25 +23,24 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEve
 import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEventType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceProfile;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
-import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.ResourceProfileComputationException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.SchedulingResolver;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.lang.FixTimePointConstraint;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
+import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointScheduleQuery;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class DiscreteResourceSchedulingResolver <T extends DomainComponent & ResourceProfileManager> extends Resolver 
+public class DiscreteResourceSchedulingResolver <T extends DomainComponent & ResourceProfileManager> extends SchedulingResolver 
 { 
 	@ComponentPlaceholder
 	protected T component;
@@ -93,7 +91,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 	}
 
 	/**
-	 * 
+	 * 	FIXME -> Leverage MCS to compute peak solutions 
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
@@ -291,14 +289,14 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		List<TemporalConstraint> toRetract = new ArrayList<>();
 		try
 		{
+			// sort events according to the lower bound of the time points
+			Collections.sort(events);
 			// check resource events
 			for (ResourceEvent event : events) 
 			{
-				// check decision schedule
-				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
-						TemporalQueryType.INTERVAL_SCHEDULE);
-				// set interval
-				query.setInterval(event.getDecision().getToken().getInterval());
+				// check the schedule of the event
+				TimePointScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.TP_SCHEDULE);
+				query.setTimePoint(event.getEvent());
 				// process query
 				this.tdb.process(query);
 				
@@ -316,13 +314,12 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 						// set point 
 						cons.setReference(point);
 						// set time
-						cons.setTime(point.getUpperBound());
+						cons.setTime(point.getUpperBound());	// ORP - schedule consumption events as late as possible
 						// propagate constraint
 						this.tdb.propagate(cons);
 						
 						// add sample
 						orp.addSample(event, point.getUpperBound());
-						
 						// add constraint
 						toRetract.add(cons);
 					}
@@ -339,13 +336,12 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 						// set point
 						cons.setReference(point);
 						// set time
-						cons.setTime(point.getLowerBound());
+						cons.setTime(point.getLowerBound());	// ORP - schedule production events as soon as possible
 						// propagate constraint
 						this.tdb.propagate(cons);
 						
 						// add sample
 						orp.addSample(event, point.getLowerBound());
-						
 						// add constraint
 						toRetract.add(cons);
 					}
@@ -475,11 +471,11 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		long currentLevel = this.component.getInitialCapacity();
 		// peak flag
 		boolean isPeak = false;
-		// prepare a peak
-		ResourceProfileFlaw peak = new ResourceProfileFlaw(this.component);
-		
+
 		// list of flaws
 		List<Flaw> flaws = new ArrayList<>();
+		// prepare a peak
+		ResourceProfileFlaw peak = new ResourceProfileFlaw(this.component);
 		// check profile samples
 		for (ProfileSample sample : profile.getProfileSamples()) 
 		{
@@ -496,7 +492,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 			// check peak flag
 			if (!isPeak) 
 			{
-				// check if entering peak modality
+				// check entering condition to peak modality
 				isPeak = currentLevel < this.component.getMinCapacity() || 
 						currentLevel > this.component.getMaxCapacity();
 						
@@ -508,15 +504,15 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 			}
 			else if (isPeak)
 			{
-				// check current level of resource
-				if (currentLevel >= this.component.getMinCapacity() && 
-						currentLevel <= this.component.getMaxCapacity())
-				{
-					// a peak found
+				// check exiting condition from peak modality
+				isPeak = currentLevel != this.component.getInitialCapacity();
+				
+				// close peak if exit
+				if (!isPeak) {
+					// peak found
 					flaws.add(peak);
 					// reset new peak
 					peak = new ResourceProfileFlaw(this.component);
-					isPeak = false;
 				}
 			}
 		}
@@ -530,102 +526,5 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 		
 		// get flaws
 		return flaws;
-	}
-	
-	/**
-	 * 
-	 */
-	private List<List<Decision>> schedule(Collection<Decision> decisions) 
-	{
-		// initialize permutations
-		List<List<Decision>> result = new ArrayList<>();
-		// compute permutations
-		this.computePermutations(decisions, new ArrayList<Decision>(), result);
-		// get permutations
-		return result;
-	}
-	
-	/**
-	 * 
-	 * @param decisions
-	 * @param current
-	 * @param result
-	 */
-	private void computePermutations(Collection<Decision> decisions, List<Decision> current, List<List<Decision>> result) 
-	{
-		// base step
-		if (current.size() == decisions.size()) {
-			result.add(current);
-		}
-		else {
-			// recursive step
-			for (Decision dec : decisions) {
-				if (!current.contains(dec)) {
-					// create a new current list
-					List<Decision> list = new ArrayList<>(current);
-					list.add(dec);
-					// recursive call
-					this.computePermutations(decisions, list, result);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @param schedule
-	 * @return
-	 * @throws TemporalConstraintPropagationException
-	 */
-	private double checkScheduleFeasibility(List<Decision>schedule) 
-			throws TemporalConstraintPropagationException
-	{
-		// computed makespan 
-		double makespan = this.tdb.getOrigin();
-		// list of propagate precedence constraints
-		List<TemporalConstraint> committed = new ArrayList<>();
-		try
-		{
-			for (int index = 0; index < schedule.size() - 1; index++) 
-			{
-				// get decisions
-				Decision a = schedule.get(index);
-				Decision b = schedule.get(index + 1);
-				
-				// create temporal constraint
-				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-				before.setReference(a.getToken().getInterval());
-				before.setTarget(b.getToken().getInterval());
-				// propagate temporal constraint
-				this.tdb.propagate(before);
-				// add committed constraint
-				committed.add(before);
-			}
-			
-			// check feasibility 
-			this.tdb.checkConsistency();
-			
-			// feasible solution - compute the resulting makespan
-			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-			this.tdb.process(query);
-			// get computed makespan
-			makespan = query.getMakespan();
-		}
-		catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
-			// not feasible schedule
-			this.logger.debug("Not feasible schedule constraint found\n- " + ex.getMessage() + "\n");
-			// forward exception
-			throw new TemporalConstraintPropagationException(ex.getMessage());
-		}
-		finally {
-			// restore initial state
-			for (TemporalConstraint cons : committed) {
-				// remove constraint from network
-				this.tdb.retract(cons);
-			}
-		}
-		
-		// get resulting makespan
-		return makespan;
 	}
 }

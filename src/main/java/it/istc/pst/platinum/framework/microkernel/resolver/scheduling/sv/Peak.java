@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -127,7 +127,7 @@ public class TimePoint extends TemporalData implements Comparable<TimePoint>
 	 */
 	@Override
 	public int compareTo(TimePoint o) {
-		return this.id - o.id;
+		return this.lb < o.lb ? -1 : this.lb == o.lb && this.ub < o.ub ? -1 : this.lb == o.lb && this.ub == o.ub ? this.id <= o.id ? -1 : 1 : 1;
 	}
 	
 	/**

@@ -23,7 +23,7 @@ public final class PrimitiveStateVariable extends StateVariable implements Resou
 	 */
 	@DomainComponentConfiguration(resolvers = {
 			// scheduling resolver
-			ResolverType.SV_SCHEDULING_RESOLVER,	// or DISCRETE_RESOURCE_SCHEDULING_RESOLVER
+			ResolverType.SV_SCHEDULING_RESOLVER,
 			// time-line gap resolver
 			ResolverType.SV_GAP_RESOLVER,
 			// behavior checking resolver

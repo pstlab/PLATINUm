@@ -174,11 +174,25 @@ public abstract class StateVariable extends DomainComponent
 	 * @param target
 	 * @return
 	 */
-	public List<List<ComponentValue>> getPaths(ComponentValue source, ComponentValue target) {
+	public List<List<ComponentValue>> getPaths(ComponentValue source, ComponentValue target) 
+	{
 		// list of available paths
 		List<List<ComponentValue>> result = new ArrayList<>();
-		// search for paths
-		this.getPaths(new ArrayList<ComponentValue>(), source, target, result);
+		// check source and target
+		if (source.equals(target)) {
+			// get successors
+			for (ComponentValue value : this.getDirectSuccessors(source)) {
+				// initialize the path
+				List<ComponentValue> path = new ArrayList<>();
+				path.add(source);
+				// directly calls
+				this.computePaths(path, value, target, result);
+			}
+		}
+		else {
+			// search for paths
+			this.computePaths(new ArrayList<ComponentValue>(), source, target, result);
+		}
 		// get resulting paths
 		return result;
 	}
@@ -242,20 +256,35 @@ public abstract class StateVariable extends DomainComponent
 	 * @param target
 	 * @param result
 	 */
-	private void getPaths(List<ComponentValue> path, ComponentValue current, ComponentValue target, List<List<ComponentValue>> result) {
-		// check current value w.r.t. the target
-		if (current.equals(target) && !path.isEmpty()) {
+	private void computePaths(List<ComponentValue> path, ComponentValue current, ComponentValue target, List<List<ComponentValue>> result) 
+	{
+		// base step
+		if (current.equals(target)) {
 			// add target
 			path.add(current);
 			// add path to the result
-			result.add(path);
+			result.add(new ArrayList<>(path));
+			// remove last added element
+			path.remove(path.size() -1);
 		}
-		else if (!path.contains(current)) {
-			// intermediate step
-			path.add(current);
-			for (ComponentValue successor : this.getDirectSuccessors(current)) {
-				// recursive call
-				this.getPaths(new ArrayList<>(path), successor, target, result);
+		else	// recursive step
+		{
+			// check cycle
+			if (path.contains(current)) {
+				// skip path
+				this.logger.debug("Avoid cycles on SV paths\n- (partial) path: " + path + "\n- current value: " + current + "\n- target: " + target + "\n");
+			}
+			else	// no cycle found 
+			{
+				//add current value to the path
+				path.add(current);
+				// recursive calls
+				for (ComponentValue successor : this.getDirectSuccessors(current)) {
+					// recursive call
+					this.computePaths(path, successor, target, result);
+				}
+				// remove last added element
+				path.remove(path.size() - 1);
 			}
 		}
 	}

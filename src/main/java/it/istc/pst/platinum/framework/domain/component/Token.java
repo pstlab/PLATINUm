@@ -7,7 +7,7 @@ import it.istc.pst.platinum.framework.time.TemporalInterval;
  * @author anacleto
  *
  */
-public final class Token 
+public final class Token implements Comparable<Token> 
 {
 	private int id;
 	protected DomainComponent component;	// component the token belongs to
@@ -65,6 +65,15 @@ public final class Token
 	 */
 	public DomainComponent getComponent() {
 		return component;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public int compareTo(Token o) {
+		// compare temporal intervals
+		return this.interval.compareTo(o.interval);
 	}
 	
 	/**

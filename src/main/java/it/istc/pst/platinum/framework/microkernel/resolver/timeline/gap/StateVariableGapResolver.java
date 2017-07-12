@@ -1,8 +1,6 @@
 package it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +36,7 @@ import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
  * @author anacleto
  *
  */
-public final class StateVariableGapResolver <T extends StateVariable> extends Resolver implements Comparator<Decision> 
+public final class StateVariableGapResolver <T extends StateVariable> extends Resolver //implements Comparator<Decision> 
 {
 	@ComponentPlaceholder
 	protected T component;
@@ -51,38 +49,38 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				ResolverType.SV_GAP_RESOLVER.getFlawType());
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public int compare(Decision d1, Decision d2) 
-	{
-		// check distance again between temporal intervals
-		IntervalDistanceQuery query = this.tdb.
-				createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-		// set intervals
-		query.setSource(d1.getToken().getInterval());
-		query.setTarget(d2.getToken().getInterval());
-		// process query
-		this.tdb.process(query);
-		// get result
-		long dmin = query.getDistanceLowerBound();
-		long dmax = query.getDistanceUpperBound();
-		
-		// check temporal ordering
-		if (dmin >= 0 && dmax >= 0) { 
-			return -1;
-		}
-		else if (dmin < 0 && dmax <= 0) { 
-			return 1; 
-		}
-		else { 
-			throw new RuntimeException("Unknown ordering of decisions\n"
-				+ "- distance= [" + dmin + ", " + dmax + "]\n"
-				+ "- d1= " + d1 + "" + d1.getToken() +"\n"
-				+ "- d2= " + d2 + "" + d2.getToken() + "\n"); 
-		} 
-	}
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public int compare(Decision d1, Decision d2) 
+//	{
+//		// check distance again between temporal intervals
+//		IntervalDistanceQuery query = this.tdb.
+//				createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
+//		// set intervals
+//		query.setSource(d1.getToken().getInterval());
+//		query.setTarget(d2.getToken().getInterval());
+//		// process query
+//		this.tdb.process(query);
+//		// get result
+//		long dmin = query.getDistanceLowerBound();
+//		long dmax = query.getDistanceUpperBound();
+//		
+//		// check temporal ordering
+//		if (dmin >= 0 && dmax >= 0) { 
+//			return -1;
+//		}
+//		else if (dmin < 0 && dmax <= 0) { 
+//			return 1; 
+//		}
+//		else { 
+//			throw new RuntimeException("Unknown ordering of decisions\n"
+//				+ "- distance= [" + dmin + ", " + dmax + "]\n"
+//				+ "- d1= " + d1 + "" + d1.getToken() +"\n"
+//				+ "- d2= " + d2 + "" + d2.getToken() + "\n"); 
+//		} 
+//	}
 	
 	/**
 	 * 
@@ -327,9 +325,7 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		// if scheduled decisions look for gaps
 		if (isScheduled) 
 		{
-			// sort decisions
-			Collections.sort(list, this);
-			// look for gaps
+			// check gaps between adjacent decisions
 			for (int index = 0; index < list.size() - 1; index++) 
 			{
 				// get two adjacent decisions
@@ -347,16 +343,8 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				long dmin = query.getDistanceLowerBound();
 				long dmax = query.getDistanceUpperBound();
 				
-				// check gap
-				if (dmin >= 0 && dmax > 0) 
-				{
-					// we've got a gap
-					Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
-					// add the gap
-					flaws.add(gap);
-					this.logger.debug("Gap found on component= " + this.component.getName() + ":\n-distance= [dmin= " + dmin + ", dmax= " + dmax + "]\n- left-decision= " + left + "\n- right-deicision= " + right + "\n");
-				}
-				else if (dmin == 0 && dmax == 0) 
+				// the precondition is that decisions are schedules. 
+				if (dmin == 0 && dmax == 0) 
 				{
 					// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
 					boolean connected = false;
@@ -375,6 +363,18 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 						Gap gap = new Gap(this.component, left, right);
 						flaws.add(gap);
 					}
+				}
+				else if(dmin >= 0 && dmax > 0) 
+				{
+					// we've got a gap
+					Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
+					// add the gap
+					flaws.add(gap);
+					this.logger.debug("Gap found on component= " + this.component.getName() + ":\n-distance= [dmin= " + dmin + ", dmax= " + dmax + "]\n- left-decision= " + left + "\n- right-deicision= " + right + "\n");
+				}
+				else {
+					// not scheduled decisions
+					this.logger.warning("Trying to find gaps between not scheduled decisions...\n- left: " + left + "\n- right: " + right + "\n");
 				}
 			}
 		}
@@ -407,9 +407,10 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				// get gap's tokens
 				Token left = gap.getLeftDecision().getToken();
 				Token right = gap.getRightDecision().getToken();
-				// get available paths
-				for (List<ComponentValue> path : this.component.
-						getPaths(left.getPredicate().getValue(), right.getPredicate().getValue())) 
+				// check all (acyclic) paths among tokens
+				List<List<ComponentValue>> paths = this.component.getPaths(left.getPredicate().getValue(), right.getPredicate().getValue());
+				// each path represents a feasible solution for the gap 
+				for (List<ComponentValue> path : paths) 
 				{
 					// remove the source and destination values from the path
 					path.remove(path.size() - 1);
