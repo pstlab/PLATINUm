@@ -11,6 +11,7 @@ import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.FlawSelectionHeuristicModule;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.SearchStrategyModule;
+import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
@@ -19,7 +20,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.PlanControllabilityType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
@@ -28,13 +28,10 @@ import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckExcep
  */
 public class PseudoControllabilityAwareSolver extends Solver 
 {
-	@SearchStrategyModule(strategy= SearchStrategyType.DFS)
-	private SearchStrategy strategy;
-
-	@SearchStrategyModule(strategy = SearchStrategyType.DFS)
-	private SearchStrategy blacklist;
+	@SearchStrategyModule(strategy= SearchStrategyType.ASTAR)
+	private SearchStrategy fringe;
 	
-	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.HFS)
+	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.SEARCH_AND_BUILD)
 	private FlawSelectionHeuristic heuristic;
 	
 	/**
@@ -47,150 +44,123 @@ public class PseudoControllabilityAwareSolver extends Solver
 	/**
 	 * 
 	 */
+	@PostConstruct
+	protected void init() {
+		// create the root node
+		SearchSpaceNode root = this.createSearchSpaceNode();
+		// enqueue the root node
+		this.fringe.enqueue(root);
+	}
+	
+	/**
+	 * 
+	 */
 	@Override
 	public SolutionPlan solve() 
 			throws NoSolutionFoundException 
 	{
-		// prepare the search
-		boolean exit = false;								// process end flag
-		long start = System.currentTimeMillis();			// execution start time
-		this.stepCounter = 0;								// solving step counter
+		// set solving start time
+		long start = System.currentTimeMillis();
+		// initialize solving step counter
+		this.stepCounter = 0;
 
-		// the solution plan
+		// initialize the solution plan
 		SolutionPlan plan = null;
-		SearchSpaceNode extracted = null;			// current extracted node
-		SearchSpaceNode last = null;				// root node
-		// create root node and add to the fringe
-		SearchSpaceNode root = new SearchSpaceNode();
-		this.strategy.enqueue(root);
-		
-		// start with pseudo-controllability mode
-		boolean pseudocontrollability = true;
-		// starts solution search
-		while (!exit) 
+		// last extracted node
+		SearchSpaceNode last = null, node = null;
+		// search condition
+		boolean search = true;
+		// search a solution
+		while (search) 
 		{
 			try 
 			{
-				// new solving step
+				// update step counter
 				this.stepCounter++;
-				this.logger.debug("Solving step " + this.stepCounter);
-				// skip flag
-				boolean skip = false;
+				// extract a node from the fringe
+				node = this.fringe.dequeue();
+				this.logger.info("Solving step: " + this.stepCounter +"\n"
+						+ "- Extracted node: " + node + "\n"
+						+ "- Applied operator: " + node.getGenerator() + "\n");
 				
-				// extract next node from the fringe
-				extracted = this.strategy.dequeue();
-				// context switch
-				this.contextSwitch(last, extracted);
+				// propagate extracted node
+				this.contextSwitch(last, node);
 				// updated last propagated node
-				last = extracted;
+				last = node;
+				// check consistency of the resulting partial plan
+				this.pdb.check();
 				
-				try 
-				{
-					// consistency check
-					this.pdb.check();
-					this.logger.debug("Plan refinement:\n- applied operator= "  + extracted.getGenerator() + "\n\n"
-							+ "- current plan:\n"
+				// print information concerning current partial plan	
+				this.logger.info("Partial plan after propagation of operator: "  + node.getGenerator() + "\n"
+							+ "- plan:\n"
 							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
 							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n\n"
-							+ "- pending plan:\n"
+							+ "- pending plan (agenda):\n"
 							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
 							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n"
 							+ "- silent plan:\n"
 							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.SILENT).getDecisions() + "\n"
 							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.SILENT).getRelations() + "\n\n");
-				}
-				catch (PseudoControllabilityCheckException ex) 
-				{
-					// check solving modality
-					if (pseudocontrollability) 
-					{
-						// add node to the black list
-						this.blacklist.enqueue(extracted);
-						// skip
-						skip = true;
-						// warning
-						this.logger.warning("Controllability issues fund during plan refinement:\n- " + ex.getPseudoControllabilityIssues());
-					}
-				}
 				
-				// check solving flags
-				if (!skip) 
+ 				// choose the best flaws to solve
+				List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
+				// create a branch for each "equivalent" flaw to solve next
+				for (Flaw flaw : flaws)
 				{
-	 				// choose the best flaws to solve
-					List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
-					// create a branch for each "equivalent" flaw to solve next
-					for (Flaw flaw : flaws)
-					{
-						// expand the search space with the available solutions of the flaw
-						for (SearchSpaceNode child : this.expand(extracted, flaw)) {
-							// add the node to the fringe
-							this.strategy.enqueue(child);
-							// expand the search space
-							this.logger.debug("Search tree expansion:\nChild-node= " + child + "\n");
-						}
+					// expand the search space with the available solutions of the flaw
+					for (SearchSpaceNode child : this.expand(last, flaw)) {
+						// add the node to the fringe
+						this.fringe.enqueue(child);
+						// expand the search space
+						this.logger.info("Search tree expansion:\n- node: " + child + "\n"
+								+ "- generator: " + child.getGenerator() + "\n");
 					}
-				}
-				else {
-					// skipping current plan
-					this.logger.debug("Skipping current plan for controllability issues...");
 				}
 			}
-			catch (PlanRefinementException | ConsistencyCheckException | UnsolvableFlawFoundException ex) {
-				// unsolvable flaw found
-				this.logger.error("Error during plan refinement:\n " + ex.getMessage());
+			catch (PlanRefinementException ex) {
+				// error while refining the current plan
+				this.logger.warning("Error while refining the current plan\n"
+						+ "- operator: " + node.getGenerator() + "\n"
+						+ "- message: " + ex.getMessage() + "\n");
+			}
+			catch (UnsolvableFlawFoundException | ConsistencyCheckException  ex) {
+				// not feasible partial plan
+				this.logger.warning("Not feasible partial plan found\n"
+						+ "- oeprator: " + node.getGenerator() + "\n"
+						+ "- plan:\n"
+							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
+							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n"
+						+ "- agenda:\n"
+							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
+							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n");
+			}
+			catch (NoFlawFoundException ex)
+			{
+				// solution found stop search
+				search = false;
+				// set solving time
+				this.time = System.currentTimeMillis() - start;
+				// set plan
+				plan = this.pdb.getSolutionPlan();
+				plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABLE);
+				plan.setSolvingTime(this.time);
+				// pseudo-controllable solution found
+				this.logger.info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			}
 			catch (EmptyFringeException ex) 
 			{
-				try 
-				{
-					// no pseudo-controllable solution try with not pseudo-controllable ones
-					pseudocontrollability = false;
-					// enqueue not pseudo-controllable node
-					this.strategy.enqueue(this.blacklist.dequeue());
-					// notify changing modality
-					this.logger.info("No more node in the fringe but still flaws to solve [" + this.blacklist.getFringeSize() +  "] ...\n"
-							+ "- Entering in not pseudo-controllability mode\n");
-				}
-				catch (EmptyFringeException exx) 
-				{
-					// get solving time
-					this.time = System.currentTimeMillis() - start;
-					// no solution found
-					throw new NoSolutionFoundException("No solution found after " + this.time  + " (msecs) "
-							+ "and " + this.stepCounter  + " solving steps\n");
-				}
-			}
-			catch (NoFlawFoundException ex) 
-			{
-				// get solving time
+				// no solution found stop search
+				search = false;
+				// set solving time
 				this.time = System.currentTimeMillis() - start;
-				// solution found
-				exit = true;
-				// check solving modality
-				if (pseudocontrollability) 
-				{
-					// set plan
-					plan = this.pdb.getSolutionPlan();
-					plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABLE);
-					plan.setSolvingTime(this.time);
-					// pseudo-controllable solution found
-					this.logger.info("Pseudo-controllable solution found after " + this.time + " (msecs) "
-							+ "and " + this.stepCounter + " solving steps\n");
-				}
-				else 
-				{
-					// set plan
-					plan = this.pdb.getSolutionPlan();
-					plan.setControllability(PlanControllabilityType.NOT_PSEUDO_CONTROLLABLE);
-					plan.setSolvingTime(this.time);
-					// not pseudo-controllable solution found
-					this.logger.info("Not pseudo-controllable solution found after " + this.time + " (msecs) "
-							+ "and " + this.stepCounter + " solving steps\n");
-				}
+				// backtrack from the last propagated node
+				this.backtrack(last);
+				// throw exception
+				throw new NoSolutionFoundException("No pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			}
 			
 		} // end while
-
+		
 		// get solution plan
 		return plan;
 	}

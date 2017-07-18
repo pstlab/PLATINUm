@@ -27,7 +27,7 @@ public final class ContainsIntervalConstraint extends BinaryTemporalConstraint<T
 	 * 
 	 * @param startTimeBounds
 	 */
-	public void setFirstBound(long[] bounds) {
+	public void setStartTimeBound(long[] bounds) {
 		this.startTimeBounds[0] = bounds[0];
 		this.startTimeBounds[1] = bounds[1];
 	}
@@ -44,7 +44,7 @@ public final class ContainsIntervalConstraint extends BinaryTemporalConstraint<T
 	 * 
 	 * @param endTimeBounds
 	 */
-	public void setSecondBound(long[] bounds) {
+	public void setEndTimeBound(long[] bounds) {
 		this.endTimeBounds[0] = bounds[0];
 		this.endTimeBounds[1] = bounds[1];
 	}

@@ -101,7 +101,6 @@ public interface PlanDataBase
 	 */
 	public void check() 
 			throws ConsistencyCheckException;
-	
 	/**
 	 * 
 	 * @param name
@@ -187,7 +186,7 @@ public interface PlanDataBase
 	
 	/**
 	 * 
-	 * @param type
+	 * @param types
 	 * @return
 	 * @throws UnsolvableFlawFoundException
 	 */

@@ -57,14 +57,14 @@ public class BeforeRelation extends TemporalRelation
 	 * 
 	 * @return
 	 */
-	public long getDistanceLowerBound() {
+	public long getLowerBound() {
 		return this.bound[0];
 	}
 	
 	/**
 	 * 
 	 */
-	public long getDistanceUpperBound() {
+	public long getUpperBound() {
 		return this.bound[1];
 	}
 

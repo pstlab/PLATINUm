@@ -93,7 +93,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@TemporalFacadeConfiguration(facade = TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE)
 	@ParameterFacadeConfiguration(facade = ParameterFacadeType.CSP_PARAMETER_FACADE)
-	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
+	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.OFF)
 	@DomainComponentConfiguration(resolvers = { 
 			// plan refinement resolver
 			ResolverType.PLAN_REFINEMENT 
@@ -339,10 +339,10 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		this.tdb.checkConsistency();
 		// check parameter consistency
 		this.pdb.checkConsistency();
-		// check pseudo-controllability of components
+		// check also pseudo-controllability
 		this.checkPseudoControllability();
 	}
-
+	
 	/**
 	 * Check components to get information about the specific 
 	 * tokens that are not pseudo-controllable
@@ -351,7 +351,8 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public void checkPseudoControllability() 
-			throws PseudoControllabilityCheckException {
+			throws PseudoControllabilityCheckException 
+	{
 		// list of squeezed tokens
 		Map<DomainComponent, List<Decision>> squeezed = new HashMap<>();
 		// check pseudo-controllability of components
@@ -698,6 +699,23 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
+	public void restore(Relation rel) {
+		// check if local relation
+		if (rel.isLocal()) {
+			// get component
+			DomainComponent component = rel.getReference().getComponent();
+			component.restore(rel);
+		}
+		else {
+			// simply add back the relation to the component
+			this.relations.add(rel);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
 	public Decision create(ComponentValue value, String[] labels) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
@@ -965,7 +983,8 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			DomainComponent component = relation.getReference().getComponent();
 			component.free(relation);
 		}
-		else {
+		else 
+		{
 			// check if global relation exists
 			if (this.relations.contains(relation)) {
 				// deactivate relation if necessary
@@ -979,17 +998,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			}
 		}
 	}
-	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public String printSilentPlan() {
-//		String str = "";
-//		str += "- decisions= " + this.getSilentDecisions() + "\n";
-//		str += "- relations= " + this.getSilentRelations() + "\n";
-//		return str;
-//	}
 	
 	/**
 	 * Only for debugging
@@ -1456,14 +1464,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				this.commit(solution);
 				// set applied
 				operator.setApplied();
-//				// compute the resulting makespan
-//				double makespan = this.computeMakespan();
-//				// get resulting agenda
-//				Agenda agenda = this.getAgenda();
-//				// set makespan
-//				operator.setMakespan(makespan);
-//				// set agenda
-//				operator.setAgenda(agenda);
 			}
 			catch (FlawSolutionApplicationException ex) {
 				// error while applying flaw solution
@@ -1475,7 +1475,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		{
 			try
 			{
-				// simply restore flaw solution
+				// simply restore flaw solution by leveraging "SILENT" plan
 				this.restore(solution);
 			} 
 			catch (Exception ex) { 

@@ -1,6 +1,6 @@
 DOMAIN SATELLITE
 {
-	TEMPORAL_MODULE temporal_module = [0, 100], 100;
+	TEMPORAL_MODULE temporal_module = [0, 150], 100;
 	
 	COMP_TYPE SingletonStateVariable PointingModeType (Earth(), Slewing(), Science(), _Comm(), Maintenance())
 	{
@@ -54,7 +54,7 @@ DOMAIN SATELLITE
 	{
 		VALUE Science()
 		{
-			cd0 PointingMode.pm._Comm();
+			cd0 <!> PointingMode.pm._Comm();
 			
 			BEFORE [0, +INF] cd0; 
 		}

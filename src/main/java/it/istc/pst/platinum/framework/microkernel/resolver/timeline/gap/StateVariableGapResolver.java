@@ -8,13 +8,13 @@ import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Token;
-import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.TransitionNotFoundException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.Transition;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
@@ -26,17 +26,25 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.M
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleGapCompletionException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
+import it.istc.pst.platinum.framework.time.TemporalInterval;
+import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
+import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
+import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
+import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
+import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
+import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
+import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
-import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 
 /**
  * 
  * @author anacleto
  *
  */
-public final class StateVariableGapResolver <T extends StateVariable> extends Resolver //implements Comparator<Decision> 
+public final class StateVariableGapResolver <T extends StateVariable> extends Resolver 
 {
 	@ComponentPlaceholder
 	protected T component;
@@ -48,108 +56,68 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		super(ResolverType.SV_GAP_RESOLVER.getLabel(), 
 				ResolverType.SV_GAP_RESOLVER.getFlawType());
 	}
-	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public int compare(Decision d1, Decision d2) 
-//	{
-//		// check distance again between temporal intervals
-//		IntervalDistanceQuery query = this.tdb.
-//				createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-//		// set intervals
-//		query.setSource(d1.getToken().getInterval());
-//		query.setTarget(d2.getToken().getInterval());
-//		// process query
-//		this.tdb.process(query);
-//		// get result
-//		long dmin = query.getDistanceLowerBound();
-//		long dmax = query.getDistanceUpperBound();
-//		
-//		// check temporal ordering
-//		if (dmin >= 0 && dmax >= 0) { 
-//			return -1;
-//		}
-//		else if (dmin < 0 && dmax <= 0) { 
-//			return 1; 
-//		}
-//		else { 
-//			throw new RuntimeException("Unknown ordering of decisions\n"
-//				+ "- distance= [" + dmin + ", " + dmax + "]\n"
-//				+ "- d1= " + d1 + "" + d1.getToken() +"\n"
-//				+ "- d2= " + d2 + "" + d2.getToken() + "\n"); 
-//		} 
-//	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	protected void doRestore(FlawSolution solution) 
-			throws Exception 
+			throws RelationPropagationException 
 	{
 		// get created decisions 
-		List<Decision> dCreated = solution.getCreatedDecisions();
+		List<Decision> decisions = solution.getCreatedDecisions();
 		// restore created decisions
-		for (Decision dec : dCreated) {
+		for (Decision decision : decisions) {
 			// restore decision
-			this.component.restore(dec);
+			this.component.restore(decision);
 		}
 		
-		// get activated decisions
-		List<Decision> dActivated = solution.getActivatedDecisisons();
-		List<Decision> commitDecs = new ArrayList<>();
-		// activate decisions
-		for (Decision dec : dActivated) 
-		{
-			try
-			{
-				// activate decision
-				this.component.add(dec);
-				commitDecs.add(dec);
-			}
-			catch (DecisionPropagationException ex) 
-			{
-				// deactivate committed decisions
-				for (Decision d : commitDecs) {
-					// deactivate decision
-					this.component.delete(d);
-				}
-
-				// error while resetting flaw solution
-				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
-			}
+		// restore created relations
+		List<Relation> created = solution.getCreatedRelations();
+		// restore created relations
+		for (Relation relation : created) {
+			// restore relation
+			this.component.restore(relation);
 		}
 		
 		// get activated relations
-		List<Relation> rActivated = solution.getActivatedRelations();
+		List<Relation> activated = solution.getActivatedRelations();
 		// list of committed relations
-		List<Relation> commitRels = new ArrayList<>();
-		// activate relations
-		for (Relation rel : rActivated) 
+		List<Relation> committed = new ArrayList<>();
+		try
 		{
-			try
+			// activate relations
+			for (Relation relation : activated) 
 			{
+				// restore relation
+				this.component.restore(relation);
 				// activate relation
-				this.component.add(rel);
-				commitRels.add(rel);
+				this.component.add(relation);
+				committed.add(relation);
 			}
-			catch (RelationPropagationException ex) {
-				// deactivate committed relations
-				for (Relation r : commitRels) {
-					// deactivate relation
-					this.component.delete(r);
-				}
-				
-				// deactivate committed decisions
-				for (Decision d : commitDecs) {
-					// deactivate 
-					this.component.delete(d);
-				}
-				
-				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+		}
+		catch (RelationPropagationException ex) 
+		{
+			// deactivate committed relations
+			for (Relation relation : committed) {
+				// free relation
+				this.component.free(relation);
 			}
+			
+			// remove also created relations and decisions
+			for (Relation relation : created) {
+				// free relation
+				this.component.free(relation);
+			}
+			
+			// remove created decisions
+			for (Decision decision : decisions) {
+				// move back decision to SILENT set
+				this.component.delete(decision);
+			}
+			
+			// exception while restoring a previously applied operator
+			throw new RelationPropagationException("Error while resetting flaw solution:\n- " + solution + "\n");
 		}
 	}
 	
@@ -199,11 +167,11 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 			catch (RelationPropagationException ex) 
 			{
 				// retract committed relations if needed
-				for (Relation cr : committed) {
+				for (Relation relation : committed) {
 					// deactivate relation
-					this.component.delete(cr);
+					this.component.delete(relation);
 					// clear memory from relation
-					this.component.free(cr);
+					this.component.free(relation);
 				}
 				
 				// not feasible solution
@@ -214,7 +182,6 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		{
 			// create the list of the decisions
 			List<Decision> transition = new ArrayList<>();
-			
 			// add the gap-left decision
 			transition.add(completion.getLeftDecision());
 			// create intermediate decisions
@@ -234,7 +201,6 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				// add pending decision
 				solution.addCreatedDecision(dec);
 			}
-			
 			// add the gap-right decision
 			transition.add(completion.getRightDecision());
 			
@@ -268,22 +234,27 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 	@Override
 	protected void doRetract(FlawSolution solution) 
 	{
-		// manage activated relations
-		for (Relation rel : solution.getActivatedRelations()) {
-			// deactivate relation
-			this.component.delete(rel);
+		// list of activated relations
+		List<Relation> activated = solution.getActivatedRelations();
+		// completely activated relations
+		for (Relation relation : activated) {
+			// free created and activated relations
+			this.component.free(relation);
 		}
 		
-		// delete activated decisions: ACTIVE -> PENDING
-		for (Decision dec : solution.getActivatedDecisisons()) {
-			// deactivate decision
-			this.component.delete(dec);
+		// list of all created relations
+		List<Relation> created = solution.getCreatedRelations();
+		// completely remove created relations
+		for (Relation relation : created) {
+			// free created relations
+			this.component.free(relation);
 		}
 		
-		// delete pending decisions: PENDING -> SILENT
-		for (Decision dec : solution.getCreatedDecisions()) {
-			// delete pending decisions
-			this.component.delete(dec);
+		// list of all pending decisions created
+		List<Decision> decisions = solution.getCreatedDecisions();
+		for (Decision decision : decisions) {
+			// move to SILENT all added pending decisions
+			this.component.delete(decision);
 		}
 	}
 
@@ -298,91 +269,67 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		List<Flaw> flaws = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
 		List<Decision> list = this.component.getActiveDecisions();
-		this.logger.debug("Check timeline gaps on component= " + this.component.getName() + "\n"
-				+ "- " + list + "\n");
 		// check scheduled decisions
 		boolean isScheduled = true;
+		// check gaps between adjacent decisions
 		for (int index = 0; index < list.size() - 1 && isScheduled; index++) 
 		{
-			// get decision A
-			Decision a = list.get(index);
-			for (int jndex = index +1; jndex < list.size() && isScheduled; jndex++)
+			// get two adjacent decisions
+			Decision left = list.get(index);
+			Decision right = list.get(index + 1);
+			// check distance again between temporal intervals
+			IntervalDistanceQuery query = this.tdb.
+					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
+			// set intervals
+			query.setSource(left.getToken().getInterval());
+			query.setTarget(right.getToken().getInterval());
+			// process query
+			this.tdb.process(query);
+			// get result
+			long dmin = query.getDistanceLowerBound();
+			long dmax = query.getDistanceUpperBound();
+			
+			// the precondition is that decisions are schedules. 
+			if (dmin == 0 && dmax == 0) 
 			{
-				// get a decision B
-				Decision b = list.get(jndex);
-				// check overlapping intervals
-				IntervalOverlapQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_OVERLAP);
-				// set intervals
-				query.setReference(a.getToken().getInterval());
-				query.setTarget(b.getToken().getInterval());
-				// process query
-				this.tdb.process(query);
-				// check if scheduled
-				isScheduled = !query.isOverlapping();
+				// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
+				boolean connected = false;
+				Iterator<Relation> it = this.component.getActiveRelations(left, right).iterator();
+				while (it.hasNext() && !connected) {
+					// next relation
+					Relation rel = it.next();
+					// check type
+					connected = rel.getType().equals(RelationType.MEETS);
+				}
+				
+				// check if decisions are linked
+				if (!connected) 
+				{
+					// force transition through a MEETS constraint
+					Gap gap = new Gap(this.component, left, right);
+					// add gap
+					flaws.add(gap);
+				}
+			}
+			else if(dmin >= 0 && dmax > 0) 
+			{
+				// we've got a gap
+				Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
+				// add gap
+				flaws.add(gap);
+			}
+			else {
+				// not scheduled decisions
+				isScheduled = false;
 			}
 		}
 		
-		// if scheduled decisions look for gaps
-		if (isScheduled) 
-		{
-			// check gaps between adjacent decisions
-			for (int index = 0; index < list.size() - 1; index++) 
-			{
-				// get two adjacent decisions
-				Decision left = list.get(index);
-				Decision right = list.get(index + 1);
-				// check distance again between temporal intervals
-				IntervalDistanceQuery query = this.tdb.
-						createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-				// set intervals
-				query.setSource(left.getToken().getInterval());
-				query.setTarget(right.getToken().getInterval());
-				// process query
-				this.tdb.process(query);
-				// get result
-				long dmin = query.getDistanceLowerBound();
-				long dmax = query.getDistanceUpperBound();
-				
-				// the precondition is that decisions are schedules. 
-				if (dmin == 0 && dmax == 0) 
-				{
-					// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
-					boolean connected = false;
-					Iterator<Relation> it = this.component.getActiveRelations(left, right).iterator();
-					while (it.hasNext() && !connected) {
-						// next relation
-						Relation rel = it.next();
-						// check type
-						connected = rel.getType().equals(RelationType.MEETS);
-					}
-					
-					// check if decisions are linked
-					if (!connected) {
-						// create semantic compliant flaw
-						this.logger.debug("Ensure timeline semantics on " + this.component + " between:\n- " + left + "\n- " + right);
-						Gap gap = new Gap(this.component, left, right);
-						flaws.add(gap);
-					}
-				}
-				else if(dmin >= 0 && dmax > 0) 
-				{
-					// we've got a gap
-					Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
-					// add the gap
-					flaws.add(gap);
-					this.logger.debug("Gap found on component= " + this.component.getName() + ":\n-distance= [dmin= " + dmin + ", dmax= " + dmax + "]\n- left-decision= " + left + "\n- right-deicision= " + right + "\n");
-				}
-				else {
-					// not scheduled decisions
-					this.logger.warning("Trying to find gaps between not scheduled decisions...\n- left: " + left + "\n- right: " + right + "\n");
-				}
-			}
-		}
-		else {
-			// not scheduled decisions on component
-			this.logger.debug("No gaps can be detected\nNot scheduled decisions on component= " + this.component.getName() + "\n");
-			// clear gaps detected till now
+		// check if scheduled decisions
+		if (!isScheduled) {
+			// clear all gaps detected
 			flaws = new ArrayList<>();
+			// not scheduled decisions on component
+			this.logger.debug("Not scheduled decisions found on component= " + this.component.getName() + " and therefore no gaps can be dected\n");
 		}
 		
 		// get detected gaps
@@ -413,16 +360,34 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				for (List<ComponentValue> path : paths) 
 				{
 					// remove the source and destination values from the path
-					path.remove(path.size() - 1);
 					path.remove(0);
+					path.remove(path.size() - 1);
 					// feasible solution
-					GapCompletion sol = new GapCompletion(gap, path);
-					// set created subgoals
-					for (ComponentValue subgoal : path) {
-						sol.addCreatedSubGoal(subgoal);
+					GapCompletion solution = new GapCompletion(gap, path);
+					try
+					{
+						// check temporal feasibility of solution
+						double makespan = this.checkGapCompletionTemporalFeasibility(solution);
+						// set the resulting makespan
+						solution.setMakespan(makespan);
+						// add solution to the flaw
+						gap.addSolution(solution);
+						// print gap information
+						this.logger.debug("Gap found on component " + this.component.getName() + ":\n"
+								+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
+								+ "- left-side decision: " + gap.getLeftDecision() + "\n"
+								+ "- right-side decision: " + gap.getRightDecision() + "\n"
+								+ "- solution path: " + path + "\n"
+								+ "- resulting makespan: " + makespan + "\n");
+						
 					}
-					// add solution to the flaw
-					gap.addSolution(sol);
+					catch (NotFeasibleGapCompletionException ex) {
+						// not feasible gap completion found
+						this.logger.debug("Not feasible gap completion found:\n"
+								+ "- gap: " + gap + "\n"
+								+ "- solution: " + path + "\n"
+								+ "- message: \"" + ex.getMessage() + "\"\n");
+					}
 				}
 			}
 			break;
@@ -431,8 +396,22 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 			case SEMANTIC_CONNECTION : 
 			{
 				// direct connection between decisions
-				GapCompletion sol = new GapCompletion(gap, new ArrayList<ComponentValue>());
-				gap.addSolution(sol);
+				GapCompletion solution = new GapCompletion(gap, new ArrayList<ComponentValue>());
+				try
+				{
+					// check solution feasibility
+					double makespan = this.checkGapCompletionTemporalFeasibility(solution);
+					// set the makespan
+					solution.setMakespan(makespan);
+					// add gap solution
+					gap.addSolution(solution);
+				}
+				catch (NotFeasibleGapCompletionException ex) {
+					this.logger.debug("Not feasible gap completion found:\n"
+							+ "- gap: " + gap + "\n"
+							+ "- solution: " + solution + "\n"
+							+ "- message: \""+ ex.getMessage() + "\"\n");
+				}
 			}
 			break;
 		}
@@ -522,5 +501,124 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 		
 		// get created relations
 		return rels;
+	}
+	
+	/**
+	 * 
+	 * @param completion
+	 * @return
+	 * @throws NotFeasibleGapCompletionException
+	 */
+	private double checkGapCompletionTemporalFeasibility(GapCompletion completion) 
+			throws NotFeasibleGapCompletionException
+	{
+		// initialize makespan
+		double makespan = Double.MIN_VALUE + 1;
+		// list of committed relations
+		List<TemporalConstraint> committedConstraints = new ArrayList<>();
+		List<TemporalInterval> committedIntervals = new ArrayList<>();
+		try
+		{
+			// check solution path
+			if (completion.getPath().isEmpty()) 
+			{
+				// direct token transition between active decisions
+				Decision reference = completion.getLeftDecision();
+				Decision target = completion.getRightDecision();
+				
+				// create temporal constraint
+				BeforeIntervalConstraint meets = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
+				// set reference 
+				meets.setReference(reference.getToken().getInterval());
+				meets.setTarget(target.getToken().getInterval());
+				
+				// propagate constraint and check consistency
+				this.tdb.propagate(meets);
+				// add to committed constraint
+				committedConstraints.add(meets);
+				this.tdb.checkConsistency();
+				
+				// feasible solution, compute the resulting makespan
+				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+				this.tdb.process(query);
+				// set the resulting makespan
+				makespan = query.getMakespan();
+			}
+			else 
+			{
+				// prepare the sequence of temporal intervals
+				List<TemporalInterval> intervals = new ArrayList<>();
+				// add left interval
+				intervals.add(completion.getLeftDecision().getToken().getInterval());
+				
+				// create intermediate intervals
+				for (ComponentValue value : completion.getPath()) 
+				{
+					// create temporal interval
+					TemporalInterval i = this.tdb.createTemporalInterval(value.getDurationBounds(), value.isControllable());
+					// add intermediate interval
+					intervals.add(i);
+					// add committed interval
+					committedIntervals.add(i);
+					
+					/*
+					 * TODO: Take into account also parameter constraints/relations
+					 */
+				}
+				
+				// add last interval
+				intervals.add(completion.getRightDecision().getToken().getInterval());
+							
+				// try to propagate temporal relations between adjacent intervals
+				for (int index = 0; index <= intervals.size() - 2; index++) 
+				{
+					// get adjacent decisions
+					TemporalInterval i = intervals.get(index);
+					TemporalInterval j = intervals.get(index + 1);
+					// create and activate temporal constraint
+					MeetsIntervalConstraint meets = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
+					// set reference
+					meets.setReference(i);
+					meets.setTarget(j);
+					
+					// propagate temporal constraint
+					this.tdb.propagate(meets);
+					committedConstraints.add(meets);
+					
+					/*
+					 * TODO: Take into account also parameter constraints/relations
+					 */
+				}
+				
+				// check temporal feasibility
+				this.tdb.checkConsistency();
+				// feasible solution, compute the resulting makespan
+				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+				this.tdb.process(query);
+				// set the resulting makespan
+				makespan = query.getMakespan();
+			}
+		}
+		catch (TemporalIntervalCreationException | TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+			// throw exception
+			throw new NotFeasibleGapCompletionException(ex.getMessage());
+		}
+		finally 
+		{
+			// clear data structure if necessary
+			for (TemporalConstraint constraint : committedConstraints) {
+				// retract temporal constraint
+				this.tdb.retract(constraint);
+			}
+			
+			// clear data structure if necessary
+			for (TemporalInterval interval : committedIntervals) {
+				// delete temporal intervals and related time points
+				this.tdb.deleteTemporalInterval(interval);
+			}
+		}
+		
+		// get computed makespan
+		return makespan;
 	}
 }

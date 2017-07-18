@@ -64,7 +64,8 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 	@Override
 	public int compare(SearchSpaceNode o1, SearchSpaceNode o2) {
 		// compare the costs of the nodes
-		return o1.getCost() < o2.getCost() ? -1 : 
-			o1.getCost() == o2.getCost() && o1.getDepth() >= o2.getDepth() ? -1 : 1;
+		return o1.getMakespan() <= o2.getMakespan() ? -1 : 1;
+//		return o1.getCost() < o2.getCost() ? -1 : 
+//			o1.getCost() == o2.getCost() && o1.getDepth() >= o2.getDepth() ? -1 : 1;
 	}
 }

@@ -1012,7 +1012,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 			data = new ArrayList<>(subset);
 		}
 		
-		// compute the makespan
+		// compute the makespan by taking into account controllable intervals only
 		for (TemporalInterval i : data) 
 		{
 			// check if controllable

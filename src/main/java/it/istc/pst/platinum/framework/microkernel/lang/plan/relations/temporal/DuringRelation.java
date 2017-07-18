@@ -106,8 +106,8 @@ public class DuringRelation extends TemporalRelation
 		c.setTarget(this.target.getToken().getInterval());
 		
 		// set bounds
-		c.setFirstBound(this.startTimeBound);
-		c.setSecondBound(this.endTimeBound);
+		c.setStartTimeBound(this.startTimeBound);
+		c.setEndTimeBound(this.endTimeBound);
 		// set constraint
 		this.constraint = c;
 		// get constraint

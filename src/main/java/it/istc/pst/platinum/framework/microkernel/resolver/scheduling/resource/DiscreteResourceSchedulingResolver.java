@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
-import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceProfileManager;
@@ -113,7 +112,10 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 				// set resulting makespan
 				solution.setMakespan(makespan);
 				profileFlaw.addSolution(solution);
-				this.logger.debug("Feasible solution of the peak:\n- solution= " + solution + "\n");
+				this.logger.debug("Feasible solution of the peak:\n"
+						+ "- peak: " + profileFlaw.getPeak() + "\n"
+						+ "- feasible solution: " + solution + "\n"
+						+ "- resulting makespan: " + makespan + "\n");
 			}
 			catch (TemporalConstraintPropagationException ex) {
 				// not feasible schedule, discard the related schedule
@@ -153,8 +155,9 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 			rel.setBound(new long[] {1, this.component.getHorizon()});
 			// add reference, target and constraint
 			relations.add(rel);
-			
-			this.logger.debug("Applying flaw solution\n- " + solution + "\nthrough before constraint " + rel);
+			this.logger.debug("Applying flaw solution:\n"
+					+ "- solution: " + solution + "\n"
+					+ "- created temporal constraint: " + rel + "\n");
 		}
 		
 		try 
@@ -182,69 +185,34 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 	 */
 	@Override
 	protected void doRestore(FlawSolution solution) 
-			throws Exception 
+			throws RelationPropagationException 
 	{
-		// get created decisions 
-		List<Decision> dCreated = solution.getCreatedDecisions();
-		// restore created decisions
-		for (Decision dec : dCreated) {
-			// restore decision
-			this.component.restore(dec);
-		}
-		
-		// get activated decisions
-		List<Decision> dActivated = solution.getActivatedDecisisons();
-		List<Decision> commitDecs = new ArrayList<>();
-		// activate decisions
-		for (Decision dec : dActivated) 
-		{
-			try
-			{
-				// activate decision
-				this.component.add(dec);
-				commitDecs.add(dec);
-			}
-			catch (DecisionPropagationException ex) 
-			{
-				// deactivate committed decisions
-				for (Decision d : commitDecs) {
-					// deactivate decision
-					this.component.delete(d);
-				}
-
-				// error while resetting flaw solution
-				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
-			}
-		}
-		
-		// get activated relations
-		List<Relation> rActivated = solution.getActivatedRelations();
+		// list of activated relations
+		List<Relation> list = solution.getActivatedRelations();
 		// list of committed relations
-		List<Relation> commitRels = new ArrayList<>();
-		// activate relations
-		for (Relation rel : rActivated) 
+		List<Relation> committed = new ArrayList<>();
+		try
 		{
-			try
+			// activate relations
+			for (Relation rel : list) 
 			{
+				// restore relation
+				this.component.restore(rel);
 				// activate relation
 				this.component.add(rel);
-				commitRels.add(rel);
+				committed.add(rel);
 			}
-			catch (RelationPropagationException ex) {
-				// deactivate committed relations
-				for (Relation r : commitRels) {
-					// deactivate relation
-					this.component.delete(r);
-				}
-				
-				// deactivate committed decisions
-				for (Decision d : commitDecs) {
-					// deactivate 
-					this.component.delete(d);
-				}
-				
-				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
+		}
+		catch (RelationPropagationException ex) 
+		{
+			// deactivate committed relations
+			for (Relation relation : committed) {
+				// free relation
+				this.component.free(relation);
 			}
+
+			// error while restoring flaw solution
+			throw new RelationPropagationException("Error while resetting flaw solution:\n- " + solution + "\n");
 		}
 	}
 	
@@ -254,24 +222,13 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 	@Override
 	protected void doRetract(FlawSolution solution) 
 	{
+		// get the list of activated (and also created) relations
+		List<Relation> relations = solution.getActivatedRelations();
 		// manage activated relations
-		for (Relation rel : solution.getActivatedRelations()) {
-			// deactivate relation
-			this.component.delete(rel);
+		for (Relation rel : relations) {
+			// free created and activated relations
+			this.component.free(rel);
 		}
-		
-		// delete activated decisions: ACTIVE -> PENDING
-		for (Decision dec : solution.getActivatedDecisisons()) {
-			// deactivate decision
-			this.component.delete(dec);
-		}
-		
-		// delete pending decisions: PENDING -> SILENT
-		for (Decision dec : solution.getCreatedDecisions()) {
-			// delete pending decisions
-			this.component.delete(dec);
-		}
-		
 	}
 	
 	/**
@@ -464,7 +421,6 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent & Res
 	
 	/**
 	 * 
-	 * @param initialCapacity
 	 * @param profile
 	 * @return
 	 */

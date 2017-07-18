@@ -17,9 +17,11 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoun
  */
 public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 {
+	// note that the order determines the application sequence of filters
 	@FlawFilterPipelineModule(pipeline= {
-			FlawFilterType.HFF,
 			FlawFilterType.TFF,
+			FlawFilterType.HFF,
+			FlawFilterType.DFF
 	})
 	private List<FlawFilter> filters;
 	

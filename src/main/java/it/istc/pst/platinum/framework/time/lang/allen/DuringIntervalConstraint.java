@@ -27,7 +27,7 @@ public class DuringIntervalConstraint extends BinaryTemporalConstraint<TemporalI
 	 * 
 	 * @param bounds
 	 */
-	public void setFirstBound(long[] bounds) {
+	public void setStartTimeBound(long[] bounds) {
 		this.startTimeBounds[0] = bounds[0];
 		this.startTimeBounds[1] = bounds[1];
 	}
@@ -36,7 +36,7 @@ public class DuringIntervalConstraint extends BinaryTemporalConstraint<TemporalI
 	 * 
 	 * @param bounds
 	 */
-	public void setSecondBound(long[] bounds) {
+	public void setEndTimeBound(long[] bounds) {
 		this.endTimeBounds[0] = bounds[0];
 		this.endTimeBounds[1] = bounds[1];
 	}

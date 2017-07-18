@@ -178,7 +178,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		System.out.println("[Test]: createTemporalIntervalsAndCheckPseudoControllability1() --------------------");
 		System.out.println();
 		TemporalInterval i1 = null;
-		try {
+		try 
+		{
 			// create flexible temporal interval
 			i1 = this.facade.createTemporalInterval(new long[] {10, 50}, false);
 			Assert.assertNotNull(i1);
@@ -503,15 +504,15 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 					create(TemporalConstraintType.DURING);
 			c2.setReference(i2);
 			c2.setTarget(i3);
-			c2.setFirstBound(new long[] {1, 80});
-			c2.setSecondBound(new long[] {1, 80});
+			c2.setStartTimeBound(new long[] {1, 80});
+			c2.setEndTimeBound(new long[] {1, 80});
 			// contains constraint
 			DuringIntervalConstraint c3 = this.intervalFactory.
 					create(TemporalConstraintType.DURING);
 			c3.setReference(i1);
 			c3.setTarget(i3);
-			c3.setFirstBound(new long[] {1,10});
-			c3.setSecondBound(new long[] {1, 10});
+			c3.setStartTimeBound(new long[] {1,10});
+			c3.setEndTimeBound(new long[] {1, 10});
 			
 			// propagate constraints
 			facade.propagate(c1);
@@ -569,15 +570,15 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 					create(TemporalConstraintType.DURING);
 			c2.setReference(i2);
 			c2.setTarget(i3);
-			c2.setFirstBound(new long[] {1, 80});
-			c2.setSecondBound(new long[] {1, 80});
+			c2.setStartTimeBound(new long[] {1, 80});
+			c2.setEndTimeBound(new long[] {1, 80});
 			// contains constraint
 			DuringIntervalConstraint c3 = this.intervalFactory.
 					create(TemporalConstraintType.DURING);
 			c3.setReference(i1);
 			c3.setTarget(i3);
-			c3.setFirstBound(new long[] {1,10});
-			c3.setSecondBound(new long[] {1, 10});
+			c3.setStartTimeBound(new long[] {1,10});
+			c3.setEndTimeBound(new long[] {1, 10});
 			
 			// propagate constraints
 			this.facade.propagate(c1);

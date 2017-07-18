@@ -86,7 +86,7 @@ public abstract class SchedulingResolver extends Resolver
 	 * @return
 	 * @throws TemporalConstraintPropagationException
 	 */
-	protected double checkScheduleFeasibility(List<Decision>schedule) 
+	protected double checkScheduleFeasibility(List<Decision> schedule) 
 			throws TemporalConstraintPropagationException
 	{
 		// initialize the makespan

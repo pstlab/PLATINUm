@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.istc.pst.epsl.microkernel.internal.engine.exception.UnsolvableFlawException;
-import it.istc.pst.platinum.framework.domain.component.ex.DecisionNotFoundException;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
@@ -266,6 +265,15 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	}
 	
 	/**
+	 * 
+	 * @param rel
+	 */
+	public void restore(Relation rel) {
+		// simply add back the relation to the component
+		this.relations.add(rel);
+	}
+	
+	/**
 	 * The method creates a pending decision of the plan with the given component's value
 	 * 
 	 * @param value
@@ -398,19 +406,19 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		return local;
 	}
 	
-	/**
-	 * 
-	 * @param dec
-	 * @throws DecisionNotFoundException
-	 */
-	public void restoreDecision(Decision dec) 
-			throws DecisionNotFoundException
-	{
-		// check if decision exists in the agenda
-		if (!this.decisions.get(PlanElementStatus.SILENT).contains(dec)) {
-			throw new DecisionNotFoundException("Decision not found in among SILENTs " + dec);
-		}
-	}	
+//	/**
+//	 * 
+//	 * @param dec
+//	 * @throws DecisionNotFoundException
+//	 */
+//	public void restoreDecision(Decision dec) 
+//			throws DecisionNotFoundException
+//	{
+//		// check if decision exists in the agenda
+//		if (!this.decisions.get(PlanElementStatus.SILENT).contains(dec)) {
+//			throw new DecisionNotFoundException("Decision not found in among SILENTs " + dec);
+//		}
+//	}	
 	
 	/**
 	 * 
@@ -822,9 +830,9 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		try
 		{
 			// check if active decisions
-			if (!this.isActive(rel.getReference()) || !this.isActive(rel.getTarget())) {
+			if (!this.relations.contains(rel) || !this.isActive(rel.getReference()) || !this.isActive(rel.getTarget())) {
 				// not active decisions
-				throw new RelationPropagationException("Trying to propagate local relation between not active decisions\n"
+				throw new RelationPropagationException("Trying to propagate an unkown relation or a local relation between not active decisions\n"
 						+ "- reference= " + rel.getReference() + "\n"
 						+ "- target= " + rel.getTarget() + "\n");
 			}
@@ -1087,7 +1095,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @throws TemporalIntervalCreationException
 	 * @throws ParameterCreationException
 	 */
-	protected Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
+	public Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
 			throws TemporalIntervalCreationException, ParameterCreationException
 	{
 		// create a temporal interval

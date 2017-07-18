@@ -20,16 +20,17 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoun
  * @author anacleto
  *
  */
-public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic implements Comparator<Flaw>
+public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic implements Comparator<Flaw>
 {
 	// domain hierarchy
 	private List<DomainComponent>[] hierarchy;
-	private FlawType[] preferences;
+	private FlawType[] searchPreferences;
+	private FlawType[] buildPreferences;
 	
 	/**
 	 * 
 	 */
-	protected HierarchicalFlawSelectionHeuristic() {
+	protected SearchAndBuildFlawSelectionHeuristic() {
 		super(FlawSelectionHeuristicType.HFS.getLabel());
 	}
 	
@@ -39,13 +40,17 @@ public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic i
 	@PostConstruct
 	protected void init() 
 	{
-		// set preferences
-		this.preferences = new FlawType[] {
+		// set search phase preferences
+		this.searchPreferences = new FlawType[] {
 				FlawType.PLAN_REFINEMENT,
 				FlawType.RESOURCE_PEAK,
 				FlawType.SV_SCHEDULING,
-				FlawType.SV_GAP,
-				FlawType.INVALID_BEHAVIOR
+		};
+		
+		// set build phase preferences
+		this.buildPreferences = new FlawType[] {
+			FlawType.SV_GAP,
+			FlawType.INVALID_BEHAVIOR,
 		};
 		
 		// get dependency graph
@@ -80,19 +85,17 @@ public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic i
 			throws UnsolvableFlawFoundException, NoFlawFoundException 
 	{
 		// set of detected flaws
-		Set<Flaw> flaws = new HashSet<>();
-		// find flaws on components according to preference
-		for (int jndex = 0; jndex < this.preferences.length && flaws.isEmpty(); jndex++)
+		List<Flaw> flaws = new ArrayList<>();
+		// check components according to the hierarchy
+		for (int index = 0; index < this.hierarchy.length && flaws.isEmpty(); index++)
 		{
-			// get preference 
-			FlawType type = this.preferences[jndex];
-		
-			// check components according to the hierarchy
-			for (int index = 0; index < this.hierarchy.length && flaws.isEmpty(); index++)
-			{
-				// get component at the current level of the hierarchy
-				List<DomainComponent> components = this.hierarchy[index];
-			
+			// get component at the current level of the hierarchy
+			List<DomainComponent> components = this.hierarchy[index];
+			// find flaws on components according to preference
+			for (int jndex = 0; jndex < this.searchPreferences.length && flaws.isEmpty(); jndex++)
+			{		
+				// get type of flaw 
+				FlawType type = this.searchPreferences[jndex];			
 				// check flaw type
 				if (type.equals(FlawType.PLAN_REFINEMENT))
 				{
@@ -115,43 +118,44 @@ public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic i
 				}
 			}
 		}
-		
-		// further filter the remaining flaws according to the number of available solutions
-		if (!flaws.isEmpty()) {
-			// sort flaws
-			List<Flaw> list = new ArrayList<>(flaws);
-			// sort flaws
-			Collections.sort(list, this);
-			// get the first flaw
-			Flaw flaw = list.remove(0);
-			// reset filtered set
-			flaws = new HashSet<>();
-			flaws.add(flaw);
-			// check remaining flaws from the list
-			boolean stop = false;
-			for (int index = 0; index < list.size() && !stop; index++) {
-				// get flaw
-				Flaw current = list.get(index);
-				// compare available solutions
-				if (flaw.getSolutions().size() == current.getSolutions().size()) {
-					// add flaw to the set
-					flaws.add(current);
-				}
-				else {
-					// stop, the rest of flaws have an higher number of solutions available
-					stop = true;
+	
+		// check flaws
+		if (flaws.isEmpty())
+		{
+			// check components according to the (inverse) hierarchy
+			for (int index = this.hierarchy.length - 1; index >= 0 && flaws.isEmpty(); index--)
+			{
+				// get component at the current level of the hierarchy
+				List<DomainComponent> components = this.hierarchy[index];
+				// find flaws on components according to preferences
+				for (int jndex = 0; jndex < this.buildPreferences.length && flaws.isEmpty(); jndex++)
+				{
+					// get type 
+					FlawType type = this.buildPreferences[jndex];
+					// check components
+					for (DomainComponent component : components) {
+						flaws.addAll(component.detectFlaws(type));
+					}
 				}
 			}
 		}
 		
+		// prepare the equivalent set
+		Set<Flaw> set = new HashSet<>();
 		// check flaws found
 		if (flaws.isEmpty()) {
 			// throw exception
 			throw new NoFlawFoundException("No flaw has been found in the current plan");
 		}
+		else {
+			// get the most difficult flaw to solve
+			Collections.sort(flaws, this);
+			// get the first flaw
+			set.add(flaws.get(0));
+		}
 		
 		// get "equivalent" flaws to solve
-		return flaws;
+		return set;
 	}
 	
 	/**
@@ -225,7 +229,6 @@ public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic i
 	@Override
 	public int compare(Flaw o1, Flaw o2) {
 		// compare the number of available solutions
-		return o1.getSolutions().size() < o2.getSolutions().size() ? -1 : 
-			o1.getSolutions().size() > o2.getSolutions().size() ? 1 : 0;
+		return o1.getSolutions().size() <= o2.getSolutions().size() ? -1 : 1; 
 	}
 }

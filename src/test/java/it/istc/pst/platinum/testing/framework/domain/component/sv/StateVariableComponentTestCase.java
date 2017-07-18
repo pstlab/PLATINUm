@@ -520,22 +520,26 @@ public class StateVariableComponentTestCase
 		Assert.assertNotNull(this.psv);
 		
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", true);
-		ComponentValue v2 = this.psv.addValue("Val-2", true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
-		ComponentValue v4 = this.psv.addValue("Val-4", true);
+		ComponentValue v1 = this.psv.addValue("Val-1", new long[] {1, this.facade.getHorizon()}, true);
+		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 10}, true);
+		ComponentValue v3 = this.psv.addValue("Val-3", new long[] {5, 5}, true);
+		ComponentValue v4 = this.psv.addValue("Val-4", new long[] {1, this.facade.getHorizon()}, true);
+		ComponentValue v5 = this.psv.addValue("Val-5", new long[] {5, 5}, true);
+		ComponentValue v6 = this.psv.addValue("Val-6", new long[] {3, 3}, true);
 		
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
+		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v2, v3);
 		this.psv.addValueTransition(v3, v4);
+		this.psv.addValueTransition(v3, v5);
+		this.psv.addValueTransition(v3, v6);
 		this.psv.addValueTransition(v4, v1);
+		this.psv.addValueTransition(v5, v4);
+		this.psv.addValueTransition(v6, v4);
+		
 		try 
 		{
-			// display component
-			this.psv.display();
-			Thread.sleep(3000);
-			
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {}, 
 					new long[] {5, 5}, new long[] {5, 5});
@@ -543,7 +547,7 @@ public class StateVariableComponentTestCase
 			this.psv.add(d1);
 			
 			Decision d2 = this.psv.create(v4, new String[] {}, 
-					new long[] {20, 20}, new long[] {5, 5});
+					new long[] {18, 20}, new long[] {5, 7});
 			// add decision with specified end interval
 			this.psv.add(d2);
 			
@@ -561,7 +565,6 @@ public class StateVariableComponentTestCase
 			this.psv.display();
 			Thread.sleep(3000);
 	
-			
 			// check that only a gap is found
 			List<Flaw> flaws = this.psv.detectFlaws();
 			Assert.assertNotNull(flaws);
@@ -576,7 +579,7 @@ public class StateVariableComponentTestCase
 			// get flaw
 			Gap gap = (Gap) flaws.get(0);
 			// check solution
-			Assert.assertTrue(gap.getSolutions().size() == 1);
+			Assert.assertTrue(gap.getSolutions().size() == 2);
 			
 			// solve the flaw
 			this.psv.commit(flaws.get(0).getSolutions().get(0));

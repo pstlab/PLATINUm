@@ -8,14 +8,22 @@ package it.istc.pst.platinum.deliberative.heuristic;
 public enum FlawSelectionHeuristicType 
 {
 	/**
+	 * Hierarchical search & build flaw selection heuristics
+	 */
+	SEARCH_AND_BUILD(SearchAndBuildFlawSelectionHeuristic.class.getName(), 
+			"Hierarchical Search & Build (S&B) flaw selection heuristics"),
+
+	/**
 	 * (optimized) Hierarchical flaw selection heuristic
 	 */
-	HFS(HierarchicalFlawSelectionHeuristic.class.getName(), "Hierarchical flaw selection heuristics"),
+	HFS(HierarchicalFlawSelectionHeuristic.class.getName(), 
+			"Hierarchical flaw selection heuristics"),
 	
 	/**
 	 * Pipeline-based Filter flaw selection heuristic
 	 */
-	PIPELINE(PipelineFlawSelectionHeuristic.class.getName(), "General Pipeline-based flaw selection heuristics");
+	PIPELINE(PipelineFlawSelectionHeuristic.class.getName(), 
+			"General Pipeline-based flaw selection heuristics");
 	
 	private String cname;
 	private String label;

@@ -19,7 +19,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private List<Operator> operators;	// node generation trace
-	private Operator generator;			// node generator operator
 	private Agenda agenda;				// plan agenda
 	private double makespan;			// node makespan
 	
@@ -33,7 +32,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.id = ID_COUNTER.getAndIncrement();
 		// initialize operators
 		this.operators = new ArrayList<>();
-		this.generator = null;
 		this.makespan = Double.MAX_VALUE - 1;
 		this.agenda = new Agenda();
 	}
@@ -50,9 +48,9 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.operators = new ArrayList<>(parent.getOperators());
 		// add generator
 		this.operators.add(op);
-		this.generator = op;
-		// inherit the makespan and the agenda from parent node 
+		// inherit the makespan from the parent node 
 		this.makespan = parent.getMakespan();
+		// inherit the agenda from the parent node
 		this.agenda = parent.getAgenda();
 	}
 	
@@ -111,9 +109,11 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	public double getCost() {
 		// compute the cost of the current node
 		double cost = 0.0;
-		if (this.generator != null) {
+		// get generator operator
+		Operator operator = this.getGenerator();
+		if (operator != null) {
 			// set initial cost
-			cost = this.generator.getCost();
+			cost = operator.getCost();
 			for (Operator op : this.operators) {
 				cost += op.getCost();
 			}
@@ -124,14 +124,17 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	}
 	
 	/**
+	 * Get the flaw that has been solved to generate the node 
 	 * 
 	 * @return
 	 */
 	public Flaw getFlaw() {
-		return this.generator.getFlaw();
+		// verify whether the node is root
+		return this.isRootNode() ? null : this.getGenerator().getFlaw();
 	}
 	
 	/**
+	 * Verify whether the node is root, i.e. not generator operator has been applied.
 	 * 
 	 * @return
 	 */
@@ -141,28 +144,42 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	}
 	
 	/**
+	 * The method returns the order list of operators that have been applied to generated the node. 
+	 * 
+	 * The last operator of the list is the node generator operator (i.e. the last applied operator).
 	 * 
 	 * @return
 	 */
 	public List<Operator> getOperators() {
-		return operators;
+		// get list of operators
+		return new ArrayList<>(this.operators);
 	}
 	
 	/**
-	 * The method returns the generator operator of the node.
+	 * The method returns the node generator operator.
 	 * 
 	 * The method returns null for the root node of the search space
 	 * 
 	 * @return
 	 */
-	public Operator getGenerator() {
+	public Operator getGenerator() 
+	{
 		// get generator
-		return this.generator;
+		Operator operator = null;
+		if (!this.operators.isEmpty()) {
+			// get last applied operator
+			operator = this.operators.get(this.operators.size() - 1);
+		}
+		
+		// get generator operator
+		return operator;
 	}
 	
 	/**
-	 * Get the list of applied operators from the more recent to the 
-	 * specified one (excepted) 
+	 * Get the list of applied operators from the more recent to the specified one (not included).
+	 * 
+	 * The method returns the list of operators that have been applied after the specified one starting with the more recent. The first
+	 * element of the list is the node generator operator.
 	 * 
 	 * @param operator
 	 * @return
@@ -184,11 +201,16 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 				list.add(this.operators.get(i));
 			}
 		}
-		// get list
+		// get list of operators
 		return list;
 	}
 	
 	/**
+	 * Get the list of applied operators starting from the selected operator (not included).
+	 * 
+	 * The method returns the orderer list of operators that have been applied after the specified one. The 
+	 * last operator of the list is the node generator operator.
+	 * 
 	 * 
 	 * @param operator
 	 * @return
@@ -207,7 +229,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 				list.add(this.operators.get(index));
 			}
 		}
-		// get list
+		// get list of operators
 		return list;
 	}
 	
@@ -255,6 +277,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	@Override
 	public String toString() {
-		return "[SearchSpaceNode depth= " + this.getDepth() + " cost= " + this.getCost() + " makespan= " + this.makespan + " agenda= " + this.agenda + "]";
+		return "[SearchSpaceNode id= " + this.id + " depth= " + this.getDepth() + " cost= " + this.getCost() + " makespan= " + this.makespan + "]";
 	}
 }

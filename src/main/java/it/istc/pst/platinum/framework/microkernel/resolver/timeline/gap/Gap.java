@@ -2,7 +2,6 @@ package it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap;
 
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 
@@ -92,11 +91,6 @@ public class Gap extends Flaw
 	 */
 	@Override
 	public String toString() {
-		String str =  "[Gap left-decision= " + this.left + " right-decision= " + this.right + " solutions=\n";
-		for (FlawSolution sol : this.getSolutions()) {
-			str += "\t- completion= " + sol + "\n";
-		}
-		str += "]";
-		return str;
+		return "[Gap [dmin= " + this.dmin + ", dmax= " + this.dmax + "] left= " + this.left + " right-decision= " + this.right + "]";
 	}
 }

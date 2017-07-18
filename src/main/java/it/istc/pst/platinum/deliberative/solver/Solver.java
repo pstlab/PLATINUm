@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.deliberative.solver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.istc.pst.platinum.framework.domain.PlanDataBase;
@@ -15,6 +16,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.PlanRefinementExceptio
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Agenda;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Operator;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
@@ -49,6 +51,14 @@ public abstract class Solver extends ApplicationFrameworkObject
 	 * 
 	 * @return
 	 */
+	protected SearchSpaceNode createSearchSpaceNode() {
+		return new SearchSpaceNode();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getLabel() {
 		return label;
 	}
@@ -69,14 +79,56 @@ public abstract class Solver extends ApplicationFrameworkObject
 		return "[Solver label= " + this.label + "]";
 	}
 	
-//	/**
-//	 * 
-//	 * @param depth
-//	 * @return
-//	 */
-//	protected SearchSpaceNode createNode() {
-//		return new SearchSpaceNode();
-//	}
+	/**
+	 * 
+	 * @param node
+	 */
+	protected void backtrack(SearchSpaceNode node) 
+	{
+		// list of operators that have been applied to generate the node
+		List<Operator> operators = node.getOperators();
+		// retract operators starting from the more recent ones
+		Collections.reverse(operators);
+		// retract all operators
+		for (Operator operator : operators) {
+			// retract operator
+			this.pdb.retract(operator);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @throws OperatorPropagationException
+	 */
+	protected void propagate(SearchSpaceNode node) 
+			throws PlanRefinementException 
+	{
+		// get the list of applied operators
+		List<Operator> operators = node.getOperators();
+		// list of committed operators
+		List<Operator> committed = new ArrayList<>();
+		try 
+		{
+			// propagate operators in chronological order
+			for (Operator operator : operators) {
+				// propagate operator
+				this.pdb.propagate(operator);
+				// add committed operator
+				committed.add(operator);
+			}
+		}
+		catch (OperatorPropagationException ex) {
+			// retract committed operators in reverse order
+			Collections.reverse(committed);
+			for (Operator operator : committed) {
+				this.pdb.retract(operator);
+			}
+
+			// throw exception
+			throw new PlanRefinementException("Error while propagating node:\n" + node + "\n- message: " + ex.getMessage() + "\n");
+		}
+	}
 	
 	/**
 	 * 
@@ -87,63 +139,14 @@ public abstract class Solver extends ApplicationFrameworkObject
 	protected void contextSwitch(SearchSpaceNode last, SearchSpaceNode extracted) 
 			throws PlanRefinementException 
 	{
-		// get operators of the last propagated node
-		List<Operator> from = new ArrayList<>();
-		// check last node 
+		// check if a backtrack is needed
 		if (last != null) {
-			// get operators from the last propagated node
-			from = last.getOperators();
-		}
-		List<Operator> to = extracted.getOperators();
-		
-		// check if backtrack is needed
-		boolean backtrack = false;
-		int threshold = Math.min(from.size(), to.size());
-		Operator lastCommonOperator = null;
-		for (int index = 0; index < threshold && !backtrack; index++) {
-			// compare operators
-			if (from.get(index).equals(to.get(index))) {
-				// update last common operator
-				lastCommonOperator = from.get(index);
-			} else {
-				// different operators - retraction is needed
-				backtrack = true;
-			}
-		}
-
-		// check if to retract
-		List<Operator> toRetract = new ArrayList<>();
-		if (backtrack) 
-		{
-			// retract operators of the last propagate node till the last common operator
-			toRetract.addAll(last.getOperatorsUpTo(lastCommonOperator));
-			for (Operator op : toRetract) {
-				// undo applied flaw solution
-				this.pdb.retract(op);
-			}
+			// backtrack last propagated node
+			this.backtrack(last);
 		}
 		
-		// propagate operators of the extracted node (starting from the last common operator)
-		List<Operator> toPropagate = extracted.getOperatorsFrom(lastCommonOperator);
-		List<Operator> committed = new ArrayList<>();
-		for (Operator op : toPropagate) 
-		{
-			try 
-			{
-				// propagate operator
-				this.pdb.propagate(op);
-				committed.add(op);
-			}
-			catch (OperatorPropagationException ex) {
-				// undo committed operators
-				for (Operator comm : committed) {
-					this.pdb.retract(comm);
-				}
-				
-				// forward exception
-				throw new PlanRefinementException(ex.getMessage());
-			}
-		}
+		// propagate extracted node
+		this.propagate(extracted);
 	}
 	
 	/**
@@ -156,65 +159,42 @@ public abstract class Solver extends ApplicationFrameworkObject
 	{
 		// list of child nodes
 		List<SearchSpaceNode> list = new ArrayList<>();
-		// check flaw category
-		switch (flaw.getCategory())
+		// check flaw solutions
+		for (FlawSolution solution : flaw.getSolutions()) 
 		{
-			// planning flaw 
-			case PLANNING : 
-			{
-				// check flaw solutions
-				for (FlawSolution solution : flaw.getSolutions()) 
-				{
-					// create operator
-					Operator op = new Operator(solution);
-					// create child node
-					SearchSpaceNode child = new SearchSpaceNode(current, op);
-					// inherit the makespan from the parent node
-					List<ComponentValue> goals = current.getAgenda().getGoals();
-					// update list of goals 
-					for (ComponentValue solved : solution.getSolvedGoals()) {
-						goals.remove(solved);
-					}
-					for (ComponentValue subgoal : solution.getCreatedSubGoals()) {
-						goals.add(subgoal);
-					}
+			// create operator
+			Operator op = new Operator(solution);
+			// create child node
+			SearchSpaceNode child = new SearchSpaceNode(current, op);
+			// set computed makespan
+			child.setMakespan(solution.getMakespan());
+			// set resulting agenda
+			List<ComponentValue> goals = new ArrayList<>(current.getAgenda().getGoals());
+			// remove solved goals in the solution
+			for (Decision decision : solution.getActivatedDecisisons()) {
+				goals.remove(decision.getValue());
+			}
+//			for (ComponentValue solved : solution.getSolvedGoals()) {
+//				goals.remove(solved);
+//			}
+			// add added pending goals in the solution
+//			for (ComponentValue subgoal : solution.getCreatedSubGoals()) {
+//				goals.add(subgoal);
+//			}
+			for (Decision decision : solution.getCreatedDecisions()) {
+				goals.add(decision.getValue());
+			}
 
-					// set the resulting agenda
-					Agenda agenda = new Agenda();
-					for (ComponentValue goal : goals) {
-						agenda.add(goal);
-					}
-					child.setAgenda(agenda);
-					// add child
-					list.add(child);
-				}
+			// set solution agenda
+			Agenda agenda = new Agenda();
+			for (ComponentValue goal : goals) {
+				agenda.add(goal);
 			}
-			break;
 			
-			// scheduling flaw
-			case SCHEDULING : 
-			{
-				// check flaw solutions
-				for (FlawSolution solution : flaw.getSolutions()) 
-				{
-					// create operator
-					Operator op = new Operator(solution);
-					// create child node
-					SearchSpaceNode child = new SearchSpaceNode(current, op);
-					// inherit the agenda from the parent node
-					double mk = solution.getMakespan();
-					// update the node
-					child.setMakespan(mk);
-					// add child
-					list.add(child);
-				}
-			}
-			break;
-			
-			// unsolvable flaw 
-			case UNSOLVABLE : {
-				throw new RuntimeException("Impossible to expand the search space with unsolvable flaws\n- flaw= " + flaw + "\n");
-			}
+			// set agenda to node
+			child.setAgenda(agenda);
+			// add child
+			list.add(child);
 		}
 		
 		// get children

@@ -25,10 +25,10 @@ import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckExcep
  */
 public class BestFirstSolver extends Solver 
 {
-	@SearchStrategyModule(strategy= SearchStrategyType.DFS)
+	@SearchStrategyModule(strategy= SearchStrategyType.ASTAR)
 	private SearchStrategy strategy;
 	
-	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.HFS)
+	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.PIPELINE)
 	private FlawSelectionHeuristic heuristic;
 	
 	/**
@@ -55,7 +55,7 @@ public class BestFirstSolver extends Solver
 		SearchSpaceNode extracted = null;			// current extracted node
 		SearchSpaceNode last = null;				// root node
 		// create root node and add to the fringe
-		SearchSpaceNode root = new SearchSpaceNode();
+		SearchSpaceNode root = this.createSearchSpaceNode();
 		this.strategy.enqueue(root);
 		
 		// starts solution search

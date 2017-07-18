@@ -505,8 +505,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
-		constraint.setFirstBound(bounds[0]);
-		constraint.setSecondBound(bounds[1]);
+		constraint.setStartTimeBound(bounds[0]);
+		constraint.setEndTimeBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add execution dependencies
@@ -534,8 +534,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		constraint.setReference(reference.getInterval());
 		constraint.setTarget(target.getInterval());
 		// set bounds
-		constraint.setFirstBound(bounds[0]);
-		constraint.setSecondBound(bounds[1]);
+		constraint.setStartTimeBound(bounds[0]);
+		constraint.setEndTimeBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add execution dependencies
