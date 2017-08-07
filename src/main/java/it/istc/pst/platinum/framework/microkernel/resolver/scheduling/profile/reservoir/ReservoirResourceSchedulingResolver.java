@@ -1,13 +1,19 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.reservoir;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
-import it.istc.pst.platinum.framework.domain.component.resource.ReservoirResource;
-import it.istc.pst.platinum.framework.domain.component.resource.ResourceProductionValue;
+import it.istc.pst.platinum.framework.domain.component.ex.ResourceProfileComputationException;
+import it.istc.pst.platinum.framework.domain.component.resource.ResourceEvent;
+import it.istc.pst.platinum.framework.domain.component.resource.ResourceEventType;
+import it.istc.pst.platinum.framework.domain.component.resource.ResourceProfile;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResourceProfile;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResourceProfileManager;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.UsageResourceProfileSample;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -16,29 +22,18 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.BeforeRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.TemporalRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ProfileSample;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEvent;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEventType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceProfile;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.ResourceProfileComputationException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.SchedulingResolver;
-import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
-import it.istc.pst.platinum.framework.time.lang.FixTimePointConstraint;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
-import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
-import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class ReservoirResourceSchedulingResolver <T extends ReservoirResource> extends SchedulingResolver 
+public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> & ReservoirResourceProfileManager> extends SchedulingResolver 
 {
 	@ComponentPlaceholder
 	protected T component;
@@ -61,21 +56,25 @@ public class ReservoirResourceSchedulingResolver <T extends ReservoirResource> e
 		List<Flaw> flaws = new ArrayList<>();
 		try
 		{
-			// get pessimistic resource profile
-			List<ResourceEvent> events = this.component.getConsumptions();
-			// get production events
-			events.addAll(this.component.getProductions());
+			// check pessimistic resource profile
+			ReservoirResourceProfile prp = this.component.computePessimisticResourceProfile();
+			// check samples
+			List<UsageResourceProfileSample> samples = prp.getSamples();
 			
-			// compute optimistic resource profile
-			ResourceProfile orp = this.computeOptimisticResourceProfile(events);
-			// compute flaws
-			flaws.addAll(this.computeProfilePeaks(orp));
-			// check pessimistic resource profile if necessary
+			/*
+			 * TODO - trova picchi
+			 */
+			
+			// check if any flaw has been found
 			if (flaws.isEmpty()) {
-				// compute pessimistic resource profile
-				ResourceProfile prp = this.computePessimisticResourceProfile(events);
-				// compute flaws
-				flaws.addAll(this.computeProfilePeaks(prp));
+				// check optimistic resource profile
+				ReservoirResourceProfile orp = this.component.computeOptimisticResourceProfile();
+				// check samples
+				samples = orp.getSamples();
+				
+				/*
+				 * TODO - trova picchi
+				 */
 			}
 		}
 		catch (ResourceProfileComputationException ex) {
@@ -262,192 +261,192 @@ public class ReservoirResourceSchedulingResolver <T extends ReservoirResource> e
 	}
 
 	
-	/**
-	 * 
-	 * @param events
-	 * @return
-	 * @throws ResourceProfileComputationException
-	 */
-	private ResourceProfile computePessimisticResourceProfile(List<ResourceEvent> events) 
-			throws ResourceProfileComputationException
-	{
-		// create resource profile
-		ResourceProfile prp = new ResourceProfile();
-		// constraints to retract
-		List<TemporalConstraint> toRetract = new ArrayList<>();
-		try
-		{
-			// check resource events
-			for (ResourceEvent event : events) 
-			{
-				// check decision schedule
-				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
-						TemporalQueryType.INTERVAL_SCHEDULE);
-				// set interval
-				query.setInterval(event.getDecision().getToken().getInterval());
-				// process query
-				this.tdb.process(query);
-				
-				// check event and set the optimistic schedule
-				switch (event.getType())
-				{
-					// schedule consumption as late as possible
-					case CONSUMPTION : 
-					{
-						// get time point to schedule
-						TimePoint point = event.getEvent();
-						// prepare constraint
-						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-								TemporalConstraintType.FIX_TIME_POINT);
-						// set point 
-						cons.setReference(point);
-						// set time
-						cons.setTime(point.getLowerBound());
-						// propagate constraint
-						this.tdb.propagate(cons);
-						
-						// add sample
-						prp.addSample(event, point.getLowerBound());
-						
-						// add constraint
-						toRetract.add(cons);
-					}
-					break;
-					
-					// schedule production as soon as possible
-					case PRODUCTION : 
-					{
-						// get time point to schedule
-						TimePoint point = event.getEvent();
-						// prepare constraint
-						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-								TemporalConstraintType.FIX_TIME_POINT);
-						// set point
-						cons.setReference(point);
-						// set time
-						cons.setTime(point.getUpperBound());
-						// propagate constraint
-						this.tdb.propagate(cons);
-						
-						// add sample
-						prp.addSample(event, point.getUpperBound());
-						
-						// add constraint
-						toRetract.add(cons);
-					}
-					break;
-				}
-			}
-		}
-		catch (TemporalConstraintPropagationException ex) {
-			// profile computation error
-			throw new ResourceProfileComputationException(ex.getMessage());
-		}
-		finally 
-		{
-			// retract propagated constraints
-			for (TemporalConstraint constraint : toRetract) {
-				// retract constraints propagated for profile computation
-				this.tdb.retract(constraint);;
-			}
-		}
-		// get profile
-		return prp;
-	}
-	
-	/**
-	 * 
-	 * @param events
-	 * @return
-	 * @throws ResourceProfileComputationException
-	 */
-	private ResourceProfile computeOptimisticResourceProfile(List<ResourceEvent> events) 
-			throws ResourceProfileComputationException
-	{
-		// initialize resource profile
-		ResourceProfile orp = new ResourceProfile();
-		// list of constraint to retract 
-		List<TemporalConstraint> toRetract = new ArrayList<>();
-		try
-		{
-			// check resource events
-			for (ResourceEvent event : events) 
-			{
-				// check decision schedule
-				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
-						TemporalQueryType.INTERVAL_SCHEDULE);
-				// set interval
-				query.setInterval(event.getDecision().getToken().getInterval());
-				// process query
-				this.tdb.process(query);
-				
-				// check event and set the optimistic schedule
-				switch (event.getType())
-				{
-					// schedule consumption as late as possible
-					case CONSUMPTION : 
-					{
-						// get time point to schedule
-						TimePoint point = event.getEvent();
-						// prepare constraint
-						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-								TemporalConstraintType.FIX_TIME_POINT);
-						// set point 
-						cons.setReference(point);
-						// set time
-						cons.setTime(point.getUpperBound());
-						// propagate constraint
-						this.tdb.propagate(cons);
-						
-						// add sample
-						orp.addSample(event, point.getUpperBound());
-						
-						// add constraint
-						toRetract.add(cons);
-					}
-					break;
-					
-					// schedule production as soon as possible
-					case PRODUCTION : 
-					{
-						// get time point to schedule
-						TimePoint point = event.getEvent();
-						// prepare constraint
-						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-								TemporalConstraintType.FIX_TIME_POINT);
-						// set point
-						cons.setReference(point);
-						// set time
-						cons.setTime(point.getLowerBound());
-						// propagate constraint
-						this.tdb.propagate(cons);
-						
-						// add sample
-						orp.addSample(event, point.getLowerBound());
-						
-						// add constraint
-						toRetract.add(cons);
-					}
-					break;
-				}
-			}
-		}
-		catch (TemporalConstraintPropagationException ex) {
-			// profile computation error
-			throw new ResourceProfileComputationException(ex.getMessage());
-		}
-		finally 
-		{
-			// retract propagated constraints
-			for (TemporalConstraint constraint : toRetract) {
-				// retract constraints propagated for profile computation
-				this.tdb.retract(constraint);;
-			}
-		}
-		
-		// get profile
-		return orp;
-	}
+//	/**
+//	 * 
+//	 * @param events
+//	 * @return
+//	 * @throws ResourceProfileComputationException
+//	 */
+//	private ResourceProfile computePessimisticResourceProfile(List<ResourceEvent> events) 
+//			throws ResourceProfileComputationException
+//	{
+//		// create resource profile
+//		ResourceProfile prp = new ResourceProfile();
+//		// constraints to retract
+//		List<TemporalConstraint> toRetract = new ArrayList<>();
+//		try
+//		{
+//			// check resource events
+//			for (ResourceEvent event : events) 
+//			{
+//				// check decision schedule
+//				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
+//						TemporalQueryType.INTERVAL_SCHEDULE);
+//				// set interval
+//				query.setInterval(event.getDecision().getToken().getInterval());
+//				// process query
+//				this.tdb.process(query);
+//				
+//				// check event and set the optimistic schedule
+//				switch (event.getType())
+//				{
+//					// schedule consumption as late as possible
+//					case CONSUMPTION : 
+//					{
+//						// get time point to schedule
+//						TimePoint point = event.getEvent();
+//						// prepare constraint
+//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
+//								TemporalConstraintType.FIX_TIME_POINT);
+//						// set point 
+//						cons.setReference(point);
+//						// set time
+//						cons.setTime(point.getLowerBound());
+//						// propagate constraint
+//						this.tdb.propagate(cons);
+//						
+//						// add sample
+//						prp.addSample(event, point.getLowerBound());
+//						
+//						// add constraint
+//						toRetract.add(cons);
+//					}
+//					break;
+//					
+//					// schedule production as soon as possible
+//					case PRODUCTION : 
+//					{
+//						// get time point to schedule
+//						TimePoint point = event.getEvent();
+//						// prepare constraint
+//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
+//								TemporalConstraintType.FIX_TIME_POINT);
+//						// set point
+//						cons.setReference(point);
+//						// set time
+//						cons.setTime(point.getUpperBound());
+//						// propagate constraint
+//						this.tdb.propagate(cons);
+//						
+//						// add sample
+//						prp.addSample(event, point.getUpperBound());
+//						
+//						// add constraint
+//						toRetract.add(cons);
+//					}
+//					break;
+//				}
+//			}
+//		}
+//		catch (TemporalConstraintPropagationException ex) {
+//			// profile computation error
+//			throw new ResourceProfileComputationException(ex.getMessage());
+//		}
+//		finally 
+//		{
+//			// retract propagated constraints
+//			for (TemporalConstraint constraint : toRetract) {
+//				// retract constraints propagated for profile computation
+//				this.tdb.retract(constraint);;
+//			}
+//		}
+//		// get profile
+//		return prp;
+//	}
+//	
+//	/**
+//	 * 
+//	 * @param events
+//	 * @return
+//	 * @throws ResourceProfileComputationException
+//	 */
+//	private ResourceProfile computeOptimisticResourceProfile(List<ResourceEvent> events) 
+//			throws ResourceProfileComputationException
+//	{
+//		// initialize resource profile
+//		ResourceProfile orp = new ResourceProfile();
+//		// list of constraint to retract 
+//		List<TemporalConstraint> toRetract = new ArrayList<>();
+//		try
+//		{
+//			// check resource events
+//			for (ResourceEvent event : events) 
+//			{
+//				// check decision schedule
+//				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
+//						TemporalQueryType.INTERVAL_SCHEDULE);
+//				// set interval
+//				query.setInterval(event.getDecision().getToken().getInterval());
+//				// process query
+//				this.tdb.process(query);
+//				
+//				// check event and set the optimistic schedule
+//				switch (event.getType())
+//				{
+//					// schedule consumption as late as possible
+//					case CONSUMPTION : 
+//					{
+//						// get time point to schedule
+//						TimePoint point = event.getEvent();
+//						// prepare constraint
+//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
+//								TemporalConstraintType.FIX_TIME_POINT);
+//						// set point 
+//						cons.setReference(point);
+//						// set time
+//						cons.setTime(point.getUpperBound());
+//						// propagate constraint
+//						this.tdb.propagate(cons);
+//						
+//						// add sample
+//						orp.addSample(event, point.getUpperBound());
+//						
+//						// add constraint
+//						toRetract.add(cons);
+//					}
+//					break;
+//					
+//					// schedule production as soon as possible
+//					case PRODUCTION : 
+//					{
+//						// get time point to schedule
+//						TimePoint point = event.getEvent();
+//						// prepare constraint
+//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
+//								TemporalConstraintType.FIX_TIME_POINT);
+//						// set point
+//						cons.setReference(point);
+//						// set time
+//						cons.setTime(point.getLowerBound());
+//						// propagate constraint
+//						this.tdb.propagate(cons);
+//						
+//						// add sample
+//						orp.addSample(event, point.getLowerBound());
+//						
+//						// add constraint
+//						toRetract.add(cons);
+//					}
+//					break;
+//				}
+//			}
+//		}
+//		catch (TemporalConstraintPropagationException ex) {
+//			// profile computation error
+//			throw new ResourceProfileComputationException(ex.getMessage());
+//		}
+//		finally 
+//		{
+//			// retract propagated constraints
+//			for (TemporalConstraint constraint : toRetract) {
+//				// retract constraints propagated for profile computation
+//				this.tdb.retract(constraint);;
+//			}
+//		}
+//		
+//		// get profile
+//		return orp;
+//	}
 	
 	/**
 	 * 

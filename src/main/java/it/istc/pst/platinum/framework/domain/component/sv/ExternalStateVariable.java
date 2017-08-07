@@ -40,20 +40,14 @@ public final class ExternalStateVariable extends StateVariable
 		// external component
 		return true;
 	}
-	
+
 	/**
 	 * 
-	 * @param value
-	 * @param duration
-	 * @param controllable
-	 * @return
 	 */
 	@Override
-	protected StateVariableValue doCreateValue(String value, long[] duration, boolean controllable) {
-		// create and add value
-		StateVariableValue v = new StateVariableValue(value, duration, false, this);
-		this.values.add(v);
-		return v;
+	public StateVariableValue addValue(String label, long[] duration, boolean controllable) {
+		// force values of external variable to be not controllable
+		return super.addValue(label, duration, false);
 	}
 	
 	/**

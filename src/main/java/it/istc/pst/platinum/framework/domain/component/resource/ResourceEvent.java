@@ -1,39 +1,38 @@
-package it.istc.pst.platinum.framework.microkernel.lang.plan.resource;
+package it.istc.pst.platinum.framework.domain.component.resource;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.time.tn.TimePoint;
+import it.istc.pst.platinum.framework.time.tn.TemporalData;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class ResourceEvent implements Comparable<ResourceEvent>
+public abstract class ResourceEvent<T extends TemporalData> implements Comparable<ResourceEvent<?>>
 {
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
-	private int id;
-	private Decision activity;
-	private TimePoint event;
-	private ResourceEventType type;
-	private int amount;
+	protected int id;
+	protected Decision activity;
+	protected ResourceEventType type;
+	protected int amount;
+	protected T event;
 	
 	/**
 	 * 
 	 * @param type
-	 * @param event
-	 * @param amount
 	 * @param activity
+	 * @param amount
 	 */
-	protected ResourceEvent(ResourceEventType type, TimePoint event, int amount, Decision activity) 
+	protected ResourceEvent(ResourceEventType type, Decision activity, int amount, T event) 
 	{
 		// set id
 		this.id = ID_COUNTER.getAndIncrement();
 		this.activity = activity;
-		this.event = event;
 		this.type = type;
 		this.amount = amount;
+		this.event = event;
 	}
 	
 	/**
@@ -56,16 +55,16 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 	 * 
 	 * @return
 	 */
-	public TimePoint getEvent() {
-		return event;
+	public int getAmount() {
+		return amount;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public int getAmount() {
-		return amount;
+	public T getEvent() {
+		return event;
 	}
 	
 	/**
@@ -80,14 +79,13 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 	 * 
 	 */
 	@Override
-	public int compareTo(ResourceEvent o) {
-		// compare related time points
+	public int compareTo(ResourceEvent<?> o) {
+		// compare the related temporal events
 		return this.event.compareTo(o.event);
 	}
-
+	
 	/**
 	 * 
-	 * @return
 	 */
 	@Override
 	public int hashCode() {
@@ -96,11 +94,9 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 		result = prime * result + id;
 		return result;
 	}
-	
+
 	/**
 	 * 
-	 * @param obj
-	 * @return
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -110,7 +106,7 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ResourceEvent other = (ResourceEvent) obj;
+		ResourceEvent<?> other = (ResourceEvent<?>) obj;
 		if (id != other.id)
 			return false;
 		return true;
@@ -122,6 +118,6 @@ public abstract class ResourceEvent implements Comparable<ResourceEvent>
 	@Override
 	public String toString() {
 		// get event description
-		return "[ResourceEvent id= " + this.id +  " type= " + this.type + "(" + this.amount + ") time= [" + this.event.getLowerBound() + ", " + this.event.getUpperBound() + "]]";
+		return "[ResourceEvent id= " + this.id +  " type= " + this.type + " amount= " + this.amount + "]";
 	}
 }

@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
+import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 
@@ -17,14 +17,14 @@ import it.istc.pst.platinum.framework.time.TemporalInterval;
  */
 public class Timeline implements Comparator<Token> 
 {
-	private DomainComponent component;
+	private StateVariable sv;
 	
 	/**
 	 * 
-	 * @param component
+	 * @param sv
 	 */
-	public Timeline(DomainComponent component) {
-		this.component = component;
+	public Timeline(StateVariable sv) {
+		this.sv = sv;
 	}
 	
 	/**
@@ -33,7 +33,7 @@ public class Timeline implements Comparator<Token>
 	 */
 	public List<Token> getTokens() {
 		List<Token> tokens = new ArrayList<>();
-		for (Decision dec : this.component.getActiveDecisions()) {
+		for (Decision dec : this.sv.getActiveDecisions()) {
 			tokens.add(dec.getToken());
 		}
 		// sort tokens
@@ -46,8 +46,8 @@ public class Timeline implements Comparator<Token>
 	 * 
 	 * @return
 	 */
-	public DomainComponent getComponent() {
-		return this.component;
+	public StateVariable getComponent() {
+		return this.sv;
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class Timeline implements Comparator<Token>
 	 * @return
 	 */
 	public String getName() {
-		return this.component.getName();
+		return this.sv.getName();
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class Timeline implements Comparator<Token>
 	 * @return
 	 */
 	public boolean isObservation() {
-		return this.component.isExternal();
+		return this.sv.isExternal();
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class Timeline implements Comparator<Token>
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((component == null) ? 0 : component.hashCode());
+		result = prime * result + ((sv == null) ? 0 : sv.hashCode());
 		return result;
 	}
 
@@ -104,10 +104,10 @@ public class Timeline implements Comparator<Token>
 		if (getClass() != obj.getClass())
 			return false;
 		Timeline other = (Timeline) obj;
-		if (component == null) {
-			if (other.component != null)
+		if (sv == null) {
+			if (other.sv != null)
 				return false;
-		} else if (!component.equals(other.component))
+		} else if (!sv.equals(other.sv))
 			return false;
 		return true;
 	}
@@ -117,6 +117,6 @@ public class Timeline implements Comparator<Token>
 	 */
 	@Override
 	public String toString() {
-		return "[Timeline component= " + this.component + " tokens= " + this.getTokens() + "]";
+		return "[Timeline component= " + this.sv + " tokens= " + this.getTokens() + "]";
 	}
 }

@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.lang.plan.resource;
+package it.istc.pst.platinum.framework.domain.component.resource;
 
 /**
  * 
@@ -15,5 +15,10 @@ public enum ResourceEventType
 	/**
 	 * 
 	 */
-	CONSUMPTION
+	CONSUMPTION,
+	
+	/**
+	 * 
+	 */
+	REQUIREMENT;
 }

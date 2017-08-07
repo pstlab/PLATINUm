@@ -11,7 +11,7 @@ import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
  * @author anacleto
  *
  */
-public class TemporalInterval extends TemporalData implements Comparable<TemporalInterval>
+public class TemporalInterval extends TemporalData
 {
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	
@@ -118,9 +118,11 @@ public class TemporalInterval extends TemporalData implements Comparable<Tempora
 	 * 
 	 */
 	@Override
-	public int compareTo(TemporalInterval o) {
+	public int compareTo(TemporalData o) {
+		// get interval
+		TemporalInterval i = (TemporalInterval) o;
 		// compare start times
-		return this.start.compareTo(o.start);  
+		return this.start.compareTo(i.start);  
 	}
 	
 	/**

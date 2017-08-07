@@ -10,7 +10,7 @@ import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
  * @author anacleto
  *
  */
-public abstract class ComponentValue 
+public abstract class ComponentValue <T extends DomainComponent<?>>
 {
 	private static int ID_COUNTER = 0;
 	protected int id;
@@ -18,7 +18,7 @@ public abstract class ComponentValue
 	protected ComponentValueType type;
 	private long[] duration;
 	private boolean controllable;
-	protected DomainComponent component;
+	protected T component;
 	protected List<ParameterPlaceHolder> placeholders;
 	
 	/**
@@ -29,7 +29,7 @@ public abstract class ComponentValue
 	 * @param controllable
 	 * @param component
 	 */
-	protected ComponentValue(String value, ComponentValueType type, long[] duration, boolean controllable, DomainComponent component) {
+	protected ComponentValue(String value, ComponentValueType type, long[] duration, boolean controllable, T component) {
 		this.id = getNextId();
 		this.type = type;
 		this.duration = duration;
@@ -59,7 +59,7 @@ public abstract class ComponentValue
 	 * 
 	 * @return
 	 */
-	public DomainComponent getComponent() {
+	public T getComponent() {
 		return component;
 	}
 	
@@ -183,7 +183,7 @@ public abstract class ComponentValue
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ComponentValue other = (ComponentValue) obj;
+		ComponentValue<?> other = (ComponentValue<?>) obj;
 		if (id != other.id)
 			return false;
 		return true;

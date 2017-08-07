@@ -16,7 +16,7 @@ public abstract class Flaw
 	private int id;
 	
 	private FlawType type;						// the type of flaw
-	private DomainComponent component;			// the component the flaw belongs to
+	private DomainComponent<?> component;			// the component the flaw belongs to
 	private List<FlawSolution> solutions;		// the list of available solutions
 	
 	/**
@@ -24,7 +24,7 @@ public abstract class Flaw
 	 * @param component
 	 * @param type
 	 */
-	protected Flaw(DomainComponent component, FlawType type) {
+	protected Flaw(DomainComponent<?> component, FlawType type) {
 		this.id = getNextId();
 		this.type = type;
 		this.solutions = new ArrayList<>();
@@ -59,7 +59,7 @@ public abstract class Flaw
 	 * 
 	 * @return
 	 */
-	public DomainComponent getComponent() {
+	public DomainComponent<?> getComponent() {
 		return component;
 	}
 	

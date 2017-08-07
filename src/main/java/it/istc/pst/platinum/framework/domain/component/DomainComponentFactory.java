@@ -37,7 +37,7 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends DomainComponent> T create(String name, DomainComponentType type) 
+	public <T extends DomainComponent<?>> T create(String name, DomainComponentType type) 
 	{
 		T component = null;
 		try 

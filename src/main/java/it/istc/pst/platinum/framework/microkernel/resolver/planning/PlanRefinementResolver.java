@@ -348,7 +348,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	private void doComputeUnificationSolutions(Goal goal) 
 	{ 
 		// get goal-related component
-		DomainComponent component = goal.getComponent();
+		DomainComponent<?> component = goal.getComponent();
 		// search active decisions compatible for unification
 		for (Decision unif : component.getActiveDecisions()) 
 		{
@@ -404,7 +404,9 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 			for (Relation relation : pending)
 			{
 				// check temporal relations concerning the goal
-				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) 
+				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT) && 
+						(this.component.isActive(relation.getReference()) || 
+								this.component.isActive(relation.getTarget()))) 
 				{
 					// check relation type
 					switch (relation.getType()) 
@@ -693,7 +695,8 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 			{
 				// check temporal relations concerning the goal
 				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT) && 
-						(this.component.isActive(relation.getReference()) || this.component.isActive(relation.getTarget()))) 
+						(this.component.isActive(relation.getReference()) || 
+								this.component.isActive(relation.getTarget()))) 
 				{
 					// check relation type
 					switch (relation.getType()) 

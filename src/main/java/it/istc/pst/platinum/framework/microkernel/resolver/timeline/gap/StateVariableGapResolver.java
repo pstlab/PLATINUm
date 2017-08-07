@@ -34,7 +34,6 @@ import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationExcep
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
@@ -527,7 +526,7 @@ public final class StateVariableGapResolver <T extends StateVariable> extends Re
 				Decision target = completion.getRightDecision();
 				
 				// create temporal constraint
-				BeforeIntervalConstraint meets = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
+				MeetsIntervalConstraint meets = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
 				// set reference 
 				meets.setReference(reference.getToken().getInterval());
 				meets.setTarget(target.getToken().getInterval());

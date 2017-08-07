@@ -17,7 +17,7 @@ public class Decision implements Comparable<Decision>
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private Decision causalLink;		// set "generator" decision
-	private ComponentValue value;
+	private ComponentValue<?> value;
 	private String[] labels;
 	private long[] start;
 	private long[] end;
@@ -36,7 +36,7 @@ public class Decision implements Comparable<Decision>
 	 * @param end
 	 * @param nominalDuration
 	 */
-	public Decision(ComponentValue value, String[] labels, long[] start, long[] end, long[] nominalDuration) 
+	public Decision(ComponentValue<?> value, String[] labels, long[] start, long[] end, long[] nominalDuration) 
 	{
 		// set id
 		this.id = ID_COUNTER.getAndIncrement();
@@ -159,7 +159,7 @@ public class Decision implements Comparable<Decision>
 	 * 
 	 * @return
 	 */
-	public ComponentValue getValue() {
+	public ComponentValue<?> getValue() {
 		return value;
 	}
 	
@@ -231,7 +231,7 @@ public class Decision implements Comparable<Decision>
 	 * 
 	 * @return
 	 */
-	public DomainComponent getComponent() {
+	public DomainComponent<?> getComponent() {
 		return this.value.getComponent();
 	}
 	

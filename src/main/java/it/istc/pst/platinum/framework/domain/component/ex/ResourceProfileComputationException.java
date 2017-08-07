@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.ex;
+package it.istc.pst.platinum.framework.domain.component.ex;
 
 /**
  * 

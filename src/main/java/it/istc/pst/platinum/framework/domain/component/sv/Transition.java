@@ -3,7 +3,6 @@ package it.istc.pst.platinum.framework.domain.component.sv;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.ParameterPlaceHolder;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
 
@@ -14,8 +13,8 @@ import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstr
  */
 public final class Transition 
 {
-	private ComponentValue reference;
-	private ComponentValue target;
+	private StateVariableValue reference;
+	private StateVariableValue target;
 	private Map<Integer, Map<Integer, ParameterConstraintType>> constraints;
 	
 	/**
@@ -23,7 +22,7 @@ public final class Transition
 	 * @param reference
 	 * @param target
 	 */
-	protected Transition(ComponentValue reference, ComponentValue target) {
+	protected Transition(StateVariableValue reference, StateVariableValue target) {
 		this.reference = reference;
 		this.target = target;
 		this.constraints = new HashMap<>();
@@ -39,7 +38,7 @@ public final class Transition
 	 * 
 	 * @return
 	 */
-	public ComponentValue getReference() {
+	public StateVariableValue getReference() {
 		return reference;
 	}
 	
@@ -47,7 +46,7 @@ public final class Transition
 	 * 
 	 * @return
 	 */
-	public ComponentValue getTarget() {
+	public StateVariableValue getTarget() {
 		return target;
 	}
 	

@@ -2,23 +2,22 @@ package it.istc.pst.platinum.framework.domain.component.sv;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.ComponentValueType;
-import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class StateVariableValue extends ComponentValue {
-
+public class StateVariableValue extends ComponentValue<StateVariable>
+{
 	/**
 	 * 
 	 * @param value
 	 * @param duration
 	 * @param controllable
-	 * @param component
+	 * @param sv
 	 */
-	protected StateVariableValue(String value, long[] duration, boolean controllable, DomainComponent component) {
-		super(value, ComponentValueType.STATE_VARIABLE_VALUE, duration, controllable, component);
+	protected StateVariableValue(String value, long[] duration, boolean controllable, StateVariable sv) {
+		super(value, ComponentValueType.STATE_VARIABLE_VALUE, duration, controllable, sv);
 	}
 }

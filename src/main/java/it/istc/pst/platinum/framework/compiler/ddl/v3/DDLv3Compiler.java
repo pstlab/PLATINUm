@@ -23,31 +23,6 @@ import it.istc.pst.ddl.v3.parser.DDLEnumerationParameterType;
 import it.istc.pst.ddl.v3.parser.DDLInstantiatedComponentDecision;
 import it.istc.pst.ddl.v3.parser.DDLNumericParameterConstraint;
 import it.istc.pst.ddl.v3.parser.DDLNumericParameterConstraint.DDLNumericParameterConstraintType;
-import it.istc.pst.platinum.framework.compiler.DomainCompiler;
-import it.istc.pst.platinum.framework.compiler.DomainCompilerType;
-import it.istc.pst.platinum.framework.domain.PlanDataBase;
-import it.istc.pst.platinum.framework.domain.PlanDataBaseFactory;
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
-import it.istc.pst.platinum.framework.domain.component.DomainComponent;
-import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
-import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
-import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
-import it.istc.pst.platinum.framework.domain.component.resource.DiscreteResource;
-import it.istc.pst.platinum.framework.domain.component.resource.ReservoirResource;
-import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
-import it.istc.pst.platinum.framework.domain.component.sv.Transition;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
-import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
-import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFact;
-import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFluent;
-import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemGoal;
-import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameterDomain;
-import it.istc.pst.platinum.framework.parameter.lang.NumericParameterDomain;
-import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
-import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
-import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
 import it.istc.pst.ddl.v3.parser.DDLNumericParameterType;
 import it.istc.pst.ddl.v3.parser.DDLParameterConstraint;
 import it.istc.pst.ddl.v3.parser.DDLParameterType;
@@ -66,6 +41,33 @@ import it.istc.pst.ddl.v3.parser.DDLTimeline;
 import it.istc.pst.ddl.v3.parser.DDLTimelineSynchronization;
 import it.istc.pst.ddl.v3.parser.ddl3Lexer;
 import it.istc.pst.ddl.v3.parser.ddl3Parser;
+import it.istc.pst.platinum.framework.compiler.DomainCompiler;
+import it.istc.pst.platinum.framework.compiler.DomainCompilerType;
+import it.istc.pst.platinum.framework.domain.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.PlanDataBaseFactory;
+import it.istc.pst.platinum.framework.domain.component.ComponentValue;
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
+import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
+import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
+import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceValue;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResource;
+import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
+import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
+import it.istc.pst.platinum.framework.domain.component.sv.Transition;
+import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
+import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
+import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFact;
+import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFluent;
+import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemGoal;
+import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameterDomain;
+import it.istc.pst.platinum.framework.parameter.lang.NumericParameterDomain;
+import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
+import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
+import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
 
 /**
  * 
@@ -760,7 +762,7 @@ public class DDLv3Compiler extends DomainCompiler
 		DDLRenewableResourceComponentDecision ddlDec = (DDLRenewableResourceComponentDecision) ddlSynch.getReference();
 		
 		// get trigger value
-		ComponentValue valTrigger = comp.getRequirementValue();
+		RequirementResourceValue valTrigger = comp.getRequirementValue();
 		
 		// create synchronization
 		SynchronizationRule rule = pdb.createSynchronizationRule(valTrigger, new String[] {ddlDec.getRequirementName()}); 
@@ -880,7 +882,6 @@ public class DDLv3Compiler extends DomainCompiler
 				
 				// discrete resource component
 				case RESOURCE_DISCRETE : 
-				case RESOURCE_UNARY : 
 				{
 					// check target decision
 					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
@@ -1314,7 +1315,6 @@ public class DDLv3Compiler extends DomainCompiler
 				
 				// discrete resource component
 				case RESOURCE_DISCRETE : 
-				case RESOURCE_UNARY : 
 				{
 					// check target decision
 					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
@@ -2100,7 +2100,6 @@ public class DDLv3Compiler extends DomainCompiler
 				
 				// discrete resource component
 				case RESOURCE_DISCRETE : 
-				case RESOURCE_UNARY : 
 				{
 					// check target decision
 					DDLComponentDecision ddlTargetDecision = ddlTarget.getComponentDecision();
@@ -2531,7 +2530,7 @@ public class DDLv3Compiler extends DomainCompiler
 		resource.setMaxCapacity(capacity);
 		resource.setInitialCapacity(capacity);
 		// add requirement value
-		resource.addRequirementValue("REQUIREMENT");
+		resource.addRequirementValue();
 		// add component 
 		pdb.addDomainComponent(resource);
 	}
@@ -2557,9 +2556,9 @@ public class DDLv3Compiler extends DomainCompiler
 		resource.setMaxCapacity(max);
 		resource.setInitialCapacity(max);
 		// add consumption value
-		resource.addConsumptionValue("CONSUMPTION");
+		resource.addConsumptionValue();
 		// add production value
-		resource.addProductionValue("PRODUCTION");
+		resource.addProductionValue();
 		// add component
 		pdb.addDomainComponent(resource);
 	}
@@ -2596,7 +2595,7 @@ public class DDLv3Compiler extends DomainCompiler
 			DDLSingletonStateVariableComponentType ddlComponentType = (DDLSingletonStateVariableComponentType) this.ddl_domain.getComponentTypes().get(ddlComponent.getComponentType());
 			
 			// value index
-			Map<String, ComponentValue> vindex = new HashMap<>();
+			Map<String, StateVariableValue> vindex = new HashMap<>();
 			// creating allowed values
 			for (DDLSingletonStateVariableComponentDecisionType ddlValueType : ddlComponentType.getAllowedValues().values()) 
 			{
@@ -2618,7 +2617,7 @@ public class DDLv3Compiler extends DomainCompiler
 								
 						
 						// add value to the variable
-						ComponentValue val = sv.addValue(vname, new long[] {dmin, dmax}, controllable);
+						StateVariableValue val = sv.addValue(vname, new long[] {dmin, dmax}, controllable);
 						
 						// add parameter place-holders to the value
 						for (String pname : ddlValueType.getParameterTypes()) {
@@ -2696,11 +2695,11 @@ public class DDLv3Compiler extends DomainCompiler
 				
 				// get related values
 				DDLSingletonStateVariableComponentDecision source = ddlTransition.getFrom();
-				ComponentValue from = vindex.get(source.getName());
+				StateVariableValue from = vindex.get(source.getName());
 				for (DDLSingletonStateVariableComponentDecision target : ddlTransition.getTo()) 
 				{
 					// get target value
-					ComponentValue to = vindex.get(target.getName());
+					StateVariableValue to = vindex.get(target.getName());
 					// add transition constraint
 					Transition t = sv.addValueTransition(from, to);
 					

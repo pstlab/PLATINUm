@@ -31,7 +31,7 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 * 
 	 */
 	protected SearchAndBuildFlawSelectionHeuristic() {
-		super(FlawSelectionHeuristicType.HFS.getLabel());
+		super(FlawSelectionHeuristicType.SEARCH_AND_BUILD.getLabel());
 	}
 	
 	/**
@@ -42,9 +42,9 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 	{
 		// set search phase preferences
 		this.searchPreferences = new FlawType[] {
-				FlawType.PLAN_REFINEMENT,
 				FlawType.RESOURCE_PEAK,
 				FlawType.SV_SCHEDULING,
+				FlawType.PLAN_REFINEMENT,
 		};
 		
 		// set build phase preferences

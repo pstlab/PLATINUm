@@ -5,7 +5,7 @@ package it.istc.pst.platinum.framework.time.tn;
  * @author anacleto
  *
  */
-public class TimePoint extends TemporalData implements Comparable<TimePoint>
+public class TimePoint extends TemporalData
 {
 	private long domLb;
 	private long domUb;
@@ -126,11 +126,13 @@ public class TimePoint extends TemporalData implements Comparable<TimePoint>
 	 * 
 	 */
 	@Override
-	public int compareTo(TimePoint o) {
-		return this.lb < o.lb ? -1 : 
-			this.lb == o.lb && this.ub < o.ub ? -1 : 
-				this.lb == o.lb && this.ub == o.ub ? 
-						this.id <= o.id ? -1 : 1 : 
+	public int compareTo(TemporalData o) {
+		// get time point 
+		TimePoint p = (TimePoint) o;
+		return this.lb < p.lb ? -1 : 
+			this.lb == p.lb && this.ub < p.ub ? -1 : 
+				this.lb == p.lb && this.ub == p.ub ? 
+						this.id <= p.id ? -1 : 1 : 
 						1;
 	}
 	

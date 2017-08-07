@@ -8,30 +8,31 @@ package it.istc.pst.platinum.framework.microkernel.lang.flaw;
 public enum FlawType 
 {
 	/**
-	 * Plan refinement goal
+	 * A condition or state that constrain the behavior of the component of the domain and that must be achieved in order to complete a plan 
+	 * 
 	 */
 	PLAN_REFINEMENT(FlawCategoryType.PLANNING),
 	
 	/**
-	 * State Variable scheduling threat
+	 * A set of temporally overlapping activities that require an amount of resource exceeding the maximum capacity
 	 */
-	SV_SCHEDULING(FlawCategoryType.SCHEDULING),
+	RESOURCE_OVERFLOW(FlawCategoryType.SCHEDULING),
 	
 	/**
-	 * State Variable gap threat
+	 * An unbounded temporal interval that entail planning decisions to define the behavior of a particular component of the domain 
 	 */
-	SV_GAP(FlawCategoryType.PLANNING),
+	INCOMPLETE_BEHAVIOR(FlawCategoryType.PLANNING),
+	
+	/**
+	 *  
+	 */
+	RESOURCE_PLANNING(FlawCategoryType.PLANNING_SCHEDULING),
 	
 	/**
 	 * Issue concerning the temporal behavior of a component. It represents 
 	 * an inconsistency which generates an unsolvable flaw
 	 */
-	INVALID_BEHAVIOR(FlawCategoryType.UNSOLVABLE),
-	
-	/**
-	 * Resource peak threat
-	 */
-	RESOURCE_PEAK(FlawCategoryType.SCHEDULING);
+	INVALID_BEHAVIOR(FlawCategoryType.UNSOLVABLE);
 	
 	private FlawCategoryType category;
 	

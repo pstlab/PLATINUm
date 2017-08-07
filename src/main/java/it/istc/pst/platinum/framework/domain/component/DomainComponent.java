@@ -53,7 +53,7 @@ import it.istc.pst.platinum.framework.utils.view.component.gantt.GanttComponentV
  * @author anacleto
  *
  */
-public abstract class DomainComponent extends ApplicationFrameworkObject
+public abstract class DomainComponent<V extends ComponentValue<?>> extends ApplicationFrameworkObject
 {
 	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
 	protected TemporalFacade tdb;
@@ -71,6 +71,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	// component's name
 	protected String name;
 	protected DomainComponentType type;
+	// list of values
+	protected List<V> values;
 	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
@@ -89,6 +91,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		super();
 		this.type = type;
 		this.name = name;
+		// initialize the list of values
+		this.values = new ArrayList<>();
 		
 		// initialize decisions of the (local) plan
 		this.decisions = new HashMap<>();
@@ -279,7 +283,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @param value
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels) {
+	public Decision create(ComponentValue<?> value, String[] labels) {
 		// create decision
 		return this.create(
 				value,
@@ -296,7 +300,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels, long[] duration) {
+	public Decision create(ComponentValue<?> value, String[] labels, long[] duration) {
 		// create decision
 		return this.create(
 				value,
@@ -314,7 +318,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
+	public Decision create(ComponentValue<?> value, String[] labels, long[] end, long[] duration) {
 		// create decision
 		return this.create(
 				value,
@@ -333,7 +337,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
+	public Decision create(ComponentValue<?> value, String[] labels, long[] start, long[] end, long[] duration) {
 		// initialize decision
 		Decision dec = new Decision(value, labels, start, end, duration);
 		// add decision the the agenda
@@ -957,16 +961,25 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	
 	/**
 	 * 
+	 * @param label
+	 * @param duration
+	 * @param controllable
 	 * @return
 	 */
-	public abstract List<ComponentValue> getValues();
+	public abstract V addValue(String label, long[] duration, boolean controllable);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract List<V> getValues();
 	
 	/**
 	 * 
 	 * @param name
 	 * @return
 	 */
-	public abstract ComponentValue getValueByName(String name);
+	public abstract V getValueByName(String name);
 	
 	/**
 	 * 
@@ -1068,7 +1081,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DomainComponent other = (DomainComponent) obj;
+		DomainComponent<?> other = (DomainComponent<?>) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -1095,7 +1108,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @throws TemporalIntervalCreationException
 	 * @throws ParameterCreationException
 	 */
-	public Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
+	public Token createToken(int id, ComponentValue<?> value, String[] labels, long[] start, long[] end, long[] duration) 
 			throws TemporalIntervalCreationException, ParameterCreationException
 	{
 		// create a temporal interval

@@ -15,11 +15,11 @@ import it.istc.pst.platinum.framework.domain.component.pdb.ParameterSynchronizat
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationConstraint;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
-import it.istc.pst.platinum.framework.domain.component.resource.DiscreteResource;
-import it.istc.pst.platinum.framework.domain.component.resource.ReservoirResource;
-import it.istc.pst.platinum.framework.domain.component.resource.ResourceConsumptionValue;
-import it.istc.pst.platinum.framework.domain.component.resource.ResourceProductionValue;
-import it.istc.pst.platinum.framework.domain.component.resource.ResourceRequirementValue;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceValue;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResource;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceUsageValue;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceProductionValue;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
@@ -99,7 +99,7 @@ public class DDLv3CompilerTestCase
 			Assert.assertTrue(dom.getUpperBound() == rr.getMaxCapacity());
 			
 			// check consumption value
-			ResourceConsumptionValue cons = rr.getConsumptionValue();
+			ResourceUsageValue cons = rr.getConsumptionValue();
 			Assert.assertNotNull(cons);
 			Assert.assertTrue(cons.getLabel().equals("CONSUMPTION"));
 			Assert.assertTrue(cons.getParameterPlaceHolders().size() == 1);
@@ -124,7 +124,7 @@ public class DDLv3CompilerTestCase
 			Assert.assertTrue(resource.getValues().size() == 1);
 			
 			// check requirement value
-			ResourceRequirementValue req = resource.getRequirementValue();
+			RequirementResourceValue req = resource.getRequirementValue();
 			Assert.assertNotNull(req);
 			Assert.assertTrue(req.getLabel().equals("REQUIREMENT"));
 			Assert.assertTrue(req.getParameterPlaceHolders().size() == 1);

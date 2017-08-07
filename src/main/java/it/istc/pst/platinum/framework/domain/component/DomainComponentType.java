@@ -1,9 +1,8 @@
 package it.istc.pst.platinum.framework.domain.component;
 
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseComponent;
-import it.istc.pst.platinum.framework.domain.component.resource.DiscreteResource;
-import it.istc.pst.platinum.framework.domain.component.resource.ReservoirResource;
-import it.istc.pst.platinum.framework.domain.component.resource.UnaryResource;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResource;
 import it.istc.pst.platinum.framework.domain.component.sv.ExternalStateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.FunctionalStateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable;
@@ -43,12 +42,7 @@ public enum DomainComponentType {
 	/**
 	 * Discrete Resource type
 	 */
-	RESOURCE_DISCRETE(DiscreteResource.class.getName(), "Discrete Resource component"),
-	
-	/**
-	 * Binary Resource type
-	 */
-	RESOURCE_UNARY(UnaryResource.class.getName(), "Unary Resource component");
+	RESOURCE_DISCRETE(DiscreteResource.class.getName(), "Discrete Resource component");
 	
 	private String cname;
 	private String label;

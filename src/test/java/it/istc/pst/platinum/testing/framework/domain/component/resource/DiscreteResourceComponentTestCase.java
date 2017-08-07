@@ -12,7 +12,7 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
-import it.istc.pst.platinum.framework.domain.component.resource.DiscreteResource;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;

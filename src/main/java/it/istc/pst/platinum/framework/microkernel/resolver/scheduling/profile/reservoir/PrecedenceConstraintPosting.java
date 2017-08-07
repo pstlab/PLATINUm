@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource;
+package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.reservoir;
 
 import java.util.ArrayList;
 import java.util.List;

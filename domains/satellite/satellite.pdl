@@ -9,5 +9,5 @@ PROBLEM SATELLITE_Problem (DOMAIN SATELLITE)
 
 	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 	g1 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
-	g2 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
+//	g2 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 }

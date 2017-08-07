@@ -10,7 +10,7 @@ import it.istc.pst.platinum.framework.time.TemporalInterval;
 public final class Token implements Comparable<Token> 
 {
 	private int id;
-	protected DomainComponent component;	// component the token belongs to
+	protected DomainComponent<?> component;	// component the token belongs to
 	protected TemporalInterval interval;	// temporal interval
 	protected Predicate predicate;			// predicate
 	
@@ -20,7 +20,7 @@ public final class Token implements Comparable<Token>
 	 * @param interval
 	 * @param predicate
 	 */
-	protected Token(int id, DomainComponent component, TemporalInterval interval, Predicate predicate) {
+	protected Token(int id, DomainComponent<?> component, TemporalInterval interval, Predicate predicate) {
 		this.id = id;
 		this.component = component;
 		this.interval = interval;
@@ -63,7 +63,7 @@ public final class Token implements Comparable<Token>
 	 * 
 	 * @return
 	 */
-	public DomainComponent getComponent() {
+	public DomainComponent<?> getComponent() {
 		return component;
 	}
 	

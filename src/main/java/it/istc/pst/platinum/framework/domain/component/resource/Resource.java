@@ -1,13 +1,9 @@
 package it.istc.pst.platinum.framework.domain.component.resource;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.resource.ResourceEvent;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.parameter.lang.NumericParameter;
 import it.istc.pst.platinum.framework.parameter.lang.query.CheckValuesParameterQuery;
@@ -18,12 +14,11 @@ import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckExcep
  * @author anacleto
  *
  */
-public abstract class Resource extends DomainComponent implements ResourceProfileManager
+public abstract class Resource<T extends ComponentValue<?>> extends DomainComponent<T> implements ResourceProfileManager
 {	
-	protected int min;						// minimum resource capacity
-	protected int max;						// maximum resource capacity
-	protected int initial;					// initial resource capacity
-	protected List<ComponentValue> values;	// list of values
+	protected int min;							// minimum resource capacity
+	protected int max;							// maximum resource capacity
+	protected int initial;						// initial resource capacity
 	
 	/**
 	 * 
@@ -32,7 +27,6 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	 */
 	protected Resource(String name, DomainComponentType type) {
 		super(name, type);
-		this.values = new ArrayList<>();
 	}
 	
 	/**
@@ -91,63 +85,20 @@ public abstract class Resource extends DomainComponent implements ResourceProfil
 	 * 
 	 */
 	@Override
-	public List<ComponentValue> getValues() {
-		return new ArrayList<>(this.values);
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public ComponentValue getValueByName(String name) {
-		ComponentValue value = null;
-		for (ComponentValue v : this.values) {
-			if (v.getLabel().equals(name)) {
-				value = v;
-				break;
-			}
-		}
-		
-		// check if value has been found
-		if (value == null) {
-			throw new RuntimeException("Value " + name + " not found");
-		}
-		
-		// get value
-		return value;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
 	public void checkPseudoControllability() 
 			throws PseudoControllabilityCheckException {
 		// nothing to do
 	}
-	
+
 	/**
 	 * 
+	 * @param activity
 	 * @return
 	 */
-	@Override
-	public abstract List<ResourceEvent> getProductions();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	@Override
-	public abstract List<ResourceEvent> getConsumptions();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected int checkAmount(Decision dec)
+	protected int getRequiredAmountOfResource(Decision activity)
 	{
 		// get value of resource
-		NumericParameter param = (NumericParameter) dec.getParameterByIndex(0);
+		NumericParameter param = (NumericParameter) activity.getParameterByIndex(0);
 		// prepare query
 		CheckValuesParameterQuery query = this.pdb.createQuery(ParameterQueryType.CHECK_PARAMETER_VALUES);
 		// set parameter

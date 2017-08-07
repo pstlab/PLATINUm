@@ -2,8 +2,8 @@ package it.istc.pst.platinum.framework.microkernel.resolver;
 
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.resolver.planning.PlanRefinementResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource.DiscreteResourceSchedulingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.resource.ReservoirResourceSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.discrete.DiscreteResourceSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.reservoir.ReservoirResourceSchedulingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.StateVariableSchedulingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.ObservationBehaviorCheckingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.StateVariableBehaviorCheckingResolver;
@@ -31,14 +31,14 @@ public enum ResolverType
 	 */
 	DISCRETE_RESOURCE_SCHEDULING_RESOLVER(DiscreteResourceSchedulingResolver.class.getName(),
 			"Discrete Resource Scheduler",
-			FlawType.RESOURCE_PEAK),
+			FlawType.RESOURCE_OVERFLOW),
 	
 	/**
 	 * 
 	 */
 	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(ReservoirResourceSchedulingResolver.class.getName(),
 			"Reservoir Resource Scheduler",
-			FlawType.RESOURCE_PEAK),
+			FlawType.RESOURCE_PLANNING),
 
 	/**
 	 * This resolver complies with the semantics of timelines as a 
@@ -47,7 +47,7 @@ public enum ResolverType
 	 */
 	SV_SCHEDULING_RESOLVER(StateVariableSchedulingResolver.class.getName(),
 			"State Variable Scheduler",
-			FlawType.SV_SCHEDULING),
+			FlawType.RESOURCE_OVERFLOW),
 	
 	/**
 	 * This resolver complies with the semantics of timelines as a
@@ -57,7 +57,7 @@ public enum ResolverType
 	 */
 	SV_GAP_RESOLVER(StateVariableGapResolver.class.getName(),
 			"Timeline Gap Manager",
-			FlawType.SV_GAP),
+			FlawType.INCOMPLETE_BEHAVIOR),
 	
 	/**
 	 * This resolver is responsible for verifying the temporal behavior of a state

@@ -5,7 +5,7 @@ package it.istc.pst.platinum.framework.time.tn;
  * @author alessandroumbrico
  *
  */
-public abstract class TemporalData 
+public abstract class TemporalData implements Comparable<TemporalData>
 {
 	protected int id;
 	
