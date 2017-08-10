@@ -26,7 +26,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.B
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.SchedulingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.reservoir.PrecedenceConstraintPosting;
 
 /**
  * 
@@ -282,26 +281,22 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 			throws FlawSolutionApplicationException 
 	{
 		// get the flaw solution to consider
-		PrecedenceConstraintPosting pcp = (PrecedenceConstraintPosting) solution;
+		PrecedenceConstraint pc = (PrecedenceConstraint) solution;
 		// prepare relations
 		Set<Relation> relations = new HashSet<>();
-		// setup relations
-		for (int index = 0; index <= pcp.getPrecedences().size() - 2; index++) 
-		{
-			// get adjacent decisions
-			Decision reference = pcp.getPrecedences().get(index);
-			Decision target = pcp.getPrecedences().get(index + 1);
+		// get reference and target decisions
+		Decision reference = pc.getReference();
+		Decision target = pc.getTarget();
 			
-			// create relation
-			BeforeRelation rel = this.component.create(RelationType.BEFORE, reference, target);
-			// set bounds
-			rel.setBound(new long[] {1, this.component.getHorizon()});
-			// add reference, target and constraint
-			relations.add(rel);
-			this.logger.debug("Applying flaw solution:\n"
-					+ "- solution: " + solution + "\n"
-					+ "- created temporal constraint: " + rel + "\n");
-		}
+		// create relation
+		BeforeRelation rel = this.component.create(RelationType.BEFORE, reference, target);
+		// set bounds
+		rel.setBound(new long[] {1, this.component.getHorizon()});
+		// add reference, target and constraint
+		relations.add(rel);
+		this.logger.debug("Applying flaw solution:\n"
+				+ "- solution: " + solution + "\n"
+				+ "- created temporal constraint: " + rel + "\n");
 		
 		try 
 		{
@@ -312,12 +307,8 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 		}
 		catch (RelationPropagationException ex) 
 		{
-			// free all relations
-			for (Relation rel : relations) {
-				// clear memory from relation
-				this.component.free(rel);
-			}
-			
+			// clear memory from relation
+			this.component.free(rel);
 			// not feasible solution
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
