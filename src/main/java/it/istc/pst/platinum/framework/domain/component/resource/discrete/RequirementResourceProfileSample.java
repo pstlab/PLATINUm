@@ -70,4 +70,12 @@ public class RequirementResourceProfileSample extends ResourceProfileSample
 		return this.start < o.start ? -1 : 
 			this.start == o.start && this.end <= o.end ? -1 : 1;
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[RequirementResourceProfileSample interval= (" + start + ", " + end+ ") decision= " + this.event.getDecision() + "]";
+	}
 }

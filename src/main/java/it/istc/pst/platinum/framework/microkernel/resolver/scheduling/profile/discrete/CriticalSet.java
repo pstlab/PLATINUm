@@ -1,6 +1,8 @@
 package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.discrete;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
@@ -22,7 +24,7 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	 * @param component
 	 */
 	protected CriticalSet(DomainComponent<?> component) {
-		super(component, FlawType.RESOURCE_PEAK);
+		super(component, FlawType.RESOURCE_OVERFLOW);
 		this.samples = new HashSet<>();
 	}
 	
@@ -40,6 +42,15 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 		
 		// get computed amount
 		return total;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<RequirementResourceProfileSample> getSamples() {
+		// get the list of samples 
+		return new ArrayList<>(this.samples);
 	}
 	
 	/**
