@@ -22,10 +22,17 @@ public class PrecedenceConstraint extends FlawSolution
 	 * @param target
 	 * @param preserved
 	 */
-	protected PrecedenceConstraint(CriticalSet cs, Decision reference, Decision target, double preserved) {
+	protected PrecedenceConstraint(CriticalSet cs, Decision reference, Decision target) {
 		super(cs);
 		this.reference = reference;
 		this.target = target;
+	}
+	
+	/**
+	 * 
+	 * @param preserved
+	 */
+	public void setPreservedSpace(double preserved) {
 		this.preserved = preserved;
 	}
 	

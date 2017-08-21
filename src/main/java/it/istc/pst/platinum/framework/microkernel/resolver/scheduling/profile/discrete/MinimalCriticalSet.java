@@ -122,11 +122,19 @@ public class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 * @param reference
 	 * @param target
 	 * @param preserved
+	 * @param makespan
 	 * @return
 	 */
-	protected PrecedenceConstraint createSolution(Decision reference, Decision target, double preserved) {
+	protected PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved, double makespan) 
+	{
 		// create a precedence constraint
-		PrecedenceConstraint pc = new PrecedenceConstraint(this.cs, reference, target, preserved);
+		PrecedenceConstraint pc = new PrecedenceConstraint(this.cs, reference, target);
+		// set the value of resulting preserved space
+		pc.setPreservedSpace(preserved);
+		// set the value of the resulting makespan
+		pc.setMakespan(makespan);
+		// add solution to the original flaw
+		this.solutions.add(pc);
 		// get constraint
 		return pc;
 	}

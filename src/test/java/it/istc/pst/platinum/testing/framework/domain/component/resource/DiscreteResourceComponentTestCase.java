@@ -7,12 +7,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceValue;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
@@ -69,7 +69,7 @@ public class DiscreteResourceComponentTestCase
 		this.resource.setMinCapacity(0);
 		this.resource.setMaxCapacity(10);
 		this.resource.setInitialCapacity(10);
-		this.resource.addRequirementValue("REQUIREMENT");
+		this.resource.addRequirementValue();
 	}
 	
 	/**
@@ -96,9 +96,12 @@ public class DiscreteResourceComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.resource);
 		// check values
-		List<ComponentValue> values = this.resource.getValues();
+		List<RequirementResourceValue> values = this.resource.getValues();
 		Assert.assertNotNull(values);
 		Assert.assertTrue(values.size() == 1);
+		RequirementResourceValue req = values.get(0);
+		Assert.assertNotNull(req);
+		Assert.assertTrue(req.getNumberOfParameterPlaceHolders() == 1);
 		// check min capacity
 		Assert.assertTrue(this.resource.getMinCapacity() == 0);
 		// check max capacity
@@ -116,15 +119,15 @@ public class DiscreteResourceComponentTestCase
 		System.out.println();
 		
 		// get value
-		ComponentValue requirement = this.resource.getValues().get(0);
+		RequirementResourceValue requirement = this.resource.getValues().get(0);
 		Assert.assertNotNull(requirement);
-		Assert.assertTrue(requirement.getLabel().equals("REQUIREMENT"));
 		
-		// create decision
+		// create a requirement decision
 		Decision dec = this.resource.create(requirement, new String[] {"?a0"});
 		Assert.assertNotNull(dec);
 		Assert.assertNull(dec.getToken());
 		System.out.println(dec);
+		
 		try
 		{
 			// add decision
@@ -166,9 +169,8 @@ public class DiscreteResourceComponentTestCase
 		System.out.println();
 		
 		// get value
-		ComponentValue requirement = this.resource.getValues().get(0);
+		RequirementResourceValue requirement = this.resource.getValues().get(0);
 		Assert.assertNotNull(requirement);
-		Assert.assertTrue(requirement.getLabel().equals("REQUIREMENT"));
 		
 		try
 		{

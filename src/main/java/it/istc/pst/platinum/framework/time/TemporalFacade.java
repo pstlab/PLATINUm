@@ -673,9 +673,12 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	public final void retract(TemporalConstraint constraint) {
 		// retract propagated constraints
 		TimePointDistanceConstraint[] toRetract = constraint.getPropagatedConstraints();
-		this.tn.removeDistanceConstraint(Arrays.asList(toRetract));
-		// clear data structure
-		constraint.clear();
+		// verify whether some constraints have been propagated
+		if (toRetract != null) {
+			this.tn.removeDistanceConstraint(Arrays.asList(toRetract));
+			// clear data structure
+			constraint.clear();
+		}
 	}
 	
 	/**
@@ -1006,26 +1009,32 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 		// initialize the makespan
 		double makespan = this.getOrigin();
 		// get the list of intervals to take into account
-		List<TemporalInterval> data = new ArrayList<>(this.intervals);
+		List<TemporalInterval> data = new ArrayList<>();
+		// check if a subset has been specified
 		if (!subset.isEmpty()) {
 			// take into account only a subset of intervals
-			data = new ArrayList<>(subset);
+			data.addAll(subset);
+		}
+		else {
+			// get only controllable intervals
+			for (TemporalInterval i : this.intervals) {
+				// check controllability property
+				if (i.isControllable()) {
+					data.add(i);
+				}
+			}
 		}
 		
 		// compute the makespan by taking into account controllable intervals only
 		for (TemporalInterval i : data) 
 		{
-			// check if controllable
-			if (i.isControllable()) 
-			{
-				// check interval schedule
-				IntervalScheduleQuery query = this.qf.create(TemporalQueryType.INTERVAL_SCHEDULE);
-				query.setInterval(i);
-				// process
-				this.process(query);
-				// update makespan
-				makespan = Math.max(makespan, i.getEndTime().getLowerBound());
-			}
+			// check interval schedule
+			IntervalScheduleQuery query = this.qf.create(TemporalQueryType.INTERVAL_SCHEDULE);
+			query.setInterval(i);
+			// process
+			this.process(query);
+			// update makespan
+			makespan = Math.max(makespan, i.getEndTime().getLowerBound());
 		}
 		
 		// get the computed value

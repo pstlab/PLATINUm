@@ -76,6 +76,6 @@ public class RequirementResourceProfileSample extends ResourceProfileSample
 	 */
 	@Override
 	public String toString() {
-		return "[RequirementResourceProfileSample interval= (" + start + ", " + end+ ") decision= " + this.event.getDecision() + "]";
+		return "[RequirementResourceProfileSample id= d:" + this.event.getDecision().getId() + " interval= (" + start + ", " + end+ ") amount= " + this.event.getAmount() + "]";
 	}
 }

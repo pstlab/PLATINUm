@@ -3,10 +3,8 @@ package it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.d
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
@@ -17,15 +15,22 @@ import it.istc.pst.platinum.framework.domain.component.resource.discrete.Discret
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResourceProfileManager;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceProfileSample;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.BeforeRelation;
+import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.SchedulingResolver;
+import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
+import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
+import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
+import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
+import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
  * 
@@ -61,7 +66,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 			List<CriticalSet> CSs = this.computeCriticalSets(prp);
 			
 			// check if any flaw has been found
-			if (flaws.isEmpty()) {
+			if (CSs.isEmpty()) {
 				// check optimistic resource profile
 				DiscreteResourceProfile orp = this.component.computeOptimisticResourceProfile();
 				// compute flaws on profile
@@ -154,6 +159,34 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 		// get sampled MCSs
 		return mcss;
 	}
+	
+	/**
+	 * Estimate the preserved values of time point domains after propagation of a precedence constraint "tp1 < tp2".
+	 * 
+	 * The method assumes that the precedence constraint is feasible and that the bounds of the time points have been updated 
+	 * according to precedence constraint (i.e. the underlying temporal must encapsulate additional information coming from 
+	 * the temporal constraint) 
+	 * 
+	 * @param tp1
+	 * @param tp2
+	 * @return
+	 */
+	private double computePreservedSpaceHeuristicValue(TimePoint tp1, TimePoint tp2)
+	{
+		// initialize value
+		double preserved = 0;
+		// compute parameters
+		double A = (tp2.getUpperBound() - tp2.getLowerBound() + 1) * (tp1.getUpperBound() - tp1.getLowerBound() + 1);
+		double B = (tp2.getUpperBound() - tp1.getLowerBound() + 1) * (tp2.getUpperBound() - tp1.getLowerBound() + 2);
+		double Cmin = Math.max(0, (tp2.getLowerBound() - tp1.getLowerBound()) * (tp2.getLowerBound() - tp1.getLowerBound() + 1));
+		double Cmax = Math.max(0, (tp2.getUpperBound() - tp1.getUpperBound() * (tp2.getUpperBound() - tp1.getUpperBound() + 1)));
+
+		// compute preserved space value
+		preserved = (B - Cmin - Cmax) / (2 * A);
+		
+		// get computed heuristic value
+		return preserved;
+	}
 
 	
 	/**
@@ -174,39 +207,102 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 			for (int jndex = index + 1; jndex < list.size(); jndex++)
 			{
 				// get target decision
-				Decision target  =list.get(jndex).getDecision();
-				
+				Decision target = list.get(jndex).getDecision();
+				// prepare precedence constraint
+				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+
 				try
 				{
 					/*
-					 * TODO : check feasibility of precedence constraint "reference < target" and compute the resulting preserved heuristic value
+					 *  check feasibility of precedence constraint "reference < target" and compute the resulting preserved heuristic value
 					 */
 					
-					double preserved = 0;
+					// set reference interval
+					before.setReference(reference.getToken().getInterval());
+					// set target interval
+					before.setTarget(target.getToken().getInterval());
+					// set bounds
+					before.setLowerBound(0);
+					before.setUpperBound(this.tdb.getHorizon());
+					
+					// verify constraint feasibility through constraint propagation
+					this.tdb.propagate(before);
+					// check temporal consistency
+					this.tdb.checkConsistency();
+					
+
+					// compute the preserved space heuristic value resulting after constraint propagation
+					double preserved = this.computePreservedSpaceHeuristicValue(
+							reference.getToken().getInterval().getEndTime(), 
+							target.getToken().getInterval().getStartTime());
+					
+					// compute the resulting makespan of the temporal plan after constraint propagation
+					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+					// process query
+					this.tdb.process(query);
+					// get computed makespan
+					double makespan = query.getMakespan();
+					
 					
 					// create and add solution to the MCS
-					mcs.createSolution(reference, target, preserved);
+					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved, makespan);
+					// print some debugging information
+					this.logger.debug("Feasible solution of MCS found:\n"
+							+ "- mcs: " + mcs + "\n"
+							+ "- precedence constraint: " + pc + "\n");
 				}
-				catch (Exception ex) {
+				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
 					this.logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
 				}
+				finally {
+					// retract propagated constraint
+					this.tdb.retract(before);
+				}
 				
 				
 				try
 				{
-					/*
-					 * TODO : check the feasibility of precedence constraint "target < reference" and compute the resulting preserved heuristic value
-					 */
+					// set reference interval
+					before.setReference(target.getToken().getInterval());
+					// set target interval
+					before.setTarget(reference.getToken().getInterval());
+					// set bounds
+					before.setLowerBound(0);
+					before.setUpperBound(this.tdb.getHorizon());
 					
-					double preserved = 0;
+					// verify constraint feasibility through constraint propagation
+					this.tdb.propagate(before);
+					// check temporal consistency
+					this.tdb.checkConsistency();
+					
+					
+					// compute the preserved space heuristic value resulting after constraint propagation
+					double preserved = this.computePreservedSpaceHeuristicValue(
+							target.getToken().getInterval().getEndTime(), 
+							reference.getToken().getInterval().getStartTime());
+					
+					// compute the resulting makespan of the temporal plan after constraint propagation
+					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+					// process query
+					this.tdb.process(query);
+					// get computed makespan
+					double makespan = query.getMakespan();
 					
 					// create and add solution to the MCS
-					mcs.createSolution(target, reference, preserved);
+					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved, makespan);
+					// print some debugging information
+					this.logger.debug("Feasible solution of MCS found:\n"
+							+ "- mcs: " + mcs + "\n"
+							+ "- precedence constraint: " + pc + "\n");
 				}
-				catch (Exception ex) {
+				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
 					this.logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
+				}
+				finally {
+					// retract (inverted) precedence constraint
+					this.tdb.retract(before);
 				}
 			}
 		}
@@ -230,7 +326,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 		CriticalSet cs = (CriticalSet) flaw;
 		
 		/*
-		 * TODO : A critical set (CS) is not necessary minimal, so sample MCSs from the CS
+		 * A critical set (CS) is not necessary minimal, so sample MCSs from the CS
 		 */
 		
 		// sample the critical set in order to find minimal critical sets
@@ -253,7 +349,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 			}
 			
 			/*
-			 * TODO : rate MCSs according to the computed preserved heuristic value and select the best one for expansion
+			 * Rate MCSs according to the computed preserved heuristic value and select the best one for expansion
 			 */
 			
 			// sort MCSs according to the computed preserved heuristic value
@@ -379,37 +475,45 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 		List<RequirementResourceProfileSample> samples = profile.getSamples();
 		
 		// data structure to maintain data "learned" during flaw detection
-		Map<RequirementResourceProfileSample, Set<RequirementResourceProfileSample>> skip = new HashMap<>();
-		for (RequirementResourceProfileSample i : samples) 
+//		Map<RequirementResourceProfileSample, Set<RequirementResourceProfileSample>> skip = new HashMap<>();
+//		for (RequirementResourceProfileSample i : samples)
+		for (int index = 0; index < samples.size() - 1; index++)
 		{
+			// get current sample
+			RequirementResourceProfileSample i = samples.get(index);
 			// initialize the critical set
 			CriticalSet cs = new CriticalSet(this.component);
 			// add i to the current critical set
 			cs.addSample(i);
+			// initialize the skip data structure
+//			if (!skip.containsKey(i)) {
+//				skip.put(i, new HashSet<>());
+//			}
+			
 			// check possible critical sets
-			for (RequirementResourceProfileSample j : samples)
+//			for (RequirementResourceProfileSample j : samples)
+			for (int jndex = index + 1; jndex < samples.size(); jndex++)
 			{
-				// take into account distinct samples
-				if (!i.equals(j) && !skip.get(i).contains(j)) 
-				{
+				// get sample
+				RequirementResourceProfileSample j = samples.get(jndex);
+//				// take into account distinct samples
+//				if (!i.equals(j) && !skip.get(i).contains(j)) 
+//				{
 					// verify whether the current sample overlaps the considered critical set
 					if (cs.isOverlapping(j)) 
 					{
 						// add the sample to the critical set
 						cs.addSample(j);
-						// add skip information
-						if (skip.containsKey(i)) {
-							skip.put(i, new HashSet<>());
-						}
-						if (skip.containsKey(j)) {
-							skip.put(j, new HashSet<>());
-						}
-						
-						// add skip information
-						skip.get(i).add(j);
-						skip.get(j).add(i);
+//						// add skip information
+//						if (!skip.containsKey(j)) {
+//							skip.put(j, new HashSet<>());
+//						}
+//						
+//						// add skip information
+//						skip.get(i).add(j);
+//						skip.get(j).add(i);
 					}
-				}
+//				}
 			}
 			
 			// check critical set condition
