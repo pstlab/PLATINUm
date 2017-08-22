@@ -263,6 +263,10 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 				
 				try
 				{
+					/*
+					 *  check feasibility of precedence constraint "target < reference" and compute the resulting preserved heuristic value
+					 */
+					
 					// set reference interval
 					before.setReference(target.getToken().getInterval());
 					// set target interval
@@ -290,7 +294,7 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 					double makespan = query.getMakespan();
 					
 					// create and add solution to the MCS
-					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved, makespan);
+					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved, makespan);
 					// print some debugging information
 					this.logger.debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
@@ -475,45 +479,27 @@ public class DiscreteResourceSchedulingResolver <T extends DomainComponent<?> & 
 		List<RequirementResourceProfileSample> samples = profile.getSamples();
 		
 		// data structure to maintain data "learned" during flaw detection
-//		Map<RequirementResourceProfileSample, Set<RequirementResourceProfileSample>> skip = new HashMap<>();
-//		for (RequirementResourceProfileSample i : samples)
 		for (int index = 0; index < samples.size() - 1; index++)
 		{
 			// get current sample
 			RequirementResourceProfileSample i = samples.get(index);
 			// initialize the critical set
 			CriticalSet cs = new CriticalSet(this.component);
+			cs.setMinCapacity(this.component.getMinCapacity());
+			cs.setMaxCapacity(this.component.getMaxCapacity());
 			// add i to the current critical set
 			cs.addSample(i);
-			// initialize the skip data structure
-//			if (!skip.containsKey(i)) {
-//				skip.put(i, new HashSet<>());
-//			}
 			
 			// check possible critical sets
-//			for (RequirementResourceProfileSample j : samples)
 			for (int jndex = index + 1; jndex < samples.size(); jndex++)
 			{
 				// get sample
 				RequirementResourceProfileSample j = samples.get(jndex);
-//				// take into account distinct samples
-//				if (!i.equals(j) && !skip.get(i).contains(j)) 
-//				{
-					// verify whether the current sample overlaps the considered critical set
-					if (cs.isOverlapping(j)) 
-					{
-						// add the sample to the critical set
-						cs.addSample(j);
-//						// add skip information
-//						if (!skip.containsKey(j)) {
-//							skip.put(j, new HashSet<>());
-//						}
-//						
-//						// add skip information
-//						skip.get(i).add(j);
-//						skip.get(j).add(i);
-					}
-//				}
+				// verify whether the current sample overlaps the considered critical set
+				if (cs.isOverlapping(j)) {
+					// add the sample to the critical set
+					cs.addSample(j);
+				}
 			}
 			
 			// check critical set condition

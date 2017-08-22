@@ -17,6 +17,8 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
  */
 public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 {
+	private double minCapacity;									// minimum level of resource capacity
+	private double maxCapacity;									// maximum level of resource capacity
 	private Set<RequirementResourceProfileSample> samples;		// profile samples composing the critical set
 	
 	/**
@@ -26,6 +28,38 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	protected CriticalSet(DomainComponent<?> component) {
 		super(component, FlawType.RESOURCE_OVERFLOW);
 		this.samples = new HashSet<>();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMaxCapacity() {
+		return maxCapacity;
+	}
+	
+	/**
+	 * 
+	 * @param maxCapacity
+	 */
+	public void setMaxCapacity(double maxCapacity) {
+		this.maxCapacity = maxCapacity;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMinCapacity() {
+		return minCapacity;
+	}
+	
+	/**
+	 * 
+	 * @param minCapacity
+	 */
+	public void setMinCapacity(double minCapacity) {
+		this.minCapacity = minCapacity;
 	}
 	
 	/**
@@ -149,5 +183,13 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	public int compareTo(CriticalSet o) {
 		// compare the total amount of resource required 
 		return this.getTotalRequirement() >= o.getTotalRequirement() ? -1 : 1;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[CriticalSet resource-capacity= (min= " + this.minCapacity + ", max= " + this.maxCapacity + "), total-requirement= " + this.getTotalRequirement() + ", #activities= " + this.samples.size() + "]";
 	}
 }

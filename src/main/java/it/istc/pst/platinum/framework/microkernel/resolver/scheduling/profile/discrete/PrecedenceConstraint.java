@@ -72,4 +72,13 @@ public class PrecedenceConstraint extends FlawSolution
 		// parse and get double value
 		return Double.parseDouble(cost);
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[PrecedenceConstraint preserved= " + this.preserved + " makespan= " + this.getMakespan() + " reference= " + this.reference +" target= " + this.target + "]";
+	}
+	
 }
