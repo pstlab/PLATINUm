@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 
 /**
  * 

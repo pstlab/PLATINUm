@@ -3,9 +3,9 @@ package it.istc.pst.platinum.framework.domain.component.sv;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalPseudoControllabilityQuery;
@@ -26,7 +26,7 @@ public final class ExternalStateVariable extends StateVariable
 			// observation checking resolver
 			ResolverType.OBSERVATION_CHECKING_RESOLVER,
 			// behavior checking resolver
-			ResolverType.SV_BEHAVIOR_CHECKING_RESOLVER
+			ResolverType.TIMELINE_BEHAVIOR_CHECKING_RESOLVER
 	})
 	protected ExternalStateVariable(String name) {
 		super(name, DomainComponentType.SV_EXTERNAL);
@@ -45,9 +45,9 @@ public final class ExternalStateVariable extends StateVariable
 	 * 
 	 */
 	@Override
-	public StateVariableValue addValue(String label, long[] duration, boolean controllable) {
+	public StateVariableValue addStateVariableValue(String label, long[] duration, boolean controllable) {
 		// force values of external variable to be not controllable
-		return super.addValue(label, duration, false);
+		return super.addStateVariableValue(label, duration, false);
 	}
 	
 	/**

@@ -13,15 +13,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilter;
 import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseObserver;
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseEvent;
 import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Plan;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
-import it.istc.pst.platinum.framework.microkernel.resolver.planning.Goal;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.resolver.refinement.Goal;
 
 /**
  * 

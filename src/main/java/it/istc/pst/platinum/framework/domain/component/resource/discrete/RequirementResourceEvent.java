@@ -1,8 +1,8 @@
 package it.istc.pst.platinum.framework.domain.component.resource.discrete;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceEvent;
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceEventType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 

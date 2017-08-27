@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.TransitionNotFoundException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalPseudoControllabilityQuery;
 import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
@@ -20,8 +20,10 @@ import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckExcep
  */
 public abstract class StateVariable extends DomainComponent<StateVariableValue> 
 {
+	protected List<StateVariableValue> values;							
 	// SV's transition function
 	protected Map<StateVariableValue, Map<StateVariableValue, Transition>> transitions;
+	
 	
 	/**
 	 * 
@@ -30,6 +32,8 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 	 */
 	protected StateVariable(String name, DomainComponentType type) {
 		super(name, type);
+		// initialize the list of values
+				this.values = new ArrayList<StateVariableValue>();
 		// initialize transition function
 		this.transitions = new HashMap<>();
 	}
@@ -78,9 +82,12 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 	
 	/**
 	 * 
+	 * @param label
+	 * @param duration
+	 * @param controllable
+	 * @return
 	 */
-	@Override
-	public StateVariableValue addValue(String label, long[] duration, boolean controllable) {
+	public StateVariableValue addStateVariableValue(String label, long[] duration, boolean controllable) {
 		// create and add value
 		StateVariableValue value = new StateVariableValue(label, duration, controllable, this);
 		// add to available values

@@ -3,8 +3,8 @@ package it.istc.pst.platinum.deliberative.heuristic.filter.semantic;
 import java.util.List;
 import java.util.Map;
 
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
+import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 
 /**
  * 

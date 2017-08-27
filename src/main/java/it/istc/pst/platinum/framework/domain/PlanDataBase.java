@@ -8,6 +8,7 @@ import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
+import it.istc.pst.platinum.framework.domain.component.pdb.Operator;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
@@ -16,7 +17,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationE
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Operator;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Plan;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
@@ -85,14 +85,14 @@ public interface PlanDataBase
 	 * 
 	 * @return
 	 */
-	public List<DomainComponent> getComponents();
+	public List<DomainComponent<?>> getComponents();
 	
 	/**
 	 * 
 	 * @param name
 	 * @return
 	 */
-	public DomainComponent getComponentByName(String name);
+	public DomainComponent<?> getComponentByName(String name);
 	
 	/**
 	 *  Check consistency of the plan data-base
@@ -107,13 +107,13 @@ public interface PlanDataBase
 	 * @param type
 	 * @return
 	 */
-	public <T extends DomainComponent> T createDomainComponent(String name, DomainComponentType type);
+	public <T extends DomainComponent<?>> T createDomainComponent(String name, DomainComponentType type);
 	
 	/**
 	 * 
 	 * @param component
 	 */
-	public void addDomainComponent(DomainComponent component);
+	public void addDomainComponent(DomainComponent<?> component);
 	
 	/**
 	 * 
@@ -143,7 +143,7 @@ public interface PlanDataBase
 	 * @return
 	 * @throws DomainComponentNotFoundException
 	 */
-	public SynchronizationRule createSynchronizationRule(ComponentValue value, String[] labels) 
+	public SynchronizationRule createSynchronizationRule(ComponentValue<?> value, String[] labels) 
 			throws DomainComponentNotFoundException;
 	
 	/**
@@ -167,14 +167,14 @@ public interface PlanDataBase
 	 * @param value
 	 * @return
 	 */
-	public List<SynchronizationRule> getSynchronizationRules(ComponentValue value);
+	public List<SynchronizationRule> getSynchronizationRules(ComponentValue<?> value);
 
 	/**
 	 * 
 	 * @param component
 	 * @return
 	 */
-	public List<SynchronizationRule> getSynchronizationRules(DomainComponent component);
+	public List<SynchronizationRule> getSynchronizationRules(DomainComponent<?> component);
 	
 	/**
 	 * 
@@ -217,13 +217,13 @@ public interface PlanDataBase
 	 * 
 	 * @return
 	 */
-	public Map<DomainComponent, Set<DomainComponent>> getDependencyGraph();
+	public Map<DomainComponent<?>, Set<DomainComponent<?>>> getDependencyGraph();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree();
+	public Map<ComponentValue<?>, Set<ComponentValue<?>>> getDecompositionTree();
 	
 	/**
 	 * Compute the makespan of the plan

@@ -3,6 +3,9 @@ package it.istc.pst.platinum.framework.microkernel.lang.plan;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+
 /**
  * 
  * @author anacleto

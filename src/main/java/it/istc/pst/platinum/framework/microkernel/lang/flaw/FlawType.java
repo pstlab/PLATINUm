@@ -26,7 +26,7 @@ public enum FlawType
 	/**
 	 * An unbounded temporal interval that entail planning decisions to define the behavior of a particular component of the domain 
 	 */
-	INCOMPLETE_BEHAVIOR(FlawCategoryType.PLANNING),
+	BEHAVIOR_PLANNING(FlawCategoryType.PLANNING),
 	
 	/**
 	 * A set of activities exceeding resource availability (i.e. a peak). Reservoir resources can solve such a peak in two 

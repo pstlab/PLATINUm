@@ -10,7 +10,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundExcepti
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.timeline.Timeline;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Timeline;
 
 /**
  * 

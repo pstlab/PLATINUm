@@ -2,7 +2,7 @@ package it.istc.pst.platinum.framework.domain.component.resource;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.time.tn.TemporalData;
 
 /**

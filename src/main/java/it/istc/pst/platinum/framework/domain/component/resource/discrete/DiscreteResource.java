@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
 import it.istc.pst.platinum.framework.domain.component.ex.ResourceProfileComputationException;
 import it.istc.pst.platinum.framework.domain.component.resource.Resource;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.parameter.lang.NumericParameterDomain;
@@ -27,7 +28,7 @@ import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointScheduleQuery;
  * @author anacleto
  *
  */
-public class DiscreteResource extends Resource<RequirementResourceValue> implements DiscreteResourceProfileManager
+public class DiscreteResource extends Resource<RequirementResourceValue> // implements DiscreteResourceProfileManager
 {
 	public static final String REQUIREMENT_LABEL = "REQUIREMENT";		// language constant
 	private RequirementResourceValue requirement;						// requirement value
@@ -46,13 +47,40 @@ public class DiscreteResource extends Resource<RequirementResourceValue> impleme
 		this.min = Integer.MIN_VALUE + 1;
 		this.max = Integer.MAX_VALUE - 1;
 		this.initial = this.max;
+		// create the requirement value
 		this.requirement = null;
 	}
-
+	
 	/**
 	 * 
 	 */
-	@Override
+	@PostConstruct
+	protected void init() {
+		super.init();
+		// setup the only value available for a discrete resource component
+		this.requirement = new RequirementResourceValue(
+				REQUIREMENT_LABEL, 
+				new long[] {
+						1, this.tdb.getHorizon()
+				}, 
+				this);
+		
+		// set also the domains of the "amount" parameter 
+		NumericParameterDomain dom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", 
+				ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
+		
+		// set domain bounds
+		dom.setLowerBound(0);
+		dom.setUpperBound(this.max);
+		// set parameter domain
+		this.requirement.addParameterPlaceHolder(dom);
+	}
+
+	/**
+	 * Get the list of (temporally flexible) requirements of a discrete resource
+	 * 
+	 * @return
+	 */
 	public List<RequirementResourceEvent> getRequirements() 
 	{
 		// list of values
@@ -76,47 +104,14 @@ public class DiscreteResource extends Resource<RequirementResourceValue> impleme
 	
 	/**
 	 * 
-	 * @return
-	 */
-	public RequirementResourceValue addRequirementValue() {
-		// add requirement
-		return this.addValue(REQUIREMENT_LABEL, new long[] {1, this.tdb.getHorizon()}, true);
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public RequirementResourceValue addValue(String label, long[] duration, boolean controllable) 
-	{
-		// check requirement
-		if (this.requirement == null)
-		{
-			// setup the only value available for a discrete resource component
-			this.requirement = new RequirementResourceValue(label, duration, this);
-			// set also the domains of the "amount" parameter 
-			NumericParameterDomain dom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", 
-					ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
-			// set domain bounds
-			dom.setLowerBound(0);
-			dom.setUpperBound(this.max);
-			// set parameter domain
-			this.requirement.addParameterPlaceHolder(dom);
-			// add to values
-			this.values.add(this.requirement);
-		}
-		
-		// get the requirement value
-		return this.requirement;
-	}
-
-	/**
-	 * 
 	 */
 	@Override
 	public List<RequirementResourceValue> getValues() {
 		// get values - only one element expected
-		return new ArrayList<>(this.values);
+		List<RequirementResourceValue> list = new ArrayList<>();
+		list.add(this.requirement);
+		// get list of available values
+		return list;
 	}
 	
 	/**
@@ -134,28 +129,16 @@ public class DiscreteResource extends Resource<RequirementResourceValue> impleme
 	@Override
 	public RequirementResourceValue getValueByName(String name) 
 	{	
-		// requirement value
-		RequirementResourceValue value = null;
-		for (RequirementResourceValue v : this.values) {
-			if (v.getLabel().equals(name)) {
-				value = v;
-				break;
-			}
-		}
-		
-		// check if value has been found
-		if (value == null) {
-			throw new RuntimeException("Value \"" + name + "\" not found on discrete resource \"" + this.name + "\"");
-		}
-		
 		// get the requirement value
-		return value;
+		return this.requirement;
 	}
 	
 	/**
+	 * Compute the pessimistic profile (PRP) of a discrete resource
 	 * 
+	 * @return
+	 * @throws ResourceProfileComputationException
 	 */
-	@Override
 	public DiscreteResourceProfile computePessimisticResourceProfile() 
 			throws ResourceProfileComputationException
 	{
@@ -237,9 +220,11 @@ public class DiscreteResource extends Resource<RequirementResourceValue> impleme
 	}
 	
 	/**
+	 * Compute the optimistic profile (ORP) of a discrete resource
 	 * 
+	 * @return
+	 * @throws ResourceProfileComputationException
 	 */
-	@Override
 	public DiscreteResourceProfile computeOptimisticResourceProfile() 
 			throws ResourceProfileComputationException
 	{

@@ -1,13 +1,13 @@
 package it.istc.pst.platinum.framework.microkernel.resolver;
 
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.resolver.planning.PlanRefinementResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.discrete.DiscreteResourceSchedulingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.reservoir.ReservoirResourceSchedulingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.StateVariableSchedulingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.ObservationBehaviorCheckingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.StateVariableBehaviorCheckingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap.StateVariableGapResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.refinement.PlanRefinementResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete.DiscreteResourceSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir.ReservoirResourceSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking.ObservationBehaviorCheckingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking.TimelineBehaviorCheckingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.TimelineBehaviorPlanningResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.TImelineSchedulingResolver;
 
 /**
  * 
@@ -45,9 +45,9 @@ public enum ResolverType
 	 * continuous sequence of not overlapping tokens. Specifically, 
 	 * the resolver is responsible for managing token overlaps.
 	 */
-	SV_SCHEDULING_RESOLVER(StateVariableSchedulingResolver.class.getName(),
+	TIMELINE_SCHEDULING_RESOLVER(TImelineSchedulingResolver.class.getName(),
 			"State Variable Scheduler",
-			FlawType.RESOURCE_OVERFLOW),
+			FlawType.TIMELINE_OVERFLOW),
 	
 	/**
 	 * This resolver complies with the semantics of timelines as a
@@ -55,16 +55,16 @@ public enum ResolverType
 	 * resolver is responsible for managing gaps on a timeline and 
 	 * complete its (temporal) behavior.
 	 */
-	SV_GAP_RESOLVER(StateVariableGapResolver.class.getName(),
+	TIMELINE_BEHAVIOR_PLANNING_RESOLVER(TimelineBehaviorPlanningResolver.class.getName(),
 			"Timeline Gap Manager",
-			FlawType.INCOMPLETE_BEHAVIOR),
+			FlawType.BEHAVIOR_PLANNING),
 	
 	/**
 	 * This resolver is responsible for verifying the temporal behavior of a state
 	 * variable. Namely, the resolver verifies if the obtained behavior is consistent 
 	 * with the state variable specification.
 	 */
-	SV_BEHAVIOR_CHECKING_RESOLVER(StateVariableBehaviorCheckingResolver.class.getName(),
+	TIMELINE_BEHAVIOR_CHECKING_RESOLVER(TimelineBehaviorCheckingResolver.class.getName(),
 			"State Variable Behavior Checker",
 			FlawType.INVALID_BEHAVIOR),
 	

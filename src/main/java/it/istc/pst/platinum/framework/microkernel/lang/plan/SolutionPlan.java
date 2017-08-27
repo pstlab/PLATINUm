@@ -5,10 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.TemporalRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.timeline.Timeline;
+import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
@@ -138,12 +140,46 @@ public class SolutionPlan
 	 * 
 	 * @param component
 	 */
-	public void add(DomainComponent component) {
-		Timeline tl = new Timeline(component);
-		if (component.isExternal()) {
-			this.observations.add(tl);
-		} else {
-			this.timelines.add(tl);
+	public void add(DomainComponent<?> component) 
+	{
+		// check component type
+		switch (component.getType())
+		{
+			case SV_FUNCTIONAL : 
+			case SV_PRIMITIVE : {
+				// get the state variable
+				StateVariable sv = (StateVariable) component;
+				// get the timeline 
+				Timeline tl = new Timeline(sv);
+				// add to timeline
+				this.timelines.add(tl);
+			}
+			break;
+			
+			case SV_EXTERNAL : {
+				// get the state variable 
+				StateVariable sv = (StateVariable) component;
+				// get the timeline 
+				Timeline tl = new Timeline(sv);
+				// add to observations
+				this.observations.add(tl);
+			}
+			break;
+			
+			case RESOURCE_DISCRETE : case RESOURCE_RESERVOIR : 
+			{
+				/*
+				 * FIXME: How to manage resources? 
+				 * 
+				 * Such components should be represented through different data structures...
+				 */
+			}
+			break;
+			
+			case PDB : {
+				// ignore this type of components
+			}
+			break;
 		}
 	}
 	

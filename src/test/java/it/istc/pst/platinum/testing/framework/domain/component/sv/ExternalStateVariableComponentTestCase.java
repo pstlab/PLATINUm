@@ -6,10 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.sv.ExternalStateVariable;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryFactory;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;

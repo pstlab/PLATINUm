@@ -18,12 +18,12 @@ import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.ExternalStateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFact;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFluent;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemGoal;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
 

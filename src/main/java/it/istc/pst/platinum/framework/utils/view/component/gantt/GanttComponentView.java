@@ -28,9 +28,9 @@ import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.utils.view.component.ComponentView;
 

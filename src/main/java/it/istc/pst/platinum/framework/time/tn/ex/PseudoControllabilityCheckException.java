@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 
 /**
  * 
@@ -17,7 +17,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 public class PseudoControllabilityCheckException extends ConsistencyCheckException {
 	private static final long serialVersionUID = 1L;
 
-	private Map<DomainComponent, List<Decision>> issues;
+	private Map<DomainComponent<?>, List<Decision>> issues;
 	
 	/**
 	 * 
@@ -44,7 +44,7 @@ public class PseudoControllabilityCheckException extends ConsistencyCheckExcepti
 	 * 
 	 * @param issues
 	 */
-	public void setPseudoControllabilityIssues(Map<DomainComponent, List<Decision>> issues) {
+	public void setPseudoControllabilityIssues(Map<DomainComponent<?>, List<Decision>> issues) {
 		this.issues = issues;
 	}
 
@@ -52,7 +52,7 @@ public class PseudoControllabilityCheckException extends ConsistencyCheckExcepti
 	 * 
 	 * @return
 	 */
-	public Map<DomainComponent, List<Decision>> getPseudoControllabilityIssues() {
+	public Map<DomainComponent<?>, List<Decision>> getPseudoControllabilityIssues() {
 		return new HashMap<>(this.issues);
 	}
 }

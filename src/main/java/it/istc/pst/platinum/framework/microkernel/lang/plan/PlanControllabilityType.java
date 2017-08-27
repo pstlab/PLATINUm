@@ -5,11 +5,30 @@ package it.istc.pst.platinum.framework.microkernel.lang.plan;
  * @author anacleto
  *
  */
-public enum PlanControllabilityType {
-
+public enum PlanControllabilityType 
+{
+	/**
+	 * No information is given about the controllability property of the plan
+	 */
 	UNKNOWN,
 	
-	PSEUDO_CONTROLLABLE,
+	/**
+	 * The plan is pseudo-controllable 
+	 */
+	PSEUDO_CONTROLLABILITY,
 	
-	NOT_PSEUDO_CONTROLLABLE
+	/**
+	 * 
+	 */
+	WEAK_CONTROLLABILITY,
+	
+	/**
+	 * 
+	 */
+	STRONG_CONTROLLABILITY,
+	
+	/**
+	 * 
+	 */
+	DYNAMIC_CONTROLLABILITY
 }

@@ -22,7 +22,7 @@ import it.istc.pst.platinum.framework.domain.component.resource.reservoir.Resour
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceProductionValue;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.parameter.lang.NumericParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
 

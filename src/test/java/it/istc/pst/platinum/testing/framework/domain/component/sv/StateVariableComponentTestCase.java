@@ -8,18 +8,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable;
+import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.DecisionSchedule;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.Peak;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap.Gap;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.gap.GapCompletion;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.Gap;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.GapCompletion;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.DecisionSchedule;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
@@ -91,9 +92,9 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long [] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", new long[] {11, 25}, false);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.facade.getHorizon()}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long [] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {11, 25}, false);
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
 		this.psv.addValueTransition(v2, v3);
@@ -110,8 +111,8 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
 		System.out.println(this.psv);
@@ -149,9 +150,9 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {1, this.facade.getHorizon()}, true);
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -331,7 +332,7 @@ public class StateVariableComponentTestCase
 				// get flaws 
 				Assert.assertNotNull(f);
 				// check type
-				if (f instanceof Peak) {
+				if (f instanceof OverlappingSet) {
 					// get flaw solution
 					Assert.assertNotNull(f.getSolutions());
 					Assert.assertTrue(!f.getSolutions().isEmpty());
@@ -387,7 +388,7 @@ public class StateVariableComponentTestCase
 			Assert.assertNotNull(flaws);
 			Assert.assertTrue(!flaws.isEmpty());
 			// get peak
-			Peak peak = (Peak) flaws.get(0);
+			OverlappingSet peak = (OverlappingSet) flaws.get(0);
 			// check solutions
 			Assert.assertNotNull(peak.getSolutions());
 			Assert.assertTrue(!peak.getSolutions().isEmpty());
@@ -464,7 +465,7 @@ public class StateVariableComponentTestCase
 			do 
 			{
 				// get peak
-				Peak peak = (Peak) flaw;
+				OverlappingSet peak = (OverlappingSet) flaw;
 				// check solutions
 				Assert.assertNotNull(peak.getSolutions());
 				
@@ -760,7 +761,7 @@ public class StateVariableComponentTestCase
 			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
 			
 			// get peak
-			Peak peak = (Peak) flaws.get(0);
+			OverlappingSet peak = (OverlappingSet) flaws.get(0);
 			// check solutions
 			Assert.assertNotNull(peak.getSolutions());
 			Assert.assertTrue(!peak.getSolutions().isEmpty());

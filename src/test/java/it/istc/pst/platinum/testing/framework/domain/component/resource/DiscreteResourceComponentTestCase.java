@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
@@ -18,12 +19,11 @@ import it.istc.pst.platinum.framework.domain.component.resource.discrete.Require
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.parameter.BindParameterRelation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.BindParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.profile.discrete.PrecedenceConstraint;
+import it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete.PrecedenceConstraint;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
@@ -74,7 +74,6 @@ public class DiscreteResourceComponentTestCase
 		this.resource.setMinCapacity(0);
 		this.resource.setMaxCapacity(10);
 		this.resource.setInitialCapacity(10);
-		this.resource.addRequirementValue();
 	}
 	
 	/**

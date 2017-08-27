@@ -22,7 +22,7 @@ public class Agenda
 	 * @param name
 	 * @param horizon
 	 */
-	public Agenda() {
+	protected Agenda() {
 		this.goals = new HashMap<>();
 	}
 	

@@ -25,11 +25,10 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.ConstraintPropagationE
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.parameter.ParameterRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.relations.temporal.TemporalRelation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.ParameterRelation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
@@ -72,7 +71,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 	protected String name;
 	protected DomainComponentType type;
 	// list of values
-	protected List<V> values;
+//	protected List<V> values;
 	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
@@ -92,7 +91,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 		this.type = type;
 		this.name = name;
 		// initialize the list of values
-		this.values = new ArrayList<>();
+//		this.values = new ArrayList<>();
 		
 		// initialize decisions of the (local) plan
 		this.decisions = new HashMap<>();
@@ -959,14 +958,14 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 		}
 	}
 	
-	/**
-	 * 
-	 * @param label
-	 * @param duration
-	 * @param controllable
-	 * @return
-	 */
-	public abstract V addValue(String label, long[] duration, boolean controllable);
+//	/**
+//	 * 
+//	 * @param label
+//	 * @param duration
+//	 * @param controllable
+//	 * @return
+//	 */
+//	public abstract V addValue(String label, long[] duration, boolean controllable);
 	
 	/**
 	 * 

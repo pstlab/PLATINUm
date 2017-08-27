@@ -1,6 +1,6 @@
 package it.istc.pst.platinum.framework.domain.component.pdb;
 
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 
 /**
  * 

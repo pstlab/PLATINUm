@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Relation;
+import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 
 /**
  * 

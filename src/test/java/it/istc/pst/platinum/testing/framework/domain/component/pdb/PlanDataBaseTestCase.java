@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import it.istc.pst.platinum.framework.domain.PlanDataBaseFactory;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseComponent;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationConstraint;
@@ -20,14 +21,13 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationE
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
-import it.istc.pst.platinum.framework.microkernel.resolver.planning.Goal;
-import it.istc.pst.platinum.framework.microkernel.resolver.planning.GoalExpansion;
-import it.istc.pst.platinum.framework.microkernel.resolver.planning.GoalUnification;
-import it.istc.pst.platinum.framework.microkernel.resolver.scheduling.sv.Peak;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
+import it.istc.pst.platinum.framework.microkernel.resolver.refinement.Goal;
+import it.istc.pst.platinum.framework.microkernel.resolver.refinement.GoalExpansion;
+import it.istc.pst.platinum.framework.microkernel.resolver.refinement.GoalUnification;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
 import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
@@ -527,8 +527,8 @@ public class PlanDataBaseTestCase {
 					Assert.assertTrue(goal.getDecision().equals(dec1));
 					System.out.println(goal);
 				}
-				if (flaw instanceof Peak) {
-					Peak peak = (Peak) flaw;
+				if (flaw instanceof OverlappingSet) {
+					OverlappingSet peak = (OverlappingSet) flaw;
 					Assert.assertTrue(peak.size() == 2);
 					Assert.assertTrue(peak.getDecisions().contains(dec2));
 					Assert.assertTrue(peak.getDecisions().contains(dec3));

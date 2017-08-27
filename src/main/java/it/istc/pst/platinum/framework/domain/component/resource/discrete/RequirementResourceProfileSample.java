@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.framework.domain.component.resource.discrete;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceProfileSample;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Decision;
 
 /**
  * 

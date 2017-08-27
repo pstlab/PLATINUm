@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.framework.microkernel.lang.problem;
 
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 
 /**
  * 
