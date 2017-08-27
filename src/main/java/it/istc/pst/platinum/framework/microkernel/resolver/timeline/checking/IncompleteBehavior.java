@@ -22,7 +22,7 @@ public class IncompleteBehavior extends Flaw {
 	 * @param right
 	 */
 	protected IncompleteBehavior(StateVariable sv, Decision left, Decision right) {
-		super(sv, FlawType.INVALID_BEHAVIOR);
+		super(sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
 		this.left = left;
 		this.right = right;
 	}

@@ -26,7 +26,7 @@ public class Gap extends Flaw
 	 * @param distance
 	 */
 	protected Gap(StateVariable sv, Decision left, Decision right, long[] distance) {
-		super(sv, FlawType.SV_GAP);
+		super(sv, FlawType.TIMELINE_BEHAVIOR_PLANNING);
 		this.left = left;
 		this.right = right;
 		this.dmin = distance[0];
@@ -41,7 +41,7 @@ public class Gap extends Flaw
 	 * @param right
 	 */
 	protected Gap(StateVariable sv, Decision left, Decision right) {
-		super(sv, FlawType.SV_GAP);
+		super(sv, FlawType.TIMELINE_BEHAVIOR_PLANNING);
 		this.left = left;
 		this.right = right;
 		this.gapType = GapType.SEMANTIC_CONNECTION;

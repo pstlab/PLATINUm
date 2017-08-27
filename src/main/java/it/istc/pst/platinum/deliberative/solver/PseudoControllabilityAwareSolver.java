@@ -142,7 +142,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				this.time = System.currentTimeMillis() - start;
 				// set plan
 				plan = this.pdb.getSolutionPlan();
-				plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABLE);
+				plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABILITY);
 				plan.setSolvingTime(this.time);
 				// pseudo-controllable solution found
 				this.logger.info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");

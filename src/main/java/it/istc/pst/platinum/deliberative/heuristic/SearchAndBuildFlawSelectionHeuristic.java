@@ -42,15 +42,16 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 	{
 		// set search phase preferences
 		this.searchPreferences = new FlawType[] {
-				FlawType.RESOURCE_PEAK,
-				FlawType.SV_SCHEDULING,
+				FlawType.RESOURCE_PLANNING,
+				FlawType.RESOURCE_OVERFLOW,
+				FlawType.TIMELINE_OVERFLOW,
 				FlawType.PLAN_REFINEMENT,
 		};
 		
 		// set build phase preferences
 		this.buildPreferences = new FlawType[] {
-			FlawType.SV_GAP,
-			FlawType.INVALID_BEHAVIOR,
+			FlawType.TIMELINE_BEHAVIOR_PLANNING,
+			FlawType.TIMELINE_BEHAVIOR_CHECKING,
 		};
 		
 		// get dependency graph

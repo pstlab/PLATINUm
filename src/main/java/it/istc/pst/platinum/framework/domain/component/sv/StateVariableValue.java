@@ -8,7 +8,7 @@ import it.istc.pst.platinum.framework.domain.component.ComponentValueType;
  * @author anacleto
  *
  */
-public class StateVariableValue extends ComponentValue<StateVariable>
+public class StateVariableValue extends ComponentValue
 {
 	/**
 	 * 

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.TransitionNotFoundException;
@@ -43,10 +42,10 @@ import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
  * @author anacleto
  *
  */
-public final class TimelineBehaviorPlanningResolver <T extends StateVariable> extends Resolver 
+public final class TimelineBehaviorPlanningResolver extends Resolver 
 {
 	@ComponentPlaceholder
-	protected T component;
+	protected StateVariable sv;
 	
 	/**
 	 * 
@@ -68,7 +67,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 		// restore created decisions
 		for (Decision decision : decisions) {
 			// restore decision
-			this.component.restore(decision);
+			this.sv.restore(decision);
 		}
 		
 		// restore created relations
@@ -76,7 +75,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 		// restore created relations
 		for (Relation relation : created) {
 			// restore relation
-			this.component.restore(relation);
+			this.sv.restore(relation);
 		}
 		
 		// get activated relations
@@ -89,9 +88,9 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 			for (Relation relation : activated) 
 			{
 				// restore relation
-				this.component.restore(relation);
+				this.sv.restore(relation);
 				// activate relation
-				this.component.add(relation);
+				this.sv.add(relation);
 				committed.add(relation);
 			}
 		}
@@ -100,19 +99,19 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 			// deactivate committed relations
 			for (Relation relation : committed) {
 				// free relation
-				this.component.free(relation);
+				this.sv.free(relation);
 			}
 			
 			// remove also created relations and decisions
 			for (Relation relation : created) {
 				// free relation
-				this.component.free(relation);
+				this.sv.free(relation);
 			}
 			
 			// remove created decisions
 			for (Decision decision : decisions) {
 				// move back decision to SILENT set
-				this.component.delete(decision);
+				this.sv.delete(decision);
 			}
 			
 			// exception while restoring a previously applied operator
@@ -141,9 +140,9 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 				Decision target = completion.getRightDecision();
 				
 				// create constraint
-				MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
+				MeetsRelation meets = this.sv.create(RelationType.MEETS, reference, target);
 				// propagate relation
-				this.component.add(meets);
+				this.sv.add(meets);
 				committed.add(meets);
 				// add activated relation to solution
 				solution.addActivatedRelation(meets);
@@ -154,7 +153,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 					// create parameter relations
 					Set<Relation> pRels = this.createParameterRelations(reference, target);
 					// propagate relation
-					this.component.add(pRels);
+					this.sv.add(pRels);
 					committed.addAll(pRels);
 					// add activated relation to solution
 					solution.addActivatedRelations(pRels);
@@ -168,9 +167,9 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 				// retract committed relations if needed
 				for (Relation relation : committed) {
 					// deactivate relation
-					this.component.delete(relation);
+					this.sv.delete(relation);
 					// clear memory from relation
-					this.component.free(relation);
+					this.sv.free(relation);
 				}
 				
 				// not feasible solution
@@ -193,7 +192,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 				}
 				
 				// create pending decision
-				Decision dec = this.component.create(value, labels);
+				Decision dec = this.sv.create(value, labels);
 				// these decisions can be set as mandatory expansion
 				dec.setMandatoryExpansion();
 				transition.add(dec);
@@ -211,7 +210,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 				Decision target = transition.get(index + 1);
 				
 				// create pending relation
-				MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
+				MeetsRelation meets = this.sv.create(RelationType.MEETS, reference, target);
 				solution.addCreatedRelation(meets);
 				try 
 				{
@@ -238,7 +237,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 		// completely activated relations
 		for (Relation relation : activated) {
 			// free created and activated relations
-			this.component.free(relation);
+			this.sv.free(relation);
 		}
 		
 		// list of all created relations
@@ -246,14 +245,14 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 		// completely remove created relations
 		for (Relation relation : created) {
 			// free created relations
-			this.component.free(relation);
+			this.sv.free(relation);
 		}
 		
 		// list of all pending decisions created
 		List<Decision> decisions = solution.getCreatedDecisions();
 		for (Decision decision : decisions) {
 			// move to SILENT all added pending decisions
-			this.component.delete(decision);
+			this.sv.delete(decision);
 		}
 	}
 
@@ -267,7 +266,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 		// list of gaps
 		List<Flaw> flaws = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
-		List<Decision> list = this.component.getActiveDecisions();
+		List<Decision> list = this.sv.getActiveDecisions();
 		// check scheduled decisions
 		boolean isScheduled = true;
 		// check gaps between adjacent decisions
@@ -293,7 +292,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 			{
 				// ensure that adjacent tokens of the time-line are connected each other according to the time-line semantic
 				boolean connected = false;
-				Iterator<Relation> it = this.component.getActiveRelations(left, right).iterator();
+				Iterator<Relation> it = this.sv.getActiveRelations(left, right).iterator();
 				while (it.hasNext() && !connected) {
 					// next relation
 					Relation rel = it.next();
@@ -305,7 +304,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 				if (!connected) 
 				{
 					// force transition through a MEETS constraint
-					Gap gap = new Gap(this.component, left, right);
+					Gap gap = new Gap(this.sv, left, right);
 					// add gap
 					flaws.add(gap);
 				}
@@ -313,7 +312,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 			else if(dmin >= 0 && dmax > 0) 
 			{
 				// we've got a gap
-				Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
+				Gap gap = new Gap(this.sv, left, right, new long[] {dmin, dmax});
 				// add gap
 				flaws.add(gap);
 			}
@@ -328,7 +327,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 			// clear all gaps detected
 			flaws = new ArrayList<>();
 			// not scheduled decisions on component
-			this.logger.debug("Not scheduled decisions found on component= " + this.component.getName() + " and therefore no gaps can be dected\n");
+			this.logger.debug("Not scheduled decisions found on component= " + this.sv.getName() + " and therefore no gaps can be dected\n");
 		}
 		
 		// get detected gaps
@@ -350,11 +349,11 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 			// incomplete time-line
 			case INCOMPLETE_TIMELINE : 
 			{
-				// get gap's tokens
-				Token left = gap.getLeftDecision().getToken();
-				Token right = gap.getRightDecision().getToken();
 				// check all (acyclic) paths among tokens
-				List<List<ComponentValue>> paths = this.component.getPaths(left.getPredicate().getValue(), right.getPredicate().getValue());
+				List<List<ComponentValue>> paths = this.sv.getPaths(
+						gap.getLeftDecision().getValue(), 
+						gap.getRightDecision().getValue());
+				
 				// each path represents a feasible solution for the gap 
 				for (List<ComponentValue> path : paths) 
 				{
@@ -372,7 +371,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 						// add solution to the flaw
 						gap.addSolution(solution);
 						// print gap information
-						this.logger.debug("Gap found on component " + this.component.getName() + ":\n"
+						this.logger.debug("Gap found on component " + this.sv.getName() + ":\n"
 								+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
 								+ "- left-side decision: " + gap.getLeftDecision() + "\n"
 								+ "- right-side decision: " + gap.getRightDecision() + "\n"
@@ -417,7 +416,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 		
 		// check if solvable
 		if (!flaw.isSolvable()) {
-			throw new UnsolvableFlawFoundException("Unsolvable gap found on component " + this.component.getName() + ":\n" + flaw);
+			throw new UnsolvableFlawFoundException("Unsolvable gap found on component " + this.sv.getName() + ":\n" + flaw);
 		}
 	}
 	
@@ -434,7 +433,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 		// relations
 		Set<Relation> rels = new HashSet<>();
 		// get transition between values
-		Transition t = this.component.getTransition(reference.getValue(), target.getValue());
+		Transition t = this.sv.getTransition(reference.getValue(), target.getValue());
 		
 		// reference parameter position index
 		int referenceParameterIndex = 0;
@@ -456,7 +455,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 						case EQUAL : {
 							
 							// create (pending) local relation
-							EqualParameterRelation equal = (EqualParameterRelation) this.component.create(RelationType.EQUAL_PARAMETER, reference, target);
+							EqualParameterRelation equal = (EqualParameterRelation) this.sv.create(RelationType.EQUAL_PARAMETER, reference, target);
 							// set reference parameter label
 							equal.setReferenceParameterLabel(reference.getParameterLabelByIndex(referenceParameterIndex));
 							// set target parameter label
@@ -470,7 +469,7 @@ public final class TimelineBehaviorPlanningResolver <T extends StateVariable> ex
 						case NOT_EQUAL : {
 							
 							// create (pending) local relation
-							NotEqualParameterRelation notEqual = (NotEqualParameterRelation) this.component.create(RelationType.NOT_EQUAL_PARAMETER, reference, target);
+							NotEqualParameterRelation notEqual = (NotEqualParameterRelation) this.sv.create(RelationType.NOT_EQUAL_PARAMETER, reference, target);
 							// set reference parameter label
 							notEqual.setReferenceParameterLabel(reference.getParameterLabelByIndex(referenceParameterIndex));
 							notEqual.setTargetParameterLabel(target.getParameterLabelByIndex(targetParameterIndex));

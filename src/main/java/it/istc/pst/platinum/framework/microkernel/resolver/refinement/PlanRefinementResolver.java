@@ -348,7 +348,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	private void doComputeUnificationSolutions(Goal goal) 
 	{ 
 		// get goal-related component
-		DomainComponent<?> component = goal.getComponent();
+		DomainComponent component = goal.getComponent();
 		// search active decisions compatible for unification
 		for (Decision unif : component.getActiveDecisions()) 
 		{

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
@@ -18,7 +19,7 @@ import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckExcep
  * @author anacleto
  *
  */
-public abstract class StateVariable extends DomainComponent<StateVariableValue> 
+public abstract class StateVariable extends DomainComponent 
 {
 	protected List<StateVariableValue> values;							
 	// SV's transition function
@@ -97,6 +98,16 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 		// get value
 		return value;
 	}
+	
+	/**
+	 * 
+	 * @param label
+	 * @param controllable
+	 * @return
+	 */
+	public StateVariableValue addStateVariableValue(String label, boolean controllable) {
+		return this.addStateVariableValue(label, new long [] {1l, this.tdb.getHorizon()}, controllable);
+	}
 
 	/**
 	 * 
@@ -124,8 +135,9 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 	 * @param target
 	 * @return
 	 */
-	public Transition getTransition(StateVariableValue reference, StateVariableValue target) 
-			throws TransitionNotFoundException {
+	public Transition getTransition(ComponentValue reference, ComponentValue target) 
+			throws TransitionNotFoundException 
+	{
 		// check if transition exists
 		if (!this.transitions.containsKey(reference) || !this.transitions.get(reference).containsKey(target)) {
 			// transition not found
@@ -143,7 +155,7 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 	 * @param value
 	 * @return
 	 */
-	public List<StateVariableValue> getDirectSuccessors(StateVariableValue value) {
+	public List<ComponentValue> getDirectSuccessors(ComponentValue value) {
 		// get successors as a list
 		return new ArrayList<>(this.transitions.get(value).keySet());
 	}
@@ -159,25 +171,25 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 	 * @param target
 	 * @return
 	 */
-	public List<List<StateVariableValue>> getPaths(StateVariableValue source, StateVariableValue target) 
+	public List<List<ComponentValue>> getPaths(ComponentValue source, ComponentValue target) 
 	{
 		// list of available paths
-		List<List<StateVariableValue>> result = new ArrayList<>();
+		List<List<ComponentValue>> result = new ArrayList<>();
 		// check source and target
 		if (source.equals(target)) 
 		{
 			// initialize the path
-			List<StateVariableValue> path = new ArrayList<>();
+			List<ComponentValue> path = new ArrayList<>();
 			path.add(source);
 			// get successors
-			for (StateVariableValue value : this.getDirectSuccessors(source)) {
+			for (ComponentValue value : this.getDirectSuccessors(source)) {
 				// directly calls
 				this.computePaths(path, value, target, result);
 			}
 		}
 		else {
 			// search for paths
-			this.computePaths(new ArrayList<StateVariableValue>(), source, target, result);
+			this.computePaths(new ArrayList<ComponentValue>(), source, target, result);
 		}
 		// get resulting paths
 		return result;
@@ -186,6 +198,7 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<StateVariableValue> getValues() {
 		return new ArrayList<StateVariableValue>(this.values);
@@ -228,7 +241,7 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 	 * @param target
 	 * @param result
 	 */
-	private void computePaths(List<StateVariableValue> path, StateVariableValue current, StateVariableValue target, List<List<StateVariableValue>> result) 
+	private void computePaths(List<ComponentValue> path, ComponentValue current, ComponentValue target, List<List<ComponentValue>> result) 
 	{
 		// base step
 		if (current.equals(target)) {
@@ -251,7 +264,7 @@ public abstract class StateVariable extends DomainComponent<StateVariableValue>
 				//add current value to the path
 				path.add(current);
 				// recursive calls
-				for (StateVariableValue successor : this.getDirectSuccessors(current)) {
+				for (ComponentValue successor : this.getDirectSuccessors(current)) {
 					// recursive call
 					this.computePaths(path, successor, target, result);
 				}

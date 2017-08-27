@@ -34,9 +34,10 @@ public class TypeFlawFilter extends FlawFilter
 		// load preferences
 		this.preferences = new FlawType[] {
 				FlawType.PLAN_REFINEMENT,
-				FlawType.RESOURCE_PEAK,
-				FlawType.SV_SCHEDULING,
-				FlawType.SV_GAP
+				FlawType.RESOURCE_PLANNING,
+				FlawType.RESOURCE_OVERFLOW,
+				FlawType.TIMELINE_OVERFLOW,
+				FlawType.TIMELINE_BEHAVIOR_PLANNING
 		};
 	}
 	

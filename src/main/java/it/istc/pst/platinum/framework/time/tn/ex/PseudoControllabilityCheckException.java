@@ -17,7 +17,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckExcept
 public class PseudoControllabilityCheckException extends ConsistencyCheckException {
 	private static final long serialVersionUID = 1L;
 
-	private Map<DomainComponent<?>, List<Decision>> issues;
+	private Map<DomainComponent, List<Decision>> issues;
 	
 	/**
 	 * 
@@ -44,7 +44,7 @@ public class PseudoControllabilityCheckException extends ConsistencyCheckExcepti
 	 * 
 	 * @param issues
 	 */
-	public void setPseudoControllabilityIssues(Map<DomainComponent<?>, List<Decision>> issues) {
+	public void setPseudoControllabilityIssues(Map<DomainComponent, List<Decision>> issues) {
 		this.issues = issues;
 	}
 
@@ -52,7 +52,7 @@ public class PseudoControllabilityCheckException extends ConsistencyCheckExcepti
 	 * 
 	 * @return
 	 */
-	public Map<DomainComponent<?>, List<Decision>> getPseudoControllabilityIssues() {
+	public Map<DomainComponent, List<Decision>> getPseudoControllabilityIssues() {
 		return new HashMap<>(this.issues);
 	}
 }

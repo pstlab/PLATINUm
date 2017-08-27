@@ -15,7 +15,7 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponent;
  */
 public class Agenda 
 {
-	private Map<DomainComponent<?>, List<ComponentValue<?>>> goals;
+	private Map<DomainComponent, List<ComponentValue>> goals;
 	
 	/**
 	 * 
@@ -30,9 +30,9 @@ public class Agenda
 	 * 
 	 * @return
 	 */
-	public List<ComponentValue<?>> getGoals() {
-		List<ComponentValue<?>> list = new ArrayList<>();
-		for (List<ComponentValue<?>> goals : this.goals.values()) {
+	public List<ComponentValue> getGoals() {
+		List<ComponentValue> list = new ArrayList<>();
+		for (List<ComponentValue> goals : this.goals.values()) {
 			list.addAll(goals);
 		}
 		return list;
@@ -42,7 +42,7 @@ public class Agenda
 	 * 
 	 * @param goal
 	 */
-	public void add(ComponentValue<?> goal) {
+	public void add(ComponentValue goal) {
 		if (!this.goals.containsKey(goal.getComponent())) {
 			this.goals.put(goal.getComponent(),	new ArrayList<>());
 		}

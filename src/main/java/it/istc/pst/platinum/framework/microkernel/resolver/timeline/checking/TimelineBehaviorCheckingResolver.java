@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
@@ -89,7 +90,7 @@ public class TimelineBehaviorCheckingResolver extends Resolver implements Compar
 				StateVariableValue vi = (StateVariableValue) left.getValue();
 				StateVariableValue vj = (StateVariableValue) right.getValue();
 				// get direct successors of value vi
-				List<StateVariableValue> successors = this.sv.getDirectSuccessors(vi);
+				List<ComponentValue> successors = this.sv.getDirectSuccessors(vi);
 				if (!successors.contains(vj)) {
 					// inconsistent behavior
 					InvalidTransition issue = new InvalidTransition(this.sv, left, right);

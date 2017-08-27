@@ -70,21 +70,21 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> implements PlanDataBase
+public class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
 	// see Composite design pattern
-	private Map<String, DomainComponent<?>> components;
+	private Map<String, DomainComponent> components;
 	private DomainComponentFactory componentFactory;
 	
 	protected Problem problem;
 	
 	// domain theory
 	private Map<String, ParameterDomain> parameterDomains;
-	private Map<DomainComponent<?>, Map<ComponentValue<?>, List<SynchronizationRule>>> rules;
+	private Map<DomainComponent, Map<ComponentValue, List<SynchronizationRule>>> rules;
 	
 	// additional knowledge
-	private Map<DomainComponent<?>, Set<DomainComponent<?>>> dg;		// dependency graph (as incident graph on components)
-	private Map<ComponentValue<?>, Set<ComponentValue<?>>> tree;		// decomposition tree
+	private Map<DomainComponent, Set<DomainComponent>> dg;		// dependency graph (as incident graph on components)
+	private Map<ComponentValue, Set<ComponentValue>> tree;		// decomposition tree
 	
 	/**
 	 * 
@@ -124,9 +124,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		this.computeDependencyGraph();
 		// print computed dependencies
 		String str = "Dependency graph:\n-----------------------------------\n";
-		for (DomainComponent<?> key : this.dg.keySet()) {
+		for (DomainComponent key : this.dg.keySet()) {
 			str += "- " + key.getName() + ":\n";
-			for (DomainComponent<?> target : this.dg.get(key)) {
+			for (DomainComponent target : this.dg.get(key)) {
 				str += "\t- " + target.getName() + "\n";
 			}
 		}
@@ -138,9 +138,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		this.computeDecompositionTree();
 		// print decomposition tree
 		str = "Decomposition tree:\n-----------------------------------\n";
-		for (ComponentValue<?> val : this.tree.keySet()) {
+		for (ComponentValue val : this.tree.keySet()) {
 			str += "- " + val.getLabel() + ":\n";
-			for (ComponentValue<?> tar : this.tree.get(val)) {
+			for (ComponentValue tar : this.tree.get(val)) {
 				str += "\t- " + tar.getLabel() + "\n";
 			}
 		}
@@ -155,18 +155,18 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * component A is dependent from component B.
 	 */
 	@Override
-	public Map<DomainComponent<?>, Set<DomainComponent<?>>> getDependencyGraph() {
+	public Map<DomainComponent, Set<DomainComponent>> getDependencyGraph() {
 		// get the dependency graph
-		return new HashMap<DomainComponent<?>, Set<DomainComponent<?>>>(this.dg);
+		return new HashMap<DomainComponent, Set<DomainComponent>>(this.dg);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public Map<ComponentValue<?>, Set<ComponentValue<?>>> getDecompositionTree() {
+	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree() {
 		// get the decomposition tree
-		return new HashMap<ComponentValue<?>, Set<ComponentValue<?>>>(this.tree);
+		return new HashMap<ComponentValue, Set<ComponentValue>>(this.tree);
 	}
 	
 	/**
@@ -186,7 +186,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 
 		// clear components
-		for (DomainComponent<?> component : this.components.values()) {
+		for (DomainComponent component : this.components.values()) {
 			// clear component
 			component.clear();
 		}
@@ -206,7 +206,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// create a plan
 		SolutionPlan plan = new SolutionPlan(this.name, this.getHorizon());
 		// set components
-		for (DomainComponent<?> component : this.components.values()) {
+		for (DomainComponent component : this.components.values()) {
 			// add a component to the plan
 			plan.add(component);
 		}
@@ -303,7 +303,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public List<DomainComponent<?>> getComponents() {
+	public List<DomainComponent> getComponents() {
 		return new ArrayList<>(this.components.values());
 	}
 	
@@ -311,7 +311,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public DomainComponent<?> getComponentByName(String name) {
+	public DomainComponent getComponentByName(String name) {
 		if (!this.components.containsKey(name)) {
 			throw new RuntimeException("Component with name " + name + " does not exist");
 		}
@@ -353,9 +353,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 			throws PseudoControllabilityCheckException 
 	{
 		// list of squeezed tokens
-		Map<DomainComponent<?>, List<Decision>> squeezed = new HashMap<>();
+		Map<DomainComponent, List<Decision>> squeezed = new HashMap<>();
 		// check pseudo-controllability of components
-		for (DomainComponent<?> component : this.components.values()) 
+		for (DomainComponent component : this.components.values()) 
 		{
 			try {
 				// check pseudo-controllability
@@ -364,8 +364,8 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 			catch (PseudoControllabilityCheckException ex) 
 			{
 				// get controllability issues
-				Map<DomainComponent<?>, List<Decision>> issues = ex.getPseudoControllabilityIssues();
-				for (DomainComponent<?> c : issues.keySet()) {
+				Map<DomainComponent, List<Decision>> issues = ex.getPseudoControllabilityIssues();
+				for (DomainComponent c : issues.keySet()) {
 					for (Decision issue : issues.get(c)) {
 						// add pseudo-controllability issues
 						if (!squeezed.containsKey(c)) {
@@ -392,9 +392,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * The method returns the list of all available domain values
 	 */
 	@Override
-	public List<ComponentValue<?>> getValues() {
-		List<ComponentValue<?>> values = new ArrayList<>();
-		for (DomainComponent<?> component : this.components.values()) {
+	public List<ComponentValue> getValues() {
+		List<ComponentValue> values = new ArrayList<>();
+		for (DomainComponent component : this.components.values()) {
 			values.addAll(component.getValues());
 		}
 		// get all domain values
@@ -405,10 +405,10 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public ComponentValue<?> getValueByName(String name) {
-		ComponentValue<?> value = null;
-		for (DomainComponent<?> comp : this.components.values()) {
-			for (ComponentValue<?> v : comp.getValues()) {
+	public ComponentValue getValueByName(String name) {
+		ComponentValue value = null;
+		for (DomainComponent comp : this.components.values()) {
+			for (ComponentValue v : comp.getValues()) {
 				if (v.getLabel().equals(name)) {
 					value = v;
 					break;
@@ -468,7 +468,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * @return
 	 */
 	@Override
-	public <T extends DomainComponent<?>> T createDomainComponent(String name, DomainComponentType type) {
+	public <T extends DomainComponent> T createDomainComponent(String name, DomainComponentType type) {
 		// check if a component already exist
 		if (this.components.containsKey(name)) {
 			throw new RuntimeException("A component with name " + name + " already exists");
@@ -484,7 +484,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * @param component
 	 */
 	@Override
-	public void addDomainComponent(DomainComponent<?> component) {
+	public void addDomainComponent(DomainComponent component) {
 		// add component
 		this.components.put(component.getName(), component);
 	}
@@ -495,7 +495,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * @return
 	 */
 	@Override
-	public SynchronizationRule createSynchronizationRule(ComponentValue<?> value, String[] labels) 
+	public SynchronizationRule createSynchronizationRule(ComponentValue value, String[] labels) 
 			throws DomainComponentNotFoundException {
 		// check if related component exists
 		if (!this.components.containsKey(value.getComponent().getName())) {
@@ -513,10 +513,10 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 			throws SynchronizationCycleException 
 	{
 		// get head value
-		ComponentValue<?> value = rule.getTriggerer().getValue();
+		ComponentValue value = rule.getTriggerer().getValue();
 		// check data
 		if (!this.rules.containsKey(value.getComponent())) {
-			this.rules.put(value.getComponent(), new HashMap<ComponentValue<?>, List<SynchronizationRule>>());
+			this.rules.put(value.getComponent(), new HashMap<ComponentValue, List<SynchronizationRule>>());
 		}
 		if (!this.rules.get(value.getComponent()).containsKey(value)) {
 			// initialize
@@ -527,7 +527,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		for (TokenVariable var : rule.getTokenVariables()) 
 		{
 			// get value 
-			ComponentValue<?> v = var.getValue();
+			ComponentValue v = var.getValue();
 			// check if this value is trigger of other synchronizations
 			if (this.rules.containsKey(v.getComponent()) && this.rules.get(v.getComponent()).containsKey(v)) {
 				// get synchronizations
@@ -563,10 +563,10 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	public List<SynchronizationRule> getSynchronizationRules() {
 		// get all rules
 		List<SynchronizationRule> list = new ArrayList<>();
-		for (DomainComponent<?> comp : this.components.values()) {
+		for (DomainComponent comp : this.components.values()) {
 			// check if a synchronization has been defined on the component
 			if (this.rules.containsKey(comp)) {
-				for (ComponentValue<?> v : this.rules.get(comp).keySet()) {
+				for (ComponentValue v : this.rules.get(comp).keySet()) {
 					// add rules
 					list.addAll(this.rules.get(comp).get(v));
 				}
@@ -581,7 +581,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public List<SynchronizationRule> getSynchronizationRules(ComponentValue<?> value) {
+	public List<SynchronizationRule> getSynchronizationRules(ComponentValue value) {
 		// list of rules
 		List<SynchronizationRule> rules = new ArrayList<>();
 		// check domain specification
@@ -596,12 +596,12 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public List<SynchronizationRule> getSynchronizationRules(DomainComponent<?> component) {
+	public List<SynchronizationRule> getSynchronizationRules(DomainComponent component) {
 		// list of rules
 		List<SynchronizationRule> rules = new ArrayList<>();
 		// check domain specification
 		if (this.rules.containsKey(component)) {
-			for (ComponentValue<?> value : this.rules.get(component).keySet()) {
+			for (ComponentValue value : this.rules.get(component).keySet()) {
 				rules.addAll(this.rules.get(component).get(value));
 			}
 		}
@@ -618,7 +618,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// list of active decisions with schedule information
 		List<Decision> list = new ArrayList<>();
 		// get schedule information from components
-		for (DomainComponent<?> comp : this.components.values()) {
+		for (DomainComponent comp : this.components.values()) {
 			list.addAll(comp.getActiveDecisions());
 		}
 		// get list
@@ -633,7 +633,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	public List<Decision> getPendingDecisions() {
 		// list of pending decisions
 		List<Decision> list = new ArrayList<>();
-		for (DomainComponent<?> comp : this.components.values()) {
+		for (DomainComponent comp : this.components.values()) {
 			list.addAll(comp.getPendingDecisions());
 		}
 		// get list of pending decisions
@@ -656,7 +656,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// get relations from components
-		for (DomainComponent<?> component : this.components.values()) {
+		for (DomainComponent component : this.components.values()) {
 			list.addAll(component.getPendingRelations());
 		}
 		
@@ -680,7 +680,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// get local relations from component
-		DomainComponent<?> component = dec.getComponent();
+		DomainComponent component = dec.getComponent();
 		list.addAll(component.getPendingRelations(dec));
 		
 		// get list
@@ -704,7 +704,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local relation
 		if (rel.isLocal()) {
 			// get component
-			DomainComponent<?> component = rel.getReference().getComponent();
+			DomainComponent component = rel.getReference().getComponent();
 			component.restore(rel);
 		}
 		else {
@@ -717,9 +717,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue<?> value, String[] labels) {
+	public Decision create(ComponentValue value, String[] labels) {
 		// get the component the value belongs to
-		DomainComponent<?> comp = value.getComponent();
+		DomainComponent comp = value.getComponent();
 		// create decision
 		Decision dec = comp.create(value, labels);
 		// get created decision
@@ -730,9 +730,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue<?> value, String[] labels, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] duration) {
 		// get the component the value belongs to
-		DomainComponent<?> comp = value.getComponent();
+		DomainComponent comp = value.getComponent();
 		// create decision
 		Decision dec = comp.create(value, labels, duration);
 		// get created decision
@@ -743,9 +743,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue<?> value, String[] labels, long[] end, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
 		// get the component the value belongs to
-		DomainComponent<?> comp = value.getComponent();
+		DomainComponent comp = value.getComponent();
 		// create decision
 		Decision dec = comp.create(value, labels, end, duration);
 		// get created decision
@@ -756,9 +756,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue<?> value, String[] labels, long[] start, long[] end, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
 		// get the component the value belongs to
-		DomainComponent<?> comp = value.getComponent();
+		DomainComponent comp = value.getComponent();
 		// create decision
 		Decision dec = comp.create(value, labels, start, end, duration);
 		// get created decision
@@ -773,7 +773,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 			throws DecisionPropagationException 
 	{
 		// get the component the decision belongs to
-		DomainComponent<?> c = dec.getComponent();
+		DomainComponent c = dec.getComponent();
 		// add decision and get the list of local relations propagated
 		Set<Relation> local = c.add(dec);
 		
@@ -850,7 +850,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// list of relations
 		List<Relation> list = new ArrayList<>(this.relations);
 		// add local relations
-		for (DomainComponent<?> component : this.components.values()) {
+		for (DomainComponent component : this.components.values()) {
 			// add local relations
 			list.addAll(component.getRelations());
 		}
@@ -875,7 +875,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// add local active decisions
-		for (DomainComponent<?> component : this.components.values()) {
+		for (DomainComponent component : this.components.values()) {
 			// get component active relations
 			list.addAll(component.getActiveRelations());
 		}
@@ -907,7 +907,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// get local active relations
-		DomainComponent<?> component = dec.getComponent();
+		DomainComponent component = dec.getComponent();
 		// add local relations
 		list.addAll(component.getActiveRelations(dec));
 		
@@ -933,7 +933,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// add local relations
-		DomainComponent<?> component = dec.getComponent();
+		DomainComponent component = dec.getComponent();
 		list.addAll(component.getToActivateRelations(dec));
 		// get list of to activate relations
 		return list;
@@ -967,7 +967,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// get component decision
-		DomainComponent<?> component = dec.getComponent();
+		DomainComponent component = dec.getComponent();
 		// delete decision from component
 		component.delete(dec);
 	}
@@ -981,7 +981,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local
 		if (relation.isLocal()) {
 			// get component
-			DomainComponent<?> component = relation.getReference().getComponent();
+			DomainComponent component = relation.getReference().getComponent();
 			component.free(relation);
 		}
 		else 
@@ -1006,7 +1006,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	@Override
 	public List<Decision> getSilentDecisions() {
 		List<Decision> list = new ArrayList<>();
-		for (DomainComponent<?> component : this.components.values()) {
+		for (DomainComponent component : this.components.values()) {
 			list.addAll(component.getSilentDecisions());
 		}
 		return list;
@@ -1018,7 +1018,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	@Override
 	public List<Relation> getSilentRelations() {
 		List<Relation> list = new ArrayList<>();
-		for (DomainComponent<?> component : this.components.values()) {
+		for (DomainComponent component : this.components.values()) {
 			list.addAll(component.getSilentRelations());
 		}
 		// add global relations
@@ -1042,7 +1042,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local relation
 		if (reference.getComponent().equals(target.getComponent())) {
 			// dispatch request to the related component
-			DomainComponent<?> comp = reference.getComponent();
+			DomainComponent comp = reference.getComponent();
 			// create relation
 			rel = comp.create(type, reference, target);
 		}
@@ -1087,7 +1087,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local
 		if (rel.isLocal()) {
 			// get component 
-			DomainComponent<?> comp = rel.getReference().getComponent();
+			DomainComponent comp = rel.getReference().getComponent();
 			active = comp.isActive(rel);
 		}
 		else 
@@ -1126,7 +1126,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local
 		if (rel.isLocal()) {
 			// get component 
-			DomainComponent<?> comp = rel.getReference().getComponent();
+			DomainComponent comp = rel.getReference().getComponent();
 			pending = comp.isPending(rel);
 		}
 		else 
@@ -1155,7 +1155,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local
 		if (rel.isLocal()) {
 			// get component 
-			DomainComponent<?> comp = rel.getReference().getComponent();
+			DomainComponent comp = rel.getReference().getComponent();
 			toActivate = comp.isToActivate(rel);
 		}
 		else 
@@ -1191,7 +1191,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local
 		if (rel.isLocal()) {
 			// get component 
-			DomainComponent<?> comp = rel.getReference().getComponent();
+			DomainComponent comp = rel.getReference().getComponent();
 			active = comp.isActive(rel);
 		}
 		else 
@@ -1219,7 +1219,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local relation
 		if (rel.isLocal()) {
 			// dispatch request to the component
-			DomainComponent<?> comp = rel.getReference().getComponent();
+			DomainComponent comp = rel.getReference().getComponent();
 			// add relation
 			comp.add(rel);
 		}
@@ -1286,7 +1286,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		// check if local
 		if (rel.isLocal()) {
 			// forward request to component
-			DomainComponent<?> component = rel.getReference().getComponent();
+			DomainComponent component = rel.getReference().getComponent();
 			component.delete(rel);
 		}
 		else 
@@ -1350,7 +1350,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// check components
-		for (DomainComponent<?> comp : this.components.values()) {
+		for (DomainComponent comp : this.components.values()) {
 			// detect flaws on component
 			list.addAll(comp.detectFlaws());
 		}
@@ -1376,7 +1376,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		
 		// check components
-		for (DomainComponent<?> comp : this.components.values()) {
+		for (DomainComponent comp : this.components.values()) {
 			// detect flaws on component
 			list.addAll(comp.detectFlaws(type));
 		}
@@ -1398,7 +1398,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		else {
 			// dispatch flaw
-			DomainComponent<?> component = solution.getFlaw().getComponent();
+			DomainComponent component = solution.getFlaw().getComponent();
 			component.rollback(solution);
 		}
 	}
@@ -1421,7 +1421,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		else {
 			// dispatch flaw
-			DomainComponent<?> component = solution.getFlaw().getComponent();
+			DomainComponent component = solution.getFlaw().getComponent();
 			component.commit(solution);
 		}
 	}
@@ -1442,7 +1442,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		else {
 			// dispatch flaw
-			DomainComponent<?> component = solution.getFlaw().getComponent();
+			DomainComponent component = solution.getFlaw().getComponent();
 			component.restore(solution);
 		}
 	}
@@ -1518,7 +1518,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	@Override
 	public String toString() {
 		String str = "[PlanDataBase components=\n";
-		for (DomainComponent<?> comp : this.components.values()) { 
+		for (DomainComponent comp : this.components.values()) { 
 			str += "\t" + comp.getName() + "\n";
 			if (this.rules.containsKey(comp)) {
 				str += "\tsynchronization-rules=\n";
@@ -1732,9 +1732,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	private void computeDependencyGraph() 
 	{
 		// initialize the dependency graph
-		for (DomainComponent<?> node : this.getComponents()) {
+		for (DomainComponent node : this.getComponents()) {
 			// initialize DG 
-			this.dg.put(node, new HashSet<DomainComponent<?>>());
+			this.dg.put(node, new HashSet<DomainComponent>());
 		}
 			
 		// check synchronization and build the graph as "incident" matrix
@@ -1750,8 +1750,8 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 					TokenVariable source = ruleConstraint.getSource();
 					TokenVariable target = ruleConstraint.getTarget();
 					// check related values' components
-					DomainComponent<?> master = source.getValue().getComponent();
-					DomainComponent<?> slave = target.getValue().getComponent();
+					DomainComponent master = source.getValue().getComponent();
+					DomainComponent slave = target.getValue().getComponent();
 					// check if "external" constraint
 					if (!master.equals(slave)) 
 					{
@@ -1780,7 +1780,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * @param target
 	 * @throws HierarchyCycleException
 	 */
-	private void checkHiearchyCycle(DomainComponent<?> reference, DomainComponent<?> target) 
+	private void checkHiearchyCycle(DomainComponent reference, DomainComponent target) 
 			throws HierarchyCycleException
 	{
 		// check direct cycle
@@ -1791,7 +1791,7 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		}
 		else {
 			// check paths
-			this.findCycle(reference, new HashSet<DomainComponent<?>>());
+			this.findCycle(reference, new HashSet<DomainComponent>());
 		}
 	}
 	
@@ -1801,17 +1801,17 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	 * @param visited
 	 * @throws HierarchyCycleException
 	 */
-	private void findCycle(DomainComponent<?> comp, Set<DomainComponent<?>> visited) 
+	private void findCycle(DomainComponent comp, Set<DomainComponent> visited) 
 			throws HierarchyCycleException
 	{
 		// add component to visited
 		visited.add(comp);
 		// check component's successors
-		for (DomainComponent<?> next : this.dg.get(comp)) {
+		for (DomainComponent next : this.dg.get(comp)) {
 			// check if visited
 			if (!visited.contains(next)) {
 				// recursive call
-				this.findCycle(next, new HashSet<DomainComponent<?>>(visited));
+				this.findCycle(next, new HashSet<DomainComponent>(visited));
 			}
 			else {
 				// throw exception
@@ -1827,9 +1827,9 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 	private void computeDecompositionTree()
 	{
 		// initialize the decomposition tree
-		for (DomainComponent<?> component : this.getComponents()) {
+		for (DomainComponent component : this.getComponents()) {
 			// check component values
-			for (ComponentValue<?> value : component.getValues()) {
+			for (ComponentValue value : component.getValues()) {
 				// add entry to the tree
 				this.tree.put(value, new HashSet<>());
 			}
@@ -1839,12 +1839,12 @@ public class PlanDataBaseComponent extends DomainComponent<ComponentValue<?>> im
 		for (SynchronizationRule rule : this.getSynchronizationRules()) 
 		{
 			// get trigger value 
-			ComponentValue<?> reference = rule.getTriggerer().getValue();
+			ComponentValue reference = rule.getTriggerer().getValue();
 			// check synchronization target
 			for (SynchronizationConstraint constraint : rule.getConstraints())
 			{
 				// get target value
-				ComponentValue<?> target = constraint.getTarget().getValue();
+				ComponentValue target = constraint.getTarget().getValue();
 				// avoid reflexive references
 				if (!reference.equals(target)) {
 					this.tree.get(reference).add(target);

@@ -140,7 +140,7 @@ public class SolutionPlan
 	 * 
 	 * @param component
 	 */
-	public void add(DomainComponent<?> component) 
+	public void add(DomainComponent component) 
 	{
 		// check component type
 		switch (component.getType())

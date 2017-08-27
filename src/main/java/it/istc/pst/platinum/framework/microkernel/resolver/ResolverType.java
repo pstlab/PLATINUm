@@ -57,7 +57,7 @@ public enum ResolverType
 	 */
 	TIMELINE_BEHAVIOR_PLANNING_RESOLVER(TimelineBehaviorPlanningResolver.class.getName(),
 			"Timeline Gap Manager",
-			FlawType.BEHAVIOR_PLANNING),
+			FlawType.TIMELINE_BEHAVIOR_PLANNING),
 	
 	/**
 	 * This resolver is responsible for verifying the temporal behavior of a state
@@ -66,7 +66,7 @@ public enum ResolverType
 	 */
 	TIMELINE_BEHAVIOR_CHECKING_RESOLVER(TimelineBehaviorCheckingResolver.class.getName(),
 			"State Variable Behavior Checker",
-			FlawType.INVALID_BEHAVIOR),
+			FlawType.TIMELINE_BEHAVIOR_CHECKING),
 	
 	/**
 	 * This resolver is responsible for verifying the observed behavior of external 
@@ -76,7 +76,7 @@ public enum ResolverType
 	 */
 	OBSERVATION_CHECKING_RESOLVER(ObservationBehaviorCheckingResolver.class.getName(),
 			"Observation Checker",
-			FlawType.INVALID_BEHAVIOR);
+			FlawType.TIMELINE_BEHAVIOR_CHECKING);
 	
 	// resolver class name
 	private String cname;

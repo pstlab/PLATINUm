@@ -86,12 +86,9 @@ public class DeliberativeLauncher
 					
 					// check if resulting plan is pseudo-controllable
 					String pseudo = plan.getPlanControllabilityType().
-							equals(PlanControllabilityType.PSEUDO_CONTROLLABLE) ? 
+							equals(PlanControllabilityType.PSEUDO_CONTROLLABILITY) ? 
 									"p" :	// pseudo-controllable 
-									plan.getPlanControllabilityType().equals(PlanControllabilityType.NOT_PSEUDO_CONTROLLABLE) ? 
-									"np" :	// not pseudo-controllable
-									"u";	// unknown
-					
+									"np";
 					
 					// export the plan to the output file
 					try (PrintWriter writer = new PrintWriter(new File(

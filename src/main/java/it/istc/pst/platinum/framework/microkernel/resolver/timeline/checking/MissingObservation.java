@@ -16,7 +16,7 @@ public class MissingObservation extends Flaw
 	 * @param sv
 	 */
 	protected MissingObservation(StateVariable sv) {
-		super(sv, FlawType.INVALID_BEHAVIOR);
+		super(sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
 	}
 	
 	/**

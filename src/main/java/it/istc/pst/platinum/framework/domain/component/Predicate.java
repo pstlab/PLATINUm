@@ -12,7 +12,7 @@ import it.istc.pst.platinum.framework.parameter.lang.Parameter;
 public class Predicate 
 {
 	private int id;
-	private ComponentValue<?> value;
+	private ComponentValue value;
 	private String[] labels;
 	private Parameter<?>[] parameters;
 	
@@ -21,7 +21,7 @@ public class Predicate
 	 * @param id
 	 * @param value
 	 */
-	protected Predicate(int id, ComponentValue<?> value) {
+	protected Predicate(int id, ComponentValue value) {
 		this.id = id;
 		this.value = value;
 		this.labels = new String[value.getNumberOfParameterPlaceHolders()];
@@ -40,7 +40,7 @@ public class Predicate
 	 * 
 	 * @return
 	 */
-	public final ComponentValue<?> getValue() {
+	public final ComponentValue getValue() {
 		return this.value;
 	}
 	

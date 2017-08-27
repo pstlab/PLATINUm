@@ -9,6 +9,7 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.ResourceProfileComputationException;
 import it.istc.pst.platinum.framework.domain.component.resource.Resource;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
@@ -26,7 +27,7 @@ import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointScheduleQuery;
  * @author anacleto
  *
  */
-public class ReservoirResource extends Resource<ResourceUsageValue> implements ReservoirResourceProfileManager
+public class ReservoirResource extends Resource
 {
 	public static final String CONSUMPTION_LABEL = "CONSUMPTION";
 	public static final String PRODUCTION_LABEL = "PRODUCTION";
@@ -52,70 +53,32 @@ public class ReservoirResource extends Resource<ResourceUsageValue> implements R
 	
 	/**
 	 * 
-	 * @return
 	 */
-	public ResourceUsageValue addConsumptionValue() {
-		// add the value
-		return this.addValue(CONSUMPTION_LABEL, new long[] {1, this.tdb.getHorizon()}, true);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public ResourceUsageValue addProductionValue() {
-		// add the value
-		return this.addValue(PRODUCTION_LABEL, new long[] {1, this.tdb.getHorizon()}, true);
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public ResourceUsageValue addValue(String label, long[] duration, boolean controllable) 
+	@PostConstruct
+	public void init() 
 	{
-		// resource usage
-		ResourceUsageValue res = null;
-		// check consumption label and related value
-		if (label.equals(CONSUMPTION_LABEL) && this.consumption == null) 
-		{
-			// create resource consumption value
-			this.consumption = new ResourceConsumptionValue(CONSUMPTION_LABEL, duration, controllable, this);
-			// set also the domains of the "amount" parameter 
-			NumericParameterDomain dom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", 
-					ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
-			// set domain bounds
-			dom.setLowerBound(0);
-			dom.setUpperBound(this.max);
-			// set parameter domain
-			this.consumption.addParameterPlaceHolder(dom);
-			// add to values
-			this.values.add(this.consumption);
-			// set value
-			res = this.consumption;
-		}
+		super.init();
+		// create resource consumption value
+		this.consumption = new ResourceConsumptionValue(CONSUMPTION_LABEL, new long[] {1, this.tdb.getHorizon()}, true, this);
+		// set also the domains of the "amount" parameter 
+		NumericParameterDomain cDom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", 
+				ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
+		// set domain bounds
+		cDom.setLowerBound(0);
+		cDom.setUpperBound(this.max);
+		// set parameter domain
+		this.consumption.addParameterPlaceHolder(cDom);
 		
-		// check production label and related value
-		if (label.equals(PRODUCTION_LABEL) && this.production == null) 
-		{
-			// create resource production value
-			this.production = new ResourceProductionValue(PRODUCTION_LABEL, duration, controllable, this);
-			// set also the domains of the "amount" parameter 
-			NumericParameterDomain dom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", 
-					ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
-			// set domain bounds
-			dom.setLowerBound(0);
-			dom.setUpperBound(this.max);
-			// set parameter domain
-			this.production.addParameterPlaceHolder(dom);
-			// add to values
-			this.values.add(this.production);
-			// set value
-			res = this.production;
-		}
-		
-		// get resource usage
-		return res;
+		// create resource production value
+		this.production = new ResourceProductionValue(PRODUCTION_LABEL, new long[] {1, this.tdb.getHorizon()}, true, this);
+		// set also the domains of the "amount" parameter 
+		NumericParameterDomain pDom  = this.pdb.createParameterDomain("res-" + this.name + "-amount", 
+				ParameterDomainType.NUMERIC_DOMAIN_PARAMETER_TYPE);
+		// set domain bounds
+		pDom.setLowerBound(0);
+		pDom.setUpperBound(this.max);
+		// set parameter domain
+		this.production.addParameterPlaceHolder(pDom);
 	}
 	
 	/**
@@ -137,10 +100,14 @@ public class ReservoirResource extends Resource<ResourceUsageValue> implements R
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ResourceUsageValue> getValues() {
 		// list of values
-		return new ArrayList<ResourceUsageValue>(this.values);
+		List<ResourceUsageValue> values = new ArrayList<>();
+		values.add(this.consumption);
+		values.add(this.production);
+		return values;
 	}
 
 	/**
@@ -148,28 +115,18 @@ public class ReservoirResource extends Resource<ResourceUsageValue> implements R
 	 */
 	@Override
 	public ResourceUsageValue getValueByName(String name) {
-		// requirement value
-		ResourceUsageValue value = null;
-		for (ResourceUsageValue v : this.values) {
-			if (v.getLabel().equals(name)) {
-				value = v;
-				break;
-			}
-		}
 		
-		// check if value has been found
-		if (value == null) {
-			throw new RuntimeException("Value \"" + name + "\" not found on reservoir resource \"" + this.name + "\"");
-		}
+		/*
+		 * FIXME : To implement 
+		 */
 		
 		// get the requirement value
-		return value;
+		return null;
 	}
 
 	/**
 	 * 
 	 */
-	@Override
 	public List<ProductionResourceEvent> getProductions() 
 	{
 		// list of production events
@@ -198,7 +155,6 @@ public class ReservoirResource extends Resource<ResourceUsageValue> implements R
 	/**
 	 * 
 	 */
-	@Override
 	public List<ConsumptionResourceEvent> getConsumptions() 
 	{
 		// list of consumption events
@@ -227,7 +183,6 @@ public class ReservoirResource extends Resource<ResourceUsageValue> implements R
 	/**
 	 * 
 	 */
-	@Override
 	public ReservoirResourceProfile computeOptimisticResourceProfile() 
 			throws ResourceProfileComputationException
 	{
@@ -328,7 +283,6 @@ public class ReservoirResource extends Resource<ResourceUsageValue> implements R
 	/**
 	 * 
 	 */
-	@Override
 	public ReservoirResourceProfile computePessimisticResourceProfile() 
 			throws ResourceProfileComputationException
 	{

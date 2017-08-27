@@ -8,7 +8,7 @@ import it.istc.pst.platinum.framework.domain.component.ComponentValueType;
  * @author anacleto
  *
  */
-public abstract class ResourceUsageValue extends ComponentValue<ReservoirResource> 
+public abstract class ResourceUsageValue extends ComponentValue 
 {
 	/**
 	 * 

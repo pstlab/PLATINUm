@@ -2529,8 +2529,6 @@ public class DDLv3Compiler extends DomainCompiler
 		resource.setMinCapacity(0);
 		resource.setMaxCapacity(capacity);
 		resource.setInitialCapacity(capacity);
-		// add requirement value
-		resource.addRequirementValue();
 		// add component 
 		pdb.addDomainComponent(resource);
 	}
@@ -2555,10 +2553,6 @@ public class DDLv3Compiler extends DomainCompiler
 		resource.setMinCapacity(min);
 		resource.setMaxCapacity(max);
 		resource.setInitialCapacity(max);
-		// add consumption value
-		resource.addConsumptionValue();
-		// add production value
-		resource.addProductionValue();
 		// add component
 		pdb.addDomainComponent(resource);
 	}
@@ -2617,7 +2611,7 @@ public class DDLv3Compiler extends DomainCompiler
 								
 						
 						// add value to the variable
-						StateVariableValue val = sv.addValue(vname, new long[] {dmin, dmax}, controllable);
+						StateVariableValue val = sv.addStateVariableValue(vname, new long[] {dmin, dmax}, controllable);
 						
 						// add parameter place-holders to the value
 						for (String pname : ddlValueType.getParameterTypes()) {

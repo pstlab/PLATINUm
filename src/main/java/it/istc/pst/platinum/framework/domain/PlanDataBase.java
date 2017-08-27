@@ -85,14 +85,14 @@ public interface PlanDataBase
 	 * 
 	 * @return
 	 */
-	public List<DomainComponent<?>> getComponents();
+	public List<DomainComponent> getComponents();
 	
 	/**
 	 * 
 	 * @param name
 	 * @return
 	 */
-	public DomainComponent<?> getComponentByName(String name);
+	public DomainComponent getComponentByName(String name);
 	
 	/**
 	 *  Check consistency of the plan data-base
@@ -107,13 +107,13 @@ public interface PlanDataBase
 	 * @param type
 	 * @return
 	 */
-	public <T extends DomainComponent<?>> T createDomainComponent(String name, DomainComponentType type);
+	public <T extends DomainComponent> T createDomainComponent(String name, DomainComponentType type);
 	
 	/**
 	 * 
 	 * @param component
 	 */
-	public void addDomainComponent(DomainComponent<?> component);
+	public void addDomainComponent(DomainComponent component);
 	
 	/**
 	 * 
@@ -143,7 +143,7 @@ public interface PlanDataBase
 	 * @return
 	 * @throws DomainComponentNotFoundException
 	 */
-	public SynchronizationRule createSynchronizationRule(ComponentValue<?> value, String[] labels) 
+	public SynchronizationRule createSynchronizationRule(ComponentValue value, String[] labels) 
 			throws DomainComponentNotFoundException;
 	
 	/**
@@ -167,14 +167,14 @@ public interface PlanDataBase
 	 * @param value
 	 * @return
 	 */
-	public List<SynchronizationRule> getSynchronizationRules(ComponentValue<?> value);
+	public List<SynchronizationRule> getSynchronizationRules(ComponentValue value);
 
 	/**
 	 * 
 	 * @param component
 	 * @return
 	 */
-	public List<SynchronizationRule> getSynchronizationRules(DomainComponent<?> component);
+	public List<SynchronizationRule> getSynchronizationRules(DomainComponent component);
 	
 	/**
 	 * 
@@ -217,13 +217,13 @@ public interface PlanDataBase
 	 * 
 	 * @return
 	 */
-	public Map<DomainComponent<?>, Set<DomainComponent<?>>> getDependencyGraph();
+	public Map<DomainComponent, Set<DomainComponent>> getDependencyGraph();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Map<ComponentValue<?>, Set<ComponentValue<?>>> getDecompositionTree();
+	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree();
 	
 	/**
 	 * Compute the makespan of the plan

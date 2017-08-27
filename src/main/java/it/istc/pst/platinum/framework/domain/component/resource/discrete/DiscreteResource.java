@@ -28,7 +28,7 @@ import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointScheduleQuery;
  * @author anacleto
  *
  */
-public class DiscreteResource extends Resource<RequirementResourceValue> // implements DiscreteResourceProfileManager
+public class DiscreteResource extends Resource
 {
 	public static final String REQUIREMENT_LABEL = "REQUIREMENT";		// language constant
 	private RequirementResourceValue requirement;						// requirement value
@@ -105,6 +105,7 @@ public class DiscreteResource extends Resource<RequirementResourceValue> // impl
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RequirementResourceValue> getValues() {
 		// get values - only one element expected

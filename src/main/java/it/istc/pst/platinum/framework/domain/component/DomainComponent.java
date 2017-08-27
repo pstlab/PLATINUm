@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.framework.domain.component;
 
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +53,7 @@ import it.istc.pst.platinum.framework.utils.view.component.gantt.GanttComponentV
  * @author anacleto
  *
  */
-public abstract class DomainComponent<V extends ComponentValue<?>> extends ApplicationFrameworkObject
+public abstract class DomainComponent extends ApplicationFrameworkObject //<V extends ComponentValue<?>> extends ApplicationFrameworkObject
 {
 	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
 	protected TemporalFacade tdb;
@@ -70,8 +71,6 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 	// component's name
 	protected String name;
 	protected DomainComponentType type;
-	// list of values
-//	protected List<V> values;
 	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
@@ -90,8 +89,6 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 		super();
 		this.type = type;
 		this.name = name;
-		// initialize the list of values
-//		this.values = new ArrayList<>();
 		
 		// initialize decisions of the (local) plan
 		this.decisions = new HashMap<>();
@@ -282,7 +279,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 	 * @param value
 	 * @return
 	 */
-	public Decision create(ComponentValue<?> value, String[] labels) {
+	public Decision create(ComponentValue value, String[] labels) {
 		// create decision
 		return this.create(
 				value,
@@ -299,7 +296,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue<?> value, String[] labels, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] duration) {
 		// create decision
 		return this.create(
 				value,
@@ -317,7 +314,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue<?> value, String[] labels, long[] end, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
 		// create decision
 		return this.create(
 				value,
@@ -336,7 +333,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue<?> value, String[] labels, long[] start, long[] end, long[] duration) {
+	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
 		// initialize decision
 		Decision dec = new Decision(value, labels, start, end, duration);
 		// add decision the the agenda
@@ -408,21 +405,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 		// get list of "local" activated relations
 		return local;
 	}
-	
-//	/**
-//	 * 
-//	 * @param dec
-//	 * @throws DecisionNotFoundException
-//	 */
-//	public void restoreDecision(Decision dec) 
-//			throws DecisionNotFoundException
-//	{
-//		// check if decision exists in the agenda
-//		if (!this.decisions.get(PlanElementStatus.SILENT).contains(dec)) {
-//			throw new DecisionNotFoundException("Decision not found in among SILENTs " + dec);
-//		}
-//	}	
-	
+
 	/**
 	 * 
 	 * @param dec
@@ -958,27 +941,18 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 		}
 	}
 	
-//	/**
-//	 * 
-//	 * @param label
-//	 * @param duration
-//	 * @param controllable
-//	 * @return
-//	 */
-//	public abstract V addValue(String label, long[] duration, boolean controllable);
-	
 	/**
 	 * 
 	 * @return
 	 */
-	public abstract List<V> getValues();
+	public abstract <V extends ComponentValue> List<V> getValues();
 	
 	/**
 	 * 
 	 * @param name
 	 * @return
 	 */
-	public abstract V getValueByName(String name);
+	public abstract ComponentValue getValueByName(String name);
 	
 	/**
 	 * 
@@ -1080,7 +1054,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DomainComponent<?> other = (DomainComponent<?>) obj;
+		DomainComponent other = (DomainComponent) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -1107,7 +1081,7 @@ public abstract class DomainComponent<V extends ComponentValue<?>> extends Appli
 	 * @throws TemporalIntervalCreationException
 	 * @throws ParameterCreationException
 	 */
-	public Token createToken(int id, ComponentValue<?> value, String[] labels, long[] start, long[] end, long[] duration) 
+	public Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
 			throws TemporalIntervalCreationException, ParameterCreationException
 	{
 		// create a temporal interval

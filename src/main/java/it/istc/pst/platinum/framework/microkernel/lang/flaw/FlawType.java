@@ -26,7 +26,7 @@ public enum FlawType
 	/**
 	 * An unbounded temporal interval that entail planning decisions to define the behavior of a particular component of the domain 
 	 */
-	BEHAVIOR_PLANNING(FlawCategoryType.PLANNING),
+	TIMELINE_BEHAVIOR_PLANNING(FlawCategoryType.PLANNING),
 	
 	/**
 	 * A set of activities exceeding resource availability (i.e. a peak). Reservoir resources can solve such a peak in two 
@@ -40,7 +40,7 @@ public enum FlawType
 	 * Issue concerning the temporal behavior of a component. It represents 
 	 * an inconsistency which generates an unsolvable flaw
 	 */
-	INVALID_BEHAVIOR(FlawCategoryType.UNSOLVABLE);
+	TIMELINE_BEHAVIOR_CHECKING(FlawCategoryType.UNSOLVABLE);
 	
 	private FlawCategoryType category;
 	

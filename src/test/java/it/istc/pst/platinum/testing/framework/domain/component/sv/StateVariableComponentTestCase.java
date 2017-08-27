@@ -19,8 +19,8 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.Gap;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.GapCompletion;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.DecisionSchedule;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.PrecedenceConstraint;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
@@ -228,14 +228,14 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
-		ComponentValue v4 = this.psv.addValue("Val-4", new long[] {22, 33}, false);
-		ComponentValue v5 = this.psv.addValue("Val-5", new long[] {5, 20}, false);
-		ComponentValue v6 = this.psv.addValue("Val-6", true);
-		ComponentValue v7 = this.psv.addValue("Val-7", true);
-		ComponentValue v8 = this.psv.addValue("Val-8", false);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
+		StateVariableValue  v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", new long[] {22, 33}, false);
+		StateVariableValue v5 = this.psv.addStateVariableValue("Val-5", new long[] {5, 20}, false);
+		StateVariableValue v6 = this.psv.addStateVariableValue("Val-6", true);
+		StateVariableValue v7 = this.psv.addStateVariableValue("Val-7", true);
+		StateVariableValue v8 = this.psv.addStateVariableValue("Val-8", false);
 		
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
@@ -300,9 +300,9 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1",new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -336,7 +336,7 @@ public class StateVariableComponentTestCase
 					// get flaw solution
 					Assert.assertNotNull(f.getSolutions());
 					Assert.assertTrue(!f.getSolutions().isEmpty());
-					DecisionSchedule s1 = (DecisionSchedule) f.getSolutions().get(0);
+					PrecedenceConstraint s1 = (PrecedenceConstraint) f.getSolutions().get(0);
 					Assert.assertNotNull(s1);
 				}
 				
@@ -362,9 +362,9 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1",new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -429,9 +429,9 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1",new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -493,7 +493,7 @@ public class StateVariableComponentTestCase
 				Thread.sleep(3000);
 				
 				// detect flaws
-				flaws = this.psv.detectFlaws(FlawType.SV_SCHEDULING);
+				flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
 				Assert.assertNotNull(flaws);
 				if (!flaws.isEmpty()) {
 					flaw = flaws.get(0);
@@ -521,12 +521,12 @@ public class StateVariableComponentTestCase
 		Assert.assertNotNull(this.psv);
 		
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", new long[] {1, this.facade.getHorizon()}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 10}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", new long[] {5, 5}, true);
-		ComponentValue v4 = this.psv.addValue("Val-4", new long[] {1, this.facade.getHorizon()}, true);
-		ComponentValue v5 = this.psv.addValue("Val-5", new long[] {5, 5}, true);
-		ComponentValue v6 = this.psv.addValue("Val-6", new long[] {3, 3}, true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.facade.getHorizon()}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 10}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {5, 5}, true);
+		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", new long[] {1, this.facade.getHorizon()}, true);
+		StateVariableValue v5 = this.psv.addStateVariableValue("Val-5", new long[] {5, 5}, true);
+		StateVariableValue v6 = this.psv.addStateVariableValue("Val-6", new long[] {3, 3}, true);
 		
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
@@ -634,10 +634,10 @@ public class StateVariableComponentTestCase
 		Assert.assertNotNull(this.psv);
 		
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", true);
-		ComponentValue v2 = this.psv.addValue("Val-2", true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
-		ComponentValue v4 = this.psv.addValue("Val-4", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", true);
 		
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
@@ -732,9 +732,9 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1",new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);

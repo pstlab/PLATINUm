@@ -1,6 +1,5 @@
 package it.istc.pst.platinum.framework.domain.component.resource;
 
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
@@ -14,7 +13,7 @@ import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckExcep
  * @author anacleto
  *
  */
-public abstract class Resource<T extends ComponentValue<?>> extends DomainComponent<T> implements ResourceProfileManager
+public abstract class Resource extends DomainComponent
 {	
 	protected int min;							// minimum resource capacity
 	protected int max;							// maximum resource capacity
@@ -33,7 +32,6 @@ public abstract class Resource<T extends ComponentValue<?>> extends DomainCompon
 	 * 
 	 * @return
 	 */
-	@Override
 	public long getMinCapacity() {
 		return this.min;
 	}
@@ -42,7 +40,6 @@ public abstract class Resource<T extends ComponentValue<?>> extends DomainCompon
 	 * 
 	 * @return
 	 */
-	@Override
 	public long getMaxCapacity() {
 		return this.max;
 	}
@@ -51,7 +48,6 @@ public abstract class Resource<T extends ComponentValue<?>> extends DomainCompon
 	 * 
 	 * @return
 	 */
-	@Override
 	public long getInitialCapacity() {
 		return this.initial;
 	}

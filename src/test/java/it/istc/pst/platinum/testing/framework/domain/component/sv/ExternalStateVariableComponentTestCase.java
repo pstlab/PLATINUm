@@ -5,11 +5,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.sv.ExternalStateVariable;
+import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryFactory;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
@@ -87,9 +87,9 @@ public class ExternalStateVariableComponentTestCase {
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long [] {10, 30}, true);
-		ComponentValue v3 = this.psv.addValue("Val-3", new long[] {11, 25}, false);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long [] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {11, 25}, false);
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
 		this.psv.addValueTransition(v2, v3);
@@ -106,8 +106,8 @@ public class ExternalStateVariableComponentTestCase {
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", new long[] {5, 5}, true);
-		ComponentValue v2 = this.psv.addValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
 		System.out.println(this.psv);
@@ -177,7 +177,7 @@ public class ExternalStateVariableComponentTestCase {
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
-		ComponentValue v1 = this.psv.addValue("Val-1", new long[] {2, 10}, true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {2, 10}, true);
 		System.out.println(this.psv);
 		System.out.println(this.facade);
 		try 
