@@ -77,7 +77,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	private DomainComponentFactory componentFactory;
 	
 	protected Problem problem;
-	
 	// domain theory
 	private Map<String, ParameterDomain> parameterDomains;
 	private Map<DomainComponent, Map<ComponentValue, List<SynchronizationRule>>> rules;
@@ -1542,11 +1541,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		// check if a problem has been already set up
 		if (this.problem == null) 
 		{
-			// initialize incident graph
-			this.dg = new HashMap<>();
-			// initialize the decomposition tree
-			this.tree = new HashMap<>();
-			
 			// list of committed decisions
 			List<Decision> committedDecisions = new ArrayList<>();
 			// list of committed relations
@@ -1731,6 +1725,8 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	private void computeDependencyGraph() 
 	{
+		// initialize incident graph
+		this.dg = new HashMap<>();
 		// initialize the dependency graph
 		for (DomainComponent node : this.getComponents()) {
 			// initialize DG 
@@ -1826,6 +1822,8 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	private void computeDecompositionTree()
 	{
+		// initialize the decomposition tree
+		this.tree = new HashMap<>();
 		// initialize the decomposition tree
 		for (DomainComponent component : this.getComponents()) {
 			// check component values

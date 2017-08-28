@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.refinement;
+package it.istc.pst.platinum.framework.microkernel.resolver.planning;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;

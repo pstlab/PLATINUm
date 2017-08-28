@@ -1,5 +1,7 @@
 package it.istc.pst.platinum.framework.domain.component.pdb;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.ParameterPlaceHolder;
 
@@ -10,6 +12,7 @@ import it.istc.pst.platinum.framework.domain.component.ParameterPlaceHolder;
  */
 public class TokenVariable 
 {
+	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private ComponentValue value;
 	private String[] labels;
@@ -20,12 +23,11 @@ public class TokenVariable
 	
 	/**
 	 * 
-	 * @param id
 	 * @param value
 	 * @param labels
 	 */
-	protected TokenVariable(int id, ComponentValue value, String[] labels) {
-		this.id = id;
+	protected TokenVariable(ComponentValue value, String[] labels) {
+		this.id = ID_COUNTER.getAndIncrement();
 		this.value = value;
 		this.labels = labels;
 		

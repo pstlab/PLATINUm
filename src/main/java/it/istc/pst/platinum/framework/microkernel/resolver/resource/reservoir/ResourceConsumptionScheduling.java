@@ -12,7 +12,7 @@ import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
  * @author anacleto
  *
  */
-public class PrecedenceConstraintPosting extends FlawSolution 
+public class ResourceConsumptionScheduling extends FlawSolution 
 {
 	private List<Decision> precedence;
 	
@@ -21,7 +21,7 @@ public class PrecedenceConstraintPosting extends FlawSolution
 	 * @param flaw
 	 * @param precedences
 	 */
-	protected PrecedenceConstraintPosting(ResourceProfileFlaw flaw, List<Decision> precedences) {
+	protected ResourceConsumptionScheduling(ResourceProfileFlaw flaw, List<Decision> precedences) {
 		super(flaw);
 		this.precedence = new ArrayList<>(precedences);
 	}

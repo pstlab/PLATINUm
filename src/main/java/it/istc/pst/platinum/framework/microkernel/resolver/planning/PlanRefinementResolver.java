@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.refinement;
+package it.istc.pst.platinum.framework.microkernel.resolver.planning;
 
 import java.util.ArrayList;
 import java.util.HashMap;

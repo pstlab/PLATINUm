@@ -12,12 +12,12 @@ import it.istc.pst.platinum.deliberative.app.PlannerFactory;
 import it.istc.pst.platinum.framework.domain.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseFactory;
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.ExternalStateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable;
+import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFact;
@@ -91,9 +91,9 @@ public class PlannerTestCase
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue v11 = c1.addValue("Val11", new long[] {3, this.pdb.getHorizon()}, true);
-			ComponentValue v12 = c1.addValue("Val12", new long[] {3, 11}, false);
-			ComponentValue v13 = c1.addValue("Val13", new long[] {7, 7}, true);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11", new long[] {3, this.pdb.getHorizon()}, true);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12", new long[] {3, 11}, false);
+			StateVariableValue v13 = c1.addStateVariableValue("Val13", new long[] {7, 7}, true);
 			// add transitions
 			c1.addValueTransition(v11, v12);
 			c1.addValueTransition(v12, v11);
@@ -105,9 +105,9 @@ public class PlannerTestCase
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue v21 = c2.addValue("Val21", new long[] {5, 45}, true);
-			ComponentValue v22 = c2.addValue("Val22", new long[] {7, 11}, true);
-			ComponentValue v23 = c2.addValue("Val23", new long[] {3, this.pdb.getHorizon()}, true);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21", new long[] {5, 45}, true);
+			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {7, 11}, true);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23", new long[] {3, this.pdb.getHorizon()}, true);
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -119,9 +119,9 @@ public class PlannerTestCase
 			// create state variables
 			ExternalStateVariable c3 = this.pdb.createDomainComponent("C3", DomainComponentType.SV_EXTERNAL);
 			// add values
-			ComponentValue v31 = c3.addValue("Val31", new long[] {1, 50}, true);
-			ComponentValue v32 = c3.addValue("Val32", new long[] {1, 50}, false);
-			ComponentValue v33 = c3.addValue("Val33", new long[] {1, 50}, true);
+			StateVariableValue v31 = c3.addStateVariableValue("Val31", new long[] {1, 50}, true);
+			StateVariableValue v32 = c3.addStateVariableValue("Val32", new long[] {1, 50}, false);
+			StateVariableValue v33 = c3.addStateVariableValue("Val33", new long[] {1, 50}, true);
 			// add transitions
 			c3.addValueTransition(v31, v32);
 			c3.addValueTransition(v32, v33);
@@ -207,8 +207,8 @@ public class PlannerTestCase
 			// create state variable 
 			PrimitiveStateVariable robot = this.pdb.createDomainComponent("Robot", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue idle = robot.addValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
-			ComponentValue goTo = robot.addValue("GoTo", new long[] {1, this.pdb.getHorizon()}, true);
+			StateVariableValue idle = robot.addStateVariableValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
+			StateVariableValue goTo = robot.addStateVariableValue("GoTo", new long[] {1, this.pdb.getHorizon()}, true);
 			goTo.addParameterPlaceHolder(locations);
 			// add transitions
 			robot.addValueTransition(idle, goTo);
@@ -219,9 +219,9 @@ public class PlannerTestCase
 			// create state variables
 			PrimitiveStateVariable robotBase = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue at = robotBase.addValue("At", new long[] {5, this.pdb.getHorizon()}, true);
+			StateVariableValue at = robotBase.addStateVariableValue("At", new long[] {5, this.pdb.getHorizon()}, true);
 			at.addParameterPlaceHolder(locations);
-			ComponentValue moving = robotBase.addValue("Moving", new long[] {11, 16}, false);
+			StateVariableValue moving = robotBase.addStateVariableValue("Moving", new long[] {11, 16}, false);
 			// add transitions
 			robotBase.addValueTransition(at, moving);
 			robotBase.addValueTransition(moving, at);
@@ -302,10 +302,10 @@ public class PlannerTestCase
 			// create state variable 
 			PrimitiveStateVariable satellite = this.pdb.createDomainComponent("Satellite", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue earth = satellite.addValue("Earth", new long[] {1, this.pdb.getHorizon()}, true);
-			ComponentValue slewing = satellite.addValue("Slewing", new long[] {10, 15}, true);
-			ComponentValue comm = satellite.addValue("Comm", new long[] {15, 20}, false);
-			ComponentValue science = satellite.addValue("Science", new long[] {16, 23}, true);
+			StateVariableValue earth = satellite.addStateVariableValue("Earth", new long[] {1, this.pdb.getHorizon()}, true);
+			StateVariableValue slewing = satellite.addStateVariableValue("Slewing", new long[] {10, 15}, true);
+			StateVariableValue comm = satellite.addStateVariableValue("Comm", new long[] {15, 20}, false);
+			StateVariableValue science = satellite.addStateVariableValue("Science", new long[] {16, 23}, true);
 			// add transitions
 			satellite.addValueTransition(earth, slewing);
 			satellite.addValueTransition(earth, comm);
@@ -319,8 +319,8 @@ public class PlannerTestCase
 			// create state variables
 			ExternalStateVariable window = this.pdb.createDomainComponent("Window", DomainComponentType.SV_EXTERNAL);
 			// add values
-			ComponentValue visible = window.addValue("Visible", new long[] {80, 80}, false);
-			ComponentValue notVisible = window.addValue("notVisible", new long[] {10, 10}, false);
+			StateVariableValue visible = window.addStateVariableValue("Visible", new long[] {80, 80}, false);
+			StateVariableValue notVisible = window.addStateVariableValue("notVisible", new long[] {10, 10}, false);
 			// add transitions
 			window.addValueTransition(visible, notVisible);
 			window.addValueTransition(notVisible, visible);
@@ -441,8 +441,8 @@ public class PlannerTestCase
 			// create state variable 
 			PrimitiveStateVariable rover = this.pdb.createDomainComponent("Rover", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue idle = rover.addValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
-			ComponentValue take = rover.addValue("TakePicture", new long[] {1, this.pdb.getHorizon()}, true);
+			StateVariableValue idle = rover.addStateVariableValue("Idle", new long[] {1, this.pdb.getHorizon()}, true);
+			StateVariableValue take = rover.addStateVariableValue("TakePicture", new long[] {1, this.pdb.getHorizon()}, true);
 			take.addParameterPlaceHolder(targets);
 			take.addParameterPlaceHolder(locations);
 			// add transitions
@@ -454,9 +454,9 @@ public class PlannerTestCase
 			// create state variables
 			PrimitiveStateVariable base = this.pdb.createDomainComponent("RobotBase", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue at = base.addValue("At", new long[] {1, this.pdb.getHorizon()}, true);
+			StateVariableValue at = base.addStateVariableValue("At", new long[] {1, this.pdb.getHorizon()}, true);
 			at.addParameterPlaceHolder(locations);
-			ComponentValue moving = base.addValue("Moving", new long[] {10, 15}, false);
+			StateVariableValue moving = base.addStateVariableValue("Moving", new long[] {10, 15}, false);
 			// add transitions
 			base.addValueTransition(at, moving);
 			base.addValueTransition(moving, at);
@@ -466,7 +466,7 @@ public class PlannerTestCase
 			// create state variables
 			PrimitiveStateVariable camera = this.pdb.createDomainComponent("RobotCamera", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			ComponentValue takingPicture = camera.addValue("TakingPicture", new long[] {7, 11}, false);
+			StateVariableValue takingPicture = camera.addStateVariableValue("TakingPicture", new long[] {7, 11}, false);
 			takingPicture.addParameterPlaceHolder(targets);
 			// add component
 			this.pdb.addDomainComponent(camera);

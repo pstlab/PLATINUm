@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
@@ -12,9 +11,10 @@ import it.istc.pst.platinum.framework.domain.component.ex.ResourceProfileComputa
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceEvent;
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceEventType;
 import it.istc.pst.platinum.framework.domain.component.resource.ResourceProfile;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResource;
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResourceProfile;
-import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResourceProfileManager;
-import it.istc.pst.platinum.framework.domain.component.resource.reservoir.UsageResourceProfileSample;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceProductionValue;
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceUsageProfileSample;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -33,10 +33,10 @@ import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
  * @author anacleto
  *
  */
-public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> & ReservoirResourceProfileManager> extends Resolver 
+public class ReservoirResourceSchedulingResolver extends Resolver 
 {
 	@ComponentPlaceholder
-	protected T component;
+	protected ReservoirResource resource;
 	
 	/**
 	 * 
@@ -57,9 +57,9 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 		try
 		{
 			// check pessimistic resource profile
-			ReservoirResourceProfile prp = this.component.computePessimisticResourceProfile();
+			ReservoirResourceProfile prp = this.resource.computePessimisticResourceProfile();
 			// check samples
-			List<UsageResourceProfileSample> samples = prp.getSamples();
+			List<ResourceUsageProfileSample> samples = prp.getSamples();
 			
 			/*
 			 * TODO - trova picchi
@@ -68,7 +68,7 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 			// check if any flaw has been found
 			if (flaws.isEmpty()) {
 				// check optimistic resource profile
-				ReservoirResourceProfile orp = this.component.computeOptimisticResourceProfile();
+				ReservoirResourceProfile orp = this.resource.computeOptimisticResourceProfile();
 				// check samples
 				samples = orp.getSamples();
 				
@@ -136,9 +136,9 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 		ResourceProduction prod = (ResourceProduction) solution;
 		
 		// get production value
-		ResourceProductionValue value = this.component.getProductionValue();
+		ResourceProductionValue value = this.resource.getProductionValue();
 		// create production decision 
-		Decision subgoal = this.component.create(value, new String[] {
+		Decision subgoal = this.resource.create(value, new String[] {
 			"?amount"
 		});
 		// add created decision to flaw solution
@@ -149,7 +149,7 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 		// create (pending) relations
 		for (Decision dec : prod.getBeforeDecisions()) {
 			// create precedence relation
-			BeforeRelation rel = this.component.create(RelationType.BEFORE, dec, subgoal);
+			BeforeRelation rel = this.resource.create(RelationType.BEFORE, dec, subgoal);
 			relations.add(rel);
 			// add created relation to flaw solution
 			prod.addCreatedRelation(rel);
@@ -158,7 +158,7 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 		// create (pending) relations
 		for (Decision dec : prod.getAfterDecisions()) {
 			// create precedence relation
-			BeforeRelation rel = this.component.create(RelationType.BEFORE, subgoal, dec);
+			BeforeRelation rel = this.resource.create(RelationType.BEFORE, subgoal, dec);
 			relations.add(rel);
 			// add created relation to flaw solution
 			prod.addCreatedRelation(rel);
@@ -173,19 +173,19 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 	{
 		// deactivate relations: ACTIVE -> PENDING/SILENT
 		for (Relation rel : solution.getActivatedRelations()) {
-			this.component.delete(rel);
+			this.resource.delete(rel);
 		}
 		
 		// delete activated decisions: ACTIVE -> PENDING
 		for (Decision dec : solution.getActivatedDecisisons()) {
 			// deactivate decision
-			this.component.delete(dec);
+			this.resource.delete(dec);
 		}
 		
 		// delete pending decisions: PENDING -> SILENT
 		for (Decision dec : solution.getCreatedDecisions()) {
 			// delete pending decisions
-			this.component.delete(dec);
+			this.resource.delete(dec);
 		}
 	}
 
@@ -201,7 +201,7 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 		// restore created decisions
 		for (Decision dec : dCreated) {
 			// restore decision
-			this.component.restore(dec);
+			this.resource.restore(dec);
 		}
 		
 		// get activated decisions
@@ -213,7 +213,7 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 			try
 			{
 				// activate decision
-				this.component.add(dec);
+				this.resource.add(dec);
 				commitDecs.add(dec);
 			}
 			catch (DecisionPropagationException ex) 
@@ -221,7 +221,7 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 				// deactivate committed decisions
 				for (Decision d : commitDecs) {
 					// deactivate decision
-					this.component.delete(d);
+					this.resource.delete(d);
 				}
 
 				// error while resetting flaw solution
@@ -239,214 +239,26 @@ public class ReservoirResourceSchedulingResolver <T extends DomainComponent<?> &
 			try
 			{
 				// activate relation
-				this.component.add(rel);
+				this.resource.add(rel);
 				commitRels.add(rel);
 			}
 			catch (RelationPropagationException ex) {
 				// deactivate committed relations
 				for (Relation r : commitRels) {
 					// deactivate relation
-					this.component.delete(r);
+					this.resource.delete(r);
 				}
 				
 				// deactivate committed decisions
 				for (Decision d : commitDecs) {
 					// deactivate 
-					this.component.delete(d);
+					this.resource.delete(d);
 				}
 				
 				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
 			}
 		}
 	}
-
-	
-//	/**
-//	 * 
-//	 * @param events
-//	 * @return
-//	 * @throws ResourceProfileComputationException
-//	 */
-//	private ResourceProfile computePessimisticResourceProfile(List<ResourceEvent> events) 
-//			throws ResourceProfileComputationException
-//	{
-//		// create resource profile
-//		ResourceProfile prp = new ResourceProfile();
-//		// constraints to retract
-//		List<TemporalConstraint> toRetract = new ArrayList<>();
-//		try
-//		{
-//			// check resource events
-//			for (ResourceEvent event : events) 
-//			{
-//				// check decision schedule
-//				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
-//						TemporalQueryType.INTERVAL_SCHEDULE);
-//				// set interval
-//				query.setInterval(event.getDecision().getToken().getInterval());
-//				// process query
-//				this.tdb.process(query);
-//				
-//				// check event and set the optimistic schedule
-//				switch (event.getType())
-//				{
-//					// schedule consumption as late as possible
-//					case CONSUMPTION : 
-//					{
-//						// get time point to schedule
-//						TimePoint point = event.getEvent();
-//						// prepare constraint
-//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-//								TemporalConstraintType.FIX_TIME_POINT);
-//						// set point 
-//						cons.setReference(point);
-//						// set time
-//						cons.setTime(point.getLowerBound());
-//						// propagate constraint
-//						this.tdb.propagate(cons);
-//						
-//						// add sample
-//						prp.addSample(event, point.getLowerBound());
-//						
-//						// add constraint
-//						toRetract.add(cons);
-//					}
-//					break;
-//					
-//					// schedule production as soon as possible
-//					case PRODUCTION : 
-//					{
-//						// get time point to schedule
-//						TimePoint point = event.getEvent();
-//						// prepare constraint
-//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-//								TemporalConstraintType.FIX_TIME_POINT);
-//						// set point
-//						cons.setReference(point);
-//						// set time
-//						cons.setTime(point.getUpperBound());
-//						// propagate constraint
-//						this.tdb.propagate(cons);
-//						
-//						// add sample
-//						prp.addSample(event, point.getUpperBound());
-//						
-//						// add constraint
-//						toRetract.add(cons);
-//					}
-//					break;
-//				}
-//			}
-//		}
-//		catch (TemporalConstraintPropagationException ex) {
-//			// profile computation error
-//			throw new ResourceProfileComputationException(ex.getMessage());
-//		}
-//		finally 
-//		{
-//			// retract propagated constraints
-//			for (TemporalConstraint constraint : toRetract) {
-//				// retract constraints propagated for profile computation
-//				this.tdb.retract(constraint);;
-//			}
-//		}
-//		// get profile
-//		return prp;
-//	}
-//	
-//	/**
-//	 * 
-//	 * @param events
-//	 * @return
-//	 * @throws ResourceProfileComputationException
-//	 */
-//	private ResourceProfile computeOptimisticResourceProfile(List<ResourceEvent> events) 
-//			throws ResourceProfileComputationException
-//	{
-//		// initialize resource profile
-//		ResourceProfile orp = new ResourceProfile();
-//		// list of constraint to retract 
-//		List<TemporalConstraint> toRetract = new ArrayList<>();
-//		try
-//		{
-//			// check resource events
-//			for (ResourceEvent event : events) 
-//			{
-//				// check decision schedule
-//				IntervalScheduleQuery query = this.tdb.createTemporalQuery(
-//						TemporalQueryType.INTERVAL_SCHEDULE);
-//				// set interval
-//				query.setInterval(event.getDecision().getToken().getInterval());
-//				// process query
-//				this.tdb.process(query);
-//				
-//				// check event and set the optimistic schedule
-//				switch (event.getType())
-//				{
-//					// schedule consumption as late as possible
-//					case CONSUMPTION : 
-//					{
-//						// get time point to schedule
-//						TimePoint point = event.getEvent();
-//						// prepare constraint
-//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-//								TemporalConstraintType.FIX_TIME_POINT);
-//						// set point 
-//						cons.setReference(point);
-//						// set time
-//						cons.setTime(point.getUpperBound());
-//						// propagate constraint
-//						this.tdb.propagate(cons);
-//						
-//						// add sample
-//						orp.addSample(event, point.getUpperBound());
-//						
-//						// add constraint
-//						toRetract.add(cons);
-//					}
-//					break;
-//					
-//					// schedule production as soon as possible
-//					case PRODUCTION : 
-//					{
-//						// get time point to schedule
-//						TimePoint point = event.getEvent();
-//						// prepare constraint
-//						FixTimePointConstraint cons = this.tdb.createTemporalConstraint(
-//								TemporalConstraintType.FIX_TIME_POINT);
-//						// set point
-//						cons.setReference(point);
-//						// set time
-//						cons.setTime(point.getLowerBound());
-//						// propagate constraint
-//						this.tdb.propagate(cons);
-//						
-//						// add sample
-//						orp.addSample(event, point.getLowerBound());
-//						
-//						// add constraint
-//						toRetract.add(cons);
-//					}
-//					break;
-//				}
-//			}
-//		}
-//		catch (TemporalConstraintPropagationException ex) {
-//			// profile computation error
-//			throw new ResourceProfileComputationException(ex.getMessage());
-//		}
-//		finally 
-//		{
-//			// retract propagated constraints
-//			for (TemporalConstraint constraint : toRetract) {
-//				// retract constraints propagated for profile computation
-//				this.tdb.retract(constraint);;
-//			}
-//		}
-//		
-//		// get profile
-//		return orp;
-//	}
 	
 	/**
 	 * 

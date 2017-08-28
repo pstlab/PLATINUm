@@ -7,7 +7,7 @@ import it.istc.pst.platinum.framework.domain.component.resource.ResourceProfileS
  * @author anacleto
  *
  */
-public class UsageResourceProfileSample extends ResourceProfileSample
+public class ResourceUsageProfileSample extends ResourceProfileSample
 {
 	private long amount;
 	private long time;
@@ -21,7 +21,7 @@ public class UsageResourceProfileSample extends ResourceProfileSample
 	 * @param time
 	 * @param amount
 	 */
-	protected UsageResourceProfileSample(long time, long amount) {
+	protected ResourceUsageProfileSample(long time, long amount) {
 		super();
 		this.amount = amount;		// a negative amount implies a resource consumption, a resource production otherwise
 		this.time = time;
@@ -52,7 +52,7 @@ public class UsageResourceProfileSample extends ResourceProfileSample
 	@Override
 	public int compareTo(ResourceProfileSample other) {
 		// cast to usage sample
-		UsageResourceProfileSample o = (UsageResourceProfileSample) other;
+		ResourceUsageProfileSample o = (ResourceUsageProfileSample) other;
 		// compare the time instant and the required amount (absolute values)
 		return this.time < o.time ? -1 :
 			this.time == o.time && Math.abs(this.amount) >= Math.abs(o.amount) ? -1 : 1;

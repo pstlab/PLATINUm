@@ -11,12 +11,16 @@ import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
+import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
+import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
+import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.Gap;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.GapCompletion;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
@@ -326,7 +330,7 @@ public class StateVariableComponentTestCase
 			Assert.assertNotNull(flaws);
 			Assert.assertTrue(!flaws.isEmpty());
 			System.out.println(flaws);
-			Assert.assertTrue(flaws.size() == 3);
+			Assert.assertTrue(flaws.size() == 1);
 			System.out.println("Detected flaws ");
 			for (Flaw f : flaws) {
 				// get flaws 
@@ -794,6 +798,110 @@ public class StateVariableComponentTestCase
 			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
 		}
 		catch (Exception ex) {
+			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void applyAndRetractFlawSolutionTest()
+	{
+		System.out.println("[Test]: applyAndRetractFlawSolutionTest() --------------------");
+		System.out.println();
+		// create the state variable description
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		// add transitions
+		this.psv.addValueTransition(v1, v3);
+		this.psv.addValueTransition(v3, v2);
+		this.psv.addValueTransition(v2, v3);
+		this.psv.addValueTransition(v3, v1);
+		
+		System.out.println(this.psv);
+		System.out.println(this.facade);
+		try 
+		{
+			// create tokens
+			Decision d1 = this.psv.create(v1, new String[] {});
+			this.psv.add(d1);
+			Decision d2 = this.psv.create(v2, new String[] {});
+			this.psv.add(d2);
+			
+			// detect flaws
+			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
+			Assert.assertNotNull(flaws);
+			Assert.assertFalse(flaws.isEmpty());
+			Assert.assertTrue(flaws.size() == 1);
+			
+			// get the flaw
+			Flaw flaw = flaws.get(0);
+			// check solutions
+			List<FlawSolution> solutions = flaw.getSolutions();
+			Assert.assertNotNull(solutions);
+			Assert.assertFalse(solutions.isEmpty());
+			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			
+			// apply a solution
+			FlawSolution solution = solutions.get(0);
+			System.out.println("Try to apply solution: " + solution + "\n");
+			this.psv.commit(solution);
+			
+			// check consistency 
+			this.facade.checkConsistency();
+			System.out.println(".... solution successfully applied\n");
+			
+			
+			// no flaws expected
+			flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
+			Assert.assertNotNull(flaws);
+			Assert.assertTrue(flaws.isEmpty());
+			System.out.println("No more flaws on resource " + this.psv + "\n");
+			
+			// try to roll-back applied solution
+			System.out.println("Try to rollback applied solution: " + solution + "\n");
+			// retract applied solution
+			this.psv.rollback(solution);
+			
+			// check consistency
+			this.facade.checkConsistency();
+			System.out.println(".... solution successfully retracted\n");
+			
+			
+			// flaws expected
+			flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
+			Assert.assertNotNull(flaws);
+			Assert.assertFalse(flaws.isEmpty());
+			Assert.assertTrue(flaws.size() == 1);
+			
+			// try again to solve the the flaw and check the resulting state
+			flaw = flaws.get(0);
+			// check solutions
+			solutions = flaw.getSolutions();
+			Assert.assertNotNull(solutions);
+			Assert.assertFalse(solutions.isEmpty());
+			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			
+			// apply a solution
+			solution = solutions.get(0);
+			System.out.println("Try to apply solution: " + solution + "\n");
+			this.psv.commit(solution);
+			
+			// check consistency 
+			this.facade.checkConsistency();
+			System.out.println(".... solution successfully applied\n");
+			
+			
+			// no flaws expected
+			flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
+			Assert.assertNotNull(flaws);
+			Assert.assertTrue(flaws.isEmpty());
+			System.out.println("No more flaws on resource " + this.psv + "\n");
+		}
+		catch (FlawSolutionApplicationException | ConsistencyCheckException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}

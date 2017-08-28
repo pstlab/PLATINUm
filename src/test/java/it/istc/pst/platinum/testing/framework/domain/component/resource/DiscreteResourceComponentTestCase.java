@@ -414,6 +414,116 @@ public class DiscreteResourceComponentTestCase
 	
 	/**
 	 * 
+	 */
+	@Test
+	public void applyAndRetractFlawSolutionTest()
+	{
+		System.out.println("[Test]: applyAndRetractFlawSolutionTest() --------------------");
+		System.out.println();
+		
+		try
+		{
+			// create decision
+			Decision r1 = this.postRequirement(
+					0, 
+					new long [] {3, 18}, 
+					new long[] {33, 65}, 
+					new long[] {1, this.tdb.getHorizon()}, 
+					5);
+			// print posted activity
+			System.out.println("Successfully posted resource requiremet: " + r1 + "\n");
+			
+			// create decision
+			Decision r2 = this.postRequirement(
+					1, 
+					new long[] {1, 6}, 
+					new long[] {8, 11}, 
+					new long[] {1, this.tdb.getHorizon()}, 
+					6);
+			// print posted activity 
+			System.out.println("Successfully posted resource requirement: " + r2 + "\n");
+			
+			// detect flaws
+			List<Flaw> flaws = this.resource.detectFlaws();
+			Assert.assertNotNull(flaws);
+			Assert.assertFalse(flaws.isEmpty());
+			Assert.assertTrue(flaws.size() == 1);
+			
+			// get the flaw
+			Flaw flaw = flaws.get(0);
+			// check solutions
+			List<FlawSolution> solutions = flaw.getSolutions();
+			Assert.assertNotNull(solutions);
+			Assert.assertFalse(solutions.isEmpty());
+			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			
+			// apply a solution
+			FlawSolution solution = solutions.get(0);
+			System.out.println("Try to apply solution: " + solution + "\n");
+			this.resource.commit(solution);
+			
+			// check consistency 
+			this.tdb.checkConsistency();
+			this.pdb.checkConsistency();
+			System.out.println(".... solution successfully applied\n");
+			
+			
+			// no flaws expected
+			flaws = this.resource.detectFlaws();
+			Assert.assertNotNull(flaws);
+			Assert.assertTrue(flaws.isEmpty());
+			System.out.println("No more flaws on resource " + this.resource + "\n");
+			
+			// try to roll-back applied solution
+			System.out.println("Try to rollback applied solution: " + solution + "\n");
+			// retract applied solution
+			this.resource.rollback(solution);
+			
+			// check consistency
+			this.tdb.checkConsistency();
+			this.pdb.checkConsistency();
+			System.out.println(".... solution successfully retracted\n");
+			
+			
+			// flaws expected
+			flaws = this.resource.detectFlaws();
+			Assert.assertNotNull(flaws);
+			Assert.assertFalse(flaws.isEmpty());
+			Assert.assertTrue(flaws.size() == 1);
+			
+			// try again to solve the the flaw and check the resulting state
+			flaw = flaws.get(0);
+			// check solutions
+			solutions = flaw.getSolutions();
+			Assert.assertNotNull(solutions);
+			Assert.assertFalse(solutions.isEmpty());
+			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			
+			// apply a solution
+			solution = solutions.get(0);
+			System.out.println("Try to apply solution: " + solution + "\n");
+			this.resource.commit(solution);
+			
+			// check consistency 
+			this.tdb.checkConsistency();
+			this.pdb.checkConsistency();
+			System.out.println(".... solution successfully applied\n");
+			
+			
+			// no flaws expected
+			flaws = this.resource.detectFlaws();
+			Assert.assertNotNull(flaws);
+			Assert.assertTrue(flaws.isEmpty());
+			System.out.println("No more flaws on resource " + this.resource + "\n");
+		}
+		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
+			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
+		}
+	}
+	
+	/**
+	 * 
 	 * @param start
 	 * @param end
 	 * @param duration

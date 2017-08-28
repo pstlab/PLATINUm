@@ -114,14 +114,29 @@ public class ReservoirResource extends Resource
 	 * 
 	 */
 	@Override
-	public ResourceUsageValue getValueByName(String name) {
+	public ResourceUsageValue getValueByName(String name) 
+	{
+		// the value
+		ResourceUsageValue value = null;
+		// check consumption value
+		if (name.equals(CONSUMPTION_LABEL)) {
+			// set consumption value
+			value = this.consumption;
+		}
 		
-		/*
-		 * FIXME : To implement 
-		 */
+		// check production value
+		if (name.equals(PRODUCTION_LABEL)) {
+			// set production value
+			value = this.production;
+		}
+		
+		// unknown value
+		if (value == null) {
+			throw new RuntimeException("Unknown reservoir resource value \"" + name + "\"\n");
+		}
 		
 		// get the requirement value
-		return null;
+		return value;
 	}
 
 	/**
@@ -222,7 +237,7 @@ public class ReservoirResource extends Resource
 				this.tdb.checkConsistency();
 				
 				// create profile sample
-				UsageResourceProfileSample sample = new UsageResourceProfileSample(time, amount);
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
 				// add sample
 				orp.addSampel(sample);
 			}
@@ -258,7 +273,7 @@ public class ReservoirResource extends Resource
 				
 				
 				// create profile sample
-				UsageResourceProfileSample sample = new UsageResourceProfileSample(time, amount);
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
 				// add sample
 				orp.addSampel(sample);
 			}
@@ -322,7 +337,7 @@ public class ReservoirResource extends Resource
 				this.tdb.checkConsistency();
 				
 				// create profile sample
-				UsageResourceProfileSample sample = new UsageResourceProfileSample(time, amount);
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
 				// add sample
 				prp.addSampel(sample);
 			}
@@ -358,7 +373,7 @@ public class ReservoirResource extends Resource
 				
 				
 				// create profile sample
-				UsageResourceProfileSample sample = new UsageResourceProfileSample(time, amount);
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
 				// add sample
 				prp.addSampel(sample);
 			}

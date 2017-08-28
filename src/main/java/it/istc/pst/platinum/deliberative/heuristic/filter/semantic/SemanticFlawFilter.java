@@ -21,7 +21,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Plan;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
-import it.istc.pst.platinum.framework.microkernel.resolver.refinement.Goal;
+import it.istc.pst.platinum.framework.microkernel.resolver.planning.Goal;
 
 /**
  * 

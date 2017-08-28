@@ -15,7 +15,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
  */
 public class SynchronizationRule 
 {
-	private int idCounter;
 	private TokenVariable triggerer;
 	private Map<Integer, TokenVariable> tokenVariables;
 	private Map<TokenVariable, Map<TokenVariable, List<SynchronizationConstraint>>> constraints;
@@ -25,7 +24,6 @@ public class SynchronizationRule
 	 * @param triggerer
 	 */
 	protected SynchronizationRule(ComponentValue triggerer, String[] labels) {
-		this.idCounter = 0;
 		this.tokenVariables = new HashMap<>();
 		this.constraints = new HashMap<>();
 		// create trigger token variable
@@ -39,7 +37,7 @@ public class SynchronizationRule
 	 */
 	public TokenVariable addTokenVariable(ComponentValue value, String[] labels) {
 		// create token variable
-		TokenVariable v = new TokenVariable(this.getNextTokenVariableId(), value, labels);
+		TokenVariable v = new TokenVariable(value, labels);
 		this.tokenVariables.put(v.getId(), v);
 		return v;
 	}
@@ -157,13 +155,5 @@ public class SynchronizationRule
 	@Override
 	public String toString() {
 		return "[SynchronizationRule triggerer= " + this.triggerer + " constraints= " + this.constraints + "]";
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	private synchronized int getNextTokenVariableId() {
-		return idCounter++;
 	}
 }

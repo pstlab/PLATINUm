@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.framework.microkernel.resolver;
 
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.resolver.refinement.PlanRefinementResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.planning.PlanRefinementResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete.DiscreteResourceSchedulingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir.ReservoirResourceSchedulingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking.ObservationBehaviorCheckingResolver;

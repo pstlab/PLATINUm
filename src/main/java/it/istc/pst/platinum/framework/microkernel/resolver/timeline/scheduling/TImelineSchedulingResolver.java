@@ -126,9 +126,12 @@ public final class TImelineSchedulingResolver extends Resolver
 		
 		// list of flaws
 		List<Flaw> flaws = new ArrayList<>();
-		// consider only the maximum overlapping set
-		Collections.sort(overlapping);
-		flaws.add(overlapping.get(0));
+		// check overlapping sets found
+		if (!overlapping.isEmpty()) {
+			// consider only the maximum overlapping set
+			Collections.sort(overlapping);
+			flaws.add(overlapping.get(0));
+		}
 		// get peaks
 		return flaws;
 	}
