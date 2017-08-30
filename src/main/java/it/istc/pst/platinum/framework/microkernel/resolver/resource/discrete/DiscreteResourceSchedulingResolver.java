@@ -24,7 +24,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.Before
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
@@ -134,7 +134,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver implements Comp
 				// get other sample
 				RequirementResourceProfileSample other = list.get(jndex);
 				// check the resulting amount 
-				long amount = mcs.getTotalAmount() + other.getAmount();
+				double amount = mcs.getTotalAmount() + other.getAmount();
 				// an MCS is minimal so check the amount of resource required  (minimal condition)
 				if (amount > this.component.getMaxCapacity()) 
 				{
@@ -194,7 +194,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver implements Comp
 	 * @throws Exception - contains information concerning the unsolvable MCS
 	 */
 	private void computeMinimalCriticalSetSolutions(MinimalCriticalSet mcs) 
-			throws UnsolvableFlawFoundException
+			throws UnsolvableFlawException
 	{
 		// list of samples
 		List<RequirementResourceProfileSample> list = mcs.getSamples();
@@ -317,7 +317,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver implements Comp
 		// check MCS solutions
 		if (mcs.getSolutions().isEmpty()) {
 			// unsolvable MCS found
-			throw new UnsolvableFlawFoundException("Unsolvable MCS found on discrete resource " + this.component.getName() + "\n- mcs: " + mcs + "\n");
+			throw new UnsolvableFlawException("Unsolvable MCS found on discrete resource " + this.component.getName() + "\n- mcs: " + mcs + "\n");
 		}
 	}
 	
@@ -327,7 +327,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver implements Comp
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// cast flaw
 		CriticalSet cs = (CriticalSet) flaw;
@@ -372,7 +372,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver implements Comp
 		}
 		catch (Exception ex) {
 			// unsolvable MCS found
-			throw new UnsolvableFlawFoundException("Unsolvable MCS found on discrete resourc e" + this.component.getName() + ":\n" + flaw);
+			throw new UnsolvableFlawException("Unsolvable MCS found on discrete resourc e" + this.component.getName() + ":\n" + flaw);
 		}
 	}
 	

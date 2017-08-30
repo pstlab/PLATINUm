@@ -19,7 +19,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.PlanRefinementExceptio
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.PlanControllabilityType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
  * 
@@ -123,7 +123,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 						+ "- operator: " + node.getGenerator() + "\n"
 						+ "- message: " + ex.getMessage() + "\n");
 			}
-			catch (UnsolvableFlawFoundException | ConsistencyCheckException  ex) {
+			catch (UnsolvableFlawException | ConsistencyCheckException  ex) {
 				// not feasible partial plan
 				this.logger.warning("Not feasible partial plan found\n"
 						+ "- oeprator: " + node.getGenerator() + "\n"

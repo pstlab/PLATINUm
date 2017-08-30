@@ -214,7 +214,7 @@ public class ReservoirResource extends Resource
 				// get consumption temporal event
 				TimePoint event = consumption.getEvent();
 				// get amount of resource consumed (negative number)
-				long amount = -consumption.getAmount();
+				double amount = -consumption.getAmount();
 				
 				// check the current schedule of the time point
 				TimePointScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.TP_SCHEDULE);
@@ -237,7 +237,7 @@ public class ReservoirResource extends Resource
 				this.tdb.checkConsistency();
 				
 				// create profile sample
-				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(consumption, time, amount);
 				// add sample
 				orp.addSampel(sample);
 			}
@@ -249,7 +249,7 @@ public class ReservoirResource extends Resource
 				// get production temporal event
 				TimePoint event = production.getEvent();
 				// get amount of resource produced (positive number)
-				long amount = production.getAmount();
+				double amount = production.getAmount();
 				
 				// check the current schedule of the time point
 				TimePointScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.TP_SCHEDULE);
@@ -273,7 +273,7 @@ public class ReservoirResource extends Resource
 				
 				
 				// create profile sample
-				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(production, time, amount);
 				// add sample
 				orp.addSampel(sample);
 			}
@@ -314,7 +314,7 @@ public class ReservoirResource extends Resource
 				// get consumption temporal event
 				TimePoint event = consumption.getEvent();
 				// get amount of resource consumed (negative number)
-				long amount = -consumption.getAmount();
+				double amount = -consumption.getAmount();
 				
 				// check the current schedule of the time point
 				TimePointScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.TP_SCHEDULE);
@@ -337,7 +337,7 @@ public class ReservoirResource extends Resource
 				this.tdb.checkConsistency();
 				
 				// create profile sample
-				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(consumption, time, amount);
 				// add sample
 				prp.addSampel(sample);
 			}
@@ -349,7 +349,7 @@ public class ReservoirResource extends Resource
 				// get production temporal event
 				TimePoint event = production.getEvent();
 				// get amount of resource produced (positive number)
-				long amount = production.getAmount();
+				double amount = production.getAmount();
 				
 				// check the current schedule of the time point
 				TimePointScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.TP_SCHEDULE);
@@ -373,8 +373,8 @@ public class ReservoirResource extends Resource
 				
 				
 				// create profile sample
-				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(time, amount);
-				// add sample
+				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(production, time, amount);
+				// add sample 
 				prp.addSampel(sample);
 			}
 		}
@@ -390,7 +390,7 @@ public class ReservoirResource extends Resource
 				this.tdb.retract(constraint);
 			}
 		}
-		
+
 		// get computed profile
 		return prp;
 	}

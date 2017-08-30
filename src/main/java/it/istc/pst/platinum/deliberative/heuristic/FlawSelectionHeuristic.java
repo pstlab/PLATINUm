@@ -9,7 +9,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLog
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
@@ -49,11 +49,11 @@ public abstract class FlawSelectionHeuristic extends ApplicationFrameworkObject
 	 * flaw determines a branch in the resulting search space of the planner.
 	 * 
 	 * @return
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 * @throws NoFlawFoundException
 	 */
 	public abstract Set<Flaw> choose() 
-			throws UnsolvableFlawFoundException, NoFlawFoundException; 
+			throws UnsolvableFlawException, NoFlawFoundException; 
 	
 	
 	/**

@@ -20,7 +20,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.Gap;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.GapCompletion;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
@@ -901,7 +901,7 @@ public class StateVariableComponentTestCase
 			Assert.assertTrue(flaws.isEmpty());
 			System.out.println("No more flaws on resource " + this.psv + "\n");
 		}
-		catch (FlawSolutionApplicationException | ConsistencyCheckException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
+		catch (FlawSolutionApplicationException | ConsistencyCheckException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}

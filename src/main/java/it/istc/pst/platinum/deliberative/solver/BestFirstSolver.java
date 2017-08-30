@@ -15,7 +15,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundExcepti
 import it.istc.pst.platinum.framework.microkernel.lang.ex.PlanRefinementException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
@@ -101,7 +101,7 @@ public class BestFirstSolver extends Solver
 				}
 				
 			}
-			catch (PlanRefinementException | ConsistencyCheckException | UnsolvableFlawFoundException ex) {
+			catch (PlanRefinementException | ConsistencyCheckException | UnsolvableFlawException ex) {
 				// unsolvable flaw found
 				this.logger.error("Error during plan refinement:\n " + ex.getMessage());
 			}

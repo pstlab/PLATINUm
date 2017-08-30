@@ -15,7 +15,7 @@ import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.InvalidBehaviorException;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
@@ -69,7 +69,7 @@ public final class ObservationBehaviorCheckingResolver <T extends StateVariable>
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException {
+			throws UnsolvableFlawException {
 		// simply throw exception
 		throw new InvalidBehaviorException("Incomplete behavior description of component " + this.component.getName() + ":\n" + flaw);
 	}

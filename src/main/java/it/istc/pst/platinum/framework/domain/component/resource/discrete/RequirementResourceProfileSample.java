@@ -39,7 +39,7 @@ public class RequirementResourceProfileSample extends ResourceProfileSample
 	 * 
 	 * @return
 	 */
-	public long getAmount() {
+	public double getAmount() {
 		return this.event.getAmount();
 	}
 	

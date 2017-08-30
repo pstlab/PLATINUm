@@ -5,7 +5,7 @@ import java.util.List;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
  * 
@@ -17,10 +17,10 @@ public interface FlawManager
 	/**
 	 * 
 	 * @return
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 */
 	public List<Flaw> findFlaws() 
-			throws UnsolvableFlawFoundException;
+			throws UnsolvableFlawException;
 	
 	/**
 	 * 

@@ -26,7 +26,7 @@ import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleGapCompletionException;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
@@ -339,7 +339,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// get the gap
 		Gap gap = (Gap) flaw;
@@ -416,7 +416,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver
 		
 		// check if solvable
 		if (!flaw.isSolvable()) {
-			throw new UnsolvableFlawFoundException("Unsolvable gap found on component " + this.sv.getName() + ":\n" + flaw);
+			throw new UnsolvableFlawException("Unsolvable gap found on component " + this.sv.getName() + ":\n" + flaw);
 		}
 	}
 	

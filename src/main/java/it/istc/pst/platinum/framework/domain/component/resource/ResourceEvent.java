@@ -16,7 +16,7 @@ public abstract class ResourceEvent<T extends TemporalData> implements Comparabl
 	protected int id;
 	protected Decision activity;
 	protected ResourceEventType type;
-	protected int amount;
+	protected double amount;
 	protected T event;
 	
 	/**
@@ -25,7 +25,7 @@ public abstract class ResourceEvent<T extends TemporalData> implements Comparabl
 	 * @param activity
 	 * @param amount
 	 */
-	protected ResourceEvent(ResourceEventType type, Decision activity, int amount, T event) 
+	protected ResourceEvent(ResourceEventType type, Decision activity, double amount, T event) 
 	{
 		// set id
 		this.id = ID_COUNTER.getAndIncrement();
@@ -55,7 +55,7 @@ public abstract class ResourceEvent<T extends TemporalData> implements Comparabl
 	 * 
 	 * @return
 	 */
-	public int getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 	

@@ -14,7 +14,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.ConstraintPropagationE
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraint;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
@@ -73,7 +73,7 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 */
 	@Override
 	public List<Flaw> findFlaws() 
-			throws UnsolvableFlawFoundException
+			throws UnsolvableFlawException
 	{
 		// list of flaws on the related component
 		List<Flaw> flaws = new ArrayList<>();
@@ -230,8 +230,8 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	/**
 	 * 
 	 * @param flaw
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 */
 	protected abstract void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException;
+			throws UnsolvableFlawException;
 }

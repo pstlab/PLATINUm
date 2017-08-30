@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.istc.pst.epsl.microkernel.internal.engine.exception.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
@@ -32,7 +31,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.Param
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
 import it.istc.pst.platinum.framework.parameter.ex.ParameterCreationException;
 import it.istc.pst.platinum.framework.parameter.ex.ParameterNotFoundException;
@@ -957,11 +956,10 @@ public abstract class DomainComponent extends ApplicationFrameworkObject //<V ex
 	/**
 	 * 
 	 * @return
-	 * @throws UnsolvableFlawFoundException
 	 * @throws UnsolvableFlawException
 	 */
 	public List<Flaw> detectFlaws() 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
@@ -979,10 +977,10 @@ public abstract class DomainComponent extends ApplicationFrameworkObject //<V ex
 	 * 
 	 * @param type
 	 * @return
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 */
 	public List<Flaw> detectFlaws(FlawType type) 
-			throws UnsolvableFlawFoundException
+			throws UnsolvableFlawException
 	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();

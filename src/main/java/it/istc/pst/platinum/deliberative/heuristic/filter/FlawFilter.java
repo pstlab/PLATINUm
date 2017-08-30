@@ -9,7 +9,7 @@ import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
@@ -57,10 +57,10 @@ public abstract class FlawFilter extends ApplicationFrameworkObject
 	 * detected by directly querying the plan data-base
 	 * 
 	 * @return
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 */
 	public abstract Set<Flaw> filter() 
-			throws UnsolvableFlawFoundException;
+			throws UnsolvableFlawException;
 	
 	/**
 	 * 

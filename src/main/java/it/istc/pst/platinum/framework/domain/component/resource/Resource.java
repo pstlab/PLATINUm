@@ -48,7 +48,7 @@ public abstract class Resource extends DomainComponent
 	 * 
 	 * @return
 	 */
-	public long getInitialCapacity() {
+	public long getInitialLevel() {
 		return this.initial;
 	}
 	

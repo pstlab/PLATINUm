@@ -20,7 +20,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Plan;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.Problem;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
 
@@ -179,19 +179,19 @@ public interface PlanDataBase
 	/**
 	 * 
 	 * @return
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 */
 	public List<Flaw> detectFlaws() 
-			throws UnsolvableFlawFoundException;
+			throws UnsolvableFlawException;
 	
 	/**
 	 * 
 	 * @param types
 	 * @return
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 */
 	public List<Flaw> detectFlaws(FlawType type) 
-			throws UnsolvableFlawFoundException;
+			throws UnsolvableFlawException;
 	
 	/**
 	 * 

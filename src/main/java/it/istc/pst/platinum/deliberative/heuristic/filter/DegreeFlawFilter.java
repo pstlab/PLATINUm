@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class DegreeFlawFilter extends FlawFilter implements Comparator<Flaw>
 	 */
 	@Override
 	public Set<Flaw> filter() 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// set of filtered list
 		Set<Flaw> flaws = new HashSet<>();

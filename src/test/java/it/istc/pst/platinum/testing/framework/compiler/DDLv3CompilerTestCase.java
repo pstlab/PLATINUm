@@ -84,7 +84,7 @@ public class DDLv3CompilerTestCase
 			ReservoirResource rr = (ReservoirResource) component;
 			Assert.assertTrue(rr.getMinCapacity() == 5);
 			Assert.assertTrue(rr.getMaxCapacity() == 35);
-			Assert.assertTrue(rr.getInitialCapacity() == 35);
+			Assert.assertTrue(rr.getInitialLevel() == 35);
 			Assert.assertTrue(rr.getValues().size() == 2);
 			
 			// check production value
@@ -119,8 +119,8 @@ public class DDLv3CompilerTestCase
 			// check parameters
 			Assert.assertTrue(resource.getMinCapacity() == 0);
 			Assert.assertTrue(resource.getMaxCapacity() == 10);
-			Assert.assertTrue(resource.getInitialCapacity() == 10);
-			Assert.assertTrue(resource.getInitialCapacity() == 10);
+			Assert.assertTrue(resource.getInitialLevel() == 10);
+			Assert.assertTrue(resource.getInitialLevel() == 10);
 			Assert.assertTrue(resource.getValues().size() == 1);
 			
 			// check requirement value

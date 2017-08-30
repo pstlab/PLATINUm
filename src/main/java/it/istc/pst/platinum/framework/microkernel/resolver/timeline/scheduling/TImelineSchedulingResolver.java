@@ -20,7 +20,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.Before
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
@@ -172,7 +172,7 @@ public final class TImelineSchedulingResolver extends Resolver
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// cast flaw
 		OverlappingSet set = (OverlappingSet) flaw;
@@ -285,7 +285,7 @@ public final class TImelineSchedulingResolver extends Resolver
 				// check solutions
 				if (mcs.getSolutions().isEmpty()) {
 					// unsolvable MCS found
-					throw new UnsolvableFlawFoundException("Unsolvable MCS found on discrete resource " + this.sv.getName() + "\n- mcs: " + mcs + "\n"); 
+					throw new UnsolvableFlawException("Unsolvable MCS found on discrete resource " + this.sv.getName() + "\n- mcs: " + mcs + "\n"); 
 				}
 				
 				// add MCS to list

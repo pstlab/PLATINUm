@@ -13,7 +13,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConst
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
  * 
@@ -78,7 +78,7 @@ public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic i
 	 */
 	@Override
 	public Set<Flaw> choose() 
-			throws UnsolvableFlawFoundException, NoFlawFoundException 
+			throws UnsolvableFlawException, NoFlawFoundException 
 	{
 		// set of detected flaws
 		Set<Flaw> flaws = new HashSet<>();

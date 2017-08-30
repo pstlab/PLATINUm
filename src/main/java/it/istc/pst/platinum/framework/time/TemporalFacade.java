@@ -261,7 +261,6 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 			// delete start time
 			this.tn.removeTimePoint(s);
 			throw new InconsistentIntervaEndTimeException(ex.getMessage());
-		
 		}
 		
 		// interval's duration
@@ -279,8 +278,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 			// propagate distance constraint
 			this.tn.addDistanceConstraint(d);
 		} 
-		catch (InconsistentDistanceConstraintException ex) 
-		{
+		catch (InconsistentDistanceConstraintException ex) {
 			// remove start and end time points
 			this.tn.removeTimePoint(s);
 			this.tn.removeTimePoint(e);

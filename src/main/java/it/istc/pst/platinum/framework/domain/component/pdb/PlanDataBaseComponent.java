@@ -53,7 +53,7 @@ import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
@@ -1338,7 +1338,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public List<Flaw> detectFlaws() 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
@@ -1363,7 +1363,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 */
 	@Override
 	public List<Flaw> detectFlaws(FlawType type) 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
@@ -1701,7 +1701,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				// check unsolvable flaws
 				this.detectFlaws();
 			} 
-			catch (UnsolvableFlawFoundException ex) {
+			catch (UnsolvableFlawException ex) {
 				// unsolvable flaws found
 				throw new ProblemInitializationException("Inconsistent Problem description\n- Unsolvable flaws have been found\n" + ex.getMessage());
 			}

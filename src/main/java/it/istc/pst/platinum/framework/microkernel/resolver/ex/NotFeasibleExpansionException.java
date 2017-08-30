@@ -5,7 +5,7 @@ package it.istc.pst.platinum.framework.microkernel.resolver.ex;
  * @author anacleto
  *
  */
-public class NotFeasibleExpansionException extends UnsolvableFlawFoundException {
+public class NotFeasibleExpansionException extends UnsolvableFlawException {
 	private static final long serialVersionUID = 1L;
 
 	/**

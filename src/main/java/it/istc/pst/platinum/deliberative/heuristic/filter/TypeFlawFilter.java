@@ -8,7 +8,7 @@ import java.util.Set;
 import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class TypeFlawFilter extends FlawFilter
 	 */
 	@Override
 	public Set<Flaw> filter() 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// filtered set
 		Set<Flaw> set = new HashSet<>();

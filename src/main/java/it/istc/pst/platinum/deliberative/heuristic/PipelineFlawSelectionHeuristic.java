@@ -8,7 +8,7 @@ import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.FlawFilterPipelineModule;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
  * 
@@ -37,7 +37,7 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 */
 	@Override
 	public Set<Flaw> choose() 
-			throws UnsolvableFlawFoundException, NoFlawFoundException 
+			throws UnsolvableFlawException, NoFlawFoundException 
 	{
 		// set of detected flaws
 		Set<Flaw> flaws = null;

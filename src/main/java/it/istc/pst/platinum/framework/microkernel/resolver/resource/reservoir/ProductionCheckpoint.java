@@ -1,4 +1,6 @@
-package it.istc.pst.platinum.framework.domain.component.resource.reservoir;
+package it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir;
+
+import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ProductionResourceEvent;
 
 /**
  * 
@@ -7,28 +9,28 @@ package it.istc.pst.platinum.framework.domain.component.resource.reservoir;
  */
 public class ProductionCheckpoint implements Comparable<ProductionCheckpoint> 
 {
-	private ConsumptionResourceEvent lastConsumption; 	// last consumption before production
 	private ProductionResourceEvent production;			// production event
-	private double potential;								// potential "energy" available before the production event
+	private double potential;							// potential "energy" available before the production event
+	private long schedule;								// sampling time of the checkpoint
 	
 	/**
 	 * 
 	 * @param event
 	 * @param potential
-	 * @param last
+	 * @param schedule
 	 */
-	protected ProductionCheckpoint(ProductionResourceEvent event, double potential, ConsumptionResourceEvent last) {
+	protected ProductionCheckpoint(ProductionResourceEvent event, double potential, long schedule) {
 		this.production = event;
 		this.potential = potential;
-		this.lastConsumption = last;
+		this.schedule = schedule;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public ConsumptionResourceEvent getLastConsumption() {
-		return lastConsumption;
+	public long getSchedule() {
+		return schedule;
 	}
 	
 	/**
@@ -52,8 +54,8 @@ public class ProductionCheckpoint implements Comparable<ProductionCheckpoint>
 	 */
 	@Override
 	public int compareTo(ProductionCheckpoint o) {
-		// compare potential energies
-		return this.potential >= o.potential ? -1 : 1;
+		// compare checkpoint schedules
+		return this.schedule <= o.schedule ? -1 : 1;
 	}
 
 	/**

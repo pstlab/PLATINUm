@@ -22,7 +22,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.BindParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete.PrecedenceConstraint;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
@@ -201,7 +201,7 @@ public class DiscreteResourceComponentTestCase
 				System.out.println("peak -> " + flaw + "\n");
 			}
 		}
-		catch (ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
+		catch (ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}
@@ -253,7 +253,7 @@ public class DiscreteResourceComponentTestCase
 			System.out.println("Resource peak has been solved after " + counter + " steps");
 			
 		}
-		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
+		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}
@@ -334,7 +334,7 @@ public class DiscreteResourceComponentTestCase
 			// print number of steps needed to solve the peak
 			System.out.println("Resource peak has been solved after " + counter + " steps");
 		}
-		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
+		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}
@@ -406,7 +406,7 @@ public class DiscreteResourceComponentTestCase
 			// print number of steps needed to solve the peak
 			System.out.println("Resource peak has been solved after " + counter + " steps");
 		}
-		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
+		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}
@@ -516,7 +516,7 @@ public class DiscreteResourceComponentTestCase
 			Assert.assertTrue(flaws.isEmpty());
 			System.out.println("No more flaws on resource " + this.resource + "\n");
 		}
-		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawFoundException ex) {
+		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
 			Assert.assertTrue(false);
 		}
@@ -567,12 +567,12 @@ public class DiscreteResourceComponentTestCase
 	/**
 	 * 
 	 * @return
-	 * @throws UnsolvableFlawFoundException
+	 * @throws UnsolvableFlawException
 	 * @throws FlawSolutionApplicationException
 	 * @throws ConsistencyCheckException
 	 */
 	private int solve() 
-			throws UnsolvableFlawFoundException, FlawSolutionApplicationException, ConsistencyCheckException
+			throws UnsolvableFlawException, FlawSolutionApplicationException, ConsistencyCheckException
 	{
 		// check peak
 		List<Flaw> flaws = this.resource.detectFlaws();

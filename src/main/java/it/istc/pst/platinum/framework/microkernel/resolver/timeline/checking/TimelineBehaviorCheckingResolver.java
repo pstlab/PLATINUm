@@ -17,7 +17,7 @@ import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.InvalidBehaviorException;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
@@ -133,7 +133,7 @@ public class TimelineBehaviorCheckingResolver extends Resolver implements Compar
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException {
+			throws UnsolvableFlawException {
 		// simply throw exception
 		throw new InvalidBehaviorException("Inconsistent temporal behavior of component " + this.sv.getName() + ":\n" + flaw);
 	}

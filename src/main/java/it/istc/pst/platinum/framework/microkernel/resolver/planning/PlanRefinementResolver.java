@@ -40,7 +40,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleExpansionException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleUnificationException;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawFoundException;
+import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
@@ -105,7 +105,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawFoundException 
+			throws UnsolvableFlawException 
 	{
 		// get goal
 		Goal goal = (Goal) flaw;
@@ -124,7 +124,7 @@ public class PlanRefinementResolver <T extends PlanDataBaseComponent> extends Re
 		// check if solvable
 		if (!flaw.isSolvable()) {
 			// simply throw exception
-			throw new UnsolvableFlawFoundException("Unsolvable flaw found on component " + this.component.getName() + ":"
+			throw new UnsolvableFlawException("Unsolvable flaw found on component " + this.component.getName() + ":"
 					+ "\n" + flaw + "\n");
 		}
 	}
