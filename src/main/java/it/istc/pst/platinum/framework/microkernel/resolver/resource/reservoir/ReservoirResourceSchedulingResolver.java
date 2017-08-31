@@ -19,6 +19,7 @@ import it.istc.pst.platinum.framework.domain.component.resource.reservoir.Reserv
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceProductionValue;
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceUsageProfileSample;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
@@ -100,14 +101,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		// try to solve the peak through scheduling if possible
 		if (!peak.getProductionCheckpoints().isEmpty()) {
 			// analyze possible schedules
-			this.computePeakSchedulingSolutions(peak);
+			this.doComputePeakSchedulingSolutions(peak);
 		}
 		
 		/*
 		 * Now I'm assuming that a production always generate the amount of resource needed to reach the maximum capacity,
 		 * independently from the duration of the production activity
 		 */
-		this.computePeakPlanningSolutions(peak);
+		this.doComputePeakPlanningSolutions(peak);
 		
 		// check solutions found
 		if (peak.getSolutions().isEmpty()) {
@@ -122,12 +123,12 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 	 * 
 	 * @param peak
 	 */
-	private void computePeakPlanningSolutions(Peak peak)
+	private void doComputePeakPlanningSolutions(Peak peak)
 	{
 		// get the consumptions that generate the peak
 		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
 		// compute the amount of resource to produce in order to set the maximum capacity
-		double amount = 0;
+		int amount = 0;
 		for (int index = 0; index < consumptions.size() - 1; index++)
 		{
 			// get consumption activity
@@ -149,10 +150,12 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 			beforeProduction.add(checkpoint.getProduction().getDecision());
 		}
 		
-		// get last consumption before peak (assuming minimal peak)
-		ConsumptionResourceEvent lastConsumption = consumptions.get(consumptions.size() - 2);
-		// schedule production after last consumption
-		beforeProduction.add(lastConsumption.getDecision());
+		// get consumptions before peak (assuming minimal peak)
+		for (int index = consumptions.size() - 2; index >= 0; index--) {
+			ConsumptionResourceEvent before = consumptions.get(index);
+			// schedule production after last consumption
+			beforeProduction.add(before.getDecision());
+		}
 		
 		// get consumption generating the peak
 		ConsumptionResourceEvent cause = consumptions.get(consumptions.size() - 1);
@@ -244,7 +247,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 	 * 
 	 * @param peak
 	 */
-	private void computePeakSchedulingSolutions(Peak peak)
+	private void doComputePeakSchedulingSolutions(Peak peak)
 	{
 		// get the consumptions that generate the peak
 		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
@@ -266,7 +269,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 				// get production decision
 				Decision production = checkpoint.getProduction().getDecision();
 				// get potential "energy" of the checkpoint
-				double potential = checkpoint.getPotential();
+				double potential = this.resource.getMaxCapacity() - checkpoint.getResourceConsumed();
 				// check the potential energy of the checkpoint is enough for the consumption
 				if (potential >= amount)
 				{
@@ -287,13 +290,9 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 						
 						// try to propagate constraint
 						this.tdb.propagate(c1);
+						
 						// add entry to constraints: "consumption < production"
 						constraints.put(consumption, production);
-						
-						// compute the preserved space of the involved time points
-						double preserved = this.computePreservedSpaceHeuristicValue(
-								c1.getReference().getEndTime(), 
-								c1.getTarget().getStartTime());
 						
 						// check if constraint c2 is necessary
 						if (index > 0) {
@@ -310,7 +309,16 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 							this.tdb.propagate(c2);
 							// add entry to constraints: "previous < consumption"
 							constraints.put(previous, consumption);
-							
+						}
+						
+						// check the feasibility of the solution
+						this.tdb.checkConsistency();
+						// compute the preserved space of the involved time points
+						double preserved = this.computePreservedSpaceHeuristicValue(
+								c1.getReference().getEndTime(), 
+								c1.getTarget().getStartTime());
+						// update preserved space with constraint c2 if necessary
+						if (index > 0) {
 							// compute the resulting (average) preserved space heuristics
 							preserved = (preserved + this.computePreservedSpaceHeuristicValue(
 									c2.getReference().getEndTime(), 
@@ -330,7 +338,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 						// add solution to the peak
 						peak.addSolution(scheduling);
 					}
-					catch (TemporalConstraintPropagationException ex) {
+					catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
 						this.logger.debug("Not valid schedule found to solve peak:\n- peak: " + peak + "\n"
 								+ "- schedule: " + consumption + " < " + production + "\n");
 					}
@@ -338,6 +346,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 						// retract constraints
 						this.tdb.retract(c1);
 						this.tdb.retract(c2);
+						// clear constraints
+						constraints.clear();
 					}
 				}
 			}
@@ -413,7 +423,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		// add parameter (pending) relation to bind the production parameter
 		BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, goal, goal);
 		// set the desired amount of resource to produce
-		bind.setValue(Double.toString(solution.getAmount()));
+		bind.setValue(Integer.toString(solution.getAmount()));
+		bind.setReferenceParameterLabel("?amount");
 		// add created relations
 		solution.addCreatedRelation(bind);
 		
@@ -560,21 +571,22 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		Set<ProductionCheckpoint> checkpoints = new HashSet<>();
 		// set of consumptions that may generate a peak
 		List<ConsumptionResourceEvent> consumptions = new ArrayList<>();
-		
+		// get profile samples
+		List<ResourceUsageProfileSample> samples = profile.getSamples();
 		// analyze the resource profile until a peak is found
-		for (int index = 0; index < profile.getSamples().size() && peaks.isEmpty(); index++)
+		for (int index = 0; index < samples.size() && peaks.isEmpty(); index++)
 		{
 			// current sample
-			ResourceUsageProfileSample sample = profile.getSamples().get(index);
+			ResourceUsageProfileSample sample = samples.get(index);
 			// check production event
 			if (sample.getAmount() > 0)
 			{
 				// get production event
 				ProductionResourceEvent production = (ProductionResourceEvent) sample.getEvent();
 				// get potential resource usage
-				long potential = this.resource.getMaxCapacity() - currentLevel;
+				double consumed = this.resource.getMaxCapacity() - currentLevel;
 				// create a production checkpoint
-				ProductionCheckpoint point = new ProductionCheckpoint(production, potential, sample.getSchedule());
+				ProductionCheckpoint point = new ProductionCheckpoint(production, consumed, sample.getSchedule());
 				// add to the set
 				checkpoints.add(point);
 				// clear the list of peak consumptions

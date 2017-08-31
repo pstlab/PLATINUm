@@ -72,6 +72,6 @@ public class ConsumptionScheduling extends FlawSolution implements ResourceOverC
 	 */
 	@Override
 	public String toString() {
-		return "[ConsumptionScheduling preserved: " + this.preserved + "\n- constraints: " + this.constraints + "\n]";
+		return "[ConsumptionScheduling preserved: " + this.preserved + " constraints: " + this.constraints + "]\n";
 	}
 }

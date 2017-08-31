@@ -67,8 +67,8 @@ public class ResourceUsageProfileSample extends ResourceProfileSample
 		ResourceUsageProfileSample o = (ResourceUsageProfileSample) other;
 		// compare the time instant and the required amount (absolute values)
 		return this.schedule < o.schedule ? -1 :
-			this.schedule == o.schedule && this.amount < 0 && o.amount > 0 ? -1 :
-				this.schedule == o.schedule && this.amount > 0 && o.amount < 0 ? 1 :
-					this.schedule == o.schedule && (this.amount < 0 && o.amount < 0 || this.amount > 0 && o.amount > 0) && Math.abs(this.amount) > Math.abs(o.amount) ? -1 : 1;
+			this.schedule == o.schedule && this.amount < 0 && o.amount > 0 ? 1 :			// if the schedule is the same put productions before consumptions
+				this.schedule == o.schedule && this.amount > 0 && o.amount < 0 ? -1 :		// if the schedule is the same put productions before consumptions
+			1;
 	}
 }
