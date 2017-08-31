@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import it.istc.pst.platinum.deliberative.heuristic.filter.ex.HierarchyCycleException;
+import it.istc.pst.platinum.deliberative.solver.Operator;
 import it.istc.pst.platinum.framework.domain.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;

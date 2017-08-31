@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.domain.component.pdb;
+package it.istc.pst.platinum.deliberative.solver;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

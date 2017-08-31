@@ -5,9 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.istc.pst.platinum.framework.domain.component.pdb.Operator;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Agenda;
 
 /**
  * 

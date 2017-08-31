@@ -7,7 +7,6 @@ import java.util.List;
 import it.istc.pst.platinum.framework.domain.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.pdb.Operator;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
@@ -17,7 +16,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationExc
 import it.istc.pst.platinum.framework.microkernel.lang.ex.PlanRefinementException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Agenda;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 

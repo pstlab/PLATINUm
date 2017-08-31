@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.lang.plan;
+package it.istc.pst.platinum.deliberative.solver;
 
 import java.util.ArrayList;
 import java.util.HashMap;

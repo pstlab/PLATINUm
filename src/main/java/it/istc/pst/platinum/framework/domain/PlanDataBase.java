@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.istc.pst.platinum.deliberative.solver.Operator;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
-import it.istc.pst.platinum.framework.domain.component.pdb.Operator;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
