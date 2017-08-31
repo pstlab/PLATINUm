@@ -52,7 +52,7 @@ import it.istc.pst.platinum.framework.utils.view.component.gantt.GanttComponentV
  * @author anacleto
  *
  */
-public abstract class DomainComponent extends ApplicationFrameworkObject //<V extends ComponentValue<?>> extends ApplicationFrameworkObject
+public abstract class DomainComponent extends ApplicationFrameworkObject
 {
 	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
 	protected TemporalFacade tdb;

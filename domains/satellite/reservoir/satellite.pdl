@@ -1,0 +1,12 @@
+PROBLEM SATELLITE_Reservoir_Problem (DOMAIN RESERVOIR_SATELLITE) 
+{
+	f0 <fact> PointingMode.pm.Earth() AT [0, 0] [1, +INF] [1, +INF];
+	
+	win0 <fact> Window.channel.NotVisible() AT [0, 0] [10, 10] [10, 10];
+	win1 <fact> Window.channel.Visible() AT [10, 10] [120, 120] [110, 110];
+	win2 <fact> Window.channel.NotVisible() AT [120, 120] [150, 150] [30, 30];
+	win3 <fact> Window.channel.Visible() AT [150, 150] [200, 200] [50, 50];
+
+	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
+	g1 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
+}

@@ -31,7 +31,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 	@SearchStrategyModule(strategy= SearchStrategyType.ASTAR)
 	private SearchStrategy fringe;
 	
-	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.SEARCH_AND_BUILD)
+	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.HFS)
 	private FlawSelectionHeuristic heuristic;
 	
 	/**

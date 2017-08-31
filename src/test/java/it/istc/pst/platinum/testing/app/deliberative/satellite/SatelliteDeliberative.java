@@ -18,17 +18,9 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  */
 public class SatelliteDeliberative extends Planner
 {
-	// no resource
-	private static final String DDL = "domains/satellite/satellite.ddl";
-	private static final String PDL = "domains/satellite/satellite.pdl";
-	
-	// discrete resource
-//	private static final String DDL = "domains/satellite/discrete/satellite.ddl";
-//	private static final String PDL = "domains/satellite/discrete/satellite.pdl";
-	
-	// reservoir resource
-//	private static final String DDL = "domains/satellite/reservoir/satellite.ddl";
-//	private static final String PDL = "domains/satellite/reservoir/satellite.pdl";
+	private static final String DOMAIN_TYPE = "reservoir"; 	// simple, discrete, reservoir
+	private static final String DDL = "domains/satellite/" + DOMAIN_TYPE + "/satellite.ddl";
+	private static final String PDL = "domains/satellite/" + DOMAIN_TYPE + "/satellite.pdl";
 	
 	@SolverModule(solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE)
 	protected Solver solver;
@@ -36,7 +28,7 @@ public class SatelliteDeliberative extends Planner
 	/**
 	 * 
 	 */
-	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.INFO)
+	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
 	protected SatelliteDeliberative() {
 		super();
 	}
