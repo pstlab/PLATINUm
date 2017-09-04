@@ -1,7 +1,7 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.planning;
+package it.istc.pst.platinum.framework.microkernel.resolver.plan;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
@@ -46,7 +46,7 @@ public class GoalUnification extends GoalJustification
 	 * 
 	 * @param translated
 	 */
-	public void setTranslatedRelations(List<Relation> translated) {
+	public void setTranslatedRelations(Collection<Relation> translated) {
 		this.toTranslate = new HashSet<>(translated);
 	}
 	

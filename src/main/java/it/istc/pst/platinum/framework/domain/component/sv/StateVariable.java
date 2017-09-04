@@ -25,7 +25,6 @@ public abstract class StateVariable extends DomainComponent
 	// SV's transition function
 	protected Map<StateVariableValue, Map<StateVariableValue, Transition>> transitions;
 	
-	
 	/**
 	 * 
 	 * @param name

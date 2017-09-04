@@ -7,8 +7,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledgeFactory;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
@@ -162,6 +164,41 @@ public abstract class ApplicationFrameworkFactory
 			// set plan data-based reference
 			field.setAccessible(true);
 			field.set(obj, pdb);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param obj
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T extends ApplicationFrameworkObject> void injectDomainKnowledge(T obj) 
+			throws IllegalArgumentException, IllegalAccessException 
+	{ 
+		// get class
+		Class<T> clazz = (Class<T>) obj.getClass();
+		// find annotated field
+		List<Field> fields = this.findFieldsAnnotatedBy(clazz, DomainKnowledgePlaceholder.class);
+		// check field
+		for (Field field : fields) 
+		{
+			// get annotation
+			DomainKnowledgePlaceholder placeholder = field.getAnnotation(DomainKnowledgePlaceholder.class);
+			// get reference
+			ApplicationFrameworkObject element = this.container.lookup(placeholder.lookup());
+			// check if already instantiated
+			if (element == null) {
+				// create factory
+				DomainKnowledgeFactory knowledgeFactory = new DomainKnowledgeFactory();
+				// create domain knowledge instance
+				element = knowledgeFactory.create(placeholder.lookup(), placeholder.type());
+			}
+			
+			// set plan data-based reference
+			field.setAccessible(true);
+			field.set(obj, element);
 		}
 	}
 	

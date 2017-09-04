@@ -2,6 +2,7 @@ package it.istc.pst.platinum.testing.framework.domain.component.resource;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -328,7 +329,7 @@ public class ReservoirResourceComponentTestCase
 			
 			// check pending decisions and relations
 			List<Decision> pending = this.resource.getPendingDecisions();
-			List<Relation> relations = this.resource.getPendingRelations();
+			Set<Relation> relations = this.resource.getPendingRelations();
 			Assert.assertTrue(pending.size() == 1);
 			System.out.println("One production goal found after solution propagation");
 			Assert.assertTrue(planning.getDecisionsBeforeProduction().size() == 2);
@@ -479,7 +480,7 @@ public class ReservoirResourceComponentTestCase
 		
 		// check pending decisions and relations
 		List<Decision> pending = this.resource.getPendingDecisions();
-		List<Relation> relations = this.resource.getPendingRelations();
+		Set<Relation> relations = this.resource.getPendingRelations();
 		Assert.assertTrue(pending.size() == 1);
 		System.out.println("One production goal found after solution propagation");
 		Assert.assertTrue(planning.getDecisionsBeforeProduction().size() == 2);
@@ -848,7 +849,7 @@ public class ReservoirResourceComponentTestCase
 				
 				// check pending decisions and relations
 				List<Decision> pending = this.resource.getPendingDecisions();
-				List<Relation> relations = this.resource.getPendingRelations();
+				Set<Relation> relations = this.resource.getPendingRelations();
 				Assert.assertTrue(pending.size() == 1);
 				System.out.println("One production goal found after solution propagation");
 				System.out.println("Current agenda:\n- pending decisions: " + pending + "\n- pending relations: " + relations + "\n");

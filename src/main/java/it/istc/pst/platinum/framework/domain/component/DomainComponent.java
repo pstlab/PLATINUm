@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
+import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
@@ -54,14 +55,14 @@ import it.istc.pst.platinum.framework.utils.view.component.gantt.GanttComponentV
  */
 public abstract class DomainComponent extends ApplicationFrameworkObject
 {
-	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
-	protected TemporalFacade tdb;
-	
-	@ParameterFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PARAMETER_FACADE)
-	protected ParameterFacade pdb;
-	
 	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
 	protected FrameworkLogger logger;
+	
+	@TemporalFacadePlaceholder
+	protected TemporalFacade tdb;
+	
+	@ParameterFacadePlaceholder
+	protected ParameterFacade pdb;
 	
 	@ResolverListPlaceholder
 	protected List<Resolver> resolvers;
@@ -71,9 +72,14 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	protected String name;
 	protected DomainComponentType type;
 	
+	// synchronization rules from the planning domain
+	protected static Map<DomainComponent, Map<ComponentValue, List<SynchronizationRule>>> rules;
+	// current (global) relations
+	protected static Set<Relation> globalRelations;
+	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
-	protected Set<Relation> relations;
+	protected Set<Relation> localRelations;
 	
 	// display data concerning this component
 	private ComponentView view;
@@ -96,7 +102,15 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		}
 		
 		// initialize relations of the (local) plan
-		this.relations = new HashSet<>();
+		this.localRelations = new HashSet<>();
+		// initialize global relations
+		if (globalRelations == null) {
+			globalRelations = new HashSet<>();
+		}
+		// initialize rules 
+		if (rules == null) {
+			rules = new HashMap<>();
+		}
 		// set up the list of resolvers
 		this.resolvers = new ArrayList<>();
 		this.flawType2resolver = new HashMap<>();
@@ -172,7 +186,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		
 		// clear data structures
 		this.decisions.clear();
-		this.relations.clear();
+		globalRelations.clear();
 	}
 	
 	/**
@@ -212,6 +226,59 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 */
 	public abstract void checkPseudoControllability() 
 			throws PseudoControllabilityCheckException;
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public final List<SynchronizationRule> getSynchronizationRules() {
+		// get all rules
+		List<SynchronizationRule> list = new ArrayList<>();
+		for (DomainComponent comp : rules.keySet()) {
+			// check if a synchronization has been defined on the component
+			if (rules.containsKey(comp)) {
+				for (ComponentValue v : rules.get(comp).keySet()) {
+					// add rules
+					list.addAll(rules.get(comp).get(v));
+				}
+			}
+		}
+		
+		// get rules
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	public final List<SynchronizationRule> getSynchronizationRules(ComponentValue value) 
+	{
+		// list of rules
+		List<SynchronizationRule> list = new ArrayList<>();
+		// check domain specification
+		if (rules.containsKey(value.getComponent()) && rules.get(value.getComponent()).containsKey(value)) {
+			list.addAll(rules.get(value.getComponent()).get(value));
+		}
+		// get rules
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	public final List<SynchronizationRule> getSynchronizationRules(DomainComponent component) 
+	{
+		// list of rules
+		List<SynchronizationRule> list = new ArrayList<>();
+		// check domain specification
+		if (rules.containsKey(component)) {
+			for (ComponentValue value : rules.get(component).keySet()) {
+				list.addAll(rules.get(component).get(value));
+			}
+		}
+		// get rules
+		return list;
+	}
 	
 	/**
 	 * 
@@ -268,8 +335,20 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @param rel
 	 */
 	public void restore(Relation rel) {
-		// simply add back the relation to the component
-		this.relations.add(rel);
+		// check if local relation
+		if (rel.getReference().getComponent().equals(rel.getTarget().getComponent()) && !rel.getReference().getComponent().equals(this)) {
+			// get reference component
+			DomainComponent refComp = rel.getReference().getComponent();
+			refComp.restore(rel);
+		}
+		else if (rel.getReference().getComponent().equals(rel.getTarget().getComponent()) && rel.getReference().getComponent().equals(this)) {
+			// add to local 
+			this.localRelations.add(rel);
+		}
+		else {
+			// restore as global relation
+			globalRelations.add(rel);
+		}
 	}
 	
 	/**
@@ -345,7 +424,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * The method adds a pending decision to the current plan. The status of the decision 
 	 * changes from PENDING to ACTIVE.
 	 * 
-	 * The method returns the list of relations propagate during decision activation.
+	 * The method returns the set of local and global relations propagate during decision activation.
 	 * 
 	 * @param dec
 	 * @return
@@ -464,267 +543,272 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Relation> T create(RelationType type, Decision reference, Decision target) {
+	public <T extends Relation> T create(RelationType type, Decision reference, Decision target) 
+	{
 		// relation 
 		T rel = null;
-		try 
+		// check reference component
+		if (!reference.getComponent().equals(this)) 
 		{
-			// get class
-			Class<T> clazz = (Class<T>) Class.forName(type.getRelationClassName());
-			// get constructor
-			Constructor<T> c = clazz.getDeclaredConstructor(Decision.class, Decision.class);
-			c.setAccessible(true);
-			// create instance
-			rel = c.newInstance(reference, target);
-			// add relation
-			this.relations.add(rel);
+			// call reference component
+			DomainComponent comp = reference.getComponent();
+			rel = comp.create(type, reference, target);
 		}
-		catch (Exception ex) {
-			throw new RuntimeException(ex.getMessage());
+		else  
+		{
+			try 
+			{
+				// get class
+				Class<T> clazz = (Class<T>) Class.forName(type.getRelationClassName());
+				// get constructor
+				Constructor<T> c = clazz.getDeclaredConstructor(Decision.class, Decision.class);
+				c.setAccessible(true);
+				// create instance
+				rel = c.newInstance(reference, target);
+				
+				// check if local relation
+				if (reference.getComponent().equals(target.getComponent())) {
+					// add to local relations
+					this.localRelations.add(rel);
+				} else {
+					// add to global relations
+					globalRelations.add(rel);
+				}
+			}
+			catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}
 		}
+		
 		// get created relation
 		return rel;
 	}
 	
 	/**
-	 * 
-	 * @param rel
-	 * @return
-	 */
-	public boolean isSilent(Relation rel)
-	{
-		// get reference
-		Decision reference = rel.getReference();
-		// get target
-		Decision target = rel.getTarget();
-		// check condition
-		return (this.isSilent(reference) || this.isSilent(target)) && rel.getConstraint() == null;
-	}
-	
-	/**
-	 * 
-	 * @param rel
-	 * @return
-	 */
-	public boolean isPending(Relation rel) 
-	{
-		// get reference
-		Decision reference = rel.getReference();
-		// get target
-		Decision target = rel.getTarget();
-		// check condition
-		return (this.isPending(reference) || this.isPending(target)) && 
-				!(this.isSilent(reference) || this.isSilent(target) && 
-						rel.getConstraint() == null);
-	}
-	
-	/**
-	 * 
-	 * @param rel
-	 * @return
-	 */
-	public boolean isToActivate(Relation rel)
-	{
-		// get reference
-		Decision reference = rel.getReference();
-		// get target
-		Decision target = rel.getTarget();
-		// check condition
-		return this.isActive(reference) && this.isActive(target) && rel.getConstraint() == null;
-	}
-	
-	/**
+	 * Get the set of local and global active relations concerning a particular decision
 	 * 
 	 * @param dec
 	 * @return
 	 */
-	public List<Relation> getActiveRelations(Decision dec)
+	public Set<Relation> getActiveRelations(Decision dec)
 	{
 		// list of active relations
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations)
-		{
-			// get reference
-			Decision reference = rel.getReference();
-			// get target 
-			Decision target = rel.getTarget();
-			// check decisions and relation status
-			if ((dec.equals(reference) || dec.equals(target)) && this.isActive(rel)) 
-			{
+		Set<Relation> set = new HashSet<>();
+		// check local relations
+		for (Relation rel : this.localRelations) {
+			// check related decisions and relation status
+			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isActive()) {
 				// add relation
-				list.add(rel);
+				set.add(rel);
+			}
+		}
+		
+		// check global relations
+		for (Relation rel : globalRelations) {
+			// check related decision and relation status
+			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isActive()) {
+				// add relation
+				set.add(rel);
 			}
 		}
 		
 		// get the list
-		return list;
+		return set;
 	}
 	
 	/**
+	 * Get the set of local and global active relations concerning a particular decision
 	 * 
 	 * @param reference
 	 * @param target
 	 * @return
 	 */
-	public List<Relation> getActiveRelations(Decision reference, Decision target)
+	public Set<Relation> getActiveRelations(Decision reference, Decision target)
 	{
 		// list of active relations
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations)
-		{
+		Set<Relation> set = new HashSet<>();
+		// check local relations
+		for (Relation rel : this.localRelations) {
 			// check decisions and relation status
-			if (reference.equals(rel.getReference()) && target.equals(rel.getTarget()) && this.isActive(rel)) 
-			{
+			if (rel.getReference().equals(reference) && rel.getTarget().equals(target) && rel.isActive()) {
 				// add relation
-				list.add(rel);
+				set.add(rel);
+			}
+		}
+		
+		// check global relations
+		for (Relation rel : globalRelations) {
+			// check decisions and relation status
+			if (rel.getReference().equals(reference) && rel.getTarget().equals(target) && rel.isActive()) {
+				// add relation
+				set.add(rel);
 			}
 		}
 		
 		// get the list
-		return list;
+		return set;
 	}
 	
 	/**
-	 * 
+	 * Get the set of local and global relations
+	 *  
 	 * @param dec
 	 * @return
 	 */
-	public List<Relation> getActiveRelations()
+	public Set<Relation> getActiveRelations()
 	{
 		// list of active relations
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations) {
+		Set<Relation> set = new HashSet<>();
+		// check local relations
+		for (Relation rel : this.localRelations) {
 			// check if active relation
-			if (this.isActive(rel)) {
+			if (rel.isActive()) {
 				// add relation
-				list.add(rel);
+				set.add(rel);
+			}
+		}
+		
+		// check global relations
+		for (Relation rel : globalRelations) {
+			// check if active
+			if (rel.isActive()) {
+				// add relation
+				set.add(rel);
 			}
 		}
 		
 		// get the list
-		return list;
+		return set;
 	}
 	
 	/**
-	 * Get the list of relations that concern a particular decision and that 
-	 * can be activated.
+	 * Get the set of not activated relations that concern a particular decision 
 	 * 
 	 * @param dec
 	 * @return
 	 */
-	public List<Relation> getToActivateRelations(Decision dec) 
+	public Set<Relation> getToActivateRelations(Decision dec) 
 	{
 		// list of relations
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations) {
+		Set<Relation> set = new HashSet<>();
+		// check pending local relations
+		for (Relation rel : this.localRelations) {
 			// check decisions and relation status
-			if (this.isToActivate(rel) && (dec.equals(rel.getReference()) || dec.equals(rel.getTarget()))) {
-				// add pending relation
-				list.add(rel);
+			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isToActivate()) {
+				// add pending local relation
+				set.add(rel);
+			}
+		}
+		
+		// check pending global relations
+		for (Relation rel : globalRelations) {
+			// check reference and target decisions
+			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isToActivate()) {
+				// add pending global relation
+				set.add(rel);
 			}
 		}
 		
 		// get list 
-		return list;
+		return set;
 	}
 	
 	/**
+	 * Get the set of local and global pending relations
 	 * 
 	 * @return
 	 */
-	public List<Relation> getPendingRelations()
+	public Set<Relation> getPendingRelations()
 	{
-		// list of relations
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations) {
-			// check decisions and relation status
-			if (this.isPending(rel)) {
+		// set of relations
+		Set<Relation> set = new HashSet<>();
+		// check local relations
+		for (Relation rel : this.localRelations) {
+			// check status
+			if (rel.isPending()) {
 				// add pending relation
-				list.add(rel);
+				set.add(rel);
 			}
 		}
-		// get list 
-		return list;
+		
+		// check global relations
+		for (Relation rel : globalRelations) {
+			// check status
+			if (rel.isPending()) {
+				// add pending relation
+				set.add(rel);
+			}
+		}
+		
+		
+		// get the set
+		return set;
 	}
 	
 	/**
-	 * 
+	 * Get the set of local and global pending relations concerning the decision 
 	 * @param dec
 	 * @return
 	 */
-	public List<Relation> getPendingRelations(Decision dec) 
+	public Set<Relation> getPendingRelations(Decision dec) 
 	{
 		// list of relations
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations) 
+		Set<Relation> set = new HashSet<>();
+		// check local relations
+		for (Relation rel : this.localRelations) 
 		{
-			// get reference
-			Decision reference = rel.getReference();
-			// get target
-			Decision target = rel.getTarget();
 			// check decisions and relation status
-			if ((dec.equals(reference) || dec.equals(target)) && 
-					(this.isPending(reference) || this.isPending(target)) && 
-					!(this.isSilent(reference) || this.isSilent(target)) && 
-					rel.getConstraint() == null)
-			{
+			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isPending()) {
 				// add pending relation
-				list.add(rel);
+				set.add(rel);
 			}
 		}
 		
 		// get list 
-		return list;
+		return set;
 	}
 	
 	/**
+	 * Get the set of all local and global relations concerning a decision
 	 * 
 	 * @param dec
 	 * @return
 	 */
-	public List<Relation> getRelations(Decision dec)
+	public Set<Relation> getRelations(Decision dec)
 	{
-		// list of relations
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations) 
-		{
-			// get reference
-			Decision reference = rel.getReference();
-			// get target
-			Decision target = rel.getTarget();
+		// list local of relations
+		Set<Relation> set = new HashSet<>();
+		for (Relation rel : this.localRelations) {
 			// check decisions and relation status
-			if (dec.equals(reference) || dec.equals(target)) {
-				// add pending relation
-				list.add(rel);
+			if (dec.equals(rel.getReference()) || dec.equals(rel.getTarget())) {
+				// add relation
+				set.add(rel);
 			}
 		}
 		
+		// get also global relation
+		for (Relation rel : globalRelations) {
+			if (dec.equals(rel.getReference()) || dec.equals(rel.getTarget())) {
+				// add relation
+				set.add(rel);
+			}
+ 		}
+		
 		// get list 
-		return list;		
+		return set;		
 	}
 	
 	/**
+	 * Get the set of all local and global relations
 	 * 
 	 * @return
 	 */
-	public List<Relation> getRelations() 
+	public Set<Relation> getRelations() 
 	{
-		return new ArrayList<>(this.relations);
-	}
-	
-	/**
-	 * 
-	 * @param rel
-	 * @return
-	 */
-	public boolean isActive(Relation rel) 
-	{
-		// get reference
-		Decision reference = rel.getReference();
-		// get target
-		Decision target = rel.getTarget();
-		// check condition
-		return this.isActive(reference) && this.isActive(target) && rel.getConstraint() != null;
+		Set<Relation> set = new HashSet<>();
+		set.addAll(this.localRelations);
+		set.addAll(globalRelations);
+		return set;
 	}
 	
 	/**
@@ -760,16 +844,22 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	 */
 	public void free(Relation relation) 
 	{
-		// check relation
-		if (this.relations.contains(relation)) {
-			// deactivate relation if necessary
-			if (this.isActive(relation)) {
-				// deactivate relation
-				this.delete(relation);
-			}
-			
-			// completely remove data structure
-			this.relations.remove(relation);
+		// check if relation is active
+		if (relation.isActive()) {
+			// deactivate relation
+			this.delete(relation);
+		}
+		
+		// check if local relation
+		if (this.localRelations.contains(relation)) {
+			// remove relation from component 
+			this.localRelations.remove(relation);
+		}
+		
+		// check if global relation
+		if (globalRelations.contains(relation)) {
+			// remove from global relations
+			globalRelations.remove(relation);
 		}
 	}
 	
@@ -783,18 +873,33 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	}
 	
 	/**
+	 * Get the list of silent local and global relations
+	 * 
 	 * Only for debugging 
 	 * 
 	 * @return
 	 */
-	public List<Relation> getSilentRelations() {
-		List<Relation> list = new ArrayList<>();
-		for (Relation rel : this.relations) {
-			if (this.isSilent(rel)) {
-				list.add(rel);
+	public Set<Relation> getSilentRelations() {
+		// relations
+		Set<Relation> set = new HashSet<>();
+		// check local relations
+		for (Relation rel : this.localRelations) {
+			// check status
+			if (rel.isSilent()) {
+				set.add(rel);
 			}
 		}
-		return list;
+		
+		// check global relations
+		for (Relation rel : globalRelations) {
+			// check status
+			if (rel.isSilent()) {
+				set.add(rel);
+			}
+		}
+		
+		// get the set
+		return set;
 	}
 	
 	/**
@@ -814,14 +919,8 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	{
 		try
 		{
-			// check if active decisions
-			if (!this.relations.contains(rel) || !this.isActive(rel.getReference()) || !this.isActive(rel.getTarget())) {
-				// not active decisions
-				throw new RelationPropagationException("Trying to propagate an unkown relation or a local relation between not active decisions\n"
-						+ "- reference= " + rel.getReference() + "\n"
-						+ "- target= " + rel.getTarget() + "\n");
-			}
-			else if (!this.isActive(rel)) 
+			// check if active
+			if (!rel.isActive()) 
 			{
 				// check relation type
 				switch (rel.getCategory()) 
@@ -896,17 +995,15 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 	}
 	
 	/**
+	 * Deactivate a relation by removing the related constraint if any. The relation remains into the component data 
+	 * structure as a "pending" relation
 	 * 
 	 * @param rel
 	 */
 	public void delete(Relation rel) 
 	{
-		// check if relation exists
-		if (!this.relations.contains(rel)) {
-			// relation not found
-			this.logger.warning("Local relation not found\n- relation= " + rel + "\n");
-		}
-		else if (this.isActive(rel))
+		// check if releation must be deactivated
+		if (rel.isActive())
 		{
 			// check relation type
 			switch (rel.getCategory()) 
@@ -933,10 +1030,6 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 				}
 				break;
 			}
-		}
-		else {
-			// deleting a not propagated constraint
-			this.logger.warning("Trying to delete a not propagated local relation\n- relation= " + rel + "\n");
 		}
 	}
 	

@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import it.istc.pst.platinum.framework.domain.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.PlanRefinementException;
@@ -29,8 +31,11 @@ public abstract class Solver extends ApplicationFrameworkObject
 	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER)
 	protected FrameworkLogger logger;
 	
-	@PlanDataBasePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE)
+	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
+	
+	@DomainKnowledgePlaceholder
+	protected DomainKnowledge knowledge;
 	
 	protected long time;
 	protected long stepCounter;

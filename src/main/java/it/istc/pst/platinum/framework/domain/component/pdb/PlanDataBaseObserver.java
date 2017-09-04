@@ -1,6 +1,4 @@
-package it.istc.pst.platinum.framework.domain;
-
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseEvent;
+package it.istc.pst.platinum.framework.domain.component.pdb;
 
 /**
  * 

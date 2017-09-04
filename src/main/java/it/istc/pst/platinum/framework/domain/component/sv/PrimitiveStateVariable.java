@@ -16,6 +16,8 @@ public final class PrimitiveStateVariable extends StateVariable
 	 * @param name
 	 */
 	@DomainComponentConfiguration(resolvers = {
+			// planning resolver
+			ResolverType.PLAN_REFINEMENT,
 			// scheduling resolver
 			ResolverType.TIMELINE_SCHEDULING_RESOLVER,
 			// time-line gap resolver

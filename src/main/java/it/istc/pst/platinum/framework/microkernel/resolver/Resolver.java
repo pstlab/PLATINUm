@@ -32,10 +32,10 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
 	protected FrameworkLogger logger;
 	
-	@TemporalFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_TEMPORAL_FACADE)
+	@TemporalFacadePlaceholder
 	protected TemporalFacade tdb;
 	
-	@ParameterFacadePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PARAMETER_FACADE)
+	@ParameterFacadePlaceholder
 	protected ParameterFacade pdb;
 	
 	protected String label;

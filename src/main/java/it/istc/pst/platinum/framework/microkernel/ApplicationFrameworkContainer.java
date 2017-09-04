@@ -10,6 +10,7 @@ import java.util.Map;
  */
 public final class ApplicationFrameworkContainer 
 {
+	public static final String FRAMEWORK_SINGLETON_DOMAIN_KNOWLEDGE = "/platinum/framework/domain/knowledge";
 	public static final String FRAMEWORK_SINGLETON_PLANDATABASE = "/platinum/framework/pdb";
 	public static final String FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER = "/platinum/framework/pdb/logger";
 	public static final String FRAMEWORK_SINGLETON_TEMPORAL_FACADE = "/platinum/framework/temporal/facade";
@@ -85,13 +86,8 @@ public final class ApplicationFrameworkContainer
 	 * @param key
 	 * @return
 	 */
-	public ApplicationFrameworkObject lookup(String key) 
-	{
-		// check registry
-		if (!this.registry.containsKey(key)) {
-			throw new RuntimeException("Application object with key \"" + key +"\" not found in registry");
-		}
-		// get application object
+	public ApplicationFrameworkObject lookup(String key) {
+		// get application object - null if no object is registered with the key
 		return this.registry.get(key);
 	}
 	

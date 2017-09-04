@@ -1,10 +1,8 @@
 package it.istc.pst.platinum.deliberative.strategy;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -14,7 +12,6 @@ import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
-import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 
 /**
  * 
@@ -24,8 +21,6 @@ import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConst
 public class AStarSearchStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
 {
 	private Queue<SearchSpaceNode> fringe;
-	private Map<ComponentValue, Set<ComponentValue>> tree;
-	private List<DomainComponent>[] hierarchy;
 	
 	/**
 	 * 
@@ -34,20 +29,6 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 		super(SearchStrategyType.ASTAR.getLabel());
 		// initialize the fringe
 		this.fringe = new PriorityQueue<SearchSpaceNode>(11, this);
-		this.tree = new HashMap<>();
-	}
-	
-	/**
-	 * 
-	 */
-	@PostConstruct
-	public void init() {
-		// get the decomposition graph
-		this.tree = this.pdb.getDecompositionTree();
-		// get dependency graph
-		Map<DomainComponent, Set<DomainComponent>> dg = this.pdb.getDependencyGraph();
-		// compute the resulting hierarchy 
-		this.computeHierarchy(dg);
 	}
 
 	/**
@@ -119,7 +100,7 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 		for (ComponentValue goal : node.getAgenda().getGoals())
 		{
 			// check reachable sub-tree from the decomposition graph
-			Set<ComponentValue> subtree = this.computeReachableSubTree(this.tree, goal);
+			Set<ComponentValue> subtree = this.computeReachableSubTree(this.knowledge.getDecompositionTree(), goal);
 			// organize values by components
 			Map<DomainComponent, Set<ComponentValue>> comp2value = new HashMap<>();
 			// check hierarchy of the reachable values
@@ -138,7 +119,7 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 			// update distance
 			for (DomainComponent component : comp2value.keySet()) {
 				// get hierarchical value of the component
-				double level = this.getHierarchicalLevelValue(component);
+				double level = this.knowledge.getHierarchicalLevelValue(component);
 				// get values
 				distance += Math.abs(level * comp2value.get(component).size());
 			}
@@ -186,88 +167,5 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 				this.doComputeReachableSubTree(graph, child, set);
 			}
 		}
-	}
-	
-	/**
-	 * Given an acyclic dependency graph, the method builds the 
-	 * hierarchy by means of a topological sort algorithm on the 
-	 * dependency graph
-	 * 
-	 * @param graph
-	 */
-	@SuppressWarnings("unchecked")
-	private void computeHierarchy(Map<DomainComponent, Set<DomainComponent>> graph) 
-	{
-		// compute hierarchy by means of topological sort algorithm
-		List<DomainComponent> S = new ArrayList<>();	// root components
-		for (DomainComponent c : graph.keySet()) 
-		{
-			// check if root
-			if (graph.get(c).isEmpty()) {
-				S.add(c);
-			}
- 		}
-
-		// initialize hierarchy
-		this.hierarchy = (List<DomainComponent>[]) new ArrayList[this.pdb.getComponents().size()];
-		// initialize hierarchy
-		for (int index = 0; index < this.hierarchy.length; index++) {
-			this.hierarchy[index] = new ArrayList<>();
-		}
-		
-		// top hierarchy level
-		int hlevel = 0;
-		// start building hierarchy
-		while (!S.isEmpty()) 
-		{
-			// get all root components
-			for (DomainComponent root : S) 
-			{
-				// add component
-				this.hierarchy[hlevel].add(root);
-				// remove current root from the graph
-				graph.remove(root);
-				// remove "edges" to 
-				for (DomainComponent other : graph.keySet())
-				{
-					if (graph.get(other).contains(root)) {
-						graph.get(other).remove(root);
-					}
-				}
-			}
-			
-			// clear the set of root node
-			S.clear();
-			// update hierarchy degree
-			hlevel++;
-			
-			// look for new roots
-			for (DomainComponent c : graph.keySet()) 
-			{
-				// check if root
-				if (graph.get(c).isEmpty() && !S.contains(c)) {
-					// add root
-					S.add(c);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @param component
-	 * @return
-	 */
-	private int getHierarchicalLevelValue(DomainComponent component)
-	{
-		boolean found = false;
-		int level = 0;
-		for (level = 0; level < this.hierarchy.length && !found; level++) {
-			// get components
-			found = this.hierarchy[level].contains(component);
-		}
-		
-		// get level value (inverted with respect to the position into the array
-		return (this.hierarchy.length - level) + 1;
 	}
 }

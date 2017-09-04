@@ -5,13 +5,13 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import it.istc.pst.platinum.framework.domain.PlanDataBase;
-import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ParameterPlaceHolder;
 import it.istc.pst.platinum.framework.domain.component.pdb.ParameterSynchronizationConstraint;
+import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationConstraint;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;

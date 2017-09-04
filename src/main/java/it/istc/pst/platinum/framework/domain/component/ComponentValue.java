@@ -10,7 +10,7 @@ import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
  * @author anacleto
  *
  */
-public abstract class ComponentValue //<T extends DomainComponent<?>>
+public abstract class ComponentValue 
 {
 	private static int ID_COUNTER = 0;
 	protected int id;
@@ -20,6 +20,7 @@ public abstract class ComponentValue //<T extends DomainComponent<?>>
 	private boolean controllable;
 	protected DomainComponent component;
 	protected List<ParameterPlaceHolder> placeholders;
+	protected boolean complex;								// false if the value has implications on other values through synchronization rules
 	
 	/**
 	 * 
@@ -37,6 +38,7 @@ public abstract class ComponentValue //<T extends DomainComponent<?>>
 		this.label = value;
 		this.component = component;
 		this.placeholders = new ArrayList<>();
+		this.complex = false;
 	}
 	
 	/**
@@ -126,6 +128,21 @@ public abstract class ComponentValue //<T extends DomainComponent<?>>
 	 */
 	public ParameterPlaceHolder getParameterPlaceHolderByIndex(int index) {
 		return this.placeholders.get(index);
+	}
+	
+	/**
+	 * 
+	 */
+	public void setComplex() {
+		this.complex = true;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isComplex() {
+		return this.complex;
 	}
 	
 	/**

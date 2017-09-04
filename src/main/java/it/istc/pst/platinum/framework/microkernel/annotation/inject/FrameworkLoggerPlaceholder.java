@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 public @interface FrameworkLoggerPlaceholder {
 
 	// lookup a singleton instance if necessary
-	String lookup() default "";
+	String lookup();
 }

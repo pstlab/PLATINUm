@@ -1,15 +1,12 @@
-package it.istc.pst.platinum.framework.domain;
+package it.istc.pst.platinum.framework.domain.component.pdb;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import it.istc.pst.platinum.deliberative.solver.Operator;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
-import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationException;
@@ -61,12 +58,6 @@ public interface PlanDataBase
 	 * @return
 	 */
 	public SolutionPlan getSolutionPlan();
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public Agenda getAgenda();
 	
 	/**
 	 * 
@@ -138,46 +129,6 @@ public interface PlanDataBase
 	
 	/**
 	 * 
-	 * @param value
-	 * @param labels
-	 * @return
-	 * @throws DomainComponentNotFoundException
-	 */
-	public SynchronizationRule createSynchronizationRule(ComponentValue value, String[] labels) 
-			throws DomainComponentNotFoundException;
-	
-	/**
-	 * 
-	 * @param rule
-	 * @throws SynchronizationCycleException
-	 */
-	public void addSynchronizationRule(SynchronizationRule rule) 
-			throws SynchronizationCycleException;
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public List<SynchronizationRule> getSynchronizationRules();
-	
-	/**
-	 * The method returns the list of synchronization rules with the specified 
-	 * value has the head of the rule
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public List<SynchronizationRule> getSynchronizationRules(ComponentValue value);
-
-	/**
-	 * 
-	 * @param component
-	 * @return
-	 */
-	public List<SynchronizationRule> getSynchronizationRules(DomainComponent component);
-	
-	/**
-	 * 
 	 * @return
 	 * @throws UnsolvableFlawException
 	 */
@@ -186,7 +137,7 @@ public interface PlanDataBase
 	
 	/**
 	 * 
-	 * @param types
+	 * @param type
 	 * @return
 	 * @throws UnsolvableFlawException
 	 */
@@ -214,21 +165,39 @@ public interface PlanDataBase
 	public void display();
 	
 	/**
-	 * 
-	 * @return
-	 */
-	public Map<DomainComponent, Set<DomainComponent>> getDependencyGraph();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree();
-	
-	/**
 	 * Compute the makespan of the plan
 	 * 
 	 * @return
 	 */
 	public double computeMakespan();
+	
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public abstract SynchronizationRule createSynchronizationRule(ComponentValue value, String[] labels) 
+			throws DomainComponentNotFoundException;
+	
+	/*
+	 * 
+	 */
+	public abstract void addSynchronizationRule(SynchronizationRule rule) 
+			throws SynchronizationCycleException;
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract List<SynchronizationRule> getSynchronizationRules();
+	
+	/**
+	 * 
+	 */
+	public abstract List<SynchronizationRule> getSynchronizationRules(ComponentValue value);
+	
+	/**
+	 * 
+	 */
+	public abstract List<SynchronizationRule> getSynchronizationRules(DomainComponent component);
 }

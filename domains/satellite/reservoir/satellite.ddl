@@ -1,8 +1,8 @@
 DOMAIN RESERVOIR_SATELLITE
 {
-	TEMPORAL_MODULE temporal_module = [0, 200], 100;
+	TEMPORAL_MODULE temporal_module = [0, 100], 100;
 	
-	COMP_TYPE ConsumableResource MemoryType (0, 10) 
+	COMP_TYPE ConsumableResource BatteryType (0, 10) 
 	
 	COMP_TYPE SingletonStateVariable PointingModeType (Earth(), Slewing(), Science(), _Comm(), Maintenance())
 	{
@@ -19,12 +19,12 @@ DOMAIN RESERVOIR_SATELLITE
 			Science();
 		}
 		
-		VALUE Science() [11, 18]
+		VALUE Science() [8, 11]
 		MEETS {
 			Slewing();
 		}
 		
-		VALUE _Comm() [15, 23]
+		VALUE _Comm() [10, 18]
 		MEETS {
 			Earth();
 			Maintenance();
@@ -36,7 +36,7 @@ DOMAIN RESERVOIR_SATELLITE
 		} 
 	}
 	
-	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (Visible(), NotVisible())
+	COMP_TYPE SingletonStateVariable VisibilityWindowType (Visible(), NotVisible())
 	{
 		VALUE Visible() [1, +INF]
 		MEETS {
@@ -50,35 +50,43 @@ DOMAIN RESERVOIR_SATELLITE
 	}
 	
 	COMPONENT PointingMode {FLEXIBLE pm(primitive)} : PointingModeType;
-	COMPONENT Window {FLEXIBLE channel(uncontrollable)} : GroundStationVisibilityType;
-	COMPONENT Memory {FLEXIBLE profile(primitive)} : MemoryType;
+	COMPONENT GroundStationWindow {FLEXIBLE channel(uncontrollable)} : VisibilityWindowType;
+	COMPONENT SunWindow {FLEXIBLE sun(uncontrollable)} : VisibilityWindowType; 
+	COMPONENT SatelliteBattery {FLEXIBLE profile(primitive)} : BatteryType;
 		
 	SYNCHRONIZE PointingMode.pm
 	{
 		VALUE Science()
 		{
-			cd0 <!> Memory.profile.CONSUMPTION(?amount);
+			cd0 <!> SatelliteBattery.profile.CONSUMPTION(?amount);
+			cd1 <!> PointingMode.pm._Comm();
+			
+			BEFORE [0, +INF] cd1;
 			
 			EQUALS cd0;
 			
-			?amount = 6;
+			?amount = 4;
 		}
 		
 		VALUE _Comm()
 		{
-			cd0 <?> Window.channel.Visible();
+			cd0 <?> GroundStationWindow.channel.Visible();
+			cd1 <!> SatelliteBattery.profile.CONSUMPTION(?amount);
 			
 			DURING [0, +INF] [0, +INF] cd0;
+			EQUALS cd1;
+			
+			?amount = 4;
 		}
 	}
 	
-	SYNCHRONIZE Memory.profile
+	SYNCHRONIZE SatelliteBattery.profile
 	{
 		VALUE PRODUCTION(?amount)
 		{
-			cd0 <!> PointingMode.pm._Comm();
+			cd0 <?> SunWindow.sun.Visible(); 
 			
-			EQUALS cd0;
+			DURING [0, +INF] [0, +INF] cd0;
 		}
 	}
 }

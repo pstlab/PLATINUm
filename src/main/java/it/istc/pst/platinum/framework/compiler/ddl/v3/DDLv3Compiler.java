@@ -43,11 +43,11 @@ import it.istc.pst.ddl.v3.parser.ddl3Lexer;
 import it.istc.pst.ddl.v3.parser.ddl3Parser;
 import it.istc.pst.platinum.framework.compiler.DomainCompiler;
 import it.istc.pst.platinum.framework.compiler.DomainCompilerType;
-import it.istc.pst.platinum.framework.domain.PlanDataBase;
-import it.istc.pst.platinum.framework.domain.PlanDataBaseFactory;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
+import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseFactory;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
@@ -194,6 +194,7 @@ public class DDLv3Compiler extends DomainCompiler
 		this.origin = this.ddl_domain.getTemporalModule().getRange().getMin();
 		this.horizon = this.ddl_domain.getTemporalModule().getRange().getMax();
 		String name = this.ddl_domain.getName();
+		
 		// create plan data-base
 		PlanDataBase pdb = this.factory.create(name, this.origin, this.horizon);
 		
@@ -689,7 +690,8 @@ public class DDLv3Compiler extends DomainCompiler
 	private void addSynchronizationRules(PlanDataBase pdb) 
 			throws SynchronizationCycleException 
 	{
-		try {
+		try 
+		{
 			// add synchronization on components
 			for (DDLTimelineSynchronization ddlComponentSynch : this.ddl_domain.getTimelineSynchronizations()) 
 			{
@@ -1958,7 +1960,6 @@ public class DDLv3Compiler extends DomainCompiler
 		// add synchronization rule
 		pdb.addSynchronizationRule(rule);
 	}
-	
 	
 	/**
 	 * 

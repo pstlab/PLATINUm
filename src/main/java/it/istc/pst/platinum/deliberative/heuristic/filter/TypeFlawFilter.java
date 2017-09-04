@@ -37,7 +37,8 @@ public class TypeFlawFilter extends FlawFilter
 				FlawType.RESOURCE_PLANNING,
 				FlawType.RESOURCE_OVERFLOW,
 				FlawType.TIMELINE_OVERFLOW,
-				FlawType.TIMELINE_BEHAVIOR_PLANNING
+				FlawType.TIMELINE_BEHAVIOR_PLANNING,
+				FlawType.TIMELINE_BEHAVIOR_CHECKING
 		};
 	}
 	

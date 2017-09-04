@@ -39,6 +39,8 @@ public class ReservoirResource extends Resource
 	 * @param name
 	 */
 	@DomainComponentConfiguration(resolvers = {
+			// planning resolver
+			ResolverType.PLAN_REFINEMENT,
 			// reservoir resource scheduler
 			ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER
 	})

@@ -43,6 +43,8 @@ public class FlawFilterFactory extends ApplicationFrameworkFactory {
 			this.injectFrameworkLogger(filter);
 			// inject plan data-base if needed
 			this.injectPlanDataBase(filter);
+			// inject domain knowledge
+			this.injectDomainKnowledge(filter);
 			// complete initialization if needed
 			this.doCompleteApplicationObjectInitialization(filter);
 			// add to registry

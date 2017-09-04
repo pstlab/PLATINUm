@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.planning;
+package it.istc.pst.platinum.framework.microkernel.resolver.plan;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;

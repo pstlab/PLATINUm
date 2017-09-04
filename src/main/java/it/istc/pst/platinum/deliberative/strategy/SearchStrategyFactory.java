@@ -43,6 +43,8 @@ public class SearchStrategyFactory extends ApplicationFrameworkFactory {
 			this.injectFrameworkLogger(strategy);
 			// inject plan data-base
 			this.injectPlanDataBase(strategy);
+			// inject domain knowledge
+			this.injectDomainKnowledge(strategy);
 			// complete initialization if needed
 			this.doCompleteApplicationObjectInitialization(strategy);
 			// add to registry

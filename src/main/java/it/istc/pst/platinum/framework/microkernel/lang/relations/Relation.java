@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import it.istc.pst.platinum.framework.domain.component.Constraint;
 import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 
 /**
@@ -112,6 +113,64 @@ public abstract class Relation
 	 */
 	public void clear() { 
 		this.constraint = null;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isActive() {
+		// get reference
+		DomainComponent referenceComponent = this.reference.getComponent();
+		// get target
+		DomainComponent targetComponent = this.target.getComponent();
+		// check condition
+		return referenceComponent.isActive(this.reference) && targetComponent.isActive(this.target) && this.constraint != null;
+	}
+	
+	/**
+	 * 
+	 * @param rel
+	 * @return
+	 */
+	public boolean isToActivate()
+	{
+		// get reference component
+		DomainComponent referenceComponent = this.reference.getComponent();
+		// get target component
+		DomainComponent targetComponent = this.target.getComponent();
+		// check condition
+		return referenceComponent.isActive(this.reference) && targetComponent.isActive(this.target) && this.constraint == null;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isPending() 
+	{
+		// get reference component
+		DomainComponent refComp = this.reference.getComponent();
+		// get target component
+		DomainComponent tarComp = this.target.getComponent();
+		// check condition
+		return (refComp.isPending(this.reference) || tarComp.isPending(this.target)) && 
+				!(refComp.isSilent(this.reference) || tarComp.isSilent(this.target) && 
+						this.constraint == null);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isSilent()
+	{
+		// get reference component
+		DomainComponent refComp = this.reference.getComponent();
+		// get target component
+		DomainComponent tarComp = this.target.getComponent();
+		// check condition
+		return (refComp.isSilent(this.reference) || tarComp.isSilent(this.target)) && constraint == null;
 	}
 	
 	/**

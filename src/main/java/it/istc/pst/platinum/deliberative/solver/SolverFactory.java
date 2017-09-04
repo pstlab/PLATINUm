@@ -92,6 +92,8 @@ public class SolverFactory extends ApplicationFrameworkFactory
 				field.set(solver, heuristic);
 			}
 			
+			// inject domain knowledge
+			this.injectDomainKnowledge(solver);
 			// complete initialization if needed
 			this.doCompleteApplicationObjectInitialization(solver);
 			// add to registry

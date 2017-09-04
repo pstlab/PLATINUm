@@ -419,6 +419,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		});
 		// add created decision to flaw solution
 		solution.addCreatedDecision(goal);
+		// set as mandatory expansion goal
+		goal.setMandatoryExpansion();
 		
 		// add parameter (pending) relation to bind the production parameter
 		BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, goal, goal);

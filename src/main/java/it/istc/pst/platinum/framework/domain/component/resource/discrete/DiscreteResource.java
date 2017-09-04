@@ -39,6 +39,8 @@ public class DiscreteResource extends Resource
 	 * @param name
 	 */
 	@DomainComponentConfiguration(resolvers = {
+			// planning resolver
+			ResolverType.PLAN_REFINEMENT,
 			// discrete resource scheduler
 			ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER
 	})

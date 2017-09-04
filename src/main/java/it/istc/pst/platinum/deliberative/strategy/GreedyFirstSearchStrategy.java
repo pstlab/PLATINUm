@@ -12,15 +12,15 @@ import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
  * @author anacleto
  *
  */
-public class DepthFirstCostFirstSearchStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
+public class GreedyFirstSearchStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
 {
 	private Queue<SearchSpaceNode> fringe;
 	
 	/**
 	 * 
 	 */
-	protected DepthFirstCostFirstSearchStrategy() {
-		super(SearchStrategyType.DFCF.getLabel());
+	protected GreedyFirstSearchStrategy() {
+		super(SearchStrategyType.GREEDY.getLabel());
 		// java7 compliant constructor
 		this.fringe = new PriorityQueue<SearchSpaceNode>(11, this);
 	}

@@ -1,11 +1,10 @@
-package it.istc.pst.platinum.framework.domain;
+package it.istc.pst.platinum.framework.domain.component.pdb;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseComponent;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkFactory;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;

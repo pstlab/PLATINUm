@@ -71,6 +71,8 @@ public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory
 				field.set(heuristic, list);
 			}
 			
+			// inject domain knowledge
+			this.injectDomainKnowledge(heuristic);
 			// complete initialization if needed
 			this.doCompleteApplicationObjectInitialization(heuristic);
 			// add to registry

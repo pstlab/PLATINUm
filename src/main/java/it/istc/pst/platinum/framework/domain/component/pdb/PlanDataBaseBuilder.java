@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.domain;
+package it.istc.pst.platinum.framework.domain.component.pdb;
 
 import it.istc.pst.platinum.framework.compiler.DomainCompilerFactory;
 import it.istc.pst.platinum.framework.compiler.DomainCompilerType;

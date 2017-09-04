@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.testing.framework.domain.component.sv;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -589,8 +590,7 @@ public class StateVariableComponentTestCase
 			// solve the flaw
 			this.psv.commit(flaws.get(0).getSolutions().get(0));
 			// check pending decisions
-			Assert.assertFalse(this.psv.getPendingDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getPendingDecisions().size() == 2);
+			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions");
 			System.out.println(this.psv.getPendingDecisions());
 			
@@ -612,7 +612,7 @@ public class StateVariableComponentTestCase
 			Assert.assertTrue(this.psv.getActiveDecisions().size() == 4);
 
 			// check if all pending relations have been propagated
-			List<Relation> prel = this.psv.getPendingRelations();
+			Set<Relation> prel = this.psv.getPendingRelations();
 			Assert.assertTrue(prel.isEmpty());
 			
 			// check flaws
@@ -689,15 +689,14 @@ public class StateVariableComponentTestCase
 			
 			// check component
 			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
+			Assert.assertTrue(this.psv.getActiveDecisions().size() == 4);
 			System.out.println("Active Decisions:\n" + this.psv.getActiveDecisions());
-			Assert.assertFalse(this.psv.getPendingDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getPendingDecisions().size() == 2);
+			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions:\n" + this.psv.getPendingDecisions());
-			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
+			Assert.assertFalse(this.psv.getActiveRelations().isEmpty());
+			Assert.assertTrue(this.psv.getActiveRelations().size() == 3);
 			System.out.println("Active relations:\n" + this.psv.getActiveRelations());
-			Assert.assertFalse(this.psv.getPendingRelations().isEmpty());
-			Assert.assertTrue(this.psv.getPendingRelations().size() == 3);
+			Assert.assertTrue(this.psv.getPendingRelations().isEmpty());
 			System.out.println("Pending relations:\n" + this.psv.getPendingRelations());
 			
 			System.out.println();
