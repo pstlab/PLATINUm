@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.framework.domain.component.pdb;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,6 +40,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemFluent;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.ProblemGoal;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.TemporalProblemConstraint;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.BindParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.EqualParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.NotEqualParameterRelation;
@@ -91,16 +93,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		this.parameterDomains = new HashMap<>();
 		this.componentFactory = new DomainComponentFactory();
 		this.problem = null;
-		
-		// initialize global information concerning synchronization rules
-		if (rules == null) {
-			rules = new HashMap<>();
-		}
-
-		// initialize global relations of the plan
-		if (globalRelations == null) {
-			globalRelations = new HashSet<>();
-		}
 	}
 	
 	/**
@@ -119,16 +111,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	@Override
 	public void clear() 
 	{
-		// remove all active relations
-		for (Relation rel : this.getActiveRelations()) {
-			this.delete(rel);
-		}
-		
-		// delete all active decisions
-		for (Decision dec : this.getActiveDecisions()) {
-			this.delete(dec);
-		}
-
 		// clear components
 		for (DomainComponent component : this.components.values()) {
 			// clear component
@@ -138,7 +120,16 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		// clear local relations
 		this.localRelations.clear();
 		// clear global relations
-		globalRelations.clear();
+		synchronized (globalRelations) {
+			// clear global active relations
+			for (Relation rel : globalRelations) {
+				// delete global relation
+				this.deactivate(rel);
+			}
+			
+			// clear global relations
+			globalRelations.clear();
+		}
 		// clear problem
 		this.problem = null;
 	}
@@ -543,22 +534,6 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public Set<Relation> getPendingRelations() 
-	{
-		// list of relations
-		Set<Relation> set = new HashSet<>();
-		// get relations from components
-		for (DomainComponent component : this.components.values()) {
-			set.addAll(component.getPendingRelations());
-		}
-		// get set
-		return set;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
 	public Set<Relation> getPendingRelations(Decision dec) 
 	{
 		// get decision component 
@@ -641,13 +616,13 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public Set<Relation> add(Decision dec) 
+	public Set<Relation> activate(Decision dec) 
 			throws DecisionPropagationException 
 	{
 		// get the component the decision belongs to
 		DomainComponent c = dec.getComponent();
 		// add decision and get the list of local and global relations propagated
-		Set<Relation> set = c.add(dec);
+		Set<Relation> set = c.activate(dec);
 		// get global and local relations propagated
 		return set;
 	}
@@ -668,7 +643,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	}
 	
 	/**
-	 * 
+	 * Get the set of both active and pending local and global relations on components
 	 */
 	@Override
 	public Set<Relation> getRelations() {
@@ -677,22 +652,69 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		for (DomainComponent comp : this.components.values()) {
 			set.addAll(comp.getRelations());
 		}
+		
+		// add global relations
+		synchronized (globalRelations) {
+			for (Relation rel : globalRelations) {
+				set.add(rel);
+			}
+		}
+		
 		// get the set
 		return set;
 	}
 	
 	/**
-	 * 
+	 * Get the set of local active relations and local active relations on components 
+	 *  
+	 * @param dec
+	 * @return
 	 */
 	@Override
-	public Set<Relation> getActiveRelations() 
+	public Set<Relation> getActiveRelations()
 	{
-		// list of active decisions 
+		// list of active relations
+		Set<Relation> set = new HashSet<>();
+		// check local relations
+		for (DomainComponent component : this.components.values()) {
+			// add active local relations
+			set.addAll(component.getActiveRelations());
+		}
+		
+		// add global active relations
+		synchronized (globalRelations) {
+			for (Relation rel : globalRelations) {
+				if (rel.isActive()) {
+					set.add(rel);
+				}
+			}
+		}
+		// get the list
+		return set;
+	}
+	
+	/**
+	 * Get the set of pending global relations and pending local relations on components
+	 * 
+	 * @return
+	 */
+	public Set<Relation> getPendingRelations()
+	{
+		// set of relations
 		Set<Relation> set = new HashSet<>();
 		for (DomainComponent comp : this.components.values()) {
-			set.addAll(comp.getActiveRelations());
+			set.addAll(comp.getPendingRelations());
 		}
-		// get the st
+		
+		// add pending global relations
+		synchronized (globalRelations) {
+			for (Relation rel : globalRelations) {
+				if (rel.isPending()) {
+					set.add(rel);
+				}
+			}
+		}
+		// get the set
 		return set;
 	}
 	
@@ -732,22 +754,33 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * @throws Exception
 	 */
 	@Override
-	public void delete(Decision dec) 
+	public void free(Decision dec) 
 	{
 		// get decision component
 		DomainComponent comp = dec.getComponent();
-		comp.delete(dec);
+		comp.free(dec);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void deactivate(Decision dec) {
+		// get decision component
+		DomainComponent comp = dec.getComponent();
+		comp.deactivate(dec);;
 	}
 	
 	/**
 	 * 
 	 * @param relation
 	 */
-	public void free(Relation relation) 
+	@Override
+	public void delete(Relation relation) 
 	{
 		// get reference component
 		DomainComponent refComp = relation.getReference().getComponent();
-		refComp.free(relation);
+		refComp.delete(relation);
 	}
 	
 	/**
@@ -771,6 +804,15 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		Set<Relation> set = new HashSet<>();
 		for (DomainComponent component : this.components.values()) {
 			set.addAll(component.getSilentRelations());
+		}
+		
+		// check global relations
+		synchronized (globalRelations) {
+			for (Relation rel : globalRelations) {
+				if (rel.isSilent()) {
+					set.add(rel);
+				}
+			}
 		}
 		// get the set
 		return set;
@@ -806,23 +848,23 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 */
 	@Override
-	public void add(Relation rel) 
+	public void activate(Relation rel) 
 			throws RelationPropagationException 
 	{
 		// get reference component
 		DomainComponent refComp = rel.getReference().getComponent();
-		refComp.add(rel);
+		refComp.activate(rel);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void delete(Relation rel) 
+	public void deactivate(Relation rel) 
 	{
 		// get reference component
 		DomainComponent refComp = rel.getReference().getComponent();
-		refComp.delete(rel);
+		refComp.deactivate(rel);
 	}
 	
 	/**
@@ -959,6 +1001,17 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	
 	/**
 	 * 
+	 */
+	@Override
+	public <T extends Relation> T create(RelationType type, Decision reference, Decision target) {
+		// get reference component
+		DomainComponent refComp = reference.getComponent();
+		// create relation
+		return refComp.create(type, reference, target);
+	}
+	
+	/**
+	 * 
 	 * @param problem
 	 * @throws ProblemInitializationException
 	 */
@@ -988,7 +1041,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 							fact.getDuration());
 					
 					// add decision
-					this.add(dec);
+					this.activate(dec);
 					// add committed decision
 					committedDecisions.add(dec);
 					// add entry
@@ -1000,7 +1053,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				for (Decision dec : committedDecisions) {
 					try {
 						// retract decision
-						this.delete(dec);
+						this.free(dec);
 					} catch (Exception exx) {
 						throw new RuntimeException(exx.getMessage());
 					}
@@ -1046,9 +1099,9 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 							TemporalRelation rel = this.create(constraint.getType(), reference, target);
 							rel.setBounds(tc.getBounds());
 							// check if relation can be activated
-							if (rel.isToActivate()) {
+							if (rel.canBeActivated()) {
 								// add relation 
-								this.add(rel);
+								this.activate(rel);
 								committedRelations.add(rel);
 							}
 						}
@@ -1103,9 +1156,9 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 							}
 							
 							// check if relation can be activated
-							if (rel.isToActivate()) {
+							if (rel.canBeActivated()) {
 								// add relation
-								this.add(rel);
+								this.activate(rel);
 								committedRelations.add(rel);
 							}
 						}
@@ -1117,7 +1170,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				// roll-back committed relations
 				for (Relation rel : committedRelations) {
 					// retract 
-					this.delete(rel);
+					this.deactivate(rel);
 				}
 				
 				// throw exception

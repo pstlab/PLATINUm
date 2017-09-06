@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -33,11 +33,8 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public final class TImelineSchedulingResolver extends Resolver
+public final class TImelineSchedulingResolver extends Resolver<StateVariable>
 {
-	@ComponentPlaceholder
-	private StateVariable sv;
-	
 	/**
 	 * 
 	 */
@@ -55,33 +52,43 @@ public final class TImelineSchedulingResolver extends Resolver
 	{
 		// get the flaw solution to consider
 		PrecedenceConstraint pc = (PrecedenceConstraint) solution;
-		// prepare relations
-		Set<Relation> relations = new HashSet<>();
-		// get reference and target decisions
-		Decision reference = pc.getReference();
-		Decision target = pc.getTarget();
-			
-		// create relation
-		BeforeRelation rel = this.sv.create(RelationType.BEFORE, reference, target);
-		// set bounds
-		rel.setBound(new long[] {1, this.sv.getHorizon()});
-		// add reference, target and constraint
-		relations.add(rel);
-		this.logger.debug("Applying flaw solution:\n"
-				+ "- solution: " + solution + "\n"
-				+ "- created temporal constraint: " + rel + "\n");
-		
 		try 
 		{
+			// get reference and target decisions
+			Decision reference = pc.getReference();
+			Decision target = pc.getTarget();
+				
+			// create relation
+			BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
+			// set bounds
+			before.setBound(new long[] {1, this.component.getHorizon()});
+			// add created relation to solution
+			solution.addCreatedRelation(before);
+			this.logger.debug("Applying flaw solution:\n"
+					+ "- solution: " + solution + "\n"
+					+ "- created temporal constraint: " + before + "\n");
+			
 			// propagate relations
-			this.sv.add(relations);
+			this.component.activate(before);
 			// add activated relations to solution
-			solution.addActivatedRelations(relations);
+			solution.addActivatedRelation(before);
 		}
 		catch (RelationPropagationException ex) 
 		{
-			// clear memory from relation
-			this.sv.free(rel);
+			// deactivate activated relations
+			for (Relation rel : solution.getActivatedRelations()) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.deactivate(rel);
+			}
+			
+			// delete created relations
+			for (Relation rel : solution.getCreatedRelations()) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.delete(rel);
+			}
+
 			// not feasible solution
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
@@ -96,17 +103,17 @@ public final class TImelineSchedulingResolver extends Resolver
 		// list of flaws
 		List<OverlappingSet> overlapping = new ArrayList<>();
 		// list of active decisions
-		List<Decision> decisions = this.sv.getActiveDecisions();
+		List<Decision> decisions = this.component.getActiveDecisions();
 		// look for peaks
-		for (int index = 0; index < decisions.size() - 1; index++)
+		for (int index = 0; index < decisions.size() - 1 && overlapping.isEmpty(); index++)
 		{
 			// get active decision A 
 			Decision reference = decisions.get(index);
 			// initialize the overlapping set
-			OverlappingSet set = new OverlappingSet(this.sv);
+			OverlappingSet set = new OverlappingSet(this.component);
 			set.add(reference);
 			// find overlapping decisions
-			for (int jndex = index + 1; jndex < decisions.size(); jndex++)
+			for (int jndex = index + 1; jndex < decisions.size() && overlapping.isEmpty(); jndex++)
 			{
 				// get active decision B
 				Decision target = decisions.get(jndex);
@@ -114,13 +121,9 @@ public final class TImelineSchedulingResolver extends Resolver
 				if (this.overlaps(set, target)) {
 					// add decision to the set
 					set.add(target);
+					// directly add to overlapping set
+					overlapping.add(set);
 				}
-			}
-			
-			// check the size of the set
-			if (set.size() > 1) {
-				// add set to flaws
-				overlapping.add(set);
 			}
 		}
 		
@@ -145,22 +148,21 @@ public final class TImelineSchedulingResolver extends Resolver
 	private boolean overlaps(OverlappingSet set, Decision target) 
 	{
 		// overlapping flag
-		boolean overlaps = true;
+		boolean overlaps = false;
 		// check set decisions
-		for (Decision decision : set.getDecisions())
+		for (int index = 0; index < set.size() && !overlaps; index++)
 		{
+			// get a decision from the set
+			Decision reference = set.getDecisions().get(index);
 			// check if current decision and target overlap
 			IntervalOverlapQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_OVERLAP);
 			// set intervals
-			query.setReference(decision.getToken().getInterval());
+			query.setReference(reference.getToken().getInterval());
 			query.setTarget(target.getToken().getInterval());
 			// process query
 			this.tdb.process(query);
-			if (!query.isOverlapping()) {
-				// update flag and exit from cycle
-				overlaps = false;
-				break;
-			}
+			// check overlapping condition
+			overlaps = query.isOverlapping();
 		}
 		
 		// get result
@@ -285,7 +287,7 @@ public final class TImelineSchedulingResolver extends Resolver
 				// check solutions
 				if (mcs.getSolutions().isEmpty()) {
 					// unsolvable MCS found
-					throw new UnsolvableFlawException("Unsolvable MCS found on discrete resource " + this.sv.getName() + "\n- mcs: " + mcs + "\n"); 
+					throw new UnsolvableFlawException("Unsolvable MCS found on discrete resource " + this.component.getName() + "\n- mcs: " + mcs + "\n"); 
 				}
 				
 				// add MCS to list
@@ -302,65 +304,6 @@ public final class TImelineSchedulingResolver extends Resolver
 		for (PrecedenceConstraint pc : best.getSolutions()) {
 			// add precedence constraint
 			flaw.addSolution(pc);
-		}
-	}
-	
-	/**
-	 * The StateVariableSchedulingResolver affects only temporal relations between activated decisions of the 
-	 *  related components. Thus, it is not necessary to check activated/deactivated decisions.
-	 *  
-	 *  This method simply completely remove added relations from the plan in order to cancel the 
-	 *  effects of a solution
-	 *  
-	 * @param solution
-	 */
-	@Override
-	protected void doRetract(FlawSolution solution) 
-	{
-		// get the list of activated (and also created) relations
-		List<Relation> relations = solution.getActivatedRelations();
-		// manage activated relations
-		for (Relation relation : relations) {
-			// free created and activated relations
-			this.sv.free(relation);
-		}
-	}
-	
-	/**
-	 * This method restores a previously retracted scheduling solution. 
-	 * 
-	 * The restore procedure consists in reactivating the previously computed and activated temporal relations
-	 */
-	@Override
-	protected void doRestore(FlawSolution solution) 
-			throws RelationPropagationException 
-	{
-		// list of activated relations
-		List<Relation> list = solution.getActivatedRelations();
-		// list of committed relations
-		List<Relation> committed = new ArrayList<>();
-		try
-		{
-			// activate relations
-			for (Relation relation : list) 
-			{
-				// restore relation
-				this.sv.restore(relation);
-				// activate relation
-				this.sv.add(relation);
-				committed.add(relation);
-			}
-		}
-		catch (RelationPropagationException ex) 
-		{
-			// deactivate committed relations
-			for (Relation relation : committed) {
-				// free relation
-				this.sv.free(relation);
-			}
-
-			// error while restoring flaw solution
-			throw new RelationPropagationException("Error while resetting flaw solution:\n- " + solution + "\n");
 		}
 	}
 	

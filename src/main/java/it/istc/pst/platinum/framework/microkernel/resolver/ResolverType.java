@@ -4,9 +4,9 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.resolver.plan.PlanRefinementResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete.DiscreteResourceSchedulingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir.ReservoirResourceSchedulingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking.ObservationBehaviorCheckingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking.TimelineBehaviorCheckingResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.TimelineBehaviorPlanningResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.checking.ObservationBehaviorCheckingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.checking.TimelineBehaviorCheckingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning.TimelineBehaviorPlanningResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.TImelineSchedulingResolver;
 
 /**

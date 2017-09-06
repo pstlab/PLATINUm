@@ -18,7 +18,6 @@ import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TemporalSynchronizationConstraint;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -40,6 +39,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleExpansionException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleUnificationException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
+import it.istc.pst.platinum.framework.microkernel.resolver.plan.GoalJustification.JustificationType;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
@@ -61,11 +61,8 @@ import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
  * @author anacleto
  *
  */
-public class PlanRefinementResolver extends Resolver 
+public class PlanRefinementResolver extends Resolver<DomainComponent>
 {	
-	@ComponentPlaceholder
-	protected DomainComponent component;
-	
 	/**
 	 * 
 	 */
@@ -168,22 +165,14 @@ public class PlanRefinementResolver extends Resolver
 	{
 		// get goal justification
 		GoalJustification just = (GoalJustification) solution;
-		// check type 
-		switch (just.getJustificationType())
-		{
-			// restore expansion
-			case EXPANSION : {
-				// restore solution
-				this.doRestoreExpansion((GoalExpansion) just);
-			}
-			break;
-			
+		// check if unification 
+		if (just.getJustificationType().equals(JustificationType.UNIFICATION)) {
 			// restore unification
-			case UNIFICATION : {
-				// restore unification
-				this.doRestoreUnification((GoalUnification) just);
-			}
-			break;
+			this.doRestoreUnification((GoalUnification) just);
+		}
+		else {
+			// "standard" way of restoring a flaw solution
+			super.doRestore(solution);
 		}
 	}
 	
@@ -208,23 +197,33 @@ public class PlanRefinementResolver extends Resolver
 			this.translateRelationFromGoalToUnification(unif, goal, rel);
 		}
 		
-		// get to activate relations
-		Set<Relation> toActivate = new HashSet<>(solution.getActivatedRelations());
+		// list of committed relations
+		Set<Relation> rCommitted = new HashSet<>();
 		try	
 		{
 			// get component decision 
 			DomainComponent goalComp = goal.getComponent();
 			// remove original goal: PENDING -> SILENT
-			goalComp.delete(goal);
-			for (Relation rel : toActivate) {
+			goalComp.free(goal);
+			// activate-back relations
+			for (Relation rel : solution.getActivatedRelations()) {
 				// get reference component
 				DomainComponent refComp = rel.getReference().getComponent();
 				// activate relations
-				refComp.add(toActivate);
+				refComp.activate(rel);
+				// add to committed
+				rCommitted.add(rel);
 			}
 		}
 		catch (RelationPropagationException ex) 
 		{
+			// deactivate committed relations
+			for (Relation rel : rCommitted) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.deactivate(rel);
+			}
+			
 			// translated back relations
 			for (Relation rel : toTranslate) {
 				this.translateRelationFromUnificationToOriginalGoal(unif, goal, rel);
@@ -240,126 +239,20 @@ public class PlanRefinementResolver extends Resolver
 	
 	/**
 	 * 
-	 * @param solution
-	 * @throws Exception
-	 */
-	private void doRestoreExpansion(GoalExpansion solution) 
-			throws Exception 
-	{
-		// restore created decisions
-		for (Decision dec : solution.getCreatedDecisions()) {
-			// get decision component
-			DomainComponent comp = dec.getComponent();
-			// restore decision
-			comp.restore(dec);
-		}
-		
-		// restore created relations
-		for (Relation rel : solution.getCreatedRelations()) {
-			// get reference component
-			DomainComponent refComp = rel.getReference().getComponent();
-			// restore relation
-			refComp.restore(rel);
-		}
-		
-		// committed decisions and relations
-		List<Decision> commitDecs = new ArrayList<>();
-		List<Relation> commitRels = new ArrayList<>();
-		
-		try
-		{
-			// get activated decisions
-			List<Decision> dActivated = solution.getActivatedDecisisons();
-			// get activated relations
-			List<Relation> rActivated = solution.getActivatedRelations();
-			
-			// activate decisions
-			for (Decision dec : dActivated) 
-			{
-				// get component
-				DomainComponent comp = dec.getComponent();
-				// activate decision
-				List<Relation> list = new ArrayList<>(comp.add(dec));
-				// add committed relations and decisions
-				commitRels.addAll(list);
-				commitDecs.add(dec);
-				// remove from activated relations if needed
-				rActivated.removeAll(list);
-			}
-			
-			// activate missing relations
-			for (Relation rel : rActivated) {
-				// get reference component
-				DomainComponent refComp = rel.getReference().getComponent();
-				// activate relation
-				refComp.add(rel);
-				// add to committed
-				commitRels.add(rel);
-			}
-		}
-		catch (DecisionPropagationException | RelationPropagationException ex) 
-		{
-			// deactivate committed relations
-			for (Relation relation : commitRels) {
-				// get reference component
-				DomainComponent refComp = relation.getReference().getComponent();
-				// deactivate relation
-				refComp.delete(relation);
-			}
-			
-			// deactivate committed decisions
-			for (Decision decision : commitDecs) {
-				// get component decision
-				DomainComponent comp = decision.getComponent();
-				// deactivate decision
-				comp.delete(decision);
-			}
-			
-			// remove created relations
-			for (Relation relation : solution.getCreatedRelations()) {
-				// get reference component
-				DomainComponent refComp = relation.getReference().getComponent();
-				// remove relation
-				refComp.free(relation);
-			}
-			
-			// remove created decisions
-			for (Decision decision : solution.getCreatedDecisions()) {
-				// get component decision
-				DomainComponent comp = decision.getComponent();
-				// move decision to SILENT
-				comp.delete(decision);
-			}
-
-			// error while resetting flaw solution
-			throw new Exception("Error while resetting goal expansion solution:\n"
-					+ "- goal expansion: " + solution + "\n");
-		}
-	}
-	
-	/**
-	 * 
 	 */
 	@Override
 	protected void doRetract(FlawSolution solution) 
 	{
 		// check solution type
 		GoalJustification justif = (GoalJustification) solution;
-		switch (justif.type) 
-		{
-			// retract expansion
-			case EXPANSION : {
-				// do retract expansion
-				this.doRetractExpansion((GoalExpansion) justif);
-			}
-			break;
-			
-			// retract unification
-			case UNIFICATION : {
-				// do retract unification
-				this.doRetractUnification((GoalUnification) justif);
-			}
-			break;
+		// check if unification solution
+		if (justif.getJustificationType().equals(JustificationType.UNIFICATION)) {
+			// special management of unification
+			this.doRetractUnification((GoalUnification) solution);
+		}
+		else {
+			// "standard" management of flaw solution
+			super.doRetract(solution);
 		}
 	}
 	
@@ -1055,32 +948,41 @@ public class PlanRefinementResolver extends Resolver
 		
 		// get all (pending) relations concerning the planning goal
 		DomainComponent goalComp = goal.getComponent();
-		Set<Relation> toTranslate = goalComp.getRelations(goal);
+		// set translated pending relations as created
+		unification.setTranslatedRelations(goalComp.getRelations(goal));
 		// translate pending relations by replacing goal's information with unification decision's information
-		for (Relation rel : toTranslate) {
+		for (Relation rel : unification.getToTranslate()) {
 			// translate relation
 			this.translateRelationFromGoalToUnification(unif, goal, rel);
 		}
 		
-		// get to activate relations after translation
-		Set<Relation> toActivate = new HashSet<>(goalComp.getToActivateRelations(unif));
 		try	
 		{
 			// remove original goal: PENDING -> SILENT
-			goalComp.delete(goal);
+			goalComp.free(goal);
 			// activate relations
-			goalComp.add(toActivate);
-			// add activated relations
-			unification.addActivatedRelations(toActivate);
-			// add translated pending relations as created
-			unification.setTranslatedRelations(toTranslate);
+			for (Relation rel : goalComp.getToActivateRelations(unif)) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				// activate relation
+				refComp.activate(rel);
+				// add activated relation
+				unification.addActivatedRelation(rel);
+			}
 		}
 		catch (RelationPropagationException ex) 
 		{
+			// deactivate activated relations
+			for (Relation rel : unification.getActivatedRelations()) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.deactivate(rel);
+			}
+			
 			// restore goal: SILENT -> PENDING
 			goalComp.restore(goal);
 			// translated back relations
-			for (Relation rel : toTranslate) {
+			for (Relation rel : unification.getToTranslate()) {
 				this.translateRelationFromUnificationToOriginalGoal(unif, goal, rel);
 			}
 			
@@ -1099,11 +1001,6 @@ public class PlanRefinementResolver extends Resolver
 	{
 		// get goal
 		Decision goal = expansion.getGoalDecision();
-		// list of created decisions (i.e. introduced subgoals)
-		Set<Decision> dCreated = new HashSet<>();
-		// list of created relations (i.e. pending relations)
-		Set<Relation> rCreated = new HashSet<>();
-		
 		// check rule
 		if (expansion.hasSubGoals()) 
 		{
@@ -1137,7 +1034,7 @@ public class PlanRefinementResolver extends Resolver
 				// add entry to cache
 				var2dec.put(var, pending);
 				// add created decision
-				dCreated.add(pending);
+				expansion.addCreatedDecision(pending);
 			}
 			
 			// add pending relations
@@ -1161,7 +1058,7 @@ public class PlanRefinementResolver extends Resolver
 						// set bounds
 						rel.setBounds(tc.getBounds());
 						// add created relation
-						rCreated.add(rel);
+						expansion.addCreatedRelation(rel);
 					}
 					break;
 					
@@ -1286,7 +1183,7 @@ public class PlanRefinementResolver extends Resolver
 						}
 						
 						// add created relation
-						rCreated.add(rel);
+						expansion.addCreatedRelation(rel);
 					}
 				}
 			}
@@ -1297,79 +1194,47 @@ public class PlanRefinementResolver extends Resolver
 			// get goal component
 			DomainComponent goalComp = goal.getComponent();
 			// activate decision
-			Set<Relation> rActivated = goalComp.add(goal);
-			// set information to flaw solution
+			Set<Relation> list = goalComp.activate(goal);
+			// add goal to activated decisions
 			expansion.addActivatedDecision(goal);
-			expansion.addCreatedDecisions(dCreated);
-			expansion.addActivatedRelations(rActivated);
-			// remove activated relations if any
-			rCreated.removeAll(rActivated);
-			// add resulting created relations (pending relations)
-			expansion.addCreatedRelations(rCreated);
+			// add to activated relations
+			expansion.addActivatedRelations(list);
 		}
 		catch (DecisionPropagationException ex) 
 		{
-			// delete created relations
-			for (Relation relation : rCreated) {
+			// deactivate activated relations
+			for (Relation rel : expansion.getActivatedRelations()) {
 				// get reference component
-				DomainComponent refComp = relation.getReference().getComponent();
-				// free relation
-				refComp.free(relation);
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.deactivate(rel);
 			}
 			
-			// delete created decisions
-			for (Decision pending : dCreated) {
+			// deactivate activated decisions
+			for (Decision dec : expansion.getActivatedDecisisons()) {
 				// get component
-				DomainComponent comp = pending.getComponent();
-				// delete 
-				comp.delete(pending);
+				DomainComponent refComp = dec.getComponent();
+				refComp.deactivate(dec);
 			}
-
+			
+			// delete created relations
+			for (Relation rel : expansion.getCreatedRelations()) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.delete(rel);
+			}
+			
+			// delete created decisions 
+			for (Decision dec : expansion.getCreatedDecisions()) {
+				// get component
+				DomainComponent comp = dec.getComponent();
+				comp.free(dec);
+			}
+			
 			// throw exception
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
 	}
 
-
-	/**
-	 * 
-	 * @param expansion
-	 */
-	private void doRetractExpansion(GoalExpansion expansion) 
-	{
-		// deactivate activated relations
-		for (Relation relation : expansion.getActivatedRelations()) {
-			// get reference component
-			DomainComponent comp = relation.getReference().getComponent();
-			// deactivate relation
-			comp.delete(relation);
-		}
-		
-		// remove created relations
-		for (Relation relation : expansion.getCreatedRelations()) {
-			// get reference component
-			DomainComponent comp = relation.getReference().getComponent();
-			// completely remove relation
-			comp.free(relation);
-		}
-		
-		// delete activated decisions: ACTIVE -> PENDING
-		for (Decision dec : expansion.getActivatedDecisisons()) {
-			// get decision component
-			DomainComponent comp = dec.getComponent();
-			// deactivate decision
-			comp.delete(dec);
-		}
-		
-		// delete pending decisions: PENDING -> SILENT
-		for (Decision dec : expansion.getCreatedDecisions()) {
-			// get decision component
-			DomainComponent comp = dec.getComponent();
-			// delete pending decisions
-			comp.delete(dec);
-		}
-	}
-	
 	/**
 	 * 
 	 * @param unification
@@ -1385,7 +1250,7 @@ public class PlanRefinementResolver extends Resolver
 		for (Relation rel : unification.getActivatedRelations()) {
 			// get reference component
 			DomainComponent refComp = rel.getReference().getComponent();
-			refComp.delete(rel);
+			refComp.deactivate(rel);
 		}
 		
 		// translate back relations

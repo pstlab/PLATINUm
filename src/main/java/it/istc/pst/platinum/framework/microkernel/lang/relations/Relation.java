@@ -133,7 +133,7 @@ public abstract class Relation
 	 * @param rel
 	 * @return
 	 */
-	public boolean isToActivate()
+	public boolean canBeActivated()
 	{
 		// get reference component
 		DomainComponent referenceComponent = this.reference.getComponent();

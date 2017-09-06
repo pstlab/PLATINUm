@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking;
+package it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.checking;
 
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;

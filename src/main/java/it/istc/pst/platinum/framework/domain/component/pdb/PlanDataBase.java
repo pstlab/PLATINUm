@@ -176,28 +176,28 @@ public interface PlanDataBase
 	 * @param value
 	 * @return
 	 */
-	public abstract SynchronizationRule createSynchronizationRule(ComponentValue value, String[] labels) 
+	public SynchronizationRule createSynchronizationRule(ComponentValue value, String[] labels) 
 			throws DomainComponentNotFoundException;
 	
 	/*
 	 * 
 	 */
-	public abstract void addSynchronizationRule(SynchronizationRule rule) 
+	public void addSynchronizationRule(SynchronizationRule rule) 
 			throws SynchronizationCycleException;
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public abstract List<SynchronizationRule> getSynchronizationRules();
+	public List<SynchronizationRule> getSynchronizationRules();
 	
 	/**
 	 * 
 	 */
-	public abstract List<SynchronizationRule> getSynchronizationRules(ComponentValue value);
+	public List<SynchronizationRule> getSynchronizationRules(ComponentValue value);
 	
 	/**
 	 * 
 	 */
-	public abstract List<SynchronizationRule> getSynchronizationRules(DomainComponent component);
+	public List<SynchronizationRule> getSynchronizationRules(DomainComponent component);
 }

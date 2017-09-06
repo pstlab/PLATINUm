@@ -548,14 +548,14 @@ public class DiscreteResourceComponentTestCase
 				duration);						// set requirement duration bound
 		
 		// post activity
-		this.resource.add(activity);
+		this.resource.activate(activity);
 		
 		// bind parameter 
 		BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, activity, activity);
 		bind.setReferenceParameterLabel(activity.getParameterLabelByIndex(0));
 		bind.setValue(Long.toString(amount));
 		// post constraint
-		this.resource.add(bind);
+		this.resource.activate(bind);
 		// check consistency
 		this.tdb.checkConsistency();
 		this.pdb.checkConsistency();

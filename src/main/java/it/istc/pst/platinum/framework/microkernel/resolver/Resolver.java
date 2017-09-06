@@ -1,19 +1,27 @@
 package it.istc.pst.platinum.framework.microkernel.resolver;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Constraint;
+import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
+import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
+import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConstraintPropagationException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraint;
@@ -27,7 +35,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
  *
  * @param <T>
  */
-public abstract class Resolver extends ApplicationFrameworkObject implements FlawManager 
+public abstract class Resolver<T extends DomainComponent> extends ApplicationFrameworkObject implements FlawManager 
 {
 	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
 	protected FrameworkLogger logger;
@@ -37,6 +45,9 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	
 	@ParameterFacadePlaceholder
 	protected ParameterFacade pdb;
+	
+	@ComponentPlaceholder
+	protected T component;
 	
 	protected String label;
 	protected FlawType flawType;
@@ -141,7 +152,44 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 * 
 	 * @param solution
 	 */
-	protected abstract void doRetract(FlawSolution solution); 
+	protected void doRetract(FlawSolution solution) 
+	{
+		// get the list of activated relations
+		List<Relation> rActivated = solution.getActivatedRelations();
+		for (Relation relation : rActivated) {
+			// get reference component
+			DomainComponent refComp = relation.getReference().getComponent();
+			// deactivate relation
+			refComp.deactivate(relation);
+		}
+		
+		// get the list of created relations
+		List<Relation> rCreated = solution.getCreatedRelations();
+		for (Relation relation : rCreated) {
+			// get reference component
+			DomainComponent refComp = relation.getReference().getComponent();
+			// remove relation from the data structure
+			refComp.delete(relation);
+		}
+		
+		// get the list of activated decisions
+		List<Decision> dActivated = solution.getActivatedDecisisons();
+		for (Decision decision : dActivated) {
+			// get decision component
+			DomainComponent dComp = decision.getComponent();
+			// deactivate decision
+			dComp.deactivate(decision);
+		}
+		
+		// get the list of created decisions
+		List<Decision> dCreated = solution.getCreatedDecisions();
+		for (Decision decision : dCreated) {
+			// get decision component
+			DomainComponent dComp = decision.getComponent();
+			// delete decision from pending "list" 
+			dComp.free(decision);
+		}
+	}
 	
 	/**
 	 * 
@@ -218,8 +266,91 @@ public abstract class Resolver extends ApplicationFrameworkObject implements Fla
 	 * @param solution
 	 * @throws Exception
 	 */
-	protected abstract void doRestore(FlawSolution solution) 
-			throws Exception;
+	protected void doRestore(FlawSolution solution) 
+			throws Exception
+	{
+		// get the list of created decisions
+		List<Decision> dCreated = solution.getCreatedDecisions();
+		for (Decision decision : dCreated) {
+			// get decision component
+			DomainComponent dComp = decision.getComponent();
+			dComp.restore(decision);
+		}
+		
+		// get the list of created relations
+		List<Relation> rCreated = solution.getCreatedRelations();
+		for (Relation relation : rCreated) {
+			// get reference component
+			DomainComponent refComp = relation.getReference().getComponent();
+			// restore relation
+			refComp.restore(relation);
+		}
+		
+		
+		// list of committed decisions
+		Set<Decision> dCommitted = new HashSet<>();
+		// get the list of activated decisions
+		List<Decision> dActivated = solution.getActivatedDecisisons();
+		List<Relation> avoid = new ArrayList<>();
+		try
+		{
+			
+			for (Decision decision : dActivated) {
+				// get decision component
+				DomainComponent dComp = decision.getComponent();
+				// activate decision and get the set of related relations that have been activated
+				Set<Relation> relations = dComp.activate(decision);
+				avoid.addAll(relations);
+			}
+		}
+		catch (DecisionPropagationException ex) {
+			// deactivate all "avoid" relations
+			for (Relation rel : avoid) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.deactivate(rel);
+			}
+			
+			// deactivate committed decisions
+			for (Decision dec : dCommitted) {
+				// get decision component
+				DomainComponent decComp = dec.getComponent();
+				decComp.deactivate(dec);
+			}
+			
+			// throw exception
+			throw new DecisionPropagationException(ex.getMessage());
+		}
+		
+ 		// list of committed relations
+		Set<Relation> rCommitted = new HashSet<>();
+		// get the list of activated relations
+		List<Relation> rActivated = solution.getActivatedRelations();
+		try
+		{
+			// remove the "avoid" list
+			rActivated.removeAll(avoid);
+			for (Relation relation : rActivated) {
+				// get reference component
+				DomainComponent refComp = relation.getReference().getComponent();
+				refComp.activate(relation);
+				// add to committed relations
+				rCommitted.add(relation);
+			}
+		}
+		catch (RelationPropagationException ex) {
+			// deactivate committed relations
+			for (Relation relation : rCommitted) {
+				// get reference component
+				DomainComponent refComp = relation.getReference().getComponent();
+				refComp.deactivate(relation);
+			}
+			
+			// throw exception
+			throw new RelationPropagationException(ex.getMessage());
+		}
+		
+	}
 	
 	/**
 	 * 

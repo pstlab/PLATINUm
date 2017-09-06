@@ -28,7 +28,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  */
 public class PseudoControllabilityAwareSolver extends Solver 
 {
-	@SearchStrategyModule(strategy= SearchStrategyType.GREEDY)
+	@SearchStrategyModule(strategy= SearchStrategyType.ASTAR)
 	private SearchStrategy fringe;
 	
 	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.SEARCH_AND_BUILD)

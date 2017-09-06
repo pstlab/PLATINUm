@@ -23,6 +23,8 @@ public final class ExternalStateVariable extends StateVariable
 	 * @param name
 	 */
 	@DomainComponentConfiguration(resolvers = {
+			// planning resolver is needed also for external variables
+			ResolverType.PLAN_REFINEMENT,
 			// observation checking resolver
 			ResolverType.OBSERVATION_CHECKING_RESOLVER,
 			// behavior checking resolver

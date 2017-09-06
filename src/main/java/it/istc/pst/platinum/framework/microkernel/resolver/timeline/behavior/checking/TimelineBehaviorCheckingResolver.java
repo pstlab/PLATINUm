@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking;
+package it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.checking;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,6 @@ import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
@@ -26,11 +25,8 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class TimelineBehaviorCheckingResolver extends Resolver implements Comparator<Decision> 
+public class TimelineBehaviorCheckingResolver extends Resolver<StateVariable> implements Comparator<Decision> 
 {
-	@ComponentPlaceholder
-	protected StateVariable sv;
-	
 	/**
 	 * 
 	 */
@@ -59,7 +55,7 @@ public class TimelineBehaviorCheckingResolver extends Resolver implements Compar
 		// list of gaps
 		List<Flaw> issues = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
-		List<Decision> decs = this.sv.getActiveDecisions();
+		List<Decision> decs = this.component.getActiveDecisions();
 		
 		// sort decisions
 		Collections.sort(decs, this);
@@ -76,7 +72,7 @@ public class TimelineBehaviorCheckingResolver extends Resolver implements Compar
 					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
 			
 			// set intervals
-			query.setSource(left.getToken().getInterval());
+			query.setReference(left.getToken().getInterval());
 			query.setTarget(right.getToken().getInterval());
 			// process query
 			this.tdb.process(query);
@@ -90,10 +86,10 @@ public class TimelineBehaviorCheckingResolver extends Resolver implements Compar
 				StateVariableValue vi = (StateVariableValue) left.getValue();
 				StateVariableValue vj = (StateVariableValue) right.getValue();
 				// get direct successors of value vi
-				List<ComponentValue> successors = this.sv.getDirectSuccessors(vi);
+				List<ComponentValue> successors = this.component.getDirectSuccessors(vi);
 				if (!successors.contains(vj)) {
 					// inconsistent behavior
-					InvalidTransition issue = new InvalidTransition(this.sv, left, right);
+					InvalidTransition issue = new InvalidTransition(this.component, left, right);
 					issues.add(issue);
 				}
 			}
@@ -135,6 +131,6 @@ public class TimelineBehaviorCheckingResolver extends Resolver implements Compar
 	protected void doComputeFlawSolutions(Flaw flaw) 
 			throws UnsolvableFlawException {
 		// simply throw exception
-		throw new InvalidBehaviorException("Inconsistent temporal behavior of component " + this.sv.getName() + ":\n" + flaw);
+		throw new InvalidBehaviorException("Inconsistent temporal behavior of component " + this.component.getName() + ":\n" + flaw);
 	}
 }

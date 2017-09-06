@@ -397,30 +397,18 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 				TemporalInterval a = overlap.getReference();
 				TemporalInterval b = overlap.getTarget();
 				
-				// check distance between the end of A and the start of B
-				IntervalDistanceQuery eAsB = this.qf.
-						create(TemporalQueryType.INTERVAL_DISTANCE);
-				// set intervals
-				eAsB.setSource(a);
-				eAsB.setTarget(b);
-				//process query
-				this.process(eAsB);
-
+				// check distance between A and B
+				IntervalDistanceQuery distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
+				distance.setReference(a);
+				distance.setTarget(b);
+				// process query
+				this.process(distance);
 				
-				// check distance between the end of B and the start of A
-				IntervalDistanceQuery eBsA = this.qf.
-						create(TemporalQueryType.INTERVAL_DISTANCE);
-				// set intervals
-				eBsA.setSource(b);
-				eBsA.setTarget(a);
-				//process query
-				this.process(eBsA);
-				
-				// set overlapping condition
-				overlap.setOverlapping((eAsB.getDistanceLowerBound() < 0 && eAsB.getDistanceUpperBound() > 0) ||
-						(eBsA.getDistanceLowerBound() < 0 && eBsA.getDistanceUpperBound() > 0) ||
-						(eAsB.getDistanceLowerBound() < 0 && eAsB.getDistanceUpperBound() < 0 && eBsA.getDistanceLowerBound() < 0 && eBsA.getDistanceUpperBound() < 0) ||
-						(eAsB.getDistanceLowerBound() > 0 && eAsB.getDistanceUpperBound() > 0 && eBsA.getDistanceLowerBound() > 0 && eBsA.getDistanceUpperBound() > 0));
+				// get min and max
+				long dmin = distance.getDistanceLowerBound();
+				long dmax = distance.getDistanceUpperBound();
+				// set overlapping result
+				overlap.setOverlapping(!((dmin == 0 && dmax == 0) || (dmin >= 0 && dmax > 0)));
 			}
 			break;
 			

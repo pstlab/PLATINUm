@@ -18,7 +18,6 @@ import it.istc.pst.platinum.framework.domain.component.resource.reservoir.Reserv
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResourceProfile;
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceProductionValue;
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceUsageProfileSample;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -43,11 +42,8 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class ReservoirResourceSchedulingResolver extends Resolver 
+public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResource> 
 {
-	@ComponentPlaceholder
-	protected ReservoirResource resource;
-	
 	/**
 	 * 
 	 */
@@ -67,14 +63,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		try
 		{
 			// check pessimistic resource profile
-			ReservoirResourceProfile prp = this.resource.computePessimisticResourceProfile();
+			ReservoirResourceProfile prp = this.component.computePessimisticResourceProfile();
 			// analyze the pessimistic profile and find peaks if any and generate production checkpoints
 			flaws = this.computeProfilePeaks(prp);
 			// check if any flaw has been found
 			if (flaws.isEmpty()) 
 			{
 				// check optimistic resource profile
-				ReservoirResourceProfile orp = this.resource.computeOptimisticResourceProfile();
+				ReservoirResourceProfile orp = this.component.computeOptimisticResourceProfile();
 				// analyze the optimistic profile and find peaks if any and generate production checkpoints
 				flaws = this.computeProfilePeaks(orp);
 			}
@@ -112,7 +108,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		
 		// check solutions found
 		if (peak.getSolutions().isEmpty()) {
-			throw new UnsolvableFlawException("No feasible solutions found the following peak on reservoir resource \"" + this.resource.getName() + "\":\n- peak: " + peak + "\n");
+			throw new UnsolvableFlawException("No feasible solutions found the following peak on reservoir resource \"" + this.component.getName() + "\":\n- peak: " + peak + "\n");
 		}
 	}
 	
@@ -170,7 +166,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		{
 			// create temporal interval
 			iProduction = this.tdb.createTemporalInterval(true);
-			// propagate "before" constaints
+			// propagate "before" contains
 			for (Decision decision : beforeProduction) 
 			{
 				// propagate constraint "decision < production"
@@ -188,7 +184,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 				constraints.add(before);
 			}
 		
-			// propagate "after" cosntraints
+			// propagate "after" constraints
 			for (Decision decision : afterProduction)
 			{
 				// propagate constraint "production < decision"
@@ -269,7 +265,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 				// get production decision
 				Decision production = checkpoint.getProduction().getDecision();
 				// get potential "energy" of the checkpoint
-				double potential = this.resource.getMaxCapacity() - checkpoint.getResourceConsumed();
+				double potential = this.component.getMaxCapacity() - checkpoint.getResourceConsumed();
 				// check the potential energy of the checkpoint is enough for the consumption
 				if (potential >= amount)
 				{
@@ -364,8 +360,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 	{
 		// get the set of constraint to propagate
 		Map<Decision, Decision> constraints = solution.getPrecedenceConstraints();
-		// list of committed relations
-		List<Relation> committed = new ArrayList<>();
 		try
 		{
 			// create and activate precedence constraints
@@ -374,16 +368,18 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 				// get target
 				Decision target = constraints.get(reference);
 				// create constraint
-				BeforeRelation before = this.resource.create(RelationType.BEFORE, reference, target);
+				BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
 				// set bounds
 				before.setBound(new long[] {
 						0, this.tdb.getHorizon()
 				});
 				
+				// set relation as created
+				solution.addCreatedRelation(before);
 				// add relation to component
-				this.resource.add(before);
-				// add to committed relations
-				committed.add(before);
+				this.component.activate(before);
+				// set relation as activated
+				solution.addActivatedRelation(before);
 			}
 			
 			/*
@@ -393,9 +389,13 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 			 */
 		}
 		catch (RelationPropagationException ex) {
-			// retract committed relations
-			for (Relation relation : committed) {
-				this.resource.free(relation);
+			// retract activated relations
+			for (Relation relation : solution.getActivatedRelations()) {
+				this.component.deactivate(relation);
+			}
+			// retract created relations
+			for (Relation relation : solution.getCreatedRelations()) {
+				this.component.delete(relation);
 			}
 			
 			// throw exception
@@ -412,9 +412,9 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 			throws FlawSolutionApplicationException 
 	{
 		// get production value
-		ResourceProductionValue value = this.resource.getProductionValue();
+		ResourceProductionValue value = this.component.getProductionValue();
 		// create production decision (it represents a planning goal) 
-		Decision goal = this.resource.create(value, new String[] {
+		Decision goal = this.component.create(value, new String[] {
 			"?amount"
 		});
 		// add created decision to flaw solution
@@ -423,7 +423,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		goal.setMandatoryExpansion();
 		
 		// add parameter (pending) relation to bind the production parameter
-		BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, goal, goal);
+		BindParameterRelation bind = this.component.create(RelationType.BIND_PARAMETER, goal, goal);
 		// set the desired amount of resource to produce
 		bind.setValue(Integer.toString(solution.getAmount()));
 		bind.setReferenceParameterLabel("?amount");
@@ -433,7 +433,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		// create temporal (pending) relations
 		for (Decision dec : solution.getDecisionsBeforeProduction()) {
 			// create precedence relation
-			BeforeRelation rel = this.resource.create(RelationType.BEFORE, dec, goal);
+			BeforeRelation rel = this.component.create(RelationType.BEFORE, dec, goal);
 			// set relation bounds
 			rel.setBound(new long[] {
 					0,
@@ -446,7 +446,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		// create (pending) relations
 		for (Decision dec : solution.getDecisionsAfterProduction()) {
 			// create precedence relation
-			BeforeRelation rel = this.resource.create(RelationType.BEFORE, goal, dec);
+			BeforeRelation rel = this.component.create(RelationType.BEFORE, goal, dec);
 			// set relation bounds
 			rel.setBound(new long[] {
 					0, 
@@ -492,72 +492,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 	}
 	
 	/**
-	 * 
-	 */
-	@Override
-	protected void doRetract(FlawSolution solution) 
-	{
-		// completely remove activated relations
-		for (Relation relation : solution.getActivatedRelations()) {
-			this.resource.free(relation);
-		}
-		
-		// delete created relations: PENDING -> SILENT
-		for (Relation relation : solution.getCreatedRelations()) {
-			this.resource.delete(relation);
-		}
-		
-		// delete created decision: PENDING -> SILENT
-		for (Decision decision : solution.getCreatedDecisions()) {
-			this.resource.delete(decision);
-		}
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	protected void doRestore(FlawSolution solution) 
-			throws Exception 
-	{
-		// restore created decisions
-		for (Decision decision : solution.getCreatedDecisions()) {
-			// restore decision
-			this.resource.restore(decision);
-		}
-		
-		// restore created relations
-		for (Relation relation : solution.getCreatedRelations()) {
-			// restore relation
-			this.resource.restore(relation);
-		}
-		
-		// list of committed relations
-		List<Relation> committed = new ArrayList<>();
-		// restore directly activated relations
-		for (Relation relation : solution.getActivatedRelations()) 
-		{
-			try
-			{
-				// restore relation
-				this.resource.restore(relation);
-				// activate relation
-				this.resource.add(relation);
-				committed.add(relation);
-			}
-			catch (RelationPropagationException ex) {
-				// deactivate committed relations
-				for (Relation r : committed) {
-					// deactivate relation
-					this.resource.free(r);
-				}
-				
-				throw new Exception("Error while resetting flaw solution:\n- " + solution + "\n");
-			}
-		}
-	}
-	
-	/**
 	 * Analyze the profile of a reservoir resource in order to find peaks and compute production checkpoints
 	 * 
 	 * @param profile
@@ -568,7 +502,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 		// list of peak found
 		List<Peak> peaks = new ArrayList<>();
 		// initialize resource capacity level
-		long currentLevel = this.resource.getInitialLevel();
+		long currentLevel = this.component.getInitialLevel();
 		// initialize the set of production checkpoints
 		Set<ProductionCheckpoint> checkpoints = new HashSet<>();
 		// set of consumptions that may generate a peak
@@ -586,7 +520,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 				// get production event
 				ProductionResourceEvent production = (ProductionResourceEvent) sample.getEvent();
 				// get potential resource usage
-				double consumed = this.resource.getMaxCapacity() - currentLevel;
+				double consumed = this.component.getMaxCapacity() - currentLevel;
 				// create a production checkpoint
 				ProductionCheckpoint point = new ProductionCheckpoint(production, consumed, sample.getSchedule());
 				// add to the set
@@ -607,12 +541,12 @@ public class ReservoirResourceSchedulingResolver extends Resolver
 			currentLevel += sample.getAmount();
 			
 			// check resource over consumption
-			if (currentLevel < this.resource.getMinCapacity())
+			if (currentLevel < this.component.getMinCapacity())
 			{
 				// compute the delta value of the peak
-				long delta = this.resource.getMinCapacity() - currentLevel;
+				long delta = this.component.getMinCapacity() - currentLevel;
 				// create a peak
-				Peak peak = new Peak(this.resource, consumptions, delta, checkpoints);
+				Peak peak = new Peak(this.component, consumptions, delta, checkpoints);
 				// add the peak
 				peaks.add(peak);
 				// clear consumptions

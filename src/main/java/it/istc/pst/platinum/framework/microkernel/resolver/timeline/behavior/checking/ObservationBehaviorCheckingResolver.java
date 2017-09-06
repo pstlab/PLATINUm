@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.checking;
+package it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.checking;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,7 +8,6 @@ import java.util.List;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
@@ -24,11 +23,8 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public final class ObservationBehaviorCheckingResolver <T extends StateVariable> extends Resolver implements Comparator<Decision> 
+public final class ObservationBehaviorCheckingResolver extends Resolver<StateVariable> implements Comparator<Decision> 
 {
-	@ComponentPlaceholder
-	protected T component;
-	
 	/**
 	 * 
 	 */
@@ -107,7 +103,7 @@ public final class ObservationBehaviorCheckingResolver <T extends StateVariable>
 						createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
 				
 				// set intervals
-				query.setSource(left.getToken().getInterval());
+				query.setReference(left.getToken().getInterval());
 				query.setTarget(right.getToken().getInterval());
 				// process query
 				this.tdb.process(query);

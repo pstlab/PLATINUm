@@ -117,11 +117,11 @@ public class ExternalStateVariableComponentTestCase {
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {}, 
 					new long[] {10, 10}, new long[] {15, 15}, v1.getDurationBounds());
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			Decision d2 = this.psv.create(v2, new String[] {});
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			Decision d3 = this.psv.create(v1, new String[] {});
-			this.psv.add(d3);
+			this.psv.activate(d3);
 			
 			// check consistency
 			this.facade.checkConsistency();
@@ -184,7 +184,7 @@ public class ExternalStateVariableComponentTestCase {
 		{
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {}, new long[] {15, 15}, v1.getDurationBounds());
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			// print decision
 			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 			

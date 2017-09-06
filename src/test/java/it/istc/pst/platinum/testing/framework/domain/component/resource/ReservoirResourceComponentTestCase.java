@@ -337,7 +337,7 @@ public class ReservoirResourceComponentTestCase
 			System.out.println("Current agenda:\n- pending decisions: " + pending + "\n- pending relations: " + relations + "\n");
 			
 			// add decision and then check flaws
-			this.resource.add(pending.get(0));
+			this.resource.activate(pending.get(0));
 			// check consistency
 			this.tdb.checkConsistency();
 			this.pdb.checkConsistency();
@@ -421,7 +421,7 @@ public class ReservoirResourceComponentTestCase
 			System.out.println("Peak successfully solved after production propagation");
 			
 			// retract flaw solution
-			this.resource.delete(goal);
+			this.resource.deactivate(goal);
 			// retract flaw solution
 			this.resource.rollback(solution);
 			// check consistency
@@ -489,7 +489,7 @@ public class ReservoirResourceComponentTestCase
 		
 		// add decision and then check flaws
 		Decision goal = pending.get(0);
-		this.resource.add(goal);
+		this.resource.activate(goal);
 		// check consistency
 		this.tdb.checkConsistency();
 		this.pdb.checkConsistency();
@@ -724,14 +724,14 @@ public class ReservoirResourceComponentTestCase
 				duration);						// set requirement duration bound
 		
 		// post activity
-		this.resource.add(consumption);
+		this.resource.activate(consumption);
 		
 		// bind parameter 
 		BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, consumption, consumption);
 		bind.setReferenceParameterLabel(consumption.getParameterLabelByIndex(0));
 		bind.setValue(Long.toString(amount));
 		// post constraint
-		this.resource.add(bind);
+		this.resource.activate(bind);
 		// check consistency
 		this.tdb.checkConsistency();
 		this.pdb.checkConsistency();
@@ -767,14 +767,14 @@ public class ReservoirResourceComponentTestCase
 				duration);						// set requirement duration bound
 		
 		// post activity
-		this.resource.add(consumption);
+		this.resource.activate(consumption);
 		
 		// bind parameter 
 		BindParameterRelation bind = this.resource.create(RelationType.BIND_PARAMETER, consumption, consumption);
 		bind.setReferenceParameterLabel(consumption.getParameterLabelByIndex(0));
 		bind.setValue(Long.toString(amount));
 		// post constraint
-		this.resource.add(bind);
+		this.resource.activate(bind);
 		// check consistency
 		this.tdb.checkConsistency();
 		this.pdb.checkConsistency();
@@ -855,7 +855,7 @@ public class ReservoirResourceComponentTestCase
 				System.out.println("Current agenda:\n- pending decisions: " + pending + "\n- pending relations: " + relations + "\n");
 				
 				// add decision and then check flaws
-				this.resource.add(pending.get(0));
+				this.resource.activate(pending.get(0));
 			}
 			
 			// check consistency 

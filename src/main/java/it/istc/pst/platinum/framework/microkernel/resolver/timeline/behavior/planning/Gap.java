@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning;
+package it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;

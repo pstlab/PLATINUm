@@ -63,12 +63,12 @@ public class DomainComponentFactory extends ApplicationFrameworkFactory {
 				// get configuration annotation
 				DomainComponentConfiguration annotation = c.getAnnotation(DomainComponentConfiguration.class);
 				// prepare list of resolvers
-				List<Resolver> list = new ArrayList<Resolver>();
+				List<Resolver<?>> list = new ArrayList<Resolver<?>>();
 				// check resolver
 				for (ResolverType rtype : annotation.resolvers())
 				{
 					// create resolver
-					Resolver resv = this.resvFactory.create(rtype, component);
+					Resolver<?> resv = this.resvFactory.create(rtype, component);
 					// add resolver
 					list.add(resv);
 				}

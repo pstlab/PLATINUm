@@ -22,8 +22,8 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.Gap;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning.GapCompletion;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning.Gap;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning.GapCompletion;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.PrecedenceConstraint;
 import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
@@ -126,11 +126,11 @@ public class StateVariableComponentTestCase
 		{
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {});
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			Decision d2 = this.psv.create(v2, new String[] {});
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			Decision d3 = this.psv.create(v1, new String[] {});
-			this.psv.add(d3);
+			this.psv.activate(d3);
 			
 			// check consistency
 			this.facade.checkConsistency();
@@ -171,14 +171,14 @@ public class StateVariableComponentTestCase
 					new String[] {},
 					new long[] {23, 23},
 					v1.getDurationBounds());
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			// add decision with specified end interval
 			Decision d2 = this.psv.create(
 					v2, 
 					new String[] {},
 					new long[] {80, 80}, 
 					v2.getDurationBounds());
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			
 			// check consistency
 			this.facade.checkConsistency();
@@ -320,11 +320,11 @@ public class StateVariableComponentTestCase
 		{
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {});
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			Decision d2 = this.psv.create(v2, new String[] {});
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			Decision d3 = this.psv.create(v3, new String[] {});
-			this.psv.add(d3);
+			this.psv.activate(d3);
 			
 			// check flaws
 			List<Flaw> flaws = this.psv.detectFlaws();
@@ -382,11 +382,11 @@ public class StateVariableComponentTestCase
 		{
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {});
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			Decision d2 = this.psv.create(v2, new String[] {});
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			Decision d3 = this.psv.create(v3, new String[] {});
-			this.psv.add(d3);
+			this.psv.activate(d3);
 			
 			// check flaws
 			List<Flaw> flaws = this.psv.detectFlaws();
@@ -449,16 +449,16 @@ public class StateVariableComponentTestCase
 		{
 			// create decisions
 			Decision d1 = this.psv.create(v1, new String[] {});
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			Decision d2 = this.psv.create(v2, new String[] {});
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			Decision d3 = this.psv.create(v3, new String[] {});
-			this.psv.add(d3);
+			this.psv.activate(d3);
 			Decision d4 = this.psv.create(v1,
 					new String[] {},
 					new long[] {30, 30}, 
 					v1.getDurationBounds());
-			this.psv.add(d4);
+			this.psv.activate(d4);
 					
 			// check flaws
 			List<Flaw> flaws = this.psv.detectFlaws();
@@ -550,12 +550,12 @@ public class StateVariableComponentTestCase
 			Decision d1 = this.psv.create(v1, new String[] {}, 
 					new long[] {5, 5}, new long[] {5, 5});
 			// create decision with specified end interval
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			
 			Decision d2 = this.psv.create(v4, new String[] {}, 
 					new long[] {18, 20}, new long[] {5, 7});
 			// add decision with specified end interval
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			
 			// check consistency
 			this.facade.checkConsistency();
@@ -598,7 +598,7 @@ public class StateVariableComponentTestCase
 			for (Decision dec : this.psv.getPendingDecisions()) {
 				System.out.println("Activating peding decision " + dec);
 				// propagate pending decisions
-				this.psv.add(dec);
+				this.psv.activate(dec);
 			}
 			
 			// check consistency
@@ -654,12 +654,12 @@ public class StateVariableComponentTestCase
 			Decision d1 = this.psv.create(v1, new String[] {}, 
 					new long[] {5, 5}, new long[] {5, 5});
 			// create decision with specified end interval
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			
 			Decision d2 = this.psv.create(v4, new String[] {}, 
 					new long[] {20, 20}, new long[] {5, 5});
 			// add decision with specified end interval
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			
 			// check component
 			Assert.assertNotNull(this.psv.getActiveDecisions());
@@ -750,9 +750,9 @@ public class StateVariableComponentTestCase
 		{
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {});
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			Decision d2 = this.psv.create(v2, new String[] {});
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			
 			// check flaws
 			List<Flaw> flaws = this.psv.detectFlaws();
@@ -826,9 +826,9 @@ public class StateVariableComponentTestCase
 		{
 			// create tokens
 			Decision d1 = this.psv.create(v1, new String[] {});
-			this.psv.add(d1);
+			this.psv.activate(d1);
 			Decision d2 = this.psv.create(v2, new String[] {});
-			this.psv.add(d2);
+			this.psv.activate(d2);
 			
 			// detect flaws
 			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);

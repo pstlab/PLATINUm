@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.resolver.timeline.planning;
+package it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning;
 
 import java.util.ArrayList;
 import java.util.List;

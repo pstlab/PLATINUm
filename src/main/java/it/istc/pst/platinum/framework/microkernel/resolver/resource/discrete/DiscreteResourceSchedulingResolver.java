@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.ResourceProfileComputationException;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResourceProfile;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceProfileSample;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -36,11 +36,8 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class DiscreteResourceSchedulingResolver extends Resolver implements Comparator<RequirementResourceProfileSample> 
+public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResource> implements Comparator<RequirementResourceProfileSample> 
 { 
-	@ComponentPlaceholder
-	protected DiscreteResource component;
-
 	/**
 	 * 
 	 */
@@ -385,86 +382,45 @@ public class DiscreteResourceSchedulingResolver extends Resolver implements Comp
 	{
 		// get the flaw solution to consider
 		PrecedenceConstraint pc = (PrecedenceConstraint) solution;
-		// prepare relations
-		Set<Relation> relations = new HashSet<>();
-		// get reference and target decisions
-		Decision reference = pc.getReference();
-		Decision target = pc.getTarget();
-			
-		// create relation
-		BeforeRelation rel = this.component.create(RelationType.BEFORE, reference, target);
-		// set bounds
-		rel.setBound(new long[] {1, this.component.getHorizon()});
-		// add reference, target and constraint
-		relations.add(rel);
-		this.logger.debug("Applying flaw solution:\n"
-				+ "- solution: " + solution + "\n"
-				+ "- created temporal constraint: " + rel + "\n");
-		
 		try 
 		{
+			// get reference and target decisions
+			Decision reference = pc.getReference();
+			Decision target = pc.getTarget();
+			// create relation
+			BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
+			// set bounds
+			before.setBound(new long[] {1, this.tdb.getHorizon()});
+			// add created relation
+			solution.addCreatedRelation(before);
+			this.logger.debug("Applying flaw solution:\n"
+					+ "- solution: " + solution + "\n"
+					+ "- created temporal constraint: " + before + "\n");
+			
 			// propagate relations
-			this.component.add(relations);
+			this.component.activate(before);
 			// add activated relations to solution
-			solution.addActivatedRelations(relations);
+			solution.addActivatedRelation(before);
 		}
 		catch (RelationPropagationException ex) 
 		{
-			// clear memory from relation
-			this.component.free(rel);
-			// not feasible solution
-			throw new FlawSolutionApplicationException(ex.getMessage());
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	protected void doRestore(FlawSolution solution) 
-			throws RelationPropagationException 
-	{
-		// list of activated relations
-		List<Relation> list = solution.getActivatedRelations();
-		// list of committed relations
-		List<Relation> committed = new ArrayList<>();
-		try
-		{
-			// activate relations
-			for (Relation rel : list) 
-			{
-				// restore relation
-				this.component.restore(rel);
-				// activate relation
-				this.component.add(rel);
-				committed.add(rel);
+			// deactivate created relation
+			for (Relation rel : solution.getActivatedRelations()) {
+				// get reference
+				DomainComponent refComp = rel.getReference().getComponent();
+				refComp.deactivate(rel);
 			}
-		}
-		catch (RelationPropagationException ex) 
-		{
-			// deactivate committed relations
-			for (Relation relation : committed) {
-				// free relation
-				this.component.free(relation);
+			
+			// delete created relations
+			for (Relation rel : solution.getCreatedRelations()) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				// delete relation from component
+				refComp.delete(rel);
 			}
 
-			// error while restoring flaw solution
-			throw new RelationPropagationException("Error while resetting flaw solution:\n- " + solution + "\n");
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	protected void doRetract(FlawSolution solution) 
-	{
-		// get the list of activated (and also created) relations
-		List<Relation> relations = solution.getActivatedRelations();
-		// manage activated relations
-		for (Relation rel : relations) {
-			// free created and activated relations
-			this.component.free(rel);
+			// not feasible solution
+			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
 	}
 	

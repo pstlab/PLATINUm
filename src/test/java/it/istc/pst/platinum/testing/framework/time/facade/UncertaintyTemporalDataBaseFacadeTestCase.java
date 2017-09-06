@@ -595,7 +595,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			
 			// make distance query
 			IntervalDistanceQuery distanceQuery = this.queryFactory.create(TemporalQueryType.INTERVAL_DISTANCE);
-			distanceQuery.setSource(i1);
+			distanceQuery.setReference(i1);
 			distanceQuery.setTarget(i2);
 			// process query
 			facade.process(distanceQuery);

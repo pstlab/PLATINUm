@@ -26,7 +26,7 @@ public final class IntervalDistanceQuery extends TemporalIntervalQuery {
 	 * 
 	 * @param source
 	 */
-	public void setSource(TemporalInterval source) {
+	public void setReference(TemporalInterval source) {
 		this.source = source;
 	}
 	
