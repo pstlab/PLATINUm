@@ -4,6 +4,7 @@
     <semanticResources>platform:/plugin/it.cnr.istc.keen/model/generated/Ddl.ecore</semanticResources>
     <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
     <semanticResources>virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl</semanticResources>
+    <semanticResources>virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" xmi:id="_dHZAcEIWEeeqWsm0nP27nA">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_eZW-oEIWEeeqWsm0nP27nA" name="FourByThree_AIIA17" representation="_eZXlsEIWEeeqWsm0nP27nA">
@@ -13,6 +14,34 @@
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_e2gWMEItEeeqWsm0nP27nA" name="FbTAIIA17Model" representation="_e2gWMUItEeeqWsm0nP27nA">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']"/>
         <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_09ZPsJR9Eee8cs0jjai1zg" name="Main View - Satellite Reservoir" representation="_09ZPsZR9Eee8cs0jjai1zg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']"/>
+        <target xmi:type="ddl:Ddl" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#/"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_3sRQwJR9Eee8cs0jjai1zg" name="Domain Model - Satellite Reservoir" representation="_3sRQwZR9Eee8cs0jjai1zg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']"/>
+        <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_6C8NMJR9Eee8cs0jjai1zg" name="Constraints for PointingModeType - Pointing Mode " representation="_6C80QJR9Eee8cs0jjai1zg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']"/>
+        <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_AvKNkJR-Eee8cs0jjai1zg" name="Component Diagram - Sallite Reservoir" representation="_AvKNkZR-Eee8cs0jjai1zg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']"/>
+        <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_CW3yQJR-Eee8cs0jjai1zg" name="Synchronizations for PointingMode.pm - Satellite Reservoir" representation="_CW3yQZR-Eee8cs0jjai1zg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']"/>
+        <target xmi:type="ddl:TimelineSynchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_h931MJR-Eee8cs0jjai1zg" name="Synchronizations for SatelliteBattery.profile - Satellite Reservoir" representation="_h931MZR-Eee8cs0jjai1zg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']"/>
+        <target xmi:type="ddl:TimelineSynchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8"/>
+      </ownedRepresentationDescriptors>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_iJIYEJSAEee8cs0jjai1zg" name="Constraints for VisibilityWindowType - Satellite Reservoir " representation="_iJI_IJSAEee8cs0jjai1zg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']"/>
+        <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2"/>
       </ownedRepresentationDescriptors>
     </ownedViews>
   </viewpoint:DAnalysis>
@@ -784,8 +813,8 @@
       </ownedElements>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_e2gWfkItEeeqWsm0nP27nA" name="RobotToolType">
-      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9"/>
-      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9"/>
+      <target xmi:type="ddl:Component" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9"/>
+      <semanticElements xmi:type="ddl:Component" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain/@elements.9"/>
       <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_e2gWf0ItEeeqWsm0nP27nA" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
         <labelFormat>bold</labelFormat>
         <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
@@ -1002,5 +1031,1547 @@
     <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']"/>
     <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']"/>
     <target xmi:type="ddl:Domain" href="virtual:/resource/epsl2/domains/fourbythree/aiia17/fourbythree.ddl#//@domain"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_09ZPsZR9Eee8cs0jjai1zg" name="Main View - Satellite Reservoir">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_09ZPspR9Eee8cs0jjai1zg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_09ZPs5R9Eee8cs0jjai1zg"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_0-ElIJR9Eee8cs0jjai1zg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_0-ElIZR9Eee8cs0jjai1zg" type="Sirius" element="_09ZPsZR9Eee8cs0jjai1zg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_0-uFYJR9Eee8cs0jjai1zg" type="2002" element="_09ZPtJR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_0_W-kJR9Eee8cs0jjai1zg" type="5006"/>
+          <children xmi:type="notation:Node" xmi:id="_0_YMsJR9Eee8cs0jjai1zg" type="7001">
+            <children xmi:type="notation:Node" xmi:id="_0_sVwJR9Eee8cs0jjai1zg" type="3008" element="_09ZPtpR9Eee8cs0jjai1zg">
+              <children xmi:type="notation:Node" xmi:id="_0_s80JR9Eee8cs0jjai1zg" type="5005"/>
+              <children xmi:type="notation:Node" xmi:id="_0_tj4JR9Eee8cs0jjai1zg" type="7002">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_0_tj4ZR9Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_0_tj4pR9Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:DrawerStyle" xmi:id="_0_uK8JR9Eee8cs0jjai1zg"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_0_sVwZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0_sVwpR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_0_uyAJR9Eee8cs0jjai1zg" type="3008" element="_09ZPuJR9Eee8cs0jjai1zg">
+              <children xmi:type="notation:Node" xmi:id="_0_vZEJR9Eee8cs0jjai1zg" type="5005"/>
+              <children xmi:type="notation:Node" xmi:id="_0_vZEZR9Eee8cs0jjai1zg" type="7002">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_0_vZEpR9Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_0_vZE5R9Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:DrawerStyle" xmi:id="_0_vZFJR9Eee8cs0jjai1zg"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_0_uyAZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0_uyApR9Eee8cs0jjai1zg" x="40"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_0_YMsZR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_0_YMspR9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_0-uFYZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0-uFYpR9Eee8cs0jjai1zg" y="117"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_0_orYJR9Eee8cs0jjai1zg" type="2003" element="_09ZPupR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_0_pScJR9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_0_pScZR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_0_wnMJR9Eee8cs0jjai1zg" type="3010" element="_09ZPvJR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_0_wnMZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_0_wnMpR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_0_xOQJR9Eee8cs0jjai1zg" type="3010" element="_09ZPvpR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_0_xOQZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_0_xOQpR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_0_x1UJR9Eee8cs0jjai1zg" type="3010" element="_09ZPwJR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_0_x1UZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_0_x1UpR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_0_pScpR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_0_pSc5R9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_0_orYZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0_orYpR9Eee8cs0jjai1zg" x="25"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_0-ElIpR9Eee8cs0jjai1zg"/>
+        <edges xmi:type="notation:Edge" xmi:id="_1Ab8oJR9Eee8cs0jjai1zg" type="4001" element="_09ZPwpR9Eee8cs0jjai1zg" source="_0-uFYJR9Eee8cs0jjai1zg" target="_0_orYJR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_1AdKwJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1AdKwZR9Eee8cs0jjai1zg"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_1AiDQJR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1AiDQZR9Eee8cs0jjai1zg"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_1AiqUJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1AiqUZR9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_1Ab8oZR9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_1Ab8opR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_1Ab8o5R9Eee8cs0jjai1zg" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_1BBygJR9Eee8cs0jjai1zg" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_1BBygZR9Eee8cs0jjai1zg" id="(0.4954954954954955,1.0)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_09ZPtJR9Eee8cs0jjai1zg" name="RESERVOIR_SATELLITE" outgoingEdges="_09ZPwpR9Eee8cs0jjai1zg" childrenPresentation="HorizontalStack">
+      <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+      <semanticElements xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_09ZPtZR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/domain.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']"/>
+      <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_09ZPtpR9Eee8cs0jjai1zg" name="Domain Model">
+        <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+        <semanticElements xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_09ZPt5R9Eee8cs0jjai1zg" showIcon="false" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='domModelContainer']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='domModelContainer']"/>
+      </ownedDiagramElements>
+      <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_09ZPuJR9Eee8cs0jjai1zg" name="Component Diagram">
+        <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+        <semanticElements xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_09ZPuZR9Eee8cs0jjai1zg" showIcon="false" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='compDiagramContainer']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='domain']/@subContainerMappings[name='compDiagramContainer']"/>
+      </ownedDiagramElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_09ZPupR9Eee8cs0jjai1zg" name="temporal_module" incomingEdges="_09ZPwpR9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+      <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_09ZPu5R9Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/module.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_09ZPvJR9Eee8cs0jjai1zg" name="origin: 0">
+        <target xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+        <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_09ZPvZR9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='originNode']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='originNode']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_09ZPvpR9Eee8cs0jjai1zg" name="horizon: 100">
+        <target xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+        <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_09ZPv5R9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='horizonNode']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='horizonNode']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_09ZPwJR9Eee8cs0jjai1zg" name="time points: 100">
+        <target xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+        <semanticElements xmi:type="ddl:TemporalModule" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@module"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_09ZPwZR9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='timePointsNode']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@containerMappings[name='temporalModule']/@subNodeMappings[name='timePointsNode']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_09ZPwpR9Eee8cs0jjai1zg" sourceNode="_09ZPtJR9Eee8cs0jjai1zg" targetNode="_09ZPupR9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_09Z2wJR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@edgeMappings[name='temporalModuleRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_09Z2wZR9Eee8cs0jjai1zg"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer/@edgeMappings[name='temporalModuleRelation']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_09Z2wpR9Eee8cs0jjai1zg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='rootModel']/@defaultLayer"/>
+    <target xmi:type="ddl:Ddl" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#/"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_3sRQwZR9Eee8cs0jjai1zg" name="Domain Model - Satellite Reservoir">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_3sRQwpR9Eee8cs0jjai1zg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_3sRQw5R9Eee8cs0jjai1zg"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_3sR30JR9Eee8cs0jjai1zg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_3sR30ZR9Eee8cs0jjai1zg" type="Sirius" element="_3sRQwZR9Eee8cs0jjai1zg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_3sR305R9Eee8cs0jjai1zg" type="2003" element="_3sRQxJR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_3sSe4JR9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_3sSe4ZR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_3sU7I5R9Eee8cs0jjai1zg" type="3010" element="_3sRQxpR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sU7JJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sU7JZR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_3sViMJR9Eee8cs0jjai1zg" type="3010" element="_3sRQyJR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sViMZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sViMpR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_3sWJQJR9Eee8cs0jjai1zg" type="3010" element="_3sRQypR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sWJQZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sWJQpR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_3sWJQ5R9Eee8cs0jjai1zg" type="3010" element="_3sRQzJR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sWJRJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sWJRZR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_3sWwUJR9Eee8cs0jjai1zg" type="3010" element="_3sRQzpR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sWwUZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sWwUpR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_3sSe4pR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_3sSe45R9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_3sR31JR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_3sR31ZR9Eee8cs0jjai1zg" x="9" y="9"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_3sTF8JR9Eee8cs0jjai1zg" type="2003" element="_3sRQ0JR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_3sTF85R9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_3sTtAJR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_3sWwU5R9Eee8cs0jjai1zg" type="3010" element="_3sRQ0pR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sWwVJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sWwVZR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_3sXXYJR9Eee8cs0jjai1zg" type="3010" element="_3sRQ1JR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sXXYZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sXXYpR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_3sTtAZR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_3sTtApR9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_3sTF8ZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_3sTF8pR9Eee8cs0jjai1zg" x="207" y="9"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_3sUUEJR9Eee8cs0jjai1zg" type="2003" element="_3sRQ1pR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_3sUUE5R9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_3sU7IJR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_3sX-cJR9Eee8cs0jjai1zg" type="3010" element="_3sRQ2JR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sX-cZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sX-cpR9Eee8cs0jjai1zg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_3sX-c5R9Eee8cs0jjai1zg" type="3010" element="_3sRQ2pR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_3sX-dJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_3sX-dZR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_3sU7IZR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_3sU7IpR9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_3sUUEZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_3sUUEpR9Eee8cs0jjai1zg" x="423" y="9"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_3sR30pR9Eee8cs0jjai1zg"/>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_3sRQxJR9Eee8cs0jjai1zg" name="PointingModeType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_3sRQxZR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQxpR9Eee8cs0jjai1zg" name="Earth()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQx5R9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQyJR9Eee8cs0jjai1zg" name="Slewing()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQyZR9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQypR9Eee8cs0jjai1zg" name="Science()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.2"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQy5R9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQzJR9Eee8cs0jjai1zg" name="_Comm()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.3"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQzZR9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQzpR9Eee8cs0jjai1zg" name="Maintenance()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.4"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.4"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQz5R9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_3sRQ0JR9Eee8cs0jjai1zg" name="VisibilityWindowType">
+      <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2"/>
+      <semanticElements xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_3sRQ0ZR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/statevariable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQ0pR9Eee8cs0jjai1zg" name="Visible()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.0"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQ05R9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQ1JR9Eee8cs0jjai1zg" name="NotVisible()">
+        <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.1"/>
+        <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQ1ZR9Eee8cs0jjai1zg" showIcon="false" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']/@containerMappings[name='SVType']/@subNodeMappings[name='CdType']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_3sRQ1pR9Eee8cs0jjai1zg" name="BatteryType">
+      <target xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+      <semanticElements xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_3sRQ15R9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.modeling.design/icons/consumable.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']/@containerMappings[name='CRType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']/@containerMappings[name='CRType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQ2JR9Eee8cs0jjai1zg" name="min: 0">
+        <target xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <semanticElements xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQ2ZR9Eee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']/@containerMappings[name='CRType']/@subNodeMappings[name='CRvalueMin']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']/@containerMappings[name='CRType']/@subNodeMappings[name='CRvalueMin']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3sRQ2pR9Eee8cs0jjai1zg" name="max: 10">
+        <target xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <semanticElements xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_3sRQ25R9Eee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']/@containerMappings[name='CRType']/@subNodeMappings[name='CRvalueMax']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']/@containerMappings[name='CRType']/@subNodeMappings[name='CRvalueMax']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_3sRQ3JR9Eee8cs0jjai1zg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@defaultLayer"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='stateVariablesLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='resourcesLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='DomainModel']/@additionalLayers[name='parameterLayer']"/>
+    <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_6C80QJR9Eee8cs0jjai1zg" name="Constraints for PointingModeType - Pointing Mode ">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_6C80QZR9Eee8cs0jjai1zg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_6C80QpR9Eee8cs0jjai1zg"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_6C9bUJR9Eee8cs0jjai1zg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_6C9bUZR9Eee8cs0jjai1zg" type="Sirius" element="_6C80QJR9Eee8cs0jjai1zg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_6C9bU5R9Eee8cs0jjai1zg" type="2003" element="_6C80Q5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6C-CYJR9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_6C-CYZR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_6DAeoJR9Eee8cs0jjai1zg" type="3010" element="_6C80RZR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_6DAeoZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_6DAeopR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_6C-CYpR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_6C-CY5R9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_6C9bVJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6C9bVZR9Eee8cs0jjai1zg" x="153" y="45"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_6C-CZJR9Eee8cs0jjai1zg" type="2003" element="_6C80R5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6C-pcJR9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_6C-pcZR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_6DAeo5R9Eee8cs0jjai1zg" type="3010" element="_6C80SZR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_6DAepJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_6DAepZR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_6C-pcpR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_6C-pc5R9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_6C-CZZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6C-CZpR9Eee8cs0jjai1zg" x="45" y="135"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_6C-pdJR9Eee8cs0jjai1zg" type="2003" element="_6C80S5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6C_QgJR9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_6C_QgZR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_6DAeppR9Eee8cs0jjai1zg" type="3010" element="_6C80TZR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_6DAep5R9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_6DAeqJR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_6C_QgpR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_6C_Qg5R9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_6C-pdZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6C-pdpR9Eee8cs0jjai1zg" x="45" y="225"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_6C_QhJR9Eee8cs0jjai1zg" type="2003" element="_6C80T5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6C_Qh5R9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_6C_3kJR9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_6DC64JR9Eee8cs0jjai1zg" type="3010" element="_6C80UZR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_6DC64ZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_6DC64pR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_6C_3kZR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_6C_3kpR9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_6C_QhZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6C_QhpR9Eee8cs0jjai1zg" x="255" y="135"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_6C_3k5R9Eee8cs0jjai1zg" type="2003" element="_6C80U5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6C_3lpR9Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_6C_3l5R9Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_6DDh8JR9Eee8cs0jjai1zg" type="3010" element="_6C80VZR9Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_6DDh8ZR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_6DDh8pR9Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_6C_3mJR9Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_6C_3mZR9Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_6C_3lJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6C_3lZR9Eee8cs0jjai1zg" x="222" y="225"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_6C9bUpR9Eee8cs0jjai1zg"/>
+        <edges xmi:type="notation:Edge" xmi:id="_6DEJAJR9Eee8cs0jjai1zg" type="4001" element="_6C80V5R9Eee8cs0jjai1zg" source="_6C9bU5R9Eee8cs0jjai1zg" target="_6C-CZJR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DEJBJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DEJBZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DEJBpR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DEJB5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DEJCJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DEJCZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DEJAZR9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DEJApR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_3cJR9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DEJA5R9Eee8cs0jjai1zg" points="[0, 0, 55, -50]$[0, 0, 55, -50]$[-55, 50, 0, 0]$[-55, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DEwEJR9Eee8cs0jjai1zg" id="(0.06793206793206795,0.3902439024390244)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DEwEZR9Eee8cs0jjai1zg" id="(0.4809805579036348,0.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DEwEpR9Eee8cs0jjai1zg" type="4001" element="_6C80WpR9Eee8cs0jjai1zg" source="_6C9bU5R9Eee8cs0jjai1zg" target="_6C_QhJR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DFXIJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DFXIZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DFXIpR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DFXI5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DFXJJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DFXJZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DEwE5R9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DEwFJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_QYpR9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DEwFZR9Eee8cs0jjai1zg" points="[0, 0, -55, -50]$[0, 0, -55, -50]$[55, 50, 0, 0]$[55, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DFXJpR9Eee8cs0jjai1zg" id="(0.4775224775224775,0.3902439024390244)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DFXJ5R9Eee8cs0jjai1zg" id="(0.06793206793206795,0.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DFXKJR9Eee8cs0jjai1zg" type="4001" element="_6C80XZR9Eee8cs0jjai1zg" source="_6C9bU5R9Eee8cs0jjai1zg" target="_6C_3k5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DF-MJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DF-MZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DF-MpR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DF-M5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DF-NJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DF-NZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DFXKZR9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DFXKpR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_3cpR9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DFXK5R9Eee8cs0jjai1zg" points="[0, 0, -77, -141]$[0, 0, -77, -141]$[77, 141, 0, 0]$[77, 141, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DF-NpR9Eee8cs0jjai1zg" id="(0.37512487512487513,0.3902439024390244)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DF-N5R9Eee8cs0jjai1zg" id="(0.28668390433096297,0.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DGlQJR9Eee8cs0jjai1zg" type="4001" element="_6C80YJR9Eee8cs0jjai1zg" source="_6C-CZJR9Eee8cs0jjai1zg" target="_6C9bU5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DGlRJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DGlRZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DGlRpR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DGlR5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DGlSJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DGlSZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DGlQZR9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DGlQpR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J-CQJR9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DGlQ5R9Eee8cs0jjai1zg" points="[0, 0, -55, 50]$[0, 0, -55, 50]$[55, -50, 0, 0]$[55, -50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DGlSpR9Eee8cs0jjai1zg" id="(0.4809805579036348,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DGlS5R9Eee8cs0jjai1zg" id="(0.06793206793206795,0.3902439024390244)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DHMUJR9Eee8cs0jjai1zg" type="4001" element="_6C80Y5R9Eee8cs0jjai1zg" source="_6C-CZJR9Eee8cs0jjai1zg" target="_6C-pdJR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DHMVJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DHMVZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DHMVpR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DHMV5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DHMWJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DHMWZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DHMUZR9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DHMUpR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_QY5R9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DHMU5R9Eee8cs0jjai1zg" points="[0, 0, 0, -50]$[0, 0, 0, -50]$[0, 50, 0, 0]$[0, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DHzYJR9Eee8cs0jjai1zg" id="(0.3076923076923077,0.3902439024390244)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DHzYZR9Eee8cs0jjai1zg" id="(0.3076923076923077,0.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DHzYpR9Eee8cs0jjai1zg" type="4001" element="_6C80ZpR9Eee8cs0jjai1zg" source="_6C-pdJR9Eee8cs0jjai1zg" target="_6C-CZJR9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DHzZpR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DHzZ5R9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DHzaJR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DHzaZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DIacJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DIacZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DHzY5R9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DHzZJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_QYZR9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DHzZZR9Eee8cs0jjai1zg" points="[0, 0, 0, 50]$[0, 0, 0, 50]$[0, -50, 0, 0]$[0, -50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DIacpR9Eee8cs0jjai1zg" id="(0.3076923076923077,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DIac5R9Eee8cs0jjai1zg" id="(0.3076923076923077,0.3902439024390244)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DIadJR9Eee8cs0jjai1zg" type="4001" element="_6C80aZR9Eee8cs0jjai1zg" source="_6C_QhJR9Eee8cs0jjai1zg" target="_6C9bU5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DIaeJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DIaeZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DJBgJR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DJBgZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DJBgpR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DJBg5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DIadZR9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DIadpR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_QYJR9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DIad5R9Eee8cs0jjai1zg" points="[0, 0, 55, 50]$[0, 0, 55, 50]$[-55, -50, 0, 0]$[-55, -50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DJBhJR9Eee8cs0jjai1zg" id="(0.06793206793206795,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DJBhZR9Eee8cs0jjai1zg" id="(0.4775224775224775,0.3902439024390244)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DJBhpR9Eee8cs0jjai1zg" type="4001" element="_6C80bJR9Eee8cs0jjai1zg" source="_6C_QhJR9Eee8cs0jjai1zg" target="_6C_3k5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DJokJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DJokZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DJokpR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DJok5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DJolJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DJolZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DJBh5R9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DJBiJR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_3cZR9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DJBiZR9Eee8cs0jjai1zg" points="[0, 0, 0, -50]$[0, 0, 0, -50]$[0, 50, 0, 0]$[0, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DJolpR9Eee8cs0jjai1zg" id="(0.2727272727272727,0.3902439024390244)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DJol5R9Eee8cs0jjai1zg" id="(0.35294117647058826,0.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_6DJomJR9Eee8cs0jjai1zg" type="4001" element="_6C80b5R9Eee8cs0jjai1zg" source="_6C_3k5R9Eee8cs0jjai1zg" target="_6C9bU5R9Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_6DKPoJR9Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DKPoZR9Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DKPopR9Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DKPo5R9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_6DKPpJR9Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6DKPpZR9Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_6DJomZR9Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_6DJompR9Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_6J_3c5R9Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6DJom5R9Eee8cs0jjai1zg" points="[0, 0, 77, 141]$[0, 0, 77, 141]$[-77, -141, 0, 0]$[-77, -141, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DKPppR9Eee8cs0jjai1zg" id="(0.28668390433096297,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6DKPp5R9Eee8cs0jjai1zg" id="(0.37512487512487513,0.3902439024390244)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_6C80Q5R9Eee8cs0jjai1zg" name="Earth()" outgoingEdges="_6C80V5R9Eee8cs0jjai1zg _6C80WpR9Eee8cs0jjai1zg _6C80XZR9Eee8cs0jjai1zg" incomingEdges="_6C80YJR9Eee8cs0jjai1zg _6C80aZR9Eee8cs0jjai1zg _6C80b5R9Eee8cs0jjai1zg" width="11">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.0"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_6C80RJR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_6C80RZR9Eee8cs0jjai1zg" name="[1, +INF]">
+        <target xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0"/>
+        <semanticElements xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_6C80RpR9Eee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_6C80R5R9Eee8cs0jjai1zg" name="Slewing()" outgoingEdges="_6C80YJR9Eee8cs0jjai1zg _6C80Y5R9Eee8cs0jjai1zg" incomingEdges="_6C80V5R9Eee8cs0jjai1zg _6C80ZpR9Eee8cs0jjai1zg" width="13">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.1"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_6C80SJR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_6C80SZR9Eee8cs0jjai1zg" name="[3, 3]">
+        <target xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.1"/>
+        <semanticElements xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_6C80SpR9Eee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_6C80S5R9Eee8cs0jjai1zg" name="Science()" outgoingEdges="_6C80ZpR9Eee8cs0jjai1zg" incomingEdges="_6C80Y5R9Eee8cs0jjai1zg" width="13">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.2"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.2"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_6C80TJR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_6C80TZR9Eee8cs0jjai1zg" name="[8, 11]">
+        <target xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.2"/>
+        <semanticElements xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.2"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_6C80TpR9Eee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_6C80T5R9Eee8cs0jjai1zg" name="_Comm()" outgoingEdges="_6C80aZR9Eee8cs0jjai1zg _6C80bJR9Eee8cs0jjai1zg" incomingEdges="_6C80WpR9Eee8cs0jjai1zg" width="11">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.3"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.3"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_6C80UJR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_6C80UZR9Eee8cs0jjai1zg" name="[10, 18]">
+        <target xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.3"/>
+        <semanticElements xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.3"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_6C80UpR9Eee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_6C80U5R9Eee8cs0jjai1zg" name="Maintenance()" outgoingEdges="_6C80b5R9Eee8cs0jjai1zg" incomingEdges="_6C80XZR9Eee8cs0jjai1zg _6C80bJR9Eee8cs0jjai1zg" width="17">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.4"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.4"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_6C80VJR9Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_6C80VZR9Eee8cs0jjai1zg" name="[5, 7]">
+        <target xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.4"/>
+        <semanticElements xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.4"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_6C80VpR9Eee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80V5R9Eee8cs0jjai1zg" sourceNode="_6C80Q5R9Eee8cs0jjai1zg" targetNode="_6C80R5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0/@meets.0"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0/@meets.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80WJR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80WZR9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80WpR9Eee8cs0jjai1zg" sourceNode="_6C80Q5R9Eee8cs0jjai1zg" targetNode="_6C80T5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0/@meets.1"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0/@meets.1"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80W5R9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80XJR9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80XZR9Eee8cs0jjai1zg" sourceNode="_6C80Q5R9Eee8cs0jjai1zg" targetNode="_6C80U5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0/@meets.2"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.0/@meets.2"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80XpR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80X5R9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80YJR9Eee8cs0jjai1zg" sourceNode="_6C80R5R9Eee8cs0jjai1zg" targetNode="_6C80Q5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.1/@meets.0"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.1/@meets.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80YZR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80YpR9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80Y5R9Eee8cs0jjai1zg" sourceNode="_6C80R5R9Eee8cs0jjai1zg" targetNode="_6C80S5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.1/@meets.1"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.1/@meets.1"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80ZJR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80ZZR9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80ZpR9Eee8cs0jjai1zg" sourceNode="_6C80S5R9Eee8cs0jjai1zg" targetNode="_6C80R5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.2/@meets.0"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.2/@meets.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80Z5R9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80aJR9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80aZR9Eee8cs0jjai1zg" sourceNode="_6C80T5R9Eee8cs0jjai1zg" targetNode="_6C80Q5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.3/@meets.0"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.3/@meets.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80apR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80a5R9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80bJR9Eee8cs0jjai1zg" sourceNode="_6C80T5R9Eee8cs0jjai1zg" targetNode="_6C80U5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.3/@meets.1"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.3/@meets.1"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80bZR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80bpR9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_6C80b5R9Eee8cs0jjai1zg" sourceNode="_6C80U5R9Eee8cs0jjai1zg" targetNode="_6C80Q5R9Eee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.4/@meets.0"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@transConstraint.4/@meets.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_6C80cJR9Eee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_6C80cZR9Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_6C80cpR9Eee8cs0jjai1zg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer"/>
+    <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_AvKNkZR-Eee8cs0jjai1zg" name="Component Diagram - Sallite Reservoir">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_AvKNkpR-Eee8cs0jjai1zg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_AvKNk5R-Eee8cs0jjai1zg"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_AvK0oJR-Eee8cs0jjai1zg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_AvK0oZR-Eee8cs0jjai1zg" type="Sirius" element="_AvKNkZR-Eee8cs0jjai1zg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_AvK0o5R-Eee8cs0jjai1zg" type="2003" element="_AvKNlJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_AvLbsJR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_AvLbsZR-Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_AvN38JR-Eee8cs0jjai1zg" type="3010" element="_AvKNlpR-Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_AvN38ZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_AvN38pR-Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_AvLbspR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_AvLbs5R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_AvK0pJR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AvK0pZR-Eee8cs0jjai1zg" x="12" y="9"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_AvLbtJR-Eee8cs0jjai1zg" type="2003" element="_AvKNmJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_AvMCwJR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_AvMCwZR-Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_AvN385R-Eee8cs0jjai1zg" type="3010" element="_AvKNmpR-Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_AvN39JR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_AvN39ZR-Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_AvMCwpR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_AvMCw5R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_AvLbtZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AvLbtpR-Eee8cs0jjai1zg" x="288" y="9"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_AvMCxJR-Eee8cs0jjai1zg" type="2003" element="_AvKNnJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_AvMp0JR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_AvMp0ZR-Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_AvN39pR-Eee8cs0jjai1zg" type="3010" element="_AvKNnpR-Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_AvN395R-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_AvN3-JR-Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_AvMp0pR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_AvMp05R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_AvMCxZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AvMCxpR-Eee8cs0jjai1zg" x="6" y="117"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_AvMp1JR-Eee8cs0jjai1zg" type="2003" element="_AvKNoJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_AvNQ4JR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_AvNQ4ZR-Eee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_AvOfAJR-Eee8cs0jjai1zg" type="3010" element="_AvKNopR-Eee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_AvOfAZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_AvOfApR-Eee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_AvNQ4pR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_AvNQ45R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_AvMp1ZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AvMp1pR-Eee8cs0jjai1zg" x="288" y="117"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_AvK0opR-Eee8cs0jjai1zg"/>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_AvKNlJR-Eee8cs0jjai1zg" name="PointingMode: PointingModeType">
+      <target xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.3"/>
+      <semanticElements xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.3"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_AvKNlZR-Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/component.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_AvKNlpR-Eee8cs0jjai1zg" name="pm">
+        <target xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.3/@timelines.0"/>
+        <semanticElements xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.3/@timelines.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_AvKNl5R-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/timeline.png" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_AvKNmJR-Eee8cs0jjai1zg" name="GroundStationWindow: VisibilityWindowType">
+      <target xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.4"/>
+      <semanticElements xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.4"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_AvKNmZR-Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/component.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_AvKNmpR-Eee8cs0jjai1zg" name="channel">
+        <target xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.4/@timelines.0"/>
+        <semanticElements xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.4/@timelines.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_AvKNm5R-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/timeline.png" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_AvKNnJR-Eee8cs0jjai1zg" name="SunWindow: VisibilityWindowType">
+      <target xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.5"/>
+      <semanticElements xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.5"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_AvKNnZR-Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/component.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_AvKNnpR-Eee8cs0jjai1zg" name="sun">
+        <target xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.5/@timelines.0"/>
+        <semanticElements xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.5/@timelines.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_AvKNn5R-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/timeline.png" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_AvKNoJR-Eee8cs0jjai1zg" name="SatelliteBattery: BatteryType">
+      <target xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.6"/>
+      <semanticElements xmi:type="ddl:Component" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.6"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_AvKNoZR-Eee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/component.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_AvKNopR-Eee8cs0jjai1zg" name="profile">
+        <target xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.6/@timelines.0"/>
+        <semanticElements xmi:type="ddl:Timeline" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.6/@timelines.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_AvKNo5R-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/timeline.png" labelAlignment="LEFT" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer/@containerMappings[name='component']/@subNodeMappings[name='timeline']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_AvKNpJR-Eee8cs0jjai1zg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='componentDiagram']/@defaultLayer"/>
+    <target xmi:type="ddl:Domain" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_CW3yQZR-Eee8cs0jjai1zg" name="Synchronizations for PointingMode.pm - Satellite Reservoir">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_CW3yQpR-Eee8cs0jjai1zg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_CW3yQ5R-Eee8cs0jjai1zg"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_CW5AYJR-Eee8cs0jjai1zg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_CW5AYZR-Eee8cs0jjai1zg" type="Sirius" element="_CW3yQZR-Eee8cs0jjai1zg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_CW5AY5R-Eee8cs0jjai1zg" type="2003" element="_CW3yRJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW5ncJR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW5ncZR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW5ncpR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW5nc5R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW5AZJR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW5AZZR-Eee8cs0jjai1zg" x="567" y="279"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW6OgJR-Eee8cs0jjai1zg" type="2003" element="_CW4ZUZR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW6Og5R-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW6OhJR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW6OhZR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW6OhpR-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW6OgZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW6OgpR-Eee8cs0jjai1zg" x="35" y="558"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW61kJR-Eee8cs0jjai1zg" type="2003" element="_CW4ZU5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW61k5R-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW7coJR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW7coZR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW7copR-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW61kZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW61kpR-Eee8cs0jjai1zg" x="155" y="9"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW7co5R-Eee8cs0jjai1zg" type="2003" element="_CW4ZVZR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW8DsJR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW8DsZR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW8DspR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW8Ds5R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW7cpJR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW7cpZR-Eee8cs0jjai1zg" x="171" y="279"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW8DtJR-Eee8cs0jjai1zg" type="2003" element="_CW4ZV5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW8Dt5R-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW8DuJR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW8DuZR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW8DupR-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW8DtZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW8DtpR-Eee8cs0jjai1zg" x="225" y="558"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW8Du5R-Eee8cs0jjai1zg" type="2003" element="_CW4ZWZR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW8qwJR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW8qwZR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW8qwpR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW8qw5R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW8DvJR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW8DvZR-Eee8cs0jjai1zg" y="189"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW8qxJR-Eee8cs0jjai1zg" type="2003" element="_CW4ZW5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW8qx5R-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW8qyJR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW8qyZR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW8qypR-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW8qxZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW8qxpR-Eee8cs0jjai1zg" x="270" y="189"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW8qy5R-Eee8cs0jjai1zg" type="2003" element="_CW4ZXZR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW9R0JR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW9R0ZR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW9R0pR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW9R05R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW8qzJR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW8qzZR-Eee8cs0jjai1zg" x="2" y="468"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW9R1JR-Eee8cs0jjai1zg" type="2003" element="_CW4ZX5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW9R15R-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW9R2JR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW9R2ZR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW9R2pR-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW9R1ZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW9R1pR-Eee8cs0jjai1zg" x="261" y="468"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW9R25R-Eee8cs0jjai1zg" type="2003" element="_CW4ZYZR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW944JR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW944ZR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW944pR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW9445R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW9R3JR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW9R3ZR-Eee8cs0jjai1zg" x="152" y="99"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_CW945JR-Eee8cs0jjai1zg" type="2003" element="_CW4ZY5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW9455R-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_CW946JR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_CW946ZR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_CW946pR-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_CW945ZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW945pR-Eee8cs0jjai1zg" x="162" y="369"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_CW5AYpR-Eee8cs0jjai1zg"/>
+        <edges xmi:type="notation:Edge" xmi:id="_CW-f8JR-Eee8cs0jjai1zg" type="4001" element="_CW4ZZZR-Eee8cs0jjai1zg" source="_CW61kJR-Eee8cs0jjai1zg" target="_CW9R25R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW-f9JR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW-f9ZR-Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CW-f9pR-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW-f95R-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CW-f-JR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW-f-ZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_CW-f8ZR-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_CW-f8pR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_Cb9toJR-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CW-f85R-Eee8cs0jjai1zg" points="[0, 0, 0, -50]$[0, 0, 0, -50]$[0, 50, 0, 0]$[0, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CW_HAJR-Eee8cs0jjai1zg" id="(0.6351351351351351,1.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CW_HAZR-Eee8cs0jjai1zg" id="(0.6298701298701299,0.2682926829268293)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_CW_HApR-Eee8cs0jjai1zg" type="4001" element="_CW4ZaJR-Eee8cs0jjai1zg" source="_CW7co5R-Eee8cs0jjai1zg" target="_CW945JR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW_uEJR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW_uEZR-Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CW_uEpR-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW_uE5R-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CW_uFJR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW_uFZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_CW_HA5R-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_CW_HBJR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_Cb-UsZR-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CW_HBZR-Eee8cs0jjai1zg" points="[0, 0, 0, -50]$[0, 0, 0, -50]$[0, 50, 0, 0]$[0, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CW_uFpR-Eee8cs0jjai1zg" id="(0.6360544217687075,1.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CW_uF5R-Eee8cs0jjai1zg" id="(0.6324503311258278,0.2682926829268293)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_CW_uGJR-Eee8cs0jjai1zg" type="4001" element="_CW4Za5R-Eee8cs0jjai1zg" source="_CW9R25R-Eee8cs0jjai1zg" target="_CW8qxJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CW_uHJR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW_uHZR-Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CW_uHpR-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CW_uH5R-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CXAVIJR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXAVIZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_CW_uGZR-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_CW_uGpR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_Cb9toZR-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CW_uG5R-Eee8cs0jjai1zg" points="[22, 20, -96, -70]$[26, 23, -92, -67]$[104, 77, -14, -13]$[115, 80, -3, -10]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXAVIpR-Eee8cs0jjai1zg" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXAVI5R-Eee8cs0jjai1zg" id="(0.45574242830340395,0.2682926829268293)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_CXAVJJR-Eee8cs0jjai1zg" type="4001" element="_CW4ZbpR-Eee8cs0jjai1zg" source="_CW9R25R-Eee8cs0jjai1zg" target="_CW8Du5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CXA8MJR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXA8MZR-Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CXA8MpR-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXA8M5R-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CXA8NJR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXA8NZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_CXAVJZR-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_CXAVJpR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_Cb-Us5R-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CXAVJ5R-Eee8cs0jjai1zg" points="[-24, 20, 128, -70]$[-27, 23, 125, -67]$[-117, 77, 35, -13]$[-127, 80, 25, -10]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXA8NpR-Eee8cs0jjai1zg" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXA8N5R-Eee8cs0jjai1zg" id="(0.5,0.5)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_CXA8OJR-Eee8cs0jjai1zg" type="4001" element="_CW4ZcZR-Eee8cs0jjai1zg" source="_CW945JR-Eee8cs0jjai1zg" target="_CW8qy5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CXBjQJR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXBjQZR-Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CXBjQpR-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXBjQ5R-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CXBjRJR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXBjRZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_CXA8OZR-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_CXA8OpR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_Cb-UsJR-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CXA8O5R-Eee8cs0jjai1zg" points="[-22, 20, 138, -79]$[-28, 26, 132, -73]$[-125, 83, 35, -16]$[-135, 87, 25, -12]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXBjRpR-Eee8cs0jjai1zg" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXBjR5R-Eee8cs0jjai1zg" id="(0.5,0.5)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_CXCKUJR-Eee8cs0jjai1zg" type="4001" element="_CW4ZdJR-Eee8cs0jjai1zg" source="_CW945JR-Eee8cs0jjai1zg" target="_CW9R1JR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_CXDYcJR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXDYcZR-Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CXD_gJR-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXD_gZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_CXEmkJR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CXEmkZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_CXCKUZR-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_CXCKUpR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_Cb-UspR-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CXCKU5R-Eee8cs0jjai1zg" points="[14, 20, -85, -79]$[19, 26, -80, -73]$[93, 83, -6, -16]$[96, 89, -3, -10]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXEmkpR-Eee8cs0jjai1zg" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CXEmk5R-Eee8cs0jjai1zg" id="(0.45513242517850805,0.2682926829268293)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW3yRJR-Eee8cs0jjai1zg" name="PointingModeType.Earth">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.0"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZUJR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZUZR-Eee8cs0jjai1zg" name="PointingModeType.Slewing">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.1"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZUpR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZU5R-Eee8cs0jjai1zg" name="PointingModeType.Science" outgoingEdges="_CW4ZZZR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.2"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.2"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZVJR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZVZR-Eee8cs0jjai1zg" name="PointingModeType._Comm" outgoingEdges="_CW4ZaJR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.3"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.3"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZVpR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZV5R-Eee8cs0jjai1zg" name="PointingModeType.Maintenance">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.4"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.4"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZWJR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeSV']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZWZR-Eee8cs0jjai1zg" name="cd0: SatelliteBattery.profile.CONSUMPTION" incomingEdges="_CW4ZbpR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.0"/>
+      <semanticElements xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZWpR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZW5R-Eee8cs0jjai1zg" name="cd1: PointingMode.pm._Comm" incomingEdges="_CW4Za5R-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.1"/>
+      <semanticElements xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZXJR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZXZR-Eee8cs0jjai1zg" name="cd0: GroundStationWindow.channel.Visible" incomingEdges="_CW4ZcZR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.0"/>
+      <semanticElements xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZXpR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZX5R-Eee8cs0jjai1zg" name="cd1: SatelliteBattery.profile.CONSUMPTION" incomingEdges="_CW4ZdJR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.1"/>
+      <semanticElements xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZYJR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZYZR-Eee8cs0jjai1zg" name="PointingMode.pm.Science" outgoingEdges="_CW4Za5R-Eee8cs0jjai1zg _CW4ZbpR-Eee8cs0jjai1zg" incomingEdges="_CW4ZZZR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:Synchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0"/>
+      <semanticElements xmi:type="ddl:Synchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZYpR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@containerMappings[name='syncCompDecHead']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@containerMappings[name='syncCompDecHead']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_CW4ZY5R-Eee8cs0jjai1zg" name="PointingMode.pm._Comm" outgoingEdges="_CW4ZcZR-Eee8cs0jjai1zg _CW4ZdJR-Eee8cs0jjai1zg" incomingEdges="_CW4ZaJR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:Synchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1"/>
+      <semanticElements xmi:type="ddl:Synchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_CW4ZZJR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@containerMappings[name='syncCompDecHead']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@containerMappings[name='syncCompDecHead']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_CW4ZZZR-Eee8cs0jjai1zg" name="«instance of»" sourceNode="_CW4ZU5R-Eee8cs0jjai1zg" targetNode="_CW4ZYZR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.2"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_CW4ZZpR-Eee8cs0jjai1zg" lineStyle="dash" sourceArrow="InputArrow" targetArrow="NoDecoration" foldingStyle="TARGET" strokeColor="0,0,0">
+        <customFeatures>routingStyle</customFeatures>
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']/@edgeMappings[name='syncInstanceOf']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_CW4ZZ5R-Eee8cs0jjai1zg" showIcon="false"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']/@edgeMappings[name='syncInstanceOf']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_CW4ZaJR-Eee8cs0jjai1zg" name="«instance of»" sourceNode="_CW4ZVZR-Eee8cs0jjai1zg" targetNode="_CW4ZY5R-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.1/@decTypes.3"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_CW4ZaZR-Eee8cs0jjai1zg" lineStyle="dash" sourceArrow="InputArrow" targetArrow="NoDecoration" foldingStyle="TARGET" strokeColor="0,0,0">
+        <customFeatures>routingStyle</customFeatures>
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']/@edgeMappings[name='syncInstanceOf']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_CW4ZapR-Eee8cs0jjai1zg" showIcon="false"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']/@edgeMappings[name='syncInstanceOf']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_CW4Za5R-Eee8cs0jjai1zg" name="BEFORE [0, +INF]" sourceNode="_CW4ZYZR-Eee8cs0jjai1zg" targetNode="_CW4ZW5R-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.2"/>
+      <semanticElements xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.2"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_CW4ZbJR-Eee8cs0jjai1zg" foldingStyle="SOURCE" size="2" centered="Both">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_CW4ZbZR-Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_CW4ZbpR-Eee8cs0jjai1zg" name="EQUALS" sourceNode="_CW4ZYZR-Eee8cs0jjai1zg" targetNode="_CW4ZWZR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.3"/>
+      <semanticElements xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.0/@elements.3"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_CW4Zb5R-Eee8cs0jjai1zg" foldingStyle="SOURCE" size="2" centered="Both">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_CW4ZcJR-Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_CW4ZcZR-Eee8cs0jjai1zg" name="DURING [0, +INF] [0, +INF]" sourceNode="_CW4ZY5R-Eee8cs0jjai1zg" targetNode="_CW4ZXZR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.2"/>
+      <semanticElements xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.2"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_CW4ZcpR-Eee8cs0jjai1zg" foldingStyle="SOURCE" size="2" centered="Both">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_CW4Zc5R-Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_CW4ZdJR-Eee8cs0jjai1zg" name="EQUALS" sourceNode="_CW4ZY5R-Eee8cs0jjai1zg" targetNode="_CW4ZX5R-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.3"/>
+      <semanticElements xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7/@synchronizations.1/@elements.3"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_CW4ZdZR-Eee8cs0jjai1zg" foldingStyle="SOURCE" size="2" centered="Both">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_CW4ZdpR-Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_CW4Zd5R-Eee8cs0jjai1zg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']"/>
+    <target xmi:type="ddl:TimelineSynchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.7"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_h931MZR-Eee8cs0jjai1zg" name="Synchronizations for SatelliteBattery.profile - Satellite Reservoir">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_h931MpR-Eee8cs0jjai1zg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_h931M5R-Eee8cs0jjai1zg"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_h94cQJR-Eee8cs0jjai1zg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_h94cQZR-Eee8cs0jjai1zg" type="Sirius" element="_h931MZR-Eee8cs0jjai1zg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_h95DUJR-Eee8cs0jjai1zg" type="2002" element="_h931NJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_h95qYJR-Eee8cs0jjai1zg" type="5006"/>
+          <children xmi:type="notation:Node" xmi:id="_h95qYZR-Eee8cs0jjai1zg" type="7001">
+            <children xmi:type="notation:Node" xmi:id="_h96RdJR-Eee8cs0jjai1zg" type="3008" element="_h931NpR-Eee8cs0jjai1zg">
+              <children xmi:type="notation:Node" xmi:id="_h96Rd5R-Eee8cs0jjai1zg" type="5005"/>
+              <children xmi:type="notation:Node" xmi:id="_h96ReJR-Eee8cs0jjai1zg" type="7002">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_h96ReZR-Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_h96RepR-Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:DrawerStyle" xmi:id="_h96Re5R-Eee8cs0jjai1zg"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_h96RdZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h96RdpR-Eee8cs0jjai1zg" width="85" height="40"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_h964gJR-Eee8cs0jjai1zg" type="3008" element="_h931OJR-Eee8cs0jjai1zg">
+              <children xmi:type="notation:Node" xmi:id="_h964g5R-Eee8cs0jjai1zg" type="5005"/>
+              <children xmi:type="notation:Node" xmi:id="_h964hJR-Eee8cs0jjai1zg" type="7002">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_h964hZR-Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_h964hpR-Eee8cs0jjai1zg"/>
+                <styles xmi:type="notation:DrawerStyle" xmi:id="_h964h5R-Eee8cs0jjai1zg"/>
+              </children>
+              <styles xmi:type="notation:ShapeStyle" xmi:id="_h964gZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h964gpR-Eee8cs0jjai1zg" y="52" width="85" height="40"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_h95qYpR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_h95qY5R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_h95DUZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h95DUpR-Eee8cs0jjai1zg" x="127"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_h95qZJR-Eee8cs0jjai1zg" type="2003" element="_h931OpR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_h95qZ5R-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_h95qaJR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_h95qaZR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_h95qapR-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_h95qZZR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h95qZpR-Eee8cs0jjai1zg" x="95" y="243"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_h95qa5R-Eee8cs0jjai1zg" type="2003" element="_h931PJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_h96RcJR-Eee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_h96RcZR-Eee8cs0jjai1zg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_h96RcpR-Eee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_h96Rc5R-Eee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_h95qbJR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h95qbZR-Eee8cs0jjai1zg" x="71" y="144"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_h94cQpR-Eee8cs0jjai1zg"/>
+        <edges xmi:type="notation:Edge" xmi:id="_h964iJR-Eee8cs0jjai1zg" type="4001" element="_h931PpR-Eee8cs0jjai1zg" source="_h95DUJR-Eee8cs0jjai1zg" target="_h95qa5R-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_h97fkJR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h97fkZR-Eee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_h97fkpR-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h97fk5R-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_h97flJR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h97flZR-Eee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_h964iZR-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_h964ipR-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_iChrsJR-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_h964i5R-Eee8cs0jjai1zg" points="[0, 0, 0, -50]$[0, 0, 0, -50]$[0, 50, 0, 0]$[0, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_h97flpR-Eee8cs0jjai1zg" id="(0.0,1.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_h98GoJR-Eee8cs0jjai1zg" id="(0.24,0.4878048780487805)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_h98GoZR-Eee8cs0jjai1zg" type="4001" element="_h931QZR-Eee8cs0jjai1zg" source="_h95qa5R-Eee8cs0jjai1zg" target="_h95qZJR-Eee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_h98GpZR-Eee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h98GppR-Eee8cs0jjai1zg" y="2"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_h98Gp5R-Eee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h98GqJR-Eee8cs0jjai1zg" x="-9" y="17"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_h98GqZR-Eee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_h98GqpR-Eee8cs0jjai1zg" x="-2" y="3"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_h98GopR-Eee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_h98Go5R-Eee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_iChrsZR-Eee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_h98GpJR-Eee8cs0jjai1zg" points="[-25, 20, 26, -79]$[-32, 26, 19, -73]$[-47, 80, 4, -19]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_h98Gq5R-Eee8cs0jjai1zg" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_h98GrJR-Eee8cs0jjai1zg" id="(0.16233766233766234,0.4878048780487805)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_h931NJR-Eee8cs0jjai1zg" name="BatteryType" outgoingEdges="_h931PpR-Eee8cs0jjai1zg" childrenPresentation="VerticalStack">
+      <target xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+      <semanticElements xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_h931NZR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeCR']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeCR']"/>
+      <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_h931NpR-Eee8cs0jjai1zg" name="CONSUMPTION">
+        <target xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <semanticElements xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_h931N5R-Eee8cs0jjai1zg" showIcon="false" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeCR']/@subContainerMappings[name='CRconsType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeCR']/@subContainerMappings[name='CRconsType']"/>
+      </ownedDiagramElements>
+      <ownedDiagramElements xmi:type="diagram:DNodeContainer" xmi:id="_h931OJR-Eee8cs0jjai1zg" name="PRODUCTION">
+        <target xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <semanticElements xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+        <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_h931OZR-Eee8cs0jjai1zg" showIcon="false" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+          <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeCR']/@subContainerMappings[name='CRprodType']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']/@containerMappings[name='syncCompTypeCR']/@subContainerMappings[name='CRprodType']"/>
+      </ownedDiagramElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_h931OpR-Eee8cs0jjai1zg" name="cd0: SunWindow.sun.Visible" incomingEdges="_h931QZR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.0"/>
+      <semanticElements xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.0"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_h931O5R-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']/@containerMappings[name='syncCompDecTail']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_h931PJR-Eee8cs0jjai1zg" name="SatelliteBattery.profile.PRODUCTION" outgoingEdges="_h931QZR-Eee8cs0jjai1zg" incomingEdges="_h931PpR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:Synchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0"/>
+      <semanticElements xmi:type="ddl:Synchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_h931PZR-Eee8cs0jjai1zg" iconPath="/it.cnr.istc.keen.ui/icons/synchronization.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>bold</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@containerMappings[name='syncCompDecHead']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@containerMappings[name='syncCompDecHead']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_h931PpR-Eee8cs0jjai1zg" name="«instance of»" sourceNode="_h931NJR-Eee8cs0jjai1zg" targetNode="_h931PJR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:ConsumableResourceComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_h931P5R-Eee8cs0jjai1zg" lineStyle="dash" sourceArrow="InputArrow" targetArrow="NoDecoration" foldingStyle="TARGET" strokeColor="0,0,0">
+        <customFeatures>routingStyle</customFeatures>
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']/@edgeMappings[name='syncInstanceOf']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_h931QJR-Eee8cs0jjai1zg" showIcon="false"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']/@edgeMappings[name='syncInstanceOf']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_h931QZR-Eee8cs0jjai1zg" name="DURING [0, +INF] [0, +INF]" sourceNode="_h931PJR-Eee8cs0jjai1zg" targetNode="_h931OpR-Eee8cs0jjai1zg">
+      <target xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.1"/>
+      <semanticElements xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.1"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_h931QpR-Eee8cs0jjai1zg" foldingStyle="SOURCE" size="2" centered="Both">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_h931Q5R-Eee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_h931RJR-Eee8cs0jjai1zg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTypesLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncTailsLayer']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']"/>
+    <target xmi:type="ddl:TimelineSynchronization" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8"/>
+  </diagram:DSemanticDiagram>
+  <diagram:DSemanticDiagram xmi:id="_iJI_IJSAEee8cs0jjai1zg" name="Constraints for VisibilityWindowType - Satellite Reservoir ">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_iJI_IZSAEee8cs0jjai1zg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_iJI_IpSAEee8cs0jjai1zg"/>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_iJI_MpSAEee8cs0jjai1zg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_iJI_M5SAEee8cs0jjai1zg" type="Sirius" element="_iJI_IJSAEee8cs0jjai1zg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_iJI_NZSAEee8cs0jjai1zg" type="2003" element="_iJI_I5SAEee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_iJJmMJSAEee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_iJJmMZSAEee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_iJKNRJSAEee8cs0jjai1zg" type="3010" element="_iJI_JZSAEee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_iJKNRZSAEee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_iJKNRpSAEee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_iJJmMpSAEee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_iJJmM5SAEee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_iJI_NpSAEee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJI_N5SAEee8cs0jjai1zg" x="33"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_iJJmNJSAEee8cs0jjai1zg" type="2003" element="_iJI_J5SAEee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_iJKNQJSAEee8cs0jjai1zg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_iJKNQZSAEee8cs0jjai1zg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_iJK0UJSAEee8cs0jjai1zg" type="3010" element="_iJI_KZSAEee8cs0jjai1zg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_iJK0UZSAEee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_iJK0UpSAEee8cs0jjai1zg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_iJKNQpSAEee8cs0jjai1zg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_iJKNQ5SAEee8cs0jjai1zg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_iJJmNZSAEee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="10" italic="true"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJJmNpSAEee8cs0jjai1zg" x="21" y="90"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_iJI_NJSAEee8cs0jjai1zg"/>
+        <edges xmi:type="notation:Edge" xmi:id="_iJK0U5SAEee8cs0jjai1zg" type="4001" element="_iJI_K5SAEee8cs0jjai1zg" source="_iJI_NZSAEee8cs0jjai1zg" target="_iJJmNJSAEee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_iJK0V5SAEee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJK0WJSAEee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_iJLbYJSAEee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJLbYZSAEee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_iJLbYpSAEee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJLbY5SAEee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_iJK0VJSAEee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_iJK0VZSAEee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_iNX-4JSAEee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_iJK0VpSAEee8cs0jjai1zg" points="[0, 0, 0, -50]$[0, 0, 0, -50]$[0, 50, 0, 0]$[0, 50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_iJLbZJSAEee8cs0jjai1zg" id="(0.5153846153846153,1.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_iJLbZZSAEee8cs0jjai1zg" id="(0.5125,0.4878048780487805)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_iJLbZpSAEee8cs0jjai1zg" type="4001" element="_iJI_LpSAEee8cs0jjai1zg" source="_iJJmNJSAEee8cs0jjai1zg" target="_iJI_NZSAEee8cs0jjai1zg">
+          <children xmi:type="notation:Node" xmi:id="_iJMCcJSAEee8cs0jjai1zg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJMCcZSAEee8cs0jjai1zg" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_iJMCcpSAEee8cs0jjai1zg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJMCc5SAEee8cs0jjai1zg" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_iJMCdJSAEee8cs0jjai1zg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iJMCdZSAEee8cs0jjai1zg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_iJLbZ5SAEee8cs0jjai1zg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_iJLbaJSAEee8cs0jjai1zg" fontName=".SF NS Text" fontHeight="8" bold="true"/>
+          <styles xmi:type="notation:StringValueStyle" xmi:id="_iNX-4ZSAEee8cs0jjai1zg" name="junctionPoints" stringValue="()"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_iJLbaZSAEee8cs0jjai1zg" points="[0, 0, 0, 50]$[0, 0, 0, 50]$[0, -50, 0, 0]$[0, -50, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_iJMCdpSAEee8cs0jjai1zg" id="(0.5125,0.4878048780487805)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_iJMCd5SAEee8cs0jjai1zg" id="(0.5153846153846153,1.0)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_iJI_I5SAEee8cs0jjai1zg" name="Visible()" outgoingEdges="_iJI_K5SAEee8cs0jjai1zg" incomingEdges="_iJI_LpSAEee8cs0jjai1zg" width="13">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.0"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.0"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_iJI_JJSAEee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_iJI_JZSAEee8cs0jjai1zg" name="[1, +INF]">
+        <target xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.0"/>
+        <semanticElements xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.0"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_iJI_JpSAEee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_iJI_J5SAEee8cs0jjai1zg" name="NotVisible()" outgoingEdges="_iJI_LpSAEee8cs0jjai1zg" incomingEdges="_iJI_K5SAEee8cs0jjai1zg" width="16">
+      <target xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.1"/>
+      <semanticElements xmi:type="ddl:ComponentDecisionType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@decTypes.1"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_iJI_KJSAEee8cs0jjai1zg" labelSize="10" iconPath="/it.cnr.istc.keen.ui/icons/decisiontype.png" borderSize="1" borderSizeComputationExpression="1" backgroundColor="255,251,244" foregroundColor="255,251,214">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_iJI_KZSAEee8cs0jjai1zg" name="[1, +INF]">
+        <target xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.1"/>
+        <semanticElements xmi:type="ddl:TransitionConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.1"/>
+        <ownedStyle xmi:type="diagram:Square" xmi:id="_iJI_KpSAEee8cs0jjai1zg" showIcon="false" labelPosition="node">
+          <description xmi:type="style:SquareDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@containerMappings[name='CdType']/@subNodeMappings[name='transConstrRange']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_iJI_K5SAEee8cs0jjai1zg" sourceNode="_iJI_I5SAEee8cs0jjai1zg" targetNode="_iJI_J5SAEee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.0/@meets.0"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.0/@meets.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_iJI_LJSAEee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_iJI_LZSAEee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_iJI_LpSAEee8cs0jjai1zg" sourceNode="_iJI_J5SAEee8cs0jjai1zg" targetNode="_iJI_I5SAEee8cs0jjai1zg">
+      <target xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.1/@meets.0"/>
+      <semanticElements xmi:type="ddl:SVComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2/@transConstraint.1/@meets.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_iJI_L5SAEee8cs0jjai1zg" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_iJI_MJSAEee8cs0jjai1zg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer/@edgeMappings[name='meetsRelation']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_iJI_MZSAEee8cs0jjai1zg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='TypeConstraints']/@defaultLayer"/>
+    <target xmi:type="ddl:StateVariableComponentType" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.2"/>
   </diagram:DSemanticDiagram>
 </xmi:XMI>
