@@ -2,49 +2,20 @@ package it.istc.pst.platinum.testing.app.deliberative.satellite;
 
 import it.istc.pst.platinum.deliberative.app.Planner;
 import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
-import it.istc.pst.platinum.deliberative.solver.Solver;
-import it.istc.pst.platinum.deliberative.solver.SolverType;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.SolverModule;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class SatelliteDeliberative extends Planner
+public class SatelliteDeliberativeApplication
 {
-	private static final String DOMAIN_TYPE = "reservoir"; 	// simple, discrete, reservoir
+	private static final String DOMAIN_TYPE = "simple"; 	// simple, discrete, reservoir
 	private static final String DDL = "domains/satellite/" + DOMAIN_TYPE + "/satellite.ddl";
 	private static final String PDL = "domains/satellite/" + DOMAIN_TYPE + "/satellite.pdl";
-	
-	@SolverModule(solver = SolverType.PSEUDO_CONTROLLABILITY_AWARE)
-	protected Solver solver;
-	
-	/**
-	 * 
-	 */
-	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
-	protected SatelliteDeliberative() {
-		super();
-	}
-	
-	/**
-	 * 
-	 * @return
-	 * @throws NoSolutionFoundException
-	 */
-	@Override
-	public SolutionPlan plan() 
-			throws NoSolutionFoundException {
-		// solve the problem and get the plan
-		SolutionPlan plan = this.solver.solve();
-		return plan;
-	}
 	
 	/**
 	 * 
@@ -55,13 +26,16 @@ public class SatelliteDeliberative extends Planner
 		try 
 		{
 			// create planner
-			Planner planner = PlannerBuilder.build(SatelliteDeliberative.class.getName(), DDL, PDL);	
+			Planner planner = PlannerBuilder.build(DDL, PDL);	
 			// start planning
 			SolutionPlan plan = planner.plan();
 			// solution found
 			System.out.println("... solution found after " + plan.getSolvingTime() + " msecs\n");
+			// export plan encoding 
+			String enconding = plan.export();
 			// print the resulting plan
-			System.out.println(plan);
+			System.out.println("Resulting plan:\n" + plan + "\n");
+			System.out.println("Exporting encoding:\n" + enconding + "\n");
 			
 			// display the resulting plant
 			planner.display();

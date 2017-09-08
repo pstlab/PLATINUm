@@ -287,17 +287,17 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param plan
 	 */
 	@Override
-	public void setup(EPSLPlanDescriptor plan) 
+	public void setup(PlanProtocolDescriptor plan) 
 	{
 		try 
 		{
 			// map token descriptor to nodes
-			Map<EPSLTokenDescriptor, ExecutionNode> dictionary = new HashMap<>();
+			Map<TokenProtocolDescriptor, ExecutionNode> dictionary = new HashMap<>();
 			// check time-lines
-			for (EPSLTimelineDescriptor tl : plan.getTimelines()) 
+			for (TimelineProtocolDescriptor tl : plan.getTimelines()) 
 			{
 				// create an execution node for each token
-				for (EPSLTokenDescriptor token : tl.getTokens()) 
+				for (TokenProtocolDescriptor token : tl.getTokens()) 
 				{
 					// check predicate
 					if (!token.getPredicate().equals("unallocated")) 
@@ -320,7 +320,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							// get parameter
 							EPSLParameterDescriptor param= token.getParameter(index);
 							// check type
-							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) 
+							if (param.getType().equals(ParameterTypeDescriptor.NUMERIC)) 
 							{
 								// set type
 								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
@@ -350,10 +350,10 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			}
 			
 			// check observations
-			for (EPSLTimelineDescriptor tl : plan.getObservations()) 
+			for (TimelineProtocolDescriptor tl : plan.getObservations()) 
 			{
 				// create an execution node for each token
-				for (EPSLTokenDescriptor token : tl.getTokens()) 
+				for (TokenProtocolDescriptor token : tl.getTokens()) 
 				{
 					// check predicate
 					if (!token.getPredicate().equals("unallocated")) 
@@ -376,7 +376,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							// get parameter
 							EPSLParameterDescriptor param= token.getParameter(index);
 							// check type
-							if (param.getType().equals(EPSLParameterTypes.NUMERIC)) 
+							if (param.getType().equals(ParameterTypeDescriptor.NUMERIC)) 
 							{
 								// set type
 								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
@@ -406,7 +406,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			}
 			
 			// check relations
-			for (EPSLRelationDescriptor rel : plan.getRelations()) 
+			for (RelationProtocolDescriptor rel : plan.getRelations()) 
 			{
 				try 
 				{
@@ -566,7 +566,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 	 * @param target
 	 * @param rel
 	 */
-	protected void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, EPSLRelationDescriptor rel) 
+	protected void createConstraintsAndDependencies(ExecutionNode reference, ExecutionNode target, RelationProtocolDescriptor rel) 
 			throws Exception 
 	{
 		// check relation type

@@ -1,0 +1,43 @@
+package it.istc.pst.platinum.protocol.lang.relation;
+
+import it.istc.pst.platinum.protocol.lang.TokenProtocolDescriptor;
+
+/**
+ * 
+ * @author alessandroumbrico
+ *
+ */
+public class ContainsRelationProtocolDescriptor extends RelationProtocolDescriptor 
+{
+	private long horizon;
+	
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @param horizon
+	 */
+	public ContainsRelationProtocolDescriptor(TokenProtocolDescriptor from, TokenProtocolDescriptor to, long horizon) {
+		super("contains", from, to);
+		this.horizon = horizon;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String export() {
+		return this.from.getTimeline().getName() + " " + this.from.getId() + " "
+				+ this.type + " [" + (this.first[0] > this.horizon ? "infty" : this.first[0]) + "," + (this.first[1] > this.horizon ? "infty" : this.first[1]) + "] "
+				+ " [" + (this.second[0] > this.horizon ? "infty" : this.second[0]) + "," + (this.second[1] > this.horizon ? "infty" : this.second[1]) + "] " 
+				+ this.to.getTimeline().getName() + " " + this.to.getId();
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return this.export();
+	}
+}

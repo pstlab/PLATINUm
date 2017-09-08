@@ -125,7 +125,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * 
 	 * @param plan
 	 */
-	public abstract void setup(EPSLPlanDescriptor plan);
+	public abstract void setup(PlanProtocolDescriptor plan);
 	
 	/**
 	 * 

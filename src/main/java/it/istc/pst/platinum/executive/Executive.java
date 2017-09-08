@@ -188,7 +188,7 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 	 * 
 	 * @param plan
 	 */
-	public final void initialize(EPSLPlanDescriptor plan) 
+	public final void initialize(PlanProtocolDescriptor plan) 
 			throws InterruptedException
 	{
 		// check status

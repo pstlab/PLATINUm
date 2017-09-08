@@ -10,6 +10,7 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
@@ -215,7 +216,7 @@ public class SolutionPlan
 			plan += "\t\t" + tl.getName() + " {\n";
 			for (Token token : tl.getTokens()) {
 				// get token's value
-				String value = token.getPredicate().getValue().getLabel();
+				String value = token.getPredicate().getValue().getLabel().replaceFirst("_", "");
 				TimePoint end = token.getInterval().getEndTime();
 				// add token description
 				plan += "\t\t\t token " + token.getInterval().getId() + " " + (token.isControllable() ? "" : "uncontrollable") +  " {"
@@ -234,21 +235,31 @@ public class SolutionPlan
 			switch (rel.getCategory()) 
 			{
 				// temporal relation
-				case TEMPORAL_CONSTRAINT : {
+				case TEMPORAL_CONSTRAINT : 
+				{
 					// get temporal relation
 					TemporalRelation trel = (TemporalRelation) rel;
-				
 					// get elements
 					Decision ref = trel.getReference();
 					Decision target = trel.getTarget();
 					long[][] bounds = trel.getBounds();
 					// add relation description
 					plan += "\t\t" + ref.getComponent().getName() + " " + ref.getToken().getInterval().getId() + ""
-							+ " " + trel.getType().name() + ""
-							+ "" + (bounds.length >= 1 && bounds[0] != null && bounds[0].length == 2 ? " [" + bounds[0][0] + ", " + bounds[0][1] + "] " : "") + ""
-							+ "" + (bounds.length >= 2 && bounds[1] != null && bounds[1].length == 2 ? " [" + bounds[1][0] + "," + bounds[1][1] + "] " : "") + ""
-							+ " " + target.getComponent().getName() + " " + target.getToken().getInterval().getId() + ""
-							+ "\n";
+							+ " " + trel.getType().name() + "";
+					// check type
+					if (trel.getType().equals(RelationType.MEETS) || 
+							rel.getType().equals(RelationType.MET_BY) || 
+							trel.getType().equals(RelationType.EQUALS)) {
+						// do not print temporal bounds
+						plan += " " + target.getComponent().getName() + " " + target.getToken().getInterval().getId() + ""
+								+ "\n";
+					} else {
+						// print temporal bounds
+						plan += "" + (bounds.length >= 1 && bounds[0] != null && bounds[0].length == 2 ? " [" + bounds[0][0] + ", " + bounds[0][1] + "] " : "") + ""
+								+ "" + (bounds.length >= 2 && bounds[1] != null && bounds[1].length == 2 ? " [" + bounds[1][0] + "," + bounds[1][1] + "] " : "") + ""
+								+ " " + target.getComponent().getName() + " " + target.getToken().getInterval().getId() + ""
+								+ "\n";
+					}
 				}
 				break;
 				

@@ -52,15 +52,6 @@ public final class DefaultPlanner extends Planner
 		return this.pdb.getSolutionPlan();
 	}
 	
-//	/**
-//	 * The method returns a text-based description of the current plan
-//	 * 
-//	 * @return
-//	 */
-//	public String export() {
-//		return this.getCurrentPlan().export();
-//	}
-	
 	/**
 	 * 
 	 * @return

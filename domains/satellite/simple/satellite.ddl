@@ -54,7 +54,7 @@ DOMAIN SIMPLE_SATELLITE
 	{
 		VALUE Science()
 		{
-			cd0 PointingMode.pm._Comm();
+			cd0 <!> PointingMode.pm._Comm();
 			
 			BEFORE [0, +INF] cd0; 
 		}
