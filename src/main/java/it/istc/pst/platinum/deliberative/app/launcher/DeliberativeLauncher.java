@@ -70,7 +70,7 @@ public class DeliberativeLauncher
 				try 
 				{
 					// start planning
-					System.out.println("Running EPSL2 planner on domain= " + domainName + " and problem= " + problemName + "...");
+					System.out.println("Running PLATINUm planner on domain= " + domainName + " and problem= " + problemName + "...");
 					// start planning
 					SolutionPlan plan = planner.plan();
 					// solution found

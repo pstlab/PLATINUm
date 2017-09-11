@@ -21,7 +21,7 @@ public final class DefaultPlanner extends Planner
 	/**
 	 * 
 	 */
-	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
+	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.OFF)
 	protected DefaultPlanner() {
 		super();
 	}

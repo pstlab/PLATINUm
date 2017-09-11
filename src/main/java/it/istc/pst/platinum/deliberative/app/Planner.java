@@ -57,7 +57,8 @@ public abstract class Planner extends ApplicationFrameworkObject
 	 * @return
 	 * @throws NoSolutionFoundException
 	 */
-	public abstract SolutionPlan plan() throws NoSolutionFoundException;
+	public abstract SolutionPlan plan() 
+			throws NoSolutionFoundException;
 	
 	/**
 	 * 
@@ -68,8 +69,6 @@ public abstract class Planner extends ApplicationFrameworkObject
 		// generate protocol plan descriptor
 		return this.generatePlanDescriptor(plan);
 	}
-	
-	
 	
 	/**
 	 * 

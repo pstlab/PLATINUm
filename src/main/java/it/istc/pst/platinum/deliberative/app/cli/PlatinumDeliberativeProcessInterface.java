@@ -22,7 +22,7 @@ import it.istc.pst.platinum.protocol.query.show.ShowComponentProtocolQuery;
  * @author alessandroumbrico
  *
  */
-public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAbstractCommandLIneInterface implements Runnable
+public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAbstractCommandLineInterface implements Runnable
 {
 	private static final long HORIZON = Long.MAX_VALUE - 1;			// default horizon
 	
@@ -36,12 +36,14 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 	/**
 	 * 
 	 */
-	public void run() {
+	public void run() 
+	{
 		System.out.println("************************************");
 		System.out.println("********** Platinum CLI ************");
 		System.out.println("************************************");
 
-		try {
+		try 
+		{
 			// get input reader
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			boolean exit = false;
@@ -50,28 +52,28 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				// display prompt
 				System.out.print("platinum-agent$ ");
 				String input = reader.readLine();
-				try {
-					
+				try 
+				{
 					// process input
 					exit = this.process(input);
 					System.out.println();
 				} 
 				catch (DeliberativeCommandLineInterfaceException ex) {
-					System.err.println("> !" + ex.getMessage() + "\n");
+					System.out.println("> !" + ex.getMessage() + "\n");
 					// go on
 				}
 				catch (Exception ex) {
-					System.err.println("> !" + ex.getMessage() + "\n");
+					System.out.println("> !" + ex.getMessage() + "\n");
 					exit = true;
 				}
 			}
 			while (!exit);
 			
 			// exiting
-			System.out.println("\nBye!;)\n");
+			System.out.println("\nBye!\n");
 		}
 		catch (IOException ex) {
-			System.err.println(ex.getMessage());
+			System.out.println(ex.getMessage());
 			ex.printStackTrace();
 		}
 	}
@@ -118,6 +120,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			// get DDL and PDL files
 			File ddl = new File(splits[1]);
 			File pdl = new File(splits[2]);
+			
 			// check files
 			if (ddl.exists() && !ddl.isDirectory() && pdl.exists() && !pdl.isDirectory()) {
 				// initialize
@@ -125,7 +128,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			}
 			else {
 				// files not found
-				System.err.println("DDL or PDL files not found");
+				System.out.println("DDL or PDL files not found");
 			}
 			
 			System.out.println();
@@ -162,7 +165,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				System.out.println();
 			}
 			else {
-				System.err.println("No current plan ready to display");
+				System.out.println("No current plan ready to display");
 			}
 		}
 		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.EXPORT.getCmd())) 
@@ -186,28 +189,21 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				}
 			}
 			catch (IOException ex) {
-				System.err.println(ex.getMessage());
+				System.out.println(ex.getMessage());
 			}
 		}
 		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.PLAN.getCmd())) 
 		{
-			// planning request
-			if (splits.length >= 2 && (splits[1] == null || splits[2] == null)) {
-				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> " + PlatinumDeliberativeCommandLineCommand.PLAN.getHelp());
-			}
-			
 			try 
 			{
-				// extract token description
-				TokenProtocolDescriptor goal = this.extractTokenDescription(splits);
 				// plan
-				this.plan(goal);
+				this.plan();
 			} 
 			catch (NoSolutionFoundException ex) {
-				System.err.println("No valid plan found:\n- " + ex.getMessage() + "\n");
+				System.out.println("No valid plan found:\n- " + ex.getMessage() + "\n");
 			} 
 			catch (DeliberativeCommandLineInterfaceException  ex) {
-				System.err.println(ex.getMessage());
+				System.out.println(ex.getMessage());
 			}
 			System.out.println();
 		}
@@ -291,7 +287,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			}
 			else {
 				// unknown command option
-				System.err.println("Unknown command option");
+				System.out.println("Unknown command option");
 			}
 		}
 		else 
@@ -302,7 +298,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				msg += "- " + cliCommand.getCmd() + "\t" + cliCommand.getHelp() + "\n";
 			}
 			msg += "\n";
-			System.err.println(msg);
+			System.out.println(msg);
 		}
 
 		return exit;

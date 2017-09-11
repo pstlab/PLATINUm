@@ -20,7 +20,7 @@ public enum PlatinumDeliberativeCommandLineCommand
 	/**
 	 * plan command
 	 */
-	PLAN("plan", "plan Component.timeline.predicate stLb-stUb,etLb-etUb,dLb-dUb par1-n-val,par2-n-val,...,par3-e-val1|val2|..|valN,...,parM-n-val"),
+	PLAN("plan", "solve the loaded timeline-based problem"),
 	
 	/**
 	 * get all or single timeline temporal projections 

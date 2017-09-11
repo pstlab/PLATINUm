@@ -9,7 +9,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleEx
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
 import it.istc.pst.platinum.protocol.lang.ProtocolLanguageFactory;
-import it.istc.pst.platinum.protocol.lang.TokenProtocolDescriptor;
 import it.istc.pst.platinum.protocol.query.ProtocolQueryFactory;
 
 
@@ -18,7 +17,7 @@ import it.istc.pst.platinum.protocol.query.ProtocolQueryFactory;
  * @author alessandroumbrico
  *
  */
-public abstract class PlatinumDeliberativeAbstractCommandLIneInterface 
+public abstract class PlatinumDeliberativeAbstractCommandLineInterface 
 {
 	protected ProtocolLanguageFactory langFactory;
 	protected ProtocolQueryFactory queryFactory;
@@ -29,7 +28,7 @@ public abstract class PlatinumDeliberativeAbstractCommandLIneInterface
 	 * 
 	 * @param horizon
 	 */
-	protected PlatinumDeliberativeAbstractCommandLIneInterface(long horizon) {
+	protected PlatinumDeliberativeAbstractCommandLineInterface(long horizon) {
 		this.langFactory = ProtocolLanguageFactory.getSingletonInstance(horizon);
 		this.queryFactory = ProtocolQueryFactory.getSingletonInstance();
 		this.currentSolution = null;
@@ -56,18 +55,16 @@ public abstract class PlatinumDeliberativeAbstractCommandLIneInterface
 	
 	/**
 	 * 
-	 * @param goal
 	 * @throws DeliberativeCommandLineInterfaceInitializationException
 	 * @throws NoSolutionFoundException
 	 */
-	protected void plan(TokenProtocolDescriptor goal) 
+	protected void plan() 
 			throws DeliberativeCommandLineInterfaceInitializationException, NoSolutionFoundException 
 	{
 		// check planner
 		if (this.planner == null) {
 			throw new DeliberativeCommandLineInterfaceInitializationException("Planner Not Initialized yet!");
 		}
-		
 		
 		// run the planner on the desired goal
 		this.currentSolution = this.planner.plan();

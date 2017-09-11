@@ -7,7 +7,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir.Re
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.checking.ObservationBehaviorCheckingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.checking.TimelineBehaviorCheckingResolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning.TimelineBehaviorPlanningResolver;
-import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.TImelineSchedulingResolver;
+import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.TimelineSchedulingResolver;
 
 /**
  * 
@@ -45,7 +45,7 @@ public enum ResolverType
 	 * continuous sequence of not overlapping tokens. Specifically, 
 	 * the resolver is responsible for managing token overlaps.
 	 */
-	TIMELINE_SCHEDULING_RESOLVER(TImelineSchedulingResolver.class.getName(),
+	TIMELINE_SCHEDULING_RESOLVER(TimelineSchedulingResolver.class.getName(),
 			"State Variable Scheduler",
 			FlawType.TIMELINE_OVERFLOW),
 	

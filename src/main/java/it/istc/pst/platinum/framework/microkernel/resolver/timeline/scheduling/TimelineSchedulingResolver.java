@@ -33,12 +33,12 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public final class TImelineSchedulingResolver extends Resolver<StateVariable>
+public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 {
 	/**
 	 * 
 	 */
-	protected TImelineSchedulingResolver() {
+	protected TimelineSchedulingResolver() {
 		super(ResolverType.TIMELINE_SCHEDULING_RESOLVER.getLabel(), 
 				ResolverType.TIMELINE_SCHEDULING_RESOLVER.getFlawType());
 	}
