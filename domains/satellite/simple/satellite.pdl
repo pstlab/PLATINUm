@@ -8,6 +8,4 @@ PROBLEM SIMPLE_SATELLITE_Problem (DOMAIN SIMPLE_SATELLITE)
 
 	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 	g1 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
-	
-	g0 BEFORE [0, +INF] g1;
 }

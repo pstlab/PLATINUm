@@ -135,13 +135,12 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 		}
 		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.DISPLAY.getCmd())) 
 		{
-			// check current plan
-			if (this.currentSolution != null) {
+			if (this.planner != null) {
 				try 
 				{
 					// prepare thread
 					Thread t = new Thread(new Runnable() { 
-
+	
 							/**
 							 * 
 							 */
@@ -160,13 +159,13 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				}
 				catch (Exception ex) {
 					// do not interrupt execution
+					System.out.println(ex.getMessage());
 				}
-				
-				System.out.println();
 			}
 			else {
-				System.out.println("No current plan ready to display");
+				System.out.println("!No planner has been initialized yet!");
 			}
+			System.out.println();
 		}
 		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.EXPORT.getCmd())) 
 		{
