@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>epsl2</name>
+	<name>platinum</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -20,4 +20,11 @@
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>resources</name>
+			<type>2</type>
+			<location>/home/anacleto/git/platinum/src/main/resources</location>
+		</link>
+	</linkedResources>
 </projectDescription>
