@@ -50,7 +50,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			do {
 				
 				// display prompt
-				System.out.print("platinum-agent$ ");
+				System.out.print("epsl-agent$ ");
 				String input = reader.readLine();
 				try 
 				{
