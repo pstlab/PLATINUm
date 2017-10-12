@@ -13,7 +13,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
  */
 public class SatelliteDeliberativeApplication
 {
-	private static final String DOMAIN_TYPE = "simple"; 	// simple, discrete, reservoir
+	private static final String DOMAIN_TYPE = "reservoir"; 	// simple, discrete, reservoir
 	private static final String DDL = "domains/satellite/" + DOMAIN_TYPE + "/satellite.ddl";
 	private static final String PDL = "domains/satellite/" + DOMAIN_TYPE + "/satellite.pdl";
 	

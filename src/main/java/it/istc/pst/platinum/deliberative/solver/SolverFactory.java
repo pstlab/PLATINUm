@@ -50,7 +50,7 @@ public class SolverFactory extends ApplicationFrameworkFactory
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Solver> T create(SolverType type) {
+	public <T extends Solver> T create(SolverType type, long timeout) {
 		// set solver
 		T solver;
 		try 
@@ -58,10 +58,10 @@ public class SolverFactory extends ApplicationFrameworkFactory
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getSolverClassName());
 			// get constructor
-			Constructor<T> c = clazz.getDeclaredConstructor();
+			Constructor<T> c = clazz.getDeclaredConstructor(Long.TYPE);
 			c.setAccessible(true);
 			// create instance
-			solver = c.newInstance();
+			solver = c.newInstance(timeout);
 			
 			// inject logger
 			this.injectFrameworkLogger(solver);

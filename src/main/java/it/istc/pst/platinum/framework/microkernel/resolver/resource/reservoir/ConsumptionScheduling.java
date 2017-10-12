@@ -14,19 +14,25 @@ import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
  */
 public class ConsumptionScheduling extends FlawSolution implements ResourceOverConsumptionSolution 
 {
-	private Map<Decision, Decision> constraints;	// list of precedence constraints that solve the peak
+//	private Map<Decision, Decision> constraints;	// list of precedence constraints that solve the peak
 	private double preserved;						// average value of the resulting preserved space
+	private Decision production;					// considered production decision
+	private double productionDelta;					// variation on resource production
 	
 	/**
 	 * 
 	 * @param flaw
+	 * @param production
+	 * @param delta
 	 * @param constraints
 	 * @param preserved
 	 */
-	protected ConsumptionScheduling(Peak flaw, Map<Decision, Decision> constraints, double preserved) {
+	protected ConsumptionScheduling(Peak flaw, Decision production, double delta, Map<Decision, Decision> constraints, double preserved) {
 		super(flaw);
 		this.constraints = new HashMap<>(constraints);
 		this.preserved = preserved;
+		this.production = production;
+		this.productionDelta = delta;
 	}
 	
 	/**
@@ -42,8 +48,24 @@ public class ConsumptionScheduling extends FlawSolution implements ResourceOverC
 	 * 
 	 * @return
 	 */
+	public Decision getProduction() {
+		return production;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public double getPreserved() {
 		return preserved;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getProductionDelta() {
+		return productionDelta;
 	}
 
 	/**

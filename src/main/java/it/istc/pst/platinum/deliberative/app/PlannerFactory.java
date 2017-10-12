@@ -65,7 +65,6 @@ public class PlannerFactory extends ApplicationFrameworkFactory
 			c.setAccessible(true);
 			planner = c.newInstance();
 			
-			
 			// check if annotation exist
 			if (c.isAnnotationPresent(FrameworkLoggerConfiguration.class)) 
 			{
@@ -86,7 +85,7 @@ public class PlannerFactory extends ApplicationFrameworkFactory
 				// get annotation
 				SolverModule annotation = field.getAnnotation(SolverModule.class);
 				// create solver
-				Solver solver = this.solverFactory.create(annotation.solver());
+				Solver solver = this.solverFactory.create(annotation.solver(), annotation.timeout());
 				// set field
 				field.setAccessible(true);
 				field.set(planner, solver);

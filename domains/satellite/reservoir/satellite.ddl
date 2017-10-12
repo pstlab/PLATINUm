@@ -4,19 +4,24 @@ DOMAIN RESERVOIR_SATELLITE
 	
 	COMP_TYPE ConsumableResource BatteryType (0, 10) 
 	
-	COMP_TYPE SingletonStateVariable PointingModeType (Earth(), Slewing(), Science(), _Comm(), Maintenance())
+	COMP_TYPE SingletonStateVariable PointingModeType (Earth(), Slewing(), Science(), _Comm(), _Recharging())
 	{
 		VALUE Earth() [1, +INF]
 		MEETS {
 			Slewing();
 			_Comm();
-			Maintenance();
+		}
+		
+		VALUE _Recharging() [3, 7]
+		MEETS {
+			Slewing();
 		}
 		
 		VALUE Slewing() [3, 3]
 		MEETS {
 			Earth();
 			Science();
+			_Recharging();
 		}
 		
 		VALUE Science() [8, 11]
@@ -27,13 +32,7 @@ DOMAIN RESERVOIR_SATELLITE
 		VALUE _Comm() [10, 18]
 		MEETS {
 			Earth();
-			Maintenance();
 		}
-		
-		VALUE Maintenance() [5, 7]
-		MEETS {
-			Earth();
-		} 
 	}
 	
 	COMP_TYPE SingletonStateVariable VisibilityWindowType (Visible(), NotVisible())
@@ -65,7 +64,7 @@ DOMAIN RESERVOIR_SATELLITE
 			
 			EQUALS cd0;
 			
-			?amount = 4;
+			?amount = 3;
 		}
 		
 		VALUE _Comm()
@@ -84,9 +83,11 @@ DOMAIN RESERVOIR_SATELLITE
 	{
 		VALUE PRODUCTION(?amount)
 		{
-			cd0 <?> SunWindow.sun.Visible(); 
+			cd0 <?> SunWindow.sun.Visible();
+			cd1 <!> PointingMode.pm._Recharging(); 
 			
 			DURING [0, +INF] [0, +INF] cd0;
+			EQUALS cd1;
 		}
 	}
 }

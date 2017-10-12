@@ -37,6 +37,7 @@ public abstract class Solver extends ApplicationFrameworkObject
 	@DomainKnowledgePlaceholder
 	protected DomainKnowledge knowledge;
 	
+	protected long timeout;
 	protected long time;
 	protected long stepCounter;
 	protected String label;
@@ -44,10 +45,12 @@ public abstract class Solver extends ApplicationFrameworkObject
 	/**
 	 * 
 	 * @param label
+	 * @param timeout
 	 */
-	protected Solver(String label) {
+	protected Solver(String label, long timeout) {
 		super();
 		this.label = label;
+		this.timeout = timeout;
 	}
 	
 	/**

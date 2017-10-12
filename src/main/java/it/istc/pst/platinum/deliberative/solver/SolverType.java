@@ -13,7 +13,7 @@ public enum SolverType
 	 * If no pseudo-controllable plan exists, it provides a warning and 
 	 * gets the "best" not pseudo-controllable plan found
 	 */
-	PSEUDO_CONTROLLABILITY_AWARE(PseudoControllabilityAwareSolver.class.getName(), "Pseud-Controllability aware solver"),
+	PSEUDO_CONTROLLABILITY_AWARE(PseudoControllabilityAwareSolver.class.getName(), "pseudo-controllability aware solver"),
 	
 	/**
 	 * 

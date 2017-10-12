@@ -211,7 +211,7 @@ public abstract class ComponentValue
 	 */
 	@Override
 	public String toString() {
-		return "[ComponentValue value= " + this.label + " controllable= " + (this.controllable) + "]";
+		return "[ComponentValue id= " + this.id +" value= " + this.label + " controllable= " + (this.controllable) + "]";
 	}
 	
 	/**

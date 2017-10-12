@@ -28,7 +28,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  */
 public class PseudoControllabilityAwareSolver extends Solver 
 {
-	@SearchStrategyModule(strategy= SearchStrategyType.GREEDY)
+	@SearchStrategyModule(strategy= SearchStrategyType.DFS)
 	private SearchStrategy fringe;
 	
 	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.SEARCH_AND_BUILD)
@@ -36,9 +36,10 @@ public class PseudoControllabilityAwareSolver extends Solver
 	
 	/**
 	 * 
+	 * @param timeout
 	 */
-	protected PseudoControllabilityAwareSolver() {
-		super(SolverType.PSEUDO_CONTROLLABILITY_AWARE.getLabel());
+	protected PseudoControllabilityAwareSolver(long timeout) {
+		super(SolverType.PSEUDO_CONTROLLABILITY_AWARE.getLabel(), timeout);
 	}
 	
 	/**
@@ -77,6 +78,21 @@ public class PseudoControllabilityAwareSolver extends Solver
 			{
 				// update step counter
 				this.stepCounter++;
+				// get time passed from the start 
+				long now = System.currentTimeMillis() - start;
+				// check timeout
+				if (this.timeout > 0 && now > this.timeout) 
+				{
+					// no solution found stop search
+					search = false;
+					// set solving time
+					this.time = System.currentTimeMillis() - start;
+					// backtrack from the last propagated node
+					this.backtrack(last);
+					// timeout exception
+					throw new NoSolutionFoundException("Timeout: no solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
+				}
+				
 				// extract a node from the fringe
 				node = this.fringe.dequeue();
 				this.logger.info("Solving step: " + this.stepCounter +"\n"

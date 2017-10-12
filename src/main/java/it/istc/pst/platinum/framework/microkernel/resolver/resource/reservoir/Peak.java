@@ -40,8 +40,10 @@ public class Peak extends Flaw implements Comparable<Peak>
 	 * 
 	 * @return
 	 */
-	public List<ConsumptionResourceEvent> getConsumption() {
-		return new ArrayList<>(this.consumptions);
+	public List<ConsumptionResourceEvent> getConsumptions() {
+		List<ConsumptionResourceEvent> list = new ArrayList<>(this.consumptions);
+		Collections.sort(list);
+		return list;
 	}
 	
 	/**

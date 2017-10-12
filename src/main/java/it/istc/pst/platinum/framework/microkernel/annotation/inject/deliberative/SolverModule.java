@@ -18,4 +18,7 @@ public @interface SolverModule {
 	
 	// reference to solver algorithm
 	SolverType solver();
+	
+	// set a timeout for the solver
+	long timeout() default -1;
 }

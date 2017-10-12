@@ -45,6 +45,19 @@ public final class ApplicationFrameworkContainer
 	
 	/**
 	 * 
+	 */
+	public static void clearRegistry() {
+		// check if instance exists
+		if (CONTAINER != null) {
+			// clear registry
+			CONTAINER.registry.clear();
+			// reset counter
+			ApplicationFrameworkContainer.counter = 0;
+		}
+	}
+	
+	/**
+	 * 
 	 * @param key
 	 * @param obj
 	 */

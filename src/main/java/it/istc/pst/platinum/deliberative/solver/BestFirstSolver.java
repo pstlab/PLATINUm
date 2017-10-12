@@ -33,9 +33,10 @@ public class BestFirstSolver extends Solver
 	
 	/**
 	 * 
+	 * @param timeout
 	 */
-	protected BestFirstSolver() {
-		super(SolverType.BEST_FIRST.getLabel());
+	protected BestFirstSolver(long timeout) {
+		super(SolverType.BEST_FIRST.getLabel(), timeout);
 	}
 	
 	/**
@@ -65,6 +66,20 @@ public class BestFirstSolver extends Solver
 			{
 				// new solving step
 				this.stepCounter++;
+				// get time passed from the start 
+				long now = System.currentTimeMillis() - start;
+				// check timeout
+				if (this.timeout > 0 && now > this.timeout) 
+				{
+					// set solving time
+					this.time = System.currentTimeMillis() - start;
+					// backtrack from the last propagated node
+					this.backtrack(last);
+					// timeout exception
+					throw new NoSolutionFoundException("Timeout: no solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
+				}
+				
+				
 				this.logger.debug("Solving step " + this.stepCounter);
 				
 				// extract next node from the fringe

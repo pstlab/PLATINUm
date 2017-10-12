@@ -113,6 +113,49 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	}
 	
 	/**
+	 * 
+	 * @param peak
+	 * @return
+	 */
+	private List<MCS> samplePeak(Peak peak) 
+	{
+		// list of MCS
+		List<MCS> list = new ArrayList<>();
+//		for (ConsumptionResourceEvent reference : peak.getConsumptions())
+		for (int i= 0; i < peak.getConsumptions().size() - 1; i++)
+		{
+			// get reference
+			ConsumptionResourceEvent reference = peak.getConsumptions().get(i);
+			// initialize MCS
+			MCS mcs = new MCS();
+			mcs.addEvent(reference);
+//			for (ConsumptionResourceEvent event : peak.getConsumptions()) 
+			for (int j= i; j < peak.getConsumptions().size(); j++)
+			{
+				// get event 
+				ConsumptionResourceEvent event = peak.getConsumptions().get(j);
+				if (!event.equals(reference)) 
+				{
+					// add event to MCS
+					mcs.addEvent(event);
+					// check amount 
+					if (mcs.getResourceConsumption() > this.component.getMaxCapacity()) 
+					{
+						// add MCS to list
+						list.add(mcs);
+						// clear and back reference
+						mcs = new MCS();
+						mcs.addEvent(reference);
+					}
+				}
+			}
+		}
+		
+		// get the list
+		return list;
+	}
+	
+	/**
 	 * Solve a resource over consumption by adding a production activity.
 	 * This method tries to introduce a new activity into the plan in order to generate the 
 	 * amount of resource needed to execute the set of activities generating the peak. 
@@ -121,117 +164,129 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	private void doComputePeakPlanningSolutions(Peak peak)
 	{
-		// get the consumptions that generate the peak
-		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
-		// compute the amount of resource to produce in order to set the maximum capacity
-		int amount = 0;
-		for (int index = 0; index < consumptions.size() - 1; index++)
+		// sample peak consumptions
+		List<MCS> MCSs = this.samplePeak(peak);
+		// get the most constraining MCS
+		Collections.sort(MCSs);
+		// get consumptions 
+		List<ConsumptionResourceEvent> consumptions = MCSs.get(0).getConsumptions();
+		
+//		
+//		// get the consumptions that generate the peak
+//		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
+		
+		
+		
+		
+		// list of production checkpoints
+		List<ProductionCheckpoint> checkpoints = peak.getProductionCheckpoints();
+		// compute production planning solutions
+		for (int i = consumptions.size() - 1; i > 0; i--)
 		{
-			// get consumption activity
-			ConsumptionResourceEvent consumption = consumptions.get(index);
-			amount += Math.abs(consumption.getAmount());
-		}
-		
-		
-		// initialize the list of decisions to schedule before production
-		List<Decision> beforeProduction = new ArrayList<>();
-		// initialize the list of decisions to schedule after production
-		List<Decision> afterProduction = new ArrayList<>();
-	
-		// get last production checkpoint if any
-		if (!peak.getProductionCheckpoints().isEmpty()) {
-			// get last production checkpoint 
-			ProductionCheckpoint checkpoint = peak.getProductionCheckpoints().get(peak.getProductionCheckpoints().size() - 1);
-			 // schedule production after last introduced production
-			beforeProduction.add(checkpoint.getProduction().getDecision());
-		}
-		
-		// get consumptions before peak (assuming minimal peak)
-		for (int index = consumptions.size() - 2; index >= 0; index--) {
-			ConsumptionResourceEvent before = consumptions.get(index);
-			// schedule production after last consumption
-			beforeProduction.add(before.getDecision());
-		}
-		
-		// get consumption generating the peak
-		ConsumptionResourceEvent cause = consumptions.get(consumptions.size() - 1);
-		// schedule production before the consumption generating the peak
-		afterProduction.add(cause.getDecision());
-		
-		// check the feasibility of the schedule by propagating constraints
-		List<BeforeIntervalConstraint> constraints = new ArrayList<>();
-		// production interval
-		TemporalInterval iProduction = null; 
-		try
-		{
-			// create temporal interval
-			iProduction = this.tdb.createTemporalInterval(true);
-			// propagate "before" contains
-			for (Decision decision : beforeProduction) 
+			// list of decisions to schedule before production
+			List<Decision> beforeProduction = new ArrayList<>();
+			// list of decisions after production
+			List<Decision> afterProduction = new ArrayList<>();
+			// compute the amount of resource consumed
+			int amount = 0;
+			// set activities to schedule before production (< i)
+			for (int k = 0; k < i; k++) {
+				beforeProduction.add(consumptions.get(k).getDecision());
+				amount += consumptions.get(k).getAmount();
+			}
+			
+			// set activities to schedule after production (>= i)
+			for (int k = i; k < consumptions.size(); k++) {
+				afterProduction.add(consumptions.get(k).getDecision());
+			}
+			
+			// add activities of the peak not considered in the MCS
+			for (ConsumptionResourceEvent consumption : peak.getConsumptions()) {
+				if (!consumptions.contains(consumption)) {
+					afterProduction.add(consumption.getDecision());
+				}
+			}
+
+			// add last production checkpoints if any
+			if (!checkpoints.isEmpty()) {
+				beforeProduction.add(checkpoints.get(checkpoints.size() - 1).getProduction().getDecision());
+			}
+			
+			// create temporal constraints and check temporal feasibility
+			List<BeforeIntervalConstraint> constraints = new ArrayList<>();
+			// production interval
+			TemporalInterval iProduction = null; 
+			try
 			{
-				// propagate constraint "decision < production"
-				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-				// set reference and target intervals
-				before.setReference(decision.getToken().getInterval());
-				before.setTarget(iProduction);
-				// set bounds
-				before.setLowerBound(0);
-				before.setUpperBound(this.tdb.getHorizon());
+				// create temporal interval
+				iProduction = this.tdb.createTemporalInterval(true);
+				// propagate "before" contains
+				for (Decision decision : beforeProduction) 
+				{
+					// propagate constraint "decision < production"
+					BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+					// set reference and target intervals
+					before.setReference(decision.getToken().getInterval());
+					before.setTarget(iProduction);
+					// set bounds
+					before.setLowerBound(0);
+					before.setUpperBound(this.tdb.getHorizon());
+					
+					// propagate constraint
+					this.tdb.propagate(before);
+					// add constraint to the list
+					constraints.add(before);
+				}
+			
+				// propagate "after" constraints
+				for (Decision decision : afterProduction)
+				{
+					// propagate constraint "production < decision"
+					BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+					// set reference and target intervals
+					before.setReference(iProduction);
+					before.setTarget(decision.getToken().getInterval());
+					// set bounds
+					before.setLowerBound(0);
+					before.setUpperBound(this.tdb.getHorizon());
+					
+					// propagate constraint
+					this.tdb.propagate(before);
+					// add constraint to the list
+					constraints.add(before);
+				}
 				
-				// propagate constraint
-				this.tdb.propagate(before);
-				// add constraint to the list
-				constraints.add(before);
+				// compute the resulting makespan
+				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+				this.tdb.process(query);
+				// get resulting makespan
+				double makespan = query.getMakespan();
+				
+				// create resource planning solution
+				ProductionPlanning pp = new ProductionPlanning(peak, amount, beforeProduction, afterProduction);
+				// set resulting makespan
+				pp.setMakespan(makespan);
+				// add solution to the peak
+				peak.addSolution(pp);
 			}
-		
-			// propagate "after" constraints
-			for (Decision decision : afterProduction)
+			catch (TemporalConstraintPropagationException ex) {
+				this.logger.debug("It is not possible to schedule new production in order to solve resource over consumption:\n- before-production: " + beforeProduction + "\n- after-production: " + afterProduction + "\n");
+			}
+			catch (TemporalIntervalCreationException ex) {
+				this.logger.debug("Erorr while creating temporal interval for checking the temporal feasibility of production planning\n");
+			}
+			finally 
 			{
-				// propagate constraint "production < decision"
-				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-				// set reference and target intervals
-				before.setReference(iProduction);
-				before.setTarget(decision.getToken().getInterval());
-				// set bounds
-				before.setLowerBound(0);
-				before.setUpperBound(this.tdb.getHorizon());
+				// retract all temporal constraints
+				for (BeforeIntervalConstraint constraint : constraints) {
+					this.tdb.retract(constraint);
+				}
 				
-				// propagate constraint
-				this.tdb.propagate(before);
-				// add constraint to the list
-				constraints.add(before);
-			}
-			
-			// compute the resulting makespan
-			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-			this.tdb.process(query);
-			// get resulting makespan
-			double makespan = query.getMakespan();
-			
-			// create resource planning solution
-			ProductionPlanning pp = new ProductionPlanning(peak, amount, beforeProduction, afterProduction);
-			// set resulting makespan
-			pp.setMakespan(makespan);
-			// add solution to the peak
-			peak.addSolution(pp);
-		}
-		catch (TemporalConstraintPropagationException ex) {
-			this.logger.debug("It is not possible to schedule new production in order to solve resource over consumption:\n- before-production: " + beforeProduction + "\n- after-production: " + afterProduction + "\n");
-		}
-		catch (TemporalIntervalCreationException ex) {
-			this.logger.debug("Erorr while creating temporal interval for checking the temporal feasibility of production planning\n");
-		}
-		finally 
-		{
-			// retract all temporal constraints
-			for (BeforeIntervalConstraint constraint : constraints) {
-				this.tdb.retract(constraint);
-			}
-			
-			// check if not null
-			if (iProduction != null) {
-				// delete temporal interval
-				this.tdb.deleteTemporalInterval(iProduction);
+				// retract created production interval if necessary
+				if (iProduction != null) {
+					// delete temporal interval
+					this.tdb.deleteTemporalInterval(iProduction);
+				}
 			}
 		}
 	}
@@ -245,81 +300,91 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	private void doComputePeakSchedulingSolutions(Peak peak)
 	{
+		// sample peak consumptions
+		List<MCS> MCSs = this.samplePeak(peak);
+		// get the most constraining MCS
+		Collections.sort(MCSs);
+		// get consumptions 
+		List<ConsumptionResourceEvent> consumptions = MCSs.get(0).getConsumptions();
 		// get the consumptions that generate the peak
-		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
-		// get "past" productions
+//		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
+		
+		// get production checkpoints
 		List<ProductionCheckpoint> checkpoints = peak.getProductionCheckpoints();
 		
 		// analyze peak consumptions
-		for (ConsumptionResourceEvent event : consumptions) 
+		for (int i = 0; i < consumptions.size(); i++) 
 		{
-			// get consumption decision
-			Decision consumption = event.getDecision();
-			// get amount of resource needed
-			double amount = event.getAmount();
+			// get current considered consumption
+			ConsumptionResourceEvent consumption = consumptions.get(i);
+			// get the rest of consumptions composing the current peak
+			List<ConsumptionResourceEvent> rest = new ArrayList<>();
+			for (ConsumptionResourceEvent event : consumptions) {
+				if (!consumption.equals(event)) {
+					rest.add(event);
+				}
+			}
+			
 			// analyze checkpoints
-			for (int index = 0; index < checkpoints.size(); index++) 
+			for (int index = checkpoints.size() -1; index >= 0; index--) 
 			{
 				// get checkpoint 
 				ProductionCheckpoint checkpoint = checkpoints.get(index);
-				// get production decision
-				Decision production = checkpoint.getProduction().getDecision();
 				// get potential "energy" of the checkpoint
 				double potential = this.component.getMaxCapacity() - checkpoint.getResourceConsumed();
 				// check the potential energy of the checkpoint is enough for the consumption
-				if (potential >= amount)
+				if (potential >= consumption.getAmount())
 				{
-					// check temporal feasibility of the possible schedule: "consumption < production(i)"
-					BeforeIntervalConstraint c1 = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-					// add also constraint "production(i-1) < consumption" if possible
-					BeforeIntervalConstraint c2 = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-					// initialize solution relationships
-					Map<Decision, Decision> constraints = new HashMap<>();
+					// prepare solution map
+					Map<Decision, Decision> solmap = new HashMap<>();
+					// create precedence constraint and check feasibility
+					List<BeforeIntervalConstraint> constraints = new ArrayList<>();
 					try
 					{
-						// set decisions
-						c1.setReference(consumption.getToken().getInterval());
-						c1.setTarget(production.getToken().getInterval());
+						// schedule consumption before current checkpoint
+						BeforeIntervalConstraint before1 = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+						before1.setReference(consumption.getDecision().getToken().getInterval());
+						before1.setTarget(checkpoint.getProduction().getDecision().getToken().getInterval());
 						// set bounds
-						c1.setLowerBound(0);
-						c1.setUpperBound(this.tdb.getHorizon());
+						before1.setLowerBound(0);
+						before1.setUpperBound(this.tdb.getHorizon());
+						constraints.add(before1);
+						// add solution map entry
+						solmap.put(consumption.getDecision(), checkpoint.getProduction().getDecision());
 						
-						// try to propagate constraint
-						this.tdb.propagate(c1);
+						// check if after constraint is needed
+						if (index > 0) 
+						{
+							// "second-last" checkpoint
+							ProductionCheckpoint secondLast = checkpoints.get(index - 1);
+							// schedule consumption after second last checkpoint
+							BeforeIntervalConstraint before2 = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+							before2.setReference(secondLast.getProduction().getDecision().getToken().getInterval());
+							before2.setTarget(consumption.getDecision().getToken().getInterval());
+							before2.setLowerBound(0);
+							before2.setUpperBound(this.tdb.getHorizon());
+							constraints.add(before2);
+							// add solution map entry
+							solmap.put(secondLast.getProduction().getDecision(), consumption.getDecision());
+						}
 						
-						// add entry to constraints: "consumption < production"
-						constraints.put(consumption, production);
-						
-						// check if constraint c2 is necessary
-						if (index > 0) {
-							// get previous production decision
-							Decision previous = checkpoints.get(index - 1).getProduction().getDecision();
-							// set reference
-							c2.setReference(previous.getToken().getInterval());
-							c2.setTarget(consumption.getToken().getInterval());
-							// set bounds 
-							c2.setLowerBound(0);
-							c2.setUpperBound(this.tdb.getHorizon());
-							
-							// try to propagate constraint
-							this.tdb.propagate(c2);
-							// add entry to constraints: "previous < consumption"
-							constraints.put(previous, consumption);
+						// try to propagate computed constraints
+						for (BeforeIntervalConstraint constraint : constraints) {
+							// propagate constraint
+							this.tdb.propagate(constraint);
 						}
 						
 						// check the feasibility of the solution
 						this.tdb.checkConsistency();
 						// compute the preserved space of the involved time points
-						double preserved = this.computePreservedSpaceHeuristicValue(
-								c1.getReference().getEndTime(), 
-								c1.getTarget().getStartTime());
-						// update preserved space with constraint c2 if necessary
-						if (index > 0) {
-							// compute the resulting (average) preserved space heuristics
-							preserved = (preserved + this.computePreservedSpaceHeuristicValue(
-									c2.getReference().getEndTime(), 
-									c2.getTarget().getStartTime())) / 2.0;
+						double preserved = 0;
+						for (BeforeIntervalConstraint c : constraints) {
+							// compute preserved space heuristic value
+							preserved += this.computePreservedSpaceHeuristicValue(c.getReference().getEndTime(), c.getTarget().getStartTime());
+							
 						}
+						// get average
+						preserved = preserved / constraints.size();
 						
 						// compute the resulting makespan of the temporal network
 						ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
@@ -329,21 +394,120 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						double makespan = query.getMakespan();
 						
 						// add consumption scheduling solution
-						ConsumptionScheduling scheduling = new ConsumptionScheduling(peak, constraints, preserved);
+						ConsumptionScheduling scheduling = new ConsumptionScheduling(
+								peak, 
+								checkpoint.getProduction().getDecision(),
+								consumption.getAmount(),
+								solmap, 
+								preserved);
+						
+						// set solution makespan
 						scheduling.setMakespan(makespan);
 						// add solution to the peak
 						peak.addSolution(scheduling);
 					}
 					catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
 						this.logger.debug("Not valid schedule found to solve peak:\n- peak: " + peak + "\n"
-								+ "- schedule: " + consumption + " < " + production + "\n");
+								+ "- schedule: " + consumption + " < " + checkpoint.getProduction() + "\n");
 					}
-					finally {
+					finally 
+					{
 						// retract constraints
-						this.tdb.retract(c1);
-						this.tdb.retract(c2);
+						for (BeforeIntervalConstraint constraint : constraints) {
+							this.tdb.retract(constraint);
+						}
 						// clear constraints
 						constraints.clear();
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected void doRestore(FlawSolution flawSolution) throws Exception 
+	{
+		// perform "default" operations
+		super.doRestore(flawSolution);
+		// get general solution
+		ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
+		// check type
+		if (overconsumption.getType().equals(ResourceOverConsumptionSolutionType.CONSUMPTION_SCHEDULING)) 
+		{
+			// restore the production binding constraint
+			ConsumptionScheduling solution = (ConsumptionScheduling) overconsumption;
+			// get production activity
+			Decision production = solution.getProduction();
+			// get parameter relation
+			for (Relation rel : this.component.getRelations(production)) 
+			{
+				// check parameter relation
+				if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+				{
+					try
+					{
+						// bind parameter relation
+						BindParameterRelation bind = (BindParameterRelation) rel;
+						// retract binding constraint
+						this.component.deactivate(bind);
+						// decrease the amount of resource to produce
+						int value = Integer.parseInt(bind.getValue());
+						value -= solution.getProductionDelta();
+						// update binding constraint
+						bind.setValue(Integer.toString(value));
+						// propagate bind constraint
+						this.component.activate(bind);
+					}
+					catch (RelationPropagationException ex) {
+						throw new RuntimeException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected void doRetract(FlawSolution flawSolution) 
+	{
+		// perform "default" operations
+		super.doRetract(flawSolution);
+		// get general solution
+		ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
+		// check type
+		if (overconsumption.getType().equals(ResourceOverConsumptionSolutionType.CONSUMPTION_SCHEDULING)) 
+		{
+			// restore the production binding constraint
+			ConsumptionScheduling solution = (ConsumptionScheduling) overconsumption;
+			// get production activity
+			Decision production = solution.getProduction();
+			// get parameter relation
+			for (Relation rel : this.component.getRelations(production)) 
+			{
+				// check parameter relation
+				if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+				{
+					try
+					{
+						// bind parameter relation
+						BindParameterRelation bind = (BindParameterRelation) rel;
+						// retract binding constraint
+						this.component.deactivate(bind);
+						// decrease the amount of resource to produce
+						int value = Integer.parseInt(bind.getValue());
+						value -= solution.getProductionDelta();
+						// update binding constraint
+						bind.setValue(Integer.toString(value));
+						// propagate bind constraint
+						this.component.activate(bind);
+					}
+					catch (RelationPropagationException ex) {
+						throw new RuntimeException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
 					}
 				}
 			}
@@ -382,11 +546,27 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				solution.addActivatedRelation(before);
 			}
 			
-			/*
-			 * FIXME : when rescheduling a consumption it is necessary to update the amount of 
-			 * produced resource by the following production (checkpoint) in order to set 
-			 * the level to the maximum capacity
-			 */
+			// get production activity
+			Decision production = solution.getProduction();
+			// get parameter relation
+			for (Relation rel : this.component.getRelations(production)) 
+			{
+				// check parameter relation
+				if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+				{
+					// bind parameter relation
+					BindParameterRelation bind = (BindParameterRelation) rel;
+					// deactivate binding constraint
+					this.component.deactivate(bind);
+					// increase the amount of resource to produce
+					int value = Integer.parseInt(bind.getValue());
+					value += solution.getProductionDelta();
+					// update binding constraint
+					bind.setValue(Integer.toString(value));
+					// propagate bind constraint
+					this.component.activate(bind);
+				}
+			}
 		}
 		catch (RelationPropagationException ex) {
 			// retract activated relations
@@ -399,7 +579,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			}
 			
 			// throw exception
-			throw new FlawSolutionApplicationException("Error while applying solutio to resource peak:\n- solution: " + solution + "\n- message: " + ex.getMessage() + "\n");
+			throw new FlawSolutionApplicationException("Error while applying solution to resource peak:\n- solution: " + solution + "\n- message: " + ex.getMessage() + "\n");
 		}
 	}
 	
@@ -509,6 +689,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		List<ConsumptionResourceEvent> consumptions = new ArrayList<>();
 		// get profile samples
 		List<ResourceUsageProfileSample> samples = profile.getSamples();
+		boolean peakMode = false;
 		// analyze the resource profile until a peak is found
 		for (int index = 0; index < samples.size() && peaks.isEmpty(); index++)
 		{
@@ -539,10 +720,13 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			
 			// update the current level of resource
 			currentLevel += sample.getAmount();
-			
 			// check resource over consumption
-			if (currentLevel < this.component.getMinCapacity())
+			peakMode = currentLevel < this.component.getMinCapacity();
+			// check if a peak must be closed
+			if (sample.getAmount() > 0 && peakMode) 
 			{
+				// exit peak mode
+				peakMode = false;
 				// compute the delta value of the peak
 				long delta = this.component.getMinCapacity() - currentLevel;
 				// create a peak
@@ -554,10 +738,24 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			}
 		}
 		
+		// check if a peak must be closed
+		if (peaks.isEmpty() && peakMode) {
+			// create a peak
+			// compute the delta value of the peak
+			long delta = this.component.getMinCapacity() - currentLevel;
+			// create a peak
+			Peak peak = new Peak(this.component, consumptions, delta, checkpoints);
+			// add the peak
+			peaks.add(peak);
+			// clear consumptions
+			consumptions = new ArrayList<>();
+		}
+		
 		// prepare the list of flaws
 		List<Flaw> flaws = new ArrayList<>();
 		// check if any peak has been found
-		if (!peaks.isEmpty()) {
+		if (!peaks.isEmpty()) 
+		{
 			// sort peaks according to the value of the delta
 			Collections.sort(peaks);
 			// get the "best" peak to solve
@@ -599,3 +797,53 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		return preserved;
 	}
 }
+
+/**
+ * 
+ * @author anacleto
+ *
+ */
+class MCS implements Comparable<MCS>
+{
+	private List<ConsumptionResourceEvent> consumptions;
+	
+	/**
+	 * 
+	 * @param events
+	 */
+	protected MCS() {
+		this.consumptions = new ArrayList<>();
+	}
+	
+	/**
+	 * 
+	 * @param event
+	 */
+	public void addEvent(ConsumptionResourceEvent event) {
+		this.consumptions.add(event);
+	}
+	
+	public List<ConsumptionResourceEvent> getConsumptions() {
+		return consumptions;
+	}
+	
+	public double getResourceConsumption() {
+		double total = 0;
+		for (ConsumptionResourceEvent event : consumptions) {
+			total += event.getAmount();
+		}
+		return total;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public int compareTo(MCS o) {
+		return this.getResourceConsumption() >= o.getResourceConsumption() ? -1 : 1;
+	}
+}
+
+
+
+
