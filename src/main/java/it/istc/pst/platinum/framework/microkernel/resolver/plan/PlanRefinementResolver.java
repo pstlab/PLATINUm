@@ -67,7 +67,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * 
 	 */
 	protected PlanRefinementResolver() {
-		super(ResolverType.PLAN_REFINEMENT.getLabel(), ResolverType.PLAN_REFINEMENT.getFlawType());
+		super(ResolverType.PLAN_REFINEMENT.getLabel(), ResolverType.PLAN_REFINEMENT.getFlawTypes());
 	}
 	
 	/**

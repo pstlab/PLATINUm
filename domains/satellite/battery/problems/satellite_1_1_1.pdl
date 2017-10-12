@@ -4,7 +4,7 @@ PROBLEM BATTERY_RESERVOIR_SATELLITE_1G_1S_1W (DOMAIN BATTERY_RESERVOIR_SATELLITE
 	
 	win1 <fact> GroundStationWindow.channel.Visible() AT [0, 0] [1000, 1000] [1000, 1000];
 	
-	sun1 <fact> SunWindow.sun.Visible() AT [0, 0] [100, 100] [1000, 1000];
+	sun1 <fact> SunWindow.sun.Visible() AT [0, 0] [1000, 1000] [1000, 1000];
 
 	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 }

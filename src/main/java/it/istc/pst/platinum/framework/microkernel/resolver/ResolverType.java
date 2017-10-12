@@ -22,7 +22,9 @@ public enum ResolverType
 	 */
 	PLAN_REFINEMENT(PlanRefinementResolver.class.getName(), 
 			"Plan Refinement", 
-			FlawType.PLAN_REFINEMENT),
+			new FlawType[] {
+					FlawType.PLAN_REFINEMENT
+			}),
 	
 	/**
 	 * This resolver is responsible for managing discrete resources. The 
@@ -31,14 +33,19 @@ public enum ResolverType
 	 */
 	DISCRETE_RESOURCE_SCHEDULING_RESOLVER(DiscreteResourceSchedulingResolver.class.getName(),
 			"Discrete Resource Scheduler",
-			FlawType.RESOURCE_OVERFLOW),
+			new FlawType[] {
+				FlawType.RESOURCE_OVERFLOW
+			}),
 	
 	/**
 	 * 
 	 */
 	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(ReservoirResourceSchedulingResolver.class.getName(),
 			"Reservoir Resource Scheduler",
-			FlawType.RESOURCE_PLANNING),
+			new FlawType[] {
+				FlawType.RESOURCE_PLANNING,
+				FlawType.RESOURCE_PRODUCTION_UPDATE
+			}),
 
 	/**
 	 * This resolver complies with the semantics of timelines as a 
@@ -47,7 +54,9 @@ public enum ResolverType
 	 */
 	TIMELINE_SCHEDULING_RESOLVER(TimelineSchedulingResolver.class.getName(),
 			"State Variable Scheduler",
-			FlawType.TIMELINE_OVERFLOW),
+			new FlawType[] {
+				FlawType.TIMELINE_OVERFLOW
+			}),
 	
 	/**
 	 * This resolver complies with the semantics of timelines as a
@@ -57,7 +66,9 @@ public enum ResolverType
 	 */
 	TIMELINE_BEHAVIOR_PLANNING_RESOLVER(TimelineBehaviorPlanningResolver.class.getName(),
 			"Timeline Gap Manager",
-			FlawType.TIMELINE_BEHAVIOR_PLANNING),
+			new FlawType[] {
+					FlawType.TIMELINE_BEHAVIOR_PLANNING
+	}),
 	
 	/**
 	 * This resolver is responsible for verifying the temporal behavior of a state
@@ -66,7 +77,9 @@ public enum ResolverType
 	 */
 	TIMELINE_BEHAVIOR_CHECKING_RESOLVER(TimelineBehaviorCheckingResolver.class.getName(),
 			"State Variable Behavior Checker",
-			FlawType.TIMELINE_BEHAVIOR_CHECKING),
+			new FlawType[] {
+				FlawType.TIMELINE_BEHAVIOR_CHECKING
+			}),
 	
 	/**
 	 * This resolver is responsible for verifying the observed behavior of external 
@@ -76,13 +89,15 @@ public enum ResolverType
 	 */
 	OBSERVATION_CHECKING_RESOLVER(ObservationBehaviorCheckingResolver.class.getName(),
 			"Observation Checker",
-			FlawType.TIMELINE_BEHAVIOR_CHECKING);
+			new FlawType[] {
+				FlawType.TIMELINE_BEHAVIOR_CHECKING
+			});
 	
 	// resolver class name
 	private String cname;
 	private String label;
 	// represents the type of flaw the resolver can handle
-	private FlawType flawType;
+	private FlawType[] flawTypes;
 	
 	/**
 	 * 
@@ -90,10 +105,10 @@ public enum ResolverType
 	 * @param label
 	 * @param ftype
 	 */
-	private ResolverType(String cname, String label, FlawType ftype) {
+	private ResolverType(String cname, String label, FlawType[] ftypes) {
 		this.cname = cname;
 		this.label = label;
-		this.flawType = ftype;
+		this.flawTypes = ftypes;
 	}
 	
 	/**
@@ -116,7 +131,7 @@ public enum ResolverType
 	 * 
 	 * @return
 	 */
-	public FlawType getFlawType() {
-		return flawType;
+	public FlawType[] getFlawTypes() {
+		return flawTypes;
 	}
 }

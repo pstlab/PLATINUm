@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.framework.utils.properties;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -20,17 +20,15 @@ public class FilePropertyReader
 	 */
 	public FilePropertyReader(String name)
 	{
-		try {
+		try 
+		{
 			// setup file property
 			this.properties = new Properties();
 			// load file properties
-			URL url = ClassLoader.getSystemResource(name);
-			if (url != null) {
+//			URL url = ClassLoader.getSystemResource(name);
+			try (FileInputStream in = new FileInputStream(name)) {
 				// load the (resource) property file
-				this.properties.load(url.openStream());
-			}
-			else {
-				throw new RuntimeException("Property file \"" + name +  "\" not found...");
+				this.properties.load(in);	//url.openStream());
 			}
 		}
 		catch (IOException ex) {
@@ -60,7 +58,7 @@ public class FilePropertyReader
 	 * @return
 	 */
 	public static final FilePropertyReader getDeliberativePropertyFile() {
-		return new FilePropertyReader("deliberative.properties");
+		return new FilePropertyReader("src/main/resources/deliberative.properties");
 	}
 	
 	/**
@@ -68,6 +66,6 @@ public class FilePropertyReader
 	 * @return
 	 */
 	public static final FilePropertyReader getExecutivePropertyFile() {
-		return new FilePropertyReader("executive.properties");
+		return new FilePropertyReader("src/main/resources/executive.properties");
 	}
 }

@@ -40,7 +40,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	 */
 	protected TimelineSchedulingResolver() {
 		super(ResolverType.TIMELINE_SCHEDULING_RESOLVER.getLabel(), 
-				ResolverType.TIMELINE_SCHEDULING_RESOLVER.getFlawType());
+				ResolverType.TIMELINE_SCHEDULING_RESOLVER.getFlawTypes());
 	}
 	
 	/**

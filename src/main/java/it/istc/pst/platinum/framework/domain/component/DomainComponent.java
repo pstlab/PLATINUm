@@ -126,7 +126,9 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		this.view = new GanttComponentView(this);
 		// setup resolver index
 		for (Resolver<?> resv : this.resolvers) {
-			this.flawType2resolver.put(resv.getFlawType(), resv);
+			for (FlawType ft : resv.getFlawTypes()) {
+				this.flawType2resolver.put(ft, resv);
+			}
 		}
 	}
 	

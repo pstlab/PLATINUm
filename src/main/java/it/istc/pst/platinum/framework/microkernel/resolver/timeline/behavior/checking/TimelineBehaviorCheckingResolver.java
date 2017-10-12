@@ -32,7 +32,7 @@ public class TimelineBehaviorCheckingResolver extends Resolver<StateVariable> im
 	 */
 	protected TimelineBehaviorCheckingResolver() {
 		super(ResolverType.TIMELINE_BEHAVIOR_CHECKING_RESOLVER.getLabel(), 
-				ResolverType.TIMELINE_BEHAVIOR_CHECKING_RESOLVER.getFlawType());
+				ResolverType.TIMELINE_BEHAVIOR_CHECKING_RESOLVER.getFlawTypes());
 	}
 	
 	/**

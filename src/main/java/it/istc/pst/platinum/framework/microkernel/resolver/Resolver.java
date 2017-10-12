@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.framework.microkernel.resolver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,17 +51,17 @@ public abstract class Resolver<T extends DomainComponent> extends ApplicationFra
 	protected T component;
 	
 	protected String label;
-	protected FlawType flawType;
+	protected FlawType[] flawTypes;
 	
 	/**
 	 * 
 	 * @param label
-	 * @param flawType
+	 * @param flawTypes
 	 */
-	protected Resolver(String label, FlawType flawType) {
+	protected Resolver(String label, FlawType[] flawTypes) {
 		super();
 		this.label = label;
-		this.flawType = flawType;
+		this.flawTypes = flawTypes;
 	}
 	
 	/**
@@ -75,8 +76,8 @@ public abstract class Resolver<T extends DomainComponent> extends ApplicationFra
 	 * 
 	 * @return
 	 */
-	public FlawType getFlawType() {
-		return this.flawType;
+	public FlawType[] getFlawTypes() {
+		return this.flawTypes;
 	}
 	
 	/**
@@ -109,7 +110,7 @@ public abstract class Resolver<T extends DomainComponent> extends ApplicationFra
 			throws FlawSolutionApplicationException 
 	{
 		// check flaw type
-		if (!solution.getFlaw().getType().equals(this.flawType)) {
+		if (!Arrays.asList(this.flawTypes).contains(solution.getFlaw().getType())) {
 			throw new FlawSolutionApplicationException("Impossible to apply solution for flaws of type type " + solution.getFlaw().getType());
 		}
 		
@@ -125,7 +126,7 @@ public abstract class Resolver<T extends DomainComponent> extends ApplicationFra
 			throws Exception 
 	{
 		// check flaw type
-		if (!solution.getFlaw().getType().equals(this.flawType)) {
+		if (!Arrays.asList(this.flawTypes).contains(solution.getFlaw().getType())) {
 			throw new FlawSolutionApplicationException("Impossible to restore solution for flaws of type type " + solution.getFlaw().getType());
 		}
 		
@@ -140,7 +141,7 @@ public abstract class Resolver<T extends DomainComponent> extends ApplicationFra
 	public final void retract(FlawSolution solution) 
 	{
 		// check flaw type
-		if (!solution.getFlaw().getType().equals(this.flawType)) {
+		if (!Arrays.asList(this.flawTypes).contains(solution.getFlaw().getType())) {
 			throw new RuntimeException("Impossible to retract solution for flaws of type " + solution.getFlaw().getType());
 		}
 		

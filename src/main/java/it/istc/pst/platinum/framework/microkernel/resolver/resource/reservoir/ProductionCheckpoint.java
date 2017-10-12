@@ -10,18 +10,18 @@ import it.istc.pst.platinum.framework.domain.component.resource.reservoir.Produc
 public class ProductionCheckpoint implements Comparable<ProductionCheckpoint> 
 {
 	private ProductionResourceEvent production;			// production event
-	private double consumed;							// potential "energy" available before the production event
+	private double levelBeforeProduction;				// the resource level before production
 	private long schedule;								// sampling time of the checkpoint
 	
 	/**
 	 * 
 	 * @param event
-	 * @param consumed
+	 * @param levelBefore
 	 * @param schedule
 	 */
-	protected ProductionCheckpoint(ProductionResourceEvent event, double consumed, long schedule) {
+	protected ProductionCheckpoint(ProductionResourceEvent event, double levelBefore, long schedule) {
 		this.production = event;
-		this.consumed = consumed;
+		this.levelBeforeProduction = levelBefore;
 		this.schedule = schedule;
 	}
 	
@@ -37,8 +37,8 @@ public class ProductionCheckpoint implements Comparable<ProductionCheckpoint>
 	 * 
 	 * @return
 	 */
-	public double getResourceConsumed() {
-		return consumed;
+	public double getLevelBeforeProduction() {
+		return this.levelBeforeProduction;
 	}
 	
 	/**

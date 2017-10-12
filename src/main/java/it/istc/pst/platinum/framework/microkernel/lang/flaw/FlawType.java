@@ -37,6 +37,12 @@ public enum FlawType
 	RESOURCE_PLANNING(FlawCategoryType.PLANNING_SCHEDULING),
 	
 	/**
+	 * A production activity that not producing a sufficient amount of production or producing
+	 * too much resource with respect to the maximum capacity.
+	 */
+	RESOURCE_PRODUCTION_UPDATE(FlawCategoryType.PLANNING_SCHEDULING),
+	
+	/**
 	 * Issue concerning the temporal behavior of a component. It represents 
 	 * an inconsistency which generates an unsolvable flaw
 	 */

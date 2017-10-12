@@ -30,7 +30,7 @@ public final class ObservationBehaviorCheckingResolver extends Resolver<StateVar
 	 */
 	protected ObservationBehaviorCheckingResolver() {
 		super(ResolverType.OBSERVATION_CHECKING_RESOLVER.getLabel(),
-				ResolverType.OBSERVATION_CHECKING_RESOLVER.getFlawType());
+				ResolverType.OBSERVATION_CHECKING_RESOLVER.getFlawTypes());
 	}
 	
 	/**

@@ -50,7 +50,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	 */
 	protected TimelineBehaviorPlanningResolver() {
 		super(ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER.getLabel(), 
-				ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER.getFlawType());
+				ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER.getFlawTypes());
 	}
 	
 	/**

@@ -49,7 +49,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	protected ReservoirResourceSchedulingResolver() {
 		super(ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getLabel(),
-				ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getFlawType());
+				ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
 	}
 	
 	/**
@@ -66,14 +66,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			ReservoirResourceProfile prp = this.component.computePessimisticResourceProfile();
 			// analyze the pessimistic profile and find peaks if any and generate production checkpoints
 			flaws = this.computeProfilePeaks(prp);
-			// check if any flaw has been found
-			if (flaws.isEmpty()) 
-			{
-				// check optimistic resource profile
-				ReservoirResourceProfile orp = this.component.computeOptimisticResourceProfile();
-				// analyze the optimistic profile and find peaks if any and generate production checkpoints
-				flaws = this.computeProfilePeaks(orp);
-			}
+//			// check if any flaw has been found
+//			if (flaws.isEmpty()) 
+//			{
+//				// check optimistic resource profile
+//				ReservoirResourceProfile orp = this.component.computeOptimisticResourceProfile();
+//				// analyze the optimistic profile and find peaks if any and generate production checkpoints
+//				flaws = this.computeProfilePeaks(orp);
+//			}
 		}
 		catch (ResourceProfileComputationException ex) {
 			// profile computation error
@@ -91,24 +91,58 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	protected void doComputeFlawSolutions(Flaw flaw) 
 			throws UnsolvableFlawException 
 	{
-		// get peak
-		Peak peak = (Peak) flaw;
-		
-		// try to solve the peak through scheduling if possible
-		if (!peak.getProductionCheckpoints().isEmpty()) {
-			// analyze possible schedules
-			this.doComputePeakSchedulingSolutions(peak);
+		// check flaw type
+		switch (flaw.getType()) 
+		{
+			// resource peak
+			case RESOURCE_PLANNING : 
+			{
+				// get peak
+				Peak peak = (Peak) flaw;
+				
+				// try to solve the peak through scheduling if possible
+				if (!peak.getProductionCheckpoints().isEmpty()) {
+					// analyze possible schedules
+					this.doComputePeakSchedulingSolutions(peak);
+				}
+				
+				/*
+				 * Now I'm assuming that a production always generate the amount of resource needed to reach the maximum capacity,
+				 * independently from the duration of the production activity
+				 */
+				this.doComputePeakPlanningSolutions(peak);
+			}
+			break;
+			
+			// resource production update
+			case RESOURCE_PRODUCTION_UPDATE : 
+			{
+				// get production flaw
+				ProductionFlaw pf = (ProductionFlaw) flaw;
+				// get the new amount of resource to produce
+				double amount = pf.getProducedAmount() + pf.getDelta();
+				// create solution
+				ProductionUpdate update = new ProductionUpdate(pf, amount);
+				// compute the resulting makespan of the temporal network
+				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+				// process query
+				this.tdb.process(query);
+				// get computed makespan
+				double makespan = query.getMakespan();
+				update.setMakespan(makespan);
+				// add flaw solution
+				pf.addSolution(update);
+			}
+			break;
+			
+			default : {
+				throw new RuntimeException("Reservoir resource resovler cannot handle flaws of type: " + flaw.getType() + "\n");
+			}
 		}
 		
-		/*
-		 * Now I'm assuming that a production always generate the amount of resource needed to reach the maximum capacity,
-		 * independently from the duration of the production activity
-		 */
-		this.doComputePeakPlanningSolutions(peak);
-		
 		// check solutions found
-		if (peak.getSolutions().isEmpty()) {
-			throw new UnsolvableFlawException("No feasible solutions found the following peak on reservoir resource \"" + this.component.getName() + "\":\n- peak: " + peak + "\n");
+		if (flaw.getSolutions().isEmpty()) {
+			throw new UnsolvableFlawException("No feasible solutions found the following peak on reservoir resource \"" + this.component.getName() + "\":\n- flaw: " + flaw + "\n");
 		}
 	}
 	
@@ -121,7 +155,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	{
 		// list of MCS
 		List<MCS> list = new ArrayList<>();
-//		for (ConsumptionResourceEvent reference : peak.getConsumptions())
 		for (int i= 0; i < peak.getConsumptions().size() - 1; i++)
 		{
 			// get reference
@@ -129,7 +162,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			// initialize MCS
 			MCS mcs = new MCS();
 			mcs.addEvent(reference);
-//			for (ConsumptionResourceEvent event : peak.getConsumptions()) 
 			for (int j= i; j < peak.getConsumptions().size(); j++)
 			{
 				// get event 
@@ -170,13 +202,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		Collections.sort(MCSs);
 		// get consumptions 
 		List<ConsumptionResourceEvent> consumptions = MCSs.get(0).getConsumptions();
-		
-//		
-//		// get the consumptions that generate the peak
-//		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
-		
-		
-		
 		
 		// list of production checkpoints
 		List<ProductionCheckpoint> checkpoints = peak.getProductionCheckpoints();
@@ -306,9 +331,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		Collections.sort(MCSs);
 		// get consumptions 
 		List<ConsumptionResourceEvent> consumptions = MCSs.get(0).getConsumptions();
-		// get the consumptions that generate the peak
-//		List<ConsumptionResourceEvent> consumptions = peak.getConsumption();
-		
 		// get production checkpoints
 		List<ProductionCheckpoint> checkpoints = peak.getProductionCheckpoints();
 		
@@ -317,21 +339,23 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		{
 			// get current considered consumption
 			ConsumptionResourceEvent consumption = consumptions.get(i);
-			// get the rest of consumptions composing the current peak
-			List<ConsumptionResourceEvent> rest = new ArrayList<>();
-			for (ConsumptionResourceEvent event : consumptions) {
-				if (!consumption.equals(event)) {
-					rest.add(event);
-				}
-			}
+//			// get the rest of consumptions composing the current peak
+//			List<ConsumptionResourceEvent> rest = new ArrayList<>();
+//			for (ConsumptionResourceEvent event : consumptions) {
+//				if (!consumption.equals(event)) {
+//					rest.add(event);
+//				}
+//			}
 			
 			// analyze checkpoints
 			for (int index = checkpoints.size() -1; index >= 0; index--) 
 			{
 				// get checkpoint 
 				ProductionCheckpoint checkpoint = checkpoints.get(index);
+				// check consumed resource before production
+				double consumed = this.component.getMaxCapacity() - checkpoint.getLevelBeforeProduction();
 				// get potential "energy" of the checkpoint
-				double potential = this.component.getMaxCapacity() - checkpoint.getResourceConsumed();
+				double potential = this.component.getMaxCapacity() - consumed;
 				// check the potential energy of the checkpoint is enough for the consumption
 				if (potential >= consumption.getAmount())
 				{
@@ -393,11 +417,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						// get computed makespan
 						double makespan = query.getMakespan();
 						
+						// compute the amount of resource to produce
+						double amount = checkpoint.getProduction().getAmount() + consumption.getAmount();
 						// add consumption scheduling solution
 						ConsumptionScheduling scheduling = new ConsumptionScheduling(
 								peak, 
 								checkpoint.getProduction().getDecision(),
-								consumption.getAmount(),
+								amount,
+								checkpoint.getProduction().getAmount(),
 								solmap, 
 								preserved);
 						
@@ -428,43 +455,84 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * 
 	 */
 	@Override
-	protected void doRestore(FlawSolution flawSolution) throws Exception 
+	protected void doRestore(FlawSolution flawSolution) 
+			throws Exception 
 	{
 		// perform "default" operations
 		super.doRestore(flawSolution);
-		// get general solution
-		ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
-		// check type
-		if (overconsumption.getType().equals(ResourceOverConsumptionSolutionType.CONSUMPTION_SCHEDULING)) 
+		// check flaw type
+		switch (flawSolution.getFlaw().getType())
 		{
-			// restore the production binding constraint
-			ConsumptionScheduling solution = (ConsumptionScheduling) overconsumption;
-			// get production activity
-			Decision production = solution.getProduction();
-			// get parameter relation
-			for (Relation rel : this.component.getRelations(production)) 
+			case RESOURCE_PRODUCTION_UPDATE : 
 			{
-				// check parameter relation
-				if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+				// get flaw solution
+				ProductionUpdate update = (ProductionUpdate) flawSolution;
+				// get production decision
+				Decision production = update.getProduction();
+				// get parameter relation
+				for (Relation rel : this.component.getRelations(production)) 
 				{
-					try
+					// check parameter relation
+					if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
 					{
-						// bind parameter relation
-						BindParameterRelation bind = (BindParameterRelation) rel;
-						// retract binding constraint
-						this.component.deactivate(bind);
-						// decrease the amount of resource to produce
-						int value = Integer.parseInt(bind.getValue());
-						value -= solution.getProductionDelta();
-						// update binding constraint
-						bind.setValue(Integer.toString(value));
-						// propagate bind constraint
-						this.component.activate(bind);
-					}
-					catch (RelationPropagationException ex) {
-						throw new RuntimeException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+						try
+						{
+							// bind parameter relation
+							BindParameterRelation bind = (BindParameterRelation) rel;
+							// retract binding constraint
+							this.component.deactivate(bind);
+							// update binding constraint
+							bind.setValue(Integer.toString((int) update.getAmount()));
+							// propagate bind constraint
+							this.component.activate(bind);
+						}
+						catch (RelationPropagationException ex) {
+							throw new RuntimeException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+						}
 					}
 				}
+			}
+			break;
+		
+			case RESOURCE_PLANNING : 
+			{
+				// get general solution
+				ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
+				// check type
+				if (overconsumption.getType().equals(ResourceOverConsumptionSolutionType.CONSUMPTION_SCHEDULING)) 
+				{
+					// restore the production binding constraint
+					ConsumptionScheduling solution = (ConsumptionScheduling) overconsumption;
+					// get production activity
+					Decision production = solution.getProduction();
+					// get parameter relation
+					for (Relation rel : this.component.getRelations(production)) 
+					{
+						// check parameter relation
+						if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+						{
+							try
+							{
+								// bind parameter relation
+								BindParameterRelation bind = (BindParameterRelation) rel;
+								// retract binding constraint
+								this.component.deactivate(bind);
+								// update binding constraint
+								bind.setValue(Integer.toString((int) solution.getProductionAmount()));
+								// propagate bind constraint
+								this.component.activate(bind);
+							}
+							catch (RelationPropagationException ex) {
+								throw new Exception("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+							}
+						}
+					}
+				}
+			}
+			break;
+			
+			default : {
+				throw new RuntimeException("Reservoir resource resolver cannot handle flaws of type: " + flawSolution.getFlaw().getType());
 			}
 		}
 	}
@@ -477,39 +545,79 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	{
 		// perform "default" operations
 		super.doRetract(flawSolution);
-		// get general solution
-		ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
-		// check type
-		if (overconsumption.getType().equals(ResourceOverConsumptionSolutionType.CONSUMPTION_SCHEDULING)) 
+		// check flaw type
+		switch (flawSolution.getFlaw().getType())
 		{
-			// restore the production binding constraint
-			ConsumptionScheduling solution = (ConsumptionScheduling) overconsumption;
-			// get production activity
-			Decision production = solution.getProduction();
-			// get parameter relation
-			for (Relation rel : this.component.getRelations(production)) 
+			case RESOURCE_PRODUCTION_UPDATE : 
 			{
-				// check parameter relation
-				if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+				// get flaw solution
+				ProductionUpdate update = (ProductionUpdate) flawSolution;
+				// get production decision
+				Decision production = update.getProduction();
+				// get parameter relation
+				for (Relation rel : this.component.getRelations(production)) 
 				{
-					try
+					// check parameter relation
+					if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
 					{
-						// bind parameter relation
-						BindParameterRelation bind = (BindParameterRelation) rel;
-						// retract binding constraint
-						this.component.deactivate(bind);
-						// decrease the amount of resource to produce
-						int value = Integer.parseInt(bind.getValue());
-						value -= solution.getProductionDelta();
-						// update binding constraint
-						bind.setValue(Integer.toString(value));
-						// propagate bind constraint
-						this.component.activate(bind);
-					}
-					catch (RelationPropagationException ex) {
-						throw new RuntimeException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+						try
+						{
+							// bind parameter relation
+							BindParameterRelation bind = (BindParameterRelation) rel;
+							// retract binding constraint
+							this.component.deactivate(bind);
+							// update binding constraint
+							bind.setValue(Integer.toString((int) update.getPreviousAmount()));
+							// propagate bind constraint
+							this.component.activate(bind);
+						}
+						catch (RelationPropagationException ex) {
+							throw new RuntimeException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+						}
 					}
 				}
+			}
+			break;
+		
+			case RESOURCE_PLANNING : 
+			{
+				// get general solution
+				ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
+				// check type
+				if (overconsumption.getType().equals(ResourceOverConsumptionSolutionType.CONSUMPTION_SCHEDULING)) 
+				{
+					// restore the production binding constraint
+					ConsumptionScheduling solution = (ConsumptionScheduling) overconsumption;
+					// get production activity
+					Decision production = solution.getProduction();
+					// get parameter relation
+					for (Relation rel : this.component.getRelations(production)) 
+					{
+						// check parameter relation
+						if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+						{
+							try
+							{
+								// bind parameter relation
+								BindParameterRelation bind = (BindParameterRelation) rel;
+								// retract binding constraint
+								this.component.deactivate(bind);
+								// update binding constraint
+								bind.setValue(Integer.toString((int) solution.getOldAmount()));
+								// propagate bind constraint
+								this.component.activate(bind);
+							}
+							catch (RelationPropagationException ex) {
+								throw new RuntimeException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+							}
+						}
+					}
+				}
+			}
+			break;
+			
+			default : {
+				throw new RuntimeException("Reservoir resource resolver cannot handle flaws of type: " + flawSolution.getFlaw().getType());
 			}
 		}
 	}
@@ -558,11 +666,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 					BindParameterRelation bind = (BindParameterRelation) rel;
 					// deactivate binding constraint
 					this.component.deactivate(bind);
-					// increase the amount of resource to produce
-					int value = Integer.parseInt(bind.getValue());
-					value += solution.getProductionDelta();
 					// update binding constraint
-					bind.setValue(Integer.toString(value));
+					bind.setValue(Integer.toString((int) solution.getProductionAmount()));
 					// propagate bind constraint
 					this.component.activate(bind);
 				}
@@ -644,29 +749,72 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	protected void doApply(FlawSolution solution) 
 			throws FlawSolutionApplicationException 
 	{
-		// get general solution
-		ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) solution;
-		// check over consumption type
-		switch (overconsumption.getType())
+		// check flaw type
+		switch (solution.getFlaw().getType())
 		{
-			// scheduling solution
-			case CONSUMPTION_SCHEDULING : {
-				// get scheduling solution
-				ConsumptionScheduling scheduling = (ConsumptionScheduling) overconsumption;
-				this.doApplyResourceSchedulingSolution(scheduling);
+			case RESOURCE_PRODUCTION_UPDATE : 
+			{
+				// get production update solution 
+				ProductionUpdate update = (ProductionUpdate) solution;
+				// get production decision
+				Decision production = update.getProduction();
+				try
+				{
+					// check relations
+					for (Relation rel : this.component.getRelations(production)) 
+					{
+						// check relation type 
+						if (rel.getType().equals(RelationType.BIND_PARAMETER)) 
+						{
+							// bind parameter relation
+							BindParameterRelation bind = (BindParameterRelation) rel;
+							// deactivate binding constraint
+							this.component.deactivate(bind);
+							// update binding constraint
+							bind.setValue(Integer.toString((int) update.getAmount()));
+							// propagate bind constraint
+							this.component.activate(bind);
+						}
+					}
+				}
+				catch (RelationPropagationException ex) {
+					throw new FlawSolutionApplicationException(ex.getMessage());
+				}
 			}
 			break;
-			
-			// planning solution
-			case PRODUCTION_PLANNING : {
-				// get planning solution
-				ProductionPlanning planning = (ProductionPlanning) overconsumption;
-				this.doApplyResourcePlanningSolution(planning);
+		
+			case RESOURCE_PLANNING : 
+			{
+				// get general solution
+				ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) solution;
+				// check over consumption type
+				switch (overconsumption.getType())
+				{
+					// scheduling solution
+					case CONSUMPTION_SCHEDULING : {
+						// get scheduling solution
+						ConsumptionScheduling scheduling = (ConsumptionScheduling) overconsumption;
+						this.doApplyResourceSchedulingSolution(scheduling);
+					}
+					break;
+					
+					// planning solution
+					case PRODUCTION_PLANNING : {
+						// get planning solution
+						ProductionPlanning planning = (ProductionPlanning) overconsumption;
+						this.doApplyResourcePlanningSolution(planning);
+					}
+					break;
+					
+					default : {
+						throw new RuntimeException("Unknownw reservoir resource peak solution type: " + overconsumption.getType() + "\n");
+					}
+				}
 			}
 			break;
 			
 			default : {
-				throw new RuntimeException("Unknownw reservoir resource peak solution type: " + overconsumption.getType() + "\n");
+				throw new RuntimeException("Reservoir resource resolver cannot handle flaws of type: " + solution.getFlaw().getType());
 			}
 		}
 	}
@@ -679,8 +827,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	private List<Flaw> computeProfilePeaks(ReservoirResourceProfile profile)
 	{
-		// list of peak found
-		List<Peak> peaks = new ArrayList<>();
+		// list of flaws found
+		List<Flaw> flaws = new ArrayList<>();
 		// initialize resource capacity level
 		long currentLevel = this.component.getInitialLevel();
 		// initialize the set of production checkpoints
@@ -691,24 +839,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		List<ResourceUsageProfileSample> samples = profile.getSamples();
 		boolean peakMode = false;
 		// analyze the resource profile until a peak is found
-		for (int index = 0; index < samples.size() && peaks.isEmpty(); index++)
+		for (int index = 0; index < samples.size(); index++)
 		{
 			// current sample
 			ResourceUsageProfileSample sample = samples.get(index);
-			// check production event
-			if (sample.getAmount() > 0)
-			{
-				// get production event
-				ProductionResourceEvent production = (ProductionResourceEvent) sample.getEvent();
-				// get potential resource usage
-				double consumed = this.component.getMaxCapacity() - currentLevel;
-				// create a production checkpoint
-				ProductionCheckpoint point = new ProductionCheckpoint(production, consumed, sample.getSchedule());
-				// add to the set
-				checkpoints.add(point);
-				// clear the list of peak consumptions
-				consumptions = new ArrayList<>();
-			}
+			// update the current level of resource
+			currentLevel += sample.getAmount();
+			// check resource over consumption
+			peakMode = currentLevel < this.component.getMinCapacity();
 			
 			// check consumption event
 			if (sample.getAmount() < 0) {
@@ -717,51 +855,74 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				// add event to possible peak consumptions
 				consumptions.add(consumption);
 			}
-			
-			// update the current level of resource
-			currentLevel += sample.getAmount();
-			// check resource over consumption
-			peakMode = currentLevel < this.component.getMinCapacity();
-			// check if a peak must be closed
-			if (sample.getAmount() > 0 && peakMode) 
+			else if (sample.getAmount() > 0)	// check production event
 			{
-				// exit peak mode
-				peakMode = false;
-				// compute the delta value of the peak
-				long delta = this.component.getMinCapacity() - currentLevel;
-				// create a peak
-				Peak peak = new Peak(this.component, consumptions, delta, checkpoints);
-				// add the peak
-				peaks.add(peak);
-				// clear consumptions
-				consumptions = new ArrayList<>();
+				// get production event
+				ProductionResourceEvent production = (ProductionResourceEvent) sample.getEvent();
+				// create a production checkpoint
+				ProductionCheckpoint point = new ProductionCheckpoint(production, currentLevel, sample.getSchedule());
+				// add to the set
+				checkpoints.add(point);
+				// clear the list of peak consumptions
+				consumptions.clear();
+				
+				// check peak mode
+				if (peakMode)
+				{
+					// compute the delta value of the peak
+					long delta = this.component.getMinCapacity() - currentLevel;
+					// create a peak
+					Peak peak = new Peak(this.component, consumptions, delta, checkpoints);
+					// add the peak
+					flaws.add(peak);
+					// exit peak mode
+					peakMode = false;
+					// clear consumptions
+					consumptions.clear();
+					break;
+				}
+				else if (currentLevel != this.component.getMaxCapacity()) 	// not peak mode, check the resulting level of resource
+				{
+					// compute delta
+					double delta = this.component.getMaxCapacity() - currentLevel;
+					// if delta > 0 we have got a production leak
+					if (delta > 0) 
+					{
+						// create production leak flaw
+						ProductionLeak flaw = new ProductionLeak(this.component, (ProductionResourceEvent) sample.getEvent(), delta);
+						// add to flaws
+						flaws.add(flaw);
+					}
+					
+					// if delta < 0 we have got a production overflow
+					if (delta < 0) {
+						// create production overflow
+						ProductionOverflow flaw = new ProductionOverflow(this.component, (ProductionResourceEvent) sample.getEvent(), delta);
+						// add to flaws
+						flaws.add(flaw);
+					}
+					
+					// exit peak mode
+					peakMode = false;
+					// clear data
+					consumptions.clear();
+					break;
+				}
 			}
 		}
 		
+		
 		// check if a peak must be closed
-		if (peaks.isEmpty() && peakMode) {
+		if (flaws.isEmpty() && peakMode) {
 			// create a peak
 			// compute the delta value of the peak
 			long delta = this.component.getMinCapacity() - currentLevel;
 			// create a peak
 			Peak peak = new Peak(this.component, consumptions, delta, checkpoints);
 			// add the peak
-			peaks.add(peak);
-			// clear consumptions
-			consumptions = new ArrayList<>();
-		}
-		
-		// prepare the list of flaws
-		List<Flaw> flaws = new ArrayList<>();
-		// check if any peak has been found
-		if (!peaks.isEmpty()) 
-		{
-			// sort peaks according to the value of the delta
-			Collections.sort(peaks);
-			// get the "best" peak to solve
-			Peak peak = peaks.get(0);
-			// add to flaws
 			flaws.add(peak);
+			// clear consumptions
+			consumptions.clear();
 		}
 		
 		// get found peaks - only one element expected

@@ -43,7 +43,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	 */
 	protected DiscreteResourceSchedulingResolver() {
 		super(ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getLabel(), 
-				ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getFlawType());
+				ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
 	}
 
 	/**
