@@ -11,18 +11,27 @@ public class ProductionCheckpoint implements Comparable<ProductionCheckpoint>
 {
 	private ProductionResourceEvent production;			// production event
 	private double levelBeforeProduction;				// the resource level before production
+	private double levelAfterProduction;				// the resource level after production
 	private long schedule;								// sampling time of the checkpoint
+	private double potentialConsumption;				// resource potential consumption before production
+	private double potentialProduction;					// resource potential production after production
 	
 	/**
 	 * 
 	 * @param event
-	 * @param levelBefore
 	 * @param schedule
+	 * @param levelBefore
+	 * @param levelAfter
+	 * @param potentialConsumption
+	 * @param potentialProduction
 	 */
-	protected ProductionCheckpoint(ProductionResourceEvent event, double levelBefore, long schedule) {
+	protected ProductionCheckpoint(ProductionResourceEvent event, long schedule, double levelBefore, double levelAfter, double potentialConsumption, double potentialProduction) {
 		this.production = event;
-		this.levelBeforeProduction = levelBefore;
 		this.schedule = schedule;
+		this.levelBeforeProduction = levelBefore;
+		this.levelAfterProduction = levelAfter;
+		this.potentialConsumption = potentialConsumption;
+		this.potentialProduction = potentialProduction;
 	}
 	
 	/**
@@ -45,8 +54,32 @@ public class ProductionCheckpoint implements Comparable<ProductionCheckpoint>
 	 * 
 	 * @return
 	 */
+	public double getLevelAfterProduction() {
+		return levelAfterProduction;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public ProductionResourceEvent getProduction() {
 		return production;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getPotentialCapacity() {
+		return potentialConsumption;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getPotentialProduction() {
+		return potentialProduction;
 	}
 	
 	/**

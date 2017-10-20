@@ -18,7 +18,7 @@ public class ConsumptionScheduling extends FlawSolution implements ResourceOverC
 	private double preserved;						// average value of the resulting preserved space
 	private Decision production;					// considered production decision
 	private double productionAmount;				// amount of resource to produce
-	private double oldAmount;						// old amount of produced resourc
+	private double oldAmount;						// old amount of produced resource
 	
 	/**
 	 * 

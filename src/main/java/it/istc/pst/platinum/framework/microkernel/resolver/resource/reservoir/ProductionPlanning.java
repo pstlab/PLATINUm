@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
@@ -14,9 +15,9 @@ import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
  */
 public class ProductionPlanning extends FlawSolution implements ResourceOverConsumptionSolution
 {
-	private int amount;								// amount of resource to produce
-	private List<Decision> beforeProduction;			// list of decisions before production
-	private List<Decision> afterProduction;				// list of decisions after production
+	private double amount;							// amount of resource to produce
+	private List<Decision> beforeProduction;		// list of decisions before production
+	private List<Decision> afterProduction;			// list of decisions after production
 	
 	/**
 	 * 
@@ -25,7 +26,7 @@ public class ProductionPlanning extends FlawSolution implements ResourceOverCons
 	 * @param bp
 	 * @param ap
 	 */
-	protected ProductionPlanning(Peak flaw, int amount, List<Decision> bp, List<Decision> ap) {
+	protected ProductionPlanning(Peak flaw, double amount, Collection<Decision> bp, Collection<Decision> ap) {
 		super(flaw);
 		this.amount = amount;
 		this.beforeProduction = new ArrayList<>(bp);
@@ -36,7 +37,7 @@ public class ProductionPlanning extends FlawSolution implements ResourceOverCons
 	 * 
 	 * @return
 	 */
-	public int getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 	

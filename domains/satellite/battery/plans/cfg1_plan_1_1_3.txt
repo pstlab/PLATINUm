@@ -1,0 +1,99 @@
+horizon = 1000
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 909] [1,909] }
+			 token 790  { Slewing [4, 912] [3,3] }
+			 token 761  { Science [12, 920] [8,11] }
+			 token 789  { Slewing [15, 923] [3,3] }
+			 token 765  { Science [23, 931] [8,11] }
+			 token 788  { Slewing [26, 934] [3,3] }
+			 token 771  { Science [34, 942] [8,11] }
+			 token 787  { Slewing [37, 945] [3,3] }
+			 token 778 uncontrollable { Recharging [40, 948] [3,7] }
+			 token 786  { Slewing [43, 951] [3,3] }
+			 token 774 uncontrollable { Recharging [46, 954] [3,7] }
+			 token 785  { Slewing [49, 957] [3,3] }
+			 token 784  { Earth [50, 958] [1,909] }
+			 token 763 uncontrollable { Comm [60, 968] [10,18] }
+			 token 782  { Earth [61, 969] [1,909] }
+			 token 783  { Slewing [64, 972] [3,3] }
+			 token 770 uncontrollable { Recharging [67, 975] [3,7] }
+			 token 780  { Slewing [70, 978] [3,3] }
+			 token 781  { Earth [71, 979] [1,909] }
+			 token 767 uncontrollable { Comm [81, 989] [10,18] }
+			 token 779  { Earth [82, 990] [1,909] }
+			 token 775 uncontrollable { Comm [92, 1000] [10,18] }
+		}
+	}
+	relations {
+		PointingMode 761 BEFORE [0, 1000]  PointingMode 763
+		PointingMode 761 EQUALS SatelliteBattery 762
+		PointingMode 763 EQUALS SatelliteBattery 764
+		PointingMode 763 DURING [0, 1000]  [0,1000]  GroundStationWindow 1
+		PointingMode 765 BEFORE [0, 1000]  PointingMode 767
+		PointingMode 765 EQUALS SatelliteBattery 766
+		PointingMode 767 EQUALS SatelliteBattery 768
+		PointingMode 767 DURING [0, 1000]  [0,1000]  GroundStationWindow 1
+		SatelliteBattery 764 BEFORE [0, 1000]  SatelliteBattery 769
+		SatelliteBattery 769 BEFORE [0, 1000]  SatelliteBattery 768
+		SatelliteBattery 769 EQUALS PointingMode 770
+		SatelliteBattery 769 DURING [0, 1000]  [0,1000]  SunWindow 2
+		PointingMode 771 BEFORE [0, 1000]  PointingMode 775
+		PointingMode 771 EQUALS SatelliteBattery 772
+		SatelliteBattery 766 BEFORE [0, 1000]  SatelliteBattery 773
+		SatelliteBattery 772 BEFORE [0, 1000]  SatelliteBattery 773
+		SatelliteBattery 773 BEFORE [0, 1000]  SatelliteBattery 764
+		SatelliteBattery 773 EQUALS PointingMode 774
+		SatelliteBattery 773 DURING [0, 1000]  [0,1000]  SunWindow 2
+		PointingMode 775 EQUALS SatelliteBattery 776
+		PointingMode 775 DURING [0, 1000]  [0,1000]  GroundStationWindow 1
+		SatelliteBattery 772 BEFORE [0, 1000]  SatelliteBattery 777
+		SatelliteBattery 762 BEFORE [0, 1000]  SatelliteBattery 777
+		SatelliteBattery 777 BEFORE [0, 1000]  SatelliteBattery 776
+		SatelliteBattery 777 EQUALS PointingMode 778
+		SatelliteBattery 777 DURING [0, 1000]  [0,1000]  SunWindow 2
+		PointingMode 0 BEFORE [1, 1000]  PointingMode 771
+		PointingMode 0 BEFORE [1, 1000]  PointingMode 765
+		PointingMode 0 BEFORE [1, 1000]  PointingMode 761
+		PointingMode 765 BEFORE [1, 1000]  PointingMode 771
+		PointingMode 761 BEFORE [1, 1000]  PointingMode 765
+		PointingMode 778 BEFORE [1, 1000]  PointingMode 774
+		PointingMode 774 BEFORE [1, 1000]  PointingMode 775
+		PointingMode 763 BEFORE [1, 1000]  PointingMode 775
+		PointingMode 770 BEFORE [1, 1000]  PointingMode 775
+		PointingMode 767 BEFORE [1, 1000]  PointingMode 775
+		PointingMode 767 MEETS PointingMode 779
+		PointingMode 779 MEETS PointingMode 775
+		PointingMode 770 MEETS PointingMode 780
+		PointingMode 780 MEETS PointingMode 781
+		PointingMode 781 MEETS PointingMode 767
+		PointingMode 763 MEETS PointingMode 782
+		PointingMode 782 MEETS PointingMode 783
+		PointingMode 783 MEETS PointingMode 770
+		PointingMode 774 MEETS PointingMode 785
+		PointingMode 785 MEETS PointingMode 784
+		PointingMode 784 MEETS PointingMode 763
+		PointingMode 778 MEETS PointingMode 786
+		PointingMode 786 MEETS PointingMode 774
+		PointingMode 771 MEETS PointingMode 787
+		PointingMode 787 MEETS PointingMode 778
+		PointingMode 765 MEETS PointingMode 788
+		PointingMode 788 MEETS PointingMode 771
+		PointingMode 761 MEETS PointingMode 789
+		PointingMode 789 MEETS PointingMode 765
+		PointingMode 0 MEETS PointingMode 790
+		PointingMode 790 MEETS PointingMode 761
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [1000, 1000] [1000, 1000] }
+		}
+		SunWindow {
+			 token 2 { Visible [1000, 1000] [1000, 1000] }
+		}
+	}
+}
+

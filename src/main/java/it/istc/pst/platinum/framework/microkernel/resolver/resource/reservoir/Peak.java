@@ -19,29 +19,40 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
  */
 public class Peak extends Flaw implements Comparable<Peak> 
 {
-	private List<ConsumptionResourceEvent> consumptions;		// the consumption events generating the peak
-	private Set<ProductionCheckpoint> checkpoints;			// set of production checkpoints
-	private double delta;
+	private List<ConsumptionResourceEvent> criticalSet;		// the consumption events generating the peak
+	private Set<ProductionCheckpoint> checkpoints;			// set of production checkpoints of the profile 
+	private double delta;									// amount of resource exceeding the capacity
+	private double initialLevel;							// the level of the resource at the beginning of the critical set
 	
 	/**
 	 * 
 	 * @param resource
-	 * @param consumptions
+	 * @param set
 	 * @param delta
 	 * @param points
 	 */
-	protected Peak(ReservoirResource resource, List<ConsumptionResourceEvent> consumptions, double delta, Collection<ProductionCheckpoint> points) {
+	protected Peak(ReservoirResource resource, List<ConsumptionResourceEvent> set, double delta, double initialLevel, Collection<ProductionCheckpoint> points) {
 		super(resource, FlawType.RESOURCE_PLANNING);
-		this.consumptions = new ArrayList<>(consumptions);
+		this.criticalSet = new ArrayList<>(set);
 		this.checkpoints = new HashSet<>(points);
+		this.delta = delta;
+		this.initialLevel = initialLevel;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public List<ConsumptionResourceEvent> getConsumptions() {
-		List<ConsumptionResourceEvent> list = new ArrayList<>(this.consumptions);
+	public double getInitialLevel() {
+		return initialLevel;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<ConsumptionResourceEvent> getCriticalSet() {
+		List<ConsumptionResourceEvent> list = new ArrayList<>(this.criticalSet);
 		Collections.sort(list);
 		return list;
 	}
@@ -73,6 +84,15 @@ public class Peak extends Flaw implements Comparable<Peak>
 	@Override
 	public int compareTo(Peak o) {
 		// compare peaks according to "delta" values
-		return this.delta >= o.delta ? -1 : 1;
+		return Math.abs(this.delta) >= Math.abs(o.delta) ? -1 : 1;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[Peak delta: " + delta + "\n"
+				+ "- critical-set: " + this.criticalSet + "]";
 	}
 }

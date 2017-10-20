@@ -52,6 +52,7 @@ public class SatelliteDeliberativeApplicationBatteryTestRunner
 					Planner planner = PlannerBuilder.build(domain, problem);	
 					// start planning
 					SolutionPlan plan = planner.plan();
+					System.out.println(plan);
 					
 					// get solution data 
 					double time = plan.getSolvingTime();
