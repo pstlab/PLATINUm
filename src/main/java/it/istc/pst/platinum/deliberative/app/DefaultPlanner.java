@@ -15,13 +15,13 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  */
 public final class DefaultPlanner extends Planner 
 {
-	@SolverModule(solver= SolverType.PSEUDO_CONTROLLABILITY_AWARE, timeout= 60000)
+	@SolverModule(solver= SolverType.PSEUDO_CONTROLLABILITY_AWARE, timeout= 300000)
 	protected Solver solver;
 	
 	/**
 	 * 
 	 */
-	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
+	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.OFF)
 	protected DefaultPlanner() {
 		super();
 	}

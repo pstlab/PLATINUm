@@ -1,10 +1,10 @@
 package it.istc.pst.platinum.deliberative.heuristic;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
@@ -65,7 +65,7 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 		// get the hierarchy
 		List<DomainComponent>[] hierarchy = this.knowledge.getDomainHierarchy();
 		// check components according to the hierarchy
-		for (int index = hierarchy.length - 1; index >= 0 && flaws.isEmpty(); index--)
+		for (int index = 0; index < hierarchy.length && flaws.isEmpty(); index++)
 		{
 			// get component at the current level of the hierarchy
 			List<DomainComponent> components = hierarchy[index];
@@ -103,20 +103,18 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 			}
 		}
 		
-		// prepare the equivalent set
-		Set<Flaw> set = new HashSet<>();
 		// check flaws found
 		if (flaws.isEmpty()) {
 			// throw exception
 			throw new NoFlawFoundException("No flaw has been found in the current plan");
 		}
-		else {
-			// get the most difficult flaw to solve
-			Collections.sort(flaws, this);
-			// get the first flaw
-			set.add(flaws.get(0));
-		}
 		
+		// prepare the equivalent set
+		Set<Flaw> set = new HashSet<>();
+		// randomly select a flaw to solve
+		Random rand = new Random(System.currentTimeMillis());
+		int pos = rand.nextInt(flaws.size());
+		set.add(flaws.get(pos));
 		// get "equivalent" flaws to solve
 		return set;
 	}
