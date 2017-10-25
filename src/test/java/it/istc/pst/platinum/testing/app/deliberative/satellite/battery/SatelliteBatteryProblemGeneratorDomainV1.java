@@ -12,7 +12,7 @@ import java.io.PrintWriter;
  */
 public class SatelliteBatteryProblemGeneratorDomainV1 
 {
-	private static final int HORIZON = 1000;
+	private static final int VERSION = 1;
 	private static final String[] SUN_WINDOW_SPECIFICATIONS = new String[] {
 			
 			// 1 sun window available
@@ -169,7 +169,7 @@ public class SatelliteBatteryProblemGeneratorDomainV1
 					+ "" + numberOfGoals + "G_"
 					+ "" + numberOfSunWindos + "S_"
 					+ "" + numberOfCommWindows + "W "
-					+ "(DOMAIN BATTERY_RESERVOIR_SATELLITE_H" + HORIZON + ") {\n");
+					+ "(DOMAIN BATTERY_RESERVOIR_SATELLITE_V" + VERSION+ ") {\n");
 			
 			// print known initial facts
 			writer.println(FACTS);

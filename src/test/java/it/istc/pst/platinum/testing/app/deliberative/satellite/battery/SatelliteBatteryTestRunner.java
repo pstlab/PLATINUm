@@ -52,8 +52,6 @@ public class SatelliteBatteryTestRunner extends SatelliteBatteryTest
 					Planner planner = PlannerBuilder.build(domain, problem);
 					// start planning
 					SolutionPlan plan = planner.plan();
-					planner.display();
-					
 					System.out.println("Generated plan:\n" + plan + "\n"
 							+ "----------------------------------------------------------------------\n");
 					
