@@ -16,35 +16,34 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 	
 	private static final String[] CONFIGURATIONS = new String[] {
 		"cfg1",			// strategy= DFS, heuristics= S&B
-//		"cfg2",			// strategy= GREEDY, heuristics= S&B
-//		"cfg3",			// strategy= A*, heuristics= S&B
+		"cfg2",			// strategy= GREEDY, heuristics= S&B
 	};
 	
 	private static final String[] DOMAIN_VERSIONS = new String[] {
-//			"1",
+			"1",
 			"2"
 	};
 	private static final String[] NUMBER_OF_SUN_WINDOWS = new String[] {
 			"1", 
-//			"2", 
-//			"3", 
+			"2", 
+			"3", 
 	};
 	private static final String[] NUMBER_OF_COMM_WINDOWS = new String[] {
 			"1", 
-//			"2", 
-//			"3",
+			"2", 
+			"3",
 	};
 	private static final String[] NUMBER_OF_SCIENCE_OPERATIONS = new String[] {
 			"1", 
 			"2", 
 			"3", 
-//			"4", 
-//			"5", 
-//			"6", 
-//			"7", 
-//			"8", 
-//			"9", 
-//			"10"
+			"4", 
+			"5", 
+			"6", 
+			"7", 
+			"8", 
+			"9", 
+			"10"
 	};
 	
 	/**
@@ -57,16 +56,16 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 		{
 			for (String cfg : CONFIGURATIONS)
 			{
-				// data file path
-				String dataPath = DATA_FOLDER + "/" + cfg + "_data.csv"; 
-				// create writer
-				try (PrintWriter dataWriter = new PrintWriter(new BufferedWriter(new FileWriter(dataPath)))) 
+				for (int v = 0; v < DOMAIN_VERSIONS.length; v++)
 				{
-					// print CSV header
-					dataWriter.println("horizon;#comm;#sun;#science;time;makespan;");
-					dataWriter.flush();
-					for (int v = 0; v < DOMAIN_VERSIONS.length; v++)
-					{
+					// data file path
+					String dataPath = DATA_FOLDER + "/cfg" + cfg + "_domV" + DOMAIN_VERSIONS[v] +  "_data.csv";
+					// create writer
+					try (PrintWriter dataWriter = new PrintWriter(new BufferedWriter(new FileWriter(dataPath)))) 
+					{	
+						// print CSV header
+						dataWriter.println("horizon;#comm;#sun;#science;time;makespan;");
+						dataWriter.flush();
 						for (int i = 0; i < NUMBER_OF_COMM_WINDOWS.length; i++) 
 						{
 							for (int j = 0; j < NUMBER_OF_SUN_WINDOWS.length; j++) 
