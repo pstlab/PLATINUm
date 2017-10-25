@@ -59,7 +59,7 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 				for (int v = 0; v < DOMAIN_VERSIONS.length; v++)
 				{
 					// data file path
-					String dataPath = DATA_FOLDER + "/cfg" + cfg + "_domV" + DOMAIN_VERSIONS[v] +  "_data.csv";
+					String dataPath = DATA_FOLDER + "/domV_" + DOMAIN_VERSIONS[v] + "_" + cfg + "_data.csv";
 					// create writer
 					try (PrintWriter dataWriter = new PrintWriter(new BufferedWriter(new FileWriter(dataPath)))) 
 					{	
