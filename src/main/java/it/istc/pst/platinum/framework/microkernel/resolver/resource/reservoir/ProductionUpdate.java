@@ -59,7 +59,7 @@ public class ProductionUpdate extends FlawSolution
 		// get property file 
 		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
 		// read property
-		String cost = property.getProperty("unification-cost");
+		String cost = property.getProperty("resource-planning-cost");
 		// parse and get double value
 		return Double.parseDouble(cost);
 	}

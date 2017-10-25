@@ -22,8 +22,6 @@ public final class PrimitiveStateVariable extends StateVariable
 			ResolverType.TIMELINE_SCHEDULING_RESOLVER,
 			// time-line gap resolver
 			ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER,
-			// behavior checking resolver
-			ResolverType.TIMELINE_BEHAVIOR_CHECKING_RESOLVER
 	})
 	protected PrimitiveStateVariable(String name) {
 		super(name, DomainComponentType.SV_PRIMITIVE);

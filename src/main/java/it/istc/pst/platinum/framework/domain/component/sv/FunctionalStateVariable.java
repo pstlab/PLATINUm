@@ -16,6 +16,7 @@ public class FunctionalStateVariable extends StateVariable
 	 * @param name
 	 */
 	@DomainComponentConfiguration(resolvers = {
+			// planning resolver
 			ResolverType.PLAN_REFINEMENT
 	})
 	protected FunctionalStateVariable(String name) {

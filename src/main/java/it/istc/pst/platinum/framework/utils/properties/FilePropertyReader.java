@@ -25,10 +25,9 @@ public class FilePropertyReader
 			// setup file property
 			this.properties = new Properties();
 			// load file properties
-//			URL url = ClassLoader.getSystemResource(name);
 			try (FileInputStream in = new FileInputStream(name)) {
 				// load the (resource) property file
-				this.properties.load(in);	//url.openStream());
+				this.properties.load(in);
 			}
 		}
 		catch (IOException ex) {

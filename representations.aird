@@ -1455,8 +1455,8 @@
       <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@additionalLayers[name='syncDependenciesLayer']/@edgeMappings[name='syncInstanceOf']"/>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DEdge" xmi:id="_h931QZR-Eee8cs0jjai1zg" name="DURING [0, +INF] [0, +INF]" sourceNode="_h931PJR-Eee8cs0jjai1zg" targetNode="_h931OpR-Eee8cs0jjai1zg">
-      <target xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.1"/>
-      <semanticElements xmi:type="ddl:TemporalConstraint" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.1"/>
+      <target xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.1"/>
+      <semanticElements xmi:type="ddl:InstantiatedComponentDecision" href="virtual:/resource/platinum/domains/satellite/reservoir/satellite.ddl#//@domain/@elements.8/@synchronizations.0/@elements.1"/>
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_h931QpR-Eee8cs0jjai1zg" foldingStyle="SOURCE" size="2" centered="Both">
         <description xmi:type="style:EdgeStyleDescription" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']/@ownedRepresentations[name='synchronizationDiagram']/@defaultLayer/@edgeMappings[name='syncTemporalConstraint']/@style"/>
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_h931Q5R-Eee8cs0jjai1zg" showIcon="false">

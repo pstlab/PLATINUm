@@ -1,0 +1,11 @@
+PROBLEM ALFA_DEMO (DOMAIN ALFA)
+{
+	// facts
+	f0 <fact> FourByThree.case_study.Idle();
+	f1 <fact> ALFA.process.Idle();
+	f2 <fact> Human.worker.Idle();
+	f3 <fact> Robot.actor.Idle();
+	
+	// goal	
+	g0 <goal> FourByThree.case_study.Assembly();
+}

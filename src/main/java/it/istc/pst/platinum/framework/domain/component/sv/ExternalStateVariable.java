@@ -27,8 +27,6 @@ public final class ExternalStateVariable extends StateVariable
 			ResolverType.PLAN_REFINEMENT,
 			// observation checking resolver
 			ResolverType.OBSERVATION_CHECKING_RESOLVER,
-			// behavior checking resolver
-			ResolverType.TIMELINE_BEHAVIOR_CHECKING_RESOLVER
 	})
 	protected ExternalStateVariable(String name) {
 		super(name, DomainComponentType.SV_EXTERNAL);
