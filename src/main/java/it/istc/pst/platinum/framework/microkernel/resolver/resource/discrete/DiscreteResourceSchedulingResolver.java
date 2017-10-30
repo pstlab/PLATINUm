@@ -360,7 +360,6 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			Collections.sort(mcss);	
 			// get the "best" MCS 
 			MinimalCriticalSet best = mcss.get(0);
-			
 			// add computed solutions to the flow
 			for (PrecedenceConstraint pc : best.getSolutions()) {
 				// add this precedence constraint as a possible solution of the peak
@@ -611,7 +610,7 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 		double p1 = this.getPreservedValue();
 		double p2 = o.getPreservedValue();
 		// take into account solutions with a lower level of preserved value
-		return p1 <= p2 ? -1 : 1;
+		return p1 >= p2 ? -1 : 1;
 	}
 	
 	/**
@@ -619,6 +618,6 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 */
 	@Override
 	public String toString() {
-		return "[MCS samples= " + this.samples + "]";
+		return "[MinimalCriticalSet samples= " + this.samples + "]";
 	}
 }

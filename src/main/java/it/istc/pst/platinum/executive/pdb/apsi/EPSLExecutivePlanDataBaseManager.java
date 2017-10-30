@@ -3,21 +3,12 @@ package it.istc.pst.platinum.executive.pdb.apsi;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.istc.pst.epsl.pdb.lang.EPSLParameterDescriptor;
-import it.istc.pst.epsl.pdb.lang.EPSLParameterTypes;
-import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
-import it.istc.pst.epsl.pdb.lang.EPSLTimelineDescriptor;
-import it.istc.pst.epsl.pdb.lang.EPSLTokenDescriptor;
-import it.istc.pst.epsl.pdb.lang.rel.EPSLRelationDescriptor;
 import it.istc.pst.platinum.executive.pdb.ControllabilityType;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.executive.pdb.ExecutivePlanDataBaseManager;
-import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Timeline;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.AfterRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
@@ -29,13 +20,15 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MeetsR
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MetByRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartsDuringRelation;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
-import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameter;
-import it.istc.pst.platinum.framework.parameter.lang.NumericParameter;
-import it.istc.pst.platinum.framework.parameter.lang.Parameter;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterType;
-import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
+import it.istc.pst.platinum.protocol.lang.EPSLParameterDescriptor;
+import it.istc.pst.platinum.protocol.lang.ParameterTypeDescriptor;
+import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.protocol.lang.TimelineProtocolDescriptor;
+import it.istc.pst.platinum.protocol.lang.TokenProtocolDescriptor;
+import it.istc.pst.platinum.protocol.lang.relation.RelationProtocolDescriptor;
 
 /**
  * 
@@ -53,234 +46,235 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 		super(origin, horizon);
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void setup(SolutionPlan plan) 
-	{
-		try 
-		{
-			// map tokens to nodes
-			Map<Token, ExecutionNode> dictionary = new HashMap<>();
-			// setup time-lines
-			for (Timeline tl : plan.getTimelines())
-			{
-				// get tokens
-				for (Token token : tl.getTokens())
-				{
-					// create an execution node for the token
-					TemporalInterval i = token.getInterval();
-					// check controllability type
-					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.UNCONTROLLABLE : 
-						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
-					// get predicate
-					String predicate = token.getPredicate().getValue().getLabel();
-					
-					// check predicate's parameters and values
-					String[] pValues = new String[token.getPredicate().getValue().getNumberOfParameterPlaceHolders()];
-					ParameterType[] pTypes = new ParameterType[pValues.length];
-					// check values and types
-					for (int index = 0; index < pValues.length; index++) 
-					{
-						// get parameter by index
-						Parameter<?> param = token.getPredicate().getParameterByIndex(index);
-						// check type
-						switch (param.getType())
-						{
-							case ENUMERATION_PARAMETER_TYPE : 
-							{
-								// get parameter
-								EnumerationParameter p = (EnumerationParameter) param;
-								// set parameter value
-								pValues[index] = p.getValues()[0];			// only one element expected
-								// set parameter type
-								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
-
-							}
-							break;
-							
-							case NUMERIC_PARAMETER_TYPE : 
-							{
-								// get parameter 
-								NumericParameter p = (NumericParameter) param;
-								// set parameter value
-								pValues[index] = new Integer(p.getLowerBound()).toString();		// it should be the same as the upper bound
-								// set parameter type
-								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
-							}
-							break;
-							
-							default : {
-								throw new RuntimeException("Unknown parameter type " + param.getType());
-							}
-						}
-					}
-					
-					// create the related execution node
-					ExecutionNode node = this.createNode(tl.getComponent().getName(), tl.getName(), 
-							predicate, 
-							pTypes, 
-							pValues, 
-							new long[] {
-									i.getStartTime().getLowerBound(),
-									i.getStartTime().getUpperBound()
-							}, 
-							new long[] {
-									i.getEndTime().getLowerBound(),
-									i.getEndTime().getUpperBound()
-							}, 
-							new long[] {
-									i.getDurationLowerBound(),
-									i.getDurationUpperBound()
-							}, 
-							controllability);
-
-					
-					// add node
-					this.addNode(node);
-					// add created node to index
-					dictionary.put(token, node);
-				}
-			}
-			
-			// setup observations
-			for (Timeline tl : plan.getObservations())
-			{
-				// get tokens
-				for (Token token : tl.getTokens())
-				{
-					// create an execution node for the token
-					TemporalInterval i = token.getInterval();
-					// check controllability type
-					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.UNCONTROLLABLE : 
-						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
-					// get predicate
-					String predicate = token.getPredicate().getValue().getLabel();
-					
-					// check predicate's parameters and values
-					String[] pValues = new String[token.getPredicate().getValue().getNumberOfParameterPlaceHolders()];
-					ParameterType[] pTypes = new ParameterType[pValues.length];
-					// check values and types
-					for (int index = 0; index < pValues.length; index++) 
-					{
-						// get parameter by index
-						Parameter<?> param = token.getPredicate().getParameterByIndex(index);
-						// check type
-						switch (param.getType())
-						{
-							case ENUMERATION_PARAMETER_TYPE : {
-								// get parameter
-								EnumerationParameter p = (EnumerationParameter) param;
-								// set parameter value
-								pValues[index] = p.getValues()[0];			// only one element expected
-								// set parameter type
-								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
-
-							}
-							break;
-							
-							case NUMERIC_PARAMETER_TYPE : {
-								// get parameter 
-								NumericParameter p = (NumericParameter) param;
-								// set parameter value
-								pValues[index] = new Integer(p.getLowerBound()).toString();		// it should be the same as the upper bound
-								// set parameter type
-								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
-							}
-							break;
-							
-							default : {
-								throw new RuntimeException("Unknown parameter type " + param.getType());
-							}
-						}
-					}
-					
-					// create the related execution node
-					ExecutionNode node = this.createNode(tl.getComponent().getName(), tl.getName(), 
-							predicate, 
-							pTypes, 
-							pValues, 
-							new long[] {
-									i.getStartTime().getLowerBound(),
-									i.getStartTime().getUpperBound()
-							}, 
-							new long[] {
-									i.getEndTime().getLowerBound(),
-									i.getEndTime().getUpperBound()
-							}, 
-							new long[] {
-									i.getDurationLowerBound(),
-									i.getDurationUpperBound()
-							}, 
-							controllability);
-
-					
-					// add node
-					this.addNode(node);
-					// add created node to index
-					dictionary.put(token, node);
-				}
-			}
-			
-			
-			// check relations
-			for (Relation rel : plan.getRelations()) 
-			{
-				try 
-				{
-					// check involved execution nodes
-					ExecutionNode reference = dictionary.get(rel.getReference().getToken());
-					ExecutionNode target = dictionary.get(rel.getTarget().getToken());
-					// add temporal constraints and related execution dependencies
-					this.createConstraintsAndDependencies(reference, target, rel);
-				}
-				catch (Exception ex) {
-					throw new ConsistencyCheckException("Error while propagating plan's relation " + rel + "\n" + ex.getMessage());
-				}
-			}
-			
-			// check consistency
-			this.facade.checkConsistency();
-			// check the schedule for all temporal intervals
-			for (ExecutionNode node : dictionary.values()) 
-			{
-				// check node schedule
-				IntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
-				query.setInterval(node.getInterval());
-				this.facade.process(query);
-			}
-			
-			// print execution dependency graph (for debug only)
-//			for (ExecutionNodeStatus status : this.nodes.keySet())
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void setup(SolutionPlan plan) 
+//	{
+//		try 
+//		{
+//			// map tokens to nodes
+//			Map<Token, ExecutionNode> dictionary = new HashMap<>();
+//			// setup time-lines
+//			for (Timeline tl : plan.getTimelines())
 //			{
-//				// get nodes by status
-//				for (ExecutionNode node : this.nodes.get(status))
+//				// get tokens
+//				for (Token token : tl.getTokens())
 //				{
-//					// print node and the related execution conditions
-//					System.out.println("Execution node " + node);
-//					System.out.println("\tNode execution starting conditions:");
-//					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
-//					for (ExecutionNode dep : dependencies.keySet()) {
-//						System.out.println("\t\tCan start if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
+//					// create an execution node for the token
+//					TemporalInterval i = token.getInterval();
+//					// check controllability type
+//					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.UNCONTROLLABLE : 
+//						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
+//					// get predicate
+//					String predicate = token.getPredicate().getValue().getLabel();
+//					
+//					// check predicate's parameters and values
+//					String[] pValues = new String[token.getPredicate().getValue().getNumberOfParameterPlaceHolders()];
+//					ParameterType[] pTypes = new ParameterType[pValues.length];
+//					// check values and types
+//					for (int index = 0; index < pValues.length; index++) 
+//					{
+//						// get parameter by index
+//						Parameter<?> param = token.getPredicate().getParameterByIndex(index);
+//						// check type
+//						switch (param.getType())
+//						{
+//							case ENUMERATION_PARAMETER_TYPE : 
+//							{
+//								// get parameter
+//								EnumerationParameter p = (EnumerationParameter) param;
+//								// set parameter value
+//								pValues[index] = p.getValues()[0];			// only one element expected
+//								// set parameter type
+//								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+//
+//							}
+//							break;
+//							
+//							case NUMERIC_PARAMETER_TYPE : 
+//							{
+//								// get parameter 
+//								NumericParameter p = (NumericParameter) param;
+//								// set parameter value
+//								pValues[index] = new Integer(p.getLowerBound()).toString();		// it should be the same as the upper bound
+//								// set parameter type
+//								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+//							}
+//							break;
+//							
+//							default : {
+//								throw new RuntimeException("Unknown parameter type " + param.getType());
+//							}
+//						}
 //					}
 //					
-//					// get end conditions
-//					dependencies = this.getNodeEndDependencies(node);
-//					System.out.println("\tNode execution ending conditions:");
-//					for (ExecutionNode dep : dependencies.keySet()) {
-//						System.out.println("\t\tCan end if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
-//					}
+//					// create the related execution node
+//					ExecutionNode node = this.createNode(tl.getComponent().getName(), tl.getName(), 
+//							predicate, 
+//							pTypes, 
+//							pValues, 
+//							new long[] {
+//									i.getStartTime().getLowerBound(),
+//									i.getStartTime().getUpperBound()
+//							}, 
+//							new long[] {
+//									i.getEndTime().getLowerBound(),
+//									i.getEndTime().getUpperBound()
+//							}, 
+//							new long[] {
+//									i.getDurationLowerBound(),
+//									i.getDurationUpperBound()
+//							}, 
+//							controllability);
+//
+//					
+//					// add node
+//					this.addNode(node);
+//					// add created node to index
+//					dictionary.put(token, node);
 //				}
 //			}
-		}
-		catch (TemporalIntervalCreationException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-		catch (ConsistencyCheckException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
+//			
+//			// setup observations
+//			for (Timeline tl : plan.getObservations())
+//			{
+//				// get tokens
+//				for (Token token : tl.getTokens())
+//				{
+//					// create an execution node for the token
+//					TemporalInterval i = token.getInterval();
+//					// check controllability type
+//					ControllabilityType controllability = tl.getComponent().isExternal() ? ControllabilityType.UNCONTROLLABLE : 
+//						i.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
+//					// get predicate
+//					String predicate = token.getPredicate().getValue().getLabel();
+//					
+//					// check predicate's parameters and values
+//					String[] pValues = new String[token.getPredicate().getValue().getNumberOfParameterPlaceHolders()];
+//					ParameterType[] pTypes = new ParameterType[pValues.length];
+//					// check values and types
+//					for (int index = 0; index < pValues.length; index++) 
+//					{
+//						// get parameter by index
+//						Parameter<?> param = token.getPredicate().getParameterByIndex(index);
+//						// check type
+//						switch (param.getType())
+//						{
+//							case ENUMERATION_PARAMETER_TYPE : {
+//								// get parameter
+//								EnumerationParameter p = (EnumerationParameter) param;
+//								// set parameter value
+//								pValues[index] = p.getValues()[0];			// only one element expected
+//								// set parameter type
+//								pTypes[index] = ParameterType.ENUMERATION_PARAMETER_TYPE;
+//
+//							}
+//							break;
+//							
+//							case NUMERIC_PARAMETER_TYPE : {
+//								// get parameter 
+//								NumericParameter p = (NumericParameter) param;
+//								// set parameter value
+//								pValues[index] = new Integer(p.getLowerBound()).toString();		// it should be the same as the upper bound
+//								// set parameter type
+//								pTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
+//							}
+//							break;
+//							
+//							default : {
+//								throw new RuntimeException("Unknown parameter type " + param.getType());
+//							}
+//						}
+//					}
+//					
+//					// create the related execution node
+//					ExecutionNode node = this.createNode(tl.getComponent().getName(), tl.getName(), 
+//							predicate, 
+//							pTypes, 
+//							pValues, 
+//							new long[] {
+//									i.getStartTime().getLowerBound(),
+//									i.getStartTime().getUpperBound()
+//							}, 
+//							new long[] {
+//									i.getEndTime().getLowerBound(),
+//									i.getEndTime().getUpperBound()
+//							}, 
+//							new long[] {
+//									i.getDurationLowerBound(),
+//									i.getDurationUpperBound()
+//							}, 
+//							controllability);
+//
+//					
+//					// add node
+//					this.addNode(node);
+//					// add created node to index
+//					dictionary.put(token, node);
+//				}
+//			}
+//			
+//			
+//			// check relations
+//			for (Relation rel : plan.getRelations()) 
+//			{
+//				try 
+//				{
+//					// check involved execution nodes
+//					ExecutionNode reference = dictionary.get(rel.getReference().getToken());
+//					ExecutionNode target = dictionary.get(rel.getTarget().getToken());
+//					// add temporal constraints and related execution dependencies
+//					this.createConstraintsAndDependencies(reference, target, rel);
+//				}
+//				catch (Exception ex) {
+//					throw new ConsistencyCheckException("Error while propagating plan's relation " + rel + "\n" + ex.getMessage());
+//				}
+//			}
+//			
+//			// check consistency
+//			this.facade.checkConsistency();
+//			// check the schedule for all temporal intervals
+//			for (ExecutionNode node : dictionary.values()) 
+//			{
+//				// check node schedule
+//				IntervalScheduleQuery query = this.facade.createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
+//				query.setInterval(node.getInterval());
+//				this.facade.process(query);
+//			}
+//			
+//			// print execution dependency graph (for debug only)
+////			for (ExecutionNodeStatus status : this.nodes.keySet())
+////			{
+////				// get nodes by status
+////				for (ExecutionNode node : this.nodes.get(status))
+////				{
+////					// print node and the related execution conditions
+////					System.out.println("Execution node " + node);
+////					System.out.println("\tNode execution starting conditions:");
+////					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
+////					for (ExecutionNode dep : dependencies.keySet()) {
+////						System.out.println("\t\tCan start if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
+////					}
+////					
+////					// get end conditions
+////					dependencies = this.getNodeEndDependencies(node);
+////					System.out.println("\tNode execution ending conditions:");
+////					for (ExecutionNode dep : dependencies.keySet()) {
+////						System.out.println("\t\tCan end if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
+////					}
+////				}
+////			}
+//		}
+//		catch (TemporalIntervalCreationException ex) {
+//			throw new RuntimeException(ex.getMessage());
+//		}
+//		catch (ConsistencyCheckException ex) {
+//			throw new RuntimeException(ex.getMessage());
+//		}
+//	}
+//	
 	
 	/**
 	 * 

@@ -6,10 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterType;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
@@ -32,6 +30,7 @@ import it.istc.pst.platinum.framework.time.lang.allen.StartsDuringIntervalConstr
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
+import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
 
 /**
  * 
@@ -114,12 +113,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	public long getHorizon() {
 		return this.horizon;
 	}
-	
-	/**
-	 * 
-	 * @param plan
-	 */
-	public abstract void setup(SolutionPlan plan);
 	
 	/**
 	 * 

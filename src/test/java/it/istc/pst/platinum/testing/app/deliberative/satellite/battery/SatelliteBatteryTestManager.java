@@ -15,10 +15,8 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 	private static final int NUMBER_OF_RUNS = 3;
 	
 	private static final String[] CONFIGURATIONS = new String[] {
-		"cfg1",			// strategy = DFS,	heuristics= OnlySearch
-		"cfg2",			// strategy = Greedy, heuristics= OnlySearch
-		"cfg3",			// strategy= DFS, heuristics= Search&Build,
-		"cfg4",			// strategy= Greedy, heuristics= Search&Build
+		"cfg1",			// strategy= DFS, heuristics= Search&Build,
+		"cfg2",			// strategy= Greedy, heuristics= Search&Build
 	};
 	
 	private static final String[] NUMBER_OF_SUN_WINDOWS = new String[] {
@@ -37,11 +35,11 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 			"3", 
 			"4", 
 			"5", 
-			"6", 
-			"7", 
-			"8", 
-			"9", 
-			"10"
+//			"6", 
+//			"7", 
+//			"8", 
+//			"9", 
+//			"10"
 	};
 	
 	/**
@@ -100,6 +98,10 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 											proc.waitFor();
 											// update 
 											counter++;
+											
+											// call JVM garbage and wait a bit before starting next test
+											System.gc();
+											Thread.sleep(5000);
 										}
 									}
 									catch (Exception ex) {

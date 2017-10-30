@@ -24,15 +24,15 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 			Idle();
 		}
 	}
-	
-	COMP_TYPE SingletonStateVariable SatelliteMaintenanceType (Idle(), _Recharge())
+
+	COMP_TYPE SingletonStateVariable MaintenanceType(Idle(), Recharge())
 	{
 		VALUE Idle() [1, +INF]
 		MEETS {
-			_Recharge();
+			Recharge();
 		}
 		
-		VALUE _Recharge() [4, 11]
+		VALUE Recharge() [4, 11]
 		MEETS {
 			Idle();		
 		}
@@ -45,7 +45,7 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 			Slewing();
 		}
 		
-		VALUE Slewing() [1, +INF]
+		VALUE Slewing() [3, 5]
 		MEETS {
 			Earth();
 			Target();
@@ -77,7 +77,7 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 	}
 	
 	COMPONENT Satellite {FLEXIBLE operations(functional)} : SatelliteType;
-	COMPONENT Maintenance {FLEXIBLE activities(functional)} : SatelliteMaintenanceType;
+	COMPONENT Maintenance {FLEXIBLE activities(functional)} : MaintenanceType;
 	COMPONENT PointingMode {FLEXIBLE orientation(primitive)} : PointingModeType;
 	COMPONENT GroundStationWindow {FLEXIBLE channel(uncontrollable)} : VisibilityWindowType;
 	COMPONENT SunWindow {FLEXIBLE visibility(uncontrollable)} : VisibilityWindowType; 
@@ -96,7 +96,7 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 			DURING [0, +INF] [0, +INF] cd2;
 			EQUALS cd0;
 			
-			?amount = 3;
+			?amount = 2;
 		}
 		
 		VALUE _Communicate()
@@ -111,14 +111,14 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 			EQUALS cd2;
 			DURING [0, +INF] [0, +INF] cd3;
 			
-			?amount = 4;
+			?amount = 3;
 			?bitrate = 2;
 		}
 	}
 	
 	SYNCHRONIZE Maintenance.activities
 	{
-		VALUE _Recharge() 
+		VALUE Recharge() 
 		{
 			cd0 PointingMode.orientation.Sun();
 			cd1 <?> SunWindow.visibility.Visible();
@@ -132,7 +132,7 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 	{
 		VALUE PRODUCTION(?amount)
 		{
-			cd0 <!> Maintenance.activities._Recharge();
+			cd0 <!> Maintenance.activities.Recharge();
 			
 			EQUALS cd0;
 		}

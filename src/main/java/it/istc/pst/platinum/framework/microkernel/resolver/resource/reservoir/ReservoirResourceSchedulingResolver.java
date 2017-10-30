@@ -145,7 +145,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 							makespan2 = makespan2 / o2.getSchedulingSolutions().size();
 							// compare resulting values
 							return makespan1 < makespan2 ? -1 : 
-								makespan1 == makespan2 && preserved1 <= preserved2 ? -1 : 1;
+								makespan1 == makespan2 && preserved1 >= preserved2 ? -1 : 1;
 						}
 					});
 					// keep the most promising MCS

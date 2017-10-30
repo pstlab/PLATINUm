@@ -22,15 +22,15 @@ DOMAIN BATTERY_SATELLITE_RESERVOIR
 			Idle();
 		}
 	}
-	
-	COMP_TYPE SingletonStateVariable SatelliteMaintenanceType (Idle(), _Recharge())
+
+	COMP_TYPE SingletonStateVariable MaintenanceType(Idle(), Recharge())
 	{
 		VALUE Idle() [1, +INF]
 		MEETS {
-			_Recharge();
+			Recharge();
 		}
 		
-		VALUE _Recharge() [4, 11]
+		VALUE Recharge() [4, 11]
 		MEETS {
 			Idle();		
 		}
@@ -75,7 +75,7 @@ DOMAIN BATTERY_SATELLITE_RESERVOIR
 	}
 	
 	COMPONENT Satellite {FLEXIBLE operations(functional)} : SatelliteType;
-	COMPONENT Maintenance {FLEXIBLE activities(functional)} : SatelliteMaintenanceType;
+	COMPONENT Maintenance {FLEXIBLE activities(functional)} : MaintenanceType;
 	COMPONENT PointingMode {FLEXIBLE orientation(primitive)} : PointingModeType;
 	COMPONENT GroundStationWindow {FLEXIBLE channel(uncontrollable)} : VisibilityWindowType;
 	COMPONENT SunWindow {FLEXIBLE visibility(uncontrollable)} : VisibilityWindowType; 
@@ -112,7 +112,7 @@ DOMAIN BATTERY_SATELLITE_RESERVOIR
 	
 	SYNCHRONIZE Maintenance.activities
 	{
-		VALUE _Recharge() 
+		VALUE Recharge() 
 		{
 			cd0 PointingMode.orientation.Sun();
 			cd1 <?> SunWindow.visibility.Visible();
@@ -126,7 +126,7 @@ DOMAIN BATTERY_SATELLITE_RESERVOIR
 	{
 		VALUE PRODUCTION(?amount)
 		{
-			cd0 <!> Maintenance.activities._Recharge();
+			cd0 <!> Maintenance.activities.Recharge();
 			
 			EQUALS cd0;
 		}

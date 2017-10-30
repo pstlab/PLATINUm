@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.executive.pdb.ExecutivePlanDataBaseManager;
@@ -12,8 +11,8 @@ import it.istc.pst.platinum.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionDispatcherPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionMonitorPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
+import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
 
 /**
  * 
@@ -215,37 +214,37 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 		}
 	}
 	
-	/**
-	 * 
-	 * @param plan
-	 * @throws InterruptedException
-	 */
-	public final void initialize(SolutionPlan plan) 
-			throws InterruptedException
-	{
-		// check status
-		synchronized (this.lock) {
-			while (!this.status.equals(ExecutionStatus.INACTIVE)) {
-				this.lock.wait();
-			}
-			
-			// change status and send a signal
-			this.status = ExecutionStatus.INITIALIZING;
-			this.lock.notifyAll();
-		}
-		
-		// create execution plan data-base
-		this.pdb = new EPSLExecutivePlanDataBaseManager(0, plan.getHorizon());
-		// initialize plan data-base
-		this.pdb.setup(plan);
-		
-		// initialization complete
-		synchronized (this.lock) {
-			// update status and send a signal
-			this.status = ExecutionStatus.READY;
-			this.lock.notifyAll();
-		}
-	}
+//	/**
+//	 * 
+//	 * @param plan
+//	 * @throws InterruptedException
+//	 */
+//	public final void initialize(SolutionPlan plan) 
+//			throws InterruptedException
+//	{
+//		// check status
+//		synchronized (this.lock) {
+//			while (!this.status.equals(ExecutionStatus.INACTIVE)) {
+//				this.lock.wait();
+//			}
+//			
+//			// change status and send a signal
+//			this.status = ExecutionStatus.INITIALIZING;
+//			this.lock.notifyAll();
+//		}
+//		
+//		// create execution plan data-base
+//		this.pdb = new EPSLExecutivePlanDataBaseManager(0, plan.getHorizon());
+//		// initialize plan data-base
+//		this.pdb.setup(plan);
+//		
+//		// initialization complete
+//		synchronized (this.lock) {
+//			// update status and send a signal
+//			this.status = ExecutionStatus.READY;
+//			this.lock.notifyAll();
+//		}
+//	}
 	
 	
 	/**

@@ -15,8 +15,8 @@ public abstract class SatelliteBatteryTest
 	protected static final String PDL_PATTERN = "satellite_$v_$c_$s_$g.pdl";
 	protected static final String[] DOMAIN_VERSIONS = new String[] {
 			"complete",
-			"discrete",
 			"reservoir",
+			"discrete",
 			"simple"
 	};
 	

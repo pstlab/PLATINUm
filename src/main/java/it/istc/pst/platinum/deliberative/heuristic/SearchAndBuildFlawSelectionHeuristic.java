@@ -42,8 +42,8 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 		this.searchPreferences = new FlawType[] {
 				FlawType.PLAN_REFINEMENT,
 				FlawType.RESOURCE_OVERFLOW,
-				FlawType.TIMELINE_OVERFLOW,
 				FlawType.RESOURCE_PLANNING,
+				FlawType.TIMELINE_OVERFLOW,
 		};
 		
 		// set build phase preferences
