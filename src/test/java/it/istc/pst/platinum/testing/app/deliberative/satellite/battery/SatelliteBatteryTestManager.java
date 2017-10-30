@@ -15,7 +15,10 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 	private static final int NUMBER_OF_RUNS = 3;
 	
 	private static final String[] CONFIGURATIONS = new String[] {
-		"cfg1",			// strategy= DFS, heuristics= S&B,
+		"cfg1",			// strategy = DFS,	heuristics= OnlySearch
+		"cfg2",			// strategy = Greedy, heuristics= OnlySearch
+		"cfg3",			// strategy= DFS, heuristics= Search&Build,
+		"cfg4",			// strategy= Greedy, heuristics= Search&Build
 	};
 	
 	private static final String[] NUMBER_OF_SUN_WINDOWS = new String[] {
@@ -32,13 +35,13 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 			"1", 
 			"2", 
 			"3", 
-//			"4", 
-//			"5", 
-//			"6", 
-//			"7", 
-//			"8", 
-//			"9", 
-//			"10"
+			"4", 
+			"5", 
+			"6", 
+			"7", 
+			"8", 
+			"9", 
+			"10"
 	};
 	
 	/**
@@ -49,9 +52,9 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 	{
 		try
 		{
-			for (String cfg : CONFIGURATIONS)
+			for (int v = 0; v < SatelliteBatteryTest.DOMAIN_VERSIONS.length; v++)
 			{
-				for (int v = 0; v < SatelliteBatteryTest.DOMAIN_VERSIONS.length; v++)
+				for (String cfg : CONFIGURATIONS)
 				{
 					// data file path
 					String dataPath = DATA_FOLDER + "/" + SatelliteBatteryTest.DOMAIN_VERSIONS[v] + "_" + cfg + "_data.csv";

@@ -16,8 +16,8 @@ public enum FlawSelectionHeuristicType
 	/**
 	 * (optimized) Hierarchical flaw selection heuristic
 	 */
-	HFS(HierarchicalFlawSelectionHeuristic.class.getName(), 
-			"Hierarchical flaw selection heuristics"),
+	HIERARCHICAL(HierarchicalSearchHeuristic.class.getName(), 
+			"Hierarchical Search flaw selection heuristics"),
 	
 	/**
 	 * Pipeline-based Filter flaw selection heuristic
