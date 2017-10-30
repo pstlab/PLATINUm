@@ -344,8 +344,6 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					// compute solution for "optimal" paths
 					for (ValuePath path : optimal)
 					{
-						System.out.println("\n- gap: " + gap + "\n- path: " + path.getSteps() + "\n");
-						
 						// get steps
 						List<ComponentValue> steps = path.getSteps();
 						// remove the source and destination values from the path

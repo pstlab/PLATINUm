@@ -211,8 +211,10 @@ DOMAIN ALFA
 		VALUE Assembly()
 		{
 			t1 <!> ALFA.process.Task_1();
+			t2 <!> ALFA.process.Task_2();
 			
 			CONTAINS [0, +INF] [0, +INF] t1;
+			CONTAINS [0, +INF] [0, +INF] t2;
 		}	
 	}
 		

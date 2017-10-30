@@ -59,7 +59,7 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 					try (PrintWriter dataWriter = new PrintWriter(new BufferedWriter(new FileWriter(dataPath)))) 
 					{	
 						// print CSV header
-						dataWriter.println("horizon;#comm;#sun;#science;time;makespan;");
+						dataWriter.println("version;#comm;#sun;#science;time;makespan;");
 						dataWriter.flush();
 						for (int i = 0; i < NUMBER_OF_COMM_WINDOWS.length; i++) 
 						{
