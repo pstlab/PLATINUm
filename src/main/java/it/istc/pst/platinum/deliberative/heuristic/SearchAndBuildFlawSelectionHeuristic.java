@@ -64,7 +64,7 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 		List<Flaw> flaws = new ArrayList<>();
 		// get the hierarchy
 		List<DomainComponent>[] hierarchy = this.knowledge.getDomainHierarchy();
-		// check components according to the hierarchy
+		// check components according to the hierarchy	
 		for (int index = hierarchy.length - 1; index >= 0 && flaws.isEmpty(); index--)
 		{
 			// get component at the current level of the hierarchy
@@ -86,7 +86,8 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 		if (flaws.isEmpty())
 		{
 			// plan behaviors of components according to the hierarchy
-			for (int index = 0; index < hierarchy.length && flaws.isEmpty(); index++)
+//			for (int index = 0; index < hierarchy.length && flaws.isEmpty(); index++)
+			for (int index = hierarchy.length - 1; index >= 0 && flaws.isEmpty(); index--)
 			{
 				// get component at the current level of the hierarchy
 				List<DomainComponent> components = hierarchy[index];

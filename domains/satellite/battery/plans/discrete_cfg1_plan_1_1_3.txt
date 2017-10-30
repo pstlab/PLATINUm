@@ -1,0 +1,68 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 482] [1,482] }
+			 token 293  { Slewing [2, 483] [1,482] }
+			 token 288  { Target [5, 486] [3,484] }
+			 token 295  { Slewing [6, 487] [1,482] }
+			 token 283  { Target [9, 490] [3,484] }
+			 token 294  { Slewing [10, 491] [1,482] }
+			 token 281  { Target [13, 494] [3,484] }
+			 token 296  { Slewing [14, 495] [1,482] }
+			 token 285  { Earth [19, 500] [5,486] }
+		}
+		Satellite {
+			 token 287  { Science [5, 486] [3,7] }
+			 token 282  { Science [9, 490] [3,7] }
+			 token 280  { Science [13, 494] [3,7] }
+			 token 284 uncontrollable { Communicate [19, 500] [5,8] }
+			 token 291 uncontrollable { Communicate [19, 500] [5,8] }
+			 token 289 uncontrollable { Communicate [19, 500] [5,8] }
+		}
+	}
+	relations {
+		PointingMode 296 MEETS PointingMode 285
+		Satellite 280 DURING [0, 500]  [0,500]  PointingMode 281
+		Satellite 280 BEFORE [0, 500]  Satellite 284
+		PointingMode 0 BEFORE [1, 500]  PointingMode 281
+		Satellite 282 DURING [0, 500]  [0,500]  PointingMode 283
+		Satellite 282 BEFORE [0, 500]  Satellite 289
+		PointingMode 0 BEFORE [1, 500]  PointingMode 283
+		PointingMode 283 BEFORE [1, 500]  PointingMode 281
+		Satellite 284 EQUALS Bandwidth 286
+		Satellite 284 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 284 DURING [0, 500]  [0,500]  PointingMode 285
+		PointingMode 0 BEFORE [1, 500]  PointingMode 285
+		PointingMode 283 BEFORE [1, 500]  PointingMode 285
+		PointingMode 281 BEFORE [1, 500]  PointingMode 285
+		Satellite 287 DURING [0, 500]  [0,500]  PointingMode 288
+		Satellite 287 BEFORE [0, 500]  Satellite 291
+		PointingMode 0 BEFORE [1, 500]  PointingMode 288
+		PointingMode 288 BEFORE [1, 500]  PointingMode 283
+		Satellite 289 EQUALS Bandwidth 290
+		Satellite 289 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 289 DURING [0, 500]  [0,500]  PointingMode 285
+		Satellite 291 EQUALS Bandwidth 292
+		Satellite 291 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 291 DURING [0, 500]  [0,500]  PointingMode 285
+		PointingMode 0 MEETS PointingMode 293
+		PointingMode 293 MEETS PointingMode 288
+		PointingMode 283 MEETS PointingMode 294
+		PointingMode 294 MEETS PointingMode 281
+		PointingMode 288 MEETS PointingMode 295
+		PointingMode 295 MEETS PointingMode 283
+		PointingMode 281 MEETS PointingMode 296
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

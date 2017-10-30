@@ -41,7 +41,9 @@ public class SatelliteBatteryTestRunner extends SatelliteBatteryTest
 					// get domain file
 					String domain = DOMAIN_DIRECTORY + "/" + DDL_PATTERN.replace("$v", domainVersion);
 					// get problem file
-					String problem = PROBLEM_DIRECTORY + "/" + PDL_PATTERN.replace("$c", numOfCommWindows)
+					String problem = PROBLEM_DIRECTORY + "/" + PDL_PATTERN
+							.replace("$v", domainVersion)
+							.replace("$c", numOfCommWindows)
 							.replace("$s", numOfSunWindows)
 							.replace("$g", numOfScience);
 					
@@ -60,7 +62,7 @@ public class SatelliteBatteryTestRunner extends SatelliteBatteryTest
 					double makespan = plan.getMakespan();
 					
 					// create resulting plan file
-					File planFile = new File(PLAN_FOLDER + "/" + cfg + "_plan"
+					File planFile = new File(PLAN_FOLDER + "/" + domainVersion + "_" + cfg + "_plan"
 							+ "_" + numOfCommWindows + ""
 							+ "_" + numOfSunWindows + ""
 							+ "_" + numOfScience + ".txt");

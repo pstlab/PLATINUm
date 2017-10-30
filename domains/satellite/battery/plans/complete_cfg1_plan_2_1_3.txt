@@ -1,0 +1,156 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 415] [1,415] }
+			 token 1913  { Slewing [2, 416] [1,415] }
+			 token 1880  { Target [5, 419] [3,417] }
+			 token 1911  { Slewing [6, 420] [1,415] }
+			 token 1883  { Earth [265, 425] [5,419] }
+			 token 1917  { Slewing [266, 426] [1,161] }
+			 token 1890  { Target [269, 429] [3,163] }
+			 token 1914  { Slewing [270, 430] [1,161] }
+			 token 1901  { Sun [274, 434] [4,164] }
+			 token 1915  { Slewing [275, 435] [1,161] }
+			 token 1896  { Earth [280, 440] [5,165] }
+			 token 1912  { Slewing [281, 441] [1,161] }
+			 token 1894  { Sun [285, 445] [4,164] }
+			 token 1910  { Slewing [286, 446] [1,161] }
+			 token 1887  { Target [289, 449] [3,163] }
+			 token 1909  { Slewing [290, 450] [1,161] }
+			 token 1908  { Sun [294, 454] [4,164] }
+			 token 1916  { Slewing [295, 455] [1,161] }
+			 token 1903  { Earth [300, 500] [5,205] }
+		}
+		Maintenance {
+			 token 1900 uncontrollable { Recharge [274, 434] [4,11] }
+			 token 1893 uncontrollable { Recharge [285, 445] [4,11] }
+			 token 1907 uncontrollable { Recharge [294, 454] [4,11] }
+		}
+		Satellite {
+			 token 1879  { Science [5, 419] [3,7] }
+			 token 1882 uncontrollable { Communicate [265, 425] [5,8] }
+			 token 1889  { Science [269, 429] [3,7] }
+			 token 1895 uncontrollable { Communicate [280, 440] [5,8] }
+			 token 1886  { Science [289, 449] [3,7] }
+			 token 1902 uncontrollable { Communicate [300, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 1879 DURING [0, 500]  [0,500]  PointingMode 1880
+		Satellite 1879 BEFORE [0, 500]  Satellite 1882
+		Satellite 1879 EQUALS SatelliteBattery 1881
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1880
+		Satellite 1882 EQUALS Bandwidth 1885
+		Satellite 1882 EQUALS SatelliteBattery 1884
+		Satellite 1882 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1882 DURING [0, 500]  [0,500]  PointingMode 1883
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1883
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1883
+		Satellite 1886 DURING [0, 500]  [0,500]  PointingMode 1887
+		Satellite 1886 BEFORE [0, 500]  Satellite 1902
+		Satellite 1886 EQUALS SatelliteBattery 1888
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1887
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1887
+		PointingMode 1883 BEFORE [1, 500]  PointingMode 1887
+		Satellite 1889 DURING [0, 500]  [0,500]  PointingMode 1890
+		Satellite 1889 BEFORE [0, 500]  Satellite 1895
+		Satellite 1889 EQUALS SatelliteBattery 1891
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1890
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1890
+		PointingMode 1883 BEFORE [1, 500]  PointingMode 1890
+		PointingMode 1890 BEFORE [1, 500]  PointingMode 1887
+		SatelliteBattery 1881 BEFORE [0, 500]  SatelliteBattery 1892
+		SatelliteBattery 1884 BEFORE [0, 500]  SatelliteBattery 1892
+		SatelliteBattery 1891 BEFORE [0, 500]  SatelliteBattery 1892
+		SatelliteBattery 1892 BEFORE [0, 500]  SatelliteBattery 1888
+		SatelliteBattery 1892 EQUALS Maintenance 1893
+		Maintenance 1893 DURING [0, 500]  [0,500]  SunWindow 6
+		Maintenance 1893 DURING [0, 500]  [0,500]  PointingMode 1894
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1894
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1894
+		PointingMode 1883 BEFORE [1, 500]  PointingMode 1894
+		PointingMode 1890 BEFORE [1, 500]  PointingMode 1894
+		PointingMode 1894 BEFORE [1, 500]  PointingMode 1887
+		Satellite 1895 EQUALS Bandwidth 1898
+		Satellite 1895 EQUALS SatelliteBattery 1897
+		Satellite 1895 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1895 DURING [0, 500]  [0,500]  PointingMode 1896
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1896
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1896
+		PointingMode 1883 BEFORE [1, 500]  PointingMode 1896
+		PointingMode 1890 BEFORE [1, 500]  PointingMode 1896
+		PointingMode 1896 BEFORE [1, 500]  PointingMode 1894
+		SatelliteBattery 1881 BEFORE [0, 500]  SatelliteBattery 1899
+		SatelliteBattery 1884 BEFORE [0, 500]  SatelliteBattery 1899
+		SatelliteBattery 1891 BEFORE [0, 500]  SatelliteBattery 1899
+		SatelliteBattery 1899 BEFORE [0, 500]  SatelliteBattery 1897
+		SatelliteBattery 1899 EQUALS Maintenance 1900
+		Maintenance 1900 DURING [0, 500]  [0,500]  SunWindow 6
+		Maintenance 1900 DURING [0, 500]  [0,500]  PointingMode 1901
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1901
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1901
+		PointingMode 1883 BEFORE [1, 500]  PointingMode 1901
+		PointingMode 1890 BEFORE [1, 500]  PointingMode 1901
+		PointingMode 1901 BEFORE [1, 500]  PointingMode 1896
+		Satellite 1902 EQUALS Bandwidth 1905
+		Satellite 1902 EQUALS SatelliteBattery 1904
+		Satellite 1902 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1902 DURING [0, 500]  [0,500]  PointingMode 1903
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1883 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1890 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1901 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1896 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1894 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1887 BEFORE [1, 500]  PointingMode 1903
+		SatelliteBattery 1888 BEFORE [0, 500]  SatelliteBattery 1906
+		SatelliteBattery 1906 BEFORE [0, 500]  SatelliteBattery 1904
+		SatelliteBattery 1906 EQUALS Maintenance 1907
+		Maintenance 1907 DURING [0, 500]  [0,500]  SunWindow 6
+		Maintenance 1907 DURING [0, 500]  [0,500]  PointingMode 1908
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1880 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1883 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1890 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1901 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1896 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1894 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1887 BEFORE [1, 500]  PointingMode 1908
+		PointingMode 1908 BEFORE [1, 500]  PointingMode 1903
+		PointingMode 1887 MEETS PointingMode 1909
+		PointingMode 1909 MEETS PointingMode 1908
+		PointingMode 1894 MEETS PointingMode 1910
+		PointingMode 1910 MEETS PointingMode 1887
+		PointingMode 1880 MEETS PointingMode 1911
+		PointingMode 1911 MEETS PointingMode 1883
+		PointingMode 1896 MEETS PointingMode 1912
+		PointingMode 1912 MEETS PointingMode 1894
+		PointingMode 0 MEETS PointingMode 1913
+		PointingMode 1913 MEETS PointingMode 1880
+		PointingMode 1890 MEETS PointingMode 1914
+		PointingMode 1914 MEETS PointingMode 1901
+		PointingMode 1901 MEETS PointingMode 1915
+		PointingMode 1915 MEETS PointingMode 1896
+		PointingMode 1908 MEETS PointingMode 1916
+		PointingMode 1916 MEETS PointingMode 1903
+		PointingMode 1883 MEETS PointingMode 1917
+		PointingMode 1917 MEETS PointingMode 1890
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [30, 30] [30, 30] }
+			 token 2 { Visible [230, 230] [200, 200] }
+			 token 3 { NotVisible [260, 260] [30, 30] }
+			 token 4 { Visible [460, 460] [200, 200] }
+			 token 5 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 6 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

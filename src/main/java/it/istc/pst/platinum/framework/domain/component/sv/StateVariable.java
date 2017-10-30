@@ -170,20 +170,20 @@ public abstract class StateVariable extends DomainComponent
 	 * @param target
 	 * @return
 	 */
-	public List<List<ComponentValue>> getPaths(ComponentValue source, ComponentValue target) 
+	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) 
 	{
 		// list of available paths
-		List<List<ComponentValue>> result = new ArrayList<>();
+		List<ValuePath> result = new ArrayList<>();
 		// check source and target
 		if (source.equals(target)) 
 		{
 			// initialize the path
-			List<ComponentValue> path = new ArrayList<>();
-			path.add(source);
+			List<ComponentValue> steps = new ArrayList<>();
+			steps.add(source);
 			// get successors
 			for (ComponentValue value : this.getDirectSuccessors(source)) {
 				// directly calls
-				this.computePaths(path, value, target, result);
+				this.computePaths(steps, value, target, result);
 			}
 		}
 		else {
@@ -235,40 +235,40 @@ public abstract class StateVariable extends DomainComponent
 	
 	/**
 	 * 
-	 * @param path
+	 * @param steps
 	 * @param current
 	 * @param target
 	 * @param result
 	 */
-	private void computePaths(List<ComponentValue> path, ComponentValue current, ComponentValue target, List<List<ComponentValue>> result) 
+	private void computePaths(List<ComponentValue> steps, ComponentValue current, ComponentValue target, List<ValuePath> result) 
 	{
 		// base step
 		if (current.equals(target)) {
 			// add target
-			path.add(current);
+			steps.add(current);
 			// add path to the result
-			result.add(new ArrayList<>(path));
+			result.add(new ValuePath(steps));
 			// remove last added element
-			path.remove(path.size() -1);
+			steps.remove(steps.size() -1);
 		}
 		else	// recursive step
 		{
 			// check cycle
-			if (path.contains(current)) {
+			if (steps.contains(current)) {
 				// skip path
-				this.logger.debug("Avoid cycles on SV paths\n- (partial) path: " + path + "\n- current value: " + current + "\n- target: " + target + "\n");
+				this.logger.debug("Avoid cycles on SV paths\n- (partial) path: " + steps + "\n- current value: " + current + "\n- target: " + target + "\n");
 			}
 			else	// no cycle found 
 			{
 				//add current value to the path
-				path.add(current);
+				steps.add(current);
 				// recursive calls
 				for (ComponentValue successor : this.getDirectSuccessors(current)) {
 					// recursive call
-					this.computePaths(path, successor, target, result);
+					this.computePaths(steps, successor, target, result);
 				}
 				// remove last added element
-				path.remove(path.size() - 1);
+				steps.remove(steps.size() - 1);
 			}
 		}
 	}

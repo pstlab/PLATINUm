@@ -1,11 +1,11 @@
 PROBLEM ALFA_DEMO (DOMAIN ALFA)
 {
 	// facts
-	f0 <fact> FourByThree.case_study.Idle();
-	f1 <fact> ALFA.process.Idle();
-	f2 <fact> Human.worker.Idle();
-	f3 <fact> Robot.actor.Idle();
+	f0 <fact> FourByThree.case_study.Idle() AT [0, 0] [0, +INF] [1, +INF];
+	f1 <fact> ALFA.process.Idle() AT [0, 0] [0, +INF] [1, +INF];
+	f2 <fact> Human.worker.Idle() AT [0, 0] [0, +INF] [1, +INF];
+	f3 <fact> Robot.actor.Idle() AT [0, 0] [0, +INF] [1, +INF];
 	
 	// goal	
-	g0 <goal> FourByThree.case_study.Assembly();
+	g0 <goal> FourByThree.case_study.Assembly() AT [0, +INF] [0, +INF] [1, +INF];
 }

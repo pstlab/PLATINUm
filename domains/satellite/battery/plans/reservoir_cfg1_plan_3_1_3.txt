@@ -1,0 +1,154 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 415] [1,415] }
+			 token 2440  { Slewing [2, 416] [1,415] }
+			 token 2411  { Target [5, 419] [3,417] }
+			 token 2442  { Slewing [6, 420] [1,415] }
+			 token 2408  { Target [9, 423] [3,417] }
+			 token 2439  { Slewing [10, 424] [1,415] }
+			 token 2423  { Earth [315, 429] [5,419] }
+			 token 2437  { Slewing [316, 430] [1,115] }
+			 token 2427  { Sun [320, 434] [4,118] }
+			 token 2438  { Slewing [321, 435] [1,115] }
+			 token 2417  { Earth [326, 440] [5,119] }
+			 token 2441  { Slewing [327, 441] [1,115] }
+			 token 2421  { Sun [331, 445] [4,118] }
+			 token 2435  { Slewing [332, 446] [1,115] }
+			 token 2414  { Target [335, 449] [3,117] }
+			 token 2434  { Slewing [336, 450] [1,115] }
+			 token 2433  { Sun [340, 454] [4,118] }
+			 token 2436  { Slewing [341, 455] [1,115] }
+			 token 2429  { Earth [346, 500] [5,159] }
+		}
+		Maintenance {
+			 token 2426 uncontrollable { Recharge [320, 434] [4,11] }
+			 token 2420 uncontrollable { Recharge [331, 445] [4,11] }
+			 token 2432 uncontrollable { Recharge [340, 454] [4,11] }
+		}
+		Satellite {
+			 token 2410  { Science [5, 419] [3,7] }
+			 token 2407  { Science [9, 423] [3,7] }
+			 token 2422 uncontrollable { Communicate [315, 429] [5,8] }
+			 token 2416 uncontrollable { Communicate [326, 440] [5,8] }
+			 token 2413  { Science [335, 449] [3,7] }
+			 token 2428 uncontrollable { Communicate [346, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 2407 DURING [0, 500]  [0,500]  PointingMode 2408
+		Satellite 2407 BEFORE [0, 500]  Satellite 2422
+		Satellite 2407 EQUALS SatelliteBattery 2409
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2408
+		Satellite 2410 DURING [0, 500]  [0,500]  PointingMode 2411
+		Satellite 2410 BEFORE [0, 500]  Satellite 2416
+		Satellite 2410 EQUALS SatelliteBattery 2412
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2411
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2408
+		Satellite 2413 DURING [0, 500]  [0,500]  PointingMode 2414
+		Satellite 2413 BEFORE [0, 500]  Satellite 2428
+		Satellite 2413 EQUALS SatelliteBattery 2415
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2414
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2414
+		PointingMode 2408 BEFORE [1, 500]  PointingMode 2414
+		Satellite 2416 EQUALS SatelliteBattery 2418
+		Satellite 2416 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 2416 DURING [0, 500]  [0,500]  PointingMode 2417
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2417
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2417
+		PointingMode 2408 BEFORE [1, 500]  PointingMode 2417
+		PointingMode 2417 BEFORE [1, 500]  PointingMode 2414
+		SatelliteBattery 2412 BEFORE [0, 500]  SatelliteBattery 2419
+		SatelliteBattery 2409 BEFORE [0, 500]  SatelliteBattery 2419
+		SatelliteBattery 2418 BEFORE [0, 500]  SatelliteBattery 2419
+		SatelliteBattery 2419 BEFORE [0, 500]  SatelliteBattery 2415
+		SatelliteBattery 2419 EQUALS Maintenance 2420
+		Maintenance 2420 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 2420 DURING [0, 500]  [0,500]  PointingMode 2421
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2421
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2421
+		PointingMode 2408 BEFORE [1, 500]  PointingMode 2421
+		PointingMode 2417 BEFORE [1, 500]  PointingMode 2421
+		PointingMode 2421 BEFORE [1, 500]  PointingMode 2414
+		Satellite 2422 EQUALS SatelliteBattery 2424
+		Satellite 2422 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 2422 DURING [0, 500]  [0,500]  PointingMode 2423
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2423
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2423
+		PointingMode 2408 BEFORE [1, 500]  PointingMode 2423
+		PointingMode 2423 BEFORE [1, 500]  PointingMode 2417
+		SatelliteBattery 2412 BEFORE [0, 500]  SatelliteBattery 2425
+		SatelliteBattery 2409 BEFORE [0, 500]  SatelliteBattery 2425
+		SatelliteBattery 2424 BEFORE [0, 500]  SatelliteBattery 2425
+		SatelliteBattery 2425 BEFORE [0, 500]  SatelliteBattery 2418
+		SatelliteBattery 2425 EQUALS Maintenance 2426
+		Maintenance 2426 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 2426 DURING [0, 500]  [0,500]  PointingMode 2427
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2427
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2427
+		PointingMode 2408 BEFORE [1, 500]  PointingMode 2427
+		PointingMode 2423 BEFORE [1, 500]  PointingMode 2427
+		PointingMode 2427 BEFORE [1, 500]  PointingMode 2417
+		Satellite 2428 EQUALS SatelliteBattery 2430
+		Satellite 2428 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 2428 DURING [0, 500]  [0,500]  PointingMode 2429
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2408 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2423 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2427 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2417 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2421 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2414 BEFORE [1, 500]  PointingMode 2429
+		SatelliteBattery 2415 BEFORE [0, 500]  SatelliteBattery 2431
+		SatelliteBattery 2431 BEFORE [0, 500]  SatelliteBattery 2430
+		SatelliteBattery 2431 EQUALS Maintenance 2432
+		Maintenance 2432 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 2432 DURING [0, 500]  [0,500]  PointingMode 2433
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2411 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2408 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2423 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2427 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2417 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2421 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2414 BEFORE [1, 500]  PointingMode 2433
+		PointingMode 2433 BEFORE [1, 500]  PointingMode 2429
+		PointingMode 2414 MEETS PointingMode 2434
+		PointingMode 2434 MEETS PointingMode 2433
+		PointingMode 2421 MEETS PointingMode 2435
+		PointingMode 2435 MEETS PointingMode 2414
+		PointingMode 2433 MEETS PointingMode 2436
+		PointingMode 2436 MEETS PointingMode 2429
+		PointingMode 2423 MEETS PointingMode 2437
+		PointingMode 2437 MEETS PointingMode 2427
+		PointingMode 2427 MEETS PointingMode 2438
+		PointingMode 2438 MEETS PointingMode 2417
+		PointingMode 2408 MEETS PointingMode 2439
+		PointingMode 2439 MEETS PointingMode 2423
+		PointingMode 0 MEETS PointingMode 2440
+		PointingMode 2440 MEETS PointingMode 2411
+		PointingMode 2417 MEETS PointingMode 2441
+		PointingMode 2441 MEETS PointingMode 2421
+		PointingMode 2411 MEETS PointingMode 2442
+		PointingMode 2442 MEETS PointingMode 2408
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [10, 10] [10, 10] }
+			 token 2 { Visible [160, 160] [150, 150] }
+			 token 3 { NotVisible [200, 200] [40, 40] }
+			 token 4 { Visible [300, 300] [100, 100] }
+			 token 5 { NotVisible [310, 310] [10, 10] }
+			 token 6 { Visible [460, 460] [150, 150] }
+			 token 7 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 8 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

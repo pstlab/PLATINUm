@@ -1,0 +1,78 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 436] [1,436] }
+			 token 311  { Slewing [2, 437] [1,436] }
+			 token 307  { Target [5, 440] [3,438] }
+			 token 312  { Slewing [6, 441] [1,436] }
+			 token 303  { Target [9, 444] [3,438] }
+			 token 314  { Slewing [10, 445] [1,436] }
+			 token 305  { Earth [265, 450] [5,440] }
+			 token 315  { Slewing [266, 451] [1,186] }
+			 token 301  { Target [269, 454] [3,188] }
+			 token 313  { Slewing [270, 455] [1,186] }
+			 token 310  { Earth [275, 500] [5,230] }
+		}
+		Satellite {
+			 token 306  { Science [5, 440] [3,7] }
+			 token 302  { Science [9, 444] [3,7] }
+			 token 304 uncontrollable { Communicate [265, 450] [5,8] }
+			 token 308 uncontrollable { Communicate [265, 450] [5,8] }
+			 token 300  { Science [269, 454] [3,7] }
+			 token 309 uncontrollable { Communicate [275, 460] [5,8] }
+		}
+	}
+	relations {
+		PointingMode 305 MEETS PointingMode 315
+		PointingMode 315 MEETS PointingMode 301
+		Satellite 300 DURING [0, 500]  [0,500]  PointingMode 301
+		Satellite 300 BEFORE [0, 500]  Satellite 309
+		PointingMode 0 BEFORE [1, 500]  PointingMode 301
+		Satellite 302 DURING [0, 500]  [0,500]  PointingMode 303
+		Satellite 302 BEFORE [0, 500]  Satellite 304
+		PointingMode 0 BEFORE [1, 500]  PointingMode 303
+		PointingMode 303 BEFORE [1, 500]  PointingMode 301
+		Satellite 304 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 304 DURING [0, 500]  [0,500]  PointingMode 305
+		PointingMode 0 BEFORE [1, 500]  PointingMode 305
+		PointingMode 303 BEFORE [1, 500]  PointingMode 305
+		PointingMode 305 BEFORE [1, 500]  PointingMode 301
+		Satellite 306 DURING [0, 500]  [0,500]  PointingMode 307
+		Satellite 306 BEFORE [0, 500]  Satellite 308
+		PointingMode 0 BEFORE [1, 500]  PointingMode 307
+		PointingMode 307 BEFORE [1, 500]  PointingMode 303
+		Satellite 308 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 308 DURING [0, 500]  [0,500]  PointingMode 305
+		Satellite 309 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 309 DURING [0, 500]  [0,500]  PointingMode 310
+		PointingMode 0 BEFORE [1, 500]  PointingMode 310
+		PointingMode 307 BEFORE [1, 500]  PointingMode 310
+		PointingMode 303 BEFORE [1, 500]  PointingMode 310
+		PointingMode 305 BEFORE [1, 500]  PointingMode 310
+		PointingMode 301 BEFORE [1, 500]  PointingMode 310
+		PointingMode 0 MEETS PointingMode 311
+		PointingMode 311 MEETS PointingMode 307
+		PointingMode 307 MEETS PointingMode 312
+		PointingMode 312 MEETS PointingMode 303
+		PointingMode 301 MEETS PointingMode 313
+		PointingMode 313 MEETS PointingMode 310
+		PointingMode 303 MEETS PointingMode 314
+		PointingMode 314 MEETS PointingMode 305
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [30, 30] [30, 30] }
+			 token 2 { Visible [230, 230] [200, 200] }
+			 token 3 { NotVisible [260, 260] [30, 30] }
+			 token 4 { Visible [460, 460] [200, 200] }
+			 token 5 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 6 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

@@ -1,0 +1,156 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 411] [1,411] }
+			 token 1708  { Slewing [2, 412] [1,411] }
+			 token 1676  { Target [5, 415] [3,413] }
+			 token 1702  { Slewing [6, 416] [1,411] }
+			 token 1685  { Earth [265, 421] [5,415] }
+			 token 1704  { Slewing [266, 422] [1,157] }
+			 token 1682  { Target [269, 425] [3,159] }
+			 token 1709  { Slewing [270, 426] [1,157] }
+			 token 1695  { Sun [304, 430] [4,160] }
+			 token 1706  { Slewing [305, 431] [1,127] }
+			 token 1691  { Earth [310, 436] [5,131] }
+			 token 1710  { Slewing [311, 437] [1,127] }
+			 token 1689  { Sun [315, 441] [4,130] }
+			 token 1703  { Slewing [316, 442] [1,127] }
+			 token 1679  { Target [319, 445] [3,129] }
+			 token 1707  { Slewing [320, 446] [1,127] }
+			 token 1701  { Sun [324, 454] [4,134] }
+			 token 1705  { Slewing [325, 455] [1,131] }
+			 token 1697  { Earth [330, 500] [5,175] }
+		}
+		Maintenance {
+			 token 1694 uncontrollable { Recharge [304, 430] [4,11] }
+			 token 1688 uncontrollable { Recharge [315, 441] [4,11] }
+			 token 1700 uncontrollable { Recharge [324, 450] [4,11] }
+		}
+		Satellite {
+			 token 1675  { Science [5, 415] [3,7] }
+			 token 1684 uncontrollable { Communicate [265, 421] [5,8] }
+			 token 1681  { Science [269, 425] [3,7] }
+			 token 1690 uncontrollable { Communicate [310, 436] [5,8] }
+			 token 1678  { Science [319, 445] [3,7] }
+			 token 1696 uncontrollable { Communicate [330, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 1675 DURING [0, 500]  [0,500]  PointingMode 1676
+		Satellite 1675 BEFORE [0, 500]  Satellite 1684
+		Satellite 1675 EQUALS SatelliteBattery 1677
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1676
+		Satellite 1678 DURING [0, 500]  [0,500]  PointingMode 1679
+		Satellite 1678 BEFORE [0, 500]  Satellite 1696
+		Satellite 1678 EQUALS SatelliteBattery 1680
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1679
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1679
+		Satellite 1681 DURING [0, 500]  [0,500]  PointingMode 1682
+		Satellite 1681 BEFORE [0, 500]  Satellite 1690
+		Satellite 1681 EQUALS SatelliteBattery 1683
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1682
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1682
+		PointingMode 1682 BEFORE [1, 500]  PointingMode 1679
+		Satellite 1684 EQUALS SatelliteBattery 1686
+		Satellite 1684 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1684 DURING [0, 500]  [0,500]  PointingMode 1685
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1685
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1685
+		PointingMode 1685 BEFORE [1, 500]  PointingMode 1682
+		SatelliteBattery 1677 BEFORE [0, 500]  SatelliteBattery 1687
+		SatelliteBattery 1686 BEFORE [0, 500]  SatelliteBattery 1687
+		SatelliteBattery 1683 BEFORE [0, 500]  SatelliteBattery 1687
+		SatelliteBattery 1687 BEFORE [0, 500]  SatelliteBattery 1680
+		SatelliteBattery 1687 EQUALS Maintenance 1688
+		Maintenance 1688 DURING [0, 500]  [0,500]  SunWindow 9
+		Maintenance 1688 DURING [0, 500]  [0,500]  PointingMode 1689
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1689
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1689
+		PointingMode 1685 BEFORE [1, 500]  PointingMode 1689
+		PointingMode 1682 BEFORE [1, 500]  PointingMode 1689
+		PointingMode 1689 BEFORE [1, 500]  PointingMode 1679
+		Satellite 1690 EQUALS SatelliteBattery 1692
+		Satellite 1690 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1690 DURING [0, 500]  [0,500]  PointingMode 1691
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1691
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1691
+		PointingMode 1685 BEFORE [1, 500]  PointingMode 1691
+		PointingMode 1682 BEFORE [1, 500]  PointingMode 1691
+		PointingMode 1691 BEFORE [1, 500]  PointingMode 1689
+		SatelliteBattery 1683 BEFORE [0, 500]  SatelliteBattery 1693
+		SatelliteBattery 1677 BEFORE [0, 500]  SatelliteBattery 1693
+		SatelliteBattery 1686 BEFORE [0, 500]  SatelliteBattery 1693
+		SatelliteBattery 1693 BEFORE [0, 500]  SatelliteBattery 1692
+		SatelliteBattery 1693 EQUALS Maintenance 1694
+		Maintenance 1694 DURING [0, 500]  [0,500]  SunWindow 9
+		Maintenance 1694 DURING [0, 500]  [0,500]  PointingMode 1695
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1695
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1695
+		PointingMode 1685 BEFORE [1, 500]  PointingMode 1695
+		PointingMode 1682 BEFORE [1, 500]  PointingMode 1695
+		PointingMode 1695 BEFORE [1, 500]  PointingMode 1691
+		Satellite 1696 EQUALS SatelliteBattery 1698
+		Satellite 1696 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1696 DURING [0, 500]  [0,500]  PointingMode 1697
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1685 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1682 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1695 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1691 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1689 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1679 BEFORE [1, 500]  PointingMode 1697
+		SatelliteBattery 1680 BEFORE [0, 500]  SatelliteBattery 1699
+		SatelliteBattery 1699 BEFORE [0, 500]  SatelliteBattery 1698
+		SatelliteBattery 1699 EQUALS Maintenance 1700
+		Maintenance 1700 DURING [0, 500]  [0,500]  SunWindow 9
+		Maintenance 1700 DURING [0, 500]  [0,500]  PointingMode 1701
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1676 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1685 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1682 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1695 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1691 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1689 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1679 BEFORE [1, 500]  PointingMode 1701
+		PointingMode 1701 BEFORE [1, 500]  PointingMode 1697
+		PointingMode 1676 MEETS PointingMode 1702
+		PointingMode 1702 MEETS PointingMode 1685
+		PointingMode 1689 MEETS PointingMode 1703
+		PointingMode 1703 MEETS PointingMode 1679
+		PointingMode 1685 MEETS PointingMode 1704
+		PointingMode 1704 MEETS PointingMode 1682
+		PointingMode 1701 MEETS PointingMode 1705
+		PointingMode 1705 MEETS PointingMode 1697
+		PointingMode 1695 MEETS PointingMode 1706
+		PointingMode 1706 MEETS PointingMode 1691
+		PointingMode 1679 MEETS PointingMode 1707
+		PointingMode 1707 MEETS PointingMode 1701
+		PointingMode 0 MEETS PointingMode 1708
+		PointingMode 1708 MEETS PointingMode 1676
+		PointingMode 1682 MEETS PointingMode 1709
+		PointingMode 1709 MEETS PointingMode 1695
+		PointingMode 1691 MEETS PointingMode 1710
+		PointingMode 1710 MEETS PointingMode 1689
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [30, 30] [30, 30] }
+			 token 2 { Visible [230, 230] [200, 200] }
+			 token 3 { NotVisible [260, 260] [30, 30] }
+			 token 4 { Visible [460, 460] [200, 200] }
+			 token 5 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 6 { NotVisible [50, 50] [50, 50] }
+			 token 7 { Visible [250, 250] [200, 200] }
+			 token 8 { NotVisible [300, 300] [50, 50] }
+			 token 9 { Visible [450, 450] [150, 150] }
+			 token 10 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

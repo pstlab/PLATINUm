@@ -1,0 +1,118 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 466] [1,466] }
+			 token 2136  { Slewing [2, 467] [1,466] }
+			 token 2122  { Target [5, 470] [3,468] }
+			 token 2134  { Slewing [6, 471] [1,466] }
+			 token 2112  { Target [9, 474] [3,468] }
+			 token 2130  { Slewing [10, 475] [1,466] }
+			 token 2105  { Target [13, 478] [3,468] }
+			 token 2133  { Slewing [14, 479] [1,466] }
+			 token 2126  { Sun [18, 483] [4,469] }
+			 token 2131  { Slewing [19, 484] [1,466] }
+			 token 2108  { Earth [24, 489] [5,470] }
+			 token 2135  { Slewing [25, 490] [1,466] }
+			 token 2120  { Sun [29, 494] [4,469] }
+			 token 2132  { Slewing [30, 495] [1,466] }
+			 token 2115  { Earth [35, 500] [5,470] }
+		}
+		Maintenance {
+			 token 2125 uncontrollable { Recharge [18, 483] [4,11] }
+			 token 2119 uncontrollable { Recharge [29, 494] [4,11] }
+		}
+		Satellite {
+			 token 2121  { Science [5, 470] [3,7] }
+			 token 2111  { Science [9, 474] [3,7] }
+			 token 2104  { Science [13, 478] [3,7] }
+			 token 2107 uncontrollable { Communicate [24, 489] [5,8] }
+			 token 2127 uncontrollable { Communicate [35, 500] [5,8] }
+			 token 2114 uncontrollable { Communicate [35, 500] [5,8] }
+		}
+	}
+	relations {
+		SatelliteBattery 2118 BEFORE [0, 500]  SatelliteBattery 2128
+		PointingMode 2112 MEETS PointingMode 2130
+		PointingMode 2130 MEETS PointingMode 2105
+		PointingMode 2126 MEETS PointingMode 2131
+		PointingMode 2131 MEETS PointingMode 2108
+		PointingMode 2120 MEETS PointingMode 2132
+		PointingMode 2132 MEETS PointingMode 2115
+		PointingMode 2105 MEETS PointingMode 2133
+		PointingMode 2133 MEETS PointingMode 2126
+		PointingMode 2122 MEETS PointingMode 2134
+		PointingMode 2134 MEETS PointingMode 2112
+		PointingMode 2108 MEETS PointingMode 2135
+		PointingMode 2135 MEETS PointingMode 2120
+		PointingMode 0 MEETS PointingMode 2136
+		PointingMode 2136 MEETS PointingMode 2122
+		Satellite 2104 DURING [0, 500]  [0,500]  PointingMode 2105
+		Satellite 2104 BEFORE [0, 500]  Satellite 2107
+		Satellite 2104 EQUALS SatelliteBattery 2106
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2105
+		Satellite 2107 EQUALS Bandwidth 2110
+		Satellite 2107 EQUALS SatelliteBattery 2109
+		Satellite 2107 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 2107 DURING [0, 500]  [0,500]  PointingMode 2108
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2108
+		PointingMode 2105 BEFORE [1, 500]  PointingMode 2108
+		Satellite 2111 DURING [0, 500]  [0,500]  PointingMode 2112
+		Satellite 2111 BEFORE [0, 500]  Satellite 2114
+		Satellite 2111 EQUALS SatelliteBattery 2113
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2112
+		PointingMode 2112 BEFORE [1, 500]  PointingMode 2105
+		Satellite 2114 EQUALS Bandwidth 2117
+		Satellite 2114 EQUALS SatelliteBattery 2116
+		Satellite 2114 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 2114 DURING [0, 500]  [0,500]  PointingMode 2115
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2115
+		PointingMode 2112 BEFORE [1, 500]  PointingMode 2115
+		PointingMode 2105 BEFORE [1, 500]  PointingMode 2115
+		PointingMode 2108 BEFORE [1, 500]  PointingMode 2115
+		SatelliteBattery 2113 BEFORE [0, 500]  SatelliteBattery 2118
+		SatelliteBattery 2106 BEFORE [0, 500]  SatelliteBattery 2118
+		SatelliteBattery 2109 BEFORE [0, 500]  SatelliteBattery 2118
+		SatelliteBattery 2118 BEFORE [0, 500]  SatelliteBattery 2116
+		SatelliteBattery 2118 EQUALS Maintenance 2119
+		Maintenance 2119 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 2119 DURING [0, 500]  [0,500]  PointingMode 2120
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2120
+		PointingMode 2112 BEFORE [1, 500]  PointingMode 2120
+		PointingMode 2105 BEFORE [1, 500]  PointingMode 2120
+		PointingMode 2108 BEFORE [1, 500]  PointingMode 2120
+		PointingMode 2120 BEFORE [1, 500]  PointingMode 2115
+		Satellite 2121 DURING [0, 500]  [0,500]  PointingMode 2122
+		Satellite 2121 BEFORE [0, 500]  Satellite 2127
+		Satellite 2121 EQUALS SatelliteBattery 2123
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2122
+		PointingMode 2122 BEFORE [1, 500]  PointingMode 2112
+		SatelliteBattery 2123 BEFORE [0, 500]  SatelliteBattery 2124
+		SatelliteBattery 2113 BEFORE [0, 500]  SatelliteBattery 2124
+		SatelliteBattery 2106 BEFORE [0, 500]  SatelliteBattery 2124
+		SatelliteBattery 2124 BEFORE [0, 500]  SatelliteBattery 2109
+		SatelliteBattery 2124 EQUALS Maintenance 2125
+		Maintenance 2125 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 2125 DURING [0, 500]  [0,500]  PointingMode 2126
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2126
+		PointingMode 2122 BEFORE [1, 500]  PointingMode 2126
+		PointingMode 2112 BEFORE [1, 500]  PointingMode 2126
+		PointingMode 2105 BEFORE [1, 500]  PointingMode 2126
+		PointingMode 2126 BEFORE [1, 500]  PointingMode 2108
+		Satellite 2127 EQUALS Bandwidth 2129
+		Satellite 2127 EQUALS SatelliteBattery 2128
+		Satellite 2127 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 2127 DURING [0, 500]  [0,500]  PointingMode 2115
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

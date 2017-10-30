@@ -1,0 +1,73 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 440] [1,440] }
+			 token 189  { Slewing [2, 441] [1,440] }
+			 token 181  { Target [5, 444] [3,442] }
+			 token 188  { Slewing [6, 445] [1,440] }
+			 token 183  { Earth [315, 450] [5,444] }
+			 token 187  { Slewing [316, 451] [1,136] }
+			 token 179  { Target [319, 454] [3,138] }
+			 token 186  { Slewing [320, 455] [1,136] }
+			 token 185  { Earth [325, 500] [5,180] }
+		}
+		Satellite {
+			 token 180  { Science [5, 444] [3,7] }
+			 token 182 uncontrollable { Communicate [315, 450] [5,8] }
+			 token 178  { Science [319, 454] [3,7] }
+			 token 184 uncontrollable { Communicate [325, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 178 DURING [0, 500]  [0,500]  PointingMode 179
+		Satellite 178 BEFORE [0, 500]  Satellite 184
+		PointingMode 0 BEFORE [1, 500]  PointingMode 179
+		Satellite 180 DURING [0, 500]  [0,500]  PointingMode 181
+		Satellite 180 BEFORE [0, 500]  Satellite 182
+		PointingMode 0 BEFORE [1, 500]  PointingMode 181
+		PointingMode 181 BEFORE [1, 500]  PointingMode 179
+		Satellite 182 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 182 DURING [0, 500]  [0,500]  PointingMode 183
+		PointingMode 0 BEFORE [1, 500]  PointingMode 183
+		PointingMode 181 BEFORE [1, 500]  PointingMode 183
+		PointingMode 183 BEFORE [1, 500]  PointingMode 179
+		Satellite 184 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 184 DURING [0, 500]  [0,500]  PointingMode 185
+		PointingMode 0 BEFORE [1, 500]  PointingMode 185
+		PointingMode 181 BEFORE [1, 500]  PointingMode 185
+		PointingMode 183 BEFORE [1, 500]  PointingMode 185
+		PointingMode 179 BEFORE [1, 500]  PointingMode 185
+		PointingMode 179 MEETS PointingMode 186
+		PointingMode 186 MEETS PointingMode 185
+		PointingMode 183 MEETS PointingMode 187
+		PointingMode 187 MEETS PointingMode 179
+		PointingMode 181 MEETS PointingMode 188
+		PointingMode 188 MEETS PointingMode 183
+		PointingMode 0 MEETS PointingMode 189
+		PointingMode 189 MEETS PointingMode 181
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [10, 10] [10, 10] }
+			 token 2 { Visible [160, 160] [150, 150] }
+			 token 3 { NotVisible [200, 200] [40, 40] }
+			 token 4 { Visible [300, 300] [100, 100] }
+			 token 5 { NotVisible [310, 310] [10, 10] }
+			 token 6 { Visible [460, 460] [150, 150] }
+			 token 7 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 8 { NotVisible [50, 50] [50, 50] }
+			 token 9 { Visible [150, 150] [100, 100] }
+			 token 10 { NotVisible [200, 200] [50, 50] }
+			 token 11 { Visible [300, 300] [100, 100] }
+			 token 12 { NotVisible [350, 350] [50, 50] }
+			 token 13 { Visible [450, 450] [100, 100] }
+			 token 14 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

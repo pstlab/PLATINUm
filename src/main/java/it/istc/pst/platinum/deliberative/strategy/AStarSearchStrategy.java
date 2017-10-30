@@ -1,11 +1,12 @@
 package it.istc.pst.platinum.deliberative.strategy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Set;
 
 import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
@@ -20,7 +21,7 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponent;
  */
 public class AStarSearchStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
 {
-	private Queue<SearchSpaceNode> fringe;
+	private List<SearchSpaceNode> fringe;
 	
 	/**
 	 * 
@@ -28,7 +29,7 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 	protected AStarSearchStrategy() {
 		super(SearchStrategyType.ASTAR.getLabel());
 		// initialize the fringe
-		this.fringe = new PriorityQueue<SearchSpaceNode>(11, this);
+		this.fringe = new ArrayList<>();
 	}
 
 	/**
@@ -61,8 +62,10 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 			throw new EmptyFringeException("No more nodes in the fringe");
 		}
 		
+		// sort elements of the fringe
+		Collections.sort(this.fringe, this);
 		// remove the first element of the queue
-		return this.fringe.poll();
+		return this.fringe.remove(0);
 	}
 
 	/**
@@ -76,8 +79,8 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 		double h2 = this.computeHeuristicDistance(o2);
 		
 		// compute (absolute) costs
-		double g1 = o1.getMakespan();
-		double g2 = o2.getMakespan();
+		double g1 = o1.getCost();
+		double g2 = o2.getCost();
 		
 		// compute (absolute) values
 		double f1 = Math.abs(g1 + h1);

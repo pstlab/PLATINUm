@@ -61,7 +61,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			// create relation
 			BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
 			// set bounds
-			before.setBound(new long[] {1, this.component.getHorizon()});
+			before.setBound(new long[] {0, this.component.getHorizon()});
 			// add created relation to solution
 			solution.addCreatedRelation(before);
 			this.logger.debug("Applying flaw solution:\n"

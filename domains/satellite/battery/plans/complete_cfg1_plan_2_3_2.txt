@@ -1,0 +1,95 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 431] [1,431] }
+			 token 1299  { Slewing [2, 432] [1,431] }
+			 token 1280  { Target [5, 435] [3,433] }
+			 token 1297  { Slewing [6, 436] [1,431] }
+			 token 1290  { Earth [265, 441] [5,435] }
+			 token 1296  { Slewing [266, 442] [1,177] }
+			 token 1283  { Target [269, 445] [3,179] }
+			 token 1298  { Slewing [270, 446] [1,177] }
+			 token 1295  { Sun [354, 454] [4,184] }
+			 token 1300  { Slewing [355, 455] [1,101] }
+			 token 1286  { Earth [360, 500] [5,145] }
+		}
+		Maintenance {
+			 token 1294 uncontrollable { Recharge [354, 450] [4,11] }
+		}
+		Satellite {
+			 token 1279  { Science [5, 435] [3,7] }
+			 token 1289 uncontrollable { Communicate [265, 441] [5,8] }
+			 token 1282  { Science [269, 445] [3,7] }
+			 token 1285 uncontrollable { Communicate [360, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 1279 DURING [0, 500]  [0,500]  PointingMode 1280
+		Satellite 1279 BEFORE [0, 500]  Satellite 1289
+		Satellite 1279 EQUALS SatelliteBattery 1281
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1280
+		Satellite 1282 DURING [0, 500]  [0,500]  PointingMode 1283
+		Satellite 1282 BEFORE [0, 500]  Satellite 1285
+		Satellite 1282 EQUALS SatelliteBattery 1284
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1283
+		PointingMode 1280 BEFORE [1, 500]  PointingMode 1283
+		Satellite 1285 EQUALS Bandwidth 1287
+		Satellite 1285 EQUALS SatelliteBattery 1288
+		Satellite 1285 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1285 DURING [0, 500]  [0,500]  PointingMode 1286
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1286
+		PointingMode 1280 BEFORE [1, 500]  PointingMode 1286
+		PointingMode 1283 BEFORE [1, 500]  PointingMode 1286
+		Satellite 1289 EQUALS Bandwidth 1292
+		Satellite 1289 EQUALS SatelliteBattery 1291
+		Satellite 1289 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1289 DURING [0, 500]  [0,500]  PointingMode 1290
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1290
+		PointingMode 1280 BEFORE [1, 500]  PointingMode 1290
+		PointingMode 1290 BEFORE [1, 500]  PointingMode 1283
+		SatelliteBattery 1291 BEFORE [0, 500]  SatelliteBattery 1293
+		SatelliteBattery 1284 BEFORE [0, 500]  SatelliteBattery 1293
+		SatelliteBattery 1281 BEFORE [0, 500]  SatelliteBattery 1293
+		SatelliteBattery 1293 BEFORE [0, 500]  SatelliteBattery 1288
+		SatelliteBattery 1293 EQUALS Maintenance 1294
+		Maintenance 1294 DURING [0, 500]  [0,500]  SunWindow 11
+		Maintenance 1294 DURING [0, 500]  [0,500]  PointingMode 1295
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1295
+		PointingMode 1280 BEFORE [1, 500]  PointingMode 1295
+		PointingMode 1290 BEFORE [1, 500]  PointingMode 1295
+		PointingMode 1283 BEFORE [1, 500]  PointingMode 1295
+		PointingMode 1295 BEFORE [1, 500]  PointingMode 1286
+		PointingMode 1290 MEETS PointingMode 1296
+		PointingMode 1296 MEETS PointingMode 1283
+		PointingMode 1280 MEETS PointingMode 1297
+		PointingMode 1297 MEETS PointingMode 1290
+		PointingMode 1283 MEETS PointingMode 1298
+		PointingMode 1298 MEETS PointingMode 1295
+		PointingMode 0 MEETS PointingMode 1299
+		PointingMode 1299 MEETS PointingMode 1280
+		PointingMode 1295 MEETS PointingMode 1300
+		PointingMode 1300 MEETS PointingMode 1286
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [30, 30] [30, 30] }
+			 token 2 { Visible [230, 230] [200, 200] }
+			 token 3 { NotVisible [260, 260] [30, 30] }
+			 token 4 { Visible [460, 460] [200, 200] }
+			 token 5 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 6 { NotVisible [50, 50] [50, 50] }
+			 token 7 { Visible [150, 150] [100, 100] }
+			 token 8 { NotVisible [200, 200] [50, 50] }
+			 token 9 { Visible [300, 300] [100, 100] }
+			 token 10 { NotVisible [350, 350] [50, 50] }
+			 token 11 { Visible [450, 450] [100, 100] }
+			 token 12 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

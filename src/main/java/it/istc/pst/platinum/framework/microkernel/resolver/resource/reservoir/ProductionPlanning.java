@@ -73,7 +73,7 @@ public class ProductionPlanning extends FlawSolution implements ResourceOverCons
 		// get property file 
 		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
 		// read property
-		String cost = property.getProperty("resource-planning-cost");
+		String cost = property.getProperty("expansion-cost");
 		// parse and get double value
 		return Double.parseDouble(cost);
 	}

@@ -1,8 +1,9 @@
 package it.istc.pst.platinum.deliberative.strategy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.List;
 
 import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
@@ -14,7 +15,7 @@ import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
  */
 public class DijkstraSearchStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
 {
-	private Queue<SearchSpaceNode> fringe;
+	private List<SearchSpaceNode> fringe;
 	
 	/**
 	 * 
@@ -22,7 +23,7 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 	protected DijkstraSearchStrategy() {
 		super(SearchStrategyType.DIJKSTRA.getLabel());
 		// java7 compliant constructor
-		this.fringe = new PriorityQueue<SearchSpaceNode>(11, this);
+		this.fringe = new ArrayList<>();
 	}
 	
 	/**
@@ -45,8 +46,10 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 			throw new EmptyFringeException("No more nodes in the fringe");
 		}
 		
+		// sort fringe
+		Collections.sort(this.fringe, this);
 		// remove the first element of the queue
-		return this.fringe.poll();
+		return this.fringe.remove(0);
 	}
 	
 	/**
@@ -64,8 +67,6 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 	@Override
 	public int compare(SearchSpaceNode o1, SearchSpaceNode o2) {
 		// compare the costs of the nodes
-		return o1.getMakespan() <= o2.getMakespan() ? -1 : 1;
-//		return o1.getCost() < o2.getCost() ? -1 : 
-//			o1.getCost() == o2.getCost() && o1.getDepth() >= o2.getDepth() ? -1 : 1;
+		return o1.getCost() <= o2.getCost() ? -1 : 1;
 	}
 }

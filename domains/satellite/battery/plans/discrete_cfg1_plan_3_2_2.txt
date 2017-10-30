@@ -1,0 +1,65 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 446] [1,446] }
+			 token 169  { Slewing [2, 447] [1,446] }
+			 token 159  { Target [5, 450] [3,448] }
+			 token 168  { Slewing [6, 451] [1,446] }
+			 token 164  { Target [9, 454] [3,448] }
+			 token 167  { Slewing [10, 455] [1,446] }
+			 token 161  { Earth [315, 500] [5,490] }
+		}
+		Satellite {
+			 token 158  { Science [5, 450] [3,7] }
+			 token 163  { Science [9, 454] [3,7] }
+			 token 165 uncontrollable { Communicate [315, 460] [5,8] }
+			 token 160 uncontrollable { Communicate [315, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 158 BEFORE [0, 500]  Satellite 160
+		PointingMode 0 BEFORE [1, 500]  PointingMode 159
+		Satellite 160 EQUALS Bandwidth 162
+		Satellite 160 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 160 DURING [0, 500]  [0,500]  PointingMode 161
+		PointingMode 0 BEFORE [1, 500]  PointingMode 161
+		PointingMode 159 BEFORE [1, 500]  PointingMode 161
+		Satellite 163 DURING [0, 500]  [0,500]  PointingMode 164
+		Satellite 163 BEFORE [0, 500]  Satellite 165
+		PointingMode 0 BEFORE [1, 500]  PointingMode 164
+		PointingMode 159 BEFORE [1, 500]  PointingMode 164
+		PointingMode 164 BEFORE [1, 500]  PointingMode 161
+		Satellite 165 EQUALS Bandwidth 166
+		Satellite 165 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 165 DURING [0, 500]  [0,500]  PointingMode 161
+		PointingMode 164 MEETS PointingMode 167
+		PointingMode 167 MEETS PointingMode 161
+		PointingMode 159 MEETS PointingMode 168
+		PointingMode 168 MEETS PointingMode 164
+		PointingMode 0 MEETS PointingMode 169
+		PointingMode 169 MEETS PointingMode 159
+		Satellite 158 DURING [0, 500]  [0,500]  PointingMode 159
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [10, 10] [10, 10] }
+			 token 2 { Visible [160, 160] [150, 150] }
+			 token 3 { NotVisible [200, 200] [40, 40] }
+			 token 4 { Visible [300, 300] [100, 100] }
+			 token 5 { NotVisible [310, 310] [10, 10] }
+			 token 6 { Visible [460, 460] [150, 150] }
+			 token 7 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 8 { NotVisible [50, 50] [50, 50] }
+			 token 9 { Visible [250, 250] [200, 200] }
+			 token 10 { NotVisible [300, 300] [50, 50] }
+			 token 11 { Visible [450, 450] [150, 150] }
+			 token 12 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

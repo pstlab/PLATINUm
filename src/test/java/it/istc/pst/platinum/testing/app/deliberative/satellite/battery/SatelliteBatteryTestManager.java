@@ -15,14 +15,9 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 	private static final int NUMBER_OF_RUNS = 3;
 	
 	private static final String[] CONFIGURATIONS = new String[] {
-		"cfg1",			// strategy= DFS, heuristics= S&B
-		"cfg2",			// strategy= GREEDY, heuristics= S&B
+		"cfg1",			// strategy= DFS, heuristics= S&B,
 	};
 	
-	private static final String[] DOMAIN_VERSIONS = new String[] {
-			"1",
-			"2"
-	};
 	private static final String[] NUMBER_OF_SUN_WINDOWS = new String[] {
 			"1", 
 			"2", 
@@ -37,13 +32,13 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 			"1", 
 			"2", 
 			"3", 
-			"4", 
-			"5", 
-			"6", 
-			"7", 
-			"8", 
-			"9", 
-			"10"
+//			"4", 
+//			"5", 
+//			"6", 
+//			"7", 
+//			"8", 
+//			"9", 
+//			"10"
 	};
 	
 	/**
@@ -56,10 +51,10 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 		{
 			for (String cfg : CONFIGURATIONS)
 			{
-				for (int v = 0; v < DOMAIN_VERSIONS.length; v++)
+				for (int v = 0; v < SatelliteBatteryTest.DOMAIN_VERSIONS.length; v++)
 				{
 					// data file path
-					String dataPath = DATA_FOLDER + "/domV_" + DOMAIN_VERSIONS[v] + "_" + cfg + "_data.csv";
+					String dataPath = DATA_FOLDER + "/" + SatelliteBatteryTest.DOMAIN_VERSIONS[v] + "_" + cfg + "_data.csv";
 					// create writer
 					try (PrintWriter dataWriter = new PrintWriter(new BufferedWriter(new FileWriter(dataPath)))) 
 					{	
@@ -75,31 +70,13 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 									try
 									{
 										// check domain version 1
-										if (DOMAIN_VERSIONS[v].equals("1")) 
-										{
-											SatelliteBatteryProblemGeneratorDomainV1 generator = new SatelliteBatteryProblemGeneratorDomainV1(PROBLEM_DIRECTORY);
-											String path = generator.generateProblemFile(
-													Integer.parseInt(NUMBER_OF_COMM_WINDOWS[i]), 
-													Integer.parseInt(NUMBER_OF_SUN_WINDOWS[j]), 
-													Integer.parseInt(NUMBER_OF_SCIENCE_OPERATIONS[k]));
-											// print generated file
-											System.out.println("(Generated) Problem specification: " + path + "\n");
-										}
-										// check domain version 2
-										else if (DOMAIN_VERSIONS[v].equals("2")) 
-										{
-											SatelliteBatteryProblemGeneratorDomainV2 generator = new SatelliteBatteryProblemGeneratorDomainV2(PROBLEM_DIRECTORY);
-											String path = generator.generateProblemFile(
-													Integer.parseInt(NUMBER_OF_COMM_WINDOWS[i]), 
-													Integer.parseInt(NUMBER_OF_SUN_WINDOWS[j]), 
-													Integer.parseInt(NUMBER_OF_SCIENCE_OPERATIONS[k]));
-											// print generated file
-											System.out.println("(Generated) Problem specification: " + path + "\n");
-										}
-										else {
-											// unknown version
-											throw new RuntimeException("Unknown domain version: " + DOMAIN_VERSIONS[v]);
-										}
+										SatelliteBatteryProblemGeneratorDomain generator = new SatelliteBatteryProblemGeneratorDomain(SatelliteBatteryTest.DOMAIN_VERSIONS[v]);
+										String path = generator.generateProblemFile(
+												Integer.parseInt(NUMBER_OF_COMM_WINDOWS[i]), 
+												Integer.parseInt(NUMBER_OF_SUN_WINDOWS[j]), 
+												Integer.parseInt(NUMBER_OF_SCIENCE_OPERATIONS[k]));
+										// print generated file
+										System.out.println("(Generated) Problem specification: " + path + "\n");
 										
 										int counter = 0;
 										while (counter < NUMBER_OF_RUNS) 

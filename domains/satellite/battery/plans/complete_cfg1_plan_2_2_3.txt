@@ -1,0 +1,127 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 422] [1,422] }
+			 token 1843  { Slewing [2, 423] [1,422] }
+			 token 1829  { Target [5, 426] [3,424] }
+			 token 1840  { Slewing [6, 427] [1,422] }
+			 token 1812  { Target [9, 430] [3,424] }
+			 token 1841  { Slewing [10, 431] [1,422] }
+			 token 1818  { Earth [265, 436] [5,426] }
+			 token 1839  { Slewing [266, 437] [1,172] }
+			 token 1833  { Sun [304, 441] [4,175] }
+			 token 1842  { Slewing [305, 442] [1,138] }
+			 token 1815  { Target [308, 445] [3,140] }
+			 token 1837  { Slewing [309, 446] [1,138] }
+			 token 1827  { Sun [313, 454] [4,145] }
+			 token 1838  { Slewing [314, 455] [1,142] }
+			 token 1822  { Earth [319, 500] [5,186] }
+		}
+		Maintenance {
+			 token 1832 uncontrollable { Recharge [304, 441] [4,11] }
+			 token 1826 uncontrollable { Recharge [313, 450] [4,11] }
+		}
+		Satellite {
+			 token 1828  { Science [5, 426] [3,7] }
+			 token 1811  { Science [9, 430] [3,7] }
+			 token 1817 uncontrollable { Communicate [265, 436] [5,8] }
+			 token 1814  { Science [308, 445] [3,7] }
+			 token 1834 uncontrollable { Communicate [319, 460] [5,8] }
+			 token 1821 uncontrollable { Communicate [319, 460] [5,8] }
+		}
+	}
+	relations {
+		PointingMode 1827 MEETS PointingMode 1838
+		PointingMode 1838 MEETS PointingMode 1822
+		PointingMode 1818 MEETS PointingMode 1839
+		PointingMode 1839 MEETS PointingMode 1833
+		PointingMode 1829 MEETS PointingMode 1840
+		PointingMode 1840 MEETS PointingMode 1812
+		PointingMode 1812 MEETS PointingMode 1841
+		PointingMode 1841 MEETS PointingMode 1818
+		PointingMode 1833 MEETS PointingMode 1842
+		PointingMode 1842 MEETS PointingMode 1815
+		PointingMode 0 MEETS PointingMode 1843
+		PointingMode 1843 MEETS PointingMode 1829
+		Satellite 1811 DURING [0, 500]  [0,500]  PointingMode 1812
+		Satellite 1811 BEFORE [0, 500]  Satellite 1817
+		Satellite 1811 EQUALS SatelliteBattery 1813
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1812
+		Satellite 1814 DURING [0, 500]  [0,500]  PointingMode 1815
+		Satellite 1814 BEFORE [0, 500]  Satellite 1821
+		Satellite 1814 EQUALS SatelliteBattery 1816
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1815
+		PointingMode 1812 BEFORE [1, 500]  PointingMode 1815
+		Satellite 1817 EQUALS Bandwidth 1819
+		Satellite 1817 EQUALS SatelliteBattery 1820
+		Satellite 1817 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1817 DURING [0, 500]  [0,500]  PointingMode 1818
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1818
+		PointingMode 1812 BEFORE [1, 500]  PointingMode 1818
+		PointingMode 1818 BEFORE [1, 500]  PointingMode 1815
+		Satellite 1821 EQUALS Bandwidth 1824
+		Satellite 1821 EQUALS SatelliteBattery 1823
+		Satellite 1821 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1821 DURING [0, 500]  [0,500]  PointingMode 1822
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1822
+		PointingMode 1812 BEFORE [1, 500]  PointingMode 1822
+		PointingMode 1818 BEFORE [1, 500]  PointingMode 1822
+		PointingMode 1815 BEFORE [1, 500]  PointingMode 1822
+		SatelliteBattery 1813 BEFORE [0, 500]  SatelliteBattery 1825
+		SatelliteBattery 1820 BEFORE [0, 500]  SatelliteBattery 1825
+		SatelliteBattery 1816 BEFORE [0, 500]  SatelliteBattery 1825
+		SatelliteBattery 1825 BEFORE [0, 500]  SatelliteBattery 1823
+		SatelliteBattery 1825 EQUALS Maintenance 1826
+		Maintenance 1826 DURING [0, 500]  [0,500]  SunWindow 9
+		Maintenance 1826 DURING [0, 500]  [0,500]  PointingMode 1827
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1827
+		PointingMode 1812 BEFORE [1, 500]  PointingMode 1827
+		PointingMode 1818 BEFORE [1, 500]  PointingMode 1827
+		PointingMode 1815 BEFORE [1, 500]  PointingMode 1827
+		PointingMode 1827 BEFORE [1, 500]  PointingMode 1822
+		Satellite 1828 DURING [0, 500]  [0,500]  PointingMode 1829
+		Satellite 1828 BEFORE [0, 500]  Satellite 1834
+		Satellite 1828 EQUALS SatelliteBattery 1830
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1829
+		PointingMode 1829 BEFORE [1, 500]  PointingMode 1812
+		SatelliteBattery 1830 BEFORE [0, 500]  SatelliteBattery 1831
+		SatelliteBattery 1813 BEFORE [0, 500]  SatelliteBattery 1831
+		SatelliteBattery 1820 BEFORE [0, 500]  SatelliteBattery 1831
+		SatelliteBattery 1831 BEFORE [0, 500]  SatelliteBattery 1816
+		SatelliteBattery 1831 EQUALS Maintenance 1832
+		Maintenance 1832 DURING [0, 500]  [0,500]  SunWindow 9
+		Maintenance 1832 DURING [0, 500]  [0,500]  PointingMode 1833
+		PointingMode 0 BEFORE [1, 500]  PointingMode 1833
+		PointingMode 1829 BEFORE [1, 500]  PointingMode 1833
+		PointingMode 1812 BEFORE [1, 500]  PointingMode 1833
+		PointingMode 1818 BEFORE [1, 500]  PointingMode 1833
+		PointingMode 1833 BEFORE [1, 500]  PointingMode 1815
+		Satellite 1834 EQUALS Bandwidth 1835
+		Satellite 1834 EQUALS SatelliteBattery 1836
+		Satellite 1834 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 1834 DURING [0, 500]  [0,500]  PointingMode 1822
+		SatelliteBattery 1825 BEFORE [0, 500]  SatelliteBattery 1836
+		PointingMode 1815 MEETS PointingMode 1837
+		PointingMode 1837 MEETS PointingMode 1827
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [30, 30] [30, 30] }
+			 token 2 { Visible [230, 230] [200, 200] }
+			 token 3 { NotVisible [260, 260] [30, 30] }
+			 token 4 { Visible [460, 460] [200, 200] }
+			 token 5 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 6 { NotVisible [50, 50] [50, 50] }
+			 token 7 { Visible [250, 250] [200, 200] }
+			 token 8 { NotVisible [300, 300] [50, 50] }
+			 token 9 { Visible [450, 450] [150, 150] }
+			 token 10 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

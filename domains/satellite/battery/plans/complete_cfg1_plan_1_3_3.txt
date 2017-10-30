@@ -1,0 +1,128 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 422] [1,422] }
+			 token 2523  { Slewing [2, 423] [1,422] }
+			 token 2501  { Target [5, 426] [3,424] }
+			 token 2529  { Slewing [6, 427] [1,422] }
+			 token 2498  { Target [9, 430] [3,424] }
+			 token 2524  { Slewing [10, 431] [1,422] }
+			 token 2508  { Earth [15, 436] [5,426] }
+			 token 2527  { Slewing [16, 437] [1,422] }
+			 token 2519  { Sun [354, 441] [4,425] }
+			 token 2525  { Slewing [355, 442] [1,88] }
+			 token 2515  { Target [358, 445] [3,90] }
+			 token 2526  { Slewing [359, 446] [1,88] }
+			 token 2513  { Sun [363, 494] [4,135] }
+			 token 2528  { Slewing [364, 495] [1,132] }
+			 token 2504  { Earth [369, 500] [5,136] }
+		}
+		Maintenance {
+			 token 2518 uncontrollable { Recharge [354, 441] [4,11] }
+			 token 2512 uncontrollable { Recharge [363, 450] [4,11] }
+		}
+		Satellite {
+			 token 2500  { Science [5, 426] [3,7] }
+			 token 2497  { Science [9, 430] [3,7] }
+			 token 2507 uncontrollable { Communicate [15, 436] [5,8] }
+			 token 2514  { Science [358, 445] [3,7] }
+			 token 2520 uncontrollable { Communicate [369, 500] [5,8] }
+			 token 2503 uncontrollable { Communicate [369, 500] [5,8] }
+		}
+	}
+	relations {
+		PointingMode 2508 BEFORE [1, 500]  PointingMode 2519
+		PointingMode 2519 BEFORE [1, 500]  PointingMode 2515
+		Satellite 2520 EQUALS Bandwidth 2522
+		Satellite 2520 EQUALS SatelliteBattery 2521
+		Satellite 2520 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 2520 DURING [0, 500]  [0,500]  PointingMode 2504
+		Satellite 2497 DURING [0, 500]  [0,500]  PointingMode 2498
+		Satellite 2497 BEFORE [0, 500]  Satellite 2507
+		SatelliteBattery 2511 BEFORE [0, 500]  SatelliteBattery 2521
+		Satellite 2497 EQUALS SatelliteBattery 2499
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2498
+		PointingMode 0 MEETS PointingMode 2523
+		PointingMode 2523 MEETS PointingMode 2501
+		PointingMode 2498 MEETS PointingMode 2524
+		Satellite 2500 DURING [0, 500]  [0,500]  PointingMode 2501
+		PointingMode 2524 MEETS PointingMode 2508
+		Satellite 2500 BEFORE [0, 500]  Satellite 2503
+		PointingMode 2519 MEETS PointingMode 2525
+		Satellite 2500 EQUALS SatelliteBattery 2502
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2501
+		PointingMode 2525 MEETS PointingMode 2515
+		PointingMode 2501 BEFORE [1, 500]  PointingMode 2498
+		PointingMode 2515 MEETS PointingMode 2526
+		PointingMode 2526 MEETS PointingMode 2513
+		Satellite 2503 EQUALS Bandwidth 2506
+		PointingMode 2508 MEETS PointingMode 2527
+		Satellite 2503 EQUALS SatelliteBattery 2505
+		PointingMode 2527 MEETS PointingMode 2519
+		Satellite 2503 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		PointingMode 2513 MEETS PointingMode 2528
+		Satellite 2503 DURING [0, 500]  [0,500]  PointingMode 2504
+		PointingMode 2528 MEETS PointingMode 2504
+		PointingMode 2501 MEETS PointingMode 2529
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2504
+		PointingMode 2529 MEETS PointingMode 2498
+		PointingMode 2501 BEFORE [1, 500]  PointingMode 2504
+		PointingMode 2498 BEFORE [1, 500]  PointingMode 2504
+		Satellite 2507 EQUALS Bandwidth 2510
+		Satellite 2507 EQUALS SatelliteBattery 2509
+		Satellite 2507 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 2507 DURING [0, 500]  [0,500]  PointingMode 2508
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2508
+		PointingMode 2501 BEFORE [1, 500]  PointingMode 2508
+		PointingMode 2498 BEFORE [1, 500]  PointingMode 2508
+		PointingMode 2508 BEFORE [1, 500]  PointingMode 2504
+		SatelliteBattery 2502 BEFORE [0, 500]  SatelliteBattery 2511
+		SatelliteBattery 2499 BEFORE [0, 500]  SatelliteBattery 2511
+		SatelliteBattery 2509 BEFORE [0, 500]  SatelliteBattery 2511
+		SatelliteBattery 2511 BEFORE [0, 500]  SatelliteBattery 2505
+		SatelliteBattery 2511 EQUALS Maintenance 2512
+		Maintenance 2512 DURING [0, 500]  [0,500]  SunWindow 7
+		Maintenance 2512 DURING [0, 500]  [0,500]  PointingMode 2513
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2513
+		PointingMode 2501 BEFORE [1, 500]  PointingMode 2513
+		PointingMode 2498 BEFORE [1, 500]  PointingMode 2513
+		PointingMode 2508 BEFORE [1, 500]  PointingMode 2513
+		PointingMode 2513 BEFORE [1, 500]  PointingMode 2504
+		Satellite 2514 DURING [0, 500]  [0,500]  PointingMode 2515
+		Satellite 2514 BEFORE [0, 500]  Satellite 2520
+		Satellite 2514 EQUALS SatelliteBattery 2516
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2515
+		PointingMode 2501 BEFORE [1, 500]  PointingMode 2515
+		PointingMode 2498 BEFORE [1, 500]  PointingMode 2515
+		PointingMode 2508 BEFORE [1, 500]  PointingMode 2515
+		PointingMode 2515 BEFORE [1, 500]  PointingMode 2513
+		SatelliteBattery 2502 BEFORE [0, 500]  SatelliteBattery 2517
+		SatelliteBattery 2499 BEFORE [0, 500]  SatelliteBattery 2517
+		SatelliteBattery 2509 BEFORE [0, 500]  SatelliteBattery 2517
+		SatelliteBattery 2517 BEFORE [0, 500]  SatelliteBattery 2516
+		SatelliteBattery 2517 EQUALS Maintenance 2518
+		Maintenance 2518 DURING [0, 500]  [0,500]  SunWindow 7
+		Maintenance 2518 DURING [0, 500]  [0,500]  PointingMode 2519
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2519
+		PointingMode 2501 BEFORE [1, 500]  PointingMode 2519
+		PointingMode 2498 BEFORE [1, 500]  PointingMode 2519
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { NotVisible [50, 50] [50, 50] }
+			 token 3 { Visible [150, 150] [100, 100] }
+			 token 4 { NotVisible [200, 200] [50, 50] }
+			 token 5 { Visible [300, 300] [100, 100] }
+			 token 6 { NotVisible [350, 350] [50, 50] }
+			 token 7 { Visible [450, 450] [100, 100] }
+			 token 8 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

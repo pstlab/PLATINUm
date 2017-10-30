@@ -1,0 +1,76 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 442] [1,442] }
+			 token 243  { Slewing [2, 443] [1,442] }
+			 token 234  { Target [5, 446] [3,444] }
+			 token 244  { Slewing [6, 447] [1,442] }
+			 token 241  { Target [9, 450] [3,444] }
+			 token 245  { Slewing [10, 451] [1,442] }
+			 token 236  { Target [13, 454] [3,444] }
+			 token 246  { Slewing [14, 455] [1,442] }
+			 token 238  { Earth [315, 500] [5,486] }
+		}
+		Satellite {
+			 token 233  { Science [5, 446] [3,7] }
+			 token 240  { Science [9, 450] [3,7] }
+			 token 235  { Science [13, 454] [3,7] }
+			 token 242 uncontrollable { Communicate [315, 460] [5,8] }
+			 token 239 uncontrollable { Communicate [315, 460] [5,8] }
+			 token 237 uncontrollable { Communicate [315, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 233 DURING [0, 500]  [0,500]  PointingMode 234
+		Satellite 233 BEFORE [0, 500]  Satellite 239
+		PointingMode 0 BEFORE [1, 500]  PointingMode 234
+		Satellite 235 DURING [0, 500]  [0,500]  PointingMode 236
+		Satellite 235 BEFORE [0, 500]  Satellite 237
+		PointingMode 0 BEFORE [1, 500]  PointingMode 236
+		PointingMode 234 BEFORE [1, 500]  PointingMode 236
+		Satellite 237 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 237 DURING [0, 500]  [0,500]  PointingMode 238
+		PointingMode 0 BEFORE [1, 500]  PointingMode 238
+		PointingMode 234 BEFORE [1, 500]  PointingMode 238
+		PointingMode 236 BEFORE [1, 500]  PointingMode 238
+		Satellite 239 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 239 DURING [0, 500]  [0,500]  PointingMode 238
+		Satellite 240 DURING [0, 500]  [0,500]  PointingMode 241
+		Satellite 240 BEFORE [0, 500]  Satellite 242
+		PointingMode 0 BEFORE [1, 500]  PointingMode 241
+		PointingMode 234 BEFORE [1, 500]  PointingMode 241
+		PointingMode 241 BEFORE [1, 500]  PointingMode 236
+		Satellite 242 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 242 DURING [0, 500]  [0,500]  PointingMode 238
+		PointingMode 0 MEETS PointingMode 243
+		PointingMode 243 MEETS PointingMode 234
+		PointingMode 234 MEETS PointingMode 244
+		PointingMode 244 MEETS PointingMode 241
+		PointingMode 241 MEETS PointingMode 245
+		PointingMode 245 MEETS PointingMode 236
+		PointingMode 236 MEETS PointingMode 246
+		PointingMode 246 MEETS PointingMode 238
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [10, 10] [10, 10] }
+			 token 2 { Visible [160, 160] [150, 150] }
+			 token 3 { NotVisible [200, 200] [40, 40] }
+			 token 4 { Visible [300, 300] [100, 100] }
+			 token 5 { NotVisible [310, 310] [10, 10] }
+			 token 6 { Visible [460, 460] [150, 150] }
+			 token 7 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 8 { NotVisible [50, 50] [50, 50] }
+			 token 9 { Visible [250, 250] [200, 200] }
+			 token 10 { NotVisible [300, 300] [50, 50] }
+			 token 11 { Visible [450, 450] [150, 150] }
+			 token 12 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

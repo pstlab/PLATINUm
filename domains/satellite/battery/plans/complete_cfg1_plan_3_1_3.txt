@@ -1,0 +1,126 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 426] [1,426] }
+			 token 2460  { Slewing [2, 427] [1,426] }
+			 token 2437  { Target [5, 430] [3,428] }
+			 token 2463  { Slewing [6, 431] [1,426] }
+			 token 2451  { Target [9, 434] [3,428] }
+			 token 2459  { Slewing [10, 435] [1,426] }
+			 token 2434  { Target [13, 438] [3,428] }
+			 token 2461  { Slewing [14, 439] [1,426] }
+			 token 2455  { Sun [18, 443] [4,429] }
+			 token 2462  { Slewing [19, 444] [1,426] }
+			 token 2444  { Earth [315, 449] [5,430] }
+			 token 2465  { Slewing [316, 450] [1,135] }
+			 token 2449  { Sun [320, 454] [4,138] }
+			 token 2464  { Slewing [321, 455] [1,135] }
+			 token 2440  { Earth [326, 500] [5,179] }
+		}
+		Maintenance {
+			 token 2454 uncontrollable { Recharge [18, 443] [4,11] }
+			 token 2448 uncontrollable { Recharge [320, 454] [4,11] }
+		}
+		Satellite {
+			 token 2436  { Science [5, 430] [3,7] }
+			 token 2450  { Science [9, 434] [3,7] }
+			 token 2433  { Science [13, 438] [3,7] }
+			 token 2443 uncontrollable { Communicate [315, 449] [5,8] }
+			 token 2456 uncontrollable { Communicate [326, 460] [5,8] }
+			 token 2439 uncontrollable { Communicate [326, 460] [5,8] }
+		}
+	}
+	relations {
+		SatelliteBattery 2435 BEFORE [0, 500]  SatelliteBattery 2453
+		SatelliteBattery 2453 BEFORE [0, 500]  SatelliteBattery 2445
+		SatelliteBattery 2453 EQUALS Maintenance 2454
+		Maintenance 2454 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 2454 DURING [0, 500]  [0,500]  PointingMode 2455
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2455
+		PointingMode 2437 BEFORE [1, 500]  PointingMode 2455
+		PointingMode 2451 BEFORE [1, 500]  PointingMode 2455
+		PointingMode 2434 BEFORE [1, 500]  PointingMode 2455
+		PointingMode 2455 BEFORE [1, 500]  PointingMode 2444
+		Satellite 2456 EQUALS Bandwidth 2457
+		Satellite 2456 EQUALS SatelliteBattery 2458
+		Satellite 2456 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 2456 DURING [0, 500]  [0,500]  PointingMode 2440
+		Satellite 2433 DURING [0, 500]  [0,500]  PointingMode 2434
+		Satellite 2433 BEFORE [0, 500]  Satellite 2439
+		Satellite 2433 EQUALS SatelliteBattery 2435
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2434
+		Satellite 2436 DURING [0, 500]  [0,500]  PointingMode 2437
+		Satellite 2436 BEFORE [0, 500]  Satellite 2443
+		Satellite 2436 EQUALS SatelliteBattery 2438
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2437
+		PointingMode 2437 BEFORE [1, 500]  PointingMode 2434
+		SatelliteBattery 2447 BEFORE [0, 500]  SatelliteBattery 2458
+		Satellite 2439 EQUALS Bandwidth 2441
+		PointingMode 2451 MEETS PointingMode 2459
+		Satellite 2439 EQUALS SatelliteBattery 2442
+		PointingMode 2459 MEETS PointingMode 2434
+		Satellite 2439 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		PointingMode 0 MEETS PointingMode 2460
+		Satellite 2439 DURING [0, 500]  [0,500]  PointingMode 2440
+		PointingMode 2460 MEETS PointingMode 2437
+		PointingMode 2434 MEETS PointingMode 2461
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2440
+		PointingMode 2461 MEETS PointingMode 2455
+		PointingMode 2437 BEFORE [1, 500]  PointingMode 2440
+		PointingMode 2455 MEETS PointingMode 2462
+		PointingMode 2434 BEFORE [1, 500]  PointingMode 2440
+		PointingMode 2462 MEETS PointingMode 2444
+		PointingMode 2437 MEETS PointingMode 2463
+		Satellite 2443 EQUALS Bandwidth 2446
+		PointingMode 2463 MEETS PointingMode 2451
+		Satellite 2443 EQUALS SatelliteBattery 2445
+		PointingMode 2449 MEETS PointingMode 2464
+		Satellite 2443 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		PointingMode 2464 MEETS PointingMode 2440
+		Satellite 2443 DURING [0, 500]  [0,500]  PointingMode 2444
+		PointingMode 2444 MEETS PointingMode 2465
+		PointingMode 2465 MEETS PointingMode 2449
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2444
+		PointingMode 2437 BEFORE [1, 500]  PointingMode 2444
+		PointingMode 2434 BEFORE [1, 500]  PointingMode 2444
+		PointingMode 2444 BEFORE [1, 500]  PointingMode 2440
+		SatelliteBattery 2438 BEFORE [0, 500]  SatelliteBattery 2447
+		SatelliteBattery 2435 BEFORE [0, 500]  SatelliteBattery 2447
+		SatelliteBattery 2445 BEFORE [0, 500]  SatelliteBattery 2447
+		SatelliteBattery 2447 BEFORE [0, 500]  SatelliteBattery 2442
+		SatelliteBattery 2447 EQUALS Maintenance 2448
+		Maintenance 2448 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 2448 DURING [0, 500]  [0,500]  PointingMode 2449
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2449
+		PointingMode 2437 BEFORE [1, 500]  PointingMode 2449
+		PointingMode 2434 BEFORE [1, 500]  PointingMode 2449
+		PointingMode 2444 BEFORE [1, 500]  PointingMode 2449
+		PointingMode 2449 BEFORE [1, 500]  PointingMode 2440
+		Satellite 2450 DURING [0, 500]  [0,500]  PointingMode 2451
+		Satellite 2450 BEFORE [0, 500]  Satellite 2456
+		Satellite 2450 EQUALS SatelliteBattery 2452
+		PointingMode 0 BEFORE [1, 500]  PointingMode 2451
+		PointingMode 2437 BEFORE [1, 500]  PointingMode 2451
+		PointingMode 2451 BEFORE [1, 500]  PointingMode 2434
+		SatelliteBattery 2438 BEFORE [0, 500]  SatelliteBattery 2453
+		SatelliteBattery 2452 BEFORE [0, 500]  SatelliteBattery 2453
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [10, 10] [10, 10] }
+			 token 2 { Visible [160, 160] [150, 150] }
+			 token 3 { NotVisible [200, 200] [40, 40] }
+			 token 4 { Visible [300, 300] [100, 100] }
+			 token 5 { NotVisible [310, 310] [10, 10] }
+			 token 6 { Visible [460, 460] [150, 150] }
+			 token 7 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 8 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

@@ -1,0 +1,53 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 450] [1,450] }
+			 token 85  { Slewing [2, 451] [1,450] }
+			 token 79  { Target [5, 454] [3,452] }
+			 token 86  { Slewing [6, 455] [1,450] }
+			 token 82  { Earth [265, 500] [5,494] }
+		}
+		Maintenance {
+		}
+		Satellite {
+			 token 78  { Science [5, 454] [3,7] }
+			 token 81 uncontrollable { Communicate [265, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 78 DURING [0, 500]  [0,500]  PointingMode 79
+		Satellite 78 BEFORE [0, 500]  Satellite 81
+		Satellite 78 EQUALS SatelliteBattery 80
+		PointingMode 0 BEFORE [1, 500]  PointingMode 79
+		Satellite 81 EQUALS Bandwidth 83
+		Satellite 81 EQUALS SatelliteBattery 84
+		Satellite 81 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 81 DURING [0, 500]  [0,500]  PointingMode 82
+		PointingMode 0 BEFORE [1, 500]  PointingMode 82
+		PointingMode 79 BEFORE [1, 500]  PointingMode 82
+		PointingMode 0 MEETS PointingMode 85
+		PointingMode 85 MEETS PointingMode 79
+		PointingMode 79 MEETS PointingMode 86
+		PointingMode 86 MEETS PointingMode 82
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [30, 30] [30, 30] }
+			 token 2 { Visible [230, 230] [200, 200] }
+			 token 3 { NotVisible [260, 260] [30, 30] }
+			 token 4 { Visible [460, 460] [200, 200] }
+			 token 5 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 6 { NotVisible [50, 50] [50, 50] }
+			 token 7 { Visible [250, 250] [200, 200] }
+			 token 8 { NotVisible [300, 300] [50, 50] }
+			 token 9 { Visible [450, 450] [150, 150] }
+			 token 10 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

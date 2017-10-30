@@ -1,0 +1,61 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 486] [1,486] }
+			 token 163  { Slewing [2, 487] [1,486] }
+			 token 157  { Target [5, 490] [3,488] }
+			 token 164  { Slewing [6, 491] [1,486] }
+			 token 155  { Target [9, 494] [3,488] }
+			 token 165  { Slewing [10, 495] [1,486] }
+			 token 160  { Earth [15, 500] [5,490] }
+		}
+		Satellite {
+			 token 156  { Science [5, 490] [3,7] }
+			 token 154  { Science [9, 494] [3,7] }
+			 token 158 uncontrollable { Communicate [15, 500] [5,8] }
+			 token 161 uncontrollable { Communicate [15, 500] [5,8] }
+		}
+	}
+	relations {
+		Satellite 154 BEFORE [0, 500]  Satellite 158
+		PointingMode 0 BEFORE [1, 500]  PointingMode 155
+		Satellite 156 DURING [0, 500]  [0,500]  PointingMode 157
+		Satellite 156 BEFORE [0, 500]  Satellite 161
+		PointingMode 0 BEFORE [1, 500]  PointingMode 157
+		PointingMode 157 BEFORE [1, 500]  PointingMode 155
+		Satellite 158 EQUALS Bandwidth 159
+		Satellite 158 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 158 DURING [0, 500]  [0,500]  PointingMode 160
+		PointingMode 0 BEFORE [1, 500]  PointingMode 160
+		PointingMode 157 BEFORE [1, 500]  PointingMode 160
+		PointingMode 155 BEFORE [1, 500]  PointingMode 160
+		Satellite 161 EQUALS Bandwidth 162
+		Satellite 161 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 161 DURING [0, 500]  [0,500]  PointingMode 160
+		PointingMode 0 MEETS PointingMode 163
+		PointingMode 163 MEETS PointingMode 157
+		PointingMode 157 MEETS PointingMode 164
+		PointingMode 164 MEETS PointingMode 155
+		PointingMode 155 MEETS PointingMode 165
+		PointingMode 165 MEETS PointingMode 160
+		Satellite 154 DURING [0, 500]  [0,500]  PointingMode 155
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { NotVisible [50, 50] [50, 50] }
+			 token 3 { Visible [150, 150] [100, 100] }
+			 token 4 { NotVisible [200, 200] [50, 50] }
+			 token 5 { Visible [300, 300] [100, 100] }
+			 token 6 { NotVisible [350, 350] [50, 50] }
+			 token 7 { Visible [450, 450] [100, 100] }
+			 token 8 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

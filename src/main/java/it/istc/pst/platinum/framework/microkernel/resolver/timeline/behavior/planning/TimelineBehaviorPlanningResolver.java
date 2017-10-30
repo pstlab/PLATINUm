@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,7 @@ import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationExc
 import it.istc.pst.platinum.framework.domain.component.ex.TransitionNotFoundException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.Transition;
+import it.istc.pst.platinum.framework.domain.component.sv.ValuePath;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -312,41 +314,112 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			case INCOMPLETE_TIMELINE : 
 			{
 				// check all (acyclic) paths among tokens
-				List<List<ComponentValue>> paths = this.component.getPaths(
+				List<ValuePath> paths = this.component.getPaths(
 						gap.getLeftDecision().getValue(), 
 						gap.getRightDecision().getValue());
 				
-				// each path represents a solution for the gap 
-				for (List<ComponentValue> path : paths) 
+				// check if empty
+				if (!paths.isEmpty())
 				{
-					// remove the source and destination values from the path
-					path.remove(0);
-					path.remove(path.size() - 1);
-					try
+					// consider the subset of paths with the shortest number of steps
+					Collections.sort(paths);
+					// list of "optimal" paths
+					List<ValuePath> optimal = new ArrayList<>();
+					// get the first
+					ValuePath reference = paths.remove(0);
+					optimal.add(reference);
+					// list of "non-optimal paths"
+					List<ValuePath> nonOptimal = new ArrayList<>();
+					for (ValuePath path : paths) 
 					{
-						// check feasibility of gap solution
-						GapCompletion solution = new GapCompletion(gap, path);
-						// check temporal feasibility of solution
-						double makespan = this.checkBehaviorTemporalFeasibility(solution);
-						// set the resulting makespan
-						solution.setMakespan(makespan);
-						// add solution to the flaw
-						gap.addSolution(solution);
-						// print gap information
-						this.logger.debug("Gap found on component " + this.component.getName() + ":\n"
-								+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
-								+ "- left-side decision: " + gap.getLeftDecision() + "\n"
-								+ "- right-side decision: " + gap.getRightDecision() + "\n"
-								+ "- solution path: " + path + "\n"
-								+ "- resulting makespan: " + makespan + "\n");
-						
+						// check if optimal path
+						if (path.size() == reference.size()) {
+							optimal.add(path);
+						}
+						else {	// non optimal
+							nonOptimal.add(path);
+						}
 					}
-					catch (NotFeasibleGapCompletionException ex) {
-						// not feasible gap completion found
-						this.logger.debug("Not feasible gap completion found:\n"
-								+ "- gap: " + gap + "\n"
-								+ "- solution: " + path + "\n"
-								+ "- message: \"" + ex.getMessage() + "\"\n");
+					
+					// compute solution for "optimal" paths
+					for (ValuePath path : optimal)
+					{
+						System.out.println("\n- gap: " + gap + "\n- path: " + path.getSteps() + "\n");
+						
+						// get steps
+						List<ComponentValue> steps = path.getSteps();
+						// remove the source and destination values from the path
+						steps.remove(0);
+						steps.remove(steps.size() - 1);
+						try
+						{
+							// check feasibility of gap solution
+							GapCompletion solution = new GapCompletion(gap, steps);
+							// check temporal feasibility of solution
+							double makespan = this.checkBehaviorTemporalFeasibility(solution);
+							// set the resulting makespan
+							solution.setMakespan(makespan);
+							// add solution to the flaw
+							gap.addSolution(solution);
+							// print gap information
+							this.logger.debug("Gap found on component " + this.component.getName() + ":\n"
+									+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
+									+ "- left-side decision: " + gap.getLeftDecision() + "\n"
+									+ "- right-side decision: " + gap.getRightDecision() + "\n"
+									+ "- solution path: " + path + "\n"
+									+ "- resulting makespan: " + makespan + "\n");
+							
+						}
+						catch (NotFeasibleGapCompletionException ex) {
+							// not feasible gap completion found
+							this.logger.debug("Not feasible gap completion found:\n"
+									+ "- gap: " + gap + "\n"
+									+ "- solution: " + path + "\n"
+									+ "- message: \"" + ex.getMessage() + "\"\n");
+						}
+					}
+					
+					
+					// check if a solution has been found among optimal paths
+					if (!gap.isSolvable()) 
+					{
+						// compute solution for "non optimal" paths
+						for (ValuePath path : nonOptimal)
+						{
+							System.out.println("\n- gap: " + gap + "\n- path: " + path.getSteps() + "\n");
+							
+							// get steps
+							List<ComponentValue> steps = path.getSteps();
+							// remove the source and destination values from the path
+							steps.remove(0);
+							steps.remove(steps.size() - 1);
+							try
+							{
+								// check feasibility of gap solution
+								GapCompletion solution = new GapCompletion(gap, steps);
+								// check temporal feasibility of solution
+								double makespan = this.checkBehaviorTemporalFeasibility(solution);
+								// set the resulting makespan
+								solution.setMakespan(makespan);
+								// add solution to the flaw
+								gap.addSolution(solution);
+								// print gap information
+								this.logger.debug("Gap found on component " + this.component.getName() + ":\n"
+										+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
+										+ "- left-side decision: " + gap.getLeftDecision() + "\n"
+										+ "- right-side decision: " + gap.getRightDecision() + "\n"
+										+ "- solution path: " + path + "\n"
+										+ "- resulting makespan: " + makespan + "\n");
+								
+							}
+							catch (NotFeasibleGapCompletionException ex) {
+								// not feasible gap completion found
+								this.logger.debug("Not feasible gap completion found:\n"
+										+ "- gap: " + gap + "\n"
+										+ "- solution: " + path + "\n"
+										+ "- message: \"" + ex.getMessage() + "\"\n");
+							}
+						}
 					}
 				}
 			}

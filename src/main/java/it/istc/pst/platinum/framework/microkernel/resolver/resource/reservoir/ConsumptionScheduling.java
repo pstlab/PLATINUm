@@ -87,7 +87,7 @@ public class ConsumptionScheduling extends FlawSolution implements ResourceOverC
 		// get property file 
 		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
 		// read property
-		String cost = property.getProperty("resource-planning-cost");
+		String cost = property.getProperty("scheduling-cost");
 		// parse and get double value
 		return Double.parseDouble(cost);
 	}

@@ -1,0 +1,54 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 486] [1,486] }
+			 token 151  { Slewing [2, 487] [1,486] }
+			 token 146  { Target [5, 490] [3,488] }
+			 token 149  { Slewing [6, 491] [1,486] }
+			 token 141  { Target [9, 494] [3,488] }
+			 token 150  { Slewing [10, 495] [1,486] }
+			 token 144  { Earth [15, 500] [5,490] }
+		}
+		Satellite {
+			 token 145  { Science [5, 490] [3,7] }
+			 token 140  { Science [9, 494] [3,7] }
+			 token 147 uncontrollable { Communicate [15, 500] [5,8] }
+			 token 142 uncontrollable { Communicate [15, 500] [5,8] }
+		}
+	}
+	relations {
+		Satellite 140 BEFORE [0, 500]  Satellite 142
+		PointingMode 0 BEFORE [1, 500]  PointingMode 141
+		Satellite 142 EQUALS Bandwidth 143
+		Satellite 142 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 142 DURING [0, 500]  [0,500]  PointingMode 144
+		PointingMode 0 BEFORE [1, 500]  PointingMode 144
+		PointingMode 141 BEFORE [1, 500]  PointingMode 144
+		Satellite 145 DURING [0, 500]  [0,500]  PointingMode 146
+		Satellite 145 BEFORE [0, 500]  Satellite 147
+		PointingMode 0 BEFORE [1, 500]  PointingMode 146
+		PointingMode 146 BEFORE [1, 500]  PointingMode 141
+		Satellite 147 EQUALS Bandwidth 148
+		Satellite 147 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 147 DURING [0, 500]  [0,500]  PointingMode 144
+		PointingMode 146 MEETS PointingMode 149
+		PointingMode 149 MEETS PointingMode 141
+		PointingMode 141 MEETS PointingMode 150
+		PointingMode 150 MEETS PointingMode 144
+		PointingMode 0 MEETS PointingMode 151
+		PointingMode 151 MEETS PointingMode 146
+		Satellite 140 DURING [0, 500]  [0,500]  PointingMode 141
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+
