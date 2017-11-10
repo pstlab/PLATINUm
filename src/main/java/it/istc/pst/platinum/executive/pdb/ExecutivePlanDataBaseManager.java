@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import it.istc.pst.epsl.pdb.lang.EPSLPlanDescriptor;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
@@ -119,6 +120,12 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param plan
 	 */
 	public abstract void setup(PlanProtocolDescriptor plan);
+	
+	/**
+	 * 
+	 * @param plan
+	 */
+	public abstract void setup(EPSLPlanDescriptor plan);
 	
 	/**
 	 * 

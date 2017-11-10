@@ -1,0 +1,145 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 446] [1,446] }
+			 token 3578  { Slewing [4, 449] [3,5] }
+			 token 3549  { Target [7, 452] [3,448] }
+			 token 3577  { Slewing [10, 455] [3,5] }
+			 token 3542  { Target [13, 458] [3,448] }
+			 token 3576  { Slewing [16, 461] [3,5] }
+			 token 3545  { Earth [21, 466] [5,450] }
+			 token 3574  { Slewing [24, 469] [3,5] }
+			 token 3555  { Target [27, 472] [3,448] }
+			 token 3575  { Slewing [30, 475] [3,5] }
+			 token 3559  { Sun [34, 479] [4,449] }
+			 token 3579  { Slewing [37, 482] [3,5] }
+			 token 3552  { Target [40, 485] [3,448] }
+			 token 3580  { Slewing [43, 488] [3,5] }
+			 token 3566  { Sun [47, 492] [4,449] }
+			 token 3573  { Slewing [50, 495] [3,5] }
+			 token 3561  { Earth [55, 500] [5,450] }
+		}
+		Maintenance {
+			 token 3558  { Recharge [34, 479] [4,11] }
+			 token 3565  { Recharge [47, 492] [4,11] }
+		}
+		Satellite {
+			 token 3548  { Science [7, 452] [3,7] }
+			 token 3541  { Science [13, 458] [3,7] }
+			 token 3544 uncontrollable { Communicate [21, 466] [5,8] }
+			 token 3554  { Science [27, 472] [3,7] }
+			 token 3551  { Science [40, 485] [3,7] }
+			 token 3570 uncontrollable { Communicate [55, 500] [5,8] }
+			 token 3567 uncontrollable { Communicate [55, 500] [5,8] }
+			 token 3560 uncontrollable { Communicate [55, 500] [5,8] }
+		}
+	}
+	relations {
+		Satellite 3541 DURING [0, 500]  [0,500]  PointingMode 3542
+		Satellite 3541 BEFORE [0, 500]  Satellite 3544
+		Satellite 3541 EQUALS SatelliteBattery 3543
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3542
+		Satellite 3544 EQUALS Bandwidth 3547
+		Satellite 3544 EQUALS SatelliteBattery 3546
+		Satellite 3544 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 3544 DURING [0, 500]  [0,500]  PointingMode 3545
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3545
+		PointingMode 3542 BEFORE [0, 500]  PointingMode 3545
+		Satellite 3548 DURING [0, 500]  [0,500]  PointingMode 3549
+		Satellite 3548 BEFORE [0, 500]  Satellite 3570
+		Satellite 3548 EQUALS SatelliteBattery 3550
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3549
+		PointingMode 3549 BEFORE [0, 500]  PointingMode 3542
+		Satellite 3551 DURING [0, 500]  [0,500]  PointingMode 3552
+		Satellite 3551 BEFORE [0, 500]  Satellite 3560
+		Satellite 3551 EQUALS SatelliteBattery 3553
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3552
+		PointingMode 3549 BEFORE [0, 500]  PointingMode 3552
+		PointingMode 3542 BEFORE [0, 500]  PointingMode 3552
+		PointingMode 3545 BEFORE [0, 500]  PointingMode 3552
+		Satellite 3554 DURING [0, 500]  [0,500]  PointingMode 3555
+		Satellite 3554 BEFORE [0, 500]  Satellite 3567
+		Satellite 3554 EQUALS SatelliteBattery 3556
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3555
+		PointingMode 3549 BEFORE [0, 500]  PointingMode 3555
+		PointingMode 3542 BEFORE [0, 500]  PointingMode 3555
+		PointingMode 3545 BEFORE [0, 500]  PointingMode 3555
+		PointingMode 3555 BEFORE [0, 500]  PointingMode 3552
+		SatelliteBattery 3550 BEFORE [0, 500]  SatelliteBattery 3557
+		SatelliteBattery 3543 BEFORE [0, 500]  SatelliteBattery 3557
+		SatelliteBattery 3546 BEFORE [0, 500]  SatelliteBattery 3557
+		SatelliteBattery 3556 BEFORE [0, 500]  SatelliteBattery 3557
+		SatelliteBattery 3557 BEFORE [0, 500]  SatelliteBattery 3553
+		SatelliteBattery 3557 EQUALS Maintenance 3558
+		Maintenance 3558 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 3558 DURING [0, 500]  [0,500]  PointingMode 3559
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3559
+		PointingMode 3549 BEFORE [0, 500]  PointingMode 3559
+		PointingMode 3542 BEFORE [0, 500]  PointingMode 3559
+		PointingMode 3545 BEFORE [0, 500]  PointingMode 3559
+		PointingMode 3555 BEFORE [0, 500]  PointingMode 3559
+		PointingMode 3559 BEFORE [0, 500]  PointingMode 3552
+		Satellite 3560 EQUALS Bandwidth 3562
+		Satellite 3560 EQUALS SatelliteBattery 3563
+		Satellite 3560 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 3560 DURING [0, 500]  [0,500]  PointingMode 3561
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3561
+		PointingMode 3549 BEFORE [0, 500]  PointingMode 3561
+		PointingMode 3542 BEFORE [0, 500]  PointingMode 3561
+		PointingMode 3545 BEFORE [0, 500]  PointingMode 3561
+		PointingMode 3555 BEFORE [0, 500]  PointingMode 3561
+		PointingMode 3559 BEFORE [0, 500]  PointingMode 3561
+		PointingMode 3552 BEFORE [0, 500]  PointingMode 3561
+		SatelliteBattery 3553 BEFORE [0, 500]  SatelliteBattery 3564
+		SatelliteBattery 3564 BEFORE [0, 500]  SatelliteBattery 3563
+		SatelliteBattery 3564 EQUALS Maintenance 3565
+		Maintenance 3565 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 3565 DURING [0, 500]  [0,500]  PointingMode 3566
+		PointingMode 0 BEFORE [0, 500]  PointingMode 3566
+		PointingMode 3549 BEFORE [0, 500]  PointingMode 3566
+		PointingMode 3542 BEFORE [0, 500]  PointingMode 3566
+		PointingMode 3545 BEFORE [0, 500]  PointingMode 3566
+		PointingMode 3555 BEFORE [0, 500]  PointingMode 3566
+		PointingMode 3559 BEFORE [0, 500]  PointingMode 3566
+		PointingMode 3552 BEFORE [0, 500]  PointingMode 3566
+		PointingMode 3566 BEFORE [0, 500]  PointingMode 3561
+		Satellite 3567 EQUALS Bandwidth 3569
+		Satellite 3567 EQUALS SatelliteBattery 3568
+		Satellite 3567 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 3567 DURING [0, 500]  [0,500]  PointingMode 3561
+		SatelliteBattery 3564 BEFORE [0, 500]  SatelliteBattery 3568
+		Satellite 3570 EQUALS Bandwidth 3572
+		Satellite 3570 EQUALS SatelliteBattery 3571
+		Satellite 3570 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 3570 DURING [0, 500]  [0,500]  PointingMode 3561
+		SatelliteBattery 3564 BEFORE [0, 500]  SatelliteBattery 3571
+		PointingMode 3566 MEETS PointingMode 3573
+		PointingMode 3573 MEETS PointingMode 3561
+		PointingMode 3545 MEETS PointingMode 3574
+		PointingMode 3574 MEETS PointingMode 3555
+		PointingMode 3555 MEETS PointingMode 3575
+		PointingMode 3575 MEETS PointingMode 3559
+		PointingMode 3542 MEETS PointingMode 3576
+		PointingMode 3576 MEETS PointingMode 3545
+		PointingMode 3549 MEETS PointingMode 3577
+		PointingMode 3577 MEETS PointingMode 3542
+		PointingMode 0 MEETS PointingMode 3578
+		PointingMode 3578 MEETS PointingMode 3549
+		PointingMode 3559 MEETS PointingMode 3579
+		PointingMode 3579 MEETS PointingMode 3552
+		PointingMode 3552 MEETS PointingMode 3580
+		PointingMode 3580 MEETS PointingMode 3566
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

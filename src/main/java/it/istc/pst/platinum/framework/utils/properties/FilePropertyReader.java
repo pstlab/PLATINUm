@@ -57,7 +57,7 @@ public class FilePropertyReader
 	 * @return
 	 */
 	public static final FilePropertyReader getDeliberativePropertyFile() {
-		return new FilePropertyReader("src/main/resources/deliberative.properties");
+		return new FilePropertyReader("etc/platinum/deliberative.properties");
 	}
 	
 	/**
@@ -65,6 +65,6 @@ public class FilePropertyReader
 	 * @return
 	 */
 	public static final FilePropertyReader getExecutivePropertyFile() {
-		return new FilePropertyReader("src/main/resources/executive.properties");
+		return new FilePropertyReader("etc/platinum/executive.properties");
 	}
 }

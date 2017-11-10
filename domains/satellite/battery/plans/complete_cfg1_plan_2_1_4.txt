@@ -1,0 +1,146 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 406] [1,406] }
+			 token 4062  { Slewing [4, 409] [3,5] }
+			 token 4027  { Target [7, 412] [3,408] }
+			 token 4060  { Slewing [10, 415] [3,5] }
+			 token 4044  { Target [13, 418] [3,408] }
+			 token 4055  { Slewing [16, 421] [3,5] }
+			 token 4024  { Target [19, 424] [3,408] }
+			 token 4057  { Slewing [22, 427] [3,5] }
+			 token 4037  { Earth [265, 432] [5,410] }
+			 token 4058  { Slewing [268, 435] [3,5] }
+			 token 4048  { Sun [272, 439] [4,171] }
+			 token 4059  { Slewing [275, 442] [3,5] }
+			 token 4030  { Target [278, 445] [3,170] }
+			 token 4061  { Slewing [281, 448] [3,5] }
+			 token 4042  { Sun [285, 452] [4,171] }
+			 token 4056  { Slewing [288, 455] [3,5] }
+			 token 4033  { Earth [293, 500] [5,212] }
+		}
+		Maintenance {
+			 token 4047  { Recharge [272, 439] [4,11] }
+			 token 4041  { Recharge [285, 452] [4,11] }
+		}
+		Satellite {
+			 token 4026  { Science [7, 412] [3,7] }
+			 token 4043  { Science [13, 418] [3,7] }
+			 token 4023  { Science [19, 424] [3,7] }
+			 token 4036 uncontrollable { Communicate [265, 432] [5,8] }
+			 token 4029  { Science [278, 445] [3,7] }
+			 token 4052 uncontrollable { Communicate [293, 460] [5,8] }
+			 token 4049 uncontrollable { Communicate [293, 460] [5,8] }
+			 token 4032 uncontrollable { Communicate [293, 460] [5,8] }
+		}
+	}
+	relations {
+		Satellite 4023 DURING [0, 500]  [0,500]  PointingMode 4024
+		Satellite 4023 BEFORE [0, 500]  Satellite 4036
+		Satellite 4023 EQUALS SatelliteBattery 4025
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4024
+		Satellite 4026 DURING [0, 500]  [0,500]  PointingMode 4027
+		Satellite 4026 BEFORE [0, 500]  Satellite 4052
+		Satellite 4026 EQUALS SatelliteBattery 4028
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4027
+		PointingMode 4027 BEFORE [0, 500]  PointingMode 4024
+		Satellite 4029 DURING [0, 500]  [0,500]  PointingMode 4030
+		Satellite 4029 BEFORE [0, 500]  Satellite 4032
+		Satellite 4029 EQUALS SatelliteBattery 4031
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4030
+		PointingMode 4027 BEFORE [0, 500]  PointingMode 4030
+		PointingMode 4024 BEFORE [0, 500]  PointingMode 4030
+		Satellite 4032 EQUALS Bandwidth 4034
+		Satellite 4032 EQUALS SatelliteBattery 4035
+		Satellite 4032 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 4032 DURING [0, 500]  [0,500]  PointingMode 4033
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4033
+		PointingMode 4027 BEFORE [0, 500]  PointingMode 4033
+		PointingMode 4024 BEFORE [0, 500]  PointingMode 4033
+		PointingMode 4030 BEFORE [0, 500]  PointingMode 4033
+		Satellite 4036 EQUALS Bandwidth 4038
+		Satellite 4036 EQUALS SatelliteBattery 4039
+		Satellite 4036 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 4036 DURING [0, 500]  [0,500]  PointingMode 4037
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4037
+		PointingMode 4027 BEFORE [0, 500]  PointingMode 4037
+		PointingMode 4024 BEFORE [0, 500]  PointingMode 4037
+		PointingMode 4037 BEFORE [0, 500]  PointingMode 4030
+		SatelliteBattery 4028 BEFORE [0, 500]  SatelliteBattery 4040
+		SatelliteBattery 4025 BEFORE [0, 500]  SatelliteBattery 4040
+		SatelliteBattery 4039 BEFORE [0, 500]  SatelliteBattery 4040
+		SatelliteBattery 4031 BEFORE [0, 500]  SatelliteBattery 4040
+		SatelliteBattery 4040 BEFORE [0, 500]  SatelliteBattery 4035
+		SatelliteBattery 4040 EQUALS Maintenance 4041
+		Maintenance 4041 DURING [0, 500]  [0,500]  SunWindow 6
+		Maintenance 4041 DURING [0, 500]  [0,500]  PointingMode 4042
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4042
+		PointingMode 4027 BEFORE [0, 500]  PointingMode 4042
+		PointingMode 4024 BEFORE [0, 500]  PointingMode 4042
+		PointingMode 4037 BEFORE [0, 500]  PointingMode 4042
+		PointingMode 4030 BEFORE [0, 500]  PointingMode 4042
+		PointingMode 4042 BEFORE [0, 500]  PointingMode 4033
+		Satellite 4043 DURING [0, 500]  [0,500]  PointingMode 4044
+		Satellite 4043 BEFORE [0, 500]  Satellite 4049
+		Satellite 4043 EQUALS SatelliteBattery 4045
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4044
+		PointingMode 4027 BEFORE [0, 500]  PointingMode 4044
+		PointingMode 4044 BEFORE [0, 500]  PointingMode 4024
+		SatelliteBattery 4028 BEFORE [0, 500]  SatelliteBattery 4046
+		SatelliteBattery 4045 BEFORE [0, 500]  SatelliteBattery 4046
+		SatelliteBattery 4025 BEFORE [0, 500]  SatelliteBattery 4046
+		SatelliteBattery 4039 BEFORE [0, 500]  SatelliteBattery 4046
+		SatelliteBattery 4046 BEFORE [0, 500]  SatelliteBattery 4031
+		SatelliteBattery 4046 EQUALS Maintenance 4047
+		Maintenance 4047 DURING [0, 500]  [0,500]  SunWindow 6
+		Maintenance 4047 DURING [0, 500]  [0,500]  PointingMode 4048
+		PointingMode 0 BEFORE [0, 500]  PointingMode 4048
+		PointingMode 4027 BEFORE [0, 500]  PointingMode 4048
+		PointingMode 4044 BEFORE [0, 500]  PointingMode 4048
+		PointingMode 4024 BEFORE [0, 500]  PointingMode 4048
+		PointingMode 4037 BEFORE [0, 500]  PointingMode 4048
+		PointingMode 4048 BEFORE [0, 500]  PointingMode 4030
+		Satellite 4049 EQUALS Bandwidth 4050
+		Satellite 4049 EQUALS SatelliteBattery 4051
+		Satellite 4049 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 4049 DURING [0, 500]  [0,500]  PointingMode 4033
+		SatelliteBattery 4040 BEFORE [0, 500]  SatelliteBattery 4051
+		Satellite 4052 EQUALS Bandwidth 4053
+		Satellite 4052 EQUALS SatelliteBattery 4054
+		Satellite 4052 DURING [0, 500]  [0,500]  GroundStationWindow 4
+		Satellite 4052 DURING [0, 500]  [0,500]  PointingMode 4033
+		SatelliteBattery 4040 BEFORE [0, 500]  SatelliteBattery 4054
+		PointingMode 4044 MEETS PointingMode 4055
+		PointingMode 4055 MEETS PointingMode 4024
+		PointingMode 4042 MEETS PointingMode 4056
+		PointingMode 4056 MEETS PointingMode 4033
+		PointingMode 4024 MEETS PointingMode 4057
+		PointingMode 4057 MEETS PointingMode 4037
+		PointingMode 4037 MEETS PointingMode 4058
+		PointingMode 4058 MEETS PointingMode 4048
+		PointingMode 4048 MEETS PointingMode 4059
+		PointingMode 4059 MEETS PointingMode 4030
+		PointingMode 4027 MEETS PointingMode 4060
+		PointingMode 4060 MEETS PointingMode 4044
+		PointingMode 4030 MEETS PointingMode 4061
+		PointingMode 4061 MEETS PointingMode 4042
+		PointingMode 0 MEETS PointingMode 4062
+		PointingMode 4062 MEETS PointingMode 4027
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [30, 30] [30, 30] }
+			 token 2 { Visible [230, 230] [200, 200] }
+			 token 3 { NotVisible [260, 260] [30, 30] }
+			 token 4 { Visible [460, 460] [200, 200] }
+			 token 5 { NotVisible [500, 500] [40, 40] }
+		}
+		SunWindow {
+			 token 6 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

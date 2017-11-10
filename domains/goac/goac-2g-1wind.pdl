@@ -1,0 +1,35 @@
+PROBLEM GOAC-Problem (DOMAIN GOAC) 
+{
+	pos0 <fact> RobotBase.robot_base.At(?x1, ?y1) AT [0, 0] [1, +INF] [1, +INF];
+	or0 <fact> Platine.platine.PointingAt(?pan1, ?tilt1) AT [0, 0] [1, +INF] [1, +INF];
+	cam0 <fact> Camera.camera.CamIdle() AT [0, 0] [1, +INF] [1, +INF];
+	com0 <fact> Communication.communication.CommIdle() AT [0, 0] [1, +INF] [1, +INF];
+
+	comvw0 <fact> CommunicationVW.communication_windows.None() AT [0, 0] [80, 100] [80, 100];	
+	comvw1 <fact> CommunicationVW.communication_windows.Visible() AT [80, 100] [500, 500] [400, 420];
+	comvw2 <fact> CommunicationVW.communication_windows.None() AT [500, 500] [550, 550] [50, 50];
+
+
+	g0 <goal> MissionTimeline.mission_timeline.TakingPicture(?gfile_id1, ?gx1, ?gy1, ?gpan1, ?gtilt1) AT [0, +INF] [1, +INF] [1, +INF];
+	g1 <goal> MissionTimeline.mission_timeline.TakingPicture(?gfile_id2, ?gx2, ?gy2, ?gpan2, ?gtilt2) AT [0, +INF] [1, +INF] [1, +INF];
+	
+
+	?x1 = 0;
+	?y1 = 0;
+	
+	?pan1 = 0;
+	?tilt1 = 0;
+	
+	?gfile_id1 = 2;
+	?gx1 = 4;
+	?gy1 = 1;
+	?gpan1 = 35;
+	?gtilt1 = 45;
+	
+	
+	?gfile_id2 = 1;
+	?gx2 = 11;
+	?gy2 = 23;
+	?gpan2 = 50;
+	?gtilt2 = 35;
+}

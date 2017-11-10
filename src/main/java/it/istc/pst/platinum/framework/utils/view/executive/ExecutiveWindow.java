@@ -49,7 +49,8 @@ public class ExecutiveWindow extends JFrame {
 		// display the  graph
 		this.pack();
 		RefineryUtilities.positionFrameOnScreen(this, 0, 0);
-		this.setVisible(true);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setVisible(true);
 		// set close operation
 		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 	}
@@ -145,7 +146,7 @@ public class ExecutiveWindow extends JFrame {
 				// get nodes
 				List<ExecutionNode> nodes = index.get(component).get(predicate);
 				// create a task
-				Task task = new Task(predicate,
+				Task task = new Task(component + "." + predicate,
 						new Date(nodes.get(0).getStart()[0]),
 						new Date(nodes.get(nodes.size() - 1).getEnd()[0]));
 				

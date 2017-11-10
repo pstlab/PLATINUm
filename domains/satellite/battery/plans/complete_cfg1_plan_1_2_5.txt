@@ -1,0 +1,205 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 384] [1,384] }
+			 token 11155  { Slewing [4, 387] [3,5] }
+			 token 11107  { Target [7, 390] [3,386] }
+			 token 11158  { Slewing [10, 393] [3,5] }
+			 token 11114  { Target [13, 396] [3,386] }
+			 token 11151  { Slewing [16, 399] [3,5] }
+			 token 11110  { Earth [21, 404] [5,388] }
+			 token 11154  { Slewing [24, 407] [3,5] }
+			 token 11143  { Sun [304, 411] [4,387] }
+			 token 11156  { Slewing [307, 414] [3,5] }
+			 token 11139  { Target [310, 417] [3,110] }
+			 token 11152  { Slewing [313, 420] [3,5] }
+			 token 11124  { Sun [317, 424] [4,111] }
+			 token 11150  { Slewing [320, 427] [3,5] }
+			 token 11120  { Target [323, 430] [3,110] }
+			 token 11157  { Slewing [326, 433] [3,5] }
+			 token 11130  { Sun [330, 437] [4,111] }
+			 token 11160  { Slewing [333, 440] [3,5] }
+			 token 11126  { Target [336, 443] [3,110] }
+			 token 11159  { Slewing [339, 446] [3,5] }
+			 token 11137  { Sun [343, 492] [4,153] }
+			 token 11153  { Slewing [346, 495] [3,5] }
+			 token 11132  { Earth [351, 500] [5,154] }
+		}
+		Maintenance {
+			 token 11142  { Recharge [304, 411] [4,11] }
+			 token 11123  { Recharge [317, 424] [4,11] }
+			 token 11129  { Recharge [330, 437] [4,11] }
+			 token 11136  { Recharge [343, 450] [4,11] }
+		}
+		Satellite {
+			 token 11106  { Science [7, 390] [3,7] }
+			 token 11113  { Science [13, 396] [3,7] }
+			 token 11116 uncontrollable { Communicate [21, 404] [5,8] }
+			 token 11109 uncontrollable { Communicate [21, 404] [5,8] }
+			 token 11138  { Science [310, 417] [3,7] }
+			 token 11119  { Science [323, 430] [3,7] }
+			 token 11125  { Science [336, 443] [3,7] }
+			 token 11147 uncontrollable { Communicate [351, 500] [5,8] }
+			 token 11144 uncontrollable { Communicate [351, 500] [5,8] }
+			 token 11131 uncontrollable { Communicate [351, 500] [5,8] }
+		}
+	}
+	relations {
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11139
+		Satellite 11106 DURING [0, 500]  [0,500]  PointingMode 11107
+		Satellite 11106 BEFORE [0, 500]  Satellite 11109
+		Satellite 11106 EQUALS SatelliteBattery 11108
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11107
+		Satellite 11109 EQUALS Bandwidth 11111
+		Satellite 11109 EQUALS SatelliteBattery 11112
+		Satellite 11109 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 11109 DURING [0, 500]  [0,500]  PointingMode 11110
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11110
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11110
+		Satellite 11113 DURING [0, 500]  [0,500]  PointingMode 11114
+		Satellite 11113 BEFORE [0, 500]  Satellite 11116
+		Satellite 11113 EQUALS SatelliteBattery 11115
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11114
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11114
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11110
+		Satellite 11116 EQUALS Bandwidth 11117
+		Satellite 11116 EQUALS SatelliteBattery 11118
+		Satellite 11116 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 11116 DURING [0, 500]  [0,500]  PointingMode 11110
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11139
+		PointingMode 11139 BEFORE [0, 500]  PointingMode 11124
+		Satellite 11119 DURING [0, 500]  [0,500]  PointingMode 11120
+		Satellite 11119 BEFORE [0, 500]  Satellite 11147
+		SatelliteBattery 11108 BEFORE [0, 500]  SatelliteBattery 11141
+		Satellite 11119 EQUALS SatelliteBattery 11121
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11120
+		SatelliteBattery 11115 BEFORE [0, 500]  SatelliteBattery 11141
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11120
+		SatelliteBattery 11112 BEFORE [0, 500]  SatelliteBattery 11141
+		SatelliteBattery 11118 BEFORE [0, 500]  SatelliteBattery 11141
+		SatelliteBattery 11141 BEFORE [0, 500]  SatelliteBattery 11140
+		SatelliteBattery 11141 EQUALS Maintenance 11142
+		Maintenance 11142 DURING [0, 500]  [0,500]  SunWindow 5
+		Maintenance 11142 DURING [0, 500]  [0,500]  PointingMode 11143
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11143
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11143
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11143
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11143
+		PointingMode 11143 BEFORE [0, 500]  PointingMode 11139
+		Satellite 11144 EQUALS Bandwidth 11146
+		Satellite 11144 EQUALS SatelliteBattery 11145
+		Satellite 11144 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 11144 DURING [0, 500]  [0,500]  PointingMode 11132
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11120
+		SatelliteBattery 11135 BEFORE [0, 500]  SatelliteBattery 11145
+		Satellite 11147 EQUALS Bandwidth 11149
+		Satellite 11147 EQUALS SatelliteBattery 11148
+		Satellite 11147 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 11147 DURING [0, 500]  [0,500]  PointingMode 11132
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11120
+		SatelliteBattery 11108 BEFORE [0, 500]  SatelliteBattery 11122
+		SatelliteBattery 11115 BEFORE [0, 500]  SatelliteBattery 11122
+		SatelliteBattery 11118 BEFORE [0, 500]  SatelliteBattery 11122
+		SatelliteBattery 11112 BEFORE [0, 500]  SatelliteBattery 11122
+		SatelliteBattery 11122 BEFORE [0, 500]  SatelliteBattery 11121
+		SatelliteBattery 11122 EQUALS Maintenance 11123
+		Maintenance 11123 DURING [0, 500]  [0,500]  SunWindow 5
+		Maintenance 11123 DURING [0, 500]  [0,500]  PointingMode 11124
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11124
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11124
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11124
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11124
+		PointingMode 11124 BEFORE [0, 500]  PointingMode 11120
+		Satellite 11125 DURING [0, 500]  [0,500]  PointingMode 11126
+		Satellite 11125 BEFORE [0, 500]  Satellite 11131
+		Satellite 11125 EQUALS SatelliteBattery 11127
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11126
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11126
+		SatelliteBattery 11135 BEFORE [0, 500]  SatelliteBattery 11148
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11126
+		PointingMode 11124 MEETS PointingMode 11150
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11126
+		PointingMode 11150 MEETS PointingMode 11120
+		PointingMode 11124 BEFORE [0, 500]  PointingMode 11126
+		PointingMode 11114 MEETS PointingMode 11151
+		PointingMode 11120 BEFORE [0, 500]  PointingMode 11126
+		PointingMode 11151 MEETS PointingMode 11110
+		PointingMode 11139 MEETS PointingMode 11152
+		PointingMode 11152 MEETS PointingMode 11124
+		SatelliteBattery 11121 BEFORE [0, 500]  SatelliteBattery 11128
+		PointingMode 11137 MEETS PointingMode 11153
+		SatelliteBattery 11128 BEFORE [0, 500]  SatelliteBattery 11127
+		PointingMode 11153 MEETS PointingMode 11132
+		SatelliteBattery 11128 EQUALS Maintenance 11129
+		PointingMode 11110 MEETS PointingMode 11154
+		Maintenance 11129 DURING [0, 500]  [0,500]  SunWindow 5
+		PointingMode 11154 MEETS PointingMode 11143
+		Maintenance 11129 DURING [0, 500]  [0,500]  PointingMode 11130
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11130
+		PointingMode 0 MEETS PointingMode 11155
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11130
+		PointingMode 11155 MEETS PointingMode 11107
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11130
+		PointingMode 11143 MEETS PointingMode 11156
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11130
+		PointingMode 11156 MEETS PointingMode 11139
+		PointingMode 11124 BEFORE [0, 500]  PointingMode 11130
+		PointingMode 11120 MEETS PointingMode 11157
+		PointingMode 11120 BEFORE [0, 500]  PointingMode 11130
+		PointingMode 11157 MEETS PointingMode 11130
+		PointingMode 11130 BEFORE [0, 500]  PointingMode 11126
+		PointingMode 11107 MEETS PointingMode 11158
+		PointingMode 11158 MEETS PointingMode 11114
+		Satellite 11131 EQUALS Bandwidth 11133
+		PointingMode 11126 MEETS PointingMode 11159
+		Satellite 11131 EQUALS SatelliteBattery 11134
+		PointingMode 11159 MEETS PointingMode 11137
+		Satellite 11131 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		PointingMode 11130 MEETS PointingMode 11160
+		Satellite 11131 DURING [0, 500]  [0,500]  PointingMode 11132
+		PointingMode 11160 MEETS PointingMode 11126
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11132
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11132
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11132
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11132
+		PointingMode 11124 BEFORE [0, 500]  PointingMode 11132
+		PointingMode 11120 BEFORE [0, 500]  PointingMode 11132
+		PointingMode 11130 BEFORE [0, 500]  PointingMode 11132
+		PointingMode 11126 BEFORE [0, 500]  PointingMode 11132
+		SatelliteBattery 11127 BEFORE [0, 500]  SatelliteBattery 11135
+		SatelliteBattery 11135 BEFORE [0, 500]  SatelliteBattery 11134
+		SatelliteBattery 11135 EQUALS Maintenance 11136
+		Maintenance 11136 DURING [0, 500]  [0,500]  SunWindow 5
+		Maintenance 11136 DURING [0, 500]  [0,500]  PointingMode 11137
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11114 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11110 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11124 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11120 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11130 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11126 BEFORE [0, 500]  PointingMode 11137
+		PointingMode 11137 BEFORE [0, 500]  PointingMode 11132
+		Satellite 11138 DURING [0, 500]  [0,500]  PointingMode 11139
+		Satellite 11138 BEFORE [0, 500]  Satellite 11144
+		Satellite 11138 EQUALS SatelliteBattery 11140
+		PointingMode 0 BEFORE [0, 500]  PointingMode 11139
+		PointingMode 11107 BEFORE [0, 500]  PointingMode 11139
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { NotVisible [50, 50] [50, 50] }
+			 token 3 { Visible [250, 250] [200, 200] }
+			 token 4 { NotVisible [300, 300] [50, 50] }
+			 token 5 { Visible [450, 450] [150, 150] }
+			 token 6 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

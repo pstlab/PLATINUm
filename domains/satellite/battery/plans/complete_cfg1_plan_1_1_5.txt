@@ -1,0 +1,217 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 418] [1,418] }
+			 token 6860  { Slewing [4, 421] [3,5] }
+			 token 6814  { Target [7, 424] [3,420] }
+			 token 6855  { Slewing [10, 427] [3,5] }
+			 token 6811  { Target [13, 430] [3,420] }
+			 token 6858  { Slewing [16, 433] [3,5] }
+			 token 6837  { Target [19, 436] [3,420] }
+			 token 6857  { Slewing [22, 439] [3,5] }
+			 token 6821  { Earth [27, 444] [5,422] }
+			 token 6856  { Slewing [30, 447] [3,5] }
+			 token 6841  { Sun [34, 451] [4,421] }
+			 token 6861  { Slewing [37, 454] [3,5] }
+			 token 6808  { Target [40, 457] [3,420] }
+			 token 6854  { Slewing [43, 460] [3,5] }
+			 token 6826  { Sun [47, 464] [4,421] }
+			 token 6853  { Slewing [50, 467] [3,5] }
+			 token 6817  { Earth [55, 472] [5,422] }
+			 token 6852  { Slewing [58, 475] [3,5] }
+			 token 6835  { Sun [62, 479] [4,421] }
+			 token 6859  { Slewing [65, 482] [3,5] }
+			 token 6831  { Target [68, 485] [3,420] }
+			 token 6862  { Slewing [71, 488] [3,5] }
+			 token 6848  { Sun [75, 492] [4,421] }
+			 token 6863  { Slewing [78, 495] [3,5] }
+			 token 6843  { Earth [83, 500] [5,422] }
+		}
+		Maintenance {
+			 token 6840  { Recharge [34, 451] [4,11] }
+			 token 6825  { Recharge [47, 464] [4,11] }
+			 token 6834  { Recharge [62, 479] [4,11] }
+			 token 6847  { Recharge [75, 492] [4,11] }
+		}
+		Satellite {
+			 token 6813  { Science [7, 424] [3,7] }
+			 token 6810  { Science [13, 430] [3,7] }
+			 token 6836  { Science [19, 436] [3,7] }
+			 token 6820 uncontrollable { Communicate [27, 444] [5,8] }
+			 token 6807  { Science [40, 457] [3,7] }
+			 token 6827 uncontrollable { Communicate [55, 472] [5,8] }
+			 token 6816 uncontrollable { Communicate [55, 472] [5,8] }
+			 token 6830  { Science [68, 485] [3,7] }
+			 token 6849 uncontrollable { Communicate [83, 500] [5,8] }
+			 token 6842 uncontrollable { Communicate [83, 500] [5,8] }
+		}
+	}
+	relations {
+		SatelliteBattery 6846 BEFORE [0, 500]  SatelliteBattery 6850
+		PointingMode 6817 MEETS PointingMode 6852
+		PointingMode 6852 MEETS PointingMode 6835
+		PointingMode 6826 MEETS PointingMode 6853
+		PointingMode 6853 MEETS PointingMode 6817
+		PointingMode 6808 MEETS PointingMode 6854
+		PointingMode 6854 MEETS PointingMode 6826
+		PointingMode 6814 MEETS PointingMode 6855
+		PointingMode 6855 MEETS PointingMode 6811
+		PointingMode 6821 MEETS PointingMode 6856
+		PointingMode 6856 MEETS PointingMode 6841
+		PointingMode 6837 MEETS PointingMode 6857
+		PointingMode 6857 MEETS PointingMode 6821
+		PointingMode 6811 MEETS PointingMode 6858
+		PointingMode 6858 MEETS PointingMode 6837
+		PointingMode 6835 MEETS PointingMode 6859
+		PointingMode 6859 MEETS PointingMode 6831
+		PointingMode 0 MEETS PointingMode 6860
+		PointingMode 6860 MEETS PointingMode 6814
+		PointingMode 6841 MEETS PointingMode 6861
+		PointingMode 6861 MEETS PointingMode 6808
+		PointingMode 6831 MEETS PointingMode 6862
+		PointingMode 6862 MEETS PointingMode 6848
+		PointingMode 6848 MEETS PointingMode 6863
+		Satellite 6807 DURING [0, 500]  [0,500]  PointingMode 6808
+		PointingMode 6863 MEETS PointingMode 6843
+		Satellite 6807 BEFORE [0, 500]  Satellite 6816
+		Satellite 6807 EQUALS SatelliteBattery 6809
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6808
+		Satellite 6810 DURING [0, 500]  [0,500]  PointingMode 6811
+		Satellite 6810 BEFORE [0, 500]  Satellite 6827
+		Satellite 6810 EQUALS SatelliteBattery 6812
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6811
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6808
+		Satellite 6813 DURING [0, 500]  [0,500]  PointingMode 6814
+		Satellite 6813 BEFORE [0, 500]  Satellite 6820
+		Satellite 6813 EQUALS SatelliteBattery 6815
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6814
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6811
+		Satellite 6816 EQUALS Bandwidth 6818
+		Satellite 6816 EQUALS SatelliteBattery 6819
+		Satellite 6816 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 6816 DURING [0, 500]  [0,500]  PointingMode 6817
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6817
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6817
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6817
+		PointingMode 6808 BEFORE [0, 500]  PointingMode 6817
+		Satellite 6820 EQUALS Bandwidth 6822
+		Satellite 6820 EQUALS SatelliteBattery 6823
+		Satellite 6820 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 6820 DURING [0, 500]  [0,500]  PointingMode 6821
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6821
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6821
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6821
+		PointingMode 6821 BEFORE [0, 500]  PointingMode 6808
+		SatelliteBattery 6815 BEFORE [0, 500]  SatelliteBattery 6824
+		SatelliteBattery 6812 BEFORE [0, 500]  SatelliteBattery 6824
+		SatelliteBattery 6823 BEFORE [0, 500]  SatelliteBattery 6824
+		SatelliteBattery 6809 BEFORE [0, 500]  SatelliteBattery 6824
+		SatelliteBattery 6824 BEFORE [0, 500]  SatelliteBattery 6819
+		SatelliteBattery 6824 EQUALS Maintenance 6825
+		Maintenance 6825 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 6825 DURING [0, 500]  [0,500]  PointingMode 6826
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6826
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6826
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6826
+		PointingMode 6821 BEFORE [0, 500]  PointingMode 6826
+		PointingMode 6808 BEFORE [0, 500]  PointingMode 6826
+		PointingMode 6826 BEFORE [0, 500]  PointingMode 6817
+		Satellite 6827 EQUALS Bandwidth 6828
+		Satellite 6827 EQUALS SatelliteBattery 6829
+		Satellite 6827 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 6827 DURING [0, 500]  [0,500]  PointingMode 6817
+		SatelliteBattery 6824 BEFORE [0, 500]  SatelliteBattery 6829
+		Satellite 6830 DURING [0, 500]  [0,500]  PointingMode 6831
+		Satellite 6830 BEFORE [0, 500]  Satellite 6842
+		Satellite 6830 EQUALS SatelliteBattery 6832
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6831
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6831
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6831
+		PointingMode 6821 BEFORE [0, 500]  PointingMode 6831
+		PointingMode 6808 BEFORE [0, 500]  PointingMode 6831
+		PointingMode 6826 BEFORE [0, 500]  PointingMode 6831
+		PointingMode 6817 BEFORE [0, 500]  PointingMode 6831
+		SatelliteBattery 6829 BEFORE [0, 500]  SatelliteBattery 6833
+		SatelliteBattery 6833 BEFORE [0, 500]  SatelliteBattery 6832
+		SatelliteBattery 6833 EQUALS Maintenance 6834
+		Maintenance 6834 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 6834 DURING [0, 500]  [0,500]  PointingMode 6835
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6835
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6835
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6835
+		PointingMode 6821 BEFORE [0, 500]  PointingMode 6835
+		PointingMode 6808 BEFORE [0, 500]  PointingMode 6835
+		PointingMode 6826 BEFORE [0, 500]  PointingMode 6835
+		PointingMode 6817 BEFORE [0, 500]  PointingMode 6835
+		PointingMode 6835 BEFORE [0, 500]  PointingMode 6831
+		Satellite 6836 DURING [0, 500]  [0,500]  PointingMode 6837
+		Satellite 6836 BEFORE [0, 500]  Satellite 6849
+		Satellite 6836 EQUALS SatelliteBattery 6838
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6837
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6837
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6837
+		PointingMode 6837 BEFORE [0, 500]  PointingMode 6821
+		SatelliteBattery 6815 BEFORE [0, 500]  SatelliteBattery 6839
+		SatelliteBattery 6812 BEFORE [0, 500]  SatelliteBattery 6839
+		SatelliteBattery 6838 BEFORE [0, 500]  SatelliteBattery 6839
+		SatelliteBattery 6823 BEFORE [0, 500]  SatelliteBattery 6839
+		SatelliteBattery 6839 BEFORE [0, 500]  SatelliteBattery 6809
+		SatelliteBattery 6839 EQUALS Maintenance 6840
+		Maintenance 6840 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 6840 DURING [0, 500]  [0,500]  PointingMode 6841
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6841
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6841
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6841
+		PointingMode 6837 BEFORE [0, 500]  PointingMode 6841
+		PointingMode 6821 BEFORE [0, 500]  PointingMode 6841
+		PointingMode 6841 BEFORE [0, 500]  PointingMode 6808
+		Satellite 6842 EQUALS Bandwidth 6844
+		Satellite 6842 EQUALS SatelliteBattery 6845
+		Satellite 6842 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 6842 DURING [0, 500]  [0,500]  PointingMode 6843
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6837 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6821 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6841 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6808 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6826 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6817 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6835 BEFORE [0, 500]  PointingMode 6843
+		PointingMode 6831 BEFORE [0, 500]  PointingMode 6843
+		SatelliteBattery 6832 BEFORE [0, 500]  SatelliteBattery 6846
+		SatelliteBattery 6846 BEFORE [0, 500]  SatelliteBattery 6845
+		SatelliteBattery 6846 EQUALS Maintenance 6847
+		Maintenance 6847 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 6847 DURING [0, 500]  [0,500]  PointingMode 6848
+		PointingMode 0 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6814 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6811 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6837 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6821 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6841 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6808 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6826 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6817 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6835 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6831 BEFORE [0, 500]  PointingMode 6848
+		PointingMode 6848 BEFORE [0, 500]  PointingMode 6843
+		Satellite 6849 EQUALS Bandwidth 6851
+		Satellite 6849 EQUALS SatelliteBattery 6850
+		Satellite 6849 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 6849 DURING [0, 500]  [0,500]  PointingMode 6843
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

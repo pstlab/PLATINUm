@@ -7,7 +7,7 @@ import java.util.List;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.executive.pdb.ExecutivePlanDataBaseManager;
-import it.istc.pst.platinum.executive.pdb.apsi.EPSLExecutivePlanDataBaseManager;
+import it.istc.pst.platinum.executive.pdb.epsl.EPSLExecutivePlanDataBaseManager;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionDispatcherPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionMonitorPlaceholder;

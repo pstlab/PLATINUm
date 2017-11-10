@@ -136,8 +136,8 @@ public class ProtocolLanguageFactory
 	 * @param values
 	 * @return
 	 */
-	private EPSLParameterDescriptor createParameterDescription(ParameterTypeDescriptor type, String name, long[] bounds, String[] values) {
-		EPSLParameterDescriptor param = new EPSLParameterDescriptor(getNextParameterId(), type);
+	private ParameterDescriptor createParameterDescription(ParameterTypeDescriptor type, String name, long[] bounds, String[] values) {
+		ParameterDescriptor param = new ParameterDescriptor(getNextParameterId(), type);
 		param.setName(name);
 		param.setBounds(bounds);
 		param.setValues(values);

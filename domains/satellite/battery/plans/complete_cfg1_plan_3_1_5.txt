@@ -1,0 +1,260 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 393] [1,393] }
+			 token 7802  { Slewing [4, 396] [3,5] }
+			 token 7742  { Target [7, 399] [3,395] }
+			 token 7794  { Slewing [10, 402] [3,5] }
+			 token 7755  { Target [13, 405] [3,395] }
+			 token 7793  { Slewing [16, 408] [3,5] }
+			 token 7767  { Earth [335, 413] [5,397] }
+			 token 7798  { Slewing [338, 416] [3,5] }
+			 token 7748  { Target [341, 419] [3,81] }
+			 token 7791  { Slewing [344, 422] [3,5] }
+			 token 7772  { Sun [348, 426] [4,82] }
+			 token 7801  { Slewing [351, 429] [3,5] }
+			 token 7751  { Earth [356, 434] [5,83] }
+			 token 7792  { Slewing [359, 437] [3,5] }
+			 token 7765  { Sun [363, 441] [4,82] }
+			 token 7790  { Slewing [366, 444] [3,5] }
+			 token 7761  { Target [369, 447] [3,81] }
+			 token 7796  { Slewing [372, 450] [3,5] }
+			 token 7782  { Sun [376, 454] [4,82] }
+			 token 7803  { Slewing [379, 457] [3,5] }
+			 token 7777  { Earth [384, 462] [5,83] }
+			 token 7799  { Slewing [387, 465] [3,5] }
+			 token 7759  { Sun [391, 469] [4,82] }
+			 token 7795  { Slewing [394, 472] [3,5] }
+			 token 7745  { Target [397, 475] [3,81] }
+			 token 7797  { Slewing [400, 478] [3,5] }
+			 token 7789  { Sun [404, 482] [4,82] }
+			 token 7800  { Slewing [407, 485] [3,5] }
+			 token 7784  { Earth [412, 500] [5,93] }
+		}
+		Maintenance {
+			 token 7771  { Recharge [348, 426] [4,11] }
+			 token 7764  { Recharge [363, 441] [4,11] }
+			 token 7781  { Recharge [376, 454] [4,11] }
+			 token 7758  { Recharge [391, 469] [4,11] }
+			 token 7788  { Recharge [404, 482] [4,11] }
+		}
+		Satellite {
+			 token 7741  { Science [7, 399] [3,7] }
+			 token 7754  { Science [13, 405] [3,7] }
+			 token 7766 uncontrollable { Communicate [335, 413] [5,8] }
+			 token 7747  { Science [341, 419] [3,7] }
+			 token 7773 uncontrollable { Communicate [356, 434] [5,8] }
+			 token 7750 uncontrollable { Communicate [356, 434] [5,8] }
+			 token 7760  { Science [369, 447] [3,7] }
+			 token 7776 uncontrollable { Communicate [384, 462] [5,8] }
+			 token 7744  { Science [397, 475] [3,7] }
+			 token 7783 uncontrollable { Communicate [412, 490] [5,8] }
+		}
+	}
+	relations {
+		Satellite 7741 DURING [0, 500]  [0,500]  PointingMode 7742
+		Satellite 7741 BEFORE [0, 500]  Satellite 7773
+		Satellite 7741 EQUALS SatelliteBattery 7743
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7742
+		Satellite 7744 DURING [0, 500]  [0,500]  PointingMode 7745
+		Satellite 7744 BEFORE [0, 500]  Satellite 7783
+		Satellite 7744 EQUALS SatelliteBattery 7746
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7745
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7745
+		Satellite 7747 DURING [0, 500]  [0,500]  PointingMode 7748
+		Satellite 7747 BEFORE [0, 500]  Satellite 7750
+		Satellite 7747 EQUALS SatelliteBattery 7749
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7748
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7748
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7745
+		Satellite 7750 EQUALS Bandwidth 7753
+		Satellite 7750 EQUALS SatelliteBattery 7752
+		Satellite 7750 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 7750 DURING [0, 500]  [0,500]  PointingMode 7751
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7751
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7751
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7751
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7745
+		Satellite 7754 DURING [0, 500]  [0,500]  PointingMode 7755
+		Satellite 7754 BEFORE [0, 500]  Satellite 7766
+		Satellite 7754 EQUALS SatelliteBattery 7756
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7755
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7755
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7748
+		SatelliteBattery 7752 BEFORE [0, 500]  SatelliteBattery 7757
+		SatelliteBattery 7743 BEFORE [0, 500]  SatelliteBattery 7757
+		SatelliteBattery 7756 BEFORE [0, 500]  SatelliteBattery 7757
+		SatelliteBattery 7749 BEFORE [0, 500]  SatelliteBattery 7757
+		SatelliteBattery 7757 BEFORE [0, 500]  SatelliteBattery 7746
+		SatelliteBattery 7757 EQUALS Maintenance 7758
+		Maintenance 7758 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 7758 DURING [0, 500]  [0,500]  PointingMode 7759
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7759
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7759
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7759
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7759
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7759
+		PointingMode 7759 BEFORE [0, 500]  PointingMode 7745
+		Satellite 7760 DURING [0, 500]  [0,500]  PointingMode 7761
+		Satellite 7760 BEFORE [0, 500]  Satellite 7776
+		Satellite 7760 EQUALS SatelliteBattery 7762
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7761
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7761
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7761
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7761
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7761
+		PointingMode 7761 BEFORE [0, 500]  PointingMode 7759
+		SatelliteBattery 7743 BEFORE [0, 500]  SatelliteBattery 7763
+		SatelliteBattery 7756 BEFORE [0, 500]  SatelliteBattery 7763
+		SatelliteBattery 7749 BEFORE [0, 500]  SatelliteBattery 7763
+		SatelliteBattery 7752 BEFORE [0, 500]  SatelliteBattery 7763
+		SatelliteBattery 7763 BEFORE [0, 500]  SatelliteBattery 7762
+		SatelliteBattery 7763 EQUALS Maintenance 7764
+		Maintenance 7764 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 7764 DURING [0, 500]  [0,500]  PointingMode 7765
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7765
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7765
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7765
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7765
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7765
+		PointingMode 7765 BEFORE [0, 500]  PointingMode 7761
+		Satellite 7766 EQUALS Bandwidth 7769
+		Satellite 7766 EQUALS SatelliteBattery 7768
+		Satellite 7766 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 7766 DURING [0, 500]  [0,500]  PointingMode 7767
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7767
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7767
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7767
+		PointingMode 7767 BEFORE [0, 500]  PointingMode 7748
+		SatelliteBattery 7743 BEFORE [0, 500]  SatelliteBattery 7770
+		SatelliteBattery 7756 BEFORE [0, 500]  SatelliteBattery 7770
+		SatelliteBattery 7768 BEFORE [0, 500]  SatelliteBattery 7770
+		SatelliteBattery 7749 BEFORE [0, 500]  SatelliteBattery 7770
+		SatelliteBattery 7770 BEFORE [0, 500]  SatelliteBattery 7752
+		SatelliteBattery 7770 EQUALS Maintenance 7771
+		Maintenance 7771 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 7771 DURING [0, 500]  [0,500]  PointingMode 7772
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7772
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7772
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7772
+		PointingMode 7767 BEFORE [0, 500]  PointingMode 7772
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7772
+		PointingMode 7772 BEFORE [0, 500]  PointingMode 7751
+		Satellite 7773 EQUALS Bandwidth 7775
+		Satellite 7773 EQUALS SatelliteBattery 7774
+		Satellite 7773 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 7773 DURING [0, 500]  [0,500]  PointingMode 7751
+		SatelliteBattery 7770 BEFORE [0, 500]  SatelliteBattery 7774
+		Satellite 7776 EQUALS Bandwidth 7779
+		Satellite 7776 EQUALS SatelliteBattery 7778
+		Satellite 7776 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 7776 DURING [0, 500]  [0,500]  PointingMode 7777
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7767 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7772 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7765 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7761 BEFORE [0, 500]  PointingMode 7777
+		PointingMode 7777 BEFORE [0, 500]  PointingMode 7759
+		SatelliteBattery 7762 BEFORE [0, 500]  SatelliteBattery 7780
+		SatelliteBattery 7780 BEFORE [0, 500]  SatelliteBattery 7778
+		SatelliteBattery 7780 EQUALS Maintenance 7781
+		Maintenance 7781 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 7781 DURING [0, 500]  [0,500]  PointingMode 7782
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7767 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7772 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7765 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7761 BEFORE [0, 500]  PointingMode 7782
+		PointingMode 7782 BEFORE [0, 500]  PointingMode 7777
+		Satellite 7783 EQUALS Bandwidth 7785
+		Satellite 7783 EQUALS SatelliteBattery 7786
+		Satellite 7783 DURING [0, 500]  [0,500]  GroundStationWindow 6
+		Satellite 7783 DURING [0, 500]  [0,500]  PointingMode 7784
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7767 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7772 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7765 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7761 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7782 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7777 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7759 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7745 BEFORE [0, 500]  PointingMode 7784
+		SatelliteBattery 7746 BEFORE [0, 500]  SatelliteBattery 7787
+		SatelliteBattery 7787 BEFORE [0, 500]  SatelliteBattery 7786
+		SatelliteBattery 7787 EQUALS Maintenance 7788
+		Maintenance 7788 DURING [0, 500]  [0,500]  SunWindow 8
+		Maintenance 7788 DURING [0, 500]  [0,500]  PointingMode 7789
+		PointingMode 0 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7742 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7755 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7767 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7748 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7772 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7751 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7765 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7761 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7782 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7777 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7759 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7745 BEFORE [0, 500]  PointingMode 7789
+		PointingMode 7789 BEFORE [0, 500]  PointingMode 7784
+		PointingMode 7765 MEETS PointingMode 7790
+		PointingMode 7790 MEETS PointingMode 7761
+		PointingMode 7748 MEETS PointingMode 7791
+		PointingMode 7791 MEETS PointingMode 7772
+		PointingMode 7751 MEETS PointingMode 7792
+		PointingMode 7792 MEETS PointingMode 7765
+		PointingMode 7755 MEETS PointingMode 7793
+		PointingMode 7793 MEETS PointingMode 7767
+		PointingMode 7742 MEETS PointingMode 7794
+		PointingMode 7794 MEETS PointingMode 7755
+		PointingMode 7759 MEETS PointingMode 7795
+		PointingMode 7795 MEETS PointingMode 7745
+		PointingMode 7761 MEETS PointingMode 7796
+		PointingMode 7796 MEETS PointingMode 7782
+		PointingMode 7745 MEETS PointingMode 7797
+		PointingMode 7797 MEETS PointingMode 7789
+		PointingMode 7767 MEETS PointingMode 7798
+		PointingMode 7798 MEETS PointingMode 7748
+		PointingMode 7777 MEETS PointingMode 7799
+		PointingMode 7799 MEETS PointingMode 7759
+		PointingMode 7789 MEETS PointingMode 7800
+		PointingMode 7800 MEETS PointingMode 7784
+		PointingMode 7772 MEETS PointingMode 7801
+		PointingMode 7801 MEETS PointingMode 7751
+		PointingMode 0 MEETS PointingMode 7802
+		PointingMode 7802 MEETS PointingMode 7742
+		PointingMode 7782 MEETS PointingMode 7803
+		PointingMode 7803 MEETS PointingMode 7777
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { NotVisible [10, 10] [10, 10] }
+			 token 2 { Visible [160, 160] [150, 150] }
+			 token 3 { NotVisible [170, 170] [10, 10] }
+			 token 4 { Visible [320, 320] [150, 150] }
+			 token 5 { NotVisible [330, 330] [10, 10] }
+			 token 6 { Visible [490, 490] [160, 160] }
+			 token 7 { NotVisible [500, 500] [10, 10] }
+		}
+		SunWindow {
+			 token 8 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

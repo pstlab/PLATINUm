@@ -1,0 +1,107 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 459] [1,459] }
+			 token 1486  { Slewing [4, 462] [3,5] }
+			 token 1462  { Target [7, 465] [3,461] }
+			 token 1485  { Slewing [10, 468] [3,5] }
+			 token 1465  { Earth [15, 473] [5,463] }
+			 token 1482  { Slewing [18, 476] [3,5] }
+			 token 1459  { Target [21, 479] [3,461] }
+			 token 1484  { Slewing [24, 482] [3,5] }
+			 token 1473  { Target [27, 485] [3,461] }
+			 token 1483  { Slewing [30, 488] [3,5] }
+			 token 1477  { Sun [34, 492] [4,462] }
+			 token 1481  { Slewing [37, 495] [3,5] }
+			 token 1469  { Earth [42, 500] [5,463] }
+		}
+		Maintenance {
+			 token 1476  { Recharge [34, 492] [4,11] }
+		}
+		Satellite {
+			 token 1461  { Science [7, 465] [3,7] }
+			 token 1464 uncontrollable { Communicate [15, 473] [5,8] }
+			 token 1458  { Science [21, 479] [3,7] }
+			 token 1472  { Science [27, 485] [3,7] }
+			 token 1478 uncontrollable { Communicate [42, 500] [5,8] }
+			 token 1468 uncontrollable { Communicate [42, 500] [5,8] }
+		}
+	}
+	relations {
+		Satellite 1458 DURING [0, 500]  [0,500]  PointingMode 1459
+		Satellite 1458 BEFORE [0, 500]  Satellite 1468
+		Satellite 1458 EQUALS SatelliteBattery 1460
+		PointingMode 0 BEFORE [0, 500]  PointingMode 1459
+		Satellite 1461 DURING [0, 500]  [0,500]  PointingMode 1462
+		Satellite 1461 BEFORE [0, 500]  Satellite 1464
+		Satellite 1461 EQUALS SatelliteBattery 1463
+		PointingMode 0 BEFORE [0, 500]  PointingMode 1462
+		PointingMode 1462 BEFORE [0, 500]  PointingMode 1459
+		Satellite 1464 EQUALS Bandwidth 1467
+		Satellite 1464 EQUALS SatelliteBattery 1466
+		Satellite 1464 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 1464 DURING [0, 500]  [0,500]  PointingMode 1465
+		PointingMode 0 BEFORE [0, 500]  PointingMode 1465
+		PointingMode 1462 BEFORE [0, 500]  PointingMode 1465
+		PointingMode 1465 BEFORE [0, 500]  PointingMode 1459
+		Satellite 1468 EQUALS Bandwidth 1470
+		Satellite 1468 EQUALS SatelliteBattery 1471
+		Satellite 1468 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 1468 DURING [0, 500]  [0,500]  PointingMode 1469
+		PointingMode 0 BEFORE [0, 500]  PointingMode 1469
+		PointingMode 1462 BEFORE [0, 500]  PointingMode 1469
+		PointingMode 1465 BEFORE [0, 500]  PointingMode 1469
+		PointingMode 1459 BEFORE [0, 500]  PointingMode 1469
+		Satellite 1472 DURING [0, 500]  [0,500]  PointingMode 1473
+		Satellite 1472 BEFORE [0, 500]  Satellite 1478
+		Satellite 1472 EQUALS SatelliteBattery 1474
+		PointingMode 0 BEFORE [0, 500]  PointingMode 1473
+		PointingMode 1462 BEFORE [0, 500]  PointingMode 1473
+		PointingMode 1465 BEFORE [0, 500]  PointingMode 1473
+		PointingMode 1459 BEFORE [0, 500]  PointingMode 1473
+		PointingMode 1473 BEFORE [0, 500]  PointingMode 1469
+		SatelliteBattery 1463 BEFORE [0, 500]  SatelliteBattery 1475
+		SatelliteBattery 1466 BEFORE [0, 500]  SatelliteBattery 1475
+		SatelliteBattery 1460 BEFORE [0, 500]  SatelliteBattery 1475
+		SatelliteBattery 1474 BEFORE [0, 500]  SatelliteBattery 1475
+		SatelliteBattery 1475 BEFORE [0, 500]  SatelliteBattery 1471
+		SatelliteBattery 1475 EQUALS Maintenance 1476
+		Maintenance 1476 DURING [0, 500]  [0,500]  SunWindow 2
+		Maintenance 1476 DURING [0, 500]  [0,500]  PointingMode 1477
+		PointingMode 0 BEFORE [0, 500]  PointingMode 1477
+		PointingMode 1462 BEFORE [0, 500]  PointingMode 1477
+		PointingMode 1465 BEFORE [0, 500]  PointingMode 1477
+		PointingMode 1459 BEFORE [0, 500]  PointingMode 1477
+		PointingMode 1473 BEFORE [0, 500]  PointingMode 1477
+		PointingMode 1477 BEFORE [0, 500]  PointingMode 1469
+		Satellite 1478 EQUALS Bandwidth 1480
+		Satellite 1478 EQUALS SatelliteBattery 1479
+		Satellite 1478 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 1478 DURING [0, 500]  [0,500]  PointingMode 1469
+		SatelliteBattery 1475 BEFORE [0, 500]  SatelliteBattery 1479
+		PointingMode 1477 MEETS PointingMode 1481
+		PointingMode 1481 MEETS PointingMode 1469
+		PointingMode 1465 MEETS PointingMode 1482
+		PointingMode 1482 MEETS PointingMode 1459
+		PointingMode 1473 MEETS PointingMode 1483
+		PointingMode 1483 MEETS PointingMode 1477
+		PointingMode 1459 MEETS PointingMode 1484
+		PointingMode 1484 MEETS PointingMode 1473
+		PointingMode 1462 MEETS PointingMode 1485
+		PointingMode 1485 MEETS PointingMode 1465
+		PointingMode 0 MEETS PointingMode 1486
+		PointingMode 1486 MEETS PointingMode 1462
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

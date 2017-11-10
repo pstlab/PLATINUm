@@ -1,0 +1,23 @@
+PROBLEM BATTERY_SATELLITE_DISCRETE_5G_1S_2W (DOMAIN BATTERY_SATELLITE_DISCRETE) {
+
+	f0 <fact> PointingMode.orientation.Earth() AT [0, 0] [1, +INF] [1, +INF];
+
+	win0 <fact> GroundStationWindow.channel.NotVisible() AT [0, 0] [10, 10] [10, 10];
+	win1 <fact> GroundStationWindow.channel.Visible() AT [10, 10] [160, 160] [150, 150];
+	win2 <fact> GroundStationWindow.channel.NotVisible() AT [160, 160] [170, 170] [10, 10];
+	win3 <fact> GroundStationWindow.channel.Visible() AT [170, 170] [320, 320] [150, 150];
+	win4 <fact> GroundStationWindow.channel.NotVisible() AT [320, 320] [330, 330] [10, 10];
+	win5 <fact> GroundStationWindow.channel.Visible() AT [330, 330] [490, 490] [160, 160];
+	win6 <fact> GroundStationWindow.channel.NotVisible() AT [490, 490] [500, 500] [10, 10];
+
+	sun1 <fact> SunWindow.visibility.Visible() AT [0, 0] [500, 500] [500, 500];
+
+	g0 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
+	g1 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
+	g2 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
+	g3 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
+	g4 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
+
+
+}
+

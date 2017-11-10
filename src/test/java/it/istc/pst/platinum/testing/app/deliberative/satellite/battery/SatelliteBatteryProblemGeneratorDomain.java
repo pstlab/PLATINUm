@@ -40,11 +40,14 @@ public class SatelliteBatteryProblemGeneratorDomain extends SatelliteBatteryTest
 			"\twin1 <fact> GroundStationWindow.channel.Visible() AT [0, 0] [500, 500] [500, 500];\n",
 			
 			// 2 communication windows available
-			"\twin0 <fact> GroundStationWindow.channel.NotVisible() AT [0, 0] [30, 30] [30, 30];\n"
-			+ "\twin1 <fact> GroundStationWindow.channel.Visible() AT [30, 30] [230, 230] [200, 200];\n"
-			+ "\twin2 <fact> GroundStationWindow.channel.NotVisible() AT [230, 230] [260, 260] [30, 30];\n"
-			+ "\twin3 <fact> GroundStationWindow.channel.Visible() AT [260, 260] [460, 460] [200, 200];\n"
-			+ "\twin4 <fact> GroundStationWindow.channel.NotVisible() AT [460, 460] [500, 500] [40, 40];\n",
+			
+			"\twin0 <fact> GroundStationWindow.channel.NotVisible() AT [0, 0] [10, 10] [10, 10];\n"
+			+ "\twin1 <fact> GroundStationWindow.channel.Visible() AT [10, 10] [160, 160] [150, 150];\n"
+			+ "\twin2 <fact> GroundStationWindow.channel.NotVisible() AT [160, 160] [170, 170] [10, 10];\n"
+			+ "\twin3 <fact> GroundStationWindow.channel.Visible() AT [170, 170] [320, 320] [150, 150];\n"
+			+ "\twin4 <fact> GroundStationWindow.channel.NotVisible() AT [320, 320] [330, 330] [10, 10];\n"
+			+ "\twin5 <fact> GroundStationWindow.channel.Visible() AT [330, 330] [490, 490] [160, 160];\n"
+			+ "\twin6 <fact> GroundStationWindow.channel.NotVisible() AT [490, 490] [500, 500] [10, 10];\n",
 	
 			// 3 communication windows available
 			"\twin0 <fact> GroundStationWindow.channel.NotVisible() AT [0, 0] [10, 10] [10, 10];\n"

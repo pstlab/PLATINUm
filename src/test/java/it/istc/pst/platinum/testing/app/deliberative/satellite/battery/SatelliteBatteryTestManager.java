@@ -19,16 +19,18 @@ public class SatelliteBatteryTestManager extends SatelliteBatteryTest
 		"cfg2",			// strategy= Greedy, heuristics= Search&Build
 	};
 	
-	private static final String[] NUMBER_OF_SUN_WINDOWS = new String[] {
-			"1", 
-			"2", 
-			"3", 
-	};
 	private static final String[] NUMBER_OF_COMM_WINDOWS = new String[] {
 			"1", 
 			"2", 
 			"3",
 	};
+	
+	private static final String[] NUMBER_OF_SUN_WINDOWS = new String[] {
+			"1", 
+			"2", 
+			"3", 
+	};
+	
 	private static final String[] NUMBER_OF_SCIENCE_OPERATIONS = new String[] {
 			"1", 
 			"2", 

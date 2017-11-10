@@ -1,0 +1,111 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 417] [1,417] }
+			 token 2247  { Slewing [4, 420] [3,5] }
+			 token 2228  { Target [7, 423] [3,419] }
+			 token 2250  { Slewing [10, 426] [3,5] }
+			 token 2238  { Earth [15, 431] [5,421] }
+			 token 2248  { Slewing [18, 434] [3,5] }
+			 token 2225  { Target [21, 437] [3,419] }
+			 token 2252  { Slewing [24, 440] [3,5] }
+			 token 2231  { Target [27, 443] [3,419] }
+			 token 2251  { Slewing [30, 446] [3,5] }
+			 token 2243  { Sun [354, 492] [4,462] }
+			 token 2249  { Slewing [357, 495] [3,5] }
+			 token 2234  { Earth [362, 500] [5,143] }
+		}
+		Maintenance {
+			 token 2242  { Recharge [354, 450] [4,11] }
+		}
+		Satellite {
+			 token 2227  { Science [7, 423] [3,7] }
+			 token 2237 uncontrollable { Communicate [15, 431] [5,8] }
+			 token 2224  { Science [21, 437] [3,7] }
+			 token 2230  { Science [27, 443] [3,7] }
+			 token 2244 uncontrollable { Communicate [362, 500] [5,8] }
+			 token 2233 uncontrollable { Communicate [362, 500] [5,8] }
+		}
+	}
+	relations {
+		Satellite 2244 DURING [0, 500]  [0,500]  PointingMode 2234
+		SatelliteBattery 2241 BEFORE [0, 500]  SatelliteBattery 2235
+		PointingMode 0 MEETS PointingMode 2247
+		PointingMode 2247 MEETS PointingMode 2228
+		PointingMode 2238 MEETS PointingMode 2248
+		PointingMode 2248 MEETS PointingMode 2225
+		PointingMode 2243 MEETS PointingMode 2249
+		Satellite 2224 DURING [0, 500]  [0,500]  PointingMode 2225
+		PointingMode 2249 MEETS PointingMode 2234
+		Satellite 2224 BEFORE [0, 500]  Satellite 2244
+		PointingMode 2228 MEETS PointingMode 2250
+		Satellite 2224 EQUALS SatelliteBattery 2226
+		PointingMode 0 BEFORE [0, 500]  PointingMode 2225
+		PointingMode 2250 MEETS PointingMode 2238
+		PointingMode 2231 MEETS PointingMode 2251
+		PointingMode 2251 MEETS PointingMode 2243
+		Satellite 2227 DURING [0, 500]  [0,500]  PointingMode 2228
+		PointingMode 2225 MEETS PointingMode 2252
+		Satellite 2227 BEFORE [0, 500]  Satellite 2237
+		PointingMode 2252 MEETS PointingMode 2231
+		Satellite 2227 EQUALS SatelliteBattery 2229
+		PointingMode 0 BEFORE [0, 500]  PointingMode 2228
+		PointingMode 2228 BEFORE [0, 500]  PointingMode 2225
+		Satellite 2230 DURING [0, 500]  [0,500]  PointingMode 2231
+		Satellite 2230 BEFORE [0, 500]  Satellite 2233
+		Satellite 2230 EQUALS SatelliteBattery 2232
+		PointingMode 0 BEFORE [0, 500]  PointingMode 2231
+		PointingMode 2228 BEFORE [0, 500]  PointingMode 2231
+		PointingMode 2225 BEFORE [0, 500]  PointingMode 2231
+		Satellite 2233 EQUALS Bandwidth 2236
+		Satellite 2233 EQUALS SatelliteBattery 2235
+		Satellite 2233 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 2233 DURING [0, 500]  [0,500]  PointingMode 2234
+		PointingMode 0 BEFORE [0, 500]  PointingMode 2234
+		PointingMode 2228 BEFORE [0, 500]  PointingMode 2234
+		PointingMode 2225 BEFORE [0, 500]  PointingMode 2234
+		PointingMode 2231 BEFORE [0, 500]  PointingMode 2234
+		Satellite 2237 EQUALS Bandwidth 2240
+		Satellite 2237 EQUALS SatelliteBattery 2239
+		Satellite 2237 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 2237 DURING [0, 500]  [0,500]  PointingMode 2238
+		PointingMode 0 BEFORE [0, 500]  PointingMode 2238
+		PointingMode 2228 BEFORE [0, 500]  PointingMode 2238
+		PointingMode 2238 BEFORE [0, 500]  PointingMode 2225
+		SatelliteBattery 2229 BEFORE [0, 500]  SatelliteBattery 2241
+		SatelliteBattery 2239 BEFORE [0, 500]  SatelliteBattery 2241
+		SatelliteBattery 2226 BEFORE [0, 500]  SatelliteBattery 2241
+		SatelliteBattery 2232 BEFORE [0, 500]  SatelliteBattery 2241
+		SatelliteBattery 2241 BEFORE [0, 500]  SatelliteBattery 2235
+		SatelliteBattery 2241 EQUALS Maintenance 2242
+		Maintenance 2242 DURING [0, 500]  [0,500]  SunWindow 7
+		Maintenance 2242 DURING [0, 500]  [0,500]  PointingMode 2243
+		PointingMode 0 BEFORE [0, 500]  PointingMode 2243
+		PointingMode 2228 BEFORE [0, 500]  PointingMode 2243
+		PointingMode 2238 BEFORE [0, 500]  PointingMode 2243
+		PointingMode 2225 BEFORE [0, 500]  PointingMode 2243
+		PointingMode 2231 BEFORE [0, 500]  PointingMode 2243
+		PointingMode 2243 BEFORE [0, 500]  PointingMode 2234
+		Satellite 2244 EQUALS Bandwidth 2245
+		Satellite 2244 EQUALS SatelliteBattery 2246
+		Satellite 2244 DURING [0, 500]  [0,500]  GroundStationWindow 1
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { NotVisible [50, 50] [50, 50] }
+			 token 3 { Visible [150, 150] [100, 100] }
+			 token 4 { NotVisible [200, 200] [50, 50] }
+			 token 5 { Visible [300, 300] [100, 100] }
+			 token 6 { NotVisible [350, 350] [50, 50] }
+			 token 7 { Visible [450, 450] [100, 100] }
+			 token 8 { NotVisible [500, 500] [50, 50] }
+		}
+	}
+}
+

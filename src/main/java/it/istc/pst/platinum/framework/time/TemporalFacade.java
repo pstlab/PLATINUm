@@ -697,8 +697,8 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 		// create distance constraint
 		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		// set constraint data
-		c2.setReference(equals.getReference().getEndTime());
-		c2.setTarget(equals.getTarget().getEndTime());
+		c2.setReference(equals.getTarget().getEndTime());
+		c2.setTarget(equals.getReference().getEndTime());
 		c2.setDistanceLowerBound(0);
 		c2.setDistanceUpperBound(0);
 		c2.setControllable(true);
@@ -731,8 +731,8 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 		// create distance constraint
 		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		// set data
-		c2.setReference(contains.getReference().getEndTime());
-		c2.setTarget(contains.getTarget().getEndTime());
+		c2.setReference(contains.getTarget().getEndTime());
+		c2.setTarget(contains.getReference().getEndTime());
 		c2.setDistanceLowerBound(contains.getSecondBound()[0]);
 		c2.setDistanceUpperBound(contains.getSecondBound()[1]);
 		c2.setControllable(true);
@@ -925,8 +925,8 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c.setReference(metby.getTarget().getEndTime());
 		c.setTarget(metby.getReference().getStartTime());
-		c.setDistanceLowerBound(metby.getLowerBound());
-		c.setDistanceUpperBound(metby.getUpperBound());
+		c.setDistanceLowerBound(0);
+		c.setDistanceUpperBound(0);
 		c.setControllable(true);
 		
 		// add constraint

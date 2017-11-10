@@ -14,7 +14,7 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 	private TimelineProtocolDescriptor timeline;	// timeline
 	private String predicate;					// token predicate
 	// predicate's parameter information
-	private List<EPSLParameterDescriptor> params;
+	private List<ParameterDescriptor> params;
 	// token's temporal information
 	private long[] startTimeBounds;				// token's start time interval
 	private long[] endTimeBounds;				// token's end time interval
@@ -30,7 +30,7 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 		this.id = id;
 		this.timeline = timeline;
 		this.predicate = predicate;
-		this.params = new ArrayList<EPSLParameterDescriptor>();
+		this.params = new ArrayList<ParameterDescriptor>();
 		
 		// add token to timeline
 		timeline.addToken(this);
@@ -61,7 +61,7 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 	 * 
 	 * @param param
 	 */
-	public void addParameter(EPSLParameterDescriptor param) {
+	public void addParameter(ParameterDescriptor param) {
 		this.params.add(param);
 	}
 	
@@ -101,8 +101,8 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 	 * 
 	 * @return
 	 */
-	public List<EPSLParameterDescriptor> getParameters() {
-		return new ArrayList<EPSLParameterDescriptor>(this.params);
+	public List<ParameterDescriptor> getParameters() {
+		return new ArrayList<ParameterDescriptor>(this.params);
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 	 * @param index
 	 * @return
 	 */
-	public EPSLParameterDescriptor getParameter(int index) {
+	public ParameterDescriptor getParameter(int index) {
 		return this.params.get(index);
 	}
 	
@@ -184,7 +184,7 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 				+  " { " + this.predicate + "";
 
 		// set parameters
-		for (EPSLParameterDescriptor param : this.params) {
+		for (ParameterDescriptor param : this.params) {
 			// check type
 			if (param.getType().equals(ParameterTypeDescriptor.NUMERIC)) {
 				str += "-" +  param.getBounds()[0];
@@ -212,7 +212,7 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 			+ "" + (!this.timeline.isExternal() && !this.isControllable() ? "uncontrollable" : " ");
 		str += " " + this.predicate + "( ";
 		// set parameters
-		for (EPSLParameterDescriptor param : this.params) {
+		for (ParameterDescriptor param : this.params) {
 			str += param.getName() + " = ";
 			
 			if (param.getType().equals(ParameterTypeDescriptor.NUMERIC)) {

@@ -1,0 +1,60 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 480] [1,480] }
+			 token 225  { Slewing [4, 483] [3,5] }
+			 token 218  { Target [7, 486] [3,482] }
+			 token 223  { Slewing [10, 489] [3,5] }
+			 token 211  { Target [13, 492] [3,482] }
+			 token 224  { Slewing [16, 495] [3,5] }
+			 token 214  { Earth [21, 500] [5,484] }
+		}
+		Maintenance {
+		}
+		Satellite {
+			 token 217  { Science [7, 486] [3,7] }
+			 token 210  { Science [13, 492] [3,7] }
+			 token 213 uncontrollable { Communicate [21, 500] [5,8] }
+			 token 220 uncontrollable { Communicate [21, 500] [5,8] }
+		}
+	}
+	relations {
+		Satellite 210 DURING [0, 500]  [0,500]  PointingMode 211
+		Satellite 210 BEFORE [0, 500]  Satellite 213
+		Satellite 210 EQUALS SatelliteBattery 212
+		PointingMode 0 BEFORE [0, 500]  PointingMode 211
+		Satellite 213 EQUALS Bandwidth 215
+		Satellite 213 EQUALS SatelliteBattery 216
+		Satellite 213 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 213 DURING [0, 500]  [0,500]  PointingMode 214
+		PointingMode 0 BEFORE [0, 500]  PointingMode 214
+		PointingMode 211 BEFORE [0, 500]  PointingMode 214
+		Satellite 217 DURING [0, 500]  [0,500]  PointingMode 218
+		Satellite 217 BEFORE [0, 500]  Satellite 220
+		Satellite 217 EQUALS SatelliteBattery 219
+		PointingMode 0 BEFORE [0, 500]  PointingMode 218
+		PointingMode 218 BEFORE [0, 500]  PointingMode 211
+		Satellite 220 EQUALS Bandwidth 222
+		Satellite 220 EQUALS SatelliteBattery 221
+		Satellite 220 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 220 DURING [0, 500]  [0,500]  PointingMode 214
+		PointingMode 218 MEETS PointingMode 223
+		PointingMode 223 MEETS PointingMode 211
+		PointingMode 211 MEETS PointingMode 224
+		PointingMode 224 MEETS PointingMode 214
+		PointingMode 0 MEETS PointingMode 225
+		PointingMode 225 MEETS PointingMode 218
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+
