@@ -1,4 +1,4 @@
-DOMAIN HRC_ITIA {
+DOMAIN FBT_HRC_ITIA {
 
 
 TEMPORAL_MODULE temporal_module = [0, 100], 100;

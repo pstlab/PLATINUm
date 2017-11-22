@@ -113,6 +113,14 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 	
 	/**
 	 * 
+	 * @param type
+	 */
+	public void setControllabilityType(ControllabilityType type) {
+		this.controllability = type;
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public TemporalInterval getInterval() {

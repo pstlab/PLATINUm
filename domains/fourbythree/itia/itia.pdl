@@ -1,4 +1,4 @@
-PROBLEM HRC_ITIA_SCENARIO (DOMAIN HRC_ITIA)
+PROBLEM HRC_ITIA_SCENARIO (DOMAIN FBT_HRC_ITIA)
 {
 	f1 <fact> RobotMotion.motion.At(?pos0) AT [0, 0] [1, +INF] [1, +INF];
 	f2 <fact> Human.operator.Idle() AT [0, 0] [1, +INF] [1, +INF];

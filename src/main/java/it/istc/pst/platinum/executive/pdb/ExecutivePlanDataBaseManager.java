@@ -233,7 +233,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	{
 		// check interval controllability
 		boolean controllableInterval = controllability.equals(ControllabilityType.UNCONTROLLABLE) || 
-				controllability.equals(ControllabilityType.UNCONTROLLABLE_DURATION) ? false : true;
+				controllability.equals(ControllabilityType.PARTIALLY_CONTROLLABLE) ? false : true;
 		// create temporal interval
 		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, controllableInterval);
 		
@@ -270,7 +270,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param node
 	 * @return
 	 */
-	public boolean canEndExecution(ExecutionNode node) 
+	public boolean checkEndExecutionDependencies(ExecutionNode node) 
 	{
 		// flag 
 		boolean canEnd = true;
@@ -293,7 +293,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	 * @param node
 	 * @return
 	 */
-	public boolean canStartExecution(ExecutionNode node) 
+	public boolean checkStartExecutionDependencies(ExecutionNode node) 
 	{
 		// flag
 		boolean canStart = true;
@@ -325,7 +325,7 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	{
 		// check node controllability and duration
 		if ((node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) || 
-				node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE_DURATION)) && 
+				node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE)) && 
 				(duration < node.getDuration()[0] || duration > node.getDuration()[1]))
 		{
 			// inconsistent duration to schedule

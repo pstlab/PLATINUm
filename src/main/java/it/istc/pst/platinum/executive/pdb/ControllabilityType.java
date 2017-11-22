@@ -15,7 +15,7 @@ public enum ControllabilityType {
 	/**
 	 * The executor can decide the start time of the activity but not the duration duration
 	 */
-	UNCONTROLLABLE_DURATION,
+	PARTIALLY_CONTROLLABLE,
 	
 	/**
 	 * The executive cannot decide neither the start time neither the actual duration of the temporal interval

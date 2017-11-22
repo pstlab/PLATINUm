@@ -61,7 +61,7 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 	 * @return
 	 */
 	public boolean canEnd(ExecutionNode node) {
-		return this.pdb.canEndExecution(node);
+		return this.pdb.checkEndExecutionDependencies(node);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 	 * @return
 	 */
 	public boolean canStart(ExecutionNode node) {
-		return this.pdb.canStartExecution(node);
+		return this.pdb.checkStartExecutionDependencies(node);
 	}
 	
 	/**
