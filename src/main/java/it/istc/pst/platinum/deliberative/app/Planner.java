@@ -103,8 +103,12 @@ public abstract class Planner extends ApplicationFrameworkObject
 				{
 					// get parameter
 					Parameter<?> param = token.getPredicate().getParameterByIndex(i);
+					// set parameter name
+					paramNames[i] = param.getLabel();
+					
 					// check parameter type
-					if (param.getType().equals(ParameterType.NUMERIC_PARAMETER_TYPE)) {
+					if (param.getType().equals(ParameterType.NUMERIC_PARAMETER_TYPE)) 
+					{
 						// get numeric parameter
 						NumericParameter numPar = (NumericParameter) param;
 						// set lower bound and upper bound
@@ -114,8 +118,11 @@ public abstract class Planner extends ApplicationFrameworkObject
 						};
 						// set default value to parameter values
 						paramValues[i] = new String[] {};
+						// set parameter type
+						paramTypes[i] = ParameterTypeDescriptor.NUMERIC;
 					}
-					else if (param.getType().equals(ParameterType.ENUMERATION_PARAMETER_TYPE)) {
+					else if (param.getType().equals(ParameterType.ENUMERATION_PARAMETER_TYPE)) 
+					{
 						// enumeration parameter
 						EnumerationParameter enuPar = (EnumerationParameter) param;
 						// one single value is expected
@@ -124,6 +131,8 @@ public abstract class Planner extends ApplicationFrameworkObject
 						};
 						// set default value to parameter bounds
 						paramBounds[i] = new long[] {};
+						// set parameter type
+						paramTypes[i] = ParameterTypeDescriptor.ENUMERATION;
 					}
 					else {
 						throw new RuntimeException("Unknown parameter type:\n- type: " + param.getType() + "\n");

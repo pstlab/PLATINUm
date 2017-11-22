@@ -1,0 +1,13 @@
+PROBLEM HRC_ITIA_SCENARIO (DOMAIN HRC_ITIA)
+{
+	f1 <fact> RobotMotion.motion.At(?pos0) AT [0, 0] [1, +INF] [1, +INF];
+	f2 <fact> Human.operator.Idle() AT [0, 0] [1, +INF] [1, +INF];
+ 	f3 <fact> RobotController.controller.Idle() AT [0, 0] [1,+INF] [1,+INF];
+ 	f4 <fact> T1.toolT1.Idle() AT [0, 0] [1,+INF] [1,+INF];
+ 	f5 <fact> T2.toolT2.Idle() AT [0, 0] [1,+INF] [1,+INF];
+ 	f6 <fact> T3.toolT3.Idle() AT [0, 0] [1,+INF] [1,+INF];
+ 	
+ 	?pos0 = Q1;	
+ 	
+ 	g0 <goal,!> CollaborativeProcess.process.HRC() AT [0, +INF] [0, +INF] [0, +INF];
+}
