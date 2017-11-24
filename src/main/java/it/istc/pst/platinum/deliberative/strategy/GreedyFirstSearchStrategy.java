@@ -74,8 +74,11 @@ public class GreedyFirstSearchStrategy extends SearchStrategy implements Compara
 	public int compare(SearchSpaceNode o1, SearchSpaceNode o2) 
 	{
 		// compute heuristic distance from solution node
-		double h1 = this.computeHeuristicDistance(o1);
-		double h2 = this.computeHeuristicDistance(o2);
+//		double h1 = this.computeHeuristicDistance(o1);
+//		double h2 = this.computeHeuristicDistance(o2);
+		// compute heuristic distance as makespan
+		double h1 = o1.getMakespan();
+		double h2 = o2.getMakespan();
 		
 		// compare the costs of the nodes
 		return o1.getDepth() > o2.getDepth() ? -1 :

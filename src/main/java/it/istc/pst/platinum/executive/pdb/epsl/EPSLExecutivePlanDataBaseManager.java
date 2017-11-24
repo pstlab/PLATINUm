@@ -88,13 +88,6 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 							// partially controllable token
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
 						}
-						else if (token.getPredicate().startsWith("_") && tl.getComponent().contains("Human")) {
-							// set as uncontrollable token
-							controllability = ControllabilityType.UNCONTROLLABLE;
-						}
-						
-//						tl.isExternal() ? ControllabilityType.UNCONTROLLABLE : 
-//							token.isControllable() ? ControllabilityType.CONTROLLABLE : ControllabilityType.UNCONTROLLABLE_DURATION;
 						
 						// set parameter information
 						String signature = token.getPredicate();
@@ -159,10 +152,6 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						else if (token.getPredicate().startsWith("_")) {
 							// partially controllable token
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
-						}
-						else if (token.getPredicate().startsWith("_") && tl.getComponent().contains("Human")) {
-							// set as uncontrollable token
-							controllability = ControllabilityType.UNCONTROLLABLE;
 						}
 						
 						// set parameter information
@@ -287,7 +276,6 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						long[] duration = token.getDurationBounds();
 						
 						// set controllability type
-						// set default controllability type
 						ControllabilityType controllability = ControllabilityType.CONTROLLABLE;
 						// check specific type
 						if (tl.isExternal()) {
@@ -297,10 +285,6 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						else if (token.getPredicate().startsWith("_")) {
 							// partially controllable token
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
-						}
-						else if (token.getPredicate().startsWith("_") && tl.getComponent().contains("Human")) {
-							// set as uncontrollable token
-							controllability = ControllabilityType.UNCONTROLLABLE;
 						}
 						
 						// set parameter information
@@ -366,10 +350,6 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 						else if (token.getPredicate().startsWith("_")) {
 							// partially controllable token
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
-						}
-						else if (token.getPredicate().startsWith("_") && tl.getComponent().contains("Human")) {
-							// set as uncontrollable token
-							controllability = ControllabilityType.UNCONTROLLABLE;
 						}
 						
 						// set parameter information

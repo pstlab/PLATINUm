@@ -73,22 +73,22 @@ public class RelationProtocolLanguageFactory
 				return new EqualsRelationProtocolDescriptor(from, to);
 			}
 			
-			case "endend" : {
+			case "end_end" : {
 				// get end-end relation
 				return new EndEndRelationProtocolDescriptor(from, to, this.horizon);
 			}
 			
-			case "startstart" : {
+			case "start_start" : {
 				// get start-start relation
 				return new StartStartRelationProtocolDescriptor(from, to, this.horizon);
 			}
 			
-			case "startsduring" : {
+			case "starts_during" : {
 				// get starts-during relation
 				return new StartsDuringRelationProtocolDescriptor(from, to, this.horizon);
 			}
 			
-			case "endsduring" : {
+			case "ends_during" : {
 				// get ends-during relation
 				return new EndsDuringRelationProtocolDescriptor(from, to, this.horizon);
 			}

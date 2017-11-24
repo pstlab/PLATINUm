@@ -45,8 +45,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 	
 	// plan locks
 	private final Object[] locks;
-//	protected TemporalQueryFactory qFactory;			// interval query factory
-//	protected IntervalConstraintFactory iFactory;		// interval constraint factory
 	protected TemporalFacade facade;			// temporal data base
 	
 	// plan's nodes
@@ -75,9 +73,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			this.locks[s.getIndex()] = new Object();
 		}
 		
-		// create factories
-//		this.iFactory = IntervalConstraintFactory.getInstance();
-//		this.qFactory = TemporalQueryFactory.getInstance();
 		// create logger
 		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
 		lf.createFrameworkLogger(FrameworkLoggingLevel.OFF);
@@ -231,11 +226,11 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 			ControllabilityType controllability) 
 			throws TemporalIntervalCreationException  
 	{
-		// check interval controllability
-		boolean controllableInterval = controllability.equals(ControllabilityType.UNCONTROLLABLE) || 
-				controllability.equals(ControllabilityType.PARTIALLY_CONTROLLABLE) ? false : true;
-		// create temporal interval
-		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, controllableInterval);
+//		// check interval controllability
+//		boolean controllableInterval = controllability.equals(ControllabilityType.UNCONTROLLABLE) || 
+//				controllability.equals(ControllabilityType.PARTIALLY_CONTROLLABLE) ? false : true;
+		// create temporal interval - consider all intervals as controllable during execution
+		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, true);
 		
 		// create predicate
 		NodePredicate predicate = new NodePredicate(component, timeline, signature, pTypes, pValues); 
@@ -366,8 +361,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		// set time point
 		fix.setReference(node.getInterval().getStartTime());
 		fix.setTime(time);
-//		fix.setReference(node.getInterval());
-//		fix.setStart(start);
 		// propagate constraint
 		this.facade.propagate(fix);
 		try {
@@ -595,7 +588,8 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		this.facade.propagate(constraint);
 		// add start dependency
 		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-//		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
+		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
 	}
 	
 	/**
@@ -621,6 +615,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		this.facade.propagate(constraint);
 		// add end dependency
 		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-//		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 	}
 }
