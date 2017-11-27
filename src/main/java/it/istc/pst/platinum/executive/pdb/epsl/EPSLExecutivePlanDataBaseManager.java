@@ -671,7 +671,7 @@ public class EPSLExecutivePlanDataBaseManager extends ExecutivePlanDataBaseManag
 			}
 			break;
 			
-			case "met-by" : {
+			case "met_by" : {
 				// prepare after constraint
 				this.prepareAfterTemporalConstraint(reference, target, new long[][] {
 					{0, 0}

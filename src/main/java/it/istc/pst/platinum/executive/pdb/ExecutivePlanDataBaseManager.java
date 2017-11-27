@@ -588,8 +588,6 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		this.facade.propagate(constraint);
 		// add start dependency
 		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
 	}
 	
 	/**
@@ -615,6 +613,5 @@ public abstract class ExecutivePlanDataBaseManager extends ApplicationFrameworkO
 		this.facade.propagate(constraint);
 		// add end dependency
 		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 	}
 }

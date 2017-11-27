@@ -116,59 +116,59 @@ COMP_TYPE SingletonStateVariable RobotControllerType (Idle(), RQ18(), RQ16(), RQ
 		RQ11();
 	}
 
-	VALUE RQ18() [1, 1]
+	VALUE RQ18() [1, 23]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ16() [1, 12]
+	VALUE RQ16() [1, 22]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ17() [1, 11]
+	VALUE RQ17() [1, 16]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ14() [1, 10]
+	VALUE RQ14() [1, 18]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ15() [1, 9]
+	VALUE RQ15() [1, 22]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ12() [1, 10]
+	VALUE RQ12() [1, 19]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ13() [1, 12]
+	VALUE RQ13() [1, 32]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ2() [1, 11]
+	VALUE RQ2() [1, 25]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ1() [1, 11]
+	VALUE RQ1() [1, 18]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ4() [1, 10]
+	VALUE RQ4() [1, 16]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ3() [1, 11]
+	VALUE RQ3() [1, 19]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ5() [1, 9]
+	VALUE RQ5() [1, 22]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ10() [1, 1]
+	VALUE RQ10() [1, 23]
 	MEETS {
 		Idle();
 	}
-	VALUE RQ11() [1, 1]
+	VALUE RQ11() [1, 23]
 	MEETS {
 		Idle();
 	}
@@ -200,24 +200,24 @@ COMP_TYPE SingletonStateVariable RobotToolType (Idle(), Activate(), Operating(),
 		Activate();
 	}
 
-	VALUE Activate() [1, 5]
+	VALUE Activate() [1, 3]
 	MEETS {
 		Operating();
 	}
 
-	VALUE Operating() [5, 5]
+	VALUE Operating() [3, 3]
 	MEETS {
 		Deactivate();
 	}
 
-	VALUE Deactivate() [1, 5]
+	VALUE Deactivate() [1, 3]
 	MEETS {
 		Idle();
 	}
 
 }
 
-COMPONENT CollaborativeProcess {FLEXIBLE process(functional)} : ProcessType;
+COMPONENT CollaborativeProcess {FLEXIBLE process(primitive)} : ProcessType;
 COMPONENT RobotController {FLEXIBLE controller(primitive)} : RobotControllerType;
 COMPONENT Human {FLEXIBLE operator(primitive)} : HumanType;
 COMPONENT RobotMotion {FLEXIBLE motion(primitive)} : RobotMotionType;
@@ -227,6 +227,7 @@ COMPONENT T3 {FLEXIBLE toolT3(primitive)} : RobotToolType;
 
 SYNCHRONIZE CollaborativeProcess.process {
 	
+	// RQ10, RQ11, RQ12
 	VALUE HRC() {
 		
 		// robot dedicated tasks
@@ -247,9 +248,9 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		// {H6, Q11}
 		c1 RobotController.controller.RQ11(); 
-//		
-//		// {H7, Q12} 
-//		c2 RobotController.controller.RQ12();
+		
+		// {H7, Q12} 
+		c2 RobotController.controller.RQ12();
 //		
 //		// {H8, Q13} 
 //		c3 RobotController.controller.RQ13();
@@ -280,7 +281,7 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		CONTAINS [0, +INF] [0, +INF] c0;
 		CONTAINS [0, +INF] [0, +INF] c1;
-//		CONTAINS [0, +INF] [0, +INF] c2;
+		CONTAINS [0, +INF] [0, +INF] c2;
 //		CONTAINS [0, +INF] [0, +INF] c3;
 //		CONTAINS [0, +INF] [0, +INF] c4;
 //		CONTAINS [0, +INF] [0, +INF] c5;
@@ -289,6 +290,70 @@ SYNCHRONIZE CollaborativeProcess.process {
 //		CONTAINS [0, +INF] [0, +INF] c8;
 	}
 	
+	// RQ10, RQ11, H7
+	VALUE HRC() {
+		
+		// robot dedicated tasks
+		r0 RobotController.controller.RQ2();
+		r1 RobotController.controller.RQ3();
+		r2 RobotController.controller.RQ4();
+		r3 RobotController.controller.RQ5();
+		
+		// human dedicated tasks
+		h0 Human.operator._H1();
+		h1 Human.operator._H2();
+		h2 Human.operator._H3();
+		h3 Human.operator._H4();
+		
+		// collaborative tasks 
+		// {H5, Q10}
+		c0 RobotController.controller.RQ10(); 
+		
+		// {H6, Q11}
+		c1 RobotController.controller.RQ11(); 
+		
+		// {H7, Q12} 
+		c2 Human.operator._H7();
+		
+//		// {H8, Q13} 
+//		c3 RobotController.controller.RQ13();
+//		
+//		// {H9, Q14} 
+//		c4 RobotController.controller.RQ14();
+//		
+//		// {H10, Q15} 
+//		c5 RobotController.controller.RQ15();
+//		
+//		// {H11, Q16} 
+//		c6 RobotController.controller.RQ16();
+//		
+//		// {H12, Q17} 
+//		c7 RobotController.controller.RQ17();
+//		
+//		// {H13, Q18}
+//		c8 RobotController.controller.RQ18();
+		
+		CONTAINS [0, +INF] [0, +INF] r0;
+		CONTAINS [0, +INF] [0, +INF] r1;
+		CONTAINS [0, +INF] [0, +INF] r2;
+		CONTAINS [0, +INF] [0, +INF] r3;
+		CONTAINS [0, +INF] [0, +INF] h0;
+		CONTAINS [0, +INF] [0, +INF] h1;
+		CONTAINS [0, +INF] [0, +INF] h2;
+		CONTAINS [0, +INF] [0, +INF] h3;
+		
+		CONTAINS [0, +INF] [0, +INF] c0;
+		CONTAINS [0, +INF] [0, +INF] c1;
+		CONTAINS [0, +INF] [0, +INF] c2;
+//		CONTAINS [0, +INF] [0, +INF] c3;
+//		CONTAINS [0, +INF] [0, +INF] c4;
+//		CONTAINS [0, +INF] [0, +INF] c5;
+//		CONTAINS [0, +INF] [0, +INF] c6;
+//		CONTAINS [0, +INF] [0, +INF] c7;
+//		CONTAINS [0, +INF] [0, +INF] c8;
+	}
+	
+	// H5, RQ11, RQ12 
 	VALUE HRC() {
 		
 		// robot dedicated tasks
@@ -309,9 +374,9 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		// {H6, Q11}
 		c1 RobotController.controller.RQ11(); 
-//		
-//		// {H7, Q12} 
-//		c2 RobotController.controller.RQ12();
+		
+		// {H7, Q12} 
+		c2 RobotController.controller.RQ12();
 //		
 //		// {H8, Q13} 
 //		c3 RobotController.controller.RQ13();
@@ -342,7 +407,7 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		CONTAINS [0, +INF] [0, +INF] c0;
 		CONTAINS [0, +INF] [0, +INF] c1;
-//		CONTAINS [0, +INF] [0, +INF] c2;
+		CONTAINS [0, +INF] [0, +INF] c2;
 //		CONTAINS [0, +INF] [0, +INF] c3;
 //		CONTAINS [0, +INF] [0, +INF] c4;
 //		CONTAINS [0, +INF] [0, +INF] c5;
@@ -351,6 +416,72 @@ SYNCHRONIZE CollaborativeProcess.process {
 //		CONTAINS [0, +INF] [0, +INF] c8;
 	}
 	
+	// H5, RQ11, H7 
+	VALUE HRC() {
+		
+		// robot dedicated tasks
+		r0 RobotController.controller.RQ2();
+		r1 RobotController.controller.RQ3();
+		r2 RobotController.controller.RQ4();
+		r3 RobotController.controller.RQ5();
+		
+		// human dedicated tasks
+		h0 Human.operator._H1();
+		h1 Human.operator._H2();
+		h2 Human.operator._H3();
+		h3 Human.operator._H4();
+		
+		// collaborative tasks 
+		// {H5, Q10}
+		c0 Human.operator._H5(); 
+		
+		// {H6, Q11}
+		c1 RobotController.controller.RQ11(); 
+		
+		// {H7, Q12} 
+		c2 Human.operator._H7();
+//		
+//		// {H8, Q13} 
+//		c3 RobotController.controller.RQ13();
+//		
+//		// {H9, Q14} 
+//		c4 RobotController.controller.RQ14();
+//		
+//		// {H10, Q15} 
+//		c5 RobotController.controller.RQ15();
+//		
+//		// {H11, Q16} 
+//		c6 RobotController.controller.RQ16();
+//		
+//		// {H12, Q17} 
+//		c7 RobotController.controller.RQ17();
+//		
+//		// {H13, Q18}
+//		c8 RobotController.controller.RQ18();
+		
+		CONTAINS [0, +INF] [0, +INF] r0;
+		CONTAINS [0, +INF] [0, +INF] r1;
+		CONTAINS [0, +INF] [0, +INF] r2;
+		CONTAINS [0, +INF] [0, +INF] r3;
+		CONTAINS [0, +INF] [0, +INF] h0;
+		CONTAINS [0, +INF] [0, +INF] h1;
+		CONTAINS [0, +INF] [0, +INF] h2;
+		CONTAINS [0, +INF] [0, +INF] h3;
+		
+		CONTAINS [0, +INF] [0, +INF] c0;
+		CONTAINS [0, +INF] [0, +INF] c1;
+		CONTAINS [0, +INF] [0, +INF] c2;
+//		CONTAINS [0, +INF] [0, +INF] c3;
+//		CONTAINS [0, +INF] [0, +INF] c4;
+//		CONTAINS [0, +INF] [0, +INF] c5;
+//		CONTAINS [0, +INF] [0, +INF] c6;
+//		CONTAINS [0, +INF] [0, +INF] c7;
+//		CONTAINS [0, +INF] [0, +INF] c8;
+	}
+	
+	
+	
+	// RQ10, H6, H7
 	VALUE HRC() {
 		
 		// robot dedicated tasks
@@ -371,10 +502,10 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		// {H6, Q11}
 		c1 Human.operator._H6(); 
-//		
-//		// {H7, Q12} 
-//		c2 RobotController.controller.RQ12();
-//		
+		
+		// {H7, Q12} 
+		c2 Human.operator._H7();
+		
 //		// {H8, Q13} 
 //		c3 RobotController.controller.RQ13();
 //		
@@ -404,7 +535,7 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		CONTAINS [0, +INF] [0, +INF] c0;
 		CONTAINS [0, +INF] [0, +INF] c1;
-//		CONTAINS [0, +INF] [0, +INF] c2;
+		CONTAINS [0, +INF] [0, +INF] c2;
 //		CONTAINS [0, +INF] [0, +INF] c3;
 //		CONTAINS [0, +INF] [0, +INF] c4;
 //		CONTAINS [0, +INF] [0, +INF] c5;
@@ -413,7 +544,7 @@ SYNCHRONIZE CollaborativeProcess.process {
 //		CONTAINS [0, +INF] [0, +INF] c8;
 	}
 	
-	
+	// H5, H6, H7
 	VALUE HRC() {
 		
 		// robot dedicated tasks
@@ -434,10 +565,10 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		// {H6, Q11}
 		c1 Human.operator._H6();
-//		
-//		// {H7, Q12} 
-//		c2 RobotController.controller.RQ12();
-//		
+		
+		// {H7, Q12} 
+		c2 Human.operator._H7();
+		
 //		// {H8, Q13} 
 //		c3 RobotController.controller.RQ13();
 //		
@@ -467,7 +598,133 @@ SYNCHRONIZE CollaborativeProcess.process {
 		
 		CONTAINS [0, +INF] [0, +INF] c0;
 		CONTAINS [0, +INF] [0, +INF] c1;
-//		CONTAINS [0, +INF] [0, +INF] c2;
+		CONTAINS [0, +INF] [0, +INF] c2;
+//		CONTAINS [0, +INF] [0, +INF] c3;
+//		CONTAINS [0, +INF] [0, +INF] c4;
+//		CONTAINS [0, +INF] [0, +INF] c5;
+//		CONTAINS [0, +INF] [0, +INF] c6;
+//		CONTAINS [0, +INF] [0, +INF] c7;
+//		CONTAINS [0, +INF] [0, +INF] c8;
+	}
+	
+	// H5, H6, RQ12
+	VALUE HRC() {
+		
+		// robot dedicated tasks
+		r0 RobotController.controller.RQ2();
+		r1 RobotController.controller.RQ3();
+		r2 RobotController.controller.RQ4();
+		r3 RobotController.controller.RQ5();
+		
+		// human dedicated tasks
+		h0 Human.operator._H1();
+		h1 Human.operator._H2();
+		h2 Human.operator._H3();
+		h3 Human.operator._H4();
+		
+		// collaborative tasks 
+		// {H5, Q10}
+		c0 Human.operator._H5(); 
+		
+		// {H6, Q11}
+		c1 Human.operator._H6();
+		
+		// {H7, Q12} 
+		c2 RobotController.controller.RQ12();
+		
+//		// {H8, Q13} 
+//		c3 RobotController.controller.RQ13();
+//		
+//		// {H9, Q14} 
+//		c4 RobotController.controller.RQ14();
+//		
+//		// {H10, Q15} 
+//		c5 RobotController.controller.RQ15();
+//		
+//		// {H11, Q16} 
+//		c6 RobotController.controller.RQ16();
+//		
+//		// {H12, Q17} 
+//		c7 RobotController.controller.RQ17();
+//		
+//		// {H13, Q18}
+//		c8 RobotController.controller.RQ18();
+		
+		CONTAINS [0, +INF] [0, +INF] r0;
+		CONTAINS [0, +INF] [0, +INF] r1;
+		CONTAINS [0, +INF] [0, +INF] r2;
+		CONTAINS [0, +INF] [0, +INF] r3;
+		CONTAINS [0, +INF] [0, +INF] h0;
+		CONTAINS [0, +INF] [0, +INF] h1;
+		CONTAINS [0, +INF] [0, +INF] h2;
+		CONTAINS [0, +INF] [0, +INF] h3;
+		
+		CONTAINS [0, +INF] [0, +INF] c0;
+		CONTAINS [0, +INF] [0, +INF] c1;
+		CONTAINS [0, +INF] [0, +INF] c2;
+//		CONTAINS [0, +INF] [0, +INF] c3;
+//		CONTAINS [0, +INF] [0, +INF] c4;
+//		CONTAINS [0, +INF] [0, +INF] c5;
+//		CONTAINS [0, +INF] [0, +INF] c6;
+//		CONTAINS [0, +INF] [0, +INF] c7;
+//		CONTAINS [0, +INF] [0, +INF] c8;
+	}
+
+	// RQ10, H6, RQ12
+	VALUE HRC() {
+		
+		// robot dedicated tasks
+		r0 RobotController.controller.RQ2();
+		r1 RobotController.controller.RQ3();
+		r2 RobotController.controller.RQ4();
+		r3 RobotController.controller.RQ5();
+		
+		// human dedicated tasks
+		h0 Human.operator._H1();
+		h1 Human.operator._H2();
+		h2 Human.operator._H3();
+		h3 Human.operator._H4();
+		
+		// collaborative tasks 
+		// {H5, Q10}
+		c0 RobotController.controller.RQ10(); 
+		
+		// {H6, Q11}
+		c1 Human.operator._H6(); 
+		
+		// {H7, Q12} 
+		c2 RobotController.controller.RQ12();
+		
+//		// {H8, Q13} 
+//		c3 RobotController.controller.RQ13();
+//		
+//		// {H9, Q14} 
+//		c4 RobotController.controller.RQ14();
+//		
+//		// {H10, Q15} 
+//		c5 RobotController.controller.RQ15();
+//		
+//		// {H11, Q16} 
+//		c6 RobotController.controller.RQ16();
+//		
+//		// {H12, Q17} 
+//		c7 RobotController.controller.RQ17();
+//		
+//		// {H13, Q18}
+//		c8 RobotController.controller.RQ18();
+		
+		CONTAINS [0, +INF] [0, +INF] r0;
+		CONTAINS [0, +INF] [0, +INF] r1;
+		CONTAINS [0, +INF] [0, +INF] r2;
+		CONTAINS [0, +INF] [0, +INF] r3;
+		CONTAINS [0, +INF] [0, +INF] h0;
+		CONTAINS [0, +INF] [0, +INF] h1;
+		CONTAINS [0, +INF] [0, +INF] h2;
+		CONTAINS [0, +INF] [0, +INF] h3;
+		
+		CONTAINS [0, +INF] [0, +INF] c0;
+		CONTAINS [0, +INF] [0, +INF] c1;
+		CONTAINS [0, +INF] [0, +INF] c2;
 //		CONTAINS [0, +INF] [0, +INF] c3;
 //		CONTAINS [0, +INF] [0, +INF] c4;
 //		CONTAINS [0, +INF] [0, +INF] c5;

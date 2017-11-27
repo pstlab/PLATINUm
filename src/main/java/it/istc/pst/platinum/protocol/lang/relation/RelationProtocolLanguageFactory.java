@@ -98,7 +98,7 @@ public class RelationProtocolLanguageFactory
 				return new OverlappedByRelationProtocolDescriptor(from, to, this.horizon);
 			}
 			
-			case "metby" : {
+			case "met_by" : {
 				// get met by relation
 				return new MetByRelationProtocolDescriptor(to, from);
 			}
