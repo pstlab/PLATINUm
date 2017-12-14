@@ -27,14 +27,14 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MetByR
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartsDuringRelation;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterType;
+import it.istc.pst.platinum.framework.protocol.lang.ParameterDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.ParameterTypeDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.TimelineProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDescriptor;
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
-import it.istc.pst.platinum.protocol.lang.ParameterDescriptor;
-import it.istc.pst.platinum.protocol.lang.ParameterTypeDescriptor;
-import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.TimelineProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.TokenProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.relation.RelationProtocolDescriptor;
 
 /**
  * 

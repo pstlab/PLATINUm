@@ -6,13 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
-import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.TransitionNotFoundException;
-import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
-import it.istc.pst.platinum.framework.time.lang.query.IntervalPseudoControllabilityQuery;
-import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
@@ -38,47 +34,47 @@ public abstract class StateVariable extends DomainComponent
 		this.transitions = new HashMap<>();
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void checkPseudoControllability() 
-			throws PseudoControllabilityCheckException 
-	{
-		// issues
-		List<Decision> issues = new ArrayList<>();
-		for (Decision dec : this.getActiveDecisions()) 
-		{
-			// check if token is controllable
-			if (!dec.isControllable()) 
-			{
-				// check actual duration
-				IntervalPseudoControllabilityQuery query = this.tdb.
-						createTemporalQuery(TemporalQueryType.INTERVAL_PSEUDO_CONTROLLABILITY);
-				
-				// set related temporal interval
-				query.setInterval(dec.getToken().getInterval());
-				// process
-				this.tdb.process(query);
-				// check
-				if (!query.isPseudoControllable()) {
-					// add issue
-					issues.add(dec);
-				}
-			}
-		}
-		
-		// check issues
-		if (!issues.isEmpty()) {
-			// prepare exception
-			PseudoControllabilityCheckException ex = new PseudoControllabilityCheckException("Controllability issues found on component " + this.name);
-			for (Decision issue : issues) {
-				ex.addIssue(issue);
-			}
-			// throw exception
-			throw ex;
-		}
-	}
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void checkPseudoControllability() 
+//			throws PseudoControllabilityCheckException 
+//	{
+//		// issues
+//		List<Decision> issues = new ArrayList<>();
+//		for (Decision dec : this.getActiveDecisions()) 
+//		{
+//			// check if token is controllable
+//			if (!dec.isControllable()) 
+//			{
+//				// check actual duration
+//				IntervalPseudoControllabilityQuery query = this.tdb.
+//						createTemporalQuery(TemporalQueryType.INTERVAL_PSEUDO_CONTROLLABILITY);
+//				
+//				// set related temporal interval
+//				query.setInterval(dec.getToken().getInterval());
+//				// process
+//				this.tdb.process(query);
+//				// check
+//				if (!query.isPseudoControllable()) {
+//					// add issue
+//					issues.add(dec);
+//				}
+//			}
+//		}
+//		
+//		// check issues
+//		if (!issues.isEmpty()) {
+//			// prepare exception
+//			PseudoControllabilityCheckException ex = new PseudoControllabilityCheckException("Controllability issues found on component " + this.name);
+//			for (Decision issue : issues) {
+//				ex.addIssue(issue);
+//			}
+//			// throw exception
+//			throw ex;
+//		}
+//	}
 	
 	/**
 	 * 
@@ -256,7 +252,7 @@ public abstract class StateVariable extends DomainComponent
 			// check cycle
 			if (steps.contains(current)) {
 				// skip path
-				this.logger.debug("Avoid cycles on SV paths\n- (partial) path: " + steps + "\n- current value: " + current + "\n- target: " + target + "\n");
+				logger.debug("Avoid cycles on SV paths\n- (partial) path: " + steps + "\n- current value: " + current + "\n- target: " + target + "\n");
 			}
 			else	// no cycle found 
 			{

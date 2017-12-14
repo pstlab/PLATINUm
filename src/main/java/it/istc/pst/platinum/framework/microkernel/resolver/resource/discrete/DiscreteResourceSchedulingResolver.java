@@ -224,7 +224,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					// verify constraint feasibility through constraint propagation
 					this.tdb.propagate(before);
 					// check temporal consistency
-					this.tdb.checkConsistency();
+					this.tdb.verify();
 					
 
 					// compute the preserved space heuristic value resulting after constraint propagation
@@ -243,13 +243,13 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					// create and add solution to the MCS
 					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved, makespan);
 					// print some debugging information
-					this.logger.debug("Feasible solution of MCS found:\n"
+					logger.debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
 							+ "- precedence constraint: " + pc + "\n");
 				}
 				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
-					this.logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
+					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
 				}
 				finally {
 					// retract propagated constraint
@@ -276,7 +276,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					// verify constraint feasibility through constraint propagation
 					this.tdb.propagate(before);
 					// check temporal consistency
-					this.tdb.checkConsistency();
+					this.tdb.verify();
 					
 					
 					// compute the preserved space heuristic value resulting after constraint propagation
@@ -294,13 +294,13 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					// create and add solution to the MCS
 					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved, makespan);
 					// print some debugging information
-					this.logger.debug("Feasible solution of MCS found:\n"
+					logger.debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
 							+ "- precedence constraint: " + pc + "\n");
 				}
 				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
-					this.logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
+					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
 				}
 				finally {
 					// retract (inverted) precedence constraint
@@ -392,7 +392,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			before.setBound(new long[] {1, this.tdb.getHorizon()});
 			// add created relation
 			solution.addCreatedRelation(before);
-			this.logger.debug("Applying flaw solution:\n"
+			logger.debug("Applying flaw solution:\n"
 					+ "- solution: " + solution + "\n"
 					+ "- created temporal constraint: " + before + "\n");
 			

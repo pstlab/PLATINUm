@@ -104,7 +104,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				// updated last propagated node
 				last = node;
 				// check consistency of the resulting partial plan
-				this.pdb.check();
+				this.pdb.verify();
 				
 				// print information concerning current partial plan	
 				this.logger.info("Partial plan after propagation of operator: "  + node.getGenerator() + "\n"

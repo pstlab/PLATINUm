@@ -15,9 +15,7 @@ import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationExc
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.FrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ResolverListPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
@@ -43,8 +41,6 @@ import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
-import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 import it.istc.pst.platinum.framework.utils.view.component.ComponentView;
 import it.istc.pst.platinum.framework.utils.view.component.gantt.GanttComponentView;
 
@@ -53,11 +49,8 @@ import it.istc.pst.platinum.framework.utils.view.component.gantt.GanttComponentV
  * @author anacleto
  *
  */
-public abstract class DomainComponent extends ApplicationFrameworkObject
+public abstract class DomainComponent extends FrameworkObject
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
-	protected FrameworkLogger logger;
-	
 	@TemporalFacadePlaceholder
 	protected TemporalFacade tdb;
 	
@@ -220,15 +213,15 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		this.view.display();
 	}
 	
-	/**
-	 * Check pseudo-controllability of the component and 
-	 * return the list of "squeezed" uncontrollable tokens 
-	 * if any
-	 * 
-	 * @throws PseudoControllabilityCheckException
-	 */
-	public abstract void checkPseudoControllability() 
-			throws PseudoControllabilityCheckException;
+//	/**
+//	 * Check pseudo-controllability of the component and 
+//	 * return the list of "squeezed" uncontrollable tokens 
+//	 * if any
+//	 * 
+//	 * @throws ConsistencyCheckException
+//	 */
+//	public abstract void verify() 
+//			throws ConsistencyCheckException;
 	
 	/**
 	 * 
@@ -391,7 +384,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		}
 		else {
 			// debug information
-			this.logger.warning("The decision you want to restore is not \"silent\":\n- decision: " + dec + "\n");
+			logger.warning("The decision you want to restore is not \"silent\":\n- decision: " + dec + "\n");
 		}
 	}
 	
@@ -564,7 +557,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		}
 		else {
 			// debug information
-			this.logger.warning("Trying to activate a non pending decision:\n- decision: " + dec + "\n");
+			logger.warning("Trying to activate a non pending decision:\n- decision: " + dec + "\n");
 		}
 		
 		// get list of "local" activated relations
@@ -601,7 +594,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 					this.pdb.deleteParameter(param);
 				}
 				catch (ParameterNotFoundException ex) {
-					this.logger.warning(ex.getMessage());
+					logger.warning(ex.getMessage());
 				}
 			}
 			
@@ -616,7 +609,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		}
 		else {
 			// debug information
-			this.logger.debug("The decision you want to deactivate is not active:\n- decision: " + dec + "\n");
+			logger.debug("The decision you want to deactivate is not active:\n- decision: " + dec + "\n");
 		}
 	}
 	
@@ -640,7 +633,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		}
 		else {
 			// debug information 
-			this.logger.debug("The decision you want to delete is not \"pending\":\n- decision: " + dec +"\n");
+			logger.debug("The decision you want to delete is not \"pending\":\n- decision: " + dec +"\n");
 		}
 	}
 	
@@ -1013,7 +1006,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		}
 		else {
 			// debugging information
-			this.logger.warning("The relation you want to delete is active:\n- relation: " + relation + "\n");
+			logger.warning("The relation you want to delete is active:\n- relation: " + relation + "\n");
 		}
 	}
 	
@@ -1112,7 +1105,7 @@ public abstract class DomainComponent extends ApplicationFrameworkObject
 		}
 		else {
 			// debug information
-			this.logger.warning("The decision you want to activate is already active or the related decision are not active yet:\n- " + rel + "\n");
+			logger.warning("The decision you want to activate is already active or the related decision are not active yet:\n- " + rel + "\n");
 		}
 	}
 	

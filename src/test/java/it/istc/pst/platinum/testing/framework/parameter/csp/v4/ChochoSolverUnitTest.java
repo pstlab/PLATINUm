@@ -45,7 +45,7 @@ public class ChochoSolverUnitTest
 		System.out.println("**********************************************************************************");
 		this.paramFactory = new ParameterTestFactory();
 		this.notiFactory = ParameterNotificationFactory.getInstance();
-		this.solver = ChocoSolver.getInstance();
+		this.solver = new ChocoSolver();
 	}
 	
 	/**

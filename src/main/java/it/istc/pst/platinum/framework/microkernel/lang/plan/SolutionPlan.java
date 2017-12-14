@@ -177,7 +177,7 @@ public class SolutionPlan
 			}
 			break;
 			
-			case PDB : {
+			case PLAN_DATABASE : {
 				// ignore this type of components
 			}
 			break;

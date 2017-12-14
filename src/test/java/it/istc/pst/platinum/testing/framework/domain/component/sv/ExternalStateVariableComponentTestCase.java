@@ -5,35 +5,45 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.domain.DomainComponentBuilder;
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.sv.ExternalStateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryFactory;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
+import it.istc.pst.platinum.framework.parameter.ParameterFacade;
+import it.istc.pst.platinum.framework.parameter.ParameterFacadeBuilder;
+import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
-import it.istc.pst.platinum.framework.time.TemporalFacadeFactory;
-import it.istc.pst.platinum.framework.time.TemporalFacadeType;
+import it.istc.pst.platinum.framework.time.TemporalFacadeBuilder;
 import it.istc.pst.platinum.framework.time.lang.FixIntervalDurationConstraint;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintFactory;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
+import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 
 /**
  * 
  * @author anacleto
  *
  */
+@TemporalFacadeConfiguration(
+		network = TemporalNetworkType.STNU,
+		solver = TemporalSolverType.APSP
+)
+@ParameterFacadeConfiguration(
+		solver = ParameterSolverType.CHOCHO_SOLVER
+)
 public class ExternalStateVariableComponentTestCase {
 	
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 100;
-	private TemporalFacade facade;
+	private TemporalFacade tf;
+	private ParameterFacade pf;
 	private ExternalStateVariable psv;
 
 	/**
@@ -45,22 +55,13 @@ public class ExternalStateVariableComponentTestCase {
 		System.out.println("************************* State Variable Component Test Case ***********************");
 		System.out.println("**********************************************************************************");
 		
-		// create logger
-		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
-		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
-		
-		// get temporal facade
-		TemporalFacadeFactory factory = new TemporalFacadeFactory();
 		// create temporal facade
-		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
-		
-		// get parameter facade
-		ParameterFacadeFactory pf = new ParameterFacadeFactory();
-		pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		this.tf = TemporalFacadeBuilder.createAndSet(this, ORIGIN, HORIZON);
+		// create parameter facade
+		this.pf = ParameterFacadeBuilder.createAndSet(this);
 		
 		// create State Variable
-		DomainComponentFactory df = new DomainComponentFactory();
-		this.psv = df.create("EX_SV1", DomainComponentType.SV_EXTERNAL);
+		this.psv = DomainComponentBuilder.createAndSet("EX_SV1", DomainComponentType.SV_EXTERNAL, this.tf, this.pf);
 	}
 	
 	/**
@@ -69,7 +70,8 @@ public class ExternalStateVariableComponentTestCase {
 	@After
 	public void clear() {
 		this.psv = null;
-		this.facade = null;
+		this.tf = null;
+		this.pf = null;
 		System.gc();
 		System.out.println();
 		System.out.println("**********************************************************************************");
@@ -111,7 +113,7 @@ public class ExternalStateVariableComponentTestCase {
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create tokens
@@ -124,7 +126,8 @@ public class ExternalStateVariableComponentTestCase {
 			this.psv.activate(d3);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
+			this.pf.verify();
 			
 			// check flexible schedule
 			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
@@ -132,7 +135,7 @@ public class ExternalStateVariableComponentTestCase {
 			IntervalScheduleQuery query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
-			this.facade.process(query);
+			this.tf.process(query);
 			
 			// print decision
 			System.out.println(d1);
@@ -146,20 +149,20 @@ public class ExternalStateVariableComponentTestCase {
 			query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d2.getToken().getInterval());
 			// process query
-			this.facade.process(query);
+			this.tf.process(query);
 			
 			// print decision
 			System.out.println(d2);
 			// check bounds
-			Assert.assertTrue(d2.getStart()[0] == this.facade.getOrigin());
-			Assert.assertTrue(d2.getStart()[1] == (this.facade.getHorizon() - v2.getDurationBounds()[0]));
+			Assert.assertTrue(d2.getStart()[0] == this.tf.getOrigin());
+			Assert.assertTrue(d2.getStart()[1] == (this.tf.getHorizon() - v2.getDurationBounds()[0]));
 			Assert.assertTrue(d2.getDuration()[0] == v2.getDurationBounds()[0]);
 			Assert.assertTrue(d2.getDuration()[1] == v2.getDurationBounds()[1]);
 			
 			// print state variable information
 			System.out.println();
 			System.out.println(this.psv);
-			System.out.println(this.facade);
+			System.out.println(this.tf);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -179,7 +182,7 @@ public class ExternalStateVariableComponentTestCase {
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {2, 10}, true);
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create tokens
@@ -189,7 +192,8 @@ public class ExternalStateVariableComponentTestCase {
 			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
+			this.pf.verify();
 			
 			// check flexible schedule
 			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
@@ -197,7 +201,7 @@ public class ExternalStateVariableComponentTestCase {
 			IntervalScheduleQuery query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
-			this.facade.process(query);
+			this.tf.process(query);
 			// print decision
 			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 			
@@ -208,7 +212,7 @@ public class ExternalStateVariableComponentTestCase {
 				constraint.setReference(d1.getToken().getInterval());
 				constraint.setDuration(7);
 				// propagate observation
-				this.facade.propagate(constraint);
+				this.tf.propagate(constraint);
 				Assert.assertTrue(false);
 			}
 			catch (Exception ex) {
@@ -216,13 +220,14 @@ public class ExternalStateVariableComponentTestCase {
 			}
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
+			this.pf.verify();
 			
 			// check schedule
 			query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
 			// process query
-			this.facade.process(query);
+			this.tf.process(query);
 			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 		}
 		catch (Exception ex) {

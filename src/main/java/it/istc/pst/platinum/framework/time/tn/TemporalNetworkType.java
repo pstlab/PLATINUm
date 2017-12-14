@@ -27,7 +27,7 @@ public enum TemporalNetworkType {
 	 * 
 	 * @return
 	 */
-	public String getNetworkClassName() {
+	public String getClassName() {
 		return this.name;
 	}
 }

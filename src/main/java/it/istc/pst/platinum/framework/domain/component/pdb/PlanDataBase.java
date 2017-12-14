@@ -85,13 +85,18 @@ public interface PlanDataBase
 	 */
 	public DomainComponent getComponentByName(String name);
 	
+	
 	/**
-	 *  Check consistency of the plan data-base
-	 *  
+	 * Check consistency of the plan database
+	 * 
+	 * The procedure verifies also pseudo-controllability by checking 
+	 * "squeezed" uncontrollable tokens
+	 * 
 	 * @throws ConsistencyCheckException
 	 */
-	public void check() 
+	public void verify() 
 			throws ConsistencyCheckException;
+	
 	/**
 	 * 
 	 * @param name

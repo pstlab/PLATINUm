@@ -12,12 +12,12 @@ import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable
  * @author anacleto
  *
  */
-public enum DomainComponentType {
-	
+public enum DomainComponentType 
+{
 	/**
 	 * Special purpose domain component
 	 */
-	PDB(PlanDataBaseComponent.class.getName(), "Plan Database component"),
+	PLAN_DATABASE(PlanDataBaseComponent.class.getName(), "Plan Database component"),
 	
 	/**
 	 * Functional State Variable type
@@ -61,7 +61,7 @@ public enum DomainComponentType {
 	 * 
 	 * @return
 	 */
-	public String getComponentClassName() {
+	public String getClassClassName() {
 		return cname;
 	}
 

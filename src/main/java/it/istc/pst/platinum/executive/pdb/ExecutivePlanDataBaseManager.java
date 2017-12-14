@@ -11,6 +11,7 @@ import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterType;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
 import it.istc.pst.platinum.framework.time.TemporalFacadeFactory;
 import it.istc.pst.platinum.framework.time.TemporalFacadeType;
@@ -31,7 +32,6 @@ import it.istc.pst.platinum.framework.time.lang.allen.StartsDuringIntervalConstr
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
-import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
 
 /**
  * 

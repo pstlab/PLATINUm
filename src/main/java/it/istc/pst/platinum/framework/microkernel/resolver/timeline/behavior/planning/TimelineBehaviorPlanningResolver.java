@@ -291,7 +291,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			// clear all gaps detected
 			flaws = new ArrayList<>();
 			// not scheduled decisions on component
-			this.logger.debug("Not scheduled decisions found on component= " + this.component.getName() + "... gaps cannot be detected\n");
+			logger.debug("Not scheduled decisions found on component= " + this.component.getName() + "... gaps cannot be detected\n");
 		}
 		
 		// get detected gaps
@@ -360,7 +360,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 							// add solution to the flaw
 							gap.addSolution(solution);
 							// print gap information
-							this.logger.debug("Gap found on component " + this.component.getName() + ":\n"
+							logger.debug("Gap found on component " + this.component.getName() + ":\n"
 									+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
 									+ "- left-side decision: " + gap.getLeftDecision() + "\n"
 									+ "- right-side decision: " + gap.getRightDecision() + "\n"
@@ -370,7 +370,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						}
 						catch (NotFeasibleGapCompletionException ex) {
 							// not feasible gap completion found
-							this.logger.debug("Not feasible gap completion found:\n"
+							logger.debug("Not feasible gap completion found:\n"
 									+ "- gap: " + gap + "\n"
 									+ "- solution: " + path + "\n"
 									+ "- message: \"" + ex.getMessage() + "\"\n");
@@ -402,7 +402,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 								// add solution to the flaw
 								gap.addSolution(solution);
 								// print gap information
-								this.logger.debug("Gap found on component " + this.component.getName() + ":\n"
+								logger.debug("Gap found on component " + this.component.getName() + ":\n"
 										+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
 										+ "- left-side decision: " + gap.getLeftDecision() + "\n"
 										+ "- right-side decision: " + gap.getRightDecision() + "\n"
@@ -412,7 +412,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 							}
 							catch (NotFeasibleGapCompletionException ex) {
 								// not feasible gap completion found
-								this.logger.debug("Not feasible gap completion found:\n"
+								logger.debug("Not feasible gap completion found:\n"
 										+ "- gap: " + gap + "\n"
 										+ "- solution: " + path + "\n"
 										+ "- message: \"" + ex.getMessage() + "\"\n");
@@ -438,7 +438,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					gap.addSolution(solution);
 				}
 				catch (NotFeasibleGapCompletionException ex) {
-					this.logger.debug("Not feasible gap completion found:\n"
+					logger.debug("Not feasible gap completion found:\n"
 							+ "- gap: " + gap + "\n"
 							+ "- solution: " + solution + "\n"
 							+ "- message: \""+ ex.getMessage() + "\"\n");
@@ -568,7 +568,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				// add to committed constraint
 				committedConstraints.add(meets);
 				// check temporal feasibility
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				// feasible solution, compute the resulting makespan
 				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
@@ -615,7 +615,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				}
 				
 				// check temporal feasibility
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				// feasible solution, compute the resulting makespan
 				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
 				this.tdb.process(query);

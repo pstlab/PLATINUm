@@ -80,7 +80,7 @@ public class PlannerFactory extends ApplicationFrameworkFactory
 			this.injectPlanDataBase(planner);
 			
 			// set solvers
-			List<Field> fields = this.findFieldsAnnotatedBy(clazz, SolverModule.class);
+			List<Field> fields = this.doFindFieldsAnnotatedBy(clazz, SolverModule.class);
 			for (Field field : fields) {
 				// get annotation
 				SolverModule annotation = field.getAnnotation(SolverModule.class);

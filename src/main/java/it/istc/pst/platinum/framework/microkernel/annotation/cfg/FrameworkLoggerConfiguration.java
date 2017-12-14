@@ -12,7 +12,10 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-@Target(ElementType.CONSTRUCTOR)
+@Target({
+	ElementType.TYPE,
+	ElementType.CONSTRUCTOR
+})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FrameworkLoggerConfiguration {
 
@@ -21,10 +24,4 @@ public @interface FrameworkLoggerConfiguration {
 	 * @return
 	 */
 	FrameworkLoggingLevel level() default FrameworkLoggingLevel.OFF;
-	
-	/**
-	 * 
-	 * @return
-	 */
-	boolean singleton() default true;
 }

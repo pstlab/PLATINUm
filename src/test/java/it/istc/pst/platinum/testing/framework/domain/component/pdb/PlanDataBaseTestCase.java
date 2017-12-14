@@ -7,11 +7,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseComponent;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseFactory;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationConstraint;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
@@ -38,8 +38,8 @@ import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
  * @author anacleto
  *
  */
-public class PlanDataBaseTestCase {
-
+public class PlanDataBaseTestCase 
+{
 	private PlanDataBaseComponent pdb;
 	
 	/**
@@ -51,9 +51,7 @@ public class PlanDataBaseTestCase {
 		System.out.println("****************************** PDB Component Test Case ***************************");
 		System.out.println("**********************************************************************************");
 		
-		// create Plan Data Base
-		PlanDataBaseFactory factory = PlanDataBaseFactory.getInstance();
-		this.pdb = (PlanDataBaseComponent) factory.create("PDB", 0, 50);
+		this.pdb = (PlanDataBaseComponent) PlanDataBaseBuilder.createAndSet("PDB", 0, 50);
 	}
 	
 	/**
@@ -972,7 +970,7 @@ public class PlanDataBaseTestCase {
 			
 			// apply solution
 			this.pdb.commit(exp);
-			this.pdb.check();
+			this.pdb.verify();
 			
 			// check data
 			Assert.assertNotNull(this.pdb.getPendingDecisions());
@@ -991,7 +989,7 @@ public class PlanDataBaseTestCase {
 			
 			// retract solution
 			this.pdb.rollback(exp);
-			this.pdb.check();
+			this.pdb.verify();
 			
 			// check data
 			Assert.assertNotNull(this.pdb.getPendingDecisions());

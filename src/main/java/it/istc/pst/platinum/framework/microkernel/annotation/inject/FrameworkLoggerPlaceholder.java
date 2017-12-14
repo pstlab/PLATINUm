@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
+
 /**
  * 
  * @author anacleto
@@ -14,6 +16,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FrameworkLoggerPlaceholder {
 
-	// lookup a singleton instance if necessary
-	String lookup();
+	FrameworkLoggingLevel level() default FrameworkLoggingLevel.DEBUG;
 }

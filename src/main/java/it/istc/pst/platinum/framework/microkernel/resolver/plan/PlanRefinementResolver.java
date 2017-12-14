@@ -278,13 +278,13 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 					unification.setMakespan(makespan);
 					// add solution
 					goal.addSolution(unification);
-					this.logger.debug("Feasible unification found:\n"
+					logger.debug("Feasible unification found:\n"
 							+ "- planning goal: " + goal + "\n"
 							+ "- unification decision: " + unification + "\n"
 							+ "- resulting makespan: " + makespan + "\n");
 				}
 				catch (NotFeasibleUnificationException ex) {
-					this.logger.debug("Not feasible goal unification found:\n"
+					logger.debug("Not feasible goal unification found:\n"
 							+ "- planning goal: " + goal + "\n"
 							+ "- message: \"" + ex.getMessage() + "\"\n");
 				}
@@ -560,7 +560,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			}
 			
 			// check temporal consistency
-			this.tdb.checkConsistency();
+			this.tdb.verify();
 			// feasible solution, compute the resulting makespan
 			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
 			this.tdb.process(query);
@@ -857,7 +857,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			
 		
 			// check consistency
-			this.tdb.checkConsistency();
+			this.tdb.verify();
 			// feasible solution, compute the resulting makespan
 			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
 			this.tdb.process(query);
@@ -904,7 +904,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				expansion.setMakespan(makespan);
 				// add solution
 				goal.addSolution(expansion);
-				this.logger.debug("Simple goal found:\n"
+				logger.debug("Simple goal found:\n"
 						+ "- planning goal: " + goal.getDecision() + "\n"
 						+ "- resulting makespan: " + makespan + "\n");
 			}
@@ -919,7 +919,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 					expansion.setMakespan(makespan);
 					// add solution
 					goal.addSolution(expansion);
-					this.logger.debug("Complex goal found:\n"
+					logger.debug("Complex goal found:\n"
 							+ "- planning goal: " + goal.getDecision() + "\n"
 							+ "- synchronization rule: " + rule + "\n"
 							+ "- resulting makespan: " + makespan + "\n");
@@ -927,7 +927,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			}
 		}
 		catch (NotFeasibleExpansionException ex) {
-			this.logger.debug("Not feasible goal expansion found:\n"
+			logger.debug("Not feasible goal expansion found:\n"
 					+ "- planning goal: " + goal + "\n"
 					+ "- message: \"" + ex.getMessage() + "\"\n");
 		}

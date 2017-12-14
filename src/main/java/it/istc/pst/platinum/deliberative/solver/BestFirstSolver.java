@@ -94,7 +94,7 @@ public class BestFirstSolver extends Solver
 				
 				try {
 					// consistency check
-					this.pdb.check();
+					this.pdb.verify();
 					this.logger.debug("Plan refinement successfully done... looking for flaws on the current refined plan...");
 				}
 				catch (PseudoControllabilityCheckException ex) {

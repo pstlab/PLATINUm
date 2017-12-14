@@ -37,8 +37,6 @@ import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstr
  */
 public class ChocoSolver extends ParameterSolver 
 {
-	private static ChocoSolver INSTANCE = null;
-	
 	private boolean clean;											// clean flag
 	private Model model;											// CSP model
 	
@@ -46,21 +44,9 @@ public class ChocoSolver extends ParameterSolver
 	private Map<ParameterConstraint, Constraint> constraints;		// constraints of the model
 	
 	/**
-	 * Singleton constructor for testing purposes only
-	 * 
-	 * @return
-	 */
-	public static final ChocoSolver getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new ChocoSolver();
-		}
-		return INSTANCE;
-	}
-	
-	/**
 	 * 
 	 */
-	protected ChocoSolver() {
+	public ChocoSolver() {
 		super();
 		// setup data structures
 		this.variables = new HashMap<>();

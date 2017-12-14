@@ -43,11 +43,11 @@ import it.istc.pst.ddl.v3.parser.ddl3Lexer;
 import it.istc.pst.ddl.v3.parser.ddl3Parser;
 import it.istc.pst.platinum.framework.compiler.DomainCompiler;
 import it.istc.pst.platinum.framework.compiler.DomainCompilerType;
+import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseFactory;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
@@ -79,7 +79,6 @@ public class DDLv3Compiler extends DomainCompiler
 	private long origin;
 	private long horizon;
 	
-	private PlanDataBaseFactory factory;
 	protected DDLDomain ddl_domain;
     protected DDLProblem ddl_problem;
 	
@@ -90,7 +89,6 @@ public class DDLv3Compiler extends DomainCompiler
 	 */
 	protected DDLv3Compiler(String ddlFilePath, String pdlFilePath) {
 		super(DomainCompilerType.DDLv3, ddlFilePath, pdlFilePath);
-		this.factory = PlanDataBaseFactory.getInstance();
 	}
 	
 	/**
@@ -99,7 +97,6 @@ public class DDLv3Compiler extends DomainCompiler
 	 */
 	protected DDLv3Compiler(String ddlFilePath) {
 		super(DomainCompilerType.DDLv3, ddlFilePath);
-		this.factory = PlanDataBaseFactory.getInstance();
 	}
 	
 	/**
@@ -196,7 +193,7 @@ public class DDLv3Compiler extends DomainCompiler
 		String name = this.ddl_domain.getName();
 		
 		// create plan data-base
-		PlanDataBase pdb = this.factory.create(name, this.origin, this.horizon);
+		PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(name, this.origin, this.horizon);
 		
 		// add parameter domain declaration
 		this.addParameterDomains(pdb);

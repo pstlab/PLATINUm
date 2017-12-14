@@ -8,14 +8,14 @@ import java.io.PrintWriter;
 
 import it.istc.pst.platinum.deliberative.app.cli.ex.DeliberativeCommandLineInterfaceException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
-import it.istc.pst.platinum.protocol.lang.ParameterTypeDescriptor;
-import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.TimelineProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.TokenProtocolDescriptor;
-import it.istc.pst.platinum.protocol.query.ProtocolQueryType;
-import it.istc.pst.platinum.protocol.query.get.GetFlexibleTimelinesProtocolQuery;
-import it.istc.pst.platinum.protocol.query.get.GetSingleFlexibleTimelineProtocolQuery;
-import it.istc.pst.platinum.protocol.query.show.ShowComponentProtocolQuery;
+import it.istc.pst.platinum.framework.protocol.lang.ParameterTypeDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.TimelineProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.query.ProtocolQueryType;
+import it.istc.pst.platinum.framework.protocol.query.get.GetFlexibleTimelinesProtocolQuery;
+import it.istc.pst.platinum.framework.protocol.query.get.GetSingleFlexibleTimelineProtocolQuery;
+import it.istc.pst.platinum.framework.protocol.query.show.ShowComponentProtocolQuery;
 
 /**
  * 

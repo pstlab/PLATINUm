@@ -20,13 +20,13 @@ import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameter;
 import it.istc.pst.platinum.framework.parameter.lang.NumericParameter;
 import it.istc.pst.platinum.framework.parameter.lang.Parameter;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterType;
+import it.istc.pst.platinum.framework.protocol.lang.ParameterTypeDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.ProtocolLanguageFactory;
+import it.istc.pst.platinum.framework.protocol.lang.TimelineProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDescriptor;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
-import it.istc.pst.platinum.protocol.lang.ParameterTypeDescriptor;
-import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.ProtocolLanguageFactory;
-import it.istc.pst.platinum.protocol.lang.TimelineProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.TokenProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.relation.RelationProtocolDescriptor;
 
 /**
  * 

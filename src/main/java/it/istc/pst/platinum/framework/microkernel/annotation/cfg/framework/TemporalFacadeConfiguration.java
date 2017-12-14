@@ -13,13 +13,22 @@ import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
  * @author anacleto
  *
  */
-@Target(ElementType.CONSTRUCTOR)
+@Target({
+	ElementType.TYPE,
+	ElementType.CONSTRUCTOR
+})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TemporalFacadeConfiguration {
 
-	// temporal network used
+	/**
+	 * 
+	 * @return
+	 */
 	TemporalNetworkType network();
 	
-	// temporal reasoner
+	/**
+	 * 
+	 * @return
+	 */
 	TemporalSolverType solver();
 }

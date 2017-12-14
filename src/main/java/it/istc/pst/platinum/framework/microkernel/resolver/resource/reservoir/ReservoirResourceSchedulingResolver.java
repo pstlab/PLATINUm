@@ -356,7 +356,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				}
 				
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				// compute the resulting make-span
 				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
 				this.tdb.process(query);
@@ -371,10 +371,10 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				mcs.addPlanningSolution(pp);
 			}
 			catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
-				this.logger.debug("It is not possible to schedule new production in order to solve resource over consumption:\n- before-production: " + beforeProduction + "\n- after-production: " + afterProduction + "\n");
+				logger.debug("It is not possible to schedule new production in order to solve resource over consumption:\n- before-production: " + beforeProduction + "\n- after-production: " + afterProduction + "\n");
 			}
 			catch (TemporalIntervalCreationException ex) {
-				this.logger.debug("Erorr while creating temporal interval for checking the temporal feasibility of production planning\n");
+				logger.debug("Erorr while creating temporal interval for checking the temporal feasibility of production planning\n");
 			}
 			finally 
 			{
@@ -456,7 +456,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						}
 						
 						// check the feasibility
-						this.tdb.checkConsistency();
+						this.tdb.verify();
 						
 						// compute the preserved space of the involved time points
 						double preserved = 0;
@@ -493,7 +493,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						mcs.addSchedulingSolution(scheduling);
 					}
 					catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
-						this.logger.debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
+						logger.debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
 								+ "- schedule: " + checkpoint.getProduction()+ " < " + consumption  + "\n");
 					}
 					finally 
@@ -555,7 +555,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						}
 						
 						// check the feasibility
-						this.tdb.checkConsistency();
+						this.tdb.verify();
 						
 						// compute the preserved space of the involved time points
 						double preserved = 0;
@@ -592,7 +592,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						mcs.addSchedulingSolution(scheduling);
 					}
 					catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
-						this.logger.debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
+						logger.debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
 								+ "- schedule: " + consumption + " < " + checkpoint.getProduction() + "\n");
 					}
 					finally 

@@ -28,7 +28,7 @@ public enum ParameterSolverType {
 	 * 
 	 * @return
 	 */
-	public String getParameterSolverClassName() {
+	public String getClassName() {
 		return cname;
 	}
 }

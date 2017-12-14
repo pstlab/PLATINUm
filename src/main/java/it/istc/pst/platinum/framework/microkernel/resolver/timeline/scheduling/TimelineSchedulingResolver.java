@@ -64,7 +64,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			before.setBound(new long[] {0, this.component.getHorizon()});
 			// add created relation to solution
 			solution.addCreatedRelation(before);
-			this.logger.debug("Applying flaw solution:\n"
+			logger.debug("Applying flaw solution:\n"
 					+ "- solution: " + solution + "\n"
 					+ "- created temporal constraint: " + before + "\n");
 			
@@ -209,7 +209,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 					
 					// verify constraint feasibility
 					this.tdb.propagate(before);
-					this.tdb.checkConsistency();
+					this.tdb.verify();
 					
 					// compute the resulting preserved space
 					double preserved = this.computePreservedSpaceHeuristicValue(
@@ -226,13 +226,13 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 					// add solution to MCS
 					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved, makespan);
 					// print some debugging information
-					this.logger.debug("Feasible solution of MCS found:\n"
+					logger.debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
 							+ "- precedence constraint: " + pc + "\n");
 				}
 				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
-					this.logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
+					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
 				}
 				finally {
 					// retract propagated constraint
@@ -252,7 +252,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 					
 					// verify constraint feasibility
 					this.tdb.propagate(before);
-					this.tdb.checkConsistency();
+					this.tdb.verify();
 					
 					// compute the resulting preserved space
 					double preserved = this.computePreservedSpaceHeuristicValue(
@@ -269,13 +269,13 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 					// add solution to MCS
 					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved, makespan);
 					// print some debugging information
-					this.logger.debug("Feasible solution of MCS found:\n"
+					logger.debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
 							+ "- precedence constraint: " + pc + "\n");
 				}
 				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
-					this.logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
+					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
 				}
 				finally {
 					// retract propagated constraint

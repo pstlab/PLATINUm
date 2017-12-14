@@ -236,7 +236,7 @@ public class ReservoirResource extends Resource
 				// add to committed
 				committed.add(fix);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				// create profile sample
 				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(consumption, time, amount);
@@ -271,7 +271,7 @@ public class ReservoirResource extends Resource
 				// add to committed
 				committed.add(fix);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				
 				// create profile sample
@@ -336,7 +336,7 @@ public class ReservoirResource extends Resource
 				// add to committed
 				committed.add(fix);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				// create profile sample
 				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(consumption, time, amount);
@@ -371,7 +371,7 @@ public class ReservoirResource extends Resource
 				// add to committed
 				committed.add(fix);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				
 				// create profile sample

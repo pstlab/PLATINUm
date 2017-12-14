@@ -31,7 +31,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * @param origin
 	 * @param horizon
 	 */
-	protected SimpleTemporalNetworkWithUncertainty(long origin, long horizon) 
+	public SimpleTemporalNetworkWithUncertainty(long origin, long horizon) 
 	{
 		super(origin, horizon);
 		// initialize data structures

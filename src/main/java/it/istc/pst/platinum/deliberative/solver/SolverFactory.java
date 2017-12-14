@@ -69,7 +69,7 @@ public class SolverFactory extends ApplicationFrameworkFactory
 			this.injectPlanDataBase(solver);
 			
 			// inject search strategy
-			List<Field> fields = this.findFieldsAnnotatedBy(clazz, SearchStrategyModule.class);
+			List<Field> fields = this.doFindFieldsAnnotatedBy(clazz, SearchStrategyModule.class);
 			for (Field field : fields) {
 				// get annotation
 				SearchStrategyModule annotation = field.getAnnotation(SearchStrategyModule.class);
@@ -81,7 +81,7 @@ public class SolverFactory extends ApplicationFrameworkFactory
 			}
 			
 			// inject heuristic
-			fields = this.findFieldsAnnotatedBy(clazz, FlawSelectionHeuristicModule.class);
+			fields = this.doFindFieldsAnnotatedBy(clazz, FlawSelectionHeuristicModule.class);
 			for (Field field : fields) {
 				// get annotation
 				FlawSelectionHeuristicModule annotation = field.getAnnotation(FlawSelectionHeuristicModule.class);

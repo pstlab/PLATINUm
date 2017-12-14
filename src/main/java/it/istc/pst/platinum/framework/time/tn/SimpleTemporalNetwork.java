@@ -27,7 +27,8 @@ public final class SimpleTemporalNetwork extends TemporalNetwork
 	 * @param origin
 	 * @param horizon
 	 */
-	protected SimpleTemporalNetwork(long origin, long horizon) {
+	public SimpleTemporalNetwork(long origin, long horizon) 
+	{
 		super(origin, horizon);
 		// initialize data structure
 		this.points = new HashMap<Integer, TimePoint>();

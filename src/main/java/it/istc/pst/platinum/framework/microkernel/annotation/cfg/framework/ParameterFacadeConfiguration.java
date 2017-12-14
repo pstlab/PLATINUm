@@ -12,7 +12,10 @@ import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
  * @author anacleto
  *
  */
-@Target(ElementType.CONSTRUCTOR)
+@Target({
+	ElementType.TYPE,
+	ElementType.CONSTRUCTOR
+})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ParameterFacadeConfiguration {
 
@@ -21,10 +24,4 @@ public @interface ParameterFacadeConfiguration {
 	 * @return
 	 */
 	ParameterSolverType solver();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	boolean singletion() default true;
 }

@@ -8,14 +8,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.domain.DomainComponentBuilder;
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceValue;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -25,21 +27,27 @@ import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete.PrecedenceConstraint;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
+import it.istc.pst.platinum.framework.parameter.ParameterFacadeBuilder;
+import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
 import it.istc.pst.platinum.framework.parameter.lang.NumericParameter;
 import it.istc.pst.platinum.framework.parameter.lang.query.CheckValuesParameterQuery;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
-import it.istc.pst.platinum.framework.time.TemporalFacadeFactory;
-import it.istc.pst.platinum.framework.time.TemporalFacadeType;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
+import it.istc.pst.platinum.framework.time.TemporalFacadeBuilder;
+import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 
 /**
  * 
  * @author anacleto
  *
  */
+@TemporalFacadeConfiguration(
+		network = TemporalNetworkType.STNU, 
+		solver = TemporalSolverType.APSP
+)
+@ParameterFacadeConfiguration(
+		solver = ParameterSolverType.CHOCHO_SOLVER
+)
 public class DiscreteResourceComponentTestCase 
 {
 	private TemporalFacade tdb;
@@ -55,21 +63,14 @@ public class DiscreteResourceComponentTestCase
 		System.out.println("************************* Discrete Resource Component Test Case ***********************");
 		System.out.println("**********************************************************************************");
 		
-		// create logger
-		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
-		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
-		
 		// create temporal facade
-		TemporalFacadeFactory tf = new TemporalFacadeFactory();
-		this.tdb = tf.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, 0, 100);
+		this.tdb = TemporalFacadeBuilder.createAndSet(this, 0, 100);
 		
 		// get parameter facade
-		ParameterFacadeFactory pf = new ParameterFacadeFactory();
-		this.pdb = pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		this.pdb = ParameterFacadeBuilder.createAndSet(this);
 		
-		// create unary resource
-		DomainComponentFactory df = new DomainComponentFactory();
-		this.resource = df.create("Disco1", DomainComponentType.RESOURCE_DISCRETE);
+		// create discrete resource
+		this.resource = DomainComponentBuilder.createAndSet("Disco1", DomainComponentType.RESOURCE_DISCRETE, this.tdb, this.pdb);
 		// set minimum and maximum capacity
 		this.resource.setMinCapacity(0);
 		this.resource.setMaxCapacity(10);
@@ -463,8 +464,8 @@ public class DiscreteResourceComponentTestCase
 			this.resource.commit(solution);
 			
 			// check consistency 
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			System.out.println(".... solution successfully applied\n");
 			
 			
@@ -480,8 +481,8 @@ public class DiscreteResourceComponentTestCase
 			this.resource.rollback(solution);
 			
 			// check consistency
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			System.out.println(".... solution successfully retracted\n");
 			
 			
@@ -505,8 +506,8 @@ public class DiscreteResourceComponentTestCase
 			this.resource.commit(solution);
 			
 			// check consistency 
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			System.out.println(".... solution successfully applied\n");
 			
 			
@@ -557,8 +558,8 @@ public class DiscreteResourceComponentTestCase
 		// post constraint
 		this.resource.activate(bind);
 		// check consistency
-		this.tdb.checkConsistency();
-		this.pdb.checkConsistency();
+		this.tdb.verify();
+		this.pdb.verify();
 		
 		// get decision 
 		return activity;
@@ -610,8 +611,8 @@ public class DiscreteResourceComponentTestCase
 			this.resource.commit(solution);
 			
 			// check consistency 
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			
 			System.out.println("... Solution successfully applied\n");
 			// check peak

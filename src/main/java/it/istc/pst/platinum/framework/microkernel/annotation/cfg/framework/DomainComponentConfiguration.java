@@ -13,7 +13,10 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
  * @author anacleto
  *
  */
-@Target(ElementType.CONSTRUCTOR)
+@Target({
+	ElementType.TYPE,
+	ElementType.CONSTRUCTOR
+})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DomainComponentConfiguration {
 	

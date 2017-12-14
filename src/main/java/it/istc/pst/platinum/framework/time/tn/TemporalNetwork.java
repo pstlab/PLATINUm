@@ -7,9 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.FrameworkObject;
 import it.istc.pst.platinum.framework.time.tn.ex.DistanceConstraintNotFoundException;
 import it.istc.pst.platinum.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.istc.pst.platinum.framework.time.tn.ex.InconsistentTpValueException;
@@ -23,18 +21,14 @@ import it.istc.pst.platinum.framework.time.tn.lang.event.TemporalNetworkNotifica
 import it.istc.pst.platinum.framework.time.tn.lang.event.TemporalNetworkNotificationTypes;
 import it.istc.pst.platinum.framework.time.tn.lang.event.TemporalNetworkObserver;
 import it.istc.pst.platinum.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class TemporalNetwork extends ApplicationFrameworkObject 
+public abstract class TemporalNetwork extends FrameworkObject 
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
-	protected FrameworkLogger logger;
-	
 	private int counter;				// time point ID counter
 	protected long origin;
 	protected long horizon;
@@ -48,7 +42,7 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 	protected Set<TimePoint> recyclePoints;
 	
 	// temporal network observers
-	private List<TemporalNetworkObserver> observers;
+	private final List<TemporalNetworkObserver> observers;
 	
 	/**
 	 * Creates and initialize a Temporal Network instance.
@@ -89,13 +83,9 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 	 * @param obs
 	 */
 	public final void subscribe(TemporalNetworkObserver obs) {
-		try {
+		synchronized (this.observers) {
 			// add observer
 			this.observers.add(obs);
-			// send initialization notification
-			obs.notify(TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.INITIALIZATION));	
-		} catch (NotificationPropagationFailureException ex) {
-			this.logger.error("[" + this.getClass().getName() + "]: Error at Observer Initialization\n- message= " + ex.getMessage());
 		}
 	}
 	
@@ -243,12 +233,20 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 		AddTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory.
 				createNotification(TemporalNetworkNotificationTypes.ADD_TP);
 		info.addTimePoint(tp);
-		// notify observers
-		for (TemporalNetworkObserver obs : this.observers) {
-			try {
-				obs.notify(info);
-			} catch (NotificationPropagationFailureException ex) {
-				this.logger.error(ex.getMessage());
+		
+		// check observers
+		synchronized (this.observers) 
+		{
+			// notify observers
+			for (TemporalNetworkObserver obs : this.observers) 
+			{
+				try 
+				{
+					// do notify 
+					obs.notify(info);
+				} catch (NotificationPropagationFailureException ex) {
+					logger.error(ex.getMessage());
+				}
 			}
 		}
 
@@ -286,18 +284,26 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 			catch (InconsistentDistanceConstraintException ex) {
 				// roll-back 
 				rollback = true;
-				this.logger.error(ex.getMessage());
+				logger.error(ex.getMessage());
 			}
 		}
 		
 		// check if transition is successfully ended
-		if (!rollback) {
-			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) {
-				try {
-					obs.notify(info);
-				} catch (NotificationPropagationFailureException ex) {
-					this.logger.error(ex.getMessage());
+		if (!rollback) 
+		{
+			// check observers
+			synchronized (this.observers) 
+			{
+				// notify observers
+				for (TemporalNetworkObserver obs : this.observers) 
+				{
+					try 
+					{
+						// do notify
+						obs.notify(info);
+					} catch (NotificationPropagationFailureException ex) {
+						logger.error(ex.getMessage());
+					}
 				}
 			}
 		}
@@ -308,7 +314,7 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 					// delete 
 					this.doRemoveTimePoint(tp);
 				} catch (TimePointNotFoundException ex) {
-					this.logger.error(ex.getMessage());
+					logger.error(ex.getMessage());
 				}
 			}
 			// throw exception
@@ -368,13 +374,21 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 		// create notification
 		AddTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.ADD_TP);
 		info.addTimePoint(tp);
-		// notify observers
-		for (TemporalNetworkObserver obs : this.observers) {
-			try {
-				obs.notify(info);
-			}
-			catch (NotificationPropagationFailureException ex) {
-				this.logger.error(ex.getMessage());
+		
+		// check observers
+		synchronized (this.observers)
+		{
+			// notify observers
+			for (TemporalNetworkObserver obs : this.observers) 
+			{
+				try 
+				{
+					// do notify
+					obs.notify(info);
+				}
+				catch (NotificationPropagationFailureException ex) {
+					logger.error(ex.getMessage());
+				}
 			}
 		}
 
@@ -424,13 +438,21 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 		// create notification
 		AddTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.ADD_TP);
 		info.addTimePoint(tp);
-		// notify observers
-		for (TemporalNetworkObserver obs : this.observers) {
-			try {
-				obs.notify(info);
-			}
-			catch (NotificationPropagationFailureException ex) {
-				this.logger.error(ex.getMessage());
+		
+		// check observers
+		synchronized (this.observers) 
+		{
+			// notify observers
+			for (TemporalNetworkObserver obs : this.observers) 
+			{
+				try 
+				{
+					// do notify
+					obs.notify(info);
+				}
+				catch (NotificationPropagationFailureException ex) {
+					logger.error(ex.getMessage());
+				}
 			}
 		}
 
@@ -462,19 +484,26 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 			DelTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory
 					.createNotification(TemporalNetworkNotificationTypes.DEL_TP);
 			info.addTimePoint(tp);
-			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) {
-				try {
-					// try to notify
-					obs.notify(info);
-				}
-				catch (NotificationPropagationFailureException ex) {
-					this.logger.error(ex.getMessage());
+			
+			// check observers
+			synchronized (this.observers) 
+			{
+				// notify observers
+				for (TemporalNetworkObserver obs : this.observers) 
+				{
+					try 
+					{
+						// do notify
+						obs.notify(info);
+					}
+					catch (NotificationPropagationFailureException ex) {
+						logger.error(ex.getMessage());
+					}
 				}
 			}
 		} 
 		catch (TimePointNotFoundException ex) {
-			this.logger.error(ex.getMessage());
+			logger.error(ex.getMessage());
 		}
 	}
 	
@@ -495,19 +524,26 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 				info.addTimePoint(tp);
 			}
 			catch (TimePointNotFoundException ex) {
-				this.logger.error(ex.getMessage());
+				logger.error(ex.getMessage());
 			}
 		}
 		
 		// check information
-		if (!info.isEmpty()) {
-			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) {
-				try {
-					// try to notify
-					obs.notify(info);
-				} catch (NotificationPropagationFailureException ex) {
-					this.logger.error(ex.getMessage());
+		if (!info.isEmpty()) 
+		{
+			// check observers 
+			synchronized (this.observers)
+			{
+				// notify observers
+				for (TemporalNetworkObserver obs : this.observers) 
+				{
+					try 
+					{
+						// do notify
+						obs.notify(info);
+					} catch (NotificationPropagationFailureException ex) {
+						logger.error(ex.getMessage());
+					}
 				}
 			}
 		}
@@ -555,15 +591,20 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 		// set constraint
 		info.addRelation(constraint);
 		
-		// notify observers
-		for (TemporalNetworkObserver obs : this.observers) 
+		// check observers
+		synchronized (this.observers)
 		{
-			try {
-				// try to notify
-				obs.notify(info);
-			}
-			catch (NotificationPropagationFailureException ex) {
-				this.logger.error(ex.getMessage());
+			// notify observers
+			for (TemporalNetworkObserver obs : this.observers) 
+			{
+				try 
+				{
+					// do notify
+					obs.notify(info);
+				}
+				catch (NotificationPropagationFailureException ex) {
+					logger.error(ex.getMessage());
+				}
 			}
 		}
 	}
@@ -604,22 +645,26 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 			catch (InconsistentDistanceConstraintException ex ) {
 				// roll-back
 				rollback = true;
-				this.logger.error(ex.getMessage());
+				logger.error(ex.getMessage());
 			}
 		}
 			
 		// check if transaction has been successfully done
 		if (!rollback) 
 		{
-			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) 
+			// check observers
+			synchronized (this.observers)
 			{
-				try 
+				// notify observers
+				for (TemporalNetworkObserver obs : this.observers) 
 				{
-					// try to notify
-					obs.notify(info);
-				} catch (NotificationPropagationFailureException ex) {
-					this.logger.error(ex.getMessage());
+					try 
+					{
+						// do notify
+						obs.notify(info);
+					} catch (NotificationPropagationFailureException ex) {
+						logger.error(ex.getMessage());
+					}
 				}
 			}
 		}
@@ -634,7 +679,7 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 					this.doRemoveDistanceConstraint(rel);
 				}
 				catch (DistanceConstraintNotFoundException ex) {
-					this.logger.error(ex.getMessage());
+					logger.error(ex.getMessage());
 				}
 			}
 			
@@ -666,18 +711,26 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 			// create notification
 			DelRelationTemporalNetworkNotification info = TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.DEL_REL);
 			info.addRelation(rel);
-			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) {
-				try {
-					// try to notify
-					obs.notify(info);
-				}
-				catch (NotificationPropagationFailureException ex) {
-					this.logger.error(ex.getMessage());
+			
+			// check observers
+			synchronized (this.observers)
+			{
+				// notify observers
+				for (TemporalNetworkObserver obs : this.observers) 
+				{
+					try 
+					{
+						// do notify
+						obs.notify(info);
+					}
+					catch (NotificationPropagationFailureException ex) {
+						logger.error(ex.getMessage());
+					}
 				}
 			}
-		} catch (DistanceConstraintNotFoundException ex) {
-			this.logger.error(ex.getMessage());
+		}
+		catch (DistanceConstraintNotFoundException ex) {
+			logger.error(ex.getMessage());
 		}
 	}
 	
@@ -696,18 +749,24 @@ public abstract class TemporalNetwork extends ApplicationFrameworkObject
 				info.addRelation(rel);
 			}
 			catch (DistanceConstraintNotFoundException ex) {
-				this.logger.error(ex.getMessage());
+				logger.error(ex.getMessage());
 			}
 		}
 		
-		// notify observers
-		for (TemporalNetworkObserver obs : this.observers) {
-			try {
-				// try to notify
-				obs.notify(info);
-			}
-			catch (NotificationPropagationFailureException ex) {
-				this.logger.error(ex.getMessage());
+		// check observers
+		synchronized (this.observers)
+		{
+			// notify observers
+			for (TemporalNetworkObserver obs : this.observers) 
+			{
+				try 
+				{
+					// do notify
+					obs.notify(info);
+				}
+				catch (NotificationPropagationFailureException ex) {
+					logger.error(ex.getMessage());
+				}
 			}
 		}
 	}

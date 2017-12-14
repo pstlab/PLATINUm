@@ -1,6 +1,5 @@
 package it.istc.pst.platinum.framework.domain.component.pdb;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import it.istc.pst.platinum.deliberative.solver.Operator;
+import it.istc.pst.platinum.framework.domain.DomainComponentBuilder;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
-import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
@@ -20,9 +19,9 @@ import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicatio
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.ParameterFacadeConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationException;
@@ -49,13 +48,13 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.Tempor
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
+import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
 import it.istc.pst.platinum.framework.parameter.lang.query.ComputeSolutionParameterQuery;
-import it.istc.pst.platinum.framework.time.TemporalFacadeType;
 import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
-import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
+import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
@@ -63,11 +62,13 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
+@TemporalFacadeConfiguration(network = TemporalNetworkType.STNU, solver = TemporalSolverType.APSP)
+@ParameterFacadeConfiguration(solver = ParameterSolverType.CHOCHO_SOLVER)
+@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.OFF)
 public class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
 	// see Composite design pattern
 	private Map<String, DomainComponent> components;
-	private DomainComponentFactory componentFactory;
 	
 	// the planning problem
 	protected Problem problem;
@@ -79,19 +80,16 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * 
 	 * @param name
 	 */
-	@TemporalFacadeConfiguration(facade = TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE)
-	@ParameterFacadeConfiguration(facade = ParameterFacadeType.CSP_PARAMETER_FACADE)
-	@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.OFF)
+	
 	@DomainComponentConfiguration(resolvers = {
 			// no resolver is needed
 	})
 	protected PlanDataBaseComponent(String name) 
 	{
-		super(name, DomainComponentType.PDB);
+		super(name, DomainComponentType.PLAN_DATABASE);
 		// initialize data structures
 		this.components = new HashMap<>();
 		this.parameterDomains = new HashMap<>();
-		this.componentFactory = new DomainComponentFactory();
 		this.problem = null;
 	}
 	
@@ -330,7 +328,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	}
 	
 	/**
-	 * Check the temporal consistency of the plan.
+	 * Verify the temporal consistency of the plan.
 	 * 
 	 * If the underlying network is an STNU, then the 
 	 * procedure checks also the pseudo-controllability
@@ -341,61 +339,13 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * @throws ConsistencyCheckException
 	 */
 	@Override
-	public void check() 
+	public void verify() 
 			throws ConsistencyCheckException 
 	{
 		// check temporal consistency of the network
-		this.tdb.checkConsistency();
+		this.tdb.verify();
 		// check parameter consistency
-		this.pdb.checkConsistency();
-		// check also pseudo-controllability
-		this.checkPseudoControllability();
-	}
-	
-	/**
-	 * Check components to get information about the specific 
-	 * tokens that are not pseudo-controllable
-	 * 
-	 * @return
-	 */
-	@Override
-	public void checkPseudoControllability() 
-			throws PseudoControllabilityCheckException 
-	{
-		// list of squeezed tokens
-		Map<DomainComponent, List<Decision>> squeezed = new HashMap<>();
-		// check pseudo-controllability of components
-		for (DomainComponent component : this.components.values()) 
-		{
-			try {
-				// check pseudo-controllability
-				component.checkPseudoControllability();
-			}
-			catch (PseudoControllabilityCheckException ex) 
-			{
-				// get controllability issues
-				Map<DomainComponent, List<Decision>> issues = ex.getPseudoControllabilityIssues();
-				for (DomainComponent c : issues.keySet()) {
-					for (Decision issue : issues.get(c)) {
-						// add pseudo-controllability issues
-						if (!squeezed.containsKey(c)) {
-							squeezed.put(c, new ArrayList<Decision>());
-						}
-						// add issue
-						squeezed.get(c).add(issue);
-					}
-				}
-			}
-		}
-		
-		// check if some issues have been found
-		if (!squeezed.isEmpty()) {
-			// create exception
-			PseudoControllabilityCheckException ex = new PseudoControllabilityCheckException("Some pseudo-controllability issues have been found");
-			ex.setPseudoControllabilityIssues(squeezed);
-			// throw exception
-			throw ex;
-		}
+		this.pdb.verify();
 	}
 
 	/**
@@ -478,13 +428,15 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 	 * @return
 	 */
 	@Override
-	public <T extends DomainComponent> T createDomainComponent(String name, DomainComponentType type) {
+	public <T extends DomainComponent> T createDomainComponent(String name, DomainComponentType type) 
+	{
 		// check if a component already exist
 		if (this.components.containsKey(name)) {
 			throw new RuntimeException("A component with name " + name + " already exists");
 		}
-		// create component
-		T c = this.componentFactory.create(name, type);
+	
+		// create domain component
+		T c = DomainComponentBuilder.createAndSet(name, type, this.tdb, this.pdb);
 		// get created component
 		return c;
 	}
@@ -947,7 +899,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 			}
 			catch (FlawSolutionApplicationException ex) {
 				// error while applying flaw solution
-				this.logger.warning(ex.getMessage());
+				logger.warning(ex.getMessage());
 				throw new OperatorPropagationException("Error while propagating operator:\n- " + operator + "\n");
 			}
 		}

@@ -8,14 +8,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.domain.DomainComponentBuilder;
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
 import it.istc.pst.platinum.framework.domain.component.sv.ValuePath;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -26,24 +28,32 @@ import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.pla
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning.GapCompletion;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
 import it.istc.pst.platinum.framework.microkernel.resolver.timeline.scheduling.PrecedenceConstraint;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
+import it.istc.pst.platinum.framework.parameter.ParameterFacade;
+import it.istc.pst.platinum.framework.parameter.ParameterFacadeBuilder;
+import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
-import it.istc.pst.platinum.framework.time.TemporalFacadeFactory;
-import it.istc.pst.platinum.framework.time.TemporalFacadeType;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
+import it.istc.pst.platinum.framework.time.TemporalFacadeBuilder;
+import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 
 /**
  * 
  * @author anacleto
  *
  */
+@TemporalFacadeConfiguration(
+		network = TemporalNetworkType.STNU,
+		solver = TemporalSolverType.APSP
+)
+@ParameterFacadeConfiguration(
+		solver = ParameterSolverType.CHOCHO_SOLVER
+)
 public class StateVariableComponentTestCase 
 {
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 100;
-	private TemporalFacade facade;
+	private TemporalFacade tf;
+	private ParameterFacade pf;
 	private PrimitiveStateVariable psv;
 
 	/**
@@ -55,22 +65,12 @@ public class StateVariableComponentTestCase
 		System.out.println("************************* State Variable Component Test Case ***********************");
 		System.out.println("**********************************************************************************");
 		
-		// create logger
-		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
-		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
-		
-		// get temporal facade
-		TemporalFacadeFactory factory = new TemporalFacadeFactory();
 		// create temporal facade
-		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
-		
-		// get parameter facade
-		ParameterFacadeFactory pf = new ParameterFacadeFactory();
-		pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
-		
+		this.tf = TemporalFacadeBuilder.createAndSet(this, ORIGIN, HORIZON);
+		// create parameter facade
+		this.pf = ParameterFacadeBuilder.createAndSet(this);
 		// create State Variable
-		DomainComponentFactory df = new DomainComponentFactory();
-		this.psv = df.create("SV1", DomainComponentType.SV_PRIMITIVE);
+		this.psv = DomainComponentBuilder.createAndSet("SV1", DomainComponentType.SV_PRIMITIVE, tf, pf);
 	}
 	
 	/**
@@ -79,7 +79,8 @@ public class StateVariableComponentTestCase
 	@After
 	public void clear() {
 		this.psv = null;
-		this.facade = null;
+		this.tf = null;
+		this.pf = null;
 		System.gc();
 		System.out.println();
 		System.out.println("**********************************************************************************");
@@ -97,7 +98,7 @@ public class StateVariableComponentTestCase
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create state variable description
-		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.facade.getHorizon()}, true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.tf.getHorizon()}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long [] {10, 30}, true);
 		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {11, 25}, false);
 		// add transitions
@@ -121,7 +122,7 @@ public class StateVariableComponentTestCase
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create tokens
@@ -133,11 +134,12 @@ public class StateVariableComponentTestCase
 			this.psv.activate(d3);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
+			this.pf.verify();
 			// print state variable information
 			System.out.println();
 			System.out.println(this.psv);
-			System.out.println(this.facade);
+			System.out.println(this.tf);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -157,12 +159,12 @@ public class StateVariableComponentTestCase
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {1, this.facade.getHorizon()}, true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {1, this.tf.getHorizon()}, true);
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create decision with specified end interval
@@ -181,7 +183,8 @@ public class StateVariableComponentTestCase
 			this.psv.activate(d2);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
+			this.pf.verify();
 			
 			// get time-line
 			List<Decision> decisions = this.psv.getActiveDecisions();
@@ -234,7 +237,7 @@ public class StateVariableComponentTestCase
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
-		StateVariableValue  v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
 		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
 		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", new long[] {22, 33}, false);
 		StateVariableValue v5 = this.psv.addStateVariableValue("Val-5", new long[] {5, 20}, false);
@@ -298,7 +301,7 @@ public class StateVariableComponentTestCase
 		this.psv.addValueTransition(v3, v1);
 		
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create tokens
@@ -360,7 +363,7 @@ public class StateVariableComponentTestCase
 		this.psv.addValueTransition(v3, v1);
 		
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create tokens
@@ -390,12 +393,12 @@ public class StateVariableComponentTestCase
 			
 			// print the network
 			System.out.println("Before propagation of flaw solution");
-			System.out.println(this.facade);
+			System.out.println(this.tf);
 			// apply
 			this.psv.commit(solution);
 			// print the network
 			System.out.println("After propagation of flaw solution");
-			System.out.println(this.facade);
+			System.out.println(this.tf);
 
 			// check flaws
 			flaws = this.psv.detectFlaws();
@@ -427,7 +430,7 @@ public class StateVariableComponentTestCase
 		this.psv.addValueTransition(v3, v1);
 		
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create decisions
@@ -465,16 +468,16 @@ public class StateVariableComponentTestCase
 				
 				// print the network
 				System.out.println("Before propagation of flaw solution");
-				System.out.println(this.facade);
+				System.out.println(this.tf);
 				// apply 
 				this.psv.commit(solution);
 				schedulingStepCounter++;
 				// print the network
 				System.out.println("After propagation of flaw solution");
-				System.out.println(this.facade);
+				System.out.println(this.tf);
 				
 				// check consistency
-				this.facade.checkConsistency();
+				this.tf.verify();
 				
 				// display component after scheduling
 				this.psv.display();
@@ -509,10 +512,10 @@ public class StateVariableComponentTestCase
 		Assert.assertNotNull(this.psv);
 		
 		// create the state variable description
-		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.facade.getHorizon()}, true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.tf.getHorizon()}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 10}, true);
 		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {5, 5}, true);
-		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", new long[] {1, this.facade.getHorizon()}, true);
+		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", new long[] {1, this.tf.getHorizon()}, true);
 		StateVariableValue v5 = this.psv.addStateVariableValue("Val-5", new long[] {5, 5}, true);
 		StateVariableValue v6 = this.psv.addStateVariableValue("Val-6", new long[] {3, 3}, true);
 		
@@ -541,7 +544,7 @@ public class StateVariableComponentTestCase
 			this.psv.activate(d2);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
 			
 			// get decisions
 			List<Decision> decisions = this.psv.getActiveDecisions();
@@ -585,7 +588,7 @@ public class StateVariableComponentTestCase
 			}
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
 			// display component
 			this.psv.display();
 			Thread.sleep(5000);
@@ -602,7 +605,7 @@ public class StateVariableComponentTestCase
 			flaws = this.psv.detectFlaws();
 			Assert.assertTrue(flaws.isEmpty());
 			
-			this.facade.checkConsistency();
+			this.tf.verify();
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -668,7 +671,8 @@ public class StateVariableComponentTestCase
 			
 			// apply solution
 			this.psv.commit(completion);
-			this.facade.checkConsistency();
+			this.tf.verify();
+			this.pf.verify();
 			
 			// check component
 			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
@@ -687,7 +691,8 @@ public class StateVariableComponentTestCase
 			
 			// roll-back solution
 			this.psv.rollback(completion);
-			this.facade.checkConsistency();
+			this.tf.verify();
+			this.pf.verify();
 			
 			// check component
 			Assert.assertNotNull(this.psv.getActiveDecisions());
@@ -728,7 +733,7 @@ public class StateVariableComponentTestCase
 		this.psv.addValueTransition(v3, v1);
 		
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create tokens
@@ -760,7 +765,7 @@ public class StateVariableComponentTestCase
 			
 			// commit solution
 			this.psv.commit(solution);
-			this.facade.checkConsistency();
+			this.tf.verify();
 			
 			// check relations
 			Assert.assertFalse(this.psv.getActiveRelations().isEmpty());
@@ -771,7 +776,7 @@ public class StateVariableComponentTestCase
 			
 			// roll-back solution
 			this.psv.rollback(solution);
-			this.facade.checkConsistency();
+			this.tf.verify();
 			
 			// check relations
 			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
@@ -804,7 +809,7 @@ public class StateVariableComponentTestCase
 		this.psv.addValueTransition(v3, v1);
 		
 		System.out.println(this.psv);
-		System.out.println(this.facade);
+		System.out.println(this.tf);
 		try 
 		{
 			// create tokens
@@ -833,7 +838,7 @@ public class StateVariableComponentTestCase
 			this.psv.commit(solution);
 			
 			// check consistency 
-			this.facade.checkConsistency();
+			this.tf.verify();
 			System.out.println(".... solution successfully applied\n");
 			
 			
@@ -849,7 +854,7 @@ public class StateVariableComponentTestCase
 			this.psv.rollback(solution);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.tf.verify();
 			System.out.println(".... solution successfully retracted\n");
 			
 			
@@ -873,7 +878,7 @@ public class StateVariableComponentTestCase
 			this.psv.commit(solution);
 			
 			// check consistency 
-			this.facade.checkConsistency();
+			this.tf.verify();
 			System.out.println(".... solution successfully applied\n");
 			
 			

@@ -180,7 +180,7 @@ public class DiscreteResource extends Resource
 				this.tdb.propagate(fixStart);
 				committed.add(fixStart);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				// check updated scheduled of the end time point
 				query.setTimePoint(production);
@@ -198,7 +198,7 @@ public class DiscreteResource extends Resource
 				this.tdb.propagate(fixEnd);
 				committed.add(fixEnd);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				// create sample and add sample to the profile
 				RequirementResourceProfileSample sample = new RequirementResourceProfileSample(event, start, end);
@@ -267,7 +267,7 @@ public class DiscreteResource extends Resource
 				this.tdb.propagate(fixStart);
 				committed.add(fixStart);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				// check updated scheduled of the end time point
 				query.setTimePoint(production);
@@ -285,7 +285,7 @@ public class DiscreteResource extends Resource
 				this.tdb.propagate(fixEnd);
 				committed.add(fixEnd);
 				// check consistency
-				this.tdb.checkConsistency();
+				this.tdb.verify();
 				
 				// create sample and add sample to the profile
 				RequirementResourceProfileSample sample = new RequirementResourceProfileSample(event, start, end);

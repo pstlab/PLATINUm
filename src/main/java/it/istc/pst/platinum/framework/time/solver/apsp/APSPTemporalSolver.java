@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import it.istc.pst.platinum.framework.time.solver.TemporalSolver;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetwork;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 import it.istc.pst.platinum.framework.time.tn.lang.event.AddRelationTemporalNetworkNotification;
@@ -35,8 +36,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 	 * Create an All-Pair-Shortest-Path Solver instance.
 	 * 
 	 */
-	protected APSPTemporalSolver() {
-		super();
+	public APSPTemporalSolver(TemporalNetwork tn) {
+		super(tn);
 		// initialize APSP data structure
 		this.toPropagate = false;
 		this.distance = null;
@@ -44,8 +45,43 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 		this.propagationCounter = 0;
 		// create the distance graph
 		this.dg = new DistanceGraph();
+		// initialize
+		this.init();
 	}
-
+	
+	/**
+	 * 
+	 */
+	private void init() 
+	{
+		// set propagate flag
+		this.toPropagate = true;
+		// set temporal horizon
+		this.dg.setInfity(this.tn.getHorizon() + 1);
+		// add all points to the distance graph
+		for (TimePoint point : this.tn.getTimePoints()) {
+			// add node to the distance graph
+			this.dg.add(point);
+		}
+		
+		// add edges to the distance graph
+		for (TimePoint reference : this.tn.getTimePoints()) 
+		{
+			// get related constraints
+			for (TimePointDistanceConstraint constraint : this.tn.getConstraints(reference)) 
+			{
+				// get target
+				TimePoint target = constraint.getTarget();
+				// get bounds
+				long max = constraint.getDistanceUpperBound();
+				long min = -constraint.getDistanceLowerBound();
+				// add edges
+				this.dg.add(reference, target, max);
+				this.dg.add(target, reference, min);
+			}
+		}
+	}
+	
 	/**
 	 * 
 	 * @return
@@ -250,8 +286,6 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 				// set information 
 				point.setLowerBound(distance[0]);
 				point.setUpperBound(distance[1]);
-//				tpBoundQuery.setLb(distance[0]);
-//				tpBoundQuery.setUb(distance[1]);
 			}
 			break;
 			

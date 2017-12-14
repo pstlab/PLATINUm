@@ -11,8 +11,8 @@ import it.istc.pst.platinum.executive.pdb.epsl.EPSLExecutivePlanDataBaseManager;
 import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionDispatcherPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionMonitorPlaceholder;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
 import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
-import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
 
 /**
  * 

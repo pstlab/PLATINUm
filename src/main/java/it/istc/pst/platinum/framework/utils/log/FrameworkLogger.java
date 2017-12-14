@@ -7,14 +7,12 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-
 /**
  * 
  * @author anacleto
  *
  */
-public class FrameworkLogger extends ApplicationFrameworkObject
+public class FrameworkLogger
 {
 	private Logger logger;		// the logger
 	

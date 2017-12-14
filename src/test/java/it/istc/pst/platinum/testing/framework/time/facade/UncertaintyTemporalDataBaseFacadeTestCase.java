@@ -5,12 +5,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryFactory;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
-import it.istc.pst.platinum.framework.time.TemporalFacadeFactory;
-import it.istc.pst.platinum.framework.time.TemporalFacadeType;
+import it.istc.pst.platinum.framework.time.TemporalFacadeBuilder;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintFactory;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
@@ -19,15 +19,19 @@ import it.istc.pst.platinum.framework.time.lang.allen.DuringIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
+import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
  * @author anacleto
  *
  */
+@TemporalFacadeConfiguration(
+		network = TemporalNetworkType.STNU,
+		solver = TemporalSolverType.APSP
+)
 public class UncertaintyTemporalDataBaseFacadeTestCase 
 {
 	private static final int ORIGIN = 0;
@@ -45,13 +49,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		System.out.println("********************** Uncertainty Temporal Facade Test Case *********************");
 		System.out.println("**********************************************************************************");
 		
-		// create logger
-		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
-		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
-		
 		// create temporal network
-		TemporalFacadeFactory factory = new TemporalFacadeFactory();
-		this.facade = factory.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, ORIGIN, HORIZON);
+		this.facade = TemporalFacadeBuilder.createAndSet(this, ORIGIN, HORIZON);
 		
 		// get interval factory
 		this.intervalFactory = TemporalConstraintFactory.getInstance();
@@ -80,8 +79,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			// check facade
 			Assert.assertNotNull(this.facade);
 			// check consistency
-			this.facade.checkConsistency();
-			System.out.println(this.facade.getTemporalNetworkDescription());
+			this.facade.verify();
+			System.out.println(this.facade);
 			System.out.println("Ok!");
 		} catch (ConsistencyCheckException ex) {
 			System.err.println(ex.getMessage());
@@ -120,7 +119,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			Assert.assertFalse(i1.equals(i2));
 			
 			// print temporal network information
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -156,9 +155,9 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			System.out.println(i2);
 			
 			Assert.assertFalse(i1.equals(i2));
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print temporal network information
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 		}
 		catch (ConsistencyCheckException ex) {
 			System.err.println(ex.getMessage());
@@ -209,7 +208,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			// propagate constraint
 			this.facade.propagate(constraint);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 		}
 		catch (PseudoControllabilityCheckException ex) {
 			// the network is not pseudo-controllable
@@ -224,7 +223,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			System.out.println("---> dmin= " + i1.getDurationLowerBound() + ", dmax= " + i1.getDurationUpperBound());
 			System.out.println();
 			// print temporal network information
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 		}
 		catch (Exception exx) {
 			System.err.println(exx.getMessage());
@@ -270,7 +269,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			this.facade.propagate(constraint);
 
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			
 			// get actual duration of the contingent interval
 			IntervalScheduleQuery query = this.queryFactory.
@@ -290,7 +289,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			System.out.println();
 			
 			// print temporal network information
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -312,32 +311,32 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			Assert.assertNotNull(i1);
 
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 			
 			// delete interval
 			facade.deleteTemporalInterval(i1);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print temporal network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 			
 			// create another temporal interval
 			TemporalInterval i2 = facade.createTemporalInterval(true);
 			Assert.assertNotNull(i2);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 			
 			// delete interval
 			facade.deleteTemporalInterval(i2);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print temporal network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 			
 			// create other intervals
 			facade.createTemporalInterval(true);
@@ -345,9 +344,9 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			facade.createTemporalInterval(true);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -394,9 +393,9 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			facade.propagate(before);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print temporal network information
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -443,7 +442,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			// propagate constraint
 			facade.propagate(before1);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 
 			// create (inconsistent) constraint
 			BeforeIntervalConstraint before2 = this.intervalFactory.
@@ -458,21 +457,21 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 				// propagate constraint
 				facade.propagate(before2);
 				// check consistency
-				this.facade.checkConsistency();
+				this.facade.verify();
 			}
 			catch (ConsistencyCheckException ex) {
 				// inconsistency expected
 				System.out.println(ex.getMessage());
-				System.out.println(facade.getTemporalNetworkDescription());
+				System.out.println(this.facade);
 				System.out.println();
 				System.out.println("Retract inconsistent temporal constraint");
 				// remove inconsistent constraint
 				facade.retract(before2);
 				// check consistency
-				this.facade.checkConsistency();
+				this.facade.verify();
 				
 				// print temporal network information
-				System.out.println(facade.getTemporalNetworkDescription());
+				System.out.println(this.facade);
 			}
 		}
 		catch (Exception ex) {
@@ -520,25 +519,25 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			facade.propagate(c3);
 			
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 			
 			// delete interval
 			facade.deleteTemporalInterval(i2);
 			System.out.println("Removing " + i2);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print temporal network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 			
 			// delete interval
 			facade.deleteTemporalInterval(i1);
 			System.out.println("Removing " + i1);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print temporal network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -583,15 +582,15 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			// propagate constraints
 			this.facade.propagate(c1);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			this.facade.propagate(c2);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			this.facade.propagate(c3);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			// print network
-			System.out.println(facade.getTemporalNetworkDescription());
+			System.out.println(this.facade);
 			
 			// make distance query
 			IntervalDistanceQuery distanceQuery = this.queryFactory.create(TemporalQueryType.INTERVAL_DISTANCE);

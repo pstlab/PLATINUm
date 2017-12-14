@@ -6,12 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.FrameworkObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.TemporalNetworkPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.TemporalSolverPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.query.QueryManager;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQuery;
@@ -20,6 +18,8 @@ import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.time.ex.InconsistentIntervaEndTimeException;
 import it.istc.pst.platinum.framework.time.ex.InconsistentIntervalDurationException;
 import it.istc.pst.platinum.framework.time.ex.InconsistentIntervalStartTimeException;
+import it.istc.pst.platinum.framework.time.ex.PseudoControllabilityException;
+import it.istc.pst.platinum.framework.time.ex.TemporalConsistencyException;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.ex.TimePointCreationException;
@@ -43,54 +43,49 @@ import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalPseudoControllabilityQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalScheduleQuery;
 import it.istc.pst.platinum.framework.time.solver.TemporalSolver;
+import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
 import it.istc.pst.platinum.framework.time.tn.TemporalNetwork;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 import it.istc.pst.platinum.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.istc.pst.platinum.framework.time.tn.ex.InconsistentTpValueException;
-import it.istc.pst.platinum.framework.time.tn.ex.TemporalConsistencyCheckException;
 import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointDistanceQuery;
 import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointQuery;
 import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointScheduleQuery;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class TemporalFacade extends ApplicationFrameworkObject implements QueryManager<TemporalQuery>
+@TemporalFacadeConfiguration(
+		// default network type 
+		network = TemporalNetworkType.STNU,
+		// default temporal reasoner
+		solver = TemporalSolverType.APSP
+)
+public class TemporalFacade extends FrameworkObject implements QueryManager<TemporalQuery>
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
-	protected FrameworkLogger logger;
-	
 	@TemporalNetworkPlaceholder
-	protected TemporalNetwork tn;						// temporal network
+	protected TemporalNetwork tn;										// temporal network
 
 	@TemporalSolverPlaceholder
-	protected TemporalSolver<TimePointQuery> solver;	// time point reasoner
+	protected TemporalSolver<TimePointQuery> solver;					// time point reasoner
 	
-	protected Set<TemporalInterval> intervals;			// set of created temporal intervals
-	protected TemporalQueryFactory qf;					// temporal query factory
-	protected TemporalConstraintFactory cf;	 			// temporal constraint factory
+	protected Set<TemporalInterval> intervals;							// set of created temporal intervals
+	protected TemporalQueryFactory qf;									// temporal query factory
+	protected TemporalConstraintFactory cf;	 							// temporal constraint factory
 	
 	/**
 	 * 
 	 */
 	protected TemporalFacade() {
+		super();
 		// get query factory instance
 		this.qf = TemporalQueryFactory.getInstance();
 		this.cf = TemporalConstraintFactory.getInstance();
 		this.intervals = new HashSet<>();
-	}
-	
-	/**
-	 * 
-	 */
-	@PostConstruct
-	protected void init() {
-		// bind temporal solver to the temporal network
-		this.solver.setTemporalNetwork(this.tn);
 	}
 	
 	/**
@@ -109,14 +104,14 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 		return this.tn.getHorizon();
 	}
 	
-	/**
-	 * Get the equivalent Minimal Network
-	 * 
-	 * @return
-	 */
-	public String getTemporalNetworkDescription() {
-		return this.tn.toString();
-	}
+//	/**
+//	 * Get the equivalent Minimal Network
+//	 * 
+//	 * @return
+//	 */
+//	public String getTemporalNetworkDescription() {
+//		return "[TemporalFacade\n- network:\n" + this.tn.toString() + "\n\n- solver:\n" + this.solver.toString() + "\n\n]\n";
+//	}
 	
 	/**
 	 * Create a flexible time point
@@ -124,7 +119,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public final TimePoint createTimePoint() 
+	public TimePoint createTimePoint() 
 			throws TimePointCreationException 
 	{
 		// time point to create
@@ -146,7 +141,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public final TimePoint createTimePoint(long at) 
+	public  TimePoint createTimePoint(long at) 
 			throws TimePointCreationException {
 		// time point to create
 		TimePoint point = null;
@@ -167,7 +162,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public final TimePoint createTimePoint(long[] bounds) 
+	public  TimePoint createTimePoint(long[] bounds) 
 			throws TimePointCreationException {
 		// time point to create
 		TimePoint point = null;
@@ -187,7 +182,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public final TemporalInterval createTemporalInterval(boolean controllable) 
+	public  TemporalInterval createTemporalInterval(boolean controllable) 
 			throws TemporalIntervalCreationException {
 		// create temporal interval
 		return this.createTemporalInterval(new long[] {this.getOrigin(), this.getHorizon()}, 
@@ -203,7 +198,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public final TemporalInterval createTemporalInterval(long[] duration, boolean controllable) 
+	public  TemporalInterval createTemporalInterval(long[] duration, boolean controllable) 
 			throws TemporalIntervalCreationException 
 	{
 		// create temporal interval
@@ -221,7 +216,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public final TemporalInterval createTemporalInterval(long[] end, long[] duration, boolean controllable) 
+	public  TemporalInterval createTemporalInterval(long[] end, long[] duration, boolean controllable) 
 			throws TemporalIntervalCreationException 
 	{
 		// create temporal interval
@@ -239,7 +234,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public final TemporalInterval createTemporalInterval(long[] start, long[] end, long[] duration, boolean controllable) 
+	public  TemporalInterval createTemporalInterval(long[] start, long[] end, long[] duration, boolean controllable) 
 			throws TemporalIntervalCreationException 
 	{
 		// interval's start time
@@ -297,7 +292,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * 
 	 * @param i
 	 */
-	public final void deleteTemporalInterval(TemporalInterval i) {
+	public  void deleteTemporalInterval(TemporalInterval i) {
 		// list of time points to remove
 		List<TimePoint> list = new ArrayList<>();
 		// get start time
@@ -311,14 +306,22 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	}
 	
 	/**
+	 * Check the temporal consistency of the temporal information as well as the 
+	 * pseudo-controllability property of the STNU.
 	 * 
-	 * @throws ConsistencyCheckException
+	 * 
 	 */
-	public final void checkConsistency() 
-			throws ConsistencyCheckException {
+	public void verify() 
+			throws ConsistencyCheckException 
+	{
 		// check temporal network consistency
 		if (!this.solver.isConsistent()) {
-			throw new TemporalConsistencyCheckException("The network is not temporally consistent");
+			throw new TemporalConsistencyException("The STNU is not valid!\nCheck propagated temporal constraints...\n");
+		}
+		
+		// check pseudo-controllability
+		if (!this.isPseudoControllable()) {
+			throw new PseudoControllabilityException("The STNU is not pseudo-controllable!\nCheck constraints on uncontrollable intervals...\n");
 		}
 	}
 	
@@ -327,7 +330,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @param type
 	 * @return
 	 */
-	public final <T extends TemporalQuery> T createTemporalQuery(TemporalQueryType type) {
+	public  <T extends TemporalQuery> T createTemporalQuery(TemporalQueryType type) {
 		// query instance
 		T query = this.qf.create(type);
 		// get created instance
@@ -339,7 +342,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @param type
 	 * @return
 	 */
-	public final <T extends TemporalConstraint> T createTemporalConstraint(TemporalConstraintType type) {
+	public  <T extends TemporalConstraint> T createTemporalConstraint(TemporalConstraintType type) {
 		// create constraint
 		T cons = this.cf.create(type);
 		// get created constraint
@@ -350,7 +353,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * 
 	 */
 	@Override
-	public final void process(TemporalQuery query) 
+	public  void process(TemporalQuery query) 
 	{
 		// check query type
 		switch (query.getType()) 
@@ -488,7 +491,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @param constraint
 	 * @throws Exception
 	 */
-	public final void propagate(TemporalConstraint constraint) 
+	public  void propagate(TemporalConstraint constraint) 
 			throws TemporalConstraintPropagationException 
 	{
 		try 
@@ -656,7 +659,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 * @param constraint
 	 * @throws Exception
 	 */
-	public final void retract(TemporalConstraint constraint) {
+	public  void retract(TemporalConstraint constraint) {
 		// retract propagated constraints
 		TimePointDistanceConstraint[] toRetract = constraint.getPropagatedConstraints();
 		// verify whether some constraints have been propagated
@@ -672,7 +675,7 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 	 */
 	@Override
 	public String toString() {
-		return this.tn.toString();
+		return "[TemporalFacade\n\n" + this.tn.toString() + "\n\n" + this.solver.toString() + "\n\n]\n";
 	}
 	
 	/**
@@ -1025,5 +1028,50 @@ public abstract class TemporalFacade extends ApplicationFrameworkObject implemen
 		
 		// get the computed value
 		return makespan;
+	}
+	
+	/**
+	 * This method checks if the STNU is pseudo-controllable. 
+	 * 
+	 *	This procedure checks if contingent links have been "squeezed"
+	 *	so, the STNU is pseudo-controllable if no assumption has been 
+	 *	made on the duration of uncontrollable constraints (i.e. contingent
+	 *	links).
+	 *
+	 * @return
+	 */
+	private boolean isPseudoControllable()
+	{
+		// hypothesis
+		boolean pseudoControllable = true;
+		// check contingent constraints
+		for (TimePointDistanceConstraint c : this.tn.getConstraints()) 
+		{
+			// check controllability
+			if (!c.isControllable()) {
+				// get related time points
+				TimePoint source = c.getReference();
+				TimePoint target = c.getTarget();
+				
+				// create query
+				TimePointDistanceQuery query = this.qf.create(TemporalQueryType.TP_DISTANCE);
+				query.setSource(source);
+				query.setTarget(target);
+				// process query
+				this.solver.process(query);
+
+				// get actual bounds
+				long dmin = query.getDistanceLowerBound();
+				long dmax = query.getDistanceUpperBound();
+				// check duration
+				if (dmin < c.getDistanceLowerBound() && dmax < c.getDistanceUpperBound()) {
+					// contingent link change
+					pseudoControllable = false;
+					break;
+				}
+			}
+		}
+		// get result
+		return pseudoControllable;
 	}
 }

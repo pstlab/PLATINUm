@@ -9,15 +9,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.domain.DomainComponentBuilder;
 import it.istc.pst.platinum.framework.domain.component.ComponentValueType;
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.DomainComponentFactory;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ReservoirResource;
 import it.istc.pst.platinum.framework.domain.component.resource.reservoir.ResourceUsageValue;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
@@ -29,21 +31,25 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir.ConsumptionScheduling;
 import it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir.ProductionPlanning;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
+import it.istc.pst.platinum.framework.parameter.ParameterFacadeBuilder;
+import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
 import it.istc.pst.platinum.framework.parameter.lang.NumericParameter;
 import it.istc.pst.platinum.framework.parameter.lang.query.CheckValuesParameterQuery;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
-import it.istc.pst.platinum.framework.time.TemporalFacadeFactory;
-import it.istc.pst.platinum.framework.time.TemporalFacadeType;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
+import it.istc.pst.platinum.framework.time.TemporalFacadeBuilder;
+import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 
 /**
  * 
  * @author anacleto
  *
  */
+@TemporalFacadeConfiguration(
+		network = TemporalNetworkType.STNU,
+		solver = TemporalSolverType.APSP)
+@ParameterFacadeConfiguration(
+		solver = ParameterSolverType.CHOCHO_SOLVER)
 public class ReservoirResourceComponentTestCase 
 {
 	private TemporalFacade tdb;
@@ -59,21 +65,15 @@ public class ReservoirResourceComponentTestCase
 		System.out.println("********************** Reservoir Resource Component Test Case ********************");
 		System.out.println("**********************************************************************************");
 		
-		// create logger
-		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
-		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
 		// create temporal facade
-		TemporalFacadeFactory tf = new TemporalFacadeFactory();
-		this.tdb = tf.create(TemporalFacadeType.UNCERTAINTY_TEMPORAL_FACADE, 0, 100);
+		this.tdb = TemporalFacadeBuilder.createAndSet(this, 0, 100);
 		
 		// get parameter facade
-		ParameterFacadeFactory pf = new ParameterFacadeFactory();
-		this.pdb = pf.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		this.pdb = ParameterFacadeBuilder.createAndSet(this);
 		
 		// create unary resource
-		DomainComponentFactory df = new DomainComponentFactory();
-		this.resource = df.create("ResvRes", DomainComponentType.RESOURCE_RESERVOIR);
+		this.resource = DomainComponentBuilder.createAndSet("ResvRes", DomainComponentType.RESOURCE_RESERVOIR, tdb, pdb);
 		// set minimum and maximum capacity
 		this.resource.setMinCapacity(0);
 		this.resource.setMaxCapacity(10);
@@ -323,8 +323,8 @@ public class ReservoirResourceComponentTestCase
 			this.resource.commit(planning);
 			
 			// check consistency
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			System.out.println("Resource planning solution successfully applied:\n- solution: " + planning + "\n");
 			
 			// check pending decisions and relations
@@ -339,8 +339,8 @@ public class ReservoirResourceComponentTestCase
 			// add decision and then check flaws
 			this.resource.activate(pending.get(0));
 			// check consistency
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			System.out.println("Production successfully propagated:\n- production: " + pending.get(0) + "\n");
 			
 			// check flaws after production
@@ -425,8 +425,8 @@ public class ReservoirResourceComponentTestCase
 			// retract flaw solution
 			this.resource.rollback(solution);
 			// check consistency
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			System.out.println("Solution successfully retracted:\n- solution: " + solution + "\n");
 			
 			// check peak again
@@ -474,8 +474,8 @@ public class ReservoirResourceComponentTestCase
 		this.resource.commit(planning);
 		
 		// check consistency
-		this.tdb.checkConsistency();
-		this.pdb.checkConsistency();
+		this.tdb.verify();
+		this.pdb.verify();
 		System.out.println("Resource planning solution successfully applied:\n- solution: " + planning + "\n");
 		
 		// check pending decisions and relations
@@ -491,8 +491,8 @@ public class ReservoirResourceComponentTestCase
 		Decision goal = pending.get(0);
 		this.resource.activate(goal);
 		// check consistency
-		this.tdb.checkConsistency();
-		this.pdb.checkConsistency();
+		this.tdb.verify();
+		this.pdb.verify();
 		System.out.println("Production successfully propagated:\n- production: " + pending.get(0) + "\n");
 		return goal;
 	}
@@ -733,8 +733,8 @@ public class ReservoirResourceComponentTestCase
 		// post constraint
 		this.resource.activate(bind);
 		// check consistency
-		this.tdb.checkConsistency();
-		this.pdb.checkConsistency();
+		this.tdb.verify();
+		this.pdb.verify();
 		
 		// get decision 
 		return consumption;
@@ -776,8 +776,8 @@ public class ReservoirResourceComponentTestCase
 		// post constraint
 		this.resource.activate(bind);
 		// check consistency
-		this.tdb.checkConsistency();
-		this.pdb.checkConsistency();
+		this.tdb.verify();
+		this.pdb.verify();
 		
 		// get decision 
 		return consumption;
@@ -843,8 +843,8 @@ public class ReservoirResourceComponentTestCase
 				this.resource.commit(planning);
 				
 				// check consistency
-				this.tdb.checkConsistency();
-				this.pdb.checkConsistency();
+				this.tdb.verify();
+				this.pdb.verify();
 				System.out.println("Resource planning solution successfully applied:\n- solution: " + planning + "\n");
 				
 				// check pending decisions and relations
@@ -859,8 +859,8 @@ public class ReservoirResourceComponentTestCase
 			}
 			
 			// check consistency 
-			this.tdb.checkConsistency();
-			this.pdb.checkConsistency();
+			this.tdb.verify();
+			this.pdb.verify();
 			System.out.println("... Solution successfully applied\n");
 			// check peak
 			flaws = this.resource.detectFlaws();

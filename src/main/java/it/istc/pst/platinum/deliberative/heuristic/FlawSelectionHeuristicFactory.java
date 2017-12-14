@@ -54,7 +54,7 @@ public class FlawSelectionHeuristicFactory extends ApplicationFrameworkFactory
 			this.injectPlanDataBase(heuristic);
 			
 			// check filter pipeline
-			List<Field> fields = this.findFieldsAnnotatedBy(clazz, FlawFilterPipelineModule.class);
+			List<Field> fields = this.doFindFieldsAnnotatedBy(clazz, FlawFilterPipelineModule.class);
 			for (Field field : fields) {
 				// get annotation
 				FlawFilterPipelineModule annotation = field.getAnnotation(FlawFilterPipelineModule.class);

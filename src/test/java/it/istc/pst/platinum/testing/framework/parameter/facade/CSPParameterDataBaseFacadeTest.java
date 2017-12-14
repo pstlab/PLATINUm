@@ -5,11 +5,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.parameter.ParameterFacade;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeFactory;
-import it.istc.pst.platinum.framework.parameter.ParameterFacadeType;
+import it.istc.pst.platinum.framework.parameter.ParameterFacadeBuilder;
+import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
 import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameter;
 import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
@@ -19,18 +20,18 @@ import it.istc.pst.platinum.framework.parameter.lang.constraints.NotEqualParamet
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintFactory;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
 import it.istc.pst.platinum.framework.parameter.lang.query.CheckValuesParameterQuery;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
  * @author anacleto
  *
  */
+@ParameterFacadeConfiguration(
+		solver= ParameterSolverType.CHOCHO_SOLVER
+)
 public class CSPParameterDataBaseFacadeTest 
 {
 	private ParameterFacade facade;
-	private ParameterFacadeFactory factory;
 	private ParameterConstraintFactory cFactory;
 	
 	/**
@@ -42,11 +43,8 @@ public class CSPParameterDataBaseFacadeTest
 		System.out.println("**********************************************************************************");
 		System.out.println("*************************** CSP Parameter Facade Test Case ************************");
 		System.out.println("**********************************************************************************");
-		// create logger
-		FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
-		lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
 		
-		this.factory = new ParameterFacadeFactory();
+		// get parameter constraint factory
 		this.cFactory = ParameterConstraintFactory.getInstance();
 	}
 	
@@ -71,12 +69,12 @@ public class CSPParameterDataBaseFacadeTest
 		System.out.println("[Test]: createFacadeTest() --------------------");
 		System.out.println();
 		// create facade
-		this.facade = this.factory.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		this.facade = ParameterFacadeBuilder.createAndSet(this);
 		Assert.assertNotNull(this.facade);
 		try
 		{
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			System.out.println("Ok!");
 			Assert.assertTrue(true);
 		}
@@ -96,7 +94,7 @@ public class CSPParameterDataBaseFacadeTest
 		System.out.println();
 		
 		// create facade
-		this.facade = this.factory.create(ParameterFacadeType.CSP_PARAMETER_FACADE);
+		this.facade = ParameterFacadeBuilder.createAndSet(this);
 		
 		// create parameter domains
 		EnumerationParameterDomain location = this.facade.
@@ -129,7 +127,7 @@ public class CSPParameterDataBaseFacadeTest
 			// propagate constraint
 			this.facade.propagate(neq);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			System.out.println("Ok!");
 			Assert.assertTrue(true);
 		}
@@ -148,7 +146,7 @@ public class CSPParameterDataBaseFacadeTest
 			// propagate constraint
 			this.facade.propagate(bind);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			System.out.println("Ok!");
 			Assert.assertTrue(true);
 		}
@@ -187,7 +185,7 @@ public class CSPParameterDataBaseFacadeTest
 			// propagate constraint
 			this.facade.propagate(ex);
 			// check consistency
-			this.facade.checkConsistency();
+			this.facade.verify();
 			System.out.println("Ok!");
 			Assert.assertTrue(true);
 		}

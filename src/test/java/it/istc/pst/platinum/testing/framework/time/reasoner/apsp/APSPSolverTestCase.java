@@ -10,20 +10,14 @@ import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryFactory;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintFactory;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.solver.TemporalSolverFactory;
-import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
 import it.istc.pst.platinum.framework.time.solver.apsp.APSPTemporalSolver;
 import it.istc.pst.platinum.framework.time.tn.SimpleTemporalNetwork;
 import it.istc.pst.platinum.framework.time.tn.SimpleTemporalNetworkWithUncertainty;
-import it.istc.pst.platinum.framework.time.tn.TemporalNetworkFactory;
-import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 import it.istc.pst.platinum.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointDistanceQuery;
 import it.istc.pst.platinum.framework.time.tn.lang.query.TimePointScheduleQuery;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggerFactory;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 
 /**
@@ -35,7 +29,6 @@ public class APSPSolverTestCase
 {
 	private static final long ORIGIN = 0;
 	private static final long HORIZON = 500;
-	private TemporalSolverFactory factory;
 	private SimpleTemporalNetworkWithUncertainty tn;
 	private TemporalQueryFactory qf;
 	private TemporalConstraintFactory cf;
@@ -55,15 +48,8 @@ public class APSPSolverTestCase
 			System.out.println("****************************** APSPU Solver Test Case ****************************");
 			System.out.println("**********************************************************************************");
 			
-			// create logger
-			FrameworkLoggerFactory lf = new FrameworkLoggerFactory();
-			lf.createFrameworkLogger(FrameworkLoggingLevel.DEBUG);
-			
-			// set factory
-			this.factory = new TemporalSolverFactory();
 			// create temporal network
-			TemporalNetworkFactory tnFactory = new TemporalNetworkFactory();
-			this.tn = tnFactory.create(TemporalNetworkType.STNU, ORIGIN, HORIZON);
+			this.tn = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
 			
 			// get query factory
 			this.qf = TemporalQueryFactory.getInstance();
@@ -135,8 +121,7 @@ public class APSPSolverTestCase
 	public void init() {
 		System.out.println("[Test]: init() --------------------");
 		// create APSP solver
-		APSPTemporalSolver solver = this.factory.create(TemporalSolverType.APSP);
-		solver.setTemporalNetwork(this.tn);
+		APSPTemporalSolver solver = new APSPTemporalSolver(this.tn);
 		// check initialization
 		Assert.assertNotNull(solver);
 		// print initial matrix
@@ -192,14 +177,10 @@ public class APSPSolverTestCase
 		{
 			System.out.println("[Test]: example1() --------------------");
 			// create temporal network
-			TemporalNetworkFactory tnFactory = new TemporalNetworkFactory();
-			SimpleTemporalNetwork itn = tnFactory.create(TemporalNetworkType.STN, ORIGIN, HORIZON);
-			
+			SimpleTemporalNetwork itn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
 			// create APSP solver
-			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP);
-			solver.setTemporalNetwork(itn);
-			
+			APSPTemporalSolver solver = new APSPTemporalSolver(itn);
+
 			// create time points
 			List<TimePoint> tps = itn.addTimePoints(3);
 			
@@ -251,8 +232,7 @@ public class APSPSolverTestCase
 		{
 			System.out.println("[Test]: example2() --------------------");
 			// create example temporal network
-			TemporalNetworkFactory tnFactory = new TemporalNetworkFactory();
-			SimpleTemporalNetwork exTn = tnFactory.create(TemporalNetworkType.STN, ORIGIN, HORIZON);
+			SimpleTemporalNetwork exTn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
 			
 			// create time points
 			List<TimePoint> tps = exTn.addTimePoints(2);
@@ -278,9 +258,7 @@ public class APSPSolverTestCase
 			});
 			
 			// create APSP solver
-			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP);
-			solver.setTemporalNetwork(exTn);
+			APSPTemporalSolver solver = new APSPTemporalSolver(exTn);
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			System.out.println(solver);
@@ -324,12 +302,9 @@ public class APSPSolverTestCase
 		{
 			System.out.println("[Test]: example2Incremental() --------------------");
 			// create example temporal network
-			TemporalNetworkFactory tnFactory = new TemporalNetworkFactory();
-			SimpleTemporalNetwork exTn = tnFactory.create(TemporalNetworkType.STN, ORIGIN, HORIZON);
+			SimpleTemporalNetwork exTn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
 			// create APSP solver
-			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP);
-			solver.setTemporalNetwork(exTn);
+			APSPTemporalSolver solver = new APSPTemporalSolver(exTn);
 			// create time points
 			TimePoint p1 = exTn.addTimePoint();
 			TimePoint p2 = exTn.addTimePoint();
@@ -403,9 +378,7 @@ public class APSPSolverTestCase
 		System.out.println("[Test]: updateTemporalNetworkPoint() --------------------");
 		try {
 			// create APSP solver
-			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP);
-			solver.setTemporalNetwork(this.tn);
+			APSPTemporalSolver solver =  new APSPTemporalSolver(this.tn);
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			
@@ -484,9 +457,7 @@ public class APSPSolverTestCase
 		try {
 			System.out.println("[Test]: updateTemporalNetworkEdges() --------------------");
 			// create APSP solver
-			APSPTemporalSolver solver = this.factory.
-					create(TemporalSolverType.APSP);
-			solver.setTemporalNetwork(this.tn);
+			APSPTemporalSolver solver = new APSPTemporalSolver(this.tn);
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			

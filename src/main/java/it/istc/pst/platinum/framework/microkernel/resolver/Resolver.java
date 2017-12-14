@@ -12,10 +12,8 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ComponentPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.FrameworkObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainComponentPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConstraintPropagationException;
@@ -28,7 +26,6 @@ import it.istc.pst.platinum.framework.parameter.ParameterFacade;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraint;
 import it.istc.pst.platinum.framework.time.TemporalFacade;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
  * 
@@ -36,18 +33,15 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
  *
  * @param <T>
  */
-public abstract class Resolver<T extends DomainComponent> extends ApplicationFrameworkObject implements FlawManager 
+public abstract class Resolver<T extends DomainComponent> extends FrameworkObject implements FlawManager 
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
-	protected FrameworkLogger logger;
-	
 	@TemporalFacadePlaceholder
 	protected TemporalFacade tdb;
 	
 	@ParameterFacadePlaceholder
 	protected ParameterFacade pdb;
 	
-	@ComponentPlaceholder
+	@DomainComponentPlaceholder
 	protected T component;
 	
 	protected String label;

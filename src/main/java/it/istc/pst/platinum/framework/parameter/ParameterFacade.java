@@ -4,20 +4,31 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.FrameworkObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.ParameterSolverPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQuery;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryFactory;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.microkernel.query.QueryManager;
+import it.istc.pst.platinum.framework.parameter.csp.event.AddConstraintParameterNotification;
+import it.istc.pst.platinum.framework.parameter.csp.event.AddParameterNotification;
+import it.istc.pst.platinum.framework.parameter.csp.event.DelConstraintParameterNotification;
+import it.istc.pst.platinum.framework.parameter.csp.event.DelParameterNotification;
+import it.istc.pst.platinum.framework.parameter.csp.event.ParameterNotification;
+import it.istc.pst.platinum.framework.parameter.csp.event.ParameterNotificationFactory;
+import it.istc.pst.platinum.framework.parameter.csp.event.ParameterNotificationObserver;
+import it.istc.pst.platinum.framework.parameter.csp.event.ParameterNotificationType;
 import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolver;
+import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
+import it.istc.pst.platinum.framework.parameter.ex.ParameterConsistencyException;
 import it.istc.pst.platinum.framework.parameter.ex.ParameterConstraintPropagationException;
 import it.istc.pst.platinum.framework.parameter.ex.ParameterCreationException;
 import it.istc.pst.platinum.framework.parameter.ex.ParameterNotFoundException;
@@ -26,18 +37,19 @@ import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.BinaryParameterConstraint;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraint;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
+import it.istc.pst.platinum.framework.parameter.lang.query.CheckValuesParameterQuery;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class ParameterFacade extends ApplicationFrameworkObject implements QueryManager<ParameterQuery> 
+@ParameterFacadeConfiguration(
+		// default parameter constraint solver
+		solver = ParameterSolverType.CHOCHO_SOLVER
+)
+public class ParameterFacade extends FrameworkObject implements QueryManager<ParameterQuery> 
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE_LOGGER)
-	protected FrameworkLogger logger;
-	
 	@ParameterSolverPlaceholder
 	protected ParameterSolver solver;
 	
@@ -46,8 +58,10 @@ public abstract class ParameterFacade extends ApplicationFrameworkObject impleme
 	protected Map<Parameter<?>, List<ParameterConstraint>> out;			// outgoing constraints
 	protected Map<Parameter<?>, List<ParameterConstraint>> in;			// incoming constraints
 	
+	protected ParameterNotificationFactory factory;
 	protected ParameterQueryFactory queryFactory;						// query factory
-
+	protected final List<ParameterNotificationObserver> observers;
+	
 	/**
 	 * 
 	 */
@@ -61,6 +75,22 @@ public abstract class ParameterFacade extends ApplicationFrameworkObject impleme
 		this.in = new HashMap<>();
 		// get query factory
 		this.queryFactory = ParameterQueryFactory.getInstance();
+		
+		// initialize observers
+		this.observers = new LinkedList<>();
+		// get factory
+		this.factory = ParameterNotificationFactory.getInstance();
+	}
+	
+	/**
+	 * 
+	 */
+	@PostConstruct
+	protected void init() {
+		synchronized (this.observers) {
+			// subscribe observer
+			this.observers.add(this.solver);
+		}
 	}
 	
 	/**
@@ -198,7 +228,9 @@ public abstract class ParameterFacade extends ApplicationFrameworkObject impleme
 				// get binary constraint
 				BinaryParameterConstraint binary = (BinaryParameterConstraint) constraint;
 				// check reference and target parameters
-				if (!this.parameters.contains(binary.getReference()) || !this.parameters.contains(binary.getTarget())) {
+				if (!this.parameters.contains(binary.getReference()) || 
+						!this.parameters.contains(binary.getTarget())) 
+				{
 					throw new ParameterConstraintPropagationException("Constraint parameters not found\n- reference= " + constraint.getReference() + "\n- target= " + binary.getTarget() + "\n");
 				}
 				
@@ -269,42 +301,111 @@ public abstract class ParameterFacade extends ApplicationFrameworkObject impleme
 	
 	/**
 	 * 
-	 */
-	@Override
-	public abstract void process(ParameterQuery query);
-
-	/**
-	 * 
 	 * @throws ConsistencyCheckException
 	 */
-	public abstract void checkConsistency() 
-			throws ConsistencyCheckException;
+	public void verify() 
+			throws ConsistencyCheckException 
+	{
+		// check temporal network consistency
+		if (!this.solver.isConsistent()) {
+			throw new ParameterConsistencyException("Inconsistent parameter constraints found");
+		}
+	}
 
 	/**
 	 * 
-	 * @param param
 	 */
-	protected abstract void doAddParameter(Parameter<?> param);
+	@Override
+	public void process(ParameterQuery query) 
+	{
+		// check query type
+		switch (query.getType()) 
+		{
+			// check parameter values
+			case CHECK_PARAMETER_VALUES : 
+			{
+				// get query
+				CheckValuesParameterQuery pQuery = (CheckValuesParameterQuery) query;
+				// get parameter
+				Parameter<?> param = pQuery.getParameter();
+				// get values
+				this.solver.computeValues(param);
+			}
+			break;
+			
+			// compute values of all variables
+			case COMPUTE_SOLUTION :
+			{
+				// compute CSP solution
+				this.solver.computeSolution();
+			}
+			break;
+		}
+	}
 	
 	/**
 	 * 
-	 * @param param
 	 */
-	protected abstract void doDeleteParameter(Parameter<?> param);
+	protected void doAddParameter(Parameter<?> param) 
+	{
+		// create notification
+		AddParameterNotification notif = this.factory.create(ParameterNotificationType.ADD_PARAM);
+		// set added parameter
+		notif.setParameter(param);
+		// publish notification
+		this.publish(notif);
+	}
+
+	/**
+	 * 
+	 */
+	protected void doDeleteParameter(Parameter<?> param) 
+	{
+		// create notification
+		DelParameterNotification notif = this.factory.create(ParameterNotificationType.DEL_PARAM);
+		// set added parameter
+		notif.setParameter(param);
+		// publish notification
+		this.publish(notif);
+	}
 	
 	/**
 	 * 
-	 * @param constraint
-	 * @throws ParameterConstraintPropagationException
 	 */
-	protected abstract void doPropagateConstraint(ParameterConstraint constraint) 
-			throws ParameterConstraintPropagationException;
+	protected void doPropagateConstraint(ParameterConstraint constraint) 
+			throws ParameterConstraintPropagationException 
+	{	
+		// create notification
+		AddConstraintParameterNotification notif = this.factory.create(ParameterNotificationType.ADD_CONSTRAINT);
+		notif.setConstraint(constraint);
+		// publish notification
+		this.publish(notif);
+	}
 	
 	/**
 	 * 
-	 * @param constraint
 	 */
-	protected abstract void doRetractConstraint(ParameterConstraint constraint);
+	protected void doRetractConstraint(ParameterConstraint constraint) 
+	{
+		// create notification
+		DelConstraintParameterNotification notif = this.factory.create(ParameterNotificationType.DEL_CONSTRAINT);
+		notif.setConstraint(constraint);
+		// publish notification
+		this.publish(notif);
+	}
+	
+	/**
+	 * 
+	 * @param notif
+	 */
+	private void publish(ParameterNotification notif) {
+		synchronized (this.observers) {
+			for (ParameterNotificationObserver observer : this.observers) {
+				observer.update(notif);
+			}
+		}
+	}
+	
 	
 	/**
 	 * 

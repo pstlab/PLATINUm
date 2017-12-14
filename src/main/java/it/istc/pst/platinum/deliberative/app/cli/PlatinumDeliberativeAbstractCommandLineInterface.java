@@ -7,9 +7,9 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundExcepti
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.protocol.lang.PlanProtocolDescriptor;
-import it.istc.pst.platinum.protocol.lang.ProtocolLanguageFactory;
-import it.istc.pst.platinum.protocol.query.ProtocolQueryFactory;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.ProtocolLanguageFactory;
+import it.istc.pst.platinum.framework.protocol.query.ProtocolQueryFactory;
 
 
 /**

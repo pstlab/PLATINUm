@@ -6,7 +6,6 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
 import it.istc.pst.platinum.framework.parameter.lang.NumericParameter;
 import it.istc.pst.platinum.framework.parameter.lang.query.CheckValuesParameterQuery;
-import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
@@ -77,14 +76,14 @@ public abstract class Resource extends DomainComponent
 		this.initial = initial;
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void checkPseudoControllability() 
-			throws PseudoControllabilityCheckException {
-		// nothing to do
-	}
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public void checkPseudoControllability() 
+//			throws PseudoControllabilityCheckException {
+//		// nothing to do
+//	}
 
 	/**
 	 * 
