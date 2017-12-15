@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
 import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
@@ -55,8 +56,10 @@ public class HierarchicalSearchHeuristic extends FlawSelectionHeuristic implemen
 	{
 		// set of detected flaws
 		Set<Flaw> flaws = new HashSet<>();
+		// get domain knowledge
+		DomainKnowledge knowledge = this.pdb.getDomainKnowledge();
 		// get the hierarchy
-		List<DomainComponent>[] hierarchy = this.knowledge.getDomainHierarchy();
+		List<DomainComponent>[] hierarchy = knowledge.getDomainHierarchy();
 		// check components according to the hierarchy
 		for (int index = hierarchy.length - 1; index >= 0 && flaws.isEmpty(); index--)
 		{

@@ -28,7 +28,7 @@ public enum FlawFilterType
 	/**
 	 * Type-based Flaw Filter
 	 */
-	TFF(TypeFlawFilter.class.getName(), "Type-based Flaw Filter");
+	TFF(TypeBasedFlawFilter.class.getName(), "Type-based Flaw Filter");
 	
 	
 	private String cname;
@@ -47,7 +47,7 @@ public enum FlawFilterType
 	/*
 	 * 
 	 */
-	public String getFilterClassName() {
+	public String getClassName() {
 		return cname;
 	}
 	

@@ -3,32 +3,21 @@ package it.istc.pst.platinum.deliberative.heuristic.filter;
 import java.util.Collection;
 import java.util.Set;
 
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
-import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
+import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class FlawFilter extends ApplicationFrameworkObject 
+public abstract class FlawFilter extends DeliberativeObject 
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER)
-	protected FrameworkLogger logger;
-	
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
-	
-	@DomainKnowledgePlaceholder
-	protected DomainKnowledge knowledge;
 	
 	private String label;
 	

@@ -15,14 +15,14 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public class TypeFlawFilter extends FlawFilter 
+public class TypeBasedFlawFilter extends FlawFilter 
 {
 	private FlawType[] preferences;
 
 	/**
 	 * 
 	 */
-	protected TypeFlawFilter() {
+	protected TypeBasedFlawFilter() {
 		super(FlawFilterType.TFF.getLabel());
 	}
 	

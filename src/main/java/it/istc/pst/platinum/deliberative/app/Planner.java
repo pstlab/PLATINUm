@@ -3,14 +3,20 @@ package it.istc.pst.platinum.deliberative.app;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristicType;
+import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
+import it.istc.pst.platinum.deliberative.solver.PlannerSolverType;
+import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.Token;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PlannerSolverConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.SearchStrategyConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlannerSolverPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Timeline;
@@ -26,18 +32,28 @@ import it.istc.pst.platinum.framework.protocol.lang.ProtocolLanguageFactory;
 import it.istc.pst.platinum.framework.protocol.lang.TimelineProtocolDescriptor;
 import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
 import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDescriptor;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
  * 
+ * @author anacleto
+ *
  */
-public abstract class Planner extends ApplicationFrameworkObject 
+@PlannerSolverConfiguration(
+		solver = PlannerSolverType.PSEUDO_CONTROLLABILITY_AWARE
+)
+@FlawSelectionHeuristicsConfiguration(
+		heuristics = FlawSelectionHeuristicType.SEARCH_AND_BUILD
+)
+@SearchStrategyConfiguration(
+		strategy = SearchStrategyType.DFS
+)
+public class Planner extends DeliberativeObject 
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER)
-	protected FrameworkLogger loggger;
-	
-	@PlanDataBasePlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_PLANDATABASE)
+	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
+	
+	@PlannerSolverPlaceholder
+	protected PlannerSolver solver;
 	
 	/**
 	 * 
@@ -53,12 +69,29 @@ public abstract class Planner extends ApplicationFrameworkObject
 	}
 	
 	/**
+	 * The method starts the planning process and return the solution plan if any.
+	 * 
+	 * If no solution plan is found the method throws an exception
 	 * 
 	 * @return
 	 * @throws NoSolutionFoundException
 	 */
-	public abstract SolutionPlan plan() 
-			throws NoSolutionFoundException;
+	public SolutionPlan plan() 
+			throws NoSolutionFoundException {
+		// solve the problem and get the plan
+		SolutionPlan plan = this.solver.solve();
+		return plan;
+	}
+	
+	/**
+	 * The method returns a structure representing the current plan. 
+	 * 
+	 * @return
+	 */
+	public SolutionPlan getCurrentPlan() {
+		// get current plan
+		return this.pdb.getSolutionPlan();
+	}
 	
 	/**
 	 * 
@@ -301,5 +334,15 @@ public abstract class Planner extends ApplicationFrameworkObject
 		
 		// return plan descriptor
 		return plan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	public String toString() {
+		// get a description of the plan data base
+		return this.pdb.toString();
 	}
 }

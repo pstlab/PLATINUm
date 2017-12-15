@@ -1,12 +1,10 @@
-package it.istc.pst.platinum.framework.domain.component.pdb;
+package it.istc.pst.platinum.framework.domain.component;
 
 import java.util.List;
 
 import it.istc.pst.platinum.deliberative.solver.Operator;
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
-import it.istc.pst.platinum.framework.domain.component.DomainComponent;
-import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
-import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
+import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationException;
@@ -28,6 +26,13 @@ import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
  */
 public interface PlanDataBase 
 {
+	/**
+	 * 
+	 * @return
+	 */
+	public DomainKnowledge getDomainKnowledge();
+	
+	
 	/**
 	 * 
 	 * @return

@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.deliberative.app;
 
 import it.istc.pst.platinum.framework.compiler.ex.PDLFileMissingException;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseBuilder;
+import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 

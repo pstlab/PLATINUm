@@ -4,36 +4,47 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import it.istc.pst.platinum.executive.est.EarliestStartTimePlanDispatcher;
+import it.istc.pst.platinum.executive.est.EarliestStartTimePlanMonitor;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
-import it.istc.pst.platinum.executive.pdb.ExecutivePlanDataBaseManager;
-import it.istc.pst.platinum.executive.pdb.epsl.EPSLExecutivePlanDataBaseManager;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
+import it.istc.pst.platinum.executive.pdb.ExecutivePlanDataBase;
+import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.ExecutiveDispatcherConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.ExecutiveMonitorConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionDispatcherPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionMonitorPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
 import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
+import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class Executive extends ApplicationFrameworkObject implements ExecutionManager
+@ExecutiveMonitorConfiguration(monitor = EarliestStartTimePlanMonitor.class)
+@ExecutiveDispatcherConfiguration(dispatcher = EarliestStartTimePlanDispatcher.class)
+public class Executive extends ExecutiveObject implements ExecutionManager
 {
-	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
-	private FilePropertyReader config;											// configuration property file
-	private final Object lock;													// executive's status lock
-	private ExecutionStatus status;												// executive's operating status
-	private ClockManager clock;													// execution clock controller
-	
 	@ExecutionMonitorPlaceholder
 	protected PlanMonitor monitor;						// plan monitor
 	
 	@ExecutionDispatcherPlaceholder
 	protected PlanDispatcher dispatcher;				// dispatching process
 	
-	protected ExecutivePlanDataBaseManager pdb;			// the plan to execute
+	@ExecutivePlanDataBasePlaceholder
+	protected ExecutivePlanDataBase pdb;			// the plan to execute
+	
+	
+	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
+	private FilePropertyReader config;											// configuration property file
+	private final Object lock;													// executive's status lock
+	private ExecutionStatus status;												// executive's operating status
+	private ClockManager clock;													// execution clock controller
+	
+	private ExecutiveWindow window;				// executive window
 	
 	/**
 	 * 
@@ -45,6 +56,8 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 		// set clock and initial status
 		this.lock = new Object();
 		this.status = ExecutionStatus.INACTIVE;
+		// create executive window
+		this.window = new ExecutiveWindow("Executive Window");
 	}
 	
 	/**
@@ -201,8 +214,6 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 			this.lock.notifyAll();
 		}
 		
-		// create execution plan data-base
-		this.pdb = new EPSLExecutivePlanDataBaseManager(plan.getOrigin(), plan.getHorizon());
 		// initialize plan data-base
 		this.pdb.setup(plan);
 		
@@ -213,38 +224,7 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 			this.lock.notifyAll();
 		}
 	}
-	
-//	/**
-//	 * 
-//	 * @param plan
-//	 * @throws InterruptedException
-//	 */
-//	public final void initialize(SolutionPlan plan) 
-//			throws InterruptedException
-//	{
-//		// check status
-//		synchronized (this.lock) {
-//			while (!this.status.equals(ExecutionStatus.INACTIVE)) {
-//				this.lock.wait();
-//			}
-//			
-//			// change status and send a signal
-//			this.status = ExecutionStatus.INITIALIZING;
-//			this.lock.notifyAll();
-//		}
-//		
-//		// create execution plan data-base
-//		this.pdb = new EPSLExecutivePlanDataBaseManager(0, plan.getHorizon());
-//		// initialize plan data-base
-//		this.pdb.setup(plan);
-//		
-//		// initialization complete
-//		synchronized (this.lock) {
-//			// update status and send a signal
-//			this.status = ExecutionStatus.READY;
-//			this.lock.notifyAll();
-//		}
-//	}
+
 	
 	
 	/**
@@ -342,5 +322,44 @@ public abstract class Executive extends ApplicationFrameworkObject implements Ex
 	 * 
 	 */
 	@Override
-	public abstract boolean onTick(long tick); 
+	public boolean onTick(long tick)
+	{
+		boolean complete = false;
+		try 
+		{
+			System.out.println("\n##################################################");
+			System.out.println("#### Handle tick = " + tick + " ####");
+			System.out.println("#### Synchronization step ####");
+			// synchronization step
+			this.monitor.handleTick(tick);
+			System.out.println("#### Dispatching step ####");
+			// dispatching step
+			this.dispatcher.handleTick(tick);
+			System.out.println("##################################################");
+			// display executive window
+			this.displayWindow();
+			// check if execution is complete
+			complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
+					this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
+		}
+		catch (InterruptedException ex) {
+			System.err.println(ex.getMessage());
+		}
+		return complete;
+	} 
+	
+	/**
+	 * 
+	 * @throws InterruptedException
+	 */
+	private void displayWindow() 
+			throws InterruptedException 
+	{
+		// get tau
+		long tau = this.getTau();
+		// set the data-set to show
+		this.window.setDataSet(this.pdb.getHorizon(), this.getNodes());
+		// display current execution state
+		this.window.display(tau);
+	}
 }

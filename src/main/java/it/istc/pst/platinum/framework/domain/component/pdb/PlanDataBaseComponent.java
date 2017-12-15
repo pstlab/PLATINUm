@@ -13,15 +13,20 @@ import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledgeType;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.DomainKnowledgeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationException;
@@ -62,11 +67,34 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-@TemporalFacadeConfiguration(network = TemporalNetworkType.STNU, solver = TemporalSolverType.APSP)
-@ParameterFacadeConfiguration(solver = ParameterSolverType.CHOCHO_SOLVER)
-@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.OFF)
+@DomainKnowledgeConfiguration(
+		
+		// set domain knowledge
+		knowledge = DomainKnowledgeType.STATIC
+)
+@TemporalFacadeConfiguration(
+		
+		// set temporal network 
+		network = TemporalNetworkType.STNU, 
+		
+		// set planner solver
+		solver = TemporalSolverType.APSP
+)
+@ParameterFacadeConfiguration(
+		
+		// set parameter reasoner
+		solver = ParameterSolverType.CHOCHO_SOLVER
+)
+@FrameworkLoggerConfiguration(
+		
+		// set logging level
+		level = FrameworkLoggingLevel.OFF
+)
 public class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
+	@DomainKnowledgePlaceholder
+	protected DomainKnowledge knowledge;
+	
 	// see Composite design pattern
 	private Map<String, DomainComponent> components;
 	
@@ -130,6 +158,16 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		}
 		// clear problem
 		this.problem = null;
+		// clear domain knowledge
+		this.knowledge = null;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public DomainKnowledge getDomainKnowledge() {
+		return this.knowledge;
 	}
 	
 	/*

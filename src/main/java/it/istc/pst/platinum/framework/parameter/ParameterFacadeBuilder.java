@@ -25,7 +25,7 @@ public class ParameterFacadeBuilder
 	{
 		// look for configuration annotation on reference class
 		ParameterFacadeConfiguration annot = FrameworkReflectionUtils.
-				doFindConfigurationAnnotation(reference.getClass(), ParameterFacadeConfiguration.class);
+				doFindnAnnotation(reference.getClass(), ParameterFacadeConfiguration.class);
 		// check if configuration has been found
 		if (annot == null) {
 			// use default annotation configuration

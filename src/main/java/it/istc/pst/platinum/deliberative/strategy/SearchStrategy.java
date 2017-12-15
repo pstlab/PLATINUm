@@ -2,30 +2,19 @@ package it.istc.pst.platinum.deliberative.strategy;
 
 import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
-import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
+import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class SearchStrategy extends ApplicationFrameworkObject 
+public abstract class SearchStrategy extends DeliberativeObject 
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER) 
-	protected FrameworkLogger logger;
-	
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
-	
-	@DomainKnowledgePlaceholder
-	protected DomainKnowledge knowledge;
 	
 	protected String label;
 	

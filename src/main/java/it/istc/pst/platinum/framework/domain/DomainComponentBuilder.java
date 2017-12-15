@@ -57,7 +57,7 @@ public class DomainComponentBuilder
 		}
 		
 		// find component configuration annotation
-		DomainComponentConfiguration annot = FrameworkReflectionUtils.doFindConfigurationAnnotation(c.getClass(), DomainComponentConfiguration.class);
+		DomainComponentConfiguration annot = FrameworkReflectionUtils.doFindnAnnotation(c.getClass(), DomainComponentConfiguration.class);
 		// check if annotation is null
 		if (annot == null) {
 			throw new RuntimeException("Error while creating domain component:\n- message= Configuration annotation not found\n");

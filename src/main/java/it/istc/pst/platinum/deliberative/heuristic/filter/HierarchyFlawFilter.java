@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
@@ -35,8 +36,10 @@ public class HierarchyFlawFilter extends FlawFilter
 		Set<Flaw> set = new HashSet<>();
 		// get goals 
 		List<Flaw> goals = this.pdb.detectFlaws(FlawType.PLAN_REFINEMENT);
+		// get knowledge
+		DomainKnowledge knowledge = this.pdb.getDomainKnowledge();
 		// get the hierarchy
-		List<DomainComponent>[] hierarchy = this.knowledge.getDomainHierarchy();
+		List<DomainComponent>[] hierarchy = knowledge.getDomainHierarchy();
 		// detect flaws according to the computed hierarchy of the domain
 		for (int index = 0; index < hierarchy.length && set.isEmpty(); index++)
 		{
@@ -66,8 +69,10 @@ public class HierarchyFlawFilter extends FlawFilter
 	{
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
+		// get knowledge
+		DomainKnowledge knowledge = this.pdb.getDomainKnowledge();
 		// get the hierarchy
-		List<DomainComponent>[] hierarchy = this.knowledge.getDomainHierarchy();
+		List<DomainComponent>[] hierarchy = knowledge.getDomainHierarchy();
 		// filter flaws according to the hierarchy of the related component
 		for (int hlevel = 0; hlevel < hierarchy.length && set.isEmpty(); hlevel++)
 		{

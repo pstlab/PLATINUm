@@ -5,7 +5,7 @@ package it.istc.pst.platinum.deliberative.solver;
  * @author anacleto
  *
  */
-public enum SolverType 
+public enum PlannerSolverType 
 {
 	/**
 	 * This solver tries to generate a pseudo-controllable plan.
@@ -28,7 +28,7 @@ public enum SolverType
 	 * @param cname
 	 * @param label
 	 */
-	private SolverType(String cname, String label) {
+	private PlannerSolverType(String cname, String label) {
 		this.cname = cname;
 		this.label = label;
 	}

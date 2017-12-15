@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative;
+package it.istc.pst.platinum.framework.microkernel.annotation.inject.framework;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

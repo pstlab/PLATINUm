@@ -4,38 +4,37 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristic;
+import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
-import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkContainer;
-import it.istc.pst.platinum.framework.microkernel.ApplicationFrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
+import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.FlawSelectionHeuristicPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.SearchStrategyPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.PlanRefinementException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLogger;
 
 /**
  * 
  * @author anacleto
  *
  */
-public abstract class Solver extends ApplicationFrameworkObject 
+public abstract class PlannerSolver extends DeliberativeObject 
 {
-	@FrameworkLoggerPlaceholder(lookup = ApplicationFrameworkContainer.FRAMEWORK_SINGLETON_DELIBERATIVE_LOGGER)
-	protected FrameworkLogger logger;
-	
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
 	
-	@DomainKnowledgePlaceholder
-	protected DomainKnowledge knowledge;
+	@SearchStrategyPlaceholder
+	protected SearchStrategy fringe;
+	
+	@FlawSelectionHeuristicPlaceholder
+	protected FlawSelectionHeuristic heuristic;
 	
 	protected long timeout;
 	protected long time;
@@ -47,7 +46,7 @@ public abstract class Solver extends ApplicationFrameworkObject
 	 * @param label
 	 * @param timeout
 	 */
-	protected Solver(String label, long timeout) {
+	protected PlannerSolver(String label, long timeout) {
 		super();
 		this.label = label;
 		this.timeout = timeout;

@@ -22,7 +22,7 @@ public enum DomainKnowledgeType {
 	 * 
 	 * @return
 	 */
-	public String getDomainKnowledgeClassName() {
+	public String getClassName() {
 		return clazz;
 	}
 }

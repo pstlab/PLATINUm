@@ -3,14 +3,8 @@ package it.istc.pst.platinum.deliberative.solver;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristic;
-import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristicType;
-import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
-import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.FlawSelectionHeuristicModule;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.SearchStrategyModule;
 import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
@@ -26,20 +20,14 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public class PseudoControllabilityAwareSolver extends Solver 
+public class PseudoControllabilityAwareSolver extends PlannerSolver 
 {
-	@SearchStrategyModule(strategy= SearchStrategyType.DFS)
-	private SearchStrategy fringe;
-	
-	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.SEARCH_AND_BUILD)
-	private FlawSelectionHeuristic heuristic;
-	
 	/**
 	 * 
 	 * @param timeout
 	 */
 	protected PseudoControllabilityAwareSolver(long timeout) {
-		super(SolverType.PSEUDO_CONTROLLABILITY_AWARE.getLabel(), timeout);
+		super(PlannerSolverType.PSEUDO_CONTROLLABILITY_AWARE.getLabel(), timeout);
 	}
 	
 	/**
@@ -95,7 +83,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				
 				// extract a node from the fringe
 				node = this.fringe.dequeue();
-				this.logger.info("Solving step: " + this.stepCounter +"\n"
+				logger.info("Solving step: " + this.stepCounter +"\n"
 						+ "- Extracted node: " + node + "\n"
 						+ "- Applied operator: " + node.getGenerator() + "\n");
 				
@@ -107,7 +95,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				this.pdb.verify();
 				
 				// print information concerning current partial plan	
-				this.logger.info("Partial plan after propagation of operator: "  + node.getGenerator() + "\n"
+				logger.info("Partial plan after propagation of operator: "  + node.getGenerator() + "\n"
 							+ "- plan:\n"
 							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
 							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n\n"
@@ -128,20 +116,20 @@ public class PseudoControllabilityAwareSolver extends Solver
 						// add the node to the fringe
 						this.fringe.enqueue(child);
 						// expand the search space
-						this.logger.info("Search tree expansion:\n- node: " + child + "\n"
+						logger.info("Search tree expansion:\n- node: " + child + "\n"
 								+ "- generator: " + child.getGenerator() + "\n");
 					}
 				}
 			}
 			catch (PlanRefinementException ex) {
 				// error while refining the current plan
-				this.logger.warning("Error while refining the current plan\n"
+				logger.warning("Error while refining the current plan\n"
 						+ "- operator: " + node.getGenerator() + "\n"
 						+ "- message: " + ex.getMessage() + "\n");
 			}
 			catch (UnsolvableFlawException | ConsistencyCheckException  ex) {
 				// not feasible partial plan
-				this.logger.warning("Not feasible partial plan found\n"
+				logger.warning("Not feasible partial plan found\n"
 						+ "- oeprator: " + node.getGenerator() + "\n"
 						+ "- plan:\n"
 							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
@@ -161,7 +149,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABILITY);
 				plan.setSolvingTime(this.time);
 				// pseudo-controllable solution found
-				this.logger.info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
+				logger.info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			}
 			catch (EmptyFringeException ex) 
 			{

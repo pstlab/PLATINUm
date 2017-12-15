@@ -1,24 +1,27 @@
 package it.istc.pst.platinum.executive.est;
 
+import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.PlanDispatcher;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class EarliestStartTimePlanDispatcher implements PlanDispatcher 
+public class EarliestStartTimePlanDispatcher extends PlanDispatcher 
 {
-	private EarliestStartTimeExecutive executive;
+	@ExecutivePlaceholder
+	private Executive executive;
 	
 	/**
 	 * 
 	 * @param exec
 	 */
-	public EarliestStartTimePlanDispatcher(EarliestStartTimeExecutive exec) {
-		this.executive = exec;
+	protected EarliestStartTimePlanDispatcher() {
+		super();
 	}
 	
 	/**
@@ -45,14 +48,14 @@ public class EarliestStartTimePlanDispatcher implements PlanDispatcher
 						this.executive.scheduleStartTime(node, tau);
 						// dispatch node
 						this.dispatch(node);
-						System.out.println("{tick = " + tick + " } {tau= " + tau + "} {PlanDispatcher} -> Start executing node at time= " + tau + " - node " + node);
+						logger.info("{tick = " + tick + " } {tau= " + tau + "} {PlanDispatcher} -> Start executing node at time= " + tau + " - node " + node);
 					}
 					else if (tau > node.getStart()[1]) {
 						// keep going with the execution by scheduling to the upper bound
 						this.executive.scheduleStartTime(node, node.getStart()[1]);
 						// dispatch node
 						this.dispatch(node);
-						System.out.println("{tick = " + tick + " } {tau= " + tau + "} {PlanDispatcher} -> Start executing node at time= " + tau + " - node " + node);
+						logger.info("{tick = " + tick + " } {tau= " + tau + "} {PlanDispatcher} -> Start executing node at time= " + tau + " - node " + node);
 					}
 				}
 			}

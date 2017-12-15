@@ -377,7 +377,6 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						}
 					}
 					
-					
 					// check if a solution has been found among optimal paths
 					if (!gap.isSolvable()) 
 					{

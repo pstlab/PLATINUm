@@ -29,7 +29,7 @@ public class TemporalFacadeBuilder
 	{
 		// look for configuration annotation on reference class
 		TemporalFacadeConfiguration annot = FrameworkReflectionUtils.
-				doFindConfigurationAnnotation(reference.getClass(), TemporalFacadeConfiguration.class);
+				doFindnAnnotation(reference.getClass(), TemporalFacadeConfiguration.class);
 		// check if configuration has been found
 		if (annot == null) {
 			// use default annotation configuration

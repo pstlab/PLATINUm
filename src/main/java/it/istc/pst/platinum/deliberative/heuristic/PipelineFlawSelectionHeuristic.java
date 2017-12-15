@@ -1,28 +1,32 @@
 package it.istc.pst.platinum.deliberative.heuristic;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilter;
 import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.FlawFilterPipelineModule;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PipelineConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PipelinePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
+import it.istc.pst.platinum.framework.utils.reflection.FrameworkReflectionUtils;
 
 /**
  * 
  * @author anacleto
  *
  */
+@PipelineConfiguration(pipeline= {
+		FlawFilterType.TFF,
+		FlawFilterType.HFF,
+		FlawFilterType.DFF
+})
 public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 {
-	// note that the order determines the application sequence of filters
-	@FlawFilterPipelineModule(pipeline= {
-			FlawFilterType.TFF,
-			FlawFilterType.HFF,
-			FlawFilterType.DFF
-	})
+	@PipelinePlaceholder
 	private List<FlawFilter> filters;
 	
 	/**
@@ -30,6 +34,25 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 */
 	protected PipelineFlawSelectionHeuristic() {
 		super(FlawSelectionHeuristicType.PIPELINE.getLabel());
+		// initialize filter list
+		this.filters = new ArrayList<>();
+	}
+	
+	/**
+	 * 
+	 */
+	@PostConstruct
+	private void init() 
+	{
+		// get annotation
+		PipelineConfiguration annot = FrameworkReflectionUtils.doFindnAnnotation(this.getClass(), PipelineConfiguration.class);
+		// get filter pipeline
+		for (FlawFilterType type : annot.pipeline()) {
+			// create flaw filter 
+			FlawFilter filter = this.doCreateFlawFilter(type.getClassName());
+			// add filter 
+			this.filters.add(filter);
+		}
 	}
 	
 	/**

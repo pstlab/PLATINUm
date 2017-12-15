@@ -5,8 +5,8 @@ package it.istc.pst.platinum.executive.pdb;
  * @author anacleto
  *
  */
-public enum ExecutionNodeStatus {
-	
+public enum ExecutionNodeStatus 
+{
 	/**
 	 * The token is in the plan but it cannot be executed yet.
 	 */
@@ -27,7 +27,12 @@ public enum ExecutionNodeStatus {
 	/**
 	 * The token has been successfully executed
 	 */
-	EXECUTED(3);
+	EXECUTED(3),
+	
+	/**
+	 * 
+	 */
+	FAILURE(4);
 	
 	private int index;
 	

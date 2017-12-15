@@ -20,5 +20,5 @@ import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledgeType;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DomainKnowledgeConfiguration {
 	
-	DomainKnowledgeType type();
+	DomainKnowledgeType knowledge();
 }

@@ -1,25 +1,27 @@
 package it.istc.pst.platinum.executive.est;
 
+import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.PlanMonitor;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class EarliestStartTimePlanMonitor implements PlanMonitor 
+public class EarliestStartTimePlanMonitor extends PlanMonitor 
 {
-	private EarliestStartTimeExecutive executive;
+	@ExecutivePlaceholder
+	private Executive executive;
 	
 	/**
 	 * 
 	 * @param exec
 	 */
-	protected EarliestStartTimePlanMonitor(EarliestStartTimeExecutive exec) {
-		// set executive
-		this.executive = exec;
+	protected EarliestStartTimePlanMonitor() {
+		super();
 	}
 
 	/**
@@ -60,14 +62,14 @@ public class EarliestStartTimePlanMonitor implements PlanMonitor
 				this.executive.scheduleDuration(node, duration);
 				// update status
 				this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
-				System.out.println("{tick = " + tick + "} {tau = " + tau + "} {PlanMonitor} -> End executing node with duration= " + node.getDuration()[1] + " - node " + node);
+				logger.info("{tick = " + tick + "} {tau = " + tau + "} {PlanMonitor} -> End executing node with duration= " + node.getDuration()[1] + " - node " + node);
 			}
 			else if (tau > node.getEnd()[1]) {
 				// schedule node to duration upper bound
 				this.executive.scheduleDuration(node, node.getDuration()[1]);
 				// update status
 				this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
-				System.err.println("{tick = " + tick + "} {tau = " + tau + "} {PlanMonitor} -> End executing node with duration= " + node.getDuration()[1] + " - node " + node + " WARNING {\n- Execution delay tau = " + tau + " ewind= [" + node.getEnd()[0] + ", " + node.getEnd()[1] + "]\n}");
+				logger.info("{tick = " + tick + "} {tau = " + tau + "} {PlanMonitor} -> End executing node with duration= " + node.getDuration()[1] + " - node " + node + " WARNING {\n- Execution delay tau = " + tau + " ewind= [" + node.getEnd()[0] + ", " + node.getEnd()[1] + "]\n}");
 			}
 		}
 		catch (Exception ex) {

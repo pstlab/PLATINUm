@@ -12,7 +12,10 @@ import it.istc.pst.platinum.executive.PlanMonitor;
  * @author anacleto
  *
  */
-@Target(ElementType.CONSTRUCTOR)
+@Target({
+	ElementType.TYPE,
+	ElementType.CONSTRUCTOR
+})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExecutiveMonitorConfiguration {
 

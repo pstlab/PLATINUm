@@ -164,7 +164,7 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 			for (Goal goal : goals) {
 				str += "- " + goal + "\n";
 			}
-			this.logger.debug(str);
+			logger.debug(str);
 			
 			// get the inferred "ordering" graph
 			Map<Decision, List<Decision>> graph;
@@ -209,12 +209,12 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 			for (Flaw flaw : toFilter) {
 				str += "- " + flaw;
 			}
-			this.logger.debug(str);
+			logger.debug(str);
 		}
 		else {
 			// no goals to analyze
 			toFilter.addAll(flaws);
-			this.logger.debug("No planning goals to analyze");
+			logger.debug("No planning goals to analyze");
 		}
 		
 		// get resulting sub-set of flaws

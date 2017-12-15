@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
-
 /**
  * 
  * @author anacleto
@@ -14,8 +12,6 @@ import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FlawFilterPipelineModule {
+public @interface FlawSelectionHeuristicPlaceholder {
 
-	// reference to the pipeline of filters
-	FlawFilterType[] pipeline();
 }

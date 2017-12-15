@@ -249,23 +249,18 @@ public abstract class StateVariable extends DomainComponent
 		}
 		else	// recursive step
 		{
-			// check cycle
-			if (steps.contains(current)) {
-				// skip path
-				logger.debug("Avoid cycles on SV paths\n- (partial) path: " + steps + "\n- current value: " + current + "\n- target: " + target + "\n");
-			}
-			else	// no cycle found 
-			{
-				//add current value to the path
-				steps.add(current);
-				// recursive calls
-				for (ComponentValue successor : this.getDirectSuccessors(current)) {
+			//add current value to the path
+			steps.add(current);
+			// recursive calls
+			for (ComponentValue successor : this.getDirectSuccessors(current)) {
+				// check cycle
+				if (!steps.contains(successor)) {
 					// recursive call
 					this.computePaths(steps, successor, target, result);
 				}
-				// remove last added element
-				steps.remove(steps.size() - 1);
 			}
+			// remove last added element
+			steps.remove(steps.size() - 1);
 		}
 	}
 	

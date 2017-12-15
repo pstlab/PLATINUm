@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
-
 /**
  * 
  * @author anacleto
@@ -14,8 +12,6 @@ import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SearchStrategyModule {
+public @interface PipelinePlaceholder {
 
-	// reference to search strategy
-	SearchStrategyType strategy();
 }

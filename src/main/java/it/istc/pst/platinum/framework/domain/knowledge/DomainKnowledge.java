@@ -6,9 +6,9 @@ import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.FrameworkObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlanDataBasePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 
 /**
  * 

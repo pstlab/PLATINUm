@@ -13,6 +13,7 @@ import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
 
 /**
  * 
@@ -99,11 +100,16 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 	{
 		// initialize distance
 		double distance = 0.0;
+		// get decomposition tree from the domain knowledge
+		DomainKnowledge dk = this.pdb.getDomainKnowledge();
+		// get decomposition tree
+		Map<ComponentValue, Set<ComponentValue>> tree = dk.getDecompositionTree();
+		
 		// check goals of the agenda
 		for (ComponentValue goal : node.getAgenda().getGoals())
 		{
 			// check reachable sub-tree from the decomposition graph
-			Set<ComponentValue> subtree = this.computeReachableSubTree(this.knowledge.getDecompositionTree(), goal);
+			Set<ComponentValue> subtree = this.computeReachableSubTree(tree, goal);
 			// organize values by components
 			Map<DomainComponent, Set<ComponentValue>> comp2value = new HashMap<>();
 			// check hierarchy of the reachable values
@@ -122,7 +128,7 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 			// update distance
 			for (DomainComponent component : comp2value.keySet()) {
 				// get hierarchical value of the component
-				double level = this.knowledge.getHierarchicalLevelValue(component);
+				double level = dk.getHierarchicalLevelValue(component);
 				// get values
 				distance += Math.abs(level * comp2value.get(component).size());
 			}

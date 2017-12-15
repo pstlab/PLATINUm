@@ -2,13 +2,7 @@ package it.istc.pst.platinum.deliberative.solver;
 
 import java.util.Set;
 
-import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristic;
-import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristicType;
-import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
-import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.FlawSelectionHeuristicModule;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.SearchStrategyModule;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
@@ -23,20 +17,14 @@ import it.istc.pst.platinum.framework.time.tn.ex.PseudoControllabilityCheckExcep
  * @author anacleto
  *
  */
-public class BestFirstSolver extends Solver 
+public class BestFirstSolver extends PlannerSolver 
 {
-	@SearchStrategyModule(strategy= SearchStrategyType.ASTAR)
-	private SearchStrategy strategy;
-	
-	@FlawSelectionHeuristicModule(heuristics= FlawSelectionHeuristicType.PIPELINE)
-	private FlawSelectionHeuristic heuristic;
-	
 	/**
 	 * 
 	 * @param timeout
 	 */
 	protected BestFirstSolver(long timeout) {
-		super(SolverType.BEST_FIRST.getLabel(), timeout);
+		super(PlannerSolverType.BEST_FIRST.getLabel(), timeout);
 	}
 	
 	/**
@@ -57,7 +45,7 @@ public class BestFirstSolver extends Solver
 		SearchSpaceNode last = null;				// root node
 		// create root node and add to the fringe
 		SearchSpaceNode root = this.createSearchSpaceNode();
-		this.strategy.enqueue(root);
+		this.fringe.enqueue(root);
 		
 		// starts solution search
 		while (!exit) 
@@ -80,12 +68,12 @@ public class BestFirstSolver extends Solver
 				}
 				
 				
-				this.logger.debug("Solving step " + this.stepCounter);
+				logger.debug("Solving step " + this.stepCounter);
 				
 				// extract next node from the fringe
-				extracted = this.strategy.dequeue();
+				extracted = this.fringe.dequeue();
 				// propagate node
-				this.logger.debug("Propagating node:\n" + extracted + "\nof " + this.strategy.getFringeSize() + " available in the fringe");
+				logger.debug("Propagating node:\n" + extracted + "\nof " + this.fringe.getFringeSize() + " available in the fringe");
 				
 				// context switch
 				this.contextSwitch(last, extracted);
@@ -95,11 +83,11 @@ public class BestFirstSolver extends Solver
 				try {
 					// consistency check
 					this.pdb.verify();
-					this.logger.debug("Plan refinement successfully done... looking for flaws on the current refined plan...");
+					logger.debug("Plan refinement successfully done... looking for flaws on the current refined plan...");
 				}
 				catch (PseudoControllabilityCheckException ex) {
 					// ignoring pseudo-controllability issues
-					this.logger.debug("BestFirstSolver ignores pseudo-controllability issues of the plan.... continue the search");
+					logger.debug("BestFirstSolver ignores pseudo-controllability issues of the plan.... continue the search");
 				}
 				
  				// get the "best" flaws to solve first
@@ -110,20 +98,20 @@ public class BestFirstSolver extends Solver
 					// create a branch for each possible solution of a flaw
 					for (SearchSpaceNode child : this.expand(extracted, flaw)) {
 						// enqueue node
-						this.strategy.enqueue(child);
-						this.logger.debug("Expanding the search space with:\n- node= " + child + "\n");
+						this.fringe.enqueue(child);
+						logger.debug("Expanding the search space with:\n- node= " + child + "\n");
 					}
 				}
 				
 			}
 			catch (PlanRefinementException | ConsistencyCheckException | UnsolvableFlawException ex) {
 				// unsolvable flaw found
-				this.logger.error("Error during plan refinement:\n " + ex.getMessage());
+				logger.error("Error during plan refinement:\n " + ex.getMessage());
 			}
 			catch (EmptyFringeException ex) {
 				
 				// impossible to find a solution
-				this.logger.debug("No more node in the fringe... ");
+				logger.debug("No more node in the fringe... ");
 				
 				/*
 				 * TODO : RETRACT INITIAL PROBLEM
@@ -139,7 +127,7 @@ public class BestFirstSolver extends Solver
 				this.time = System.currentTimeMillis() - start;
 				// solution found 
 				exit = true;
-				this.logger.info("Solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
+				logger.info("Solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
 			}
 			
 		} // end while

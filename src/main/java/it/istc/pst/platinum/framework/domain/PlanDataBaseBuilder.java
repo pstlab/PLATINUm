@@ -6,14 +6,17 @@ import it.istc.pst.platinum.framework.compiler.DomainCompilerFactory;
 import it.istc.pst.platinum.framework.compiler.DomainCompilerType;
 import it.istc.pst.platinum.framework.compiler.ddl.v3.DDLv3Compiler;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseComponent;
-import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
-import it.istc.pst.platinum.framework.domain.component.sv.PrimitiveStateVariable;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
+import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledgeType;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.DomainKnowledgeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.FrameworkLoggerPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
@@ -94,7 +97,7 @@ public class PlanDataBaseBuilder
 	public synchronized static PlanDataBase createAndSet(String name, long origin, long horizon)
 	{
 		// get temporal facade configuration
-		TemporalFacadeConfiguration tAnnot = FrameworkReflectionUtils.doFindConfigurationAnnotation(PlanDataBaseComponent.class, TemporalFacadeConfiguration.class);
+		TemporalFacadeConfiguration tAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, TemporalFacadeConfiguration.class);
 		if (tAnnot == null) {
 			throw new RuntimeException("Error while creating plan database:\n- message: Temporal facade configuration annotation not found\n");
 		}
@@ -103,7 +106,7 @@ public class PlanDataBaseBuilder
 		TemporalFacade tf = TemporalFacadeBuilder.createAndSet(tAnnot, origin, horizon);
 		
 		// get parameter facade configuration
-		ParameterFacadeConfiguration pAnnot = FrameworkReflectionUtils.doFindConfigurationAnnotation(PlanDataBaseComponent.class, ParameterFacadeConfiguration.class);
+		ParameterFacadeConfiguration pAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, ParameterFacadeConfiguration.class);
 		if (pAnnot == null) {
 			throw new RuntimeException("Error while creating plan database:\n- message: Parameter facade configuration annotation not found\n");
 		}
@@ -117,7 +120,7 @@ public class PlanDataBaseBuilder
 		
 		
 		// get framework logger configuration
-		FrameworkLoggerConfiguration lAnnot = FrameworkReflectionUtils.doFindConfigurationAnnotation(comp.getClass(), FrameworkLoggerConfiguration.class);
+		FrameworkLoggerConfiguration lAnnot = FrameworkReflectionUtils.doFindnAnnotation(comp.getClass(), FrameworkLoggerConfiguration.class);
 		if (lAnnot == null) {
 			throw new RuntimeException("Error while creating plan database:\n- message: Framework logger configuration annotation not found\n");
 		}
@@ -143,8 +146,68 @@ public class PlanDataBaseBuilder
 			throw new RuntimeException("Error while calling post construct method of the plan database\n- message: " + ex.getMessage() + "\n");
 		}
 		
+		// create and set domain knowledge
+		DomainKnowledgeConfiguration annot = FrameworkReflectionUtils.doFindnAnnotation(comp.getClass(), DomainKnowledgeConfiguration.class);
+		DomainKnowledge k = doCreateDomainKnowledge(annot.knowledge());
+		
+		try
+		{
+			// inject plan database reference into domain knowledge
+			FrameworkReflectionUtils.doInjectReferenceThroughAnnotation(k, PlanDataBasePlaceholder.class, comp);
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("Error while injecting plan database into domain knowledge:\n- message: " + ex.getMessage() + "\n");
+		}
+		
+		try
+		{
+			// invoke post construct method
+			FrameworkReflectionUtils.doInvokeMethodTaggedWithAnnotation(k, PostConstruct.class);
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("Error while calling post construct method of domain knowledge\n- message: " + ex.getMessage() + "\n");
+		}
+		
+		try
+		{
+			// inject domain knowledge into plan database
+			FrameworkReflectionUtils.doInjectReferenceThroughAnnotation(comp, DomainKnowledgePlaceholder.class, k);
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("Error while injecting knowledge into the framework:\n- message: " + ex.getMessage() + "\n");
+		}
+		
+		
 		// get created domain component
 		return comp;
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
+	private static <T extends DomainKnowledge> T doCreateDomainKnowledge(DomainKnowledgeType type) {
+		// initialize knowledge instance
+		T knowledge = null;
+		try
+		{
+			// get domain knowledge class
+			Class<?> clazz = Class.forName(type.getClassName());
+			// get logger constructor
+			@SuppressWarnings("unchecked")
+			Constructor<T> c = (Constructor<T>) clazz.getDeclaredConstructor();
+			// set accessible
+			c.setAccessible(true);
+			// create instance
+			knowledge = c.newInstance();
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("Error while creating domain knowledge from class: " + type.getClassName() + "\n- message: " + ex.getMessage() + "\n");
+		}
+		
+		// get knowledge
+		return knowledge;
 	}
 	
 	/**
@@ -166,26 +229,11 @@ public class PlanDataBaseBuilder
 			logger = c.newInstance(level);
 		}
 		catch (Exception ex) {
-			throw new RuntimeException("Error while creating framework loggerfrom class: " + logger.getClass().getName() + "\n- message: " + ex.getMessage() + "\n");
+			throw new RuntimeException("Error while creating framework logger from class: " + logger.getClass().getName() + "\n- message: " + ex.getMessage() + "\n");
 		}
 		
 		// get logger
 		return logger;
 	}
 	
-	
-	
-	
-	
-	
-	public static void main(String[] args)
-	{
-		PlanDataBase pdb = PlanDataBaseBuilder.createAndSet("PDB", 0, 100);
-		PrimitiveStateVariable sv1 = pdb.createDomainComponent("SV1", DomainComponentType.SV_PRIMITIVE);
-		pdb.addDomainComponent(sv1);
-		DiscreteResource res1 = pdb.createDomainComponent("REs1", DomainComponentType.RESOURCE_DISCRETE);
-		pdb.addDomainComponent(res1);
-		
-		System.out.println(">>>> " + pdb + "\n");
-	}
 }

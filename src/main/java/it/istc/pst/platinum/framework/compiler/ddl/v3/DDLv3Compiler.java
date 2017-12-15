@@ -47,7 +47,7 @@ import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.DomainComponentType;
-import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;

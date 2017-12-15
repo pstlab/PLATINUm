@@ -21,7 +21,7 @@ public class FrameworkReflectionUtils
 	 * @param aClass
 	 * @return
 	 */
-	public static <T extends Annotation> T doFindConfigurationAnnotation(Class<?> oClass, Class<T> aClass)
+	public static <T extends Annotation> T doFindnAnnotation(Class<?> oClass, Class<T> aClass)
 	{
 		// initialize annotation
 		T annot = null;
