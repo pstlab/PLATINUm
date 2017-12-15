@@ -16,11 +16,12 @@ public class Goal extends Flaw
 	
 	/**
 	 * 
+	 * @param id
 	 * @param component
 	 * @param decision
 	 */
-	protected Goal(DomainComponent component, Decision decision) {
-		super(component, FlawType.PLAN_REFINEMENT);
+	protected Goal(int id, DomainComponent component, Decision decision) {
+		super(id, component, FlawType.PLAN_REFINEMENT);
 		this.decision = decision;
 	}
 	

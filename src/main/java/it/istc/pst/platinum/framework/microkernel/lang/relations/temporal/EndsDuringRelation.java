@@ -23,12 +23,12 @@ public class EndsDuringRelation extends TemporalRelation
 	 * @param reference
 	 * @param target
 	 */
-	protected EndsDuringRelation(Decision reference, Decision target) {
-		super(RelationType.ENDS_DURING, reference, target);
+	protected EndsDuringRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.ENDS_DURING, reference, target);
 		this.firstBound = new long[] {0, Long.MAX_VALUE - 1};
 		this.secondBound = new long[] {0, Long.MAX_VALUE - 1};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 	
 	/**

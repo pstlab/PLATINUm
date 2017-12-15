@@ -700,6 +700,4 @@ DOMAIN ALFA_COMPLETE
 		}
 		
 	}
-SYNCHRONIZE Human.worker {
-	}
 }

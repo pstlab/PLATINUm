@@ -9,24 +9,11 @@ import java.lang.reflect.Constructor;
  */
 public class ParameterConstraintFactory 
 {
-	private static ParameterConstraintFactory INSTANCE = null;
-	
 	/**
 	 * 
 	 */
-	private ParameterConstraintFactory() {}
+	public ParameterConstraintFactory() {}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public static ParameterConstraintFactory getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new ParameterConstraintFactory();
-		}
-		return INSTANCE;
-	}
-
 	/**
 	 * 
 	 * @param type

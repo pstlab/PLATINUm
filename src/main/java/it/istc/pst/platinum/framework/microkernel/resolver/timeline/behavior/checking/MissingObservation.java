@@ -13,10 +13,11 @@ public class MissingObservation extends Flaw
 {
 	/**
 	 * 
+	 * @param id
 	 * @param sv
 	 */
-	protected MissingObservation(StateVariable sv) {
-		super(sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
+	protected MissingObservation(int id, StateVariable sv) {
+		super(id, sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
 	}
 	
 	/**

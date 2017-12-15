@@ -52,8 +52,8 @@ public class APSPSolverTestCase
 			this.tn = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
 			
 			// get query factory
-			this.qf = TemporalQueryFactory.getInstance();
-			this.cf = TemporalConstraintFactory.getInstance();
+			this.qf = new TemporalQueryFactory();
+			this.cf = new TemporalConstraintFactory();
 			
 			// create time points
 			this.tp1 = this.tn.addTimePoint();

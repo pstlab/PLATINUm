@@ -19,14 +19,15 @@ public class MeetsRelation extends TemporalRelation
 	
 	/**
 	 * 
+	 * @param id
 	 * @param reference
 	 * @param target
 	 */
-	protected MeetsRelation(Decision reference, Decision target) {
-		super(RelationType.MEETS, reference, target);
+	protected MeetsRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.MEETS, reference, target);
 		this.bound = new long[] {0, 0};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 	
 	/**

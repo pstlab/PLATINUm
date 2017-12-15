@@ -1,0 +1,60 @@
+horizon = 500
+plan {
+	timelines {
+		PointingMode {
+			 token 0  { Earth [1, 480] [1,480] }
+			 token 174  { Slewing [2, 481] [1,480] }
+			 token 169  { Target [5, 484] [3,482] }
+			 token 176  { Slewing [6, 485] [1,480] }
+			 token 173  { Earth [11, 490] [5,484] }
+			 token 175  { Slewing [12, 491] [1,480] }
+			 token 167  { Target [15, 494] [3,482] }
+			 token 177  { Slewing [16, 495] [1,480] }
+			 token 171  { Earth [21, 500] [5,484] }
+		}
+		Satellite {
+			 token 168  { Science [5, 484] [3,7] }
+			 token 172 uncontrollable { Communicate [11, 490] [5,8] }
+			 token 166  { Science [15, 494] [3,7] }
+			 token 170 uncontrollable { Communicate [21, 500] [5,8] }
+		}
+	}
+	relations {
+		Satellite 166 DURING [0, 500]  [0,500]  PointingMode 167
+		Satellite 166 BEFORE [0, 500]  Satellite 170
+		PointingMode 0 BEFORE [0, 500]  PointingMode 167
+		Satellite 168 DURING [0, 500]  [0,500]  PointingMode 169
+		Satellite 168 BEFORE [0, 500]  Satellite 172
+		PointingMode 0 BEFORE [0, 500]  PointingMode 169
+		PointingMode 169 BEFORE [0, 500]  PointingMode 167
+		Satellite 170 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 170 DURING [0, 500]  [0,500]  PointingMode 171
+		PointingMode 0 BEFORE [0, 500]  PointingMode 171
+		PointingMode 169 BEFORE [0, 500]  PointingMode 171
+		PointingMode 167 BEFORE [0, 500]  PointingMode 171
+		Satellite 172 DURING [0, 500]  [0,500]  GroundStationWindow 1
+		Satellite 172 DURING [0, 500]  [0,500]  PointingMode 173
+		PointingMode 0 BEFORE [0, 500]  PointingMode 173
+		PointingMode 169 BEFORE [0, 500]  PointingMode 173
+		PointingMode 173 BEFORE [0, 500]  PointingMode 167
+		PointingMode 0 MEETS PointingMode 174
+		PointingMode 174 MEETS PointingMode 169
+		PointingMode 173 MEETS PointingMode 175
+		PointingMode 175 MEETS PointingMode 167
+		PointingMode 169 MEETS PointingMode 176
+		PointingMode 176 MEETS PointingMode 173
+		PointingMode 167 MEETS PointingMode 177
+		PointingMode 177 MEETS PointingMode 171
+	}
+}
+observation {
+	timelines {
+		GroundStationWindow {
+			 token 1 { Visible [500, 500] [500, 500] }
+		}
+		SunWindow {
+			 token 2 { Visible [500, 500] [500, 500] }
+		}
+	}
+}
+

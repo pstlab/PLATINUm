@@ -53,7 +53,7 @@ public enum SearchStrategyType
 	 * 
 	 * @return
 	 */
-	public String getStrategyClassName() {
+	public String getClassName() {
 		return this.className;
 	}
 	

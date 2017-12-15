@@ -33,7 +33,7 @@ public class SimpleTemporalNetworkTestCase
 		System.out.println("************************* Simple Temporal Network Test Case **********************");
 		System.out.println("**********************************************************************************");
 		this.stn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
-		this.cf = TemporalConstraintFactory.getInstance();
+		this.cf = new TemporalConstraintFactory();
 	}
 	
 	/**

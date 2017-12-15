@@ -1,7 +1,5 @@
 package it.istc.pst.platinum.framework.domain.component;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import it.istc.pst.platinum.framework.parameter.lang.Parameter;
 
 /**
@@ -11,7 +9,6 @@ import it.istc.pst.platinum.framework.parameter.lang.Parameter;
  */
 public class Decision implements Comparable<Decision>
 {
-	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private Decision causalLink;		// set "generator" decision
 	private ComponentValue value;
@@ -27,16 +24,17 @@ public class Decision implements Comparable<Decision>
 	
 	/**
 	 * 
+	 * @param id
 	 * @param value
 	 * @param labels
 	 * @param start
 	 * @param end
 	 * @param nominalDuration
 	 */
-	protected Decision(ComponentValue value, String[] labels, long[] start, long[] end, long[] nominalDuration) 
+	protected Decision(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] nominalDuration) 
 	{
 		// set id
-		this.id = ID_COUNTER.getAndIncrement();
+		this.id = id;
 		// set parameter labels
 		this.labels = labels;
 		// set causal link

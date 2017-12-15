@@ -19,12 +19,13 @@ public class EqualParameterRelation extends ParameterRelation
 	
 	/**
 	 * 
-	 * @param refrence
+	 * @param id
+	 * @param reference
 	 * @param target
 	 */
-	protected EqualParameterRelation(Decision reference, Decision target) {
-		super(RelationType.EQUAL_PARAMETER, reference, target);
-		this.factory = ParameterConstraintFactory.getInstance();
+	protected EqualParameterRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.EQUAL_PARAMETER, reference, target);
+		this.factory = new ParameterConstraintFactory();
 	}
 	
 	/**

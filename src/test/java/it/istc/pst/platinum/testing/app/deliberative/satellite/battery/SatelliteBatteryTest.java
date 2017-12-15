@@ -13,11 +13,4 @@ public abstract class SatelliteBatteryTest
 	protected static final String DATA_FOLDER = "domains/satellite/battery/data";
 	protected static final String DDL_PATTERN = "$v/satellite.ddl";
 	protected static final String PDL_PATTERN = "satellite_$v_$c_$s_$g.pdl";
-	protected static final String[] DOMAIN_VERSIONS = new String[] {
-			"complete",
-			"reservoir",
-			"discrete",
-			"simple"
-	};
-	
 }

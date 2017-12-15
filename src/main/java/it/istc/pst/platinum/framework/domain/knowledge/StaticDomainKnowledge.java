@@ -14,7 +14,6 @@ import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationConstr
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
-import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 
 /**
  * 
@@ -35,17 +34,46 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	protected StaticDomainKnowledge() {
 		super();
 		// initialize additional data
-		this.dg = new HashMap<>();
-		this.tree = new HashMap<>();
+		this.dg = null;
+		this.tree = null;
+		this.hierarchy = null;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void printDecompositionTree() {
+		// check decomposition tree
+		if (this.tree == null) {
+			// compute decomposition tree
+			this.computeDecompositionTree();
+		}
+		
+		// print decomposition tree
+		String str = "Decomposition tree:\n-----------------------------------\n";
+		for (ComponentValue val : this.tree.keySet()) {
+			str += "- " + val.getLabel() + ":\n";
+			for (ComponentValue tar : this.tree.get(val)) {
+				str += "\t- " + tar.getLabel() + "\n";
+			}
+		}
+		str += "-----------------------------------";
+		// print resulting decomposition tree
+		logger.info(str);
 	}
 	
 	/**
 	 * 
 	 */
-	@PostConstruct
-	protected void init() {
-		// analyze synchronization to extract dependencies among components
-		this.computeDependencyGraph();
+	@Override
+	public void printDependencyGraph() {
+		// check dependency graph
+		if (this.dg == null) {
+			// compute domain hierarchy
+			this.computeDependencyGraph();
+		}
+		
 		// print computed dependencies
 		String str = "Dependency graph:\n-----------------------------------\n";
 		for (DomainComponent key : this.dg.keySet()) {
@@ -72,20 +100,6 @@ public class StaticDomainKnowledge extends DomainKnowledge
 		str += "-----------------------------------";
 		// print dependency graph
 		logger.info(str);
-		
-		// analyze synchronization to extract the decomposition tree
-		this.computeDecompositionTree();
-		// print decomposition tree
-		str = "Decomposition tree:\n-----------------------------------\n";
-		for (ComponentValue val : this.tree.keySet()) {
-			str += "- " + val.getLabel() + ":\n";
-			for (ComponentValue tar : this.tree.get(val)) {
-				str += "\t- " + tar.getLabel() + "\n";
-			}
-		}
-		str += "-----------------------------------";
-		// print resulting decomposition tree
-		logger.info(str);
 	}
 	
 	/**
@@ -93,6 +107,12 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	 */
 	@Override
 	public Map<DomainComponent, Set<DomainComponent>> getDependencyGraph() {
+		// check if a dependency graph has been computed
+		if (this.dg == null) {
+			// analyze synchronization to extract dependencies among components
+			this.computeDependencyGraph();
+		}
+		
 		// get the dependency graph
 		return new HashMap<DomainComponent, Set<DomainComponent>>(this.dg);
 	}
@@ -102,6 +122,12 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	 */
 	@Override
 	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree() {
+		// check if a decomposition tree has been computed
+		if (this.tree == null) {
+			// analyze domain synchronization to build a decomposition tree of the domain
+			this.computeDecompositionTree();
+		}
+		
 		// get the decomposition tree
 		return new HashMap<ComponentValue, Set<ComponentValue>>(this.tree);
 	}
@@ -316,15 +342,18 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	@Override
 	public int getHierarchicalLevelValue(DomainComponent component)
 	{
+		// get domain hierarchy
+		List<DomainComponent>[] h= this.getDomainHierarchy();
+		
 		boolean found = false;
 		int level = 0;
-		for (level = 0; level < this.hierarchy.length && !found; level++) {
+		for (level = 0; level < h.length && !found; level++) {
 			// get components
-			found = this.hierarchy[level].contains(component);
+			found = h[level].contains(component);
 		}
 		
 		// get level value (inverted with respect to the position into the array
-		return (this.hierarchy.length - level) + 1;
+		return (h.length - level) + 1;
 	}
 	
 	/**
@@ -332,7 +361,21 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	 * @return
 	 */
 	@Override
-	public List<DomainComponent>[] getDomainHierarchy() {
+	public List<DomainComponent>[] getDomainHierarchy() 
+	{
+		// check if dependency graph has been computed
+		if (this.dg == null) {
+			// compute dependency graph
+			this.computeDependencyGraph();
+		}
+		
+		// check if domain hierarchy has been computed
+		if (this.hierarchy == null) {
+			// compute domain hierarchy
+			this.computeHierarchy();
+		}
+
+		// get domain hierarchy
 		return this.hierarchy;
 	}
 }

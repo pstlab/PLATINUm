@@ -17,12 +17,13 @@ public class IncompleteBehavior extends Flaw {
 	
 	/**
 	 * 
+	 * @param id
 	 * @param sv
 	 * @param left
 	 * @param right
 	 */
-	protected IncompleteBehavior(StateVariable sv, Decision left, Decision right) {
-		super(sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
+	protected IncompleteBehavior(int id, StateVariable sv, Decision left, Decision right) {
+		super(id, sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
 		this.left = left;
 		this.right = right;
 	}

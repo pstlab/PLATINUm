@@ -23,10 +23,11 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	
 	/**
 	 * 
+	 * @param id
 	 * @param resource
 	 */
-	protected CriticalSet(DiscreteResource resource) {
-		super(resource, FlawType.RESOURCE_OVERFLOW);
+	protected CriticalSet(int id, DiscreteResource resource) {
+		super(id, resource, FlawType.RESOURCE_OVERFLOW);
 		this.samples = new HashSet<>();
 		this.minCapacity = resource.getMinCapacity();
 		this.maxCapacity = resource.getMaxCapacity();

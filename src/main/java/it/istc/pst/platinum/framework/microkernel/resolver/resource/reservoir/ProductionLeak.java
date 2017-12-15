@@ -12,11 +12,12 @@ public class ProductionLeak extends ProductionFlaw
 {
 	/**
 	 * 
+	 * @param id
 	 * @param resource
 	 * @param event
 	 * @param delta
 	 */
-	protected ProductionLeak(ReservoirResource resource, ProductionResourceEvent event, double delta) {
-		super(resource, event, delta);
+	protected ProductionLeak(int id, ReservoirResource resource, ProductionResourceEvent event, double delta) {
+		super(id, resource, event, delta);
 	}
 }

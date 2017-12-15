@@ -82,7 +82,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		for (Decision decision : this.component.getPendingDecisions()) 
 		{
 			// add sub-goal
-			Goal goal = new Goal(this.component, decision);
+			Goal goal = new Goal(FLAW_COUNTER.getAndIncrement(), this.component, decision);
 			// check if external component
 			if (decision.getComponent().isExternal()) {
 				// set mandatory unification

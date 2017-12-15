@@ -53,9 +53,9 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		this.facade = TemporalFacadeBuilder.createAndSet(this, ORIGIN, HORIZON);
 		
 		// get interval factory
-		this.intervalFactory = TemporalConstraintFactory.getInstance();
+		this.intervalFactory = new TemporalConstraintFactory();
 		// get query factory
-		this.queryFactory = TemporalQueryFactory.getInstance();
+		this.queryFactory = new TemporalQueryFactory();
 	}
 	
 	/**

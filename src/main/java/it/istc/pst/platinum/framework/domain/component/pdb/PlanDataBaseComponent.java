@@ -27,6 +27,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.Domai
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.DomainKnowledgePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.DomainComponentNotFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.OperatorPropagationException;
@@ -90,7 +91,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		// set logging level
 		level = FrameworkLoggingLevel.OFF
 )
-public class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
+public final class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
 	@DomainKnowledgePlaceholder
 	protected DomainKnowledge knowledge;
@@ -119,6 +120,32 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 		this.components = new HashMap<>();
 		this.parameterDomains = new HashMap<>();
 		this.problem = null;
+	}
+	
+	/**
+	 * 
+	 */
+	@PostConstruct
+	protected void init() {
+		super.init();
+		
+		// clear static (global) information
+		synchronized (rules) {
+			// clear if needed global synchronization rules
+			rules.clear();
+		}
+		
+		synchronized(globalRelations) {
+			// clear if needed global relations
+			globalRelations.clear();
+		}
+	
+		// reset predicate counter
+		PREDICATE_COUNTER.set(0);
+		// reset decision counter
+		DECISION_COUNTER.set(0);
+		// reset relation counter
+		RELATION_COUNTER.set(0);
 	}
 	
 	/**
@@ -1176,6 +1203,7 @@ public class PlanDataBaseComponent extends DomainComponent implements PlanDataBa
 				throw new ProblemInitializationException("Inconsistent Problem description\n- Unsolvable flaws have been found\n" + ex.getMessage());
 			}
 			
+			// set problem 
 			this.problem = problem;
 		}
 		else {

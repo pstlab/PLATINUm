@@ -130,7 +130,7 @@ public class ExternalStateVariableComponentTestCase {
 			this.pf.verify();
 			
 			// check flexible schedule
-			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
+			TemporalQueryFactory qFactory = new TemporalQueryFactory();
 			// create flexible schedule query
 			IntervalScheduleQuery query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
@@ -196,7 +196,7 @@ public class ExternalStateVariableComponentTestCase {
 			this.pf.verify();
 			
 			// check flexible schedule
-			TemporalQueryFactory qFactory = TemporalQueryFactory.getInstance();
+			TemporalQueryFactory qFactory = new TemporalQueryFactory();
 			// create flexible schedule query
 			IntervalScheduleQuery query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
 			query.setInterval(d1.getToken().getInterval());
@@ -207,7 +207,7 @@ public class ExternalStateVariableComponentTestCase {
 			
 			try 
 			{
-				TemporalConstraintFactory iFactory = TemporalConstraintFactory.getInstance();
+				TemporalConstraintFactory iFactory = new TemporalConstraintFactory();
 				FixIntervalDurationConstraint constraint = iFactory.create(TemporalConstraintType.FIX_INTERVAL_DURATION);
 				constraint.setReference(d1.getToken().getInterval());
 				constraint.setDuration(7);

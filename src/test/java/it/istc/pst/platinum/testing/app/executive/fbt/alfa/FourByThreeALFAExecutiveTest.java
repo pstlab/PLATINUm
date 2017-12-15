@@ -4,6 +4,8 @@ import it.istc.pst.platinum.deliberative.app.Planner;
 import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.est.EarliestStartTimeExecutive;
+import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
@@ -27,7 +29,10 @@ public class FourByThreeALFAExecutiveTest
 	{
 		try 
 		{
-			Planner planner = PlannerBuilder.build(DDL, PDL);
+			// create plan database
+			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(DDL, PDL);
+			// create planner
+			Planner planner = PlannerBuilder.createAndSet(pdb);
 			// start deliberative process 
 			SolutionPlan plan = planner.plan();
 			System.out.println();

@@ -20,15 +20,16 @@ public class StartsDuringRelation extends TemporalRelation
 	
 	/**
 	 * 
+	 * @param id
 	 * @param reference
 	 * @param target
 	 */
-	protected StartsDuringRelation(Decision reference, Decision target) {
-		super(RelationType.STARTS_DURING, reference, target);
+	protected StartsDuringRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.STARTS_DURING, reference, target);
 		this.firstBound = new long[] {0, Long.MAX_VALUE - 1};
 		this.secondBound = new long[] {0, Long.MAX_VALUE - 1};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 	
 	/**

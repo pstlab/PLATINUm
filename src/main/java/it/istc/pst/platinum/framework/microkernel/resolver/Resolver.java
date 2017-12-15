@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.istc.pst.platinum.framework.domain.component.Constraint;
 import it.istc.pst.platinum.framework.domain.component.Decision;
@@ -46,6 +47,10 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	
 	protected String label;
 	protected FlawType[] flawTypes;
+
+	// static information
+	protected static final AtomicInteger FLAW_COUNTER = new AtomicInteger(0);
+	
 	
 	/**
 	 * 
@@ -56,6 +61,9 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 		super();
 		this.label = label;
 		this.flawTypes = flawTypes;
+		
+		// reset counter if necessary
+		FLAW_COUNTER.set(0);
 	}
 	
 	/**

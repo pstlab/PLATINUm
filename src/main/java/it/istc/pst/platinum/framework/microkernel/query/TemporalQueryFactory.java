@@ -9,20 +9,10 @@ import java.lang.reflect.Constructor;
  */
 public class TemporalQueryFactory 
 {
-	private static TemporalQueryFactory INSTANCE = null;
-	
-	private TemporalQueryFactory() {}
-	
 	/**
 	 * 
-	 * @return
 	 */
-	public static TemporalQueryFactory getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new TemporalQueryFactory();
-		}
-		return INSTANCE;
-	}
+	public TemporalQueryFactory() {}
 	
 	/**
 	 * 
@@ -30,10 +20,12 @@ public class TemporalQueryFactory
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public final <T extends TemporalQuery> T create(TemporalQueryType type) {
+	public final <T extends TemporalQuery> T create(TemporalQueryType type) 
+	{
 		// query instance
 		T query = null;
-		try {
+		try 
+		{
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getQueryClassName());
 			// get constructor

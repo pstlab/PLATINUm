@@ -12,6 +12,7 @@ import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PlannerSolverConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.SearchStrategyConfiguration;
@@ -32,6 +33,7 @@ import it.istc.pst.platinum.framework.protocol.lang.ProtocolLanguageFactory;
 import it.istc.pst.platinum.framework.protocol.lang.TimelineProtocolDescriptor;
 import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
 import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDescriptor;
+import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
@@ -46,6 +48,9 @@ import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDes
 )
 @SearchStrategyConfiguration(
 		strategy = SearchStrategyType.DFS
+)
+@FrameworkLoggerConfiguration(
+		level = FrameworkLoggingLevel.OFF
 )
 public class Planner extends DeliberativeObject 
 {

@@ -96,85 +96,62 @@ public class PlanDataBaseBuilder
 	 */
 	public synchronized static PlanDataBase createAndSet(String name, long origin, long horizon)
 	{
-		// get temporal facade configuration
-		TemporalFacadeConfiguration tAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, TemporalFacadeConfiguration.class);
-		if (tAnnot == null) {
-			throw new RuntimeException("Error while creating plan database:\n- message: Temporal facade configuration annotation not found\n");
-		}
-		
-		// create temporal facade
-		TemporalFacade tf = TemporalFacadeBuilder.createAndSet(tAnnot, origin, horizon);
-		
-		// get parameter facade configuration
-		ParameterFacadeConfiguration pAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, ParameterFacadeConfiguration.class);
-		if (pAnnot == null) {
-			throw new RuntimeException("Error while creating plan database:\n- message: Parameter facade configuration annotation not found\n");
-		}
-		
-		// create parameter facade
-		ParameterFacade pf = ParameterFacadeBuilder.createAndSet(pAnnot);
-
-
-		// create plan database component instance
-		PlanDataBaseComponent comp = DomainComponentBuilder.createAndSet(name, DomainComponentType.PLAN_DATABASE, tf, pf);
-		
-		
-		// get framework logger configuration
-		FrameworkLoggerConfiguration lAnnot = FrameworkReflectionUtils.doFindnAnnotation(comp.getClass(), FrameworkLoggerConfiguration.class);
-		if (lAnnot == null) {
-			throw new RuntimeException("Error while creating plan database:\n- message: Framework logger configuration annotation not found\n");
-		}
-		
 		try
 		{
+			// get framework logger configuration
+			FrameworkLoggerConfiguration lAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, FrameworkLoggerConfiguration.class);
 			// create logger
 			FrameworkLogger logger = doCreateFrameworkLogger(lAnnot.level());
+			
 			// inject logger reference
-			FrameworkReflectionUtils.doInjectStaticReferenceThroughAnnotation(comp.getClass(), FrameworkLoggerPlaceholder.class, logger);
+			FrameworkReflectionUtils.doInjectStaticReferenceThroughAnnotation(PlanDataBaseComponent.class, FrameworkLoggerPlaceholder.class, logger);
 		}
 		catch (Exception ex) {
 			throw new RuntimeException("Error while injecting logger into the framework:\n- message: " + ex.getMessage() + "\n");
 		}
 		
+		// get temporal facade configuration
+		TemporalFacadeConfiguration tAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, TemporalFacadeConfiguration.class);
+		// create temporal facade
+		TemporalFacade tf = TemporalFacadeBuilder.createAndSet(tAnnot, origin, horizon);
 		
-		try 
-		{
-			// finalize plan database initialization
-			FrameworkReflectionUtils.doInvokeMethodTaggedWithAnnotation(comp, PostConstruct.class);
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Error while calling post construct method of the plan database\n- message: " + ex.getMessage() + "\n");
-		}
+		// get parameter facade configuration
+		ParameterFacadeConfiguration pAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, ParameterFacadeConfiguration.class);
+		// create parameter facade
+		ParameterFacade pf = ParameterFacadeBuilder.createAndSet(pAnnot);
+
 		
-		// create and set domain knowledge
-		DomainKnowledgeConfiguration annot = FrameworkReflectionUtils.doFindnAnnotation(comp.getClass(), DomainKnowledgeConfiguration.class);
-		DomainKnowledge k = doCreateDomainKnowledge(annot.knowledge());
+		// create plan database component instance
+		PlanDataBaseComponent comp = DomainComponentBuilder.createAndSet(name, DomainComponentType.PLAN_DATABASE, tf, pf);
 		
 		try
 		{
+			// create and set domain knowledge
+			DomainKnowledgeConfiguration annot = FrameworkReflectionUtils.doFindnAnnotation(comp.getClass(), DomainKnowledgeConfiguration.class);
+			DomainKnowledge knowledge = doCreateDomainKnowledge(annot.knowledge());
 			// inject plan database reference into domain knowledge
-			FrameworkReflectionUtils.doInjectReferenceThroughAnnotation(k, PlanDataBasePlaceholder.class, comp);
+			FrameworkReflectionUtils.doInjectReferenceThroughAnnotation(knowledge, PlanDataBasePlaceholder.class, comp);
+			
+			try
+			{
+				// invoke post construct method
+				FrameworkReflectionUtils.doInvokeMethodTaggedWithAnnotation(knowledge, PostConstruct.class);
+			}
+			catch (Exception ex) {
+				throw new RuntimeException("Error while calling post construct method of domain knowledge\n- message: " + ex.getMessage() + "\n");
+			}
+			
+			try
+			{
+				// inject domain knowledge into plan database
+				FrameworkReflectionUtils.doInjectReferenceThroughAnnotation(comp, DomainKnowledgePlaceholder.class, knowledge);
+			}
+			catch (Exception ex) {
+				throw new RuntimeException("Error while injecting knowledge into the framework:\n- message: " + ex.getMessage() + "\n");
+			}
 		}
 		catch (Exception ex) {
 			throw new RuntimeException("Error while injecting plan database into domain knowledge:\n- message: " + ex.getMessage() + "\n");
-		}
-		
-		try
-		{
-			// invoke post construct method
-			FrameworkReflectionUtils.doInvokeMethodTaggedWithAnnotation(k, PostConstruct.class);
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Error while calling post construct method of domain knowledge\n- message: " + ex.getMessage() + "\n");
-		}
-		
-		try
-		{
-			// inject domain knowledge into plan database
-			FrameworkReflectionUtils.doInjectReferenceThroughAnnotation(comp, DomainKnowledgePlaceholder.class, k);
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Error while injecting knowledge into the framework:\n- message: " + ex.getMessage() + "\n");
 		}
 		
 		

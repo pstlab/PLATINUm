@@ -9,23 +9,10 @@ import java.lang.reflect.Constructor;
  */
 public class TemporalConstraintFactory 
 {
-	private static TemporalConstraintFactory INSTANCE = null;
-	
-	/*
-	 * Create Allen's language factory
-	 */
-	private TemporalConstraintFactory() {}
-	
 	/**
 	 * 
-	 * @return
 	 */
-	public static TemporalConstraintFactory getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new TemporalConstraintFactory();
-		}
-		return INSTANCE;
-	}
+	public TemporalConstraintFactory() {}
 	
 	/**
 	 * 
@@ -36,10 +23,12 @@ public class TemporalConstraintFactory
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends TemporalConstraint> T create(TemporalConstraintType type) { 
+	public <T extends TemporalConstraint> T create(TemporalConstraintType type) 
+	{ 
 		// constraint to create
 		T constraint = null;
-		try {
+		try 
+		{
 			// get class from name
 			Class<T> clazz = (Class<T>) Class.forName(type.getConstraintClassName());
 			// get constructor

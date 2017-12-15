@@ -85,7 +85,7 @@ public final class ObservationBehaviorCheckingResolver extends Resolver<StateVar
 		if (decs.isEmpty()) 
 		{
 			// missing external variable observations
-			issues.add(new MissingObservation(this.component));
+			issues.add(new MissingObservation(FLAW_COUNTER.getAndIncrement(), this.component));
 		}
 		else
 		{
@@ -114,7 +114,7 @@ public final class ObservationBehaviorCheckingResolver extends Resolver<StateVar
 				if (lb > 0 || (lb == 0 && ub > 0)) 
 				{
 					// we've got a gap
-					IncompleteBehavior issue = new IncompleteBehavior(this.component, left, right);
+					IncompleteBehavior issue = new IncompleteBehavior(FLAW_COUNTER.getAndIncrement(), this.component, left, right);
 					// add the gap
 					issues.add(issue);
 				}

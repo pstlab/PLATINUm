@@ -42,7 +42,7 @@ public enum FlawSelectionHeuristicType
 	 * 
 	 * @return
 	 */
-	public String getHeuristicClassName() {
+	public String getClassName() {
 		return this.cname;
 	}
 	

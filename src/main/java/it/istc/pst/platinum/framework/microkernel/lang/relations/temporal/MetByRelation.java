@@ -18,14 +18,15 @@ public class MetByRelation extends TemporalRelation
 	
 	/**
 	 * 
+	 * @param id
 	 * @param reference
 	 * @param target
 	 */
-	protected MetByRelation(Decision reference, Decision target) {
-		super(RelationType.MET_BY, reference, target);
+	protected MetByRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.MET_BY, reference, target);
 		this.bound = new long[] {0, 0};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 
 	/**

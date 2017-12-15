@@ -51,4 +51,14 @@ public abstract class DomainKnowledge extends FrameworkObject
 	 * @return
 	 */
 	public abstract List<DomainComponent>[] getDomainHierarchy();
+	
+	/**
+	 * 
+	 */
+	public abstract void printDecompositionTree();
+	
+	/**
+	 * 
+	 */
+	public abstract void printDependencyGraph();
 }

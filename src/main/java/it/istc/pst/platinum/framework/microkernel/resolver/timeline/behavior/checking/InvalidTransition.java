@@ -21,8 +21,8 @@ public class InvalidTransition extends Flaw {
 	 * @param left
 	 * @param right
 	 */
-	protected InvalidTransition(StateVariable sv, Decision left, Decision right) {
-		super(sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
+	protected InvalidTransition(int id, StateVariable sv, Decision left, Decision right) {
+		super(id, sv, FlawType.TIMELINE_BEHAVIOR_CHECKING);
 		this.left = left;
 		this.right = right;
 	}

@@ -19,15 +19,16 @@ public class EqualsRelation extends TemporalRelation
 	
 	/**
 	 * 
+	 * @param id
 	 * @param reference
 	 * @param target
 	 */
-	protected EqualsRelation(Decision reference, Decision target) {
-		super(RelationType.EQUALS, reference, target);
+	protected EqualsRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.EQUALS, reference, target);
 		this.startBound = new long[] {0, 0};
 		this.endBound = new long[] {0, 0};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 	
 	/**

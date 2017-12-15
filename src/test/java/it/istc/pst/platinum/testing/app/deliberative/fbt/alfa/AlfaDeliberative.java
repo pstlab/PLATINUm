@@ -2,6 +2,8 @@ package it.istc.pst.platinum.testing.app.deliberative.fbt.alfa;
 
 import it.istc.pst.platinum.deliberative.app.Planner;
 import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
+import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
@@ -13,7 +15,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
  */
 public class AlfaDeliberative
 {
-	private static final String FOLDER = "domains/fourbythree/alfa";
+	private static final String FOLDER = "domains/fourbythree/alfa/complete";
 	private static final String DDL = FOLDER + "/alfa.ddl";
 	private static final String PDL = FOLDER + "/alfa.pdl";
 	
@@ -25,8 +27,10 @@ public class AlfaDeliberative
 	{ 
 		try 
 		{
+			// create plan database
+			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(DDL, PDL);
 			// create planner
-			Planner planner = PlannerBuilder.build(DDL, PDL);	
+			Planner planner = PlannerBuilder.createAndSet(pdb);	
 			// start planning
 			SolutionPlan plan = planner.plan();
 			// solution found

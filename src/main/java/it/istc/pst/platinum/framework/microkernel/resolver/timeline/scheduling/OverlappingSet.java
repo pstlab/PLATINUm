@@ -21,10 +21,11 @@ public class OverlappingSet extends Flaw implements Comparable<OverlappingSet>
 	
 	/**
 	 * 
+	 * @param id
 	 * @param sv
 	 */
-	protected OverlappingSet(StateVariable sv) {
-		super(sv, FlawType.TIMELINE_OVERFLOW);
+	protected OverlappingSet(int id, StateVariable sv) {
+		super(id, sv, FlawType.TIMELINE_OVERFLOW);
 		this.decisions = new HashSet<>();
 	}
 	

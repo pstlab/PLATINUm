@@ -442,7 +442,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			// get current sample
 			RequirementResourceProfileSample i = samples.get(index);
 			// initialize the critical set
-			CriticalSet cs = new CriticalSet((DiscreteResource) this.component);
+			CriticalSet cs = new CriticalSet(FLAW_COUNTER.getAndIncrement(), (DiscreteResource) this.component);
 			// add i to the current critical set
 			cs.addSample(i);
 			

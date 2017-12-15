@@ -28,21 +28,23 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
 @ExecutiveDispatcherConfiguration(dispatcher = EarliestStartTimePlanDispatcher.class)
 public class Executive extends ExecutiveObject implements ExecutionManager
 {
+	@ExecutivePlanDataBasePlaceholder
+	protected ExecutivePlanDataBase pdb;				// the (executive) plan to execute
+	
 	@ExecutionMonitorPlaceholder
 	protected PlanMonitor monitor;						// plan monitor
 	
 	@ExecutionDispatcherPlaceholder
 	protected PlanDispatcher dispatcher;				// dispatching process
 	
-	@ExecutivePlanDataBasePlaceholder
-	protected ExecutivePlanDataBase pdb;			// the plan to execute
-	
 	
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
 	private FilePropertyReader config;											// configuration property file
+	
 	private final Object lock;													// executive's status lock
-	private ExecutionStatus status;												// executive's operating status
 	private ClockManager clock;													// execution clock controller
+	private ExecutionStatus status;												// executive's operating status
+	
 	
 	private ExecutiveWindow window;				// executive window
 	

@@ -23,12 +23,12 @@ public class ContainsRelation extends TemporalRelation
 	 * @param reference
 	 * @param target
 	 */
-	protected ContainsRelation(Decision reference, Decision target) {
-		super(RelationType.CONTAINS, reference, target);
+	protected ContainsRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.CONTAINS, reference, target);
 		this.startTimeBound = new long[] {0, Long.MAX_VALUE - 1};
 		this.endTimeBound = new long[] {0, Long.MAX_VALUE - 1};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 	
 	/**

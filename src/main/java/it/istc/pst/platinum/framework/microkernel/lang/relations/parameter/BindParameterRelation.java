@@ -19,14 +19,15 @@ public class BindParameterRelation extends ParameterRelation
 
 	/**
 	 * 
+	 * @param id
 	 * @param reference
 	 * @param target
 	 */
-	protected BindParameterRelation(Decision reference, Decision target) {
-		super(RelationType.BIND_PARAMETER, reference, target);
+	protected BindParameterRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.BIND_PARAMETER, reference, target);
 		// reflexive relation
 		this.target = reference;
-		this.factory = ParameterConstraintFactory.getInstance();
+		this.factory = new ParameterConstraintFactory();
 	}
 	
 	/**

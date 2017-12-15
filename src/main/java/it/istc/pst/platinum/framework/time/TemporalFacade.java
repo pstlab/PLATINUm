@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import it.istc.pst.platinum.framework.microkernel.FrameworkObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
@@ -77,15 +78,23 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	protected TemporalQueryFactory qf;									// temporal query factory
 	protected TemporalConstraintFactory cf;	 							// temporal constraint factory
 	
+	// static information
+	
+	private static final AtomicInteger ID_COUNTER = new AtomicInteger(0);
+	
 	/**
 	 * 
 	 */
 	protected TemporalFacade() {
 		super();
+		
 		// get query factory instance
-		this.qf = TemporalQueryFactory.getInstance();
-		this.cf = TemporalConstraintFactory.getInstance();
+		this.qf = new TemporalQueryFactory();
+		this.cf = new TemporalConstraintFactory();
 		this.intervals = new HashSet<>();
+		
+		// reset atomic id counter if needed
+		ID_COUNTER.set(0);
 	}
 	
 	/**
@@ -281,7 +290,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		}
 		
 		// create temporal interval 
-		TemporalInterval interval = new TemporalInterval(d);
+		TemporalInterval interval = new TemporalInterval(ID_COUNTER.getAndIncrement(), d);
 		// record interval
 		this.intervals.add(interval);
 		// get created interval

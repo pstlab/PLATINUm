@@ -19,12 +19,13 @@ public class NotEqualParameterRelation extends ParameterRelation
 	
 	/**
 	 * 
-	 * @param refrence
+	 * @param id
+	 * @param reference
 	 * @param target
 	 */
-	protected NotEqualParameterRelation(Decision reference, Decision target) {
-		super(RelationType.NOT_EQUAL_PARAMETER, reference, target);
-		this.factory = ParameterConstraintFactory.getInstance();
+	protected NotEqualParameterRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.NOT_EQUAL_PARAMETER, reference, target);
+		this.factory = new ParameterConstraintFactory();
 	}
 	
 	/**

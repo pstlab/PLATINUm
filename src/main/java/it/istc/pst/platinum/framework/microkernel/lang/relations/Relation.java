@@ -1,7 +1,5 @@
 package it.istc.pst.platinum.framework.microkernel.lang.relations;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import it.istc.pst.platinum.framework.domain.component.Constraint;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
@@ -14,7 +12,6 @@ import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
  */
 public abstract class Relation 
 {
-	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private RelationType type;
 	protected Decision reference;
@@ -25,12 +22,13 @@ public abstract class Relation
 	/**
 	 * Create a pending relation
 	 * 
+	 * @param id
 	 * @param reference
 	 * @param target
 	 * @param type
 	 */
-	protected Relation(RelationType type, Decision reference, Decision target) {
-		this.id = ID_COUNTER.getAndIncrement();
+	protected Relation(int id, RelationType type, Decision reference, Decision target) {
+		this.id = id;
 		this.type = type;
 		this.reference = reference;
 		this.target = target;

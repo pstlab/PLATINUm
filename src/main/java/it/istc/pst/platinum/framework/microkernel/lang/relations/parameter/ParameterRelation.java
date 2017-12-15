@@ -17,12 +17,13 @@ public abstract class ParameterRelation extends Relation
 	
 	/**
 	 * 
+	 * @param id
 	 * @param type
 	 * @param reference
 	 * @param target
 	 */
-	protected ParameterRelation(RelationType type, Decision reference, Decision target) {
-		super(type, reference, target);
+	protected ParameterRelation(int id, RelationType type, Decision reference, Decision target) {
+		super(id, type, reference, target);
 	}
 	
 	/**

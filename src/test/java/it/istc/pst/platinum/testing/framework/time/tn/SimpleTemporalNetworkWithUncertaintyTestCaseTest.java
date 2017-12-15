@@ -36,7 +36,7 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 		System.out.println("**********************************************************************************");
 		// create Simple Temporal Network with Uncertainty
 		this.stnu = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
-		this.cf = TemporalConstraintFactory.getInstance();
+		this.cf = new TemporalConstraintFactory();
 	}
 
 	/**

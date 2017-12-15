@@ -65,18 +65,23 @@ public abstract class DomainComponent extends FrameworkObject
 	protected String name;
 	protected DomainComponentType type;
 	
-	// synchronization rules from the planning domain
-	protected static Map<DomainComponent, Map<ComponentValue, List<SynchronizationRule>>> rules;
-	// current (global) relations
-	protected static Set<Relation> globalRelations;
-	
 	// current (local) plan
 	protected Map<PlanElementStatus, Set<Decision>> decisions;
 	protected Set<Relation> localRelations;
 	
 	// display data concerning this component
 	private ComponentView view;
-	private static AtomicInteger PREDICATE_COUNTER = new AtomicInteger(0);
+	
+	// static information
+	
+	// synchronization rules from the planning domain
+	protected static final Map<DomainComponent, Map<ComponentValue, List<SynchronizationRule>>> rules = new HashMap<>();
+	// current (global) relations
+	protected static final Set<Relation> globalRelations = new HashSet<>();
+	// predicate ID counter
+	protected static final AtomicInteger PREDICATE_COUNTER = new AtomicInteger(0);
+	protected static final AtomicInteger DECISION_COUNTER = new AtomicInteger(0);
+	protected static final AtomicInteger RELATION_COUNTER = new AtomicInteger(0);
 	
 	/**
 	 * 
@@ -96,14 +101,14 @@ public abstract class DomainComponent extends FrameworkObject
 		
 		// initialize relations of the (local) plan
 		this.localRelations = new HashSet<>();
-		// initialize global relations
-		if (globalRelations == null) {
-			globalRelations = new HashSet<>();
-		}
-		// initialize rules 
-		if (rules == null) {
-			rules = new HashMap<>();
-		}
+//		// initialize global relations
+//		if (globalRelations == null) {
+//			globalRelations = new HashSet<>();
+//		}
+//		// initialize rules 
+//		if (rules == null) {
+//			rules = new HashMap<>();
+//		}
 		
 		// set up the list of resolvers
 		this.resolvers = new ArrayList<>();
@@ -115,6 +120,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 */
 	@PostConstruct
 	protected void init() {
+		
+		
 		// set component view
 		this.view = new GanttComponentView(this);
 		// setup resolver index
@@ -485,7 +492,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		
 		// initialize decision
-		Decision dec = new Decision(value, labels, start, end, duration);
+		Decision dec = new Decision(DECISION_COUNTER.getAndIncrement(), value, labels, start, end, duration);
 		// add decision the the agenda
 		this.decisions.get(PlanElementStatus.PENDING).add(dec);
 		// get initialized decision
@@ -663,10 +670,10 @@ public abstract class DomainComponent extends FrameworkObject
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getRelationClassName());
 			// get constructor
-			Constructor<T> c = clazz.getDeclaredConstructor(Decision.class, Decision.class);
+			Constructor<T> c = clazz.getDeclaredConstructor(Integer.TYPE, Decision.class, Decision.class);
 			c.setAccessible(true);
 			// create instance
-			rel = c.newInstance(reference, target);
+			rel = c.newInstance(RELATION_COUNTER.getAndIncrement(), reference, target);
 			
 			// check if local relation
 			if (rel.isLocal()) {

@@ -37,7 +37,7 @@ public enum PlannerSolverType
 	 * 
 	 * @return
 	 */
-	public String getSolverClassName() {
+	public String getClassName() {
 		return this.cname;
 	}
 	

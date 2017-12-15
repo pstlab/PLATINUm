@@ -1,7 +1,5 @@
 package it.istc.pst.platinum.framework.time;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import it.istc.pst.platinum.framework.time.tn.TemporalData;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
@@ -13,8 +11,6 @@ import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
  */
 public class TemporalInterval extends TemporalData
 {
-	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
-	
 	private TimePoint start;					// time point's start time
 	private TimePoint end;						// time point's end time
 	private long nominalDurationLowerBound;		// interval's nominal duration lower bound
@@ -27,8 +23,8 @@ public class TemporalInterval extends TemporalData
 	 * 
 	 * @param duration
 	 */
-	protected TemporalInterval(TimePointDistanceConstraint duration) {
-		super(ID_COUNTER.getAndIncrement());
+	protected TemporalInterval(int id, TimePointDistanceConstraint duration) {
+		super(id);
 		this.start = duration.getReference();
 		this.end = duration.getTarget();
 		this.nominalDurationLowerBound = duration.getDistanceLowerBound();

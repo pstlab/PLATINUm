@@ -15,12 +15,13 @@ public abstract class TemporalRelation extends Relation
 {
 	/**
 	 * 
+	 * @param id
 	 * @param type
 	 * @param reference
 	 * @param target
 	 */
-	protected TemporalRelation(RelationType type, Decision reference, Decision target) {
-		super(type, reference, target);
+	protected TemporalRelation(int id, RelationType type, Decision reference, Decision target) {
+		super(id, type, reference, target);
 	}
 	
 	/**

@@ -26,13 +26,15 @@ public class Peak extends Flaw implements Comparable<Peak>
 	
 	/**
 	 * 
+	 * @param id
 	 * @param resource
 	 * @param set
 	 * @param delta
+	 * @param initialLevel
 	 * @param points
 	 */
-	protected Peak(ReservoirResource resource, List<ConsumptionResourceEvent> set, double delta, double initialLevel, Collection<ProductionCheckpoint> points) {
-		super(resource, FlawType.RESOURCE_PLANNING);
+	protected Peak(int id, ReservoirResource resource, List<ConsumptionResourceEvent> set, double delta, double initialLevel, Collection<ProductionCheckpoint> points) {
+		super(id, resource, FlawType.RESOURCE_PLANNING);
 		this.criticalSet = new ArrayList<>(set);
 		this.checkpoints = new HashSet<>(points);
 		this.delta = delta;

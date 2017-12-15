@@ -82,13 +82,15 @@ public class FrameworkReflectionUtils
 		// get class
 		Class<?> clazz = obj.getClass();
 		// find method
-		for (Method m : clazz.getDeclaredMethods()) {
+		for (Method m : clazz.getDeclaredMethods()) 
+		{
 			// check annotation
 			found = m.isAnnotationPresent(annot);
 			if (found) {
 				// invoke method
 				m.setAccessible(true);
 				m.invoke(obj, new Object[]{});
+				break;
 			}
 		}
 		

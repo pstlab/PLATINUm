@@ -3,6 +3,8 @@ package it.istc.pst.platinum.deliberative.app.cli;
 import it.istc.pst.platinum.deliberative.app.Planner;
 import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
 import it.istc.pst.platinum.deliberative.app.cli.ex.DeliberativeCommandLineInterfaceInitializationException;
+import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
+import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
@@ -44,8 +46,10 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 			throws DeliberativeCommandLineInterfaceInitializationException 
 	{
 		try {
+			// initialize the plan database
+			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(ddl, pdl);
 			// initialize the planner
-			this.planner = PlannerBuilder.build(ddl, pdl);
+			this.planner = PlannerBuilder.createAndSet(pdb);
 		}
 		catch (SynchronizationCycleException | ProblemInitializationException ex) {
 			// command line interface initialization exception

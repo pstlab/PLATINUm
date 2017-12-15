@@ -12,11 +12,12 @@ public class ProductionOverflow extends ProductionFlaw
 {
 	/**
 	 * 
+	 * @param id
 	 * @param resource
 	 * @param event
 	 * @param delta
 	 */
-	protected ProductionOverflow(ReservoirResource resource, ProductionResourceEvent event, double delta) {
-		super(resource, event, delta);
+	protected ProductionOverflow(int id, ReservoirResource resource, ProductionResourceEvent event, double delta) {
+		super(id, resource, event, delta);
 	}
 }

@@ -22,11 +22,11 @@ public class AfterRelation extends TemporalRelation
 	 * @param reference
 	 * @param target
 	 */
-	protected AfterRelation(Decision reference, Decision target) {
-		super(RelationType.AFTER, reference, target);
+	protected AfterRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.AFTER, reference, target);
 		this.bound = new long[] {0, Long.MAX_VALUE - 1};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 	
 	/**

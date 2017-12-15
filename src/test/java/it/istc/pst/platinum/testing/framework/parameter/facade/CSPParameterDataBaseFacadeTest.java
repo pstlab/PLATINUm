@@ -45,7 +45,7 @@ public class CSPParameterDataBaseFacadeTest
 		System.out.println("**********************************************************************************");
 		
 		// get parameter constraint factory
-		this.cFactory = ParameterConstraintFactory.getInstance();
+		this.cFactory = new ParameterConstraintFactory();
 	}
 	
 	/**

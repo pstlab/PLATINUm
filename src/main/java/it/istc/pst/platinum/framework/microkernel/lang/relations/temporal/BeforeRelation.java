@@ -22,11 +22,11 @@ public class BeforeRelation extends TemporalRelation
 	 * @param reference
 	 * @param target
 	 */
-	protected BeforeRelation(Decision reference, Decision target) {
-		super(RelationType.BEFORE, reference, target);
+	protected BeforeRelation(int id, Decision reference, Decision target) {
+		super(id, RelationType.BEFORE, reference, target);
 		this.bound = new long[] {0, Long.MAX_VALUE - 1};
 		// get factory
-		this.factory = TemporalConstraintFactory.getInstance();
+		this.factory = new TemporalConstraintFactory();
 	}
 	
 	/**

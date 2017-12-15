@@ -18,12 +18,13 @@ public abstract class ProductionFlaw extends Flaw
 	
 	/**
 	 * 
+	 * @param id
 	 * @param resource
 	 * @param production
 	 * @param delta
 	 */
-	protected ProductionFlaw(ReservoirResource resource, ProductionResourceEvent production, double delta) {
-		super(resource, FlawType.RESOURCE_PRODUCTION_UPDATE);
+	protected ProductionFlaw(int id, ReservoirResource resource, ProductionResourceEvent production, double delta) {
+		super(id, resource, FlawType.RESOURCE_PRODUCTION_UPDATE);
 		this.production = production;
 		this.delta = delta;
 	}

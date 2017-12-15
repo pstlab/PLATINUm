@@ -110,7 +110,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			// get active decision A 
 			Decision reference = decisions.get(index);
 			// initialize the overlapping set
-			OverlappingSet set = new OverlappingSet(this.component);
+			OverlappingSet set = new OverlappingSet(FLAW_COUNTER.getAndIncrement(), this.component);
 			set.add(reference);
 			// find overlapping decisions
 			for (int jndex = index + 1; jndex < decisions.size() && overlapping.isEmpty(); jndex++)

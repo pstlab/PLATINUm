@@ -89,7 +89,7 @@ public class TimelineBehaviorCheckingResolver extends Resolver<StateVariable> im
 				List<ComponentValue> successors = this.component.getDirectSuccessors(vi);
 				if (!successors.contains(vj)) {
 					// inconsistent behavior
-					InvalidTransition issue = new InvalidTransition(this.component, left, right);
+					InvalidTransition issue = new InvalidTransition(FLAW_COUNTER.getAndIncrement(), this.component, left, right);
 					issues.add(issue);
 				}
 			}

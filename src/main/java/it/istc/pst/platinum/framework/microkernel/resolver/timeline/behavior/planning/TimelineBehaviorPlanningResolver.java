@@ -268,7 +268,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				if (!connected) 
 				{
 					// force transition through a MEETS constraint
-					Gap gap = new Gap(this.component, left, right);
+					Gap gap = new Gap(FLAW_COUNTER.getAndIncrement(), this.component, left, right);
 					// add gap
 					flaws.add(gap);
 				}
@@ -276,7 +276,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			else if(dmin >= 0 && dmax > 0) 
 			{
 				// we've got a gap
-				Gap gap = new Gap(this.component, left, right, new long[] {dmin, dmax});
+				Gap gap = new Gap(FLAW_COUNTER.getAndIncrement(), this.component, left, right, new long[] {dmin, dmax});
 				// add gap
 				flaws.add(gap);
 			}

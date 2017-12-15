@@ -1033,7 +1033,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 					// compute the delta value of the peak
 					double delta = this.component.getMinCapacity() - currentLevel;
 					// create a peak
-					Peak peak = new Peak(this.component, criticalSet, delta, startLevel, checkpoints); //checkpointMap.values());
+					Peak peak = new Peak(FLAW_COUNTER.getAndIncrement(), this.component, criticalSet, delta, startLevel, checkpoints); //checkpointMap.values());
 					
 					// clear peak data
 					startLevel = Long.MIN_VALUE + 1;
@@ -1057,7 +1057,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						// if delta > 0 we have got a production leak
 						if (delta > 0) {
 							// create production leak flaw
-							ProductionLeak flaw = new ProductionLeak(this.component, (ProductionResourceEvent) sample.getEvent(), delta);
+							ProductionLeak flaw = new ProductionLeak(FLAW_COUNTER.getAndIncrement(), this.component, (ProductionResourceEvent) sample.getEvent(), delta);
 							// add to flaws
 							flaws.add(flaw);
 						}
@@ -1065,7 +1065,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						// if delta < 0 we have got a production overflow
 						if (delta < 0) {
 							// create production overflow
-							ProductionOverflow flaw = new ProductionOverflow(this.component, (ProductionResourceEvent) sample.getEvent(), delta);
+							ProductionOverflow flaw = new ProductionOverflow(FLAW_COUNTER.getAndIncrement(), this.component, (ProductionResourceEvent) sample.getEvent(), delta);
 							// add to flaws
 							flaws.add(flaw);
 						}
@@ -1097,7 +1097,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			// compute the delta value of the peak
 			long delta = this.component.getMinCapacity() - currentLevel;
 			// create a peak
-			Peak peak = new Peak(this.component, criticalSet, delta, startLevel, checkpoints); //checkpointMap.values());
+			Peak peak = new Peak(FLAW_COUNTER.getAndIncrement(), this.component, criticalSet, delta, startLevel, checkpoints); //checkpointMap.values());
 			// add the peak
 			flaws.add(peak);
 		}
