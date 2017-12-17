@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.istc.pst.platinum.deliberative.solver.PlannerSolverType;
+import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
 
 /**
  * 
@@ -20,7 +20,7 @@ import it.istc.pst.platinum.deliberative.solver.PlannerSolverType;
 public @interface PlannerSolverConfiguration {
 
 	// reference to solver algorithm
-	PlannerSolverType solver();
+	Class<? extends PlannerSolver> solver();
 	
 	// set a timeout for the solver
 	long timeout() default -1;

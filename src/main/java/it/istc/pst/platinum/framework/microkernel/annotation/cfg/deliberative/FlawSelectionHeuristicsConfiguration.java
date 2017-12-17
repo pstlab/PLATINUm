@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristicType;
+import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristic;
 
 /**
  * 
@@ -20,5 +20,5 @@ import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristicType;
 public @interface FlawSelectionHeuristicsConfiguration {
 
 	// flaw selection heuristics type
-	FlawSelectionHeuristicType heuristics();
+	Class<? extends FlawSelectionHeuristic> heuristics();
 }

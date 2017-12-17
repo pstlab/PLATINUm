@@ -66,7 +66,7 @@ public class PlannerBuilder
 		FlawSelectionHeuristicsConfiguration hAnnot = FrameworkReflectionUtils.
 				doFindnAnnotation(pClass, FlawSelectionHeuristicsConfiguration.class);
 		// create flaw selection heuristic
-		FlawSelectionHeuristic heuristic = PlannerBuilder.doCreateHueristic(hAnnot.heuristics().getClassName());
+		FlawSelectionHeuristic heuristic = PlannerBuilder.doCreateHueristic(hAnnot.heuristics().getName());
 		
 		try
 		{
@@ -113,7 +113,7 @@ public class PlannerBuilder
 		// get planner solver configuration
 		PlannerSolverConfiguration psAnnot = FrameworkReflectionUtils.doFindnAnnotation(pClass, PlannerSolverConfiguration.class);
 		// create planning solver 
-		PlannerSolver solver = PlannerBuilder.doCreatePlannerSolver(psAnnot.solver().getClassName(), psAnnot.timeout());
+		PlannerSolver solver = PlannerBuilder.doCreatePlannerSolver(psAnnot.solver().getName(), psAnnot.timeout());
 		
 		try
 		{

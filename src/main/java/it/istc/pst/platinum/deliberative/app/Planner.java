@@ -3,9 +3,9 @@ package it.istc.pst.platinum.deliberative.app;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristicType;
+import it.istc.pst.platinum.deliberative.heuristic.SearchAndBuildFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
-import it.istc.pst.platinum.deliberative.solver.PlannerSolverType;
+import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.Token;
@@ -41,10 +41,10 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  *
  */
 @PlannerSolverConfiguration(
-		solver = PlannerSolverType.PSEUDO_CONTROLLABILITY_AWARE
+		solver = PseudoControllabilityAwareSolver.class
 )
 @FlawSelectionHeuristicsConfiguration(
-		heuristics = FlawSelectionHeuristicType.SEARCH_AND_BUILD
+		heuristics = SearchAndBuildFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
 		strategy = SearchStrategyType.DFS
