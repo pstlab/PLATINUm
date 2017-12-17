@@ -7,14 +7,14 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
-import it.istc.pst.platinum.executive.ex.ExecutionException;
+import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 
 /**
  * 
  * @author anacleto
  *
  */
-public final class AtomicClockManager implements Runnable, ClockManager
+public final class AtomicClockManager extends ExecutiveObject implements Runnable, ClockManager
 {
 	private static final String CLOCK_RATE_PROPERTY = "clock_frequency";	// property specifying sampling time rate (in milliseconds)
 	private Properties config;												// executive configuration file
@@ -23,13 +23,13 @@ public final class AtomicClockManager implements Runnable, ClockManager
 	
 	private long tickStart;
 	private AtomicLong tick;
-	private ExecutionManager executive;										// executive system
+	private Executive executive;											// executive system
 	
 	/**
 	 * 
 	 * @param exec
 	 */
-	public AtomicClockManager(ExecutionManager exec) {
+	protected AtomicClockManager(Executive exec) {
 		super();
 		// set tick start
 		this.tickStart = 0;
@@ -157,11 +157,7 @@ public final class AtomicClockManager implements Runnable, ClockManager
 			} 
 			catch (InterruptedException ex) {
 				// complete execution
-				System.err.println("Execution Interrupted\n" + ex.getMessage());
-				complete = true;
-			}
-			catch (ExecutionException ex) {
-				// stop execution
+				logger.error("Execution Interrupted\n" + ex.getMessage());
 				complete = true;
 			}
 		}

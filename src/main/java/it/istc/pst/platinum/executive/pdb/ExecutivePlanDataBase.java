@@ -82,8 +82,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 	 * @param origin
 	 * @param horizon
 	 */
-	public ExecutivePlanDataBase() 
-	{
+	protected ExecutivePlanDataBase() {
 		super();
 		
 		// initialize array of locks
@@ -288,6 +287,8 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 				this.facade.process(query);
 			}
 			
+			// prepare log message
+			String msg = "";
 			// print execution dependency graph (for debug only)
 			for (ExecutionNodeStatus status : this.nodes.keySet())
 			{
@@ -295,21 +296,24 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 				for (ExecutionNode node : this.nodes.get(status))
 				{
 					// print node and the related execution conditions
-					System.out.println("Execution node " + node);
-					System.out.println("\tNode execution starting conditions:");
+					msg += "Execution node " + node + "\n";
+					msg += "\tNode execution starting conditions:\n";
 					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
 					for (ExecutionNode dep : dependencies.keySet()) {
-						System.out.println("\t\tCan start if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
+						msg += "\t\tCan start if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep) + "\n";
 					}
 					
 					// get end conditions
 					dependencies = this.getNodeEndDependencies(node);
-					System.out.println("\tNode execution ending conditions:");
+					msg += "\tNode execution ending conditions:\n";
 					for (ExecutionNode dep : dependencies.keySet()) {
-						System.out.println("\t\tCan end if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep));
+						msg += "\t\tCan end if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep) + "\n";
 					}
 				}
 			}
+			
+			// print log message
+			logger.debug(msg);
 		}
 		catch (TemporalIntervalCreationException ex) {
 			throw new RuntimeException(ex.getMessage());

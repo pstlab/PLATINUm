@@ -31,7 +31,7 @@ public class EPSLExecutivePlanDataBase extends ExecutivePlanDataBase
 	 * @param origin
 	 * @param horizon
 	 */
-	public EPSLExecutivePlanDataBase() {
+	protected EPSLExecutivePlanDataBase() {
 		super();
 	}
 

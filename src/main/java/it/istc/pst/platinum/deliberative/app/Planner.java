@@ -50,7 +50,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		strategy = SearchStrategyType.DFS
 )
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.DEBUG
 )
 public class Planner extends DeliberativeObject 
 {

@@ -1,7 +1,6 @@
-package it.istc.pst.platinum.executive.est;
+package it.istc.pst.platinum.executive.dispatcher;
 
 import it.istc.pst.platinum.executive.Executive;
-import it.istc.pst.platinum.executive.PlanDispatcher;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
@@ -11,7 +10,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.Ex
  * @author anacleto
  *
  */
-public class EarliestStartTimePlanDispatcher extends PlanDispatcher 
+public class EarliestStartTimePlanDispatcher extends Dispatcher 
 {
 	@ExecutivePlaceholder
 	private Executive executive;

@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.executive;
+package it.istc.pst.platinum.executive.dispatcher;
 
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
@@ -8,7 +8,7 @@ import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
  * @author anacleto
  *
  */
-public abstract class PlanDispatcher extends ExecutiveObject 
+public abstract class Dispatcher extends ExecutiveObject 
 {
 	/**
 	 * The method handle the current tick of the executor's clock

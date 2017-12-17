@@ -3,7 +3,8 @@ package it.istc.pst.platinum.testing.app.executive.fbt.alfa;
 import it.istc.pst.platinum.deliberative.app.Planner;
 import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
-import it.istc.pst.platinum.executive.est.EarliestStartTimeExecutive;
+import it.istc.pst.platinum.executive.ExecutiveBuilder;
+import it.istc.pst.platinum.executive.ex.ExecutionException;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
@@ -43,14 +44,14 @@ public class FourByThreeALFAExecutiveTest
 			// display solution plan
 			planner.display();
 			
-			// create executor
-			Executive executor = new EarliestStartTimeExecutive();
+			// build executive plan database
+			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, pdb.getOrigin(), pdb.getHorizon());
 			// export solution plan
-			executor.initialize(planner.export(plan));
+			exec.initialize(planner.export(plan));
 			// start executing the plan
-			executor.execute();
+			exec.execute();
 		}
-		catch (SynchronizationCycleException  | ProblemInitializationException | NoSolutionFoundException ex) {
+		catch (ExecutionException | SynchronizationCycleException  | ProblemInitializationException | NoSolutionFoundException ex) {
 			System.err.println(ex.getMessage());
 		}
 		catch (InterruptedException ex) {

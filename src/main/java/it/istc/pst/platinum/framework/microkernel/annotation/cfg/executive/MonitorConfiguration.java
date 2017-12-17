@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.istc.pst.platinum.executive.PlanDispatcher;
+import it.istc.pst.platinum.executive.monitor.Monitor;
 
 /**
  * 
@@ -17,11 +17,11 @@ import it.istc.pst.platinum.executive.PlanDispatcher;
 	ElementType.CONSTRUCTOR
 })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ExecutiveDispatcherConfiguration {
+public @interface MonitorConfiguration {
 
 	/**
 	 * 
 	 * @return
 	 */
-	Class<? extends PlanDispatcher> dispatcher();
+	Class <? extends Monitor> monitor();
 }

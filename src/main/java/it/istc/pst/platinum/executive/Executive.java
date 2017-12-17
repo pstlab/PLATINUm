@@ -4,18 +4,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import it.istc.pst.platinum.executive.est.EarliestStartTimePlanDispatcher;
-import it.istc.pst.platinum.executive.est.EarliestStartTimePlanMonitor;
+import it.istc.pst.platinum.executive.dispatcher.EarliestStartTimePlanDispatcher;
+import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
+import it.istc.pst.platinum.executive.ex.ExecutionException;
+import it.istc.pst.platinum.executive.monitor.EarliestStartTimePlanMonitor;
+import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.executive.pdb.ExecutivePlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.ExecutiveDispatcherConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.ExecutiveMonitorConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionDispatcherPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutionMonitorPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.DispatcherConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.MonitorConfiguration;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.DispatcherPlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.MonitorPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
 
@@ -24,18 +29,19 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
  * @author anacleto
  *
  */
-@ExecutiveMonitorConfiguration(monitor = EarliestStartTimePlanMonitor.class)
-@ExecutiveDispatcherConfiguration(dispatcher = EarliestStartTimePlanDispatcher.class)
-public class Executive extends ExecutiveObject implements ExecutionManager
+@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
+@MonitorConfiguration(monitor = EarliestStartTimePlanMonitor.class)
+@DispatcherConfiguration(dispatcher = EarliestStartTimePlanDispatcher.class)
+public class Executive extends ExecutiveObject
 {
 	@ExecutivePlanDataBasePlaceholder
-	protected ExecutivePlanDataBase pdb;				// the (executive) plan to execute
+	protected ExecutivePlanDataBase pdb;										// the (executive) plan to execute
 	
-	@ExecutionMonitorPlaceholder
-	protected PlanMonitor monitor;						// plan monitor
+	@MonitorPlaceholder
+	protected Monitor monitor;												// plan monitor
 	
-	@ExecutionDispatcherPlaceholder
-	protected PlanDispatcher dispatcher;				// dispatching process
+	@DispatcherPlaceholder
+	protected Dispatcher dispatcher;										// dispatching process
 	
 	
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
@@ -230,11 +236,13 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 	
 	
 	/**
-	 * Blocking method which start the execution of the plan and
-	 *  waits for completion.
+	 * Blocking method which start the execution of the plan and waits for completion.
+	 * 
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
 	public final void execute() 
-			throws InterruptedException
+			throws InterruptedException, ExecutionException
 	{
 		// check status
 		synchronized (this.lock) 
@@ -249,24 +257,39 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 			this.lock.notifyAll();
 		}
 		
-		// setup the clock
-		this.clock = new AtomicClockManager(this);
-		// start clock
-		this.clock.start();
-		// wait execution completes
-		this.clock.join();
-		
-		// execution complete
-		synchronized (this.lock) 
+		try
 		{
-			// change status if not in error or interrupted and send a signal
-			if (!this.status.equals(ExecutionStatus.INTERRUPTED) && 
-					!this.status.equals(ExecutionStatus.ERROR)) 
-			{
-				// update execution status
-				this.status = ExecutionStatus.INACTIVE;
+			// setup the clock
+			this.clock = new AtomicClockManager(this);
+			// start clock
+			this.clock.start();
+			// wait execution completes
+			this.clock.join();
+		}
+		catch (InterruptedException ex) 
+		{
+			logger.error("Execution error:\n- message: " + ex.getMessage() + "\n");
+			// set error state
+			synchronized (this.lock) {
+				// set error state
+				this.status = ExecutionStatus.ERROR;
+				this.lock.notifyAll();
 			}
-			this.lock.notifyAll();
+		}
+		finally 
+		{
+			// execution complete
+			synchronized (this.lock) 
+			{
+				// change status if not in error or interrupted and send a signal
+				if (!this.status.equals(ExecutionStatus.INTERRUPTED) && 
+						!this.status.equals(ExecutionStatus.ERROR)) 
+				{
+					// update execution status
+					this.status = ExecutionStatus.INACTIVE;
+				}
+				this.lock.notifyAll();
+			}
 		}
 	}
 	
@@ -304,7 +327,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 		synchronized (this.lock) 
 		{
 			// check if in execution
-			if (this.status.equals(ExecutionStatus.EXECUTING)) {
+			if (this.status.equals(ExecutionStatus.EXECUTING)) 
+			{
 				try {
 					// interrupt the clock
 					this.clock.stop();
@@ -322,22 +346,26 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 	
 	/**
 	 * 
+	 * @param tick
+	 * @return
 	 */
-	@Override
 	public boolean onTick(long tick)
 	{
 		boolean complete = false;
 		try 
 		{
-			System.out.println("\n##################################################");
-			System.out.println("#### Handle tick = " + tick + " ####");
-			System.out.println("#### Synchronization step ####");
+			// prepare logging message
+			String msg = "\n##################################################\n";
+			msg += "#### Handle tick = " + tick + " ####\n";
+			msg += "#### Synchronization step ####\n";
 			// synchronization step
 			this.monitor.handleTick(tick);
-			System.out.println("#### Dispatching step ####");
+			msg += "#### Dispatching step ####\n";
 			// dispatching step
 			this.dispatcher.handleTick(tick);
-			System.out.println("##################################################");
+			msg += "##################################################\n";
+			// print info 
+			logger.info(msg);
 			// display executive window
 			this.displayWindow();
 			// check if execution is complete
@@ -345,8 +373,10 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 					this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
 		}
 		catch (InterruptedException ex) {
-			System.err.println(ex.getMessage());
+			logger.error(ex.getMessage());
 		}
+		
+		// get boolean flag
 		return complete;
 	} 
 	

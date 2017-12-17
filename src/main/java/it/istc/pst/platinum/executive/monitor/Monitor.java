@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.executive;
+package it.istc.pst.platinum.executive.monitor;
 
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 
@@ -7,7 +7,7 @@ import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
  * @author anacleto
  *
  */
-public abstract class PlanMonitor extends ExecutiveObject 
+public abstract class Monitor extends ExecutiveObject 
 {
 	/**
 	 * 
