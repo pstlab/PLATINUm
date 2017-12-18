@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.testing.app.deliberative.fbt.alfa;
 
-import it.istc.pst.platinum.deliberative.app.Planner;
-import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
+import it.istc.pst.platinum.deliberative.Planner;
+import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;

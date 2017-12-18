@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.app;
+package it.istc.pst.platinum.deliberative;
 
 import java.lang.reflect.Constructor;
 

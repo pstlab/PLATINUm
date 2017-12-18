@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.app.cli;
+package it.istc.pst.platinum.app.cli;
 
 /**
  * 

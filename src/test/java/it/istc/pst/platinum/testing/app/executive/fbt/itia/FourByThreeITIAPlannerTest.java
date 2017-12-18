@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.testing.app.executive.fbt.itia;
 
-import it.istc.pst.platinum.deliberative.app.Planner;
-import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
+import it.istc.pst.platinum.deliberative.Planner;
+import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.ExecutiveBuilder;
 import it.istc.pst.platinum.executive.ex.ExecutionException;

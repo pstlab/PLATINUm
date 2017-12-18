@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
+import it.istc.pst.platinum.executive.ex.ExecutionException;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 
 /**
@@ -23,13 +24,13 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 	
 	private long tickStart;
 	private AtomicLong tick;
-	private Executive executive;											// executive system
+	private ExecutionManager executive;											// executive system
 	
 	/**
 	 * 
 	 * @param exec
 	 */
-	protected AtomicClockManager(Executive exec) {
+	public AtomicClockManager(ExecutionManager exec) {
 		super();
 		// set tick start
 		this.tickStart = 0;
@@ -155,7 +156,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 				// notify executive
 				complete = this.executive.onTick(currentTick);
 			} 
-			catch (InterruptedException ex) {
+			catch (ExecutionException | InterruptedException ex) {
 				// complete execution
 				logger.error("Execution Interrupted\n" + ex.getMessage());
 				complete = true;

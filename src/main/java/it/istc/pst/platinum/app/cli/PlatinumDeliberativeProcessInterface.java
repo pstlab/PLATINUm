@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.app.cli;
+package it.istc.pst.platinum.app.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import it.istc.pst.platinum.deliberative.app.cli.ex.DeliberativeCommandLineInterfaceException;
+import it.istc.pst.platinum.app.cli.ex.DeliberativeCommandLineInterfaceException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.protocol.lang.ParameterTypeDescriptor;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;

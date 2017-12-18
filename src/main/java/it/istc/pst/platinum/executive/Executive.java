@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import it.istc.pst.platinum.executive.dispatcher.EarliestStartTimePlanDispatcher;
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
+import it.istc.pst.platinum.executive.dispatcher.EarliestStartTimePlanDispatcher;
 import it.istc.pst.platinum.executive.ex.ExecutionException;
 import it.istc.pst.platinum.executive.monitor.EarliestStartTimePlanMonitor;
 import it.istc.pst.platinum.executive.monitor.Monitor;
@@ -17,8 +17,8 @@ import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLogger
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.DispatcherConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.MonitorConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.DispatcherPlaceholder;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.MonitorPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlanDataBasePlaceholder;
+import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.MonitorPlaceholder;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
@@ -32,7 +32,7 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
 @FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
 @MonitorConfiguration(monitor = EarliestStartTimePlanMonitor.class)
 @DispatcherConfiguration(dispatcher = EarliestStartTimePlanDispatcher.class)
-public class Executive extends ExecutiveObject
+public class Executive extends ExecutiveObject implements ExecutionManager
 {
 	@ExecutivePlanDataBasePlaceholder
 	protected ExecutivePlanDataBase pdb;										// the (executive) plan to execute
@@ -349,6 +349,7 @@ public class Executive extends ExecutiveObject
 	 * @param tick
 	 * @return
 	 */
+	@Override
 	public boolean onTick(long tick)
 	{
 		boolean complete = false;

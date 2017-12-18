@@ -1,8 +1,8 @@
-package it.istc.pst.platinum.deliberative.app.cli;
+package it.istc.pst.platinum.app.cli;
 
-import it.istc.pst.platinum.deliberative.app.Planner;
-import it.istc.pst.platinum.deliberative.app.PlannerBuilder;
-import it.istc.pst.platinum.deliberative.app.cli.ex.DeliberativeCommandLineInterfaceInitializationException;
+import it.istc.pst.platinum.app.cli.ex.DeliberativeCommandLineInterfaceInitializationException;
+import it.istc.pst.platinum.deliberative.Planner;
+import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;

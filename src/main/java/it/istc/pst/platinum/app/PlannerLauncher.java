@@ -1,10 +1,12 @@
-package it.istc.pst.platinum.deliberative.app;
+package it.istc.pst.platinum.app;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import it.istc.pst.platinum.deliberative.Planner;
+import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;

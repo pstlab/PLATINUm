@@ -17,6 +17,17 @@ public class ExecutivePlanDataBaseBuilder
 {
 	/**
 	 * 
+	 * @param origin
+	 * @param horizon
+	 * @return
+	 */
+	public synchronized static ExecutivePlanDataBase createAndSet(long origin, long horizon) {
+		// create default plan database
+		return ExecutivePlanDataBaseBuilder.createAndSet(ExecutivePlanDataBase.class, origin, horizon);
+	}
+	
+	/**
+	 * 
 	 * @param pdbClass
 	 * @param origin
 	 * @param horizon
