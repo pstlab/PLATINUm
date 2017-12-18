@@ -89,7 +89,7 @@ public class PlannerBuilder
 		// get search strategy configuration
 		SearchStrategyConfiguration ssAnnot = FrameworkReflectionUtils.doFindnAnnotation(pClass, SearchStrategyConfiguration.class);
 		// create search strategy
-		SearchStrategy strategy = PlannerBuilder.doCreateSearchStrategy(ssAnnot.strategy().getClassName());
+		SearchStrategy strategy = PlannerBuilder.doCreateSearchStrategy(ssAnnot.strategy().getName());
 		
 		try
 		{

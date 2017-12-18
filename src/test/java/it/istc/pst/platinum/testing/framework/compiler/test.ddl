@@ -1,4 +1,4 @@
-DOMAIN Test {
+DOMAIN DDLv3Test {
 
 	TEMPORAL_MODULE temporal_module = [0, 100], 500;	
 	

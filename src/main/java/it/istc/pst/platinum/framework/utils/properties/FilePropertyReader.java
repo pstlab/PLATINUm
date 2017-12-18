@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.framework.utils.properties;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -18,14 +18,14 @@ public class FilePropertyReader
 	 * 
 	 * @param name
 	 */
-	public FilePropertyReader(String name)
+	private FilePropertyReader(String name)
 	{
 		try 
 		{
 			// setup file property
 			this.properties = new Properties();
 			// load file properties
-			try (FileInputStream in = new FileInputStream(name)) {
+			try (InputStream in = getClass().getClassLoader().getResourceAsStream(name)) {
 				// load the (resource) property file
 				this.properties.load(in);
 			}
@@ -57,7 +57,8 @@ public class FilePropertyReader
 	 * @return
 	 */
 	public static final FilePropertyReader getDeliberativePropertyFile() {
-		return new FilePropertyReader("etc/platinum/deliberative.properties");
+		
+		return new FilePropertyReader("deliberative.properties");
 	}
 	
 	/**
@@ -65,6 +66,6 @@ public class FilePropertyReader
 	 * @return
 	 */
 	public static final FilePropertyReader getExecutivePropertyFile() {
-		return new FilePropertyReader("etc/platinum/executive.properties");
+		return new FilePropertyReader("executive.properties");
 	}
 }

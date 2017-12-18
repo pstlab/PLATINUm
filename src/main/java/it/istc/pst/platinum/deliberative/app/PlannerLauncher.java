@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.app;
+package it.istc.pst.platinum.deliberative.app;
 
 import java.io.File;
 import java.io.PrintWriter;

@@ -6,7 +6,7 @@ import java.util.Map;
 import it.istc.pst.platinum.deliberative.heuristic.SearchAndBuildFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
-import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
+import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
@@ -47,10 +47,10 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		heuristics = SearchAndBuildFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-		strategy = SearchStrategyType.DFS
+		strategy = DepthFirstSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.DEBUG
+		level = FrameworkLoggingLevel.OFF
 )
 public class Planner extends DeliberativeObject 
 {

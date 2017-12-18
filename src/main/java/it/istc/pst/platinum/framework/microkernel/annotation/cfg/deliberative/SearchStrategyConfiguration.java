@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
+import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
 
 /**
  * 
@@ -20,5 +20,5 @@ import it.istc.pst.platinum.deliberative.strategy.SearchStrategyType;
 public @interface SearchStrategyConfiguration {
 	
 	// search strategy
-	SearchStrategyType strategy();
+	Class<? extends SearchStrategy> strategy();
 }
