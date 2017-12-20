@@ -22,7 +22,6 @@ public class GreedyFirstSearchStrategy extends SearchStrategy implements Compara
 	 */
 	protected GreedyFirstSearchStrategy() {
 		super(SearchStrategyType.GREEDY.getLabel());
-		// java7 compliant constructor
 		this.fringe = new ArrayList<SearchSpaceNode>();
 	}
 	

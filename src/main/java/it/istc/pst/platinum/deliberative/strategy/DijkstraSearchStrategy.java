@@ -22,7 +22,6 @@ public class DijkstraSearchStrategy extends SearchStrategy implements Comparator
 	 */
 	protected DijkstraSearchStrategy() {
 		super(SearchStrategyType.DIJKSTRA.getLabel());
-		// java7 compliant constructor
 		this.fringe = new ArrayList<>();
 	}
 	

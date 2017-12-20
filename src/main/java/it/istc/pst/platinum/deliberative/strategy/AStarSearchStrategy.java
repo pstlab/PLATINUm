@@ -29,7 +29,6 @@ public class AStarSearchStrategy extends SearchStrategy implements Comparator<Se
 	 */
 	protected AStarSearchStrategy() {
 		super(SearchStrategyType.ASTAR.getLabel());
-		// initialize the fringe
 		this.fringe = new ArrayList<>();
 	}
 
