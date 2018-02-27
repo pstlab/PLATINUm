@@ -1,0 +1,85 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 172 { Idle [1,484] [1, 484] }
+			token 173 { Channel_F_B [6,485] [1, 484] }
+			token 174 { Idle [11,490] [5, 484] }
+			token 175 { Channel_R_L [21,500] [10, 489] }
+			unallocated 176 { [500,500] [0,479] }
+		}
+		cross {
+			token 177 { Down [6,485] [6, 485] }
+			token 178 { MovingUp [11,490] [5, 5] }
+			token 179 { Up [21,500] [10, 489] }
+			unallocated 180 { [500,500] [0,479] }
+		}
+		main {
+			token 181 { Still [1,484] [1, 484] }
+			token 182 { Backward [6,500] [1, 499] }
+			unallocated 183 { [500,500] [0,494] }
+		}
+		cconveyor {
+			token 184 { Still [1,490] [1, 490] }
+			token 185 { Backward [21,500] [10, 499] }
+			unallocated 186 { [500,500] [0,479] }
+		}
+		portF {
+			token 187 { Idle [1,484] [1, 484] }
+			token 188 { Receiving [6,499] [5, 15] }
+			unallocated 189 { [500,500] [1,494] }
+		}
+		portB {
+			token 190 { Idle [1,480] [1, 480] }
+			token 191 { Sending [6,485] [5, 15] }
+			unallocated 192 { [500,500] [15,494] }
+		}
+		portL {
+			token 193 { Idle [16,495] [16, 495] }
+			token 194 { Sending [21,500] [5, 15] }
+			unallocated 195 { [500,500] [0,479] }
+		}
+		portR {
+			token 196 { Idle [11,490] [11, 490] }
+			token 197 { Receiving [16,495] [5, 15] }
+			unallocated 198 { [500,500] [5,484] }
+		}
+	}
+	relations {
+		channel 172 before [0,500] channel 173
+		channel 173 before [1,500] channel 175
+		channel 175 start_before_start [0,0] portR 197
+		portR 196 before [0,500] portR 197
+		channel 175 end_before_end [0,0] portL 194
+		portR 197 before [0,infty] portL 194
+		portL 193 before [0,500] portL 194
+		channel 173 end_before_end [0,0] portB 191
+		portB 190 before [0,500] portB 191
+		channel 173 start_before_start [0,0] portF 188
+		portF 187 before [0,500] portF 188
+		channel 175 during [0,infty]  [0,infty] cconveyor 185
+		cconveyor 184 before [0,500] cconveyor 185
+		channel 173 during [0,infty]  [0,infty] main 182
+		main 181 before [0,500] main 182
+		channel 175 during [0,infty]  [0,infty] cross 179
+		channel 173 during [0,infty]  [0,infty] cross 177
+		cross 177 before [5,500] cross 179
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 199 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 200 { Available [500,500] [500, 500] }
+		}
+		neighborL {
+			token 201 { Available [500,500] [500, 500] }
+		}
+		neighborR {
+			token 202 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

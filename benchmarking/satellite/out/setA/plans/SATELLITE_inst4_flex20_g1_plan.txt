@@ -1,0 +1,88 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 926  { Earth [1,485] [1, 485] }
+			token 927  { Slewing [11,495] [10, 10] }
+			token 928  { Science [60,544] [49, 533] }
+			token 929  { Slewing [70,554] [10, 10] }
+			token 930  { Earth [450,555] [1, 485] }
+			token 931 uncontrollable { Comm [465,570] [15, 35] }
+			unallocated 932 { [700,700] [130,235] }
+		}
+		inst1 {
+			token 933  { Idle [8,492] [8, 492] }
+			token 934  { Warmup [11,495] [3, 3] }
+			token 935 uncontrollable { Process [21,505] [10, 30] }
+			token 936  { Turnoff [24,508] [3, 3] }
+			token 937  { Idle [34,700] [10, 676] }
+			unallocated 938 { [700,700] [0,666] }
+		}
+		inst2 {
+			token 939  { Idle [21,505] [21, 505] }
+			token 940  { Warmup [24,508] [3, 3] }
+			token 941 uncontrollable { Process [34,518] [10, 30] }
+			token 942  { Turnoff [37,521] [3, 3] }
+			token 943  { Idle [47,700] [10, 663] }
+			unallocated 944 { [700,700] [0,653] }
+		}
+		inst3 {
+			token 945  { Idle [34,518] [34, 518] }
+			token 946  { Warmup [37,521] [3, 3] }
+			token 947 uncontrollable { Process [47,531] [10, 30] }
+			token 948  { Turnoff [50,534] [3, 3] }
+			token 949  { Idle [60,700] [10, 650] }
+			unallocated 950 { [700,700] [0,640] }
+		}
+		inst4 {
+			token 951  { Idle [47,531] [47, 531] }
+			token 952  { Warmup [50,534] [3, 3] }
+			token 953 uncontrollable { Process [60,544] [10, 30] }
+			token 954  { Turnoff [63,547] [3, 3] }
+			token 955  { Idle [64,700] [1, 637] }
+			unallocated 956 { [700,700] [0,636] }
+		}
+	}
+	relations {
+		op_trace 928 before [0,infty] op_trace 931
+		op_trace 926 before [0,700] op_trace 931
+		op_trace 928 before [11,700] op_trace 931
+		op_trace 928 after [10,700] op_trace 926
+		op_trace 931 during [0,infty]  [0,infty] window 958
+		op_trace 928 contains [0,infty]  [0,infty] inst4 953
+		inst4 953 before [3,infty] inst4 955
+		inst4 951 before [16,700] inst4 955
+		inst4 953 before [3,700] inst4 955
+		inst4 953 after [3,700] inst4 951
+		op_trace 928 contains [0,infty]  [0,infty] inst3 947
+		inst3 947 before [3,infty] inst4 953
+		inst3 947 before [0,infty] inst3 949
+		inst4 953 during [0,infty]  [0,infty] inst3 949
+		inst3 945 before [16,700] inst3 949
+		inst3 947 before [3,700] inst3 949
+		inst3 947 after [3,700] inst3 945
+		op_trace 928 contains [0,infty]  [0,infty] inst2 941
+		inst2 941 before [3,infty] inst3 947
+		inst2 941 before [0,infty] inst2 943
+		inst3 947 during [0,infty]  [0,infty] inst2 943
+		inst2 939 before [16,700] inst2 943
+		inst2 941 before [3,700] inst2 943
+		inst2 941 after [3,700] inst2 939
+		op_trace 928 contains [0,infty]  [0,infty] inst1 935
+		inst1 935 before [3,infty] inst2 941
+		inst1 935 before [0,infty] inst1 937
+		inst2 941 during [0,infty]  [0,infty] inst1 937
+		inst1 933 before [3,700] inst1 935
+		inst1 935 before [3,700] inst1 937
+	}
+}
+observation {
+	timelines {
+		window {
+			token 957  { NotAvailable [450,450] [450, 450] }
+			token 958  { Available [500,570] [50, 120] }
+			token 959  { NotAvailable [700,700] [130, 200] }
+		}
+	}
+}
+

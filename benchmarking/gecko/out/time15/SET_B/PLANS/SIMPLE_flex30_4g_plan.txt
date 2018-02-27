@@ -1,0 +1,87 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 1569 { Idle [1,477] [1, 477] }
+			token 1570 { Channel_B_F [6,482] [1, 481] }
+			token 1571 { Idle [7,483] [1, 477] }
+			token 1572 { Channel_F_B [12,488] [1, 481] }
+			token 1573 { Idle [13,489] [1, 477] }
+			token 1574 { Channel_B_F [18,494] [1, 481] }
+			token 1575 { Idle [19,495] [1, 477] }
+			token 1576 { Channel_F_B [24,500] [1, 481] }
+			unallocated 1577 { [500,500] [0,476] }
+		}
+		main {
+			token 1578 { Still [1,477] [1, 477] }
+			token 1579 { Forward [6,482] [1, 481] }
+			token 1580 { Still [7,483] [1, 477] }
+			token 1581 { Backward [12,488] [1, 481] }
+			token 1582 { Still [13,489] [1, 477] }
+			token 1583 { Forward [18,494] [1, 481] }
+			token 1584 { Still [19,495] [1, 477] }
+			token 1585 { Backward [24,500] [1, 481] }
+			unallocated 1586 { [500,500] [0,476] }
+		}
+		portF {
+			token 1587 { Idle [1,477] [1, 477] }
+			token 1588 { Sending [6,482] [5, 35] }
+			token 1589 { Idle [7,483] [1, 477] }
+			token 1590 { Receiving [12,488] [5, 35] }
+			token 1591 { Idle [13,489] [1, 477] }
+			token 1592 { Sending [18,494] [5, 35] }
+			token 1593 { Idle [19,495] [1, 477] }
+			token 1594 { Receiving [24,500] [5, 35] }
+			unallocated 1595 { [500,500] [0,476] }
+		}
+		portB {
+			token 1596 { Idle [1,477] [1, 477] }
+			token 1597 { Receiving [6,482] [5, 35] }
+			token 1598 { Idle [7,483] [1, 477] }
+			token 1599 { Sending [12,488] [5, 35] }
+			token 1600 { Idle [13,489] [1, 477] }
+			token 1601 { Receiving [18,494] [5, 35] }
+			token 1602 { Idle [19,495] [1, 477] }
+			token 1603 { Sending [24,500] [5, 35] }
+			unallocated 1604 { [500,500] [0,476] }
+		}
+	}
+	relations {
+		channel 1569 before [0,500] channel 1570
+		channel 1570 before [1,500] channel 1572
+		channel 1572 before [1,500] channel 1574
+		channel 1574 before [1,500] channel 1576
+		channel 1576 end_before_end [0,0] portB 1603
+		channel 1572 end_before_end [0,0] portB 1599
+		channel 1574 start_before_start [0,0] portB 1601
+		channel 1570 start_before_start [0,0] portB 1597
+		portB 1596 before [0,500] portB 1597
+		portB 1597 before [1,500] portB 1599
+		portB 1601 before [1,500] portB 1603
+		channel 1576 start_before_start [0,0] portF 1594
+		channel 1572 start_before_start [0,0] portF 1590
+		channel 1574 end_before_end [0,0] portF 1592
+		channel 1570 end_before_end [0,0] portF 1588
+		portF 1587 before [0,500] portF 1588
+		portF 1590 before [1,500] portF 1592
+		channel 1576 during [0,infty]  [0,infty] main 1585
+		channel 1574 during [0,infty]  [0,infty] main 1583
+		channel 1572 during [0,infty]  [0,infty] main 1581
+		channel 1570 during [0,infty]  [0,infty] main 1579
+		main 1578 before [0,500] main 1579
+		main 1579 before [1,500] main 1581
+		main 1581 before [1,500] main 1583
+		main 1583 before [1,500] main 1585
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 1605 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 1606 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

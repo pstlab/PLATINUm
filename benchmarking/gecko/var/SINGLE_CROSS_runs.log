@@ -1,0 +1,50 @@
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_1g.pdl] -> Solution found after [23] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_2g.pdl] -> Solution found after [62] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_3g.pdl] -> Solution found after [183] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_4g.pdl] -> Solution found after [688] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_5g.pdl] -> Solution found after [1281] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_6g.pdl] -> Solution found after [2728] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_7g.pdl] -> Solution found after [8129] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_8g.pdl] -> Solution found after [18583] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_9g.pdl] -> Solution found after [36723] msecs
+$ HFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_10g.pdl] -> Solution found after [62281] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_1g.pdl] -> Solution found after [23] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_2g.pdl] -> Solution found after [113] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_3g.pdl] -> Solution found after [801] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_4g.pdl] -> Solution found after [9852] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_5g.pdl] -> Solution found after [23247] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_6g.pdl] -> Solution found after [63289] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_7g.pdl] -> No Solution found after [187631] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_8g.pdl] -> No Solution found after [180031] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_9g.pdl] -> No Solution found after [180032] msecs
+$ TFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_10g.pdl] -> No Solution found after [180019] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_1g.pdl] -> Solution found after [30] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_2g.pdl] -> Solution found after [229] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_3g.pdl] -> Solution found after [648] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_4g.pdl] -> Solution found after [3452] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_5g.pdl] -> Solution found after [10833] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_6g.pdl] -> Solution found after [32510] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_7g.pdl] -> Solution found after [113937] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_8g.pdl] -> No Solution found after [182675] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_9g.pdl] -> No Solution found after [186483] msecs
+$ DGFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_10g.pdl] -> No Solution found after [197790] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_1g.pdl] -> No Solution found after [182049] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_2g.pdl] -> No Solution found after [181964] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_3g.pdl] -> No Solution found after [185636] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_4g.pdl] -> No Solution found after [180907] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_5g.pdl] -> No Solution found after [181897] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_6g.pdl] -> No Solution found after [185771] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_7g.pdl] -> No Solution found after [184635] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_8g.pdl] -> No Solution found after [183245] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_9g.pdl] -> No Solution found after [183659] msecs
+$ DFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_10g.pdl] -> No Solution found after [183381] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_1g.pdl] -> Solution found after [28] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_2g.pdl] -> No Solution found after [391] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_3g.pdl] -> No Solution found after [4098] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_4g.pdl] -> No Solution found after [186565] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_5g.pdl] -> No Solution found after [192561] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_6g.pdl] -> No Solution found after [191262] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_7g.pdl] -> No Solution found after [184433] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_8g.pdl] -> No Solution found after [180403] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_9g.pdl] -> No Solution found after [181640] msecs
+$ RFS on [SINGLE_CROSS/GECKO_flex10.ddl,SINGLE_CROSS/GECKO_10g.pdl] -> No Solution found after [184154] msecs

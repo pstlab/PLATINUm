@@ -1,0 +1,72 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 468  { Earth [1,488] [1, 488] }
+			token 469  { Slewing [11,498] [10, 10] }
+			token 470  { Science [47,534] [36, 523] }
+			token 471  { Slewing [57,544] [10, 10] }
+			token 472  { Earth [450,545] [1, 488] }
+			token 473 uncontrollable { Comm [465,560] [15, 25] }
+			unallocated 474 { [700,700] [140,235] }
+		}
+		inst1 {
+			token 475  { Idle [8,495] [8, 495] }
+			token 476  { Warmup [11,498] [3, 3] }
+			token 477 uncontrollable { Process [21,508] [10, 20] }
+			token 478  { Turnoff [24,511] [3, 3] }
+			token 479  { Idle [34,700] [10, 676] }
+			unallocated 480 { [700,700] [0,666] }
+		}
+		inst2 {
+			token 481  { Idle [21,508] [21, 508] }
+			token 482  { Warmup [24,511] [3, 3] }
+			token 483 uncontrollable { Process [34,521] [10, 20] }
+			token 484  { Turnoff [37,524] [3, 3] }
+			token 485  { Idle [47,700] [10, 663] }
+			unallocated 486 { [700,700] [0,653] }
+		}
+		inst3 {
+			token 487  { Idle [34,521] [34, 521] }
+			token 488  { Warmup [37,524] [3, 3] }
+			token 489 uncontrollable { Process [47,534] [10, 20] }
+			token 490  { Turnoff [50,537] [3, 3] }
+			token 491  { Idle [51,700] [1, 650] }
+			unallocated 492 { [700,700] [0,649] }
+		}
+	}
+	relations {
+		op_trace 470 before [0,infty] op_trace 473
+		op_trace 468 before [0,700] op_trace 473
+		op_trace 470 before [11,700] op_trace 473
+		op_trace 470 after [10,700] op_trace 468
+		op_trace 473 during [0,infty]  [0,infty] window 494
+		op_trace 470 contains [0,infty]  [0,infty] inst3 489
+		inst3 489 before [0,infty] inst3 491
+		inst3 487 before [3,700] inst3 489
+		inst3 489 before [3,700] inst3 491
+		op_trace 470 contains [0,infty]  [0,infty] inst2 483
+		inst2 483 before [0,infty] inst3 489
+		inst2 483 before [0,infty] inst2 485
+		inst3 489 during [0,infty]  [0,infty] inst2 485
+		inst2 481 before [16,700] inst2 485
+		inst2 483 before [3,700] inst2 485
+		inst2 483 after [3,700] inst2 481
+		op_trace 470 contains [0,infty]  [0,infty] inst1 477
+		inst1 477 before [0,infty] inst2 483
+		inst1 477 before [0,infty] inst1 479
+		inst2 483 during [0,infty]  [0,infty] inst1 479
+		inst1 475 before [3,700] inst1 477
+		inst1 477 before [3,700] inst1 479
+	}
+}
+observation {
+	timelines {
+		window {
+			token 493  { NotAvailable [450,450] [450, 450] }
+			token 494  { Available [500,560] [50, 110] }
+			token 495  { NotAvailable [700,700] [140, 200] }
+		}
+	}
+}
+

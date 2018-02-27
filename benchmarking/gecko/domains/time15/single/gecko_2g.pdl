@@ -1,0 +1,22 @@
+PROBLEM GECKO_Problem (DOMAIN GECKO_Domain) 
+{
+	f0 <fact> TM_Channel.channel.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	
+	f1 <fact> TM_CrossTransfer.cross.Down() AT [0, 0] [1, +INF] [1, +INF];
+	
+	f4 <fact> TM_ConveyorMain.main.Still() AT [0, 0] [1, +INF] [1, +INF];
+	f5 <fact> TM_ConveyorCross.cconveyor.Still() AT [0, 0] [1, +INF] [1, +INF];
+	
+	f8 <fact> TM_CoordinationPortF.portF.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f9 <fact> TM_CoordinationPortB.portB.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f10 <fact> TM_CoordinationPortL.portL.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f13 <fact> TM_CoordinationPortR.portR.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	
+	f16 <fact> TM_NeighborF.neighborF.Available() AT [0, 0] [500, 500] [500, 500];
+	f17 <fact> TM_NeighborB.neighborB.Available() AT [0, 0] [500, 500] [500, 500];
+	f18 <fact> TM_NeighborL.neighborL.Available() AT [0, 0] [500, 500] [500, 500];
+	f19 <fact> TM_NeighborR.neighborR.Available() AT [0, 0] [500, 500] [500, 500];
+	
+	g1 <goal,!> TM_Channel.channel.Channel_R_L() AT [0, +INF] [1, +INF] [1, +INF];
+	g0 <goal,!> TM_Channel.channel.Channel_F_B() AT [0, +INF] [1, +INF] [1, +INF];
+}

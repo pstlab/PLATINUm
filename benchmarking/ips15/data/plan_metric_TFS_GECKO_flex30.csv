@@ -1,0 +1,10 @@
+problem;object;metric;value;
+GECKO_SIMPLE_flex30_g5;channel;fluidity;0.68;
+GECKO_SIMPLE_flex30_g5;channel;makespan;70.50;
+GECKO_SIMPLE_flex30_g5;channel,disruptibility;0.00;
+GECKO_SIMPLE_flex30_g5;energy;fluidity;0.90;
+GECKO_SIMPLE_flex30_g5;energy;makespan;70.50;
+GECKO_SIMPLE_flex30_g5;energy,disruptibility;0.00;
+GECKO_SIMPLE_flex30_g5;change_over;fluidity;1.41;
+GECKO_SIMPLE_flex30_g5;change_over;makespan;70.50;
+GECKO_SIMPLE_flex30_g5;change_over,disruptibility;0.00;

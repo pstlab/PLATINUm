@@ -1,0 +1,277 @@
+************************* PLANNER CONFIGURATION ***************************
+--------------------------------------
+--- PARAMETER CONFIGURATION
+- UNIFICATION COST = 0.1
+- EXPANSION COST = 0.1
+- SCHEDULING COST = 0.9
+- COMPLETION COST = 0.1
+--------------------------------------
+--------------------------------------
+--- SOLVER ENGINE 
+- DecisionExpansionResolver
+- DecisionUnificationResolver
+- SimpleDecisionSchedulingResolver
+- RenewableResourceSchedulingDeterministicResolver
+- StateVariableGapResolver
+--------------------------------------
+--- SEARCH STRATEGY
+- DFSStrategy
+--------------------------------------
+--- SOLVING MODE 
+- FirstSolutionSolver
+--------------------------------------
+***************************************************************************
+
+# [FirstSolutionSolver]: Solution node found after [ 71] solving step, stop search
+	- Solution cost = 30.200000000000006
+	{SearchSpaceNode [88]: depth=70 value=30.200000000000006 generator-operator={id= 88, type= DECISION_SIMPLE_SCHEDULER weight=0.9}}
+# [FirstSolutionSolver]: Solution Plan:
+
+Nodes (40):
+  Id = (3,3) CD for RobotBase Value: At(?x1[86] = 0,?y1[87] = 0).robot_base Temporal Tag: Id = 2 Time Interval [ti3-->ti4] [<PROBLEM>]
+  Id = (2,4) CD for Platine Value: PointingAt(?pan1[88] = 0,?tilt1[89] = 0).platine Temporal Tag: Id = 5 Time Interval [ti6-->ti7] [<PROBLEM>]
+  Id = (2,5) CD for Camera Value: CamIdle().camera Temporal Tag: Id = 8 Time Interval [ti9-->ti10] [<PROBLEM>]
+  Id = (2,6) CD for Communication Value: CommIdle().communication Temporal Tag: Id = 11 Time Interval [ti12-->ti13] [<PROBLEM>]
+  Id = (1,7) CD for MissionTimeline Value: Idle().mission_timeline Temporal Tag: Id = 14 Time Interval [ti15-->ti16] [<PROBLEM>]
+  Id = (1,8) CD for CommunicationVW Value: Visible().communication_windows Temporal Tag: Id = 17 Time Interval [ti18-->ti19] [<PROBLEM>]
+  Id = (2,8) CD for CommunicationVW Value: Visible().communication_windows Temporal Tag: Id = 20 Time Interval [ti21-->ti22] [<PROBLEM>]
+  Id = (3,7) CD for MissionTimeline Value: TakingPicture(?gfile_id1[95] = 2,?gx1[96] = 4,?gy1[97] = 1,?gpan1[98] = 35,?gtilt1[99] = 45).mission_timeline Temporal Tag: Id = 26 Time Interval [ti27-->ti28] [<PROBLEM>]
+  Id = (2,7) CD for MissionTimeline Value: TakingPicture(?gfile_id2[90] = 1,?gx2[91] = 3,?gy2[92] = 5,?gpan2[93] = 35,?gtilt2[94] = 55).mission_timeline Temporal Tag: Id = 23 Time Interval [ti24-->ti25] [<PROBLEM>]
+  Id: 2 Activity Requirement. Comp: Memory over Id = 38 Time Interval [ti39-->ti40] Value:  Id: 107 Singleton NumericParameter ?amount0 Type: Generic IntegerValue: 5
+  Id: 1 Activity Requirement. Comp: Memory over Id = 29 Time Interval [ti30-->ti31] Value:  Id: 100 Singleton NumericParameter ?amount0 Type: Generic IntegerValue: 5
+  Id = (4,6) CD for Communication Value: Communicating(?file_id3[113] = 1).communication Temporal Tag: Id = 44 Time Interval [ti45-->ti46] [<USER>]
+  Id = (3,6) CD for Communication Value: Communicating(?file_id3[106] = 2).communication Temporal Tag: Id = 35 Time Interval [ti36-->ti37] [<USER>]
+  Id = (4,5) CD for Camera Value: TakingPicture(?file_id2[108] = 1,?x2[109] = 3,?y2[110] = 5,?pan2[111] = 35,?tilt2[112] = 55).camera Temporal Tag: Id = 41 Time Interval [ti42-->ti43] [<USER>]
+  Id = (3,5) CD for Camera Value: TakingPicture(?file_id2[101] = 2,?x2[102] = 4,?y2[103] = 1,?pan2[104] = 35,?tilt2[105] = 45).camera Temporal Tag: Id = 32 Time Interval [ti33-->ti34] [<USER>]
+  Id = (7,3) CD for RobotBase Value: At(?x2[124] = 4,?y2[125] = 1).robot_base Temporal Tag: Id = 68 Time Interval [ti69-->ti70] [<USER>]
+  Id = (6,3) CD for RobotBase Value: At(?x2[120] = 3,?y2[121] = 5).robot_base Temporal Tag: Id = 62 Time Interval [ti63-->ti64] [<USER>]
+  Id = (4,3) CD for RobotBase Value: At(?x2[114],?y2[115]).robot_base Temporal Tag: Id = 47 Time Interval [ti48-->ti49] [<USER>]
+  Id = (5,3) CD for RobotBase Value: At(?x2[116],?y2[117]).robot_base Temporal Tag: Id = 53 Time Interval [ti54-->ti55] [<USER>]
+  Id = (4,4) CD for Platine Value: PointingAt(?pan2[122] = 35,?tilt2[123] = 45).platine Temporal Tag: Id = 65 Time Interval [ti66-->ti67] [<USER>]
+  Id = (3,4) CD for Platine Value: PointingAt(?pan2[118] = 35,?tilt2[119] = 55).platine Temporal Tag: Id = 59 Time Interval [ti60-->ti61] [<USER>]
+  Id = (4,7) CD for MissionTimeline Value: Idle().mission_timeline Temporal Tag: Id = 71 Time Interval [ti72-->ti73] [<USER>]
+  Id = (5,6) CD for Communication Value: CommIdle().communication Temporal Tag: Id = 74 Time Interval [ti75-->ti76] [<USER>]
+  Id = (5,5) CD for Camera Value: CamIdle().camera Temporal Tag: Id = 77 Time Interval [ti78-->ti79] [<USER>]
+  Id = (6,8) CD for CommunicationVW Value: None().communication_windows Temporal Tag: Id = 83 Time Interval [ti84-->ti85] [<USER>]
+  Id = (5,8) CD for CommunicationVW Value: None().communication_windows Temporal Tag: Id = 80 Time Interval [ti81-->ti82] [<USER>]
+  Id = (11,3) CD for RobotBase Value: GoingTo(?x2[132],?y2[133]).robot_base Temporal Tag: Id = 95 Time Interval [ti96-->ti97] [<USER>]
+  Id = (10,3) CD for RobotBase Value: GoingTo(?x2[130] = 4,?y2[131] = 1).robot_base Temporal Tag: Id = 92 Time Interval [ti93-->ti94] [<USER>]
+  Id = (9,3) CD for RobotBase Value: GoingTo(?x2[128],?y2[129]).robot_base Temporal Tag: Id = 89 Time Interval [ti90-->ti91] [<USER>]
+  Id = (8,3) CD for RobotBase Value: GoingTo(?x2[126] = 3,?y2[127] = 5).robot_base Temporal Tag: Id = 86 Time Interval [ti87-->ti88] [<USER>]
+  Id = (5,4) CD for Platine Value: PointingAt(?pan1[134] = 0,?tilt1[135] = 0).platine Temporal Tag: Id = 98 Time Interval [ti99-->ti100] [<USER>]
+  Id = (6,4) CD for Platine Value: PointingAt(?pan1[136] = 0,?tilt1[137] = 0).platine Temporal Tag: Id = 101 Time Interval [ti102-->ti103] [<USER>]
+  Id = (7,4) CD for Platine Value: PointingAt(?pan1[138] = 0,?tilt1[139] = 0).platine Temporal Tag: Id = 104 Time Interval [ti105-->ti106] [<USER>]
+  Id = (8,4) CD for Platine Value: PointingAt(?pan1[140] = 0,?tilt1[141] = 0).platine Temporal Tag: Id = 107 Time Interval [ti108-->ti109] [<USER>]
+  Id = (14,4) CD for Platine Value: MovingTo(?pan2[152] = 0,?tilt2[153] = 0).platine Temporal Tag: Id = 125 Time Interval [ti126-->ti127] [<USER>]
+  Id = (13,4) CD for Platine Value: MovingTo(?pan2[150] = 35,?tilt2[151] = 45).platine Temporal Tag: Id = 122 Time Interval [ti123-->ti124] [<USER>]
+  Id = (12,4) CD for Platine Value: MovingTo(?pan2[148] = 0,?tilt2[149] = 0).platine Temporal Tag: Id = 119 Time Interval [ti120-->ti121] [<USER>]
+  Id = (11,4) CD for Platine Value: MovingTo(?pan2[146] = 0,?tilt2[147] = 0).platine Temporal Tag: Id = 116 Time Interval [ti117-->ti118] [<USER>]
+  Id = (10,4) CD for Platine Value: MovingTo(?pan2[144] = 35,?tilt2[145] = 55).platine Temporal Tag: Id = 113 Time Interval [ti114-->ti115] [<USER>]
+  Id = (9,4) CD for Platine Value: MovingTo(?pan2[142] = 0,?tilt2[143] = 0).platine Temporal Tag: Id = 110 Time Interval [ti111-->ti112] [<USER>]
+Edges (124):
+  Id = 19 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on At[Id=3] (-->7) [<PROBLEM>]
+  Id = 20 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on PointingAt[Id=2] (-->8) [<PROBLEM>]
+  Id = 21 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on CamIdle[Id=2] (-->9) [<PROBLEM>]
+  Id = 22 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on CommIdle[Id=2] (-->10) [<PROBLEM>]
+  Id = 23 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on Idle[Id=1] (-->11) [<PROBLEM>]
+  Id = 24 Temporal Constraint: At [10,10][45,45][35,35]  on Visible[Id=1] (-->12) [<PROBLEM>]
+  Id = 25 Temporal Constraint: At [50,50][240,240][190,190]  on Visible[Id=2] (-->13) [<PROBLEM>]
+  Id = 27 Temporal Constraint: At [0,250][1,+INF][1,+INF]  on TakingPicture[Id=3] (-->43) [<PROBLEM>]
+  Id = 26 Temporal Constraint: At [0,250][1,+INF][1,+INF]  on TakingPicture[Id=2] (-->49) [<PROBLEM>]
+  Id = 47 Temporal Constraint: Before [0,+INF][0,0][0,0] MissionTimeline:TakingPicture[Id=2] --> Communication:Communicating[Id=4] (-->55) [<USER>]
+  Id = 49 Temporal Constraint: EndEnd [0,0][0,0][0,0] Memory:Requirement[Id=2] --> Communication:Communicating[Id=4] (-->56) [<USER>]
+  Id = 55 Parameter Constraint: ?file_id3[Id=113] = +1 among [MissionTimeline:TakingPicture[Id=2],Communication:Communicating[Id=4]](-->25) [<USER>]
+  Id = 36 Temporal Constraint: Before [0,+INF][0,0][0,0] MissionTimeline:TakingPicture[Id=3] --> Communication:Communicating[Id=3] (-->61) [<USER>]
+  Id = 38 Temporal Constraint: EndEnd [0,0][0,0][0,0] Memory:Requirement[Id=1] --> Communication:Communicating[Id=3] (-->62) [<USER>]
+  Id = 44 Parameter Constraint: ?file_id3[Id=106] = +2 among [MissionTimeline:TakingPicture[Id=3],Communication:Communicating[Id=3]](-->19) [<USER>]
+  Id = 46 Temporal Constraint: Equals [0,0][0,0][0,0] MissionTimeline:TakingPicture[Id=2] --> Camera:TakingPicture[Id=4] (-->67) [<USER>]
+  Id = 48 Temporal Constraint: StartStart [0,0][0,0][0,0] Camera:TakingPicture[Id=4] --> Memory:Requirement[Id=2] (-->68) [<USER>]
+  Id = 50 Parameter Constraint: ?x2[Id=109] = +3 among [MissionTimeline:TakingPicture[Id=2],Camera:TakingPicture[Id=4]](-->20) [<USER>]
+  Id = 51 Parameter Constraint: ?y2[Id=110] = +5 among [MissionTimeline:TakingPicture[Id=2],Camera:TakingPicture[Id=4]](-->21) [<USER>]
+  Id = 52 Parameter Constraint: ?pan2[Id=111] = +35 among [MissionTimeline:TakingPicture[Id=2],Camera:TakingPicture[Id=4]](-->22) [<USER>]
+  Id = 53 Parameter Constraint: ?tilt2[Id=112] = +55 among [MissionTimeline:TakingPicture[Id=2],Camera:TakingPicture[Id=4]](-->23) [<USER>]
+  Id = 54 Parameter Constraint: ?file_id2[Id=108] = +1 among [MissionTimeline:TakingPicture[Id=2],Camera:TakingPicture[Id=4]](-->24) [<USER>]
+  Id = 35 Temporal Constraint: Equals [0,0][0,0][0,0] MissionTimeline:TakingPicture[Id=3] --> Camera:TakingPicture[Id=3] (-->74) [<USER>]
+  Id = 37 Temporal Constraint: StartStart [0,0][0,0][0,0] Camera:TakingPicture[Id=3] --> Memory:Requirement[Id=1] (-->75) [<USER>]
+  Id = 39 Parameter Constraint: ?x2[Id=102] = +4 among [MissionTimeline:TakingPicture[Id=3],Camera:TakingPicture[Id=3]](-->14) [<USER>]
+  Id = 40 Parameter Constraint: ?y2[Id=103] = +1 among [MissionTimeline:TakingPicture[Id=3],Camera:TakingPicture[Id=3]](-->15) [<USER>]
+  Id = 41 Parameter Constraint: ?pan2[Id=104] = +35 among [MissionTimeline:TakingPicture[Id=3],Camera:TakingPicture[Id=3]](-->16) [<USER>]
+  Id = 42 Parameter Constraint: ?tilt2[Id=105] = +45 among [MissionTimeline:TakingPicture[Id=3],Camera:TakingPicture[Id=3]](-->17) [<USER>]
+  Id = 43 Parameter Constraint: ?file_id2[Id=101] = +2 among [MissionTimeline:TakingPicture[Id=3],Camera:TakingPicture[Id=3]](-->18) [<USER>]
+  Id = 79 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] Communication:Communicating[Id=3] --> CommunicationVW:Visible[Id=2] (-->85) [<USER>]
+  Id = 82 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] Communication:Communicating[Id=4] --> CommunicationVW:Visible[Id=2] (-->93) [<USER>]
+  Id = 70 Temporal Constraint: During [0,+INF][0,+INF][0,0] Camera:TakingPicture[Id=3] --> RobotBase:At[Id=7] (-->97) [<USER>]
+  Id = 72 Parameter Constraint: ?x2[Id=102] =  + ?x2[Id=124] among [Camera:TakingPicture[Id=3],RobotBase:At[Id=7]](-->30) [<USER>]
+  Id = 73 Parameter Constraint: ?y2[Id=103] =  + ?y2[Id=125] among [Camera:TakingPicture[Id=3],RobotBase:At[Id=7]](-->31) [<USER>]
+  Id = 63 Temporal Constraint: During [0,+INF][0,+INF][0,0] Camera:TakingPicture[Id=4] --> RobotBase:At[Id=6] (-->102) [<USER>]
+  Id = 65 Parameter Constraint: ?x2[Id=109] =  + ?x2[Id=120] among [Camera:TakingPicture[Id=4],RobotBase:At[Id=6]](-->26) [<USER>]
+  Id = 66 Parameter Constraint: ?y2[Id=110] =  + ?y2[Id=121] among [Camera:TakingPicture[Id=4],RobotBase:At[Id=6]](-->27) [<USER>]
+  Id = 57 Temporal Constraint: During [0,+INF][0,+INF][0,0] Communication:Communicating[Id=4] --> RobotBase:At[Id=4] (-->107) [<USER>]
+  Id = 60 Temporal Constraint: During [0,+INF][0,+INF][0,0] Communication:Communicating[Id=3] --> RobotBase:At[Id=5] (-->112) [<USER>]
+  Id = 71 Temporal Constraint: During [0,+INF][0,+INF][0,0] Camera:TakingPicture[Id=3] --> Platine:PointingAt[Id=4] (-->117) [<USER>]
+  Id = 74 Parameter Constraint: ?pan2[Id=104] =  + ?pan2[Id=122] among [Camera:TakingPicture[Id=3],Platine:PointingAt[Id=4]](-->32) [<USER>]
+  Id = 75 Parameter Constraint: ?tilt2[Id=105] =  + ?tilt2[Id=123] among [Camera:TakingPicture[Id=3],Platine:PointingAt[Id=4]](-->33) [<USER>]
+  Id = 64 Temporal Constraint: During [0,+INF][0,+INF][0,0] Camera:TakingPicture[Id=4] --> Platine:PointingAt[Id=3] (-->122) [<USER>]
+  Id = 67 Parameter Constraint: ?pan2[Id=111] =  + ?pan2[Id=118] among [Camera:TakingPicture[Id=4],Platine:PointingAt[Id=3]](-->28) [<USER>]
+  Id = 68 Parameter Constraint: ?tilt2[Id=112] =  + ?tilt2[Id=119] among [Camera:TakingPicture[Id=4],Platine:PointingAt[Id=3]](-->29) [<USER>]
+  Id = 96 Temporal Constraint: Before [0,250][0,0][0,0] MissionTimeline:Idle[Id=1] --> MissionTimeline:TakingPicture[Id=2] (-->126) [<USER>]
+  Id = 99 Temporal Constraint: Before [1,250][0,0][0,0] MissionTimeline:TakingPicture[Id=2] --> MissionTimeline:TakingPicture[Id=3] (-->128) [<USER>]
+  Id = 100 Temporal Constraint: Before [0,250][0,0][0,0] Communication:CommIdle[Id=2] --> Communication:Communicating[Id=4] (-->130) [<USER>]
+  Id = 103 Temporal Constraint: Before [1,250][0,0][0,0] Communication:Communicating[Id=4] --> Communication:Communicating[Id=3] (-->132) [<USER>]
+  Id = 104 Temporal Constraint: Before [0,250][0,0][0,0] Camera:CamIdle[Id=2] --> Camera:TakingPicture[Id=4] (-->134) [<USER>]
+  Id = 105 Temporal Constraint: Before [10,250][0,0][0,0] RobotBase:At[Id=3] --> RobotBase:At[Id=4] (-->136) [<USER>]
+  Id = 106 Temporal Constraint: Before [10,250][0,0][0,0] RobotBase:At[Id=4] --> RobotBase:At[Id=5] (-->138) [<USER>]
+  Id = 109 Temporal Constraint: Before [10,250][0,0][0,0] RobotBase:At[Id=7] --> RobotBase:At[Id=5] (-->140) [<USER>]
+  Id = 110 Temporal Constraint: After [10,250][0,0][0,0] RobotBase:At[Id=7] --> RobotBase:At[Id=4] (-->141) [<USER>]
+  Id = 111 Temporal Constraint: Before [10,250][0,0][0,0] RobotBase:At[Id=6] --> RobotBase:At[Id=4] (-->144) [<USER>]
+  Id = 112 Temporal Constraint: After [10,250][0,0][0,0] RobotBase:At[Id=6] --> RobotBase:At[Id=3] (-->145) [<USER>]
+  Id = 113 Temporal Constraint: Before [10,250][0,0][0,0] Platine:PointingAt[Id=2] --> Platine:PointingAt[Id=4] (-->148) [<USER>]
+  Id = 114 Temporal Constraint: Before [10,250][0,0][0,0] Platine:PointingAt[Id=3] --> Platine:PointingAt[Id=4] (-->150) [<USER>]
+  Id = 115 Temporal Constraint: After [10,250][0,0][0,0] Platine:PointingAt[Id=3] --> Platine:PointingAt[Id=2] (-->151) [<USER>]
+  Id = 116 Temporal Constraint: Meets [0,0][0,0][0,0] MissionTimeline:Idle[Id=1] --> MissionTimeline:TakingPicture[Id=2] (-->154) [Parameterized Transition Constraint From: Idle() To: TakingPicture(?file_id1[42],?x1[43],?y1[44],?pan1[45],?tilt1[46]) Constraints: []]
+  Id = 117 Temporal Constraint: Meets [0,0][0,0][0,0] MissionTimeline:TakingPicture[Id=2] --> MissionTimeline:Idle[Id=4] (-->157) [Parameterized Transition Constraint From: TakingPicture(?file_id[52],?x[53],?y[54],?pan[55],?tilt[56]) To: Idle() Constraints: []]
+  Id = 118 Temporal Constraint: Meets [0,0][0,0][0,0] MissionTimeline:Idle[Id=4] --> MissionTimeline:TakingPicture[Id=3] (-->158) [Parameterized Transition Constraint From: Idle() To: TakingPicture(?file_id1[42],?x1[43],?y1[44],?pan1[45],?tilt1[46]) Constraints: []]
+  Id = 120 Temporal Constraint: Meets [0,0][0,0][0,0] Communication:CommIdle[Id=2] --> Communication:Communicating[Id=4] (-->162) [Parameterized Transition Constraint From: CommIdle() To: Communicating(?file_id[39]) Constraints: []]
+  Id = 121 Temporal Constraint: Meets [0,0][0,0][0,0] Communication:Communicating[Id=4] --> Communication:CommIdle[Id=5] (-->165) [Parameterized Transition Constraint From: Communicating(?file_id[41]) To: CommIdle() Constraints: []]
+  Id = 122 Temporal Constraint: Meets [0,0][0,0][0,0] Communication:CommIdle[Id=5] --> Communication:Communicating[Id=3] (-->166) [Parameterized Transition Constraint From: CommIdle() To: Communicating(?file_id[39]) Constraints: []]
+  Id = 124 Temporal Constraint: Meets [0,0][0,0][0,0] Camera:CamIdle[Id=2] --> Camera:TakingPicture[Id=4] (-->170) [Parameterized Transition Constraint From: CamIdle() To: TakingPicture(?file_id[24],?x[25],?y[26],?pan[27],?tilt[28]) Constraints: []]
+  Id = 125 Temporal Constraint: Meets [0,0][0,0][0,0] Camera:TakingPicture[Id=4] --> Camera:CamIdle[Id=5] (-->173) [Parameterized Transition Constraint From: TakingPicture(?file_id[34],?x[35],?y[36],?pan[37],?tilt[38]) To: CamIdle() Constraints: []]
+  Id = 126 Temporal Constraint: Meets [0,0][0,0][0,0] Camera:CamIdle[Id=5] --> Camera:TakingPicture[Id=3] (-->174) [Parameterized Transition Constraint From: CamIdle() To: TakingPicture(?file_id[24],?x[25],?y[26],?pan[27],?tilt[28]) Constraints: []]
+  Id = 131 Temporal Constraint: Meets [0,0][0,0][0,0] CommunicationVW:Visible[Id=1] --> CommunicationVW:None[Id=6] (-->179) [Parameterized Transition Constraint From: Visible() To: None() Constraints: []]
+  Id = 132 Temporal Constraint: Meets [0,0][0,0][0,0] CommunicationVW:None[Id=6] --> CommunicationVW:Visible[Id=2] (-->180) [Parameterized Transition Constraint From: None() To: Visible() Constraints: []]
+  Id = 130 Temporal Constraint: Meets [0,0][0,0][0,0] CommunicationVW:None[Id=5] --> CommunicationVW:Visible[Id=1] (-->185) [Parameterized Transition Constraint From: None() To: Visible() Constraints: []]
+  Id = 128 Temporal Constraint: Release [0,0][0,0][0,0]  on None[Id=5] (-->186) [org.epsl.engine.completer.StateVariableGapResolver@5d7c1cf0]
+  Id = 129 Temporal Constraint: Duration [1,+INF][0,0][0,0]  on None[Id=5] (-->187) [org.epsl.engine.completer.StateVariableGapResolver@5d7c1cf0]
+  Id = 147 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:At[Id=7] --> RobotBase:GoingTo[Id=11] (-->193) [Parameterized Transition Constraint From: At(?x1[2],?y1[3]) To: GoingTo(?x2[4],?y2[5]) Constraints: []]
+  Id = 148 Parameter Constraint: ?x2[Id=132] =  + ?x2[Id=116] among [RobotBase:GoingTo[Id=11],RobotBase:At[Id=5]](-->40) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 149 Parameter Constraint: ?y2[Id=133] =  + ?y2[Id=117] among [RobotBase:GoingTo[Id=11],RobotBase:At[Id=5]](-->41) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 150 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:GoingTo[Id=11] --> RobotBase:At[Id=5] (-->194) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 143 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:At[Id=4] --> RobotBase:GoingTo[Id=10] (-->199) [Parameterized Transition Constraint From: At(?x1[2],?y1[3]) To: GoingTo(?x2[4],?y2[5]) Constraints: []]
+  Id = 144 Parameter Constraint: ?x2[Id=130] =  + ?x2[Id=124] among [RobotBase:GoingTo[Id=10],RobotBase:At[Id=7]](-->38) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 145 Parameter Constraint: ?y2[Id=131] =  + ?y2[Id=125] among [RobotBase:GoingTo[Id=10],RobotBase:At[Id=7]](-->39) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 146 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:GoingTo[Id=10] --> RobotBase:At[Id=7] (-->200) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 139 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:At[Id=6] --> RobotBase:GoingTo[Id=9] (-->205) [Parameterized Transition Constraint From: At(?x1[2],?y1[3]) To: GoingTo(?x2[4],?y2[5]) Constraints: []]
+  Id = 140 Parameter Constraint: ?x2[Id=128] =  + ?x2[Id=114] among [RobotBase:GoingTo[Id=9],RobotBase:At[Id=4]](-->36) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 141 Parameter Constraint: ?y2[Id=129] =  + ?y2[Id=115] among [RobotBase:GoingTo[Id=9],RobotBase:At[Id=4]](-->37) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 142 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:GoingTo[Id=9] --> RobotBase:At[Id=4] (-->206) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 135 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:At[Id=3] --> RobotBase:GoingTo[Id=8] (-->211) [Parameterized Transition Constraint From: At(?x1[2],?y1[3]) To: GoingTo(?x2[4],?y2[5]) Constraints: []]
+  Id = 136 Parameter Constraint: ?x2[Id=126] =  + ?x2[Id=120] among [RobotBase:GoingTo[Id=8],RobotBase:At[Id=6]](-->34) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 137 Parameter Constraint: ?y2[Id=127] =  + ?y2[Id=121] among [RobotBase:GoingTo[Id=8],RobotBase:At[Id=6]](-->35) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 138 Temporal Constraint: Meets [0,0][0,0][0,0] RobotBase:GoingTo[Id=8] --> RobotBase:At[Id=6] (-->212) [Parameterized Transition Constraint From: GoingTo(?x1[8],?y1[9]) To: At(?x2[10],?y2[11]) Constraints: [Id = 0 Binary Constraint ?x1[Id=8] =  + ?x2[Id=10], Id = 1 Binary Constraint ?y1[Id=9] =  + ?y2[Id=11]]]
+  Id = 151 Temporal Constraint: During [0,+INF][0,+INF][0,0] RobotBase:GoingTo[Id=11] --> Platine:PointingAt[Id=5] (-->217) [<USER>]
+  Id = 153 Temporal Constraint: During [0,+INF][0,+INF][0,0] RobotBase:GoingTo[Id=10] --> Platine:PointingAt[Id=6] (-->222) [<USER>]
+  Id = 155 Temporal Constraint: During [0,+INF][0,+INF][0,0] RobotBase:GoingTo[Id=9] --> Platine:PointingAt[Id=7] (-->227) [<USER>]
+  Id = 157 Temporal Constraint: During [0,+INF][0,+INF][0,0] RobotBase:GoingTo[Id=8] --> Platine:PointingAt[Id=8] (-->232) [<USER>]
+  Id = 170 Temporal Constraint: Before [10,250][0,0][0,0] Platine:PointingAt[Id=4] --> Platine:PointingAt[Id=5] (-->236) [<USER>]
+  Id = 171 Temporal Constraint: Before [10,250][0,0][0,0] Platine:PointingAt[Id=7] --> Platine:PointingAt[Id=4] (-->238) [<USER>]
+  Id = 172 Temporal Constraint: After [10,250][0,0][0,0] Platine:PointingAt[Id=7] --> Platine:PointingAt[Id=3] (-->239) [<USER>]
+  Id = 173 Temporal Constraint: Before [10,250][0,0][0,0] Platine:PointingAt[Id=6] --> Platine:PointingAt[Id=4] (-->242) [<USER>]
+  Id = 174 Temporal Constraint: After [10,250][0,0][0,0] Platine:PointingAt[Id=6] --> Platine:PointingAt[Id=7] (-->243) [<USER>]
+  Id = 175 Temporal Constraint: Before [10,250][0,0][0,0] Platine:PointingAt[Id=8] --> Platine:PointingAt[Id=3] (-->246) [<USER>]
+  Id = 176 Temporal Constraint: After [10,250][0,0][0,0] Platine:PointingAt[Id=8] --> Platine:PointingAt[Id=2] (-->247) [<USER>]
+  Id = 197 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:PointingAt[Id=4] --> Platine:MovingTo[Id=14] (-->251) [Parameterized Transition Constraint From: PointingAt(?pan1[20],?tilt1[21]) To: MovingTo(?pan2[22],?tilt2[23]) Constraints: []]
+  Id = 198 Parameter Constraint: ?pan2[Id=152] = 0 among [Platine:MovingTo[Id=14],Platine:PointingAt[Id=5]](-->52) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 199 Parameter Constraint: ?tilt2[Id=153] = 0 among [Platine:MovingTo[Id=14],Platine:PointingAt[Id=5]](-->53) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 200 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:MovingTo[Id=14] --> Platine:PointingAt[Id=5] (-->252) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 193 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:PointingAt[Id=6] --> Platine:MovingTo[Id=13] (-->257) [Parameterized Transition Constraint From: PointingAt(?pan1[20],?tilt1[21]) To: MovingTo(?pan2[22],?tilt2[23]) Constraints: []]
+  Id = 194 Parameter Constraint: ?pan2[Id=150] =  + ?pan2[Id=122] among [Platine:MovingTo[Id=13],Platine:PointingAt[Id=4]](-->50) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 195 Parameter Constraint: ?tilt2[Id=151] =  + ?tilt2[Id=123] among [Platine:MovingTo[Id=13],Platine:PointingAt[Id=4]](-->51) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 196 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:MovingTo[Id=13] --> Platine:PointingAt[Id=4] (-->258) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 189 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:PointingAt[Id=7] --> Platine:MovingTo[Id=12] (-->263) [Parameterized Transition Constraint From: PointingAt(?pan1[20],?tilt1[21]) To: MovingTo(?pan2[22],?tilt2[23]) Constraints: []]
+  Id = 190 Parameter Constraint: ?pan2[Id=148] = 0 among [Platine:MovingTo[Id=12],Platine:PointingAt[Id=6]](-->48) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 191 Parameter Constraint: ?tilt2[Id=149] = 0 among [Platine:MovingTo[Id=12],Platine:PointingAt[Id=6]](-->49) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 192 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:MovingTo[Id=12] --> Platine:PointingAt[Id=6] (-->264) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 185 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:PointingAt[Id=3] --> Platine:MovingTo[Id=11] (-->269) [Parameterized Transition Constraint From: PointingAt(?pan1[20],?tilt1[21]) To: MovingTo(?pan2[22],?tilt2[23]) Constraints: []]
+  Id = 186 Parameter Constraint: ?pan2[Id=146] = 0 among [Platine:MovingTo[Id=11],Platine:PointingAt[Id=7]](-->46) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 187 Parameter Constraint: ?tilt2[Id=147] = 0 among [Platine:MovingTo[Id=11],Platine:PointingAt[Id=7]](-->47) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 188 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:MovingTo[Id=11] --> Platine:PointingAt[Id=7] (-->270) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 181 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:PointingAt[Id=8] --> Platine:MovingTo[Id=10] (-->275) [Parameterized Transition Constraint From: PointingAt(?pan1[20],?tilt1[21]) To: MovingTo(?pan2[22],?tilt2[23]) Constraints: []]
+  Id = 182 Parameter Constraint: ?pan2[Id=144] =  + ?pan2[Id=118] among [Platine:MovingTo[Id=10],Platine:PointingAt[Id=3]](-->44) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 183 Parameter Constraint: ?tilt2[Id=145] =  + ?tilt2[Id=119] among [Platine:MovingTo[Id=10],Platine:PointingAt[Id=3]](-->45) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 184 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:MovingTo[Id=10] --> Platine:PointingAt[Id=3] (-->276) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 177 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:PointingAt[Id=2] --> Platine:MovingTo[Id=9] (-->281) [Parameterized Transition Constraint From: PointingAt(?pan1[20],?tilt1[21]) To: MovingTo(?pan2[22],?tilt2[23]) Constraints: []]
+  Id = 178 Parameter Constraint: ?pan2[Id=142] = 0 among [Platine:MovingTo[Id=9],Platine:PointingAt[Id=8]](-->42) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 179 Parameter Constraint: ?tilt2[Id=143] = 0 among [Platine:MovingTo[Id=9],Platine:PointingAt[Id=8]](-->43) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+  Id = 180 Temporal Constraint: Meets [0,0][0,0][0,0] Platine:MovingTo[Id=9] --> Platine:PointingAt[Id=8] (-->282) [Parameterized Transition Constraint From: MovingTo(?pan1[14],?tilt1[15]) To: PointingAt(?pan2[16],?tilt2[17]) Constraints: [Id = 2 Binary Constraint ?pan1[Id=14] =  + ?pan2[Id=16], Id = 3 Binary Constraint ?tilt1[Id=15] =  + ?tilt2[Id=17]]]
+
+# FirstSolutionSolver]: Domain Timelines:
+Time-Flexible Timeline: MissionTimeline.mission_timeline
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:31,00:02:20]		[1,7] Idle()
+	Id = 24 Time Instant [tp16]	[00:00:31,00:02:20]	[00:00:10,00:00:10]		[2,7] TakingPicture(?gfile_id2[90] = 1,?gx2[91] = 3,?gy2[92] = 5,?gpan2[93] = 35,?gtilt2[94] = 55)
+	Id = 72 Time Instant [tp48]	[00:00:41,00:02:30]	[00:00:50,00:02:39]		[4,7] Idle()
+	Id = 27 Time Instant [tp18]	[00:01:31,00:03:20]	[00:00:10,00:00:10]		[3,7] TakingPicture(?gfile_id1[95] = 2,?gx1[96] = 4,?gy1[97] = 1,?gpan1[98] = 35,?gtilt1[99] = 45)
+	Id = 28 Time Instant [tp19]	[00:01:41,00:03:30]	[00:00:30,00:02:29]		<UNDECIDED>
+	Id = 1 Time Instant [tp1]	[00:04:00,00:04:10]	
+
+Time-Fix Timeline: Memory.mem
+	70-001T00:00:00.000Z		0
+	70-001T00:00:00.031Z		5
+	70-001T00:00:00.071Z		0
+	70-001T00:00:00.091Z		5
+	70-001T00:00:00.131Z		0
+
+Time-Flexible Timeline: Communication.communication
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:01:01,00:02:50]		[2,6] CommIdle()
+	Id = 45 Time Instant [tp30]	[00:01:01,00:02:50]	[00:00:10,00:00:30]		[4,6] Communicating(?file_id3[113] = 1)
+	Id = 75 Time Instant [tp50]	[00:01:11,00:03:00]	[00:00:50,00:02:39]		[5,6] CommIdle()
+	Id = 36 Time Instant [tp24]	[00:02:01,00:03:50]	[00:00:10,00:00:30]		[3,6] Communicating(?file_id3[106] = 2)
+	Id = 37 Time Instant [tp25]	[00:02:11,00:04:00]	[00:00:00,00:01:59]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:04:00,00:04:10]	
+
+Time-Flexible Timeline: Camera.camera
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:31,00:02:20]		[2,5] CamIdle()
+	Id = 42 Time Instant [tp28]	[00:00:31,00:02:20]	[00:00:10,00:00:10]		[4,5] TakingPicture(?file_id2[108] = 1,?x2[109] = 3,?y2[110] = 5,?pan2[111] = 35,?tilt2[112] = 55)
+	Id = 78 Time Instant [tp52]	[00:00:41,00:02:30]	[00:00:50,00:02:39]		[5,5] CamIdle()
+	Id = 33 Time Instant [tp22]	[00:01:31,00:03:20]	[00:00:10,00:00:10]		[3,5] TakingPicture(?file_id2[101] = 2,?x2[102] = 4,?y2[103] = 1,?pan2[104] = 35,?tilt2[105] = 45)
+	Id = 34 Time Instant [tp23]	[00:01:41,00:03:30]	[00:00:30,00:02:29]		<UNDECIDED>
+	Id = 1 Time Instant [tp1]	[00:04:00,00:04:10]	
+
+Time-Flexible Timeline: CommunicationVW.communication_windows
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:10,00:00:10]		[5,8] None()
+	Id = 18 Time Instant [tp12]	[00:00:10,00:00:10]	[00:00:35,00:00:35]		[1,8] Visible()
+	Id = 84 Time Instant [tp56]	[00:00:45,00:00:45]	[00:00:05,00:00:05]		[6,8] None()
+	Id = 21 Time Instant [tp14]	[00:00:50,00:00:50]	[00:03:10,00:03:10]		[2,8] Visible()
+	Id = 22 Time Instant [tp15]	[00:04:00,00:04:00]	[00:00:00,00:00:10]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:04:00,00:04:10]	
+
+Time-Flexible Timeline: RobotBase.robot_base
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:11,00:02:00]		[3,3] At(?x1[86] = 0,?y1[87] = 0)
+	Id = 87 Time Instant [tp58]	[00:00:11,00:02:00]	[00:00:10,00:00:30]		[8,3] GoingTo(?x2[126] = 3,?y2[127] = 5)
+	Id = 63 Time Instant [tp42]	[00:00:21,00:02:10]	[00:00:30,00:02:19]		[6,3] At(?x2[120] = 3,?y2[121] = 5)
+	Id = 90 Time Instant [tp60]	[00:00:51,00:02:40]	[00:00:10,00:00:30]		[9,3] GoingTo(?x2[128],?y2[129])
+	Id = 48 Time Instant [tp32]	[00:01:01,00:02:50]	[00:00:10,00:01:59]		[4,3] At(?x2[114],?y2[115])
+	Id = 93 Time Instant [tp62]	[00:01:11,00:03:00]	[00:00:10,00:00:30]		[10,3] GoingTo(?x2[130] = 4,?y2[131] = 1)
+	Id = 69 Time Instant [tp46]	[00:01:21,00:03:10]	[00:00:30,00:02:19]		[7,3] At(?x2[124] = 4,?y2[125] = 1)
+	Id = 96 Time Instant [tp64]	[00:01:51,00:03:40]	[00:00:10,00:00:30]		[11,3] GoingTo(?x2[132],?y2[133])
+	Id = 54 Time Instant [tp36]	[00:02:01,00:03:50]	[00:00:10,00:02:09]		[5,3] At(?x2[116],?y2[117])
+	Id = 55 Time Instant [tp37]	[00:02:11,00:04:10]	[00:00:00,00:01:59]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:04:00,00:04:10]	
+
+Time-Flexible Timeline: Platine.platine
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:01,00:01:50]		[2,4] PointingAt(?pan1[88] = 0,?tilt1[89] = 0)
+	Id = 111 Time Instant [tp74]	[00:00:01,00:01:50]	[00:00:10,00:00:30]		[9,4] MovingTo(?pan2[142] = 0,?tilt2[143] = 0)
+	Id = 108 Time Instant [tp72]	[00:00:11,00:02:00]	[00:00:10,00:01:59]		[8,4] PointingAt(?pan1[140] = 0,?tilt1[141] = 0)
+	Id = 114 Time Instant [tp76]	[00:00:21,00:02:10]	[00:00:10,00:00:30]		[10,4] MovingTo(?pan2[144] = 35,?tilt2[145] = 55)
+	Id = 60 Time Instant [tp40]	[00:00:31,00:02:20]	[00:00:10,00:01:59]		[3,4] PointingAt(?pan2[118] = 35,?tilt2[119] = 55)
+	Id = 117 Time Instant [tp78]	[00:00:41,00:02:30]	[00:00:10,00:00:30]		[11,4] MovingTo(?pan2[146] = 0,?tilt2[147] = 0)
+	Id = 105 Time Instant [tp70]	[00:00:51,00:02:40]	[00:00:10,00:01:59]		[7,4] PointingAt(?pan1[138] = 0,?tilt1[139] = 0)
+	Id = 120 Time Instant [tp80]	[00:01:01,00:02:50]	[00:00:10,00:00:30]		[12,4] MovingTo(?pan2[148] = 0,?tilt2[149] = 0)
+	Id = 102 Time Instant [tp68]	[00:01:11,00:03:00]	[00:00:10,00:01:59]		[6,4] PointingAt(?pan1[136] = 0,?tilt1[137] = 0)
+	Id = 123 Time Instant [tp82]	[00:01:21,00:03:10]	[00:00:10,00:00:30]		[13,4] MovingTo(?pan2[150] = 35,?tilt2[151] = 45)
+	Id = 66 Time Instant [tp44]	[00:01:31,00:03:20]	[00:00:10,00:01:59]		[4,4] PointingAt(?pan2[122] = 35,?tilt2[123] = 45)
+	Id = 126 Time Instant [tp84]	[00:01:41,00:03:30]	[00:00:10,00:00:30]		[14,4] MovingTo(?pan2[152] = 0,?tilt2[153] = 0)
+	Id = 99 Time Instant [tp66]	[00:01:51,00:03:40]	[00:00:10,00:02:19]		[5,4] PointingAt(?pan1[134] = 0,?tilt1[135] = 0)
+	Id = 100 Time Instant [tp67]	[00:02:01,00:04:10]	[00:00:00,00:02:09]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:04:00,00:04:10]	
+
+
+
+[EPSLPlanner] 1 SOLUTIONS FOUND
+[EPSLPLanner] solving time = 714 msecs
+# [EPSLSolver]: Resolver execution times:
+	- SimpleDecisionSchedulingResolver : 39 msec
+	- StateVariableGapResolver : 18 msec
+	- DecisionUnificationResolver : 36 msec
+	- DecisionExpansionResolver : 93 msec
+	- RenewableResourceSchedulingDeterministicResolver : 0 msec
+# [EPSLSolver]: Propagation time : 11 msecs

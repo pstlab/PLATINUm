@@ -1,0 +1,10 @@
+PROBLEM NEPTUS_1auv_3phen_1task (DOMAIN NEPTUS)
+{
+	f00 <fact> AUV1Controller.auv1.Idle() AT [0, 0] [0, +INF] [0, +INF];
+	f01 <fact> AUV1NavigationController.auv1_navigator.At(?lf01 = base) AT [0, 0] [0, +INF] [0, +INF];
+	f03 <fact> AUV1SamplePayloadController.auv1_payload_sample.Idle() AT [0, 0] [0, +INF] [0, +INF];
+	f04 <fact> MissionController.mission.Idle() AT [0, 0] [0, +INF] [0, +INF];
+	
+	// task
+	g0 <goal,!> MissionController.mission.MakeSample(?l0= location1, ?p0= phenomena1, ?f0= 1);  
+}

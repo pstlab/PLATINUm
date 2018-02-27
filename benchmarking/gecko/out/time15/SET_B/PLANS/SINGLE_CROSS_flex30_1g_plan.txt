@@ -1,0 +1,72 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 1651 { Idle [6,490] [6, 490] }
+			token 1652 { Channel_R_L [16,500] [10, 494] }
+			unallocated 1653 { [500,500] [0,484] }
+		}
+		cross {
+			token 1654 { Down [1,485] [1, 485] }
+			token 1655 { MovingUp [6,490] [5, 5] }
+			token 1656 { Up [16,500] [10, 494] }
+			unallocated 1657 { [500,500] [0,484] }
+		}
+		main {
+			token 1658 { Still [1,500] [1, 500] }
+			unallocated 1659 { [500,500] [0,499] }
+		}
+		cconveyor {
+			token 1660 { Still [1,490] [1, 490] }
+			token 1661 { Backward [16,500] [10, 499] }
+			unallocated 1662 { [500,500] [0,484] }
+		}
+		portF {
+			token 1663 { Idle [1,500] [1, 500] }
+			unallocated 1664 { [500,500] [0,499] }
+		}
+		portB {
+			token 1665 { Idle [1,500] [1, 500] }
+			unallocated 1666 { [500,500] [0,499] }
+		}
+		portL {
+			token 1667 { Idle [11,495] [11, 495] }
+			token 1668 { Sending [16,500] [5, 35] }
+			unallocated 1669 { [500,500] [0,484] }
+		}
+		portR {
+			token 1670 { Idle [6,490] [6, 490] }
+			token 1671 { Receiving [11,495] [5, 35] }
+			unallocated 1672 { [500,500] [5,489] }
+		}
+	}
+	relations {
+		channel 1651 before [0,500] channel 1652
+		channel 1652 start_before_start [0,0] portR 1671
+		portR 1670 before [0,500] portR 1671
+		channel 1652 end_before_end [0,0] portL 1668
+		portR 1671 before [0,infty] portL 1668
+		portL 1667 before [0,500] portL 1668
+		channel 1652 during [0,infty]  [0,infty] cconveyor 1661
+		cconveyor 1660 before [0,500] cconveyor 1661
+		channel 1652 during [0,infty]  [0,infty] cross 1656
+		cross 1654 before [5,500] cross 1656
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 1673 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 1674 { Available [500,500] [500, 500] }
+		}
+		neighborL {
+			token 1675 { Available [500,500] [500, 500] }
+		}
+		neighborR {
+			token 1676 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

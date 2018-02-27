@@ -1,0 +1,43 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 0  { Earth [1,498] [1, 498] }
+			token 1  { Slewing [11,508] [10, 10] }
+			token 2  { Science [27,524] [16, 513] }
+			token 3  { Slewing [37,534] [10, 10] }
+			token 4  { Earth [450,535] [1, 498] }
+			token 5 uncontrollable { Comm [465,550] [15, 15] }
+			unallocated 6 { [700,700] [150,235] }
+		}
+		inst1 {
+			token 7  { Idle [8,511] [8, 511] }
+			token 8  { Warmup [11,514] [3, 3] }
+			token 9 uncontrollable { Process [21,524] [10, 10] }
+			token 10  { Turnoff [24,527] [3, 3] }
+			token 11  { Idle [25,700] [1, 676] }
+			unallocated 12 { [700,700] [0,675] }
+		}
+	}
+	relations {
+		op_trace 2 before [0,infty] op_trace 5
+		op_trace 0 before [0,700] op_trace 5
+		op_trace 2 before [11,700] op_trace 5
+		op_trace 2 after [10,700] op_trace 0
+		op_trace 5 during [0,infty]  [0,infty] window 14
+		op_trace 2 contains [0,infty]  [0,infty] inst1 9
+		inst1 9 before [0,infty] inst1 11
+		inst1 7 before [3,700] inst1 9
+		inst1 9 before [3,700] inst1 11
+	}
+}
+observation {
+	timelines {
+		window {
+			token 13  { NotAvailable [450,450] [450, 450] }
+			token 14  { Available [500,550] [50, 100] }
+			token 15  { NotAvailable [700,700] [150, 200] }
+		}
+	}
+}
+

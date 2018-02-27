@@ -1,0 +1,29 @@
+horizon = 20000
+plan {
+	timelines {
+		Ant1 {
+			 token 15  { Dumpingb [391, 20000] [240,240] }
+		}
+		Vis1 {
+		}
+		Nav1 {
+			 token 0  { Ata [1, 19610] [1,19610] }
+			 token 18  { GoingToa_b [101, 19710] [100,19709] }
+			 token 17  { Atb [151, 20000] [50,19899] }
+		}
+		Cam1 {
+			 token 16  { TakingPictureb [151, 19760] [50,50] }
+		}
+	}
+	relations {
+		Cam1 16 DURING [0, 20000]  [0,20000]  Nav1 17
+		Nav1 0 BEFORE [0, 20000]  Nav1 17
+		Nav1 0 MEETS Nav1 18
+		Nav1 18 MEETS Nav1 17
+		Ant1 15 AFTER [0, 20000]  Cam1 16
+	}
+}
+observation {
+	timelines {
+	}
+}

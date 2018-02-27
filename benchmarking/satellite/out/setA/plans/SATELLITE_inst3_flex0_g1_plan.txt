@@ -1,0 +1,72 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 38  { Earth [1,478] [1, 478] }
+			token 39  { Slewing [11,488] [10, 10] }
+			token 40  { Science [47,524] [36, 513] }
+			token 41  { Slewing [57,534] [10, 10] }
+			token 42  { Earth [450,535] [1, 478] }
+			token 43 uncontrollable { Comm [465,550] [15, 15] }
+			unallocated 44 { [700,700] [150,235] }
+		}
+		inst1 {
+			token 45  { Idle [8,485] [8, 485] }
+			token 46  { Warmup [11,488] [3, 3] }
+			token 47 uncontrollable { Process [21,498] [10, 10] }
+			token 48  { Turnoff [24,501] [3, 3] }
+			token 49  { Idle [34,700] [10, 676] }
+			unallocated 50 { [700,700] [0,666] }
+		}
+		inst2 {
+			token 51  { Idle [21,498] [21, 498] }
+			token 52  { Warmup [24,501] [3, 3] }
+			token 53 uncontrollable { Process [34,511] [10, 10] }
+			token 54  { Turnoff [37,514] [3, 3] }
+			token 55  { Idle [47,700] [10, 663] }
+			unallocated 56 { [700,700] [0,653] }
+		}
+		inst3 {
+			token 57  { Idle [34,511] [34, 511] }
+			token 58  { Warmup [37,514] [3, 3] }
+			token 59 uncontrollable { Process [47,524] [10, 10] }
+			token 60  { Turnoff [50,527] [3, 3] }
+			token 61  { Idle [51,700] [1, 650] }
+			unallocated 62 { [700,700] [0,649] }
+		}
+	}
+	relations {
+		op_trace 40 before [0,infty] op_trace 43
+		op_trace 38 before [0,700] op_trace 43
+		op_trace 40 before [11,700] op_trace 43
+		op_trace 40 after [10,700] op_trace 38
+		op_trace 43 during [0,infty]  [0,infty] window 64
+		op_trace 40 contains [0,infty]  [0,infty] inst3 59
+		inst3 59 before [0,infty] inst3 61
+		inst3 57 before [3,700] inst3 59
+		inst3 59 before [3,700] inst3 61
+		op_trace 40 contains [0,infty]  [0,infty] inst2 53
+		inst2 53 before [0,infty] inst3 59
+		inst2 53 before [0,infty] inst2 55
+		inst3 59 during [0,infty]  [0,infty] inst2 55
+		inst2 51 before [16,700] inst2 55
+		inst2 53 before [3,700] inst2 55
+		inst2 53 after [3,700] inst2 51
+		op_trace 40 contains [0,infty]  [0,infty] inst1 47
+		inst1 47 before [0,infty] inst2 53
+		inst1 47 before [0,infty] inst1 49
+		inst2 53 during [0,infty]  [0,infty] inst1 49
+		inst1 45 before [3,700] inst1 47
+		inst1 47 before [3,700] inst1 49
+	}
+}
+observation {
+	timelines {
+		window {
+			token 63  { NotAvailable [450,450] [450, 450] }
+			token 64  { Available [500,550] [50, 100] }
+			token 65  { NotAvailable [700,700] [150, 200] }
+		}
+	}
+}
+

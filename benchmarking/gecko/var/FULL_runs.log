@@ -1,0 +1,50 @@
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_1g.pdl] -> Solution found after [32] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_2g.pdl] -> Solution found after [78] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_3g.pdl] -> Solution found after [244] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_4g.pdl] -> Solution found after [832] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_5g.pdl] -> Solution found after [2041] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_6g.pdl] -> Solution found after [4354] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_7g.pdl] -> Solution found after [11455] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_8g.pdl] -> Solution found after [27071] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_9g.pdl] -> Solution found after [63876] msecs
+$ HFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_10g.pdl] -> No Solution found after [184106] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_1g.pdl] -> Solution found after [30] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_2g.pdl] -> Solution found after [127] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_3g.pdl] -> Solution found after [1622] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_4g.pdl] -> Solution found after [19455] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_5g.pdl] -> No Solution found after [187740] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_6g.pdl] -> No Solution found after [183641] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_7g.pdl] -> No Solution found after [181288] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_8g.pdl] -> No Solution found after [180022] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_9g.pdl] -> No Solution found after [180027] msecs
+$ TFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_10g.pdl] -> No Solution found after [180025] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_1g.pdl] -> Solution found after [33] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_2g.pdl] -> Solution found after [195] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_3g.pdl] -> Solution found after [811] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_4g.pdl] -> Solution found after [4822] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_5g.pdl] -> Solution found after [17045] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_6g.pdl] -> Solution found after [50841] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_7g.pdl] -> No Solution found after [205734] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_8g.pdl] -> No Solution found after [182135] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_9g.pdl] -> No Solution found after [187211] msecs
+$ DGFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_10g.pdl] -> No Solution found after [191297] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_1g.pdl] -> No Solution found after [181956] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_2g.pdl] -> No Solution found after [180711] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_3g.pdl] -> No Solution found after [183831] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_4g.pdl] -> No Solution found after [182396] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_5g.pdl] -> No Solution found after [182660] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_6g.pdl] -> No Solution found after [182126] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_7g.pdl] -> No Solution found after [184792] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_8g.pdl] -> No Solution found after [180375] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_9g.pdl] -> No Solution found after [181071] msecs
+$ DFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_10g.pdl] -> No Solution found after [180578] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_1g.pdl] -> Solution found after [33] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_2g.pdl] -> Solution found after [763] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_3g.pdl] -> Solution found after [817] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_4g.pdl] -> No Solution found after [18213] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_5g.pdl] -> No Solution found after [185515] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_6g.pdl] -> No Solution found after [181561] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_7g.pdl] -> No Solution found after [186674] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_8g.pdl] -> No Solution found after [180934] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_9g.pdl] -> No Solution found after [190223] msecs
+$ RFS on [FULL/GECKO_flex10.ddl,FULL/GECKO_10g.pdl] -> No Solution found after [180653] msecs

@@ -1,0 +1,113 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 100  { Earth [1,452] [1, 452] }
+			token 101  { Slewing [11,462] [10, 10] }
+			token 102  { Science [73,524] [62, 513] }
+			token 103  { Slewing [83,534] [10, 10] }
+			token 104  { Earth [450,535] [1, 452] }
+			token 105 uncontrollable { Comm [465,550] [15, 15] }
+			unallocated 106 { [700,700] [150,235] }
+		}
+		inst1 {
+			token 107  { Idle [8,459] [8, 459] }
+			token 108  { Warmup [11,462] [3, 3] }
+			token 109 uncontrollable { Process [21,472] [10, 10] }
+			token 110  { Turnoff [24,475] [3, 3] }
+			token 111  { Idle [73,700] [49, 676] }
+			unallocated 112 { [700,700] [0,627] }
+		}
+		inst2 {
+			token 113  { Idle [21,472] [21, 472] }
+			token 114  { Warmup [24,475] [3, 3] }
+			token 115 uncontrollable { Process [34,485] [10, 10] }
+			token 116  { Turnoff [37,488] [3, 3] }
+			token 117  { Idle [73,700] [36, 663] }
+			unallocated 118 { [700,700] [0,627] }
+		}
+		inst3 {
+			token 119  { Idle [34,485] [34, 485] }
+			token 120  { Warmup [37,488] [3, 3] }
+			token 121 uncontrollable { Process [47,498] [10, 10] }
+			token 122  { Turnoff [50,501] [3, 3] }
+			token 123  { Idle [73,700] [23, 650] }
+			unallocated 124 { [700,700] [0,627] }
+		}
+		inst4 {
+			token 125  { Idle [47,498] [47, 498] }
+			token 126  { Warmup [50,501] [3, 3] }
+			token 127 uncontrollable { Process [60,511] [10, 10] }
+			token 128  { Turnoff [63,514] [3, 3] }
+			token 129  { Idle [73,700] [10, 637] }
+			unallocated 130 { [700,700] [0,627] }
+		}
+		inst5 {
+			token 131  { Idle [60,511] [60, 511] }
+			token 132  { Warmup [63,514] [3, 3] }
+			token 133 uncontrollable { Process [73,524] [10, 10] }
+			token 134  { Turnoff [76,527] [3, 3] }
+			token 135  { Idle [77,700] [1, 624] }
+			unallocated 136 { [700,700] [0,623] }
+		}
+	}
+	relations {
+		op_trace 102 before [0,infty] op_trace 105
+		op_trace 100 before [0,700] op_trace 105
+		op_trace 102 before [11,700] op_trace 105
+		op_trace 102 after [10,700] op_trace 100
+		op_trace 105 during [0,infty]  [0,infty] window 138
+		op_trace 102 contains [0,infty]  [0,infty] inst5 133
+		inst5 133 before [3,infty] inst5 135
+		inst5 131 before [3,700] inst5 133
+		op_trace 102 contains [0,infty]  [0,infty] inst4 127
+		inst4 127 before [3,infty] inst5 133
+		inst4 127 during [0,infty]  [0,infty] inst5 131
+		inst5 133 during [0,infty]  [0,infty] inst4 129
+		inst4 125 before [16,700] inst4 129
+		inst4 127 before [3,700] inst4 129
+		inst4 127 after [3,700] inst4 125
+		op_trace 102 contains [0,infty]  [0,infty] inst3 121
+		inst3 121 before [3,infty] inst4 127
+		inst3 121 during [0,infty]  [0,infty] inst5 131
+		inst3 121 during [0,infty]  [0,infty] inst4 125
+		inst4 127 during [0,infty]  [0,infty] inst3 123
+		inst5 133 during [0,infty]  [0,infty] inst3 123
+		inst3 119 before [16,700] inst3 123
+		inst3 121 before [3,700] inst3 123
+		inst3 121 after [3,700] inst3 119
+		op_trace 102 contains [0,infty]  [0,infty] inst2 115
+		inst2 115 before [3,infty] inst3 121
+		inst2 115 during [0,infty]  [0,infty] inst5 131
+		inst2 115 during [0,infty]  [0,infty] inst4 125
+		inst2 115 during [0,infty]  [0,infty] inst3 119
+		inst3 121 during [0,infty]  [0,infty] inst2 117
+		inst4 127 during [0,infty]  [0,infty] inst2 117
+		inst5 133 during [0,infty]  [0,infty] inst2 117
+		inst2 113 before [16,700] inst2 117
+		inst2 115 before [3,700] inst2 117
+		inst2 115 after [3,700] inst2 113
+		op_trace 102 contains [0,infty]  [0,infty] inst1 109
+		inst1 109 before [3,infty] inst2 115
+		inst1 109 during [0,infty]  [0,infty] inst5 131
+		inst1 109 during [0,infty]  [0,infty] inst4 125
+		inst1 109 during [0,infty]  [0,infty] inst3 119
+		inst1 109 during [0,infty]  [0,infty] inst2 113
+		inst2 115 during [0,infty]  [0,infty] inst1 111
+		inst3 121 during [0,infty]  [0,infty] inst1 111
+		inst4 127 during [0,infty]  [0,infty] inst1 111
+		inst5 133 during [0,infty]  [0,infty] inst1 111
+		inst1 107 before [3,700] inst1 109
+		inst1 109 before [3,700] inst1 111
+	}
+}
+observation {
+	timelines {
+		window {
+			token 137  { NotAvailable [450,450] [450, 450] }
+			token 138  { Available [500,550] [50, 100] }
+			token 139  { NotAvailable [700,700] [150, 200] }
+		}
+	}
+}
+

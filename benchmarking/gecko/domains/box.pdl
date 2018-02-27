@@ -1,0 +1,21 @@
+PROBLEM box_Problem (DOMAIN box_Domain)
+{
+	f0 <fact> box_Channel.box_Channel_timeline.Idle() AT [0, 0] [1, 1000] [1, 1000];
+	f1 <fact> box_Cross_Conveyor_1.box_Cross_Conveyor_1_timeline.Cross_Conveyor_1_Still() AT [0, 0] [1, 1000] [1, 1000];
+	f2 <fact> box_Main_Conveyor.box_Main_Conveyor_timeline.Main_Conveyor_Still() AT [0, 0] [1, 1000] [1, 1000];
+	f3 <fact> box_Cross_Transfer_2.box_Cross_Transfer_2_timeline.Cross_2_Down() AT [0, 0] [1, 1000] [1, 1000];
+	f4 <fact> box_Port_L1.box_Port_L1_timeline.Port_L1_Available() AT [0, 0] [1, 1000] [1, 1000];
+	f5 <fact> box_Port_B1.box_Port_B1_timeline.Port_B1_Available() AT [0, 0] [1, 1000] [1, 1000];
+	f6 <fact> box_Port_F1.box_Port_F1_timeline.Port_F1_Available() AT [0, 0] [1, 1000] [1, 1000];
+	f7 <fact> box_Port_L2.box_Port_L2_timeline.Port_L2_Available() AT [0, 0] [1, 1000] [1, 1000];
+	f8 <fact> box_Port_F2.box_Port_F2_timeline.Port_F2_Available() AT [0, 0] [1, 1000] [1, 1000];
+	f9 <fact> box_Cross_Transfer_1.box_Cross_Transfer_1_timeline.Cross_1_Down() AT [0, 0] [1, 1000] [1, 1000];
+	f10 <fact> box_Port_R1.box_Port_R1_timeline.Port_R1_Available() AT [0, 0] [1, 1000] [1, 1000];
+	f11 <fact> box_Cross_Conveyor_2.box_Cross_Conveyor_2_timeline.Cross_Conveyor_2_Still() AT [0, 0] [1, 1000] [1, 1000];
+	f12 <fact> box_Port_R2.box_Port_R2_timeline.Port_R2_Available() AT [0, 0] [1, 1000] [1, 1000];
+	f13 <fact> box_Cross_Conveyor_3.box_Cross_Conveyor_3_timeline.Cross_Conveyor_3_Still() AT [0, 0] [1, 1000] [1, 1000];
+	f14 <fact> box_Neighbor_R.box_Neighbor_R_timeline.Neighbor_R_Available() AT [0, 0] [1000,1000] [1000,1000];
+	f15 <fact> box_Neighbor_F.box_Neighbor_F_timeline.Neighbor_F_Available() AT [0, 0] [1000,1000] [1000,1000];
+
+}
+

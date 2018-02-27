@@ -1,0 +1,99 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 102 { Idle [1,471] [1, 471] }
+			token 103 { Channel_B_F [6,476] [1, 475] }
+			token 104 { Idle [7,477] [1, 471] }
+			token 105 { Channel_B_F [12,482] [1, 475] }
+			token 106 { Idle [13,483] [1, 471] }
+			token 107 { Channel_F_B [18,488] [1, 475] }
+			token 108 { Idle [19,489] [1, 471] }
+			token 109 { Channel_B_F [24,494] [1, 475] }
+			token 110 { Idle [25,495] [1, 471] }
+			token 111 { Channel_F_B [30,500] [1, 475] }
+			unallocated 112 { [500,500] [0,470] }
+		}
+		main {
+			token 113 { Still [1,471] [1, 471] }
+			token 114 { Forward [12,482] [7, 481] }
+			token 115 { Still [13,483] [1, 471] }
+			token 116 { Backward [18,488] [1, 475] }
+			token 117 { Still [19,489] [1, 471] }
+			token 118 { Forward [24,494] [1, 475] }
+			token 119 { Still [25,495] [1, 471] }
+			token 120 { Backward [30,500] [1, 475] }
+			unallocated 121 { [500,500] [0,470] }
+		}
+		portF {
+			token 122 { Idle [1,471] [1, 471] }
+			token 123 { Sending [6,476] [5, 15] }
+			token 124 { Idle [7,477] [1, 471] }
+			token 125 { Sending [12,482] [5, 15] }
+			token 126 { Idle [13,483] [1, 471] }
+			token 127 { Receiving [18,488] [5, 15] }
+			token 128 { Idle [19,489] [1, 471] }
+			token 129 { Sending [24,494] [5, 15] }
+			token 130 { Idle [25,495] [1, 471] }
+			token 131 { Receiving [30,500] [5, 15] }
+			unallocated 132 { [500,500] [0,470] }
+		}
+		portB {
+			token 133 { Idle [1,471] [1, 471] }
+			token 134 { Receiving [6,476] [5, 15] }
+			token 135 { Idle [7,477] [1, 471] }
+			token 136 { Receiving [12,482] [5, 15] }
+			token 137 { Idle [13,483] [1, 471] }
+			token 138 { Sending [18,488] [5, 15] }
+			token 139 { Idle [19,489] [1, 471] }
+			token 140 { Receiving [24,494] [5, 15] }
+			token 141 { Idle [25,495] [1, 471] }
+			token 142 { Sending [30,500] [5, 15] }
+			unallocated 143 { [500,500] [0,470] }
+		}
+	}
+	relations {
+		channel 102 before [0,500] channel 103
+		channel 103 before [1,500] channel 105
+		channel 105 before [1,500] channel 107
+		channel 107 before [1,500] channel 109
+		channel 109 before [1,500] channel 111
+		channel 111 end_before_end [0,0] portB 142
+		channel 107 end_before_end [0,0] portB 138
+		channel 109 start_before_start [0,0] portB 140
+		channel 103 start_before_start [0,0] portB 134
+		channel 105 start_before_start [0,0] portB 136
+		portB 133 before [0,500] portB 134
+		portB 134 before [1,500] portB 136
+		portB 136 before [1,500] portB 138
+		portB 140 before [1,500] portB 142
+		channel 111 start_before_start [0,0] portF 131
+		channel 107 start_before_start [0,0] portF 127
+		channel 109 end_before_end [0,0] portF 129
+		channel 103 end_before_end [0,0] portF 123
+		channel 105 end_before_end [0,0] portF 125
+		portF 122 before [0,500] portF 123
+		portF 123 before [1,500] portF 125
+		portF 127 before [1,500] portF 129
+		channel 111 during [0,infty]  [0,infty] main 120
+		channel 109 during [0,infty]  [0,infty] main 118
+		channel 107 during [0,infty]  [0,infty] main 116
+		channel 103 during [0,infty]  [0,infty] main 114
+		channel 105 during [0,infty]  [0,infty] main 114
+		main 113 before [0,500] main 114
+		main 114 before [1,500] main 116
+		main 116 before [1,500] main 118
+		main 118 before [1,500] main 120
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 144 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 145 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

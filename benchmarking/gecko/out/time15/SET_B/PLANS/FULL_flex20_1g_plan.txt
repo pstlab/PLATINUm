@@ -1,0 +1,125 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 1310 { Idle [6,487] [6, 487] }
+			token 1311 { Channel_R1_B [19,500] [13, 494] }
+			unallocated 1312 { [500,500] [0,481] }
+		}
+		cross1 {
+			token 1313 { Down [1,482] [1, 482] }
+			token 1314 { MovingUp [6,487] [5, 5] }
+			token 1315 { Up [11,492] [5, 486] }
+			token 1316 { MovingDown [16,497] [5, 5] }
+			token 1317 { Down [17,498] [1, 482] }
+			unallocated 1318 { [500,500] [2,483] }
+		}
+		cross2 {
+			token 1319 { Down [1,487] [1, 487] }
+			token 1320 { MovingUp [6,492] [5, 5] }
+			token 1321 { Up [12,493] [1, 487] }
+			token 1322 { MovingDown [17,498] [5, 5] }
+			token 1323 { Down [18,499] [1, 482] }
+			unallocated 1324 { [500,500] [1,482] }
+		}
+		cross3 {
+			token 1325 { Down [1,488] [1, 488] }
+			token 1326 { MovingUp [6,493] [5, 5] }
+			token 1327 { Up [13,494] [1, 488] }
+			token 1328 { MovingDown [18,499] [5, 5] }
+			token 1329 { Down [19,500] [1, 482] }
+			unallocated 1330 { [500,500] [0,481] }
+		}
+		main {
+			token 1331 { Still [1,495] [1, 495] }
+			token 1332 { Forward [19,500] [5, 499] }
+			unallocated 1333 { [500,500] [0,481] }
+		}
+		cconveyor1 {
+			token 1334 { Still [1,487] [1, 487] }
+			token 1335 { Backward [11,500] [5, 499] }
+			unallocated 1336 { [500,500] [0,489] }
+		}
+		cconveyor2 {
+			token 1337 { Still [1,500] [1, 500] }
+			unallocated 1338 { [500,500] [0,499] }
+		}
+		cconveyor3 {
+			token 1339 { Still [1,500] [1, 500] }
+			unallocated 1340 { [500,500] [0,499] }
+		}
+		portF {
+			token 1341 { Idle [1,500] [1, 500] }
+			unallocated 1342 { [500,500] [0,499] }
+		}
+		portB {
+			token 1343 { Idle [1,495] [1, 495] }
+			token 1344 { Sending [19,500] [5, 25] }
+			unallocated 1345 { [500,500] [0,481] }
+		}
+		portL1 {
+			token 1346 { Idle [1,500] [1, 500] }
+			unallocated 1347 { [500,500] [0,499] }
+		}
+		portL2 {
+			token 1348 { Idle [1,500] [1, 500] }
+			unallocated 1349 { [500,500] [0,499] }
+		}
+		portL3 {
+			token 1350 { Idle [1,500] [1, 500] }
+			unallocated 1351 { [500,500] [0,499] }
+		}
+		portR1 {
+			token 1352 { Idle [6,487] [6, 487] }
+			token 1353 { Receiving [11,492] [5, 25] }
+			unallocated 1354 { [500,500] [8,489] }
+		}
+		portR2 {
+			token 1355 { Idle [1,500] [1, 500] }
+			unallocated 1356 { [500,500] [0,499] }
+		}
+		portR3 {
+			token 1357 { Idle [1,500] [1, 500] }
+			unallocated 1358 { [500,500] [0,499] }
+		}
+	}
+	relations {
+		channel 1310 before [0,500] channel 1311
+		channel 1311 start_before_start [0,0] portR1 1353
+		portR1 1352 before [0,500] portR1 1353
+		channel 1311 contains [0,infty]  [0,infty] cross1 1317
+		cross1 1315 before [0,infty] cross1 1317
+		portR1 1353 during [0,infty]  [0,infty] cross1 1315
+		cross1 1313 before [5,500] cross1 1315
+		cross1 1315 before [5,500] cross1 1317
+		channel 1311 contains [0,infty]  [0,infty] cross2 1323
+		cross1 1317 before [0,infty] cross2 1323
+		cross2 1319 before [11,500] cross2 1323
+		channel 1311 contains [0,infty]  [0,infty] cross3 1329
+		cross2 1323 before [0,infty] cross3 1329
+		cross3 1325 before [11,500] cross3 1329
+		main 1331 before [0,500] main 1332
+		portR1 1353 during [0,infty]  [0,infty] cconveyor1 1335
+		cconveyor1 1334 before [0,500] cconveyor1 1335
+		channel 1311 end_before_end [0,0] portB 1344
+		portB 1344 during [0,infty]  [0,infty] main 1332
+		portB 1343 before [0,500] portB 1344
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 1359 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 1360 { Available [500,500] [500, 500] }
+		}
+		neighborL {
+			token 1361 { Available [500,500] [500, 500] }
+		}
+		neighborR {
+			token 1362 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

@@ -1,0 +1,131 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 1747 { Idle [1,476] [1, 476] }
+			token 1748 { Channel_F_L [11,477] [1, 476] }
+			token 1749 { Idle [16,482] [5, 471] }
+			token 1750 { Channel_F_B [17,483] [1, 467] }
+			token 1751 { Idle [22,488] [5, 471] }
+			token 1752 { Channel_L_R [23,489] [1, 467] }
+			token 1753 { Idle [24,490] [1, 467] }
+			token 1754 { Channel_R_L [34,500] [10, 476] }
+			unallocated 1755 { [500,500] [0,466] }
+		}
+		cross {
+			token 1756 { Down [1,467] [1, 467] }
+			token 1757 { MovingUp [6,472] [5, 5] }
+			token 1758 { Up [11,477] [5, 471] }
+			token 1759 { MovingDown [16,482] [5, 5] }
+			token 1760 { Down [17,483] [1, 467] }
+			token 1761 { MovingUp [22,488] [5, 5] }
+			token 1762 { Up [34,500] [12, 478] }
+			unallocated 1763 { [500,500] [0,466] }
+		}
+		main {
+			token 1764 { Still [1,476] [1, 476] }
+			token 1765 { Backward [17,500] [7, 499] }
+			unallocated 1766 { [500,500] [0,483] }
+		}
+		cconveyor {
+			token 1767 { Still [1,472] [1, 472] }
+			token 1768 { Backward [11,487] [5, 486] }
+			token 1769 { Still [12,488] [1, 477] }
+			token 1770 { Forward [23,489] [1, 477] }
+			token 1771 { Still [24,490] [1, 467] }
+			token 1772 { Backward [34,500] [10, 476] }
+			unallocated 1773 { [500,500] [0,466] }
+		}
+		portF {
+			token 1774 { Idle [1,476] [1, 476] }
+			token 1775 { Receiving [6,481] [5, 35] }
+			token 1776 { Idle [16,482] [1, 476] }
+			token 1777 { Receiving [21,500] [5, 35] }
+			unallocated 1778 { [500,500] [0,479] }
+		}
+		portB {
+			token 1779 { Idle [1,478] [1, 478] }
+			token 1780 { Sending [17,483] [5, 35] }
+			unallocated 1781 { [500,500] [17,483] }
+		}
+		portL {
+			token 1782 { Idle [6,472] [6, 472] }
+			token 1783 { Sending [11,477] [5, 35] }
+			token 1784 { Idle [22,488] [11, 477] }
+			token 1785 { Receiving [27,494] [5, 35] }
+			token 1786 { Idle [29,495] [1, 468] }
+			token 1787 { Sending [34,500] [5, 35] }
+			unallocated 1788 { [500,500] [0,466] }
+		}
+		portR {
+			token 1789 { Idle [1,484] [1, 484] }
+			token 1790 { Sending [23,489] [5, 35] }
+			token 1791 { Idle [24,490] [1, 467] }
+			token 1792 { Receiving [29,495] [5, 35] }
+			unallocated 1793 { [500,500] [5,471] }
+		}
+	}
+	relations {
+		channel 1747 before [0,500] channel 1748
+		channel 1748 before [1,500] channel 1750
+		channel 1750 before [1,500] channel 1752
+		channel 1752 before [1,500] channel 1754
+		channel 1754 start_before_start [0,0] portR 1792
+		channel 1752 end_before_end [0,0] portR 1790
+		portR 1789 before [0,500] portR 1792
+		portR 1790 before [1,500] portR 1792
+		portR 1790 after [0,500] portR 1789
+		channel 1754 end_before_end [0,0] portL 1787
+		portR 1792 before [0,infty] portL 1787
+		channel 1752 start_before_start [0,0] portL 1785
+		channel 1748 end_before_end [0,0] portL 1783
+		portL 1782 before [0,500] portL 1787
+		portL 1785 before [1,500] portL 1787
+		portL 1785 after [0,500] portL 1782
+		portL 1783 before [1,500] portL 1785
+		portL 1783 after [0,500] portL 1782
+		channel 1750 end_before_end [0,0] portB 1780
+		portB 1779 before [0,500] portB 1780
+		channel 1750 start_before_start [0,0] portF 1777
+		channel 1748 start_before_start [0,0] portF 1775
+		portF 1774 before [0,500] portF 1777
+		portF 1775 before [1,500] portF 1777
+		portF 1775 after [0,500] portF 1774
+		channel 1754 during [0,infty]  [0,infty] cconveyor 1772
+		channel 1752 during [0,infty]  [0,infty] cconveyor 1770
+		portL 1783 during [0,infty]  [0,infty] cconveyor 1768
+		cconveyor 1767 before [0,500] cconveyor 1770
+		cconveyor 1768 before [1,500] cconveyor 1770
+		cconveyor 1768 after [0,500] cconveyor 1767
+		cconveyor 1770 before [1,500] cconveyor 1772
+		channel 1750 during [0,infty]  [0,infty] main 1765
+		portF 1775 during [0,infty]  [0,infty] main 1765
+		main 1764 before [0,500] main 1765
+		channel 1754 during [0,infty]  [0,infty] cross 1762
+		portL 1783 during [0,infty]  [0,infty] cross 1758
+		channel 1750 during [0,infty]  [0,infty] cross 1760
+		cross 1756 before [0,infty] cross 1758
+		channel 1752 during [0,infty]  [0,infty] cross 1762
+		cross 1756 before [11,500] cross 1760
+		cross 1760 before [5,500] cross 1762
+		cross 1758 before [5,500] cross 1760
+		cross 1758 after [5,500] cross 1756
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 1794 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 1795 { Available [500,500] [500, 500] }
+		}
+		neighborL {
+			token 1796 { Available [500,500] [500, 500] }
+		}
+		neighborR {
+			token 1797 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

@@ -1,0 +1,113 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 1390  { Earth [1,482] [1, 482] }
+			token 1391  { Slewing [11,492] [10, 10] }
+			token 1392  { Science [73,554] [62, 543] }
+			token 1393  { Slewing [83,564] [10, 10] }
+			token 1394  { Earth [450,565] [1, 482] }
+			token 1395 uncontrollable { Comm [465,580] [15, 45] }
+			unallocated 1396 { [700,700] [120,235] }
+		}
+		inst1 {
+			token 1397  { Idle [8,489] [8, 489] }
+			token 1398  { Warmup [11,492] [3, 3] }
+			token 1399 uncontrollable { Process [21,502] [10, 40] }
+			token 1400  { Turnoff [24,505] [3, 3] }
+			token 1401  { Idle [73,700] [49, 676] }
+			unallocated 1402 { [700,700] [0,627] }
+		}
+		inst2 {
+			token 1403  { Idle [21,502] [21, 502] }
+			token 1404  { Warmup [24,505] [3, 3] }
+			token 1405 uncontrollable { Process [34,515] [10, 40] }
+			token 1406  { Turnoff [37,518] [3, 3] }
+			token 1407  { Idle [73,700] [36, 663] }
+			unallocated 1408 { [700,700] [0,627] }
+		}
+		inst3 {
+			token 1409  { Idle [34,515] [34, 515] }
+			token 1410  { Warmup [37,518] [3, 3] }
+			token 1411 uncontrollable { Process [47,528] [10, 40] }
+			token 1412  { Turnoff [50,531] [3, 3] }
+			token 1413  { Idle [73,700] [23, 650] }
+			unallocated 1414 { [700,700] [0,627] }
+		}
+		inst4 {
+			token 1415  { Idle [47,528] [47, 528] }
+			token 1416  { Warmup [50,531] [3, 3] }
+			token 1417 uncontrollable { Process [60,541] [10, 40] }
+			token 1418  { Turnoff [63,544] [3, 3] }
+			token 1419  { Idle [73,700] [10, 637] }
+			unallocated 1420 { [700,700] [0,627] }
+		}
+		inst5 {
+			token 1421  { Idle [60,541] [60, 541] }
+			token 1422  { Warmup [63,544] [3, 3] }
+			token 1423 uncontrollable { Process [73,554] [10, 40] }
+			token 1424  { Turnoff [76,557] [3, 3] }
+			token 1425  { Idle [77,700] [1, 624] }
+			unallocated 1426 { [700,700] [0,623] }
+		}
+	}
+	relations {
+		op_trace 1392 before [0,infty] op_trace 1395
+		op_trace 1390 before [0,700] op_trace 1395
+		op_trace 1392 before [11,700] op_trace 1395
+		op_trace 1392 after [10,700] op_trace 1390
+		op_trace 1395 during [0,infty]  [0,infty] window 1428
+		op_trace 1392 contains [0,infty]  [0,infty] inst5 1423
+		inst5 1423 before [3,infty] inst5 1425
+		inst5 1421 before [3,700] inst5 1423
+		op_trace 1392 contains [0,infty]  [0,infty] inst4 1417
+		inst4 1417 before [3,infty] inst5 1423
+		inst4 1417 during [0,infty]  [0,infty] inst5 1421
+		inst5 1423 during [0,infty]  [0,infty] inst4 1419
+		inst4 1415 before [16,700] inst4 1419
+		inst4 1417 before [3,700] inst4 1419
+		inst4 1417 after [3,700] inst4 1415
+		op_trace 1392 contains [0,infty]  [0,infty] inst3 1411
+		inst3 1411 before [3,infty] inst4 1417
+		inst3 1411 during [0,infty]  [0,infty] inst5 1421
+		inst3 1411 during [0,infty]  [0,infty] inst4 1415
+		inst4 1417 during [0,infty]  [0,infty] inst3 1413
+		inst5 1423 during [0,infty]  [0,infty] inst3 1413
+		inst3 1409 before [16,700] inst3 1413
+		inst3 1411 before [3,700] inst3 1413
+		inst3 1411 after [3,700] inst3 1409
+		op_trace 1392 contains [0,infty]  [0,infty] inst2 1405
+		inst2 1405 before [3,infty] inst3 1411
+		inst2 1405 during [0,infty]  [0,infty] inst5 1421
+		inst2 1405 during [0,infty]  [0,infty] inst4 1415
+		inst2 1405 during [0,infty]  [0,infty] inst3 1409
+		inst3 1411 during [0,infty]  [0,infty] inst2 1407
+		inst4 1417 during [0,infty]  [0,infty] inst2 1407
+		inst5 1423 during [0,infty]  [0,infty] inst2 1407
+		inst2 1403 before [16,700] inst2 1407
+		inst2 1405 before [3,700] inst2 1407
+		inst2 1405 after [3,700] inst2 1403
+		op_trace 1392 contains [0,infty]  [0,infty] inst1 1399
+		inst1 1399 before [3,infty] inst2 1405
+		inst1 1399 during [0,infty]  [0,infty] inst5 1421
+		inst1 1399 during [0,infty]  [0,infty] inst4 1415
+		inst1 1399 during [0,infty]  [0,infty] inst3 1409
+		inst1 1399 during [0,infty]  [0,infty] inst2 1403
+		inst2 1405 during [0,infty]  [0,infty] inst1 1401
+		inst3 1411 during [0,infty]  [0,infty] inst1 1401
+		inst4 1417 during [0,infty]  [0,infty] inst1 1401
+		inst5 1423 during [0,infty]  [0,infty] inst1 1401
+		inst1 1397 before [3,700] inst1 1399
+		inst1 1399 before [3,700] inst1 1401
+	}
+}
+observation {
+	timelines {
+		window {
+			token 1427  { NotAvailable [450,450] [450, 450] }
+			token 1428  { Available [500,580] [50, 130] }
+			token 1429  { NotAvailable [700,700] [120, 200] }
+		}
+	}
+}
+

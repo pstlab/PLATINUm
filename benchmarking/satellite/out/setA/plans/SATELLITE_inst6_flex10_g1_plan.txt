@@ -1,0 +1,137 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 570  { Earth [1,449] [1, 449] }
+			token 571  { Slewing [11,459] [10, 10] }
+			token 572  { Science [86,534] [75, 523] }
+			token 573  { Slewing [96,544] [10, 10] }
+			token 574  { Earth [450,545] [1, 449] }
+			token 575 uncontrollable { Comm [465,560] [15, 25] }
+			unallocated 576 { [700,700] [140,235] }
+		}
+		inst1 {
+			token 577  { Idle [8,456] [8, 456] }
+			token 578  { Warmup [11,459] [3, 3] }
+			token 579 uncontrollable { Process [21,469] [10, 20] }
+			token 580  { Turnoff [24,472] [3, 3] }
+			token 581  { Idle [86,700] [62, 676] }
+			unallocated 582 { [700,700] [0,614] }
+		}
+		inst2 {
+			token 583  { Idle [21,469] [21, 469] }
+			token 584  { Warmup [24,472] [3, 3] }
+			token 585 uncontrollable { Process [34,482] [10, 20] }
+			token 586  { Turnoff [37,485] [3, 3] }
+			token 587  { Idle [86,700] [49, 663] }
+			unallocated 588 { [700,700] [0,614] }
+		}
+		inst3 {
+			token 589  { Idle [34,482] [34, 482] }
+			token 590  { Warmup [37,485] [3, 3] }
+			token 591 uncontrollable { Process [47,495] [10, 20] }
+			token 592  { Turnoff [50,498] [3, 3] }
+			token 593  { Idle [86,700] [36, 650] }
+			unallocated 594 { [700,700] [0,614] }
+		}
+		inst4 {
+			token 595  { Idle [47,495] [47, 495] }
+			token 596  { Warmup [50,498] [3, 3] }
+			token 597 uncontrollable { Process [60,508] [10, 20] }
+			token 598  { Turnoff [63,511] [3, 3] }
+			token 599  { Idle [86,700] [23, 637] }
+			unallocated 600 { [700,700] [0,614] }
+		}
+		inst5 {
+			token 601  { Idle [60,508] [60, 508] }
+			token 602  { Warmup [63,511] [3, 3] }
+			token 603 uncontrollable { Process [73,521] [10, 20] }
+			token 604  { Turnoff [76,524] [3, 3] }
+			token 605  { Idle [86,700] [10, 624] }
+			unallocated 606 { [700,700] [0,614] }
+		}
+		inst6 {
+			token 607  { Idle [73,521] [73, 521] }
+			token 608  { Warmup [76,524] [3, 3] }
+			token 609 uncontrollable { Process [86,534] [10, 20] }
+			token 610  { Turnoff [89,537] [3, 3] }
+			token 611  { Idle [90,700] [1, 611] }
+			unallocated 612 { [700,700] [0,610] }
+		}
+	}
+	relations {
+		op_trace 572 before [0,infty] op_trace 575
+		op_trace 570 before [0,700] op_trace 575
+		op_trace 572 before [11,700] op_trace 575
+		op_trace 572 after [10,700] op_trace 570
+		op_trace 575 during [0,infty]  [0,infty] window 614
+		op_trace 572 contains [0,infty]  [0,infty] inst6 609
+		inst6 609 before [3,infty] inst6 611
+		inst6 607 before [16,700] inst6 611
+		inst6 609 before [3,700] inst6 611
+		inst6 609 after [3,700] inst6 607
+		op_trace 572 contains [0,infty]  [0,infty] inst5 603
+		inst5 603 before [3,infty] inst6 609
+		inst5 603 during [0,infty]  [0,infty] inst6 607
+		inst6 609 during [0,infty]  [0,infty] inst5 605
+		inst5 601 before [16,700] inst5 605
+		inst5 603 before [3,700] inst5 605
+		inst5 603 after [3,700] inst5 601
+		op_trace 572 contains [0,infty]  [0,infty] inst4 597
+		inst4 597 before [3,infty] inst5 603
+		inst4 597 during [0,infty]  [0,infty] inst6 607
+		inst4 597 during [0,infty]  [0,infty] inst5 601
+		inst5 603 during [0,infty]  [0,infty] inst4 599
+		inst6 609 during [0,infty]  [0,infty] inst4 599
+		inst4 595 before [3,700] inst4 597
+		inst4 597 before [3,700] inst4 599
+		op_trace 572 contains [0,infty]  [0,infty] inst3 591
+		inst3 591 before [3,infty] inst4 597
+		inst3 591 during [0,infty]  [0,infty] inst6 607
+		inst3 591 during [0,infty]  [0,infty] inst5 601
+		inst3 591 during [0,infty]  [0,infty] inst4 595
+		inst4 597 during [0,infty]  [0,infty] inst3 593
+		inst5 603 during [0,infty]  [0,infty] inst3 593
+		inst6 609 during [0,infty]  [0,infty] inst3 593
+		inst3 589 before [16,700] inst3 593
+		inst3 591 before [3,700] inst3 593
+		inst3 591 after [3,700] inst3 589
+		op_trace 572 contains [0,infty]  [0,infty] inst2 585
+		inst2 585 before [3,infty] inst3 591
+		inst2 585 during [0,infty]  [0,infty] inst6 607
+		inst2 585 during [0,infty]  [0,infty] inst5 601
+		inst2 585 during [0,infty]  [0,infty] inst4 595
+		inst2 585 during [0,infty]  [0,infty] inst3 589
+		inst3 591 during [0,infty]  [0,infty] inst2 587
+		inst4 597 during [0,infty]  [0,infty] inst2 587
+		inst5 603 during [0,infty]  [0,infty] inst2 587
+		inst6 609 during [0,infty]  [0,infty] inst2 587
+		inst2 583 before [16,700] inst2 587
+		inst2 585 before [3,700] inst2 587
+		inst2 585 after [3,700] inst2 583
+		op_trace 572 contains [0,infty]  [0,infty] inst1 579
+		inst1 579 before [3,infty] inst2 585
+		inst1 579 during [0,infty]  [0,infty] inst6 607
+		inst1 579 during [0,infty]  [0,infty] inst5 601
+		inst1 579 during [0,infty]  [0,infty] inst4 595
+		inst1 579 during [0,infty]  [0,infty] inst3 589
+		inst1 579 during [0,infty]  [0,infty] inst2 583
+		inst2 585 during [0,infty]  [0,infty] inst1 581
+		inst3 591 during [0,infty]  [0,infty] inst1 581
+		inst4 597 during [0,infty]  [0,infty] inst1 581
+		inst5 603 during [0,infty]  [0,infty] inst1 581
+		inst6 609 during [0,infty]  [0,infty] inst1 581
+		inst1 577 before [3,700] inst1 579
+		inst1 579 before [3,700] inst1 581
+	}
+}
+observation {
+	timelines {
+		window {
+			token 613  { NotAvailable [450,450] [450, 450] }
+			token 614  { Available [500,560] [50, 110] }
+			token 615  { NotAvailable [700,700] [140, 200] }
+		}
+	}
+}
+

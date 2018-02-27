@@ -1,0 +1,10 @@
+$ SET_A [SATELLITE_inst1_flex20.ddl,SATELLITE_inst1_flex20_g1.pdl] -> Solution found after [55] msecs
+$ SET_A [SATELLITE_inst2_flex20.ddl,SATELLITE_inst2_flex20_g1.pdl] -> Solution found after [104] msecs
+$ SET_A [SATELLITE_inst3_flex20.ddl,SATELLITE_inst3_flex20_g1.pdl] -> Solution found after [196] msecs
+$ SET_A [SATELLITE_inst4_flex20.ddl,SATELLITE_inst4_flex20_g1.pdl] -> Solution found after [354] msecs
+$ SET_A [SATELLITE_inst5_flex20.ddl,SATELLITE_inst5_flex20_g1.pdl] -> Solution found after [1886] msecs
+$ SET_A [SATELLITE_inst6_flex20.ddl,SATELLITE_inst6_flex20_g1.pdl] -> Solution found after [2471] msecs
+$ SET_A [SATELLITE_inst7_flex20.ddl,SATELLITE_inst7_flex20_g1.pdl] -> Solution found after [3660] msecs
+$ SET_A [SATELLITE_inst8_flex20.ddl,SATELLITE_inst8_flex20_g1.pdl] -> Solution found after [5210] msecs
+$ SET_A [SATELLITE_inst9_flex20.ddl,SATELLITE_inst9_flex20_g1.pdl] -> Solution found after [7465] msecs
+$ SET_A [SATELLITE_inst10_flex20.ddl,SATELLITE_inst10_flex20_g1.pdl] -> Solution found after [10575] msecs

@@ -1,0 +1,247 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 1220  { Earth [1,407] [1, 407] }
+			token 1221  { Slewing [11,417] [10, 10] }
+			token 1222  { Science [138,544] [127, 533] }
+			token 1223  { Slewing [148,554] [10, 10] }
+			token 1224  { Earth [450,555] [1, 407] }
+			token 1225 uncontrollable { Comm [465,570] [15, 35] }
+			unallocated 1226 { [700,700] [130,235] }
+		}
+		inst1 {
+			token 1227  { Idle [8,414] [8, 414] }
+			token 1228  { Warmup [11,417] [3, 3] }
+			token 1229 uncontrollable { Process [21,427] [10, 30] }
+			token 1230  { Turnoff [24,430] [3, 3] }
+			token 1231  { Idle [138,700] [114, 676] }
+			unallocated 1232 { [700,700] [0,562] }
+		}
+		inst2 {
+			token 1233  { Idle [21,427] [21, 427] }
+			token 1234  { Warmup [24,430] [3, 3] }
+			token 1235 uncontrollable { Process [34,440] [10, 30] }
+			token 1236  { Turnoff [37,443] [3, 3] }
+			token 1237  { Idle [138,700] [101, 663] }
+			unallocated 1238 { [700,700] [0,562] }
+		}
+		inst3 {
+			token 1239  { Idle [34,440] [34, 440] }
+			token 1240  { Warmup [37,443] [3, 3] }
+			token 1241 uncontrollable { Process [47,453] [10, 30] }
+			token 1242  { Turnoff [50,456] [3, 3] }
+			token 1243  { Idle [138,700] [88, 650] }
+			unallocated 1244 { [700,700] [0,562] }
+		}
+		inst4 {
+			token 1245  { Idle [47,453] [47, 453] }
+			token 1246  { Warmup [50,456] [3, 3] }
+			token 1247 uncontrollable { Process [60,466] [10, 30] }
+			token 1248  { Turnoff [63,469] [3, 3] }
+			token 1249  { Idle [138,700] [75, 637] }
+			unallocated 1250 { [700,700] [0,562] }
+		}
+		inst5 {
+			token 1251  { Idle [60,466] [60, 466] }
+			token 1252  { Warmup [63,469] [3, 3] }
+			token 1253 uncontrollable { Process [73,479] [10, 30] }
+			token 1254  { Turnoff [76,482] [3, 3] }
+			token 1255  { Idle [138,700] [62, 624] }
+			unallocated 1256 { [700,700] [0,562] }
+		}
+		inst6 {
+			token 1257  { Idle [73,479] [73, 479] }
+			token 1258  { Warmup [76,482] [3, 3] }
+			token 1259 uncontrollable { Process [86,492] [10, 30] }
+			token 1260  { Turnoff [89,495] [3, 3] }
+			token 1261  { Idle [138,700] [49, 611] }
+			unallocated 1262 { [700,700] [0,562] }
+		}
+		inst7 {
+			token 1263  { Idle [86,492] [86, 492] }
+			token 1264  { Warmup [89,495] [3, 3] }
+			token 1265 uncontrollable { Process [99,505] [10, 30] }
+			token 1266  { Turnoff [102,508] [3, 3] }
+			token 1267  { Idle [138,700] [36, 598] }
+			unallocated 1268 { [700,700] [0,562] }
+		}
+		inst8 {
+			token 1269  { Idle [99,505] [99, 505] }
+			token 1270  { Warmup [102,508] [3, 3] }
+			token 1271 uncontrollable { Process [112,518] [10, 30] }
+			token 1272  { Turnoff [115,521] [3, 3] }
+			token 1273  { Idle [138,700] [23, 585] }
+			unallocated 1274 { [700,700] [0,562] }
+		}
+		inst9 {
+			token 1275  { Idle [112,518] [112, 518] }
+			token 1276  { Warmup [115,521] [3, 3] }
+			token 1277 uncontrollable { Process [125,531] [10, 30] }
+			token 1278  { Turnoff [128,534] [3, 3] }
+			token 1279  { Idle [138,700] [10, 572] }
+			unallocated 1280 { [700,700] [0,562] }
+		}
+		inst10 {
+			token 1281  { Idle [125,531] [125, 531] }
+			token 1282  { Warmup [128,534] [3, 3] }
+			token 1283 uncontrollable { Process [138,544] [10, 30] }
+			token 1284  { Turnoff [141,547] [3, 3] }
+			token 1285  { Idle [142,700] [1, 559] }
+			unallocated 1286 { [700,700] [0,558] }
+		}
+	}
+	relations {
+		op_trace 1222 before [0,infty] op_trace 1225
+		op_trace 1220 before [0,700] op_trace 1225
+		op_trace 1222 before [11,700] op_trace 1225
+		op_trace 1222 after [10,700] op_trace 1220
+		op_trace 1225 during [0,infty]  [0,infty] window 1288
+		op_trace 1222 contains [0,infty]  [0,infty] inst10 1283
+		inst10 1283 before [3,infty] inst10 1285
+		inst10 1281 before [3,700] inst10 1283
+		op_trace 1222 contains [0,infty]  [0,infty] inst9 1277
+		inst9 1277 before [3,infty] inst10 1283
+		inst9 1277 during [0,infty]  [0,infty] inst10 1281
+		inst10 1283 during [0,infty]  [0,infty] inst9 1279
+		inst9 1275 before [16,700] inst9 1279
+		inst9 1277 before [3,700] inst9 1279
+		inst9 1277 after [3,700] inst9 1275
+		op_trace 1222 contains [0,infty]  [0,infty] inst8 1271
+		inst8 1271 before [3,infty] inst9 1277
+		inst8 1271 during [0,infty]  [0,infty] inst10 1281
+		inst8 1271 during [0,infty]  [0,infty] inst9 1275
+		inst9 1277 during [0,infty]  [0,infty] inst8 1273
+		inst10 1283 during [0,infty]  [0,infty] inst8 1273
+		inst8 1269 before [16,700] inst8 1273
+		inst8 1271 before [3,700] inst8 1273
+		inst8 1271 after [3,700] inst8 1269
+		op_trace 1222 contains [0,infty]  [0,infty] inst7 1265
+		inst7 1265 before [3,infty] inst8 1271
+		inst7 1265 during [0,infty]  [0,infty] inst10 1281
+		inst7 1265 during [0,infty]  [0,infty] inst9 1275
+		inst7 1265 during [0,infty]  [0,infty] inst8 1269
+		inst8 1271 during [0,infty]  [0,infty] inst7 1267
+		inst9 1277 during [0,infty]  [0,infty] inst7 1267
+		inst10 1283 during [0,infty]  [0,infty] inst7 1267
+		inst7 1263 before [3,700] inst7 1265
+		inst7 1265 before [3,700] inst7 1267
+		op_trace 1222 contains [0,infty]  [0,infty] inst6 1259
+		inst6 1259 before [3,infty] inst7 1265
+		inst6 1259 during [0,infty]  [0,infty] inst10 1281
+		inst6 1259 during [0,infty]  [0,infty] inst9 1275
+		inst6 1259 during [0,infty]  [0,infty] inst8 1269
+		inst6 1259 during [0,infty]  [0,infty] inst7 1263
+		inst7 1265 during [0,infty]  [0,infty] inst6 1261
+		inst8 1271 during [0,infty]  [0,infty] inst6 1261
+		inst9 1277 during [0,infty]  [0,infty] inst6 1261
+		inst10 1283 during [0,infty]  [0,infty] inst6 1261
+		inst6 1257 before [16,700] inst6 1261
+		inst6 1259 before [3,700] inst6 1261
+		inst6 1259 after [3,700] inst6 1257
+		op_trace 1222 contains [0,infty]  [0,infty] inst5 1253
+		inst5 1253 before [3,infty] inst6 1259
+		inst5 1253 during [0,infty]  [0,infty] inst10 1281
+		inst5 1253 during [0,infty]  [0,infty] inst9 1275
+		inst5 1253 during [0,infty]  [0,infty] inst8 1269
+		inst5 1253 during [0,infty]  [0,infty] inst7 1263
+		inst5 1253 during [0,infty]  [0,infty] inst6 1257
+		inst6 1259 during [0,infty]  [0,infty] inst5 1255
+		inst7 1265 during [0,infty]  [0,infty] inst5 1255
+		inst8 1271 during [0,infty]  [0,infty] inst5 1255
+		inst9 1277 during [0,infty]  [0,infty] inst5 1255
+		inst10 1283 during [0,infty]  [0,infty] inst5 1255
+		inst5 1251 before [16,700] inst5 1255
+		inst5 1253 before [3,700] inst5 1255
+		inst5 1253 after [3,700] inst5 1251
+		op_trace 1222 contains [0,infty]  [0,infty] inst4 1247
+		inst4 1247 before [3,infty] inst5 1253
+		inst4 1247 during [0,infty]  [0,infty] inst10 1281
+		inst4 1247 during [0,infty]  [0,infty] inst9 1275
+		inst4 1247 during [0,infty]  [0,infty] inst8 1269
+		inst4 1247 during [0,infty]  [0,infty] inst7 1263
+		inst4 1247 during [0,infty]  [0,infty] inst6 1257
+		inst4 1247 during [0,infty]  [0,infty] inst5 1251
+		inst5 1253 during [0,infty]  [0,infty] inst4 1249
+		inst6 1259 during [0,infty]  [0,infty] inst4 1249
+		inst7 1265 during [0,infty]  [0,infty] inst4 1249
+		inst8 1271 during [0,infty]  [0,infty] inst4 1249
+		inst9 1277 during [0,infty]  [0,infty] inst4 1249
+		inst10 1283 during [0,infty]  [0,infty] inst4 1249
+		inst4 1245 before [16,700] inst4 1249
+		inst4 1247 before [3,700] inst4 1249
+		inst4 1247 after [3,700] inst4 1245
+		op_trace 1222 contains [0,infty]  [0,infty] inst3 1241
+		inst3 1241 before [3,infty] inst4 1247
+		inst3 1241 during [0,infty]  [0,infty] inst10 1281
+		inst3 1241 during [0,infty]  [0,infty] inst9 1275
+		inst3 1241 during [0,infty]  [0,infty] inst8 1269
+		inst3 1241 during [0,infty]  [0,infty] inst7 1263
+		inst3 1241 during [0,infty]  [0,infty] inst6 1257
+		inst3 1241 during [0,infty]  [0,infty] inst5 1251
+		inst3 1241 during [0,infty]  [0,infty] inst4 1245
+		inst4 1247 during [0,infty]  [0,infty] inst3 1243
+		inst5 1253 during [0,infty]  [0,infty] inst3 1243
+		inst6 1259 during [0,infty]  [0,infty] inst3 1243
+		inst7 1265 during [0,infty]  [0,infty] inst3 1243
+		inst8 1271 during [0,infty]  [0,infty] inst3 1243
+		inst9 1277 during [0,infty]  [0,infty] inst3 1243
+		inst10 1283 during [0,infty]  [0,infty] inst3 1243
+		inst3 1239 before [16,700] inst3 1243
+		inst3 1241 before [3,700] inst3 1243
+		inst3 1241 after [3,700] inst3 1239
+		op_trace 1222 contains [0,infty]  [0,infty] inst2 1235
+		inst2 1235 before [3,infty] inst3 1241
+		inst2 1235 during [0,infty]  [0,infty] inst10 1281
+		inst2 1235 during [0,infty]  [0,infty] inst9 1275
+		inst2 1235 during [0,infty]  [0,infty] inst8 1269
+		inst2 1235 during [0,infty]  [0,infty] inst7 1263
+		inst2 1235 during [0,infty]  [0,infty] inst6 1257
+		inst2 1235 during [0,infty]  [0,infty] inst5 1251
+		inst2 1235 during [0,infty]  [0,infty] inst4 1245
+		inst2 1235 during [0,infty]  [0,infty] inst3 1239
+		inst3 1241 during [0,infty]  [0,infty] inst2 1237
+		inst4 1247 during [0,infty]  [0,infty] inst2 1237
+		inst5 1253 during [0,infty]  [0,infty] inst2 1237
+		inst6 1259 during [0,infty]  [0,infty] inst2 1237
+		inst7 1265 during [0,infty]  [0,infty] inst2 1237
+		inst8 1271 during [0,infty]  [0,infty] inst2 1237
+		inst9 1277 during [0,infty]  [0,infty] inst2 1237
+		inst10 1283 during [0,infty]  [0,infty] inst2 1237
+		inst2 1233 before [16,700] inst2 1237
+		inst2 1235 before [3,700] inst2 1237
+		inst2 1235 after [3,700] inst2 1233
+		op_trace 1222 contains [0,infty]  [0,infty] inst1 1229
+		inst1 1229 before [3,infty] inst2 1235
+		inst1 1229 during [0,infty]  [0,infty] inst10 1281
+		inst1 1229 during [0,infty]  [0,infty] inst9 1275
+		inst1 1229 during [0,infty]  [0,infty] inst8 1269
+		inst1 1229 during [0,infty]  [0,infty] inst7 1263
+		inst1 1229 during [0,infty]  [0,infty] inst6 1257
+		inst1 1229 during [0,infty]  [0,infty] inst5 1251
+		inst1 1229 during [0,infty]  [0,infty] inst4 1245
+		inst1 1229 during [0,infty]  [0,infty] inst3 1239
+		inst1 1229 during [0,infty]  [0,infty] inst2 1233
+		inst2 1235 during [0,infty]  [0,infty] inst1 1231
+		inst3 1241 during [0,infty]  [0,infty] inst1 1231
+		inst4 1247 during [0,infty]  [0,infty] inst1 1231
+		inst5 1253 during [0,infty]  [0,infty] inst1 1231
+		inst6 1259 during [0,infty]  [0,infty] inst1 1231
+		inst7 1265 during [0,infty]  [0,infty] inst1 1231
+		inst8 1271 during [0,infty]  [0,infty] inst1 1231
+		inst9 1277 during [0,infty]  [0,infty] inst1 1231
+		inst10 1283 during [0,infty]  [0,infty] inst1 1231
+		inst1 1227 before [3,700] inst1 1229
+		inst1 1229 before [3,700] inst1 1231
+	}
+}
+observation {
+	timelines {
+		window {
+			token 1287  { NotAvailable [450,450] [450, 450] }
+			token 1288  { Available [500,570] [50, 120] }
+			token 1289  { NotAvailable [700,700] [130, 200] }
+		}
+	}
+}
+

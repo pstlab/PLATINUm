@@ -1,0 +1,16 @@
+PROBLEM GOAC-Problem (DOMAIN GOAC_Domain) 
+{
+	pos0 <fact> RobotBase.robot_base.At(?x1 = 0, ?y1 = 0) AT [0, 0] [1, +INF] [1, +INF];
+	or0 <fact> Platine.platine.PointingAt(?pan1 = 0, ?tilt1 = 0) AT [0, 0] [1, +INF] [1, +INF];
+	cam0 <fact> Camera.camera.CamIdle() AT [0, 0] [1, +INF] [1, +INF];
+	com0 <fact> Communication.communication.CommIdle() AT [0, 0] [1, +INF] [1, +INF];
+	
+	comvw1 <fact> CommunicationVW.communication_windows.Visible() AT [10, 10] [140, 140] [130, 130];
+//	comvw4 <fact> CommunicationVW.communication_windows.Visible() AT [50, 50] [140, 140] [90, 90];
+
+
+	tp0 <fact> MissionTimeline.mission_timeline.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	tp1 <goal,!> MissionTimeline.mission_timeline.TakingPicture(?gfile_id1 = 2, ?gx1 = 4, ?gy1 = 1, ?gpan1 = 35, ?gtilt1 = 45) AT [0, +INF] [1, +INF] [1, +INF];
+	
+	//at0 <goal,!> MissionTimeline.mission_timeline.At(?x = 0, ?y = 0) AT [0,150] [149,149] [1, +INF];
+}

@@ -1,0 +1,14 @@
+PROBLEM RACE_ServeCoffee_Problem (DOMAIN RACE_ServeCoffee)
+{
+	f0 <fact> Trixi.mission.Idle() AT [0, 0]Ê[1, +INF]Ê[1, +INF];
+	f1 <fact> TrixiBase.position.At(?loc = base) AT [0, 0]Ê[1, +INF]Ê[1, +INF];
+	f2 <fact> TrixiArmController.status.Idle() AT [0, 0]Ê[1, +INF]Ê[1, +INF];
+	f3 <fact> TrixiArmConfiguration.configuration.DrivingPose() AT [0, 0] [1, +INF]Ê[1, +INF];
+	
+	f4 <fact> CounterPlacingArea.counter_pa.ObjectOn(?obj = mug1) AT [0, 0]Ê[1, +INF]Ê[1, +INF];
+	f5 <fact> Table1PlacingArea.table1_pa.Free() AT [0, 0]Ê[1, +INF]Ê[1, +INF];
+	
+	f6 <fact> Table1ServiceArea.table1_sa.Free() AT [0, 0]Ê[1, +INF]Ê[1, +INF];
+	
+	//g0 <goal> Table1ServiceArea.table1_sa.WaitingForCoffee(?guest0 = guest1) AT [10, 10]Ê[11, +INF]Ê[1, +INF];
+}

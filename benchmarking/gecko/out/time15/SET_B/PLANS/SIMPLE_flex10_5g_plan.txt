@@ -1,0 +1,99 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 578 { Idle [1,471] [1, 471] }
+			token 579 { Channel_B_F [6,476] [1, 475] }
+			token 580 { Idle [7,477] [1, 471] }
+			token 581 { Channel_B_F [12,482] [1, 475] }
+			token 582 { Idle [13,483] [1, 471] }
+			token 583 { Channel_F_B [18,488] [1, 475] }
+			token 584 { Idle [19,489] [1, 471] }
+			token 585 { Channel_B_F [24,494] [1, 475] }
+			token 586 { Idle [25,495] [1, 471] }
+			token 587 { Channel_F_B [30,500] [1, 475] }
+			unallocated 588 { [500,500] [0,470] }
+		}
+		main {
+			token 589 { Still [1,471] [1, 471] }
+			token 590 { Forward [12,482] [7, 481] }
+			token 591 { Still [13,483] [1, 471] }
+			token 592 { Backward [18,488] [1, 475] }
+			token 593 { Still [19,489] [1, 471] }
+			token 594 { Forward [24,494] [1, 475] }
+			token 595 { Still [25,495] [1, 471] }
+			token 596 { Backward [30,500] [1, 475] }
+			unallocated 597 { [500,500] [0,470] }
+		}
+		portF {
+			token 598 { Idle [1,471] [1, 471] }
+			token 599 { Sending [6,476] [5, 15] }
+			token 600 { Idle [7,477] [1, 471] }
+			token 601 { Sending [12,482] [5, 15] }
+			token 602 { Idle [13,483] [1, 471] }
+			token 603 { Receiving [18,488] [5, 15] }
+			token 604 { Idle [19,489] [1, 471] }
+			token 605 { Sending [24,494] [5, 15] }
+			token 606 { Idle [25,495] [1, 471] }
+			token 607 { Receiving [30,500] [5, 15] }
+			unallocated 608 { [500,500] [0,470] }
+		}
+		portB {
+			token 609 { Idle [1,471] [1, 471] }
+			token 610 { Receiving [6,476] [5, 15] }
+			token 611 { Idle [7,477] [1, 471] }
+			token 612 { Receiving [12,482] [5, 15] }
+			token 613 { Idle [13,483] [1, 471] }
+			token 614 { Sending [18,488] [5, 15] }
+			token 615 { Idle [19,489] [1, 471] }
+			token 616 { Receiving [24,494] [5, 15] }
+			token 617 { Idle [25,495] [1, 471] }
+			token 618 { Sending [30,500] [5, 15] }
+			unallocated 619 { [500,500] [0,470] }
+		}
+	}
+	relations {
+		channel 578 before [0,500] channel 579
+		channel 579 before [1,500] channel 581
+		channel 581 before [1,500] channel 583
+		channel 583 before [1,500] channel 585
+		channel 585 before [1,500] channel 587
+		channel 587 end_before_end [0,0] portB 618
+		channel 583 end_before_end [0,0] portB 614
+		channel 585 start_before_start [0,0] portB 616
+		channel 579 start_before_start [0,0] portB 610
+		channel 581 start_before_start [0,0] portB 612
+		portB 609 before [0,500] portB 610
+		portB 610 before [1,500] portB 612
+		portB 612 before [1,500] portB 614
+		portB 616 before [1,500] portB 618
+		channel 587 start_before_start [0,0] portF 607
+		channel 583 start_before_start [0,0] portF 603
+		channel 585 end_before_end [0,0] portF 605
+		channel 579 end_before_end [0,0] portF 599
+		channel 581 end_before_end [0,0] portF 601
+		portF 598 before [0,500] portF 599
+		portF 599 before [1,500] portF 601
+		portF 603 before [1,500] portF 605
+		channel 587 during [0,infty]  [0,infty] main 596
+		channel 585 during [0,infty]  [0,infty] main 594
+		channel 583 during [0,infty]  [0,infty] main 592
+		channel 579 during [0,infty]  [0,infty] main 590
+		channel 581 during [0,infty]  [0,infty] main 590
+		main 589 before [0,500] main 590
+		main 590 before [1,500] main 592
+		main 592 before [1,500] main 594
+		main 594 before [1,500] main 596
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 620 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 621 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

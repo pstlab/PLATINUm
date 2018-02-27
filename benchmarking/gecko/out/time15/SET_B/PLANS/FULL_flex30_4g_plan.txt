@@ -1,0 +1,183 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 1981 { Idle [6,460] [6, 460] }
+			token 1982 { Channel_R1_L1 [16,470] [10, 464] }
+			token 1983 { Idle [17,475] [1, 459] }
+			token 1984 { Channel_F_L1 [22,476] [1, 459] }
+			token 1985 { Idle [27,481] [5, 459] }
+			token 1986 { Channel_F_B [28,482] [1, 455] }
+			token 1987 { Idle [33,487] [5, 459] }
+			token 1988 { Channel_R1_B [46,500] [13, 467] }
+			unallocated 1989 { [500,500] [0,454] }
+		}
+		cross1 {
+			token 1990 { Down [1,455] [1, 455] }
+			token 1991 { MovingUp [6,460] [5, 5] }
+			token 1992 { Up [22,476] [16, 470] }
+			token 1993 { MovingDown [27,481] [5, 5] }
+			token 1994 { Down [28,482] [1, 455] }
+			token 1995 { MovingUp [33,487] [5, 5] }
+			token 1996 { Up [38,492] [5, 459] }
+			token 1997 { MovingDown [43,497] [5, 5] }
+			token 1998 { Down [44,498] [1, 455] }
+			unallocated 1999 { [500,500] [2,456] }
+		}
+		cross2 {
+			token 2000 { Down [28,487] [28, 487] }
+			token 2001 { MovingUp [33,492] [5, 5] }
+			token 2002 { Up [39,493] [1, 460] }
+			token 2003 { MovingDown [44,498] [5, 5] }
+			token 2004 { Down [45,499] [1, 455] }
+			unallocated 2005 { [500,500] [1,455] }
+		}
+		cross3 {
+			token 2006 { Down [28,488] [28, 488] }
+			token 2007 { MovingUp [33,493] [5, 5] }
+			token 2008 { Up [40,494] [1, 461] }
+			token 2009 { MovingDown [45,499] [5, 5] }
+			token 2010 { Down [46,500] [1, 455] }
+			unallocated 2011 { [500,500] [0,454] }
+		}
+		main {
+			token 2012 { Still [1,475] [1, 475] }
+			token 2013 { Backward [28,494] [7, 493] }
+			token 2014 { Still [29,495] [1, 467] }
+			token 2015 { Forward [46,500] [5, 471] }
+			unallocated 2016 { [500,500] [0,454] }
+		}
+		cconveyor1 {
+			token 2017 { Still [1,460] [1, 460] }
+			token 2018 { Backward [22,486] [16, 485] }
+			token 2019 { Still [23,487] [1, 465] }
+			token 2020 { Backward [38,500] [5, 477] }
+			unallocated 2021 { [500,500] [0,462] }
+		}
+		cconveyor2 {
+			token 2022 { Still [1,500] [1, 500] }
+			unallocated 2023 { [500,500] [0,499] }
+		}
+		cconveyor3 {
+			token 2024 { Still [1,500] [1, 500] }
+			unallocated 2025 { [500,500] [0,499] }
+		}
+		portF {
+			token 2026 { Idle [17,475] [17, 475] }
+			token 2027 { Receiving [22,480] [5, 35] }
+			token 2028 { Idle [27,481] [1, 459] }
+			token 2029 { Receiving [32,500] [5, 35] }
+			unallocated 2030 { [500,500] [0,468] }
+		}
+		portB {
+			token 2031 { Idle [1,477] [1, 477] }
+			token 2032 { Sending [28,482] [5, 35] }
+			token 2033 { Idle [29,495] [1, 467] }
+			token 2034 { Sending [46,500] [5, 35] }
+			unallocated 2035 { [500,500] [0,454] }
+		}
+		portL1 {
+			token 2036 { Idle [11,465] [11, 465] }
+			token 2037 { Sending [16,470] [5, 35] }
+			token 2038 { Idle [17,471] [1, 455] }
+			token 2039 { Sending [22,476] [5, 35] }
+			unallocated 2040 { [500,500] [24,478] }
+		}
+		portL2 {
+			token 2041 { Idle [1,500] [1, 500] }
+			unallocated 2042 { [500,500] [0,499] }
+		}
+		portL3 {
+			token 2043 { Idle [1,500] [1, 500] }
+			unallocated 2044 { [500,500] [0,499] }
+		}
+		portR1 {
+			token 2045 { Idle [6,460] [6, 460] }
+			token 2046 { Receiving [11,465] [5, 35] }
+			token 2047 { Idle [33,487] [22, 476] }
+			token 2048 { Receiving [38,492] [5, 35] }
+			unallocated 2049 { [500,500] [8,462] }
+		}
+		portR2 {
+			token 2050 { Idle [1,500] [1, 500] }
+			unallocated 2051 { [500,500] [0,499] }
+		}
+		portR3 {
+			token 2052 { Idle [1,500] [1, 500] }
+			unallocated 2053 { [500,500] [0,499] }
+		}
+	}
+	relations {
+		channel 1981 before [0,500] channel 1982
+		channel 1982 before [1,500] channel 1984
+		channel 1984 before [1,500] channel 1986
+		channel 1986 before [1,500] channel 1988
+		channel 1988 start_before_start [0,0] portR1 2048
+		channel 1982 start_before_start [0,0] portR1 2046
+		portR1 2045 before [0,500] portR1 2048
+		portR1 2046 before [1,500] portR1 2048
+		portR1 2046 after [0,500] portR1 2045
+		channel 1988 contains [0,infty]  [0,infty] cross1 1998
+		cross1 1996 before [0,infty] cross1 1998
+		portR1 2048 during [0,infty]  [0,infty] cross1 1996
+		channel 1986 during [0,infty]  [0,infty] cross1 1994
+		channel 1982 during [0,infty]  [0,infty] cross1 1992
+		cross1 1990 before [0,infty] cross1 1992
+		cross1 1990 before [5,500] cross1 1992
+		cross1 1992 before [11,500] cross1 1996
+		cross1 1996 before [5,500] cross1 1998
+		cross1 1994 before [5,500] cross1 1996
+		cross1 1994 after [5,500] cross1 1992
+		channel 1988 contains [0,infty]  [0,infty] cross2 2004
+		cross1 1998 before [0,infty] cross2 2004
+		channel 1986 during [0,infty]  [0,infty] cross2 2000
+		cross2 2000 before [11,500] cross2 2004
+		channel 1988 contains [0,infty]  [0,infty] cross3 2010
+		cross2 2004 before [0,infty] cross3 2010
+		channel 1986 during [0,infty]  [0,infty] cross3 2006
+		cross3 2006 before [11,500] cross3 2010
+		channel 1986 during [0,infty]  [0,infty] main 2013
+		main 2012 before [0,500] main 2013
+		main 2013 before [1,500] main 2015
+		portR1 2048 during [0,infty]  [0,infty] cconveyor1 2020
+		channel 1982 during [0,infty]  [0,infty] cconveyor1 2018
+		cconveyor1 2017 before [0,500] cconveyor1 2018
+		cconveyor1 2018 before [1,500] cconveyor1 2020
+		channel 1984 start_before_start [0,0] portF 2027
+		portF 2027 during [0,infty]  [0,infty] main 2013
+		channel 1986 start_before_start [0,0] portF 2029
+		portF 2026 before [0,500] portF 2027
+		portF 2027 before [1,500] portF 2029
+		channel 1988 end_before_end [0,0] portB 2034
+		portB 2034 during [0,infty]  [0,infty] main 2015
+		channel 1986 end_before_end [0,0] portB 2032
+		portB 2031 before [0,500] portB 2034
+		portB 2032 before [1,500] portB 2034
+		portB 2032 after [0,500] portB 2031
+		channel 1984 end_before_end [0,0] portL1 2039
+		portL1 2039 during [0,infty]  [0,infty] cconveyor1 2018
+		portL1 2039 during [0,infty]  [0,infty] cross1 1992
+		channel 1982 end_before_end [0,0] portL1 2037
+		portR1 2046 before [0,infty] portL1 2037
+		portL1 2036 before [0,500] portL1 2039
+		portL1 2037 before [1,500] portL1 2039
+		portL1 2037 after [0,500] portL1 2036
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 2054 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 2055 { Available [500,500] [500, 500] }
+		}
+		neighborL {
+			token 2056 { Available [500,500] [500, 500] }
+		}
+		neighborR {
+			token 2057 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

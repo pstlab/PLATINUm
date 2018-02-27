@@ -1,0 +1,23 @@
+PROBLEM Rover_Problem (DOMAIN Rover) {
+
+	f0 <fact> NavigationController.nav.At(?initialPosition) AT [0, 0] [1, +INF] [1, +INF];
+	f1 <fact> InstrumentPosition.inst_position.Stowed() AT [0, 0] [1, +INF] [1, +INF];
+	f2 <fact> InstrumentOperation.inst_operation.Idle() AT [0, 0] [1, +INF] [1, +INF];	
+	f3 <fact> RoverController.rover.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	
+	// goal
+	g0 <goal> RoverController.rover.TakeSample(?goal0Position, ?goal0File) AT [0, +INF] [1, +INF] [1, +INF];
+	g1 <goal> RoverController.rover.TakeSample(?goal1Position, ?goal1File) AT [0, +INF] [1, +INF] [1, +INF];
+	g2 <goal> RoverController.rover.TakeSample(?goal2Position, ?goal2File) AT [0, +INF] [1, +INF] [1, +INF];
+	
+	?initialPosition = 0;
+	
+	?goal0Position = 1;
+	?goal0File = 0;
+	
+	?goal1Position = 2;
+	?goal1File = 1;
+	
+	?goal2Position = 3;
+	?goal2File = 2;
+}

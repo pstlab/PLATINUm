@@ -1,0 +1,247 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 360  { Earth [1,387] [1, 387] }
+			token 361  { Slewing [11,397] [10, 10] }
+			token 362  { Science [138,524] [127, 513] }
+			token 363  { Slewing [148,534] [10, 10] }
+			token 364  { Earth [450,535] [1, 387] }
+			token 365 uncontrollable { Comm [465,550] [15, 15] }
+			unallocated 366 { [700,700] [150,235] }
+		}
+		inst1 {
+			token 367  { Idle [8,394] [8, 394] }
+			token 368  { Warmup [11,397] [3, 3] }
+			token 369 uncontrollable { Process [21,407] [10, 10] }
+			token 370  { Turnoff [24,410] [3, 3] }
+			token 371  { Idle [138,700] [114, 676] }
+			unallocated 372 { [700,700] [0,562] }
+		}
+		inst2 {
+			token 373  { Idle [21,407] [21, 407] }
+			token 374  { Warmup [24,410] [3, 3] }
+			token 375 uncontrollable { Process [34,420] [10, 10] }
+			token 376  { Turnoff [37,423] [3, 3] }
+			token 377  { Idle [138,700] [101, 663] }
+			unallocated 378 { [700,700] [0,562] }
+		}
+		inst3 {
+			token 379  { Idle [34,420] [34, 420] }
+			token 380  { Warmup [37,423] [3, 3] }
+			token 381 uncontrollable { Process [47,433] [10, 10] }
+			token 382  { Turnoff [50,436] [3, 3] }
+			token 383  { Idle [138,700] [88, 650] }
+			unallocated 384 { [700,700] [0,562] }
+		}
+		inst4 {
+			token 385  { Idle [47,433] [47, 433] }
+			token 386  { Warmup [50,436] [3, 3] }
+			token 387 uncontrollable { Process [60,446] [10, 10] }
+			token 388  { Turnoff [63,449] [3, 3] }
+			token 389  { Idle [138,700] [75, 637] }
+			unallocated 390 { [700,700] [0,562] }
+		}
+		inst5 {
+			token 391  { Idle [60,446] [60, 446] }
+			token 392  { Warmup [63,449] [3, 3] }
+			token 393 uncontrollable { Process [73,459] [10, 10] }
+			token 394  { Turnoff [76,462] [3, 3] }
+			token 395  { Idle [138,700] [62, 624] }
+			unallocated 396 { [700,700] [0,562] }
+		}
+		inst6 {
+			token 397  { Idle [73,459] [73, 459] }
+			token 398  { Warmup [76,462] [3, 3] }
+			token 399 uncontrollable { Process [86,472] [10, 10] }
+			token 400  { Turnoff [89,475] [3, 3] }
+			token 401  { Idle [138,700] [49, 611] }
+			unallocated 402 { [700,700] [0,562] }
+		}
+		inst7 {
+			token 403  { Idle [86,472] [86, 472] }
+			token 404  { Warmup [89,475] [3, 3] }
+			token 405 uncontrollable { Process [99,485] [10, 10] }
+			token 406  { Turnoff [102,488] [3, 3] }
+			token 407  { Idle [138,700] [36, 598] }
+			unallocated 408 { [700,700] [0,562] }
+		}
+		inst8 {
+			token 409  { Idle [99,485] [99, 485] }
+			token 410  { Warmup [102,488] [3, 3] }
+			token 411 uncontrollable { Process [112,498] [10, 10] }
+			token 412  { Turnoff [115,501] [3, 3] }
+			token 413  { Idle [138,700] [23, 585] }
+			unallocated 414 { [700,700] [0,562] }
+		}
+		inst9 {
+			token 415  { Idle [112,498] [112, 498] }
+			token 416  { Warmup [115,501] [3, 3] }
+			token 417 uncontrollable { Process [125,511] [10, 10] }
+			token 418  { Turnoff [128,514] [3, 3] }
+			token 419  { Idle [138,700] [10, 572] }
+			unallocated 420 { [700,700] [0,562] }
+		}
+		inst10 {
+			token 421  { Idle [125,511] [125, 511] }
+			token 422  { Warmup [128,514] [3, 3] }
+			token 423 uncontrollable { Process [138,524] [10, 10] }
+			token 424  { Turnoff [141,527] [3, 3] }
+			token 425  { Idle [142,700] [1, 559] }
+			unallocated 426 { [700,700] [0,558] }
+		}
+	}
+	relations {
+		op_trace 362 before [0,infty] op_trace 365
+		op_trace 360 before [0,700] op_trace 365
+		op_trace 362 before [11,700] op_trace 365
+		op_trace 362 after [10,700] op_trace 360
+		op_trace 365 during [0,infty]  [0,infty] window 428
+		op_trace 362 contains [0,infty]  [0,infty] inst10 423
+		inst10 423 before [3,infty] inst10 425
+		inst10 421 before [3,700] inst10 423
+		op_trace 362 contains [0,infty]  [0,infty] inst9 417
+		inst9 417 before [3,infty] inst10 423
+		inst9 417 during [0,infty]  [0,infty] inst10 421
+		inst10 423 during [0,infty]  [0,infty] inst9 419
+		inst9 415 before [16,700] inst9 419
+		inst9 417 before [3,700] inst9 419
+		inst9 417 after [3,700] inst9 415
+		op_trace 362 contains [0,infty]  [0,infty] inst8 411
+		inst8 411 before [3,infty] inst9 417
+		inst8 411 during [0,infty]  [0,infty] inst10 421
+		inst8 411 during [0,infty]  [0,infty] inst9 415
+		inst9 417 during [0,infty]  [0,infty] inst8 413
+		inst10 423 during [0,infty]  [0,infty] inst8 413
+		inst8 409 before [16,700] inst8 413
+		inst8 411 before [3,700] inst8 413
+		inst8 411 after [3,700] inst8 409
+		op_trace 362 contains [0,infty]  [0,infty] inst7 405
+		inst7 405 before [3,infty] inst8 411
+		inst7 405 during [0,infty]  [0,infty] inst10 421
+		inst7 405 during [0,infty]  [0,infty] inst9 415
+		inst7 405 during [0,infty]  [0,infty] inst8 409
+		inst8 411 during [0,infty]  [0,infty] inst7 407
+		inst9 417 during [0,infty]  [0,infty] inst7 407
+		inst10 423 during [0,infty]  [0,infty] inst7 407
+		inst7 403 before [3,700] inst7 405
+		inst7 405 before [3,700] inst7 407
+		op_trace 362 contains [0,infty]  [0,infty] inst6 399
+		inst6 399 before [3,infty] inst7 405
+		inst6 399 during [0,infty]  [0,infty] inst10 421
+		inst6 399 during [0,infty]  [0,infty] inst9 415
+		inst6 399 during [0,infty]  [0,infty] inst8 409
+		inst6 399 during [0,infty]  [0,infty] inst7 403
+		inst7 405 during [0,infty]  [0,infty] inst6 401
+		inst8 411 during [0,infty]  [0,infty] inst6 401
+		inst9 417 during [0,infty]  [0,infty] inst6 401
+		inst10 423 during [0,infty]  [0,infty] inst6 401
+		inst6 397 before [16,700] inst6 401
+		inst6 399 before [3,700] inst6 401
+		inst6 399 after [3,700] inst6 397
+		op_trace 362 contains [0,infty]  [0,infty] inst5 393
+		inst5 393 before [3,infty] inst6 399
+		inst5 393 during [0,infty]  [0,infty] inst10 421
+		inst5 393 during [0,infty]  [0,infty] inst9 415
+		inst5 393 during [0,infty]  [0,infty] inst8 409
+		inst5 393 during [0,infty]  [0,infty] inst7 403
+		inst5 393 during [0,infty]  [0,infty] inst6 397
+		inst6 399 during [0,infty]  [0,infty] inst5 395
+		inst7 405 during [0,infty]  [0,infty] inst5 395
+		inst8 411 during [0,infty]  [0,infty] inst5 395
+		inst9 417 during [0,infty]  [0,infty] inst5 395
+		inst10 423 during [0,infty]  [0,infty] inst5 395
+		inst5 391 before [16,700] inst5 395
+		inst5 393 before [3,700] inst5 395
+		inst5 393 after [3,700] inst5 391
+		op_trace 362 contains [0,infty]  [0,infty] inst4 387
+		inst4 387 before [3,infty] inst5 393
+		inst4 387 during [0,infty]  [0,infty] inst10 421
+		inst4 387 during [0,infty]  [0,infty] inst9 415
+		inst4 387 during [0,infty]  [0,infty] inst8 409
+		inst4 387 during [0,infty]  [0,infty] inst7 403
+		inst4 387 during [0,infty]  [0,infty] inst6 397
+		inst4 387 during [0,infty]  [0,infty] inst5 391
+		inst5 393 during [0,infty]  [0,infty] inst4 389
+		inst6 399 during [0,infty]  [0,infty] inst4 389
+		inst7 405 during [0,infty]  [0,infty] inst4 389
+		inst8 411 during [0,infty]  [0,infty] inst4 389
+		inst9 417 during [0,infty]  [0,infty] inst4 389
+		inst10 423 during [0,infty]  [0,infty] inst4 389
+		inst4 385 before [16,700] inst4 389
+		inst4 387 before [3,700] inst4 389
+		inst4 387 after [3,700] inst4 385
+		op_trace 362 contains [0,infty]  [0,infty] inst3 381
+		inst3 381 before [3,infty] inst4 387
+		inst3 381 during [0,infty]  [0,infty] inst10 421
+		inst3 381 during [0,infty]  [0,infty] inst9 415
+		inst3 381 during [0,infty]  [0,infty] inst8 409
+		inst3 381 during [0,infty]  [0,infty] inst7 403
+		inst3 381 during [0,infty]  [0,infty] inst6 397
+		inst3 381 during [0,infty]  [0,infty] inst5 391
+		inst3 381 during [0,infty]  [0,infty] inst4 385
+		inst4 387 during [0,infty]  [0,infty] inst3 383
+		inst5 393 during [0,infty]  [0,infty] inst3 383
+		inst6 399 during [0,infty]  [0,infty] inst3 383
+		inst7 405 during [0,infty]  [0,infty] inst3 383
+		inst8 411 during [0,infty]  [0,infty] inst3 383
+		inst9 417 during [0,infty]  [0,infty] inst3 383
+		inst10 423 during [0,infty]  [0,infty] inst3 383
+		inst3 379 before [16,700] inst3 383
+		inst3 381 before [3,700] inst3 383
+		inst3 381 after [3,700] inst3 379
+		op_trace 362 contains [0,infty]  [0,infty] inst2 375
+		inst2 375 before [3,infty] inst3 381
+		inst2 375 during [0,infty]  [0,infty] inst10 421
+		inst2 375 during [0,infty]  [0,infty] inst9 415
+		inst2 375 during [0,infty]  [0,infty] inst8 409
+		inst2 375 during [0,infty]  [0,infty] inst7 403
+		inst2 375 during [0,infty]  [0,infty] inst6 397
+		inst2 375 during [0,infty]  [0,infty] inst5 391
+		inst2 375 during [0,infty]  [0,infty] inst4 385
+		inst2 375 during [0,infty]  [0,infty] inst3 379
+		inst3 381 during [0,infty]  [0,infty] inst2 377
+		inst4 387 during [0,infty]  [0,infty] inst2 377
+		inst5 393 during [0,infty]  [0,infty] inst2 377
+		inst6 399 during [0,infty]  [0,infty] inst2 377
+		inst7 405 during [0,infty]  [0,infty] inst2 377
+		inst8 411 during [0,infty]  [0,infty] inst2 377
+		inst9 417 during [0,infty]  [0,infty] inst2 377
+		inst10 423 during [0,infty]  [0,infty] inst2 377
+		inst2 373 before [16,700] inst2 377
+		inst2 375 before [3,700] inst2 377
+		inst2 375 after [3,700] inst2 373
+		op_trace 362 contains [0,infty]  [0,infty] inst1 369
+		inst1 369 before [3,infty] inst2 375
+		inst1 369 during [0,infty]  [0,infty] inst10 421
+		inst1 369 during [0,infty]  [0,infty] inst9 415
+		inst1 369 during [0,infty]  [0,infty] inst8 409
+		inst1 369 during [0,infty]  [0,infty] inst7 403
+		inst1 369 during [0,infty]  [0,infty] inst6 397
+		inst1 369 during [0,infty]  [0,infty] inst5 391
+		inst1 369 during [0,infty]  [0,infty] inst4 385
+		inst1 369 during [0,infty]  [0,infty] inst3 379
+		inst1 369 during [0,infty]  [0,infty] inst2 373
+		inst2 375 during [0,infty]  [0,infty] inst1 371
+		inst3 381 during [0,infty]  [0,infty] inst1 371
+		inst4 387 during [0,infty]  [0,infty] inst1 371
+		inst5 393 during [0,infty]  [0,infty] inst1 371
+		inst6 399 during [0,infty]  [0,infty] inst1 371
+		inst7 405 during [0,infty]  [0,infty] inst1 371
+		inst8 411 during [0,infty]  [0,infty] inst1 371
+		inst9 417 during [0,infty]  [0,infty] inst1 371
+		inst10 423 during [0,infty]  [0,infty] inst1 371
+		inst1 367 before [3,700] inst1 369
+		inst1 369 before [3,700] inst1 371
+	}
+}
+observation {
+	timelines {
+		window {
+			token 427  { NotAvailable [450,450] [450, 450] }
+			token 428  { Available [500,550] [50, 100] }
+			token 429  { NotAvailable [700,700] [150, 200] }
+		}
+	}
+}
+

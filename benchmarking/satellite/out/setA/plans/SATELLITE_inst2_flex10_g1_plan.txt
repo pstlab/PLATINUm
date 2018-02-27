@@ -1,0 +1,57 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 446  { Earth [1,501] [1, 501] }
+			token 447  { Slewing [11,511] [10, 10] }
+			token 448  { Science [34,534] [23, 523] }
+			token 449  { Slewing [44,544] [10, 10] }
+			token 450  { Earth [450,545] [1, 501] }
+			token 451 uncontrollable { Comm [465,560] [15, 25] }
+			unallocated 452 { [700,700] [140,235] }
+		}
+		inst1 {
+			token 453  { Idle [8,508] [8, 508] }
+			token 454  { Warmup [11,511] [3, 3] }
+			token 455 uncontrollable { Process [21,521] [10, 20] }
+			token 456  { Turnoff [24,524] [3, 3] }
+			token 457  { Idle [34,700] [10, 676] }
+			unallocated 458 { [700,700] [0,666] }
+		}
+		inst2 {
+			token 459  { Idle [21,521] [21, 521] }
+			token 460  { Warmup [24,524] [3, 3] }
+			token 461 uncontrollable { Process [34,534] [10, 20] }
+			token 462  { Turnoff [37,537] [3, 3] }
+			token 463  { Idle [38,700] [1, 663] }
+			unallocated 464 { [700,700] [0,662] }
+		}
+	}
+	relations {
+		op_trace 448 before [0,infty] op_trace 451
+		op_trace 446 before [0,700] op_trace 451
+		op_trace 448 before [11,700] op_trace 451
+		op_trace 448 after [10,700] op_trace 446
+		op_trace 451 during [0,infty]  [0,infty] window 466
+		op_trace 448 contains [0,infty]  [0,infty] inst2 461
+		inst2 461 before [0,infty] inst2 463
+		inst2 459 before [16,700] inst2 463
+		inst2 461 before [3,700] inst2 463
+		inst2 461 after [3,700] inst2 459
+		op_trace 448 contains [0,infty]  [0,infty] inst1 455
+		inst1 455 before [3,infty] inst2 461
+		inst2 461 during [0,infty]  [0,infty] inst1 457
+		inst1 453 before [3,700] inst1 455
+		inst1 455 before [3,700] inst1 457
+	}
+}
+observation {
+	timelines {
+		window {
+			token 465  { NotAvailable [450,450] [450, 450] }
+			token 466  { Available [500,560] [50, 110] }
+			token 467  { NotAvailable [700,700] [140, 200] }
+		}
+	}
+}
+

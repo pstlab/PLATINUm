@@ -38,10 +38,10 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 	protected ExecutivePlanDataBase pdb;										// the (executive) plan to execute
 	
 	@MonitorPlaceholder
-	protected Monitor monitor;												// plan monitor
+	protected Monitor monitor;													// plan monitor
 	
 	@DispatcherPlaceholder
-	protected Dispatcher dispatcher;										// dispatching process
+	protected Dispatcher dispatcher;											// dispatching process
 	
 	
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to

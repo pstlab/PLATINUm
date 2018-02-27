@@ -1,0 +1,59 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 966 { Idle [1,489] [1, 489] }
+			token 967 { Channel_B_F [6,494] [1, 493] }
+			token 968 { Idle [7,495] [1, 489] }
+			token 969 { Channel_F_B [12,500] [1, 493] }
+			unallocated 970 { [500,500] [0,488] }
+		}
+		main {
+			token 971 { Still [1,489] [1, 489] }
+			token 972 { Forward [6,494] [1, 493] }
+			token 973 { Still [7,495] [1, 489] }
+			token 974 { Backward [12,500] [1, 493] }
+			unallocated 975 { [500,500] [0,488] }
+		}
+		portF {
+			token 976 { Idle [1,489] [1, 489] }
+			token 977 { Sending [6,494] [5, 25] }
+			token 978 { Idle [7,495] [1, 489] }
+			token 979 { Receiving [12,500] [5, 25] }
+			unallocated 980 { [500,500] [0,488] }
+		}
+		portB {
+			token 981 { Idle [1,489] [1, 489] }
+			token 982 { Receiving [6,494] [5, 25] }
+			token 983 { Idle [7,495] [1, 489] }
+			token 984 { Sending [12,500] [5, 25] }
+			unallocated 985 { [500,500] [0,488] }
+		}
+	}
+	relations {
+		channel 966 before [0,500] channel 967
+		channel 967 before [1,500] channel 969
+		channel 969 end_before_end [0,0] portB 984
+		channel 967 start_before_start [0,0] portB 982
+		portB 981 before [0,500] portB 982
+		portB 982 before [1,500] portB 984
+		channel 969 start_before_start [0,0] portF 979
+		channel 967 end_before_end [0,0] portF 977
+		portF 976 before [0,500] portF 977
+		channel 969 during [0,infty]  [0,infty] main 974
+		channel 967 during [0,infty]  [0,infty] main 972
+		main 971 before [0,500] main 972
+		main 972 before [1,500] main 974
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 986 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 987 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

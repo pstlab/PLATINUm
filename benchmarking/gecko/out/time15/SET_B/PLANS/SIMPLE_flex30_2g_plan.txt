@@ -1,0 +1,59 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 1519 { Idle [1,489] [1, 489] }
+			token 1520 { Channel_B_F [6,494] [1, 493] }
+			token 1521 { Idle [7,495] [1, 489] }
+			token 1522 { Channel_F_B [12,500] [1, 493] }
+			unallocated 1523 { [500,500] [0,488] }
+		}
+		main {
+			token 1524 { Still [1,489] [1, 489] }
+			token 1525 { Forward [6,494] [1, 493] }
+			token 1526 { Still [7,495] [1, 489] }
+			token 1527 { Backward [12,500] [1, 493] }
+			unallocated 1528 { [500,500] [0,488] }
+		}
+		portF {
+			token 1529 { Idle [1,489] [1, 489] }
+			token 1530 { Sending [6,494] [5, 35] }
+			token 1531 { Idle [7,495] [1, 489] }
+			token 1532 { Receiving [12,500] [5, 35] }
+			unallocated 1533 { [500,500] [0,488] }
+		}
+		portB {
+			token 1534 { Idle [1,489] [1, 489] }
+			token 1535 { Receiving [6,494] [5, 35] }
+			token 1536 { Idle [7,495] [1, 489] }
+			token 1537 { Sending [12,500] [5, 35] }
+			unallocated 1538 { [500,500] [0,488] }
+		}
+	}
+	relations {
+		channel 1519 before [0,500] channel 1520
+		channel 1520 before [1,500] channel 1522
+		channel 1522 end_before_end [0,0] portB 1537
+		channel 1520 start_before_start [0,0] portB 1535
+		portB 1534 before [0,500] portB 1535
+		portB 1535 before [1,500] portB 1537
+		channel 1522 start_before_start [0,0] portF 1532
+		channel 1520 end_before_end [0,0] portF 1530
+		portF 1529 before [0,500] portF 1530
+		channel 1522 during [0,infty]  [0,infty] main 1527
+		channel 1520 during [0,infty]  [0,infty] main 1525
+		main 1524 before [0,500] main 1525
+		main 1525 before [1,500] main 1527
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 1539 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 1540 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

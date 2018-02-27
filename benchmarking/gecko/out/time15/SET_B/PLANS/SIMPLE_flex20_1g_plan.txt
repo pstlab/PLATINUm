@@ -1,0 +1,45 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 952 { Idle [1,495] [1, 495] }
+			token 953 { Channel_F_B [6,500] [1, 499] }
+			unallocated 954 { [500,500] [0,494] }
+		}
+		main {
+			token 955 { Still [1,495] [1, 495] }
+			token 956 { Backward [6,500] [1, 499] }
+			unallocated 957 { [500,500] [0,494] }
+		}
+		portF {
+			token 958 { Idle [1,495] [1, 495] }
+			token 959 { Receiving [6,500] [5, 25] }
+			unallocated 960 { [500,500] [0,494] }
+		}
+		portB {
+			token 961 { Idle [1,495] [1, 495] }
+			token 962 { Sending [6,500] [5, 25] }
+			unallocated 963 { [500,500] [0,494] }
+		}
+	}
+	relations {
+		channel 952 before [0,500] channel 953
+		channel 953 end_before_end [0,0] portB 962
+		portB 961 before [0,500] portB 962
+		channel 953 start_before_start [0,0] portF 959
+		portF 958 before [0,500] portF 959
+		channel 953 during [0,infty]  [0,infty] main 956
+		main 955 before [0,500] main 956
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 964 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 965 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

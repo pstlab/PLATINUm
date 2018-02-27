@@ -1,0 +1,71 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 988 { Idle [1,483] [1, 483] }
+			token 989 { Channel_B_F [6,488] [1, 487] }
+			token 990 { Idle [7,489] [1, 483] }
+			token 991 { Channel_F_B [12,494] [1, 487] }
+			token 992 { Idle [13,495] [1, 483] }
+			token 993 { Channel_F_B [18,500] [1, 487] }
+			unallocated 994 { [500,500] [0,482] }
+		}
+		main {
+			token 995 { Still [1,483] [1, 483] }
+			token 996 { Forward [6,488] [1, 487] }
+			token 997 { Still [7,489] [1, 483] }
+			token 998 { Backward [18,500] [7, 493] }
+			unallocated 999 { [500,500] [0,482] }
+		}
+		portF {
+			token 1000 { Idle [1,483] [1, 483] }
+			token 1001 { Sending [6,488] [5, 25] }
+			token 1002 { Idle [7,489] [1, 483] }
+			token 1003 { Receiving [12,494] [5, 25] }
+			token 1004 { Idle [13,495] [1, 483] }
+			token 1005 { Receiving [18,500] [5, 25] }
+			unallocated 1006 { [500,500] [0,482] }
+		}
+		portB {
+			token 1007 { Idle [1,483] [1, 483] }
+			token 1008 { Receiving [6,488] [5, 25] }
+			token 1009 { Idle [7,489] [1, 483] }
+			token 1010 { Sending [12,494] [5, 25] }
+			token 1011 { Idle [13,495] [1, 483] }
+			token 1012 { Sending [18,500] [5, 25] }
+			unallocated 1013 { [500,500] [0,482] }
+		}
+	}
+	relations {
+		channel 988 before [0,500] channel 989
+		channel 989 before [1,500] channel 991
+		channel 991 before [1,500] channel 993
+		channel 993 end_before_end [0,0] portB 1012
+		channel 989 start_before_start [0,0] portB 1008
+		channel 991 end_before_end [0,0] portB 1010
+		portB 1007 before [0,500] portB 1008
+		portB 1008 before [1,500] portB 1010
+		portB 1010 before [1,500] portB 1012
+		channel 993 start_before_start [0,0] portF 1005
+		channel 989 end_before_end [0,0] portF 1001
+		channel 991 start_before_start [0,0] portF 1003
+		portF 1000 before [0,500] portF 1001
+		portF 1003 before [1,500] portF 1005
+		channel 993 during [0,infty]  [0,infty] main 998
+		channel 989 during [0,infty]  [0,infty] main 996
+		channel 991 during [0,infty]  [0,infty] main 998
+		main 995 before [0,500] main 996
+		main 996 before [1,500] main 998
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 1014 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 1015 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

@@ -1,0 +1,162 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 186  { Earth [1,426] [1, 426] }
+			token 187  { Slewing [11,436] [10, 10] }
+			token 188  { Science [99,524] [88, 513] }
+			token 189  { Slewing [109,534] [10, 10] }
+			token 190  { Earth [450,535] [1, 426] }
+			token 191 uncontrollable { Comm [465,550] [15, 15] }
+			unallocated 192 { [700,700] [150,235] }
+		}
+		inst1 {
+			token 193  { Idle [8,433] [8, 433] }
+			token 194  { Warmup [11,436] [3, 3] }
+			token 195 uncontrollable { Process [21,446] [10, 10] }
+			token 196  { Turnoff [24,449] [3, 3] }
+			token 197  { Idle [99,700] [75, 676] }
+			unallocated 198 { [700,700] [0,601] }
+		}
+		inst2 {
+			token 199  { Idle [21,446] [21, 446] }
+			token 200  { Warmup [24,449] [3, 3] }
+			token 201 uncontrollable { Process [34,459] [10, 10] }
+			token 202  { Turnoff [37,462] [3, 3] }
+			token 203  { Idle [99,700] [62, 663] }
+			unallocated 204 { [700,700] [0,601] }
+		}
+		inst3 {
+			token 205  { Idle [34,459] [34, 459] }
+			token 206  { Warmup [37,462] [3, 3] }
+			token 207 uncontrollable { Process [47,472] [10, 10] }
+			token 208  { Turnoff [50,475] [3, 3] }
+			token 209  { Idle [99,700] [49, 650] }
+			unallocated 210 { [700,700] [0,601] }
+		}
+		inst4 {
+			token 211  { Idle [47,472] [47, 472] }
+			token 212  { Warmup [50,475] [3, 3] }
+			token 213 uncontrollable { Process [60,485] [10, 10] }
+			token 214  { Turnoff [63,488] [3, 3] }
+			token 215  { Idle [99,700] [36, 637] }
+			unallocated 216 { [700,700] [0,601] }
+		}
+		inst5 {
+			token 217  { Idle [60,485] [60, 485] }
+			token 218  { Warmup [63,488] [3, 3] }
+			token 219 uncontrollable { Process [73,498] [10, 10] }
+			token 220  { Turnoff [76,501] [3, 3] }
+			token 221  { Idle [99,700] [23, 624] }
+			unallocated 222 { [700,700] [0,601] }
+		}
+		inst6 {
+			token 223  { Idle [73,498] [73, 498] }
+			token 224  { Warmup [76,501] [3, 3] }
+			token 225 uncontrollable { Process [86,511] [10, 10] }
+			token 226  { Turnoff [89,514] [3, 3] }
+			token 227  { Idle [99,700] [10, 611] }
+			unallocated 228 { [700,700] [0,601] }
+		}
+		inst7 {
+			token 229  { Idle [86,511] [86, 511] }
+			token 230  { Warmup [89,514] [3, 3] }
+			token 231 uncontrollable { Process [99,524] [10, 10] }
+			token 232  { Turnoff [102,527] [3, 3] }
+			token 233  { Idle [103,700] [1, 598] }
+			unallocated 234 { [700,700] [0,597] }
+		}
+	}
+	relations {
+		op_trace 188 before [0,infty] op_trace 191
+		op_trace 186 before [0,700] op_trace 191
+		op_trace 188 before [11,700] op_trace 191
+		op_trace 188 after [10,700] op_trace 186
+		op_trace 191 during [0,infty]  [0,infty] window 236
+		op_trace 188 contains [0,infty]  [0,infty] inst7 231
+		inst7 231 before [3,infty] inst7 233
+		inst7 229 before [16,700] inst7 233
+		inst7 231 before [3,700] inst7 233
+		inst7 231 after [3,700] inst7 229
+		op_trace 188 contains [0,infty]  [0,infty] inst6 225
+		inst6 225 before [3,infty] inst7 231
+		inst6 225 during [0,infty]  [0,infty] inst7 229
+		inst7 231 during [0,infty]  [0,infty] inst6 227
+		inst6 223 before [16,700] inst6 227
+		inst6 225 before [3,700] inst6 227
+		inst6 225 after [3,700] inst6 223
+		op_trace 188 contains [0,infty]  [0,infty] inst5 219
+		inst5 219 before [3,infty] inst6 225
+		inst5 219 during [0,infty]  [0,infty] inst7 229
+		inst5 219 during [0,infty]  [0,infty] inst6 223
+		inst6 225 during [0,infty]  [0,infty] inst5 221
+		inst7 231 during [0,infty]  [0,infty] inst5 221
+		inst5 217 before [16,700] inst5 221
+		inst5 219 before [3,700] inst5 221
+		inst5 219 after [3,700] inst5 217
+		op_trace 188 contains [0,infty]  [0,infty] inst4 213
+		inst4 213 before [3,infty] inst5 219
+		inst4 213 during [0,infty]  [0,infty] inst7 229
+		inst4 213 during [0,infty]  [0,infty] inst6 223
+		inst4 213 during [0,infty]  [0,infty] inst5 217
+		inst5 219 during [0,infty]  [0,infty] inst4 215
+		inst6 225 during [0,infty]  [0,infty] inst4 215
+		inst7 231 during [0,infty]  [0,infty] inst4 215
+		inst4 211 before [16,700] inst4 215
+		inst4 213 before [3,700] inst4 215
+		inst4 213 after [3,700] inst4 211
+		op_trace 188 contains [0,infty]  [0,infty] inst3 207
+		inst3 207 before [3,infty] inst4 213
+		inst3 207 during [0,infty]  [0,infty] inst7 229
+		inst3 207 during [0,infty]  [0,infty] inst6 223
+		inst3 207 during [0,infty]  [0,infty] inst5 217
+		inst3 207 during [0,infty]  [0,infty] inst4 211
+		inst4 213 during [0,infty]  [0,infty] inst3 209
+		inst5 219 during [0,infty]  [0,infty] inst3 209
+		inst6 225 during [0,infty]  [0,infty] inst3 209
+		inst7 231 during [0,infty]  [0,infty] inst3 209
+		inst3 205 before [3,700] inst3 207
+		inst3 207 before [3,700] inst3 209
+		op_trace 188 contains [0,infty]  [0,infty] inst2 201
+		inst2 201 before [3,infty] inst3 207
+		inst2 201 during [0,infty]  [0,infty] inst7 229
+		inst2 201 during [0,infty]  [0,infty] inst6 223
+		inst2 201 during [0,infty]  [0,infty] inst5 217
+		inst2 201 during [0,infty]  [0,infty] inst4 211
+		inst2 201 during [0,infty]  [0,infty] inst3 205
+		inst3 207 during [0,infty]  [0,infty] inst2 203
+		inst4 213 during [0,infty]  [0,infty] inst2 203
+		inst5 219 during [0,infty]  [0,infty] inst2 203
+		inst6 225 during [0,infty]  [0,infty] inst2 203
+		inst7 231 during [0,infty]  [0,infty] inst2 203
+		inst2 199 before [16,700] inst2 203
+		inst2 201 before [3,700] inst2 203
+		inst2 201 after [3,700] inst2 199
+		op_trace 188 contains [0,infty]  [0,infty] inst1 195
+		inst1 195 before [3,infty] inst2 201
+		inst1 195 during [0,infty]  [0,infty] inst7 229
+		inst1 195 during [0,infty]  [0,infty] inst6 223
+		inst1 195 during [0,infty]  [0,infty] inst5 217
+		inst1 195 during [0,infty]  [0,infty] inst4 211
+		inst1 195 during [0,infty]  [0,infty] inst3 205
+		inst1 195 during [0,infty]  [0,infty] inst2 199
+		inst2 201 during [0,infty]  [0,infty] inst1 197
+		inst3 207 during [0,infty]  [0,infty] inst1 197
+		inst4 213 during [0,infty]  [0,infty] inst1 197
+		inst5 219 during [0,infty]  [0,infty] inst1 197
+		inst6 225 during [0,infty]  [0,infty] inst1 197
+		inst7 231 during [0,infty]  [0,infty] inst1 197
+		inst1 193 before [3,700] inst1 195
+		inst1 195 before [3,700] inst1 197
+	}
+}
+observation {
+	timelines {
+		window {
+			token 235  { NotAvailable [450,450] [450, 450] }
+			token 236  { Available [500,550] [50, 100] }
+			token 237  { NotAvailable [700,700] [150, 200] }
+		}
+	}
+}
+

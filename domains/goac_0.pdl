@@ -1,0 +1,5 @@
+PROBLEM GOAC_Problem (DOMAIN GOAC_Domain) 
+{
+	at0 <fact> Nav1.nav1_position.At_a() AT [0, 0] [0, +INF] [0, +INF];
+	g0 <goal> Ant1.ant1_antenna.Dumping_b() AT [0, +INF] [0, +INF] [0, +INF];
+}

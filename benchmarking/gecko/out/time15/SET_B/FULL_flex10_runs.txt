@@ -1,0 +1,5 @@
+$ [FULL/GECKO_flex10.ddl,GECKO_1g.pdl] -> Solution found after [479] msecs
+$ [FULL/GECKO_flex10.ddl,GECKO_2g.pdl] -> Solution found after [26120] msecs
+$ [FULL/GECKO_flex10.ddl,GECKO_3g.pdl] -> No Solution found after [181394] msecs
+$ [FULL/GECKO_flex10.ddl,GECKO_4g.pdl] -> No Solution found after [181835] msecs
+$ [FULL/GECKO_flex10.ddl,GECKO_5g.pdl] -> No Solution found after [182416] msecs

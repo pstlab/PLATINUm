@@ -1,0 +1,125 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 834 { Idle [6,487] [6, 487] }
+			token 835 { Channel_R1_B [19,500] [13, 494] }
+			unallocated 836 { [500,500] [0,481] }
+		}
+		cross1 {
+			token 837 { Down [1,482] [1, 482] }
+			token 838 { MovingUp [6,487] [5, 5] }
+			token 839 { Up [11,492] [5, 486] }
+			token 840 { MovingDown [16,497] [5, 5] }
+			token 841 { Down [17,498] [1, 482] }
+			unallocated 842 { [500,500] [2,483] }
+		}
+		cross2 {
+			token 843 { Down [1,487] [1, 487] }
+			token 844 { MovingUp [6,492] [5, 5] }
+			token 845 { Up [12,493] [1, 487] }
+			token 846 { MovingDown [17,498] [5, 5] }
+			token 847 { Down [18,499] [1, 482] }
+			unallocated 848 { [500,500] [1,482] }
+		}
+		cross3 {
+			token 849 { Down [1,488] [1, 488] }
+			token 850 { MovingUp [6,493] [5, 5] }
+			token 851 { Up [13,494] [1, 488] }
+			token 852 { MovingDown [18,499] [5, 5] }
+			token 853 { Down [19,500] [1, 482] }
+			unallocated 854 { [500,500] [0,481] }
+		}
+		main {
+			token 855 { Still [1,495] [1, 495] }
+			token 856 { Forward [19,500] [5, 499] }
+			unallocated 857 { [500,500] [0,481] }
+		}
+		cconveyor1 {
+			token 858 { Still [1,487] [1, 487] }
+			token 859 { Backward [11,500] [5, 499] }
+			unallocated 860 { [500,500] [0,489] }
+		}
+		cconveyor2 {
+			token 861 { Still [1,500] [1, 500] }
+			unallocated 862 { [500,500] [0,499] }
+		}
+		cconveyor3 {
+			token 863 { Still [1,500] [1, 500] }
+			unallocated 864 { [500,500] [0,499] }
+		}
+		portF {
+			token 865 { Idle [1,500] [1, 500] }
+			unallocated 866 { [500,500] [0,499] }
+		}
+		portB {
+			token 867 { Idle [4,495] [4, 495] }
+			token 868 { Sending [19,500] [5, 15] }
+			unallocated 869 { [500,500] [0,481] }
+		}
+		portL1 {
+			token 870 { Idle [1,500] [1, 500] }
+			unallocated 871 { [500,500] [0,499] }
+		}
+		portL2 {
+			token 872 { Idle [1,500] [1, 500] }
+			unallocated 873 { [500,500] [0,499] }
+		}
+		portL3 {
+			token 874 { Idle [1,500] [1, 500] }
+			unallocated 875 { [500,500] [0,499] }
+		}
+		portR1 {
+			token 876 { Idle [6,487] [6, 487] }
+			token 877 { Receiving [11,492] [5, 15] }
+			unallocated 878 { [500,500] [8,489] }
+		}
+		portR2 {
+			token 879 { Idle [1,500] [1, 500] }
+			unallocated 880 { [500,500] [0,499] }
+		}
+		portR3 {
+			token 881 { Idle [1,500] [1, 500] }
+			unallocated 882 { [500,500] [0,499] }
+		}
+	}
+	relations {
+		channel 834 before [0,500] channel 835
+		channel 835 start_before_start [0,0] portR1 877
+		portR1 876 before [0,500] portR1 877
+		channel 835 contains [0,infty]  [0,infty] cross1 841
+		cross1 839 before [0,infty] cross1 841
+		portR1 877 during [0,infty]  [0,infty] cross1 839
+		cross1 837 before [5,500] cross1 839
+		cross1 839 before [5,500] cross1 841
+		channel 835 contains [0,infty]  [0,infty] cross2 847
+		cross1 841 before [0,infty] cross2 847
+		cross2 843 before [11,500] cross2 847
+		channel 835 contains [0,infty]  [0,infty] cross3 853
+		cross2 847 before [0,infty] cross3 853
+		cross3 849 before [11,500] cross3 853
+		main 855 before [0,500] main 856
+		portR1 877 during [0,infty]  [0,infty] cconveyor1 859
+		cconveyor1 858 before [0,500] cconveyor1 859
+		channel 835 end_before_end [0,0] portB 868
+		portB 868 during [0,infty]  [0,infty] main 856
+		portB 867 before [0,500] portB 868
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 883 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 884 { Available [500,500] [500, 500] }
+		}
+		neighborL {
+			token 885 { Available [500,500] [500, 500] }
+		}
+		neighborR {
+			token 886 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

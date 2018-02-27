@@ -51,9 +51,12 @@ public class ValuePath implements Comparable<ValuePath>
 	 */
 	@Override
 	public int compareTo(ValuePath o) {
-		return this.size() <= o.size() ? -1 : 1;
+		return this.size() < o.size() ? -1 : this.size() > o.size() ? 1 : 0;
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public String toString() {
 		return "[ValuePath steps= " + this.steps + "]";

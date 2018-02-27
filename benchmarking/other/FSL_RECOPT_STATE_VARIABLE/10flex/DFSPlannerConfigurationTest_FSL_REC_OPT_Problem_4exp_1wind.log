@@ -1,0 +1,170 @@
+************************* PLANNER CONFIGURATION ***************************
+--------------------------------------
+--- PARAMETER CONFIGURATION
+- UNIFICATION COST = 0.1
+- EXPANSION COST = 0.1
+- SCHEDULING COST = 0.9
+- COMPLETION COST = 0.1
+--------------------------------------
+--------------------------------------
+--- SOLVER ENGINE 
+- DecisionExpansionResolver
+- DecisionUnificationResolver
+- SimpleDecisionSchedulingResolver
+- StateVariableGapResolver
+--------------------------------------
+--- SEARCH STRATEGY
+- DFSStrategy
+--------------------------------------
+--- SOLVING MODE 
+- FirstSolutionSolver
+--------------------------------------
+***************************************************************************
+
+# [FirstSolutionSolver]: Solution node found after [ 50] solving step, stop search
+	- Solution cost = 18.500000000000004
+	{SearchSpaceNode [61]: depth=49 value=18.500000000000004 generator-operator={id= 61, type= DECISION_SIMPLE_SCHEDULER weight=0.9}}
+# [FirstSolutionSolver]: Solution Plan:
+
+Nodes (24):
+  Id = (3,3) CD for MechanicalConfiguration Value: Deconfigured().mconfig Temporal Tag: Id = 2 Time Interval [ti3-->ti4] [<PROBLEM>]
+  Id = (2,5) CD for Rack Value: Off().rack Temporal Tag: Id = 5 Time Interval [ti6-->ti7] [<PROBLEM>]
+  Id = (3,4) CD for Fsl Value: Off().fsl Temporal Tag: Id = 8 Time Interval [ti9-->ti10] [<PROBLEM>]
+  Id = (4,7) CD for FslActivity Value: Idle().activity Temporal Tag: Id = 11 Time Interval [ti12-->ti13] [<PROBLEM>]
+  Id = (2,6) CD for HRDL Value: NotAvailable().channel Temporal Tag: Id = 14 Time Interval [ti15-->ti16] [<PROBLEM>]
+  Id = (3,6) CD for HRDL Value: Available().channel Temporal Tag: Id = 17 Time Interval [ti18-->ti19] [<PROBLEM>]
+  Id = (4,6) CD for HRDL Value: NotAvailable().channel Temporal Tag: Id = 20 Time Interval [ti21-->ti22] [<PROBLEM>]
+  Id = (8,7) CD for FslActivity Value: REC_OPT_CO(?tool4[21] = 5).activity Temporal Tag: Id = 32 Time Interval [ti33-->ti34] [<PROBLEM>]
+  Id = (9,7) CD for FslActivity Value: DATA_DNLK().activity Temporal Tag: Id = 41 Time Interval [ti42-->ti43] [<USER>]
+  Id = (7,7) CD for FslActivity Value: REC_OPT_CO(?tool3[20] = 5).activity Temporal Tag: Id = 29 Time Interval [ti30-->ti31] [<PROBLEM>]
+  Id = (10,7) CD for FslActivity Value: DATA_DNLK().activity Temporal Tag: Id = 53 Time Interval [ti54-->ti55] [<USER>]
+  Id = (6,7) CD for FslActivity Value: REC_OPT_CO(?tool2[19] = 5).activity Temporal Tag: Id = 26 Time Interval [ti27-->ti28] [<PROBLEM>]
+  Id = (11,7) CD for FslActivity Value: DATA_DNLK().activity Temporal Tag: Id = 65 Time Interval [ti66-->ti67] [<USER>]
+  Id = (5,7) CD for FslActivity Value: REC_OPT_CO(?tool1[18] = 5).activity Temporal Tag: Id = 23 Time Interval [ti24-->ti25] [<PROBLEM>]
+  Id = (12,7) CD for FslActivity Value: DATA_DNLK().activity Temporal Tag: Id = 77 Time Interval [ti78-->ti79] [<USER>]
+  Id = (4,4) CD for Fsl Value: CC().fsl Temporal Tag: Id = 35 Time Interval [ti36-->ti37] [<USER>]
+  Id = (3,5) CD for Rack Value: On().rack Temporal Tag: Id = 83 Time Interval [ti84-->ti85] [<USER>]
+  Id = (4,3) CD for MechanicalConfiguration Value: Configured(?tool2[22] = 5).mconfig Temporal Tag: Id = 38 Time Interval [ti39-->ti40] [<USER>]
+  Id = (15,7) CD for FslActivity Value: Idle().activity Temporal Tag: Id = 104 Time Interval [ti105-->ti106] [<USER>]
+  Id = (14,7) CD for FslActivity Value: Idle().activity Temporal Tag: Id = 101 Time Interval [ti102-->ti103] [<USER>]
+  Id = (13,7) CD for FslActivity Value: Idle().activity Temporal Tag: Id = 98 Time Interval [ti99-->ti100] [<USER>]
+  Id = (8,4) CD for Fsl Value: Initializing().fsl Temporal Tag: Id = 107 Time Interval [ti108-->ti109] [<USER>]
+  Id = (7,5) CD for Rack Value: TurningOn().rack Temporal Tag: Id = 110 Time Interval [ti111-->ti112] [<USER>]
+  Id = (9,3) CD for MechanicalConfiguration Value: Configuring(?tool1[27] = 5).mconfig Temporal Tag: Id = 113 Time Interval [ti114-->ti115] [<USER>]
+Edges (60):
+  Id = 11 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on Deconfigured[Id=3] (-->7) [<PROBLEM>]
+  Id = 12 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on Off[Id=2] (-->8) [<PROBLEM>]
+  Id = 13 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on Off[Id=3] (-->9) [<PROBLEM>]
+  Id = 14 Temporal Constraint: At [0,0][1,+INF][1,+INF]  on Idle[Id=4] (-->10) [<PROBLEM>]
+  Id = 15 Temporal Constraint: At [0,0][50,50][50,50]  on NotAvailable[Id=2] (-->11) [<PROBLEM>]
+  Id = 16 Temporal Constraint: At [50,50][850,850][800,800]  on Available[Id=3] (-->12) [<PROBLEM>]
+  Id = 17 Temporal Constraint: At [850,850][1000,1000][150,150]  on NotAvailable[Id=4] (-->13) [<PROBLEM>]
+  Id = 21 Temporal Constraint: At [0,1000][1,+INF][1,+INF]  on REC_OPT_CO[Id=8] (-->43) [<PROBLEM>]
+  Id = 29 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:REC_OPT_CO[Id=8] --> FslActivity:DATA_DNLK[Id=9] (-->49) [<USER>]
+  Id = 20 Temporal Constraint: At [0,1000][1,+INF][1,+INF]  on REC_OPT_CO[Id=7] (-->53) [<PROBLEM>]
+  Id = 36 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:REC_OPT_CO[Id=7] --> FslActivity:DATA_DNLK[Id=10] (-->59) [<USER>]
+  Id = 19 Temporal Constraint: At [0,1000][1,+INF][1,+INF]  on REC_OPT_CO[Id=6] (-->63) [<PROBLEM>]
+  Id = 43 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:REC_OPT_CO[Id=6] --> FslActivity:DATA_DNLK[Id=11] (-->69) [<USER>]
+  Id = 18 Temporal Constraint: At [0,1000][1,+INF][1,+INF]  on REC_OPT_CO[Id=5] (-->73) [<PROBLEM>]
+  Id = 50 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:REC_OPT_CO[Id=5] --> FslActivity:DATA_DNLK[Id=12] (-->79) [<USER>]
+  Id = 58 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] FslActivity:DATA_DNLK[Id=12] --> HRDL:Available[Id=3] (-->87) [<USER>]
+  Id = 60 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] FslActivity:DATA_DNLK[Id=11] --> HRDL:Available[Id=3] (-->95) [<USER>]
+  Id = 62 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] FslActivity:DATA_DNLK[Id=10] --> HRDL:Available[Id=3] (-->103) [<USER>]
+  Id = 64 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] FslActivity:DATA_DNLK[Id=9] --> HRDL:Available[Id=3] (-->111) [<USER>]
+  Id = 30 Temporal Constraint: During [0,+INF][0,+INF][0,0] FslActivity:REC_OPT_CO[Id=8] --> Fsl:CC[Id=4] (-->115) [<USER>]
+  Id = 69 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] FslActivity:REC_OPT_CO[Id=7] --> Fsl:CC[Id=4] (-->127) [<USER>]
+  Id = 73 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] FslActivity:REC_OPT_CO[Id=6] --> Fsl:CC[Id=4] (-->138) [<USER>]
+  Id = 77 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] FslActivity:REC_OPT_CO[Id=5] --> Fsl:CC[Id=4] (-->149) [<USER>]
+  Id = 65 Temporal Constraint: During [0,+INF][0,+INF][0,0] Fsl:CC[Id=4] --> Rack:On[Id=3] (-->153) [<USER>]
+  Id = 31 Temporal Constraint: During [0,+INF][0,+INF][0,0] Fsl:CC[Id=4] --> MechanicalConfiguration:Configured[Id=4] (-->158) [<USER>]
+  Id = 32 Parameter Constraint: ?tool2[Id=22] = +5 among [FslActivity:REC_OPT_CO[Id=8],MechanicalConfiguration:Configured[Id=4]](-->3) [<USER>]
+  Id = 83 Parameter Constraint: ?tool2[Id=22] = +5 among [FslActivity:REC_OPT_CO[Id=7],MechanicalConfiguration:Configured[Id=4]](-->7) [<USER>]
+  Id = 84 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] Fsl:CC[Id=4] --> MechanicalConfiguration:Configured[Id=4] (-->167) [<USER>]
+  Id = 86 Parameter Constraint: ?tool2[Id=22] = +5 among [FslActivity:REC_OPT_CO[Id=6],MechanicalConfiguration:Configured[Id=4]](-->8) [<USER>]
+  Id = 87 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] Fsl:CC[Id=4] --> MechanicalConfiguration:Configured[Id=4] (-->175) [<USER>]
+  Id = 89 Parameter Constraint: ?tool2[Id=22] = +5 among [FslActivity:REC_OPT_CO[Id=5],MechanicalConfiguration:Configured[Id=4]](-->9) [<USER>]
+  Id = 90 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] Fsl:CC[Id=4] --> MechanicalConfiguration:Configured[Id=4] (-->183) [<USER>]
+  Id = 92 Temporal Constraint: During [0,+INF][0,+INF][0,+INF] Rack:On[Id=3] --> MechanicalConfiguration:Configured[Id=4] (-->191) [<USER>]
+  Id = 93 Temporal Constraint: Before [0,10000][0,0][0,0] FslActivity:Idle[Id=4] --> FslActivity:REC_OPT_CO[Id=6] (-->194) [<USER>]
+  Id = 96 Temporal Constraint: Before [1,10000][0,0][0,0] FslActivity:REC_OPT_CO[Id=6] --> FslActivity:REC_OPT_CO[Id=5] (-->196) [<USER>]
+  Id = 101 Temporal Constraint: Before [1,10000][0,0][0,0] FslActivity:REC_OPT_CO[Id=5] --> FslActivity:REC_OPT_CO[Id=8] (-->198) [<USER>]
+  Id = 108 Temporal Constraint: Before [1,10000][0,0][0,0] FslActivity:REC_OPT_CO[Id=8] --> FslActivity:REC_OPT_CO[Id=7] (-->200) [<USER>]
+  Id = 109 Temporal Constraint: Before [1,10000][0,0][0,0] FslActivity:DATA_DNLK[Id=9] --> FslActivity:REC_OPT_CO[Id=7] (-->202) [<USER>]
+  Id = 110 Temporal Constraint: After [0,10000][0,0][0,0] FslActivity:DATA_DNLK[Id=9] --> FslActivity:REC_OPT_CO[Id=8] (-->203) [<USER>]
+  Id = 111 Temporal Constraint: Before [1,10000][0,0][0,0] FslActivity:DATA_DNLK[Id=12] --> FslActivity:REC_OPT_CO[Id=8] (-->206) [<USER>]
+  Id = 112 Temporal Constraint: After [0,10000][0,0][0,0] FslActivity:DATA_DNLK[Id=12] --> FslActivity:REC_OPT_CO[Id=5] (-->207) [<USER>]
+  Id = 113 Temporal Constraint: Before [1,10000][0,0][0,0] FslActivity:DATA_DNLK[Id=11] --> FslActivity:REC_OPT_CO[Id=5] (-->210) [<USER>]
+  Id = 114 Temporal Constraint: After [0,10000][0,0][0,0] FslActivity:DATA_DNLK[Id=11] --> FslActivity:REC_OPT_CO[Id=6] (-->211) [<USER>]
+  Id = 115 Temporal Constraint: Before [25,10000][0,0][0,0] Fsl:Off[Id=3] --> Fsl:CC[Id=4] (-->214) [<USER>]
+  Id = 116 Temporal Constraint: Before [40,10000][0,0][0,0] Rack:Off[Id=2] --> Rack:On[Id=3] (-->216) [<USER>]
+  Id = 117 Temporal Constraint: Before [10,10000][0,0][0,0] MechanicalConfiguration:Deconfigured[Id=3] --> MechanicalConfiguration:Configured[Id=4] (-->218) [<USER>]
+  Id = 118 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:Idle[Id=4] --> FslActivity:REC_OPT_CO[Id=6] (-->220) [Parameterized Transition Constraint From: Idle() To: REC_OPT_CO(?tool1[6]) Constraints: []]
+  Id = 123 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:DATA_DNLK[Id=9] --> FslActivity:Idle[Id=15] (-->223) [Parameterized Transition Constraint From: DATA_DNLK() To: Idle() Constraints: []]
+  Id = 124 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:Idle[Id=15] --> FslActivity:REC_OPT_CO[Id=7] (-->224) [Parameterized Transition Constraint From: Idle() To: REC_OPT_CO(?tool1[6]) Constraints: []]
+  Id = 121 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:DATA_DNLK[Id=12] --> FslActivity:Idle[Id=14] (-->229) [Parameterized Transition Constraint From: DATA_DNLK() To: Idle() Constraints: []]
+  Id = 122 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:Idle[Id=14] --> FslActivity:REC_OPT_CO[Id=8] (-->230) [Parameterized Transition Constraint From: Idle() To: REC_OPT_CO(?tool1[6]) Constraints: []]
+  Id = 119 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:DATA_DNLK[Id=11] --> FslActivity:Idle[Id=13] (-->235) [Parameterized Transition Constraint From: DATA_DNLK() To: Idle() Constraints: []]
+  Id = 120 Temporal Constraint: Meets [0,0][0,0][0,0] FslActivity:Idle[Id=13] --> FslActivity:REC_OPT_CO[Id=5] (-->236) [Parameterized Transition Constraint From: Idle() To: REC_OPT_CO(?tool1[6]) Constraints: []]
+  Id = 128 Temporal Constraint: Meets [0,0][0,0][0,0] Fsl:Off[Id=3] --> Fsl:Initializing[Id=8] (-->241) [Parameterized Transition Constraint From: Off() To: Initializing() Constraints: []]
+  Id = 129 Temporal Constraint: Meets [0,0][0,0][0,0] Fsl:Initializing[Id=8] --> Fsl:CC[Id=4] (-->242) [Parameterized Transition Constraint From: Initializing() To: CC() Constraints: []]
+  Id = 131 Temporal Constraint: Meets [0,0][0,0][0,0] Rack:Off[Id=2] --> Rack:TurningOn[Id=7] (-->247) [Parameterized Transition Constraint From: Off() To: TurningOn() Constraints: []]
+  Id = 132 Temporal Constraint: Meets [0,0][0,0][0,0] Rack:TurningOn[Id=7] --> Rack:On[Id=3] (-->248) [Parameterized Transition Constraint From: TurningOn() To: On() Constraints: []]
+  Id = 134 Temporal Constraint: Meets [0,0][0,0][0,0] MechanicalConfiguration:Deconfigured[Id=3] --> MechanicalConfiguration:Configuring[Id=9] (-->253) [Parameterized Transition Constraint From: Deconfigured() To: Configuring(?tool1[0]) Constraints: []]
+  Id = 135 Parameter Constraint: ?tool1[Id=27] =  + ?tool2[Id=22] among [MechanicalConfiguration:Configuring[Id=9],MechanicalConfiguration:Configured[Id=4]](-->10) [Parameterized Transition Constraint From: Configuring(?tool1[2]) To: Configured(?tool2[3]) Constraints: [Id = 0 Binary Constraint ?tool1[Id=2] =  + ?tool2[Id=3]]]
+  Id = 136 Temporal Constraint: Meets [0,0][0,0][0,0] MechanicalConfiguration:Configuring[Id=9] --> MechanicalConfiguration:Configured[Id=4] (-->254) [Parameterized Transition Constraint From: Configuring(?tool1[2]) To: Configured(?tool2[3]) Constraints: [Id = 0 Binary Constraint ?tool1[Id=2] =  + ?tool2[Id=3]]]
+
+# FirstSolutionSolver]: Domain Timelines:
+Time-Flexible Timeline: FslActivity.activity
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:41,00:12:07]		[4,7] Idle()
+	Id = 27 Time Instant [tp18]	[00:00:41,00:12:07]	[00:00:20,00:00:30]		[6,7] REC_OPT_CO(?tool2[19] = 5)
+	Id = 66 Time Instant [tp44]	[00:01:01,00:12:27]	[00:00:10,00:00:20]		[11,7] DATA_DNLK()
+	Id = 99 Time Instant [tp66]	[00:01:11,00:12:37]	[00:00:01,00:11:27]		[13,7] Idle()
+	Id = 24 Time Instant [tp16]	[00:01:12,00:12:38]	[00:00:20,00:00:30]		[5,7] REC_OPT_CO(?tool1[18] = 5)
+	Id = 78 Time Instant [tp52]	[00:01:32,00:12:58]	[00:00:10,00:00:20]		[12,7] DATA_DNLK()
+	Id = 102 Time Instant [tp68]	[00:01:42,00:13:08]	[00:00:01,00:11:27]		[14,7] Idle()
+	Id = 33 Time Instant [tp22]	[00:01:43,00:13:09]	[00:00:20,00:00:30]		[8,7] REC_OPT_CO(?tool4[21] = 5)
+	Id = 42 Time Instant [tp28]	[00:02:03,00:13:29]	[00:00:10,00:00:20]		[9,7] DATA_DNLK()
+	Id = 105 Time Instant [tp70]	[00:02:13,00:13:39]	[00:00:01,00:11:27]		[15,7] Idle()
+	Id = 30 Time Instant [tp20]	[00:02:14,00:13:40]	[00:00:20,00:00:30]		[7,7] REC_OPT_CO(?tool3[20] = 5)
+	Id = 54 Time Instant [tp36]	[00:02:34,00:14:00]	[00:00:10,00:00:20]		[10,7] DATA_DNLK()
+	Id = 55 Time Instant [tp37]	[00:02:44,00:14:10]	[00:02:30,02:43:56]		<UNDECIDED>
+	Id = 1 Time Instant [tp1]	[00:16:40,02:46:40]	
+
+Time-Flexible Timeline: HRDL.channel
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:50,00:00:50]		[2,6] NotAvailable()
+	Id = 18 Time Instant [tp12]	[00:00:50,00:00:50]	[00:13:20,00:13:20]		[3,6] Available()
+	Id = 21 Time Instant [tp14]	[00:14:10,00:14:10]	[00:02:30,00:02:30]		[4,6] NotAvailable()
+	Id = 22 Time Instant [tp15]	[00:16:40,00:16:40]	[00:00:00,02:30:00]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:16:40,02:46:40]	
+
+Time-Flexible Timeline: Fsl.fsl
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:16,00:11:42]		[3,4] Off()
+	Id = 108 Time Instant [tp72]	[00:00:16,00:11:42]	[00:00:25,00:00:25]		[8,4] Initializing()
+	Id = 36 Time Instant [tp24]	[00:00:41,00:12:07]	[00:01:53,02:45:59]		[4,4] CC()
+	Id = 37 Time Instant [tp25]	[00:02:34,02:46:40]	[00:00:00,02:44:06]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:16:40,02:46:40]	
+
+Time-Flexible Timeline: Rack.rack
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:01,00:11:27]		[2,5] Off()
+	Id = 111 Time Instant [tp74]	[00:00:01,00:11:27]	[00:00:40,00:00:40]		[7,5] TurningOn()
+	Id = 84 Time Instant [tp56]	[00:00:41,00:12:07]	[00:01:53,02:45:59]		[3,5] On()
+	Id = 85 Time Instant [tp57]	[00:02:34,02:46:40]	[00:00:00,02:44:06]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:16:40,02:46:40]	
+
+Time-Flexible Timeline: MechanicalConfiguration.mconfig
+	Id = 0 Time Instant [tp0]	[00:00:00,00:00:00]	[00:00:01,00:11:57]		[3,3] Deconfigured()
+	Id = 114 Time Instant [tp76]	[00:00:01,00:11:57]	[00:00:10,00:00:10]		[9,3] Configuring(?tool1[27] = 5)
+	Id = 39 Time Instant [tp26]	[00:00:11,00:12:07]	[00:01:53,02:46:29]		[4,3] Configured(?tool2[22] = 5)
+	Id = 40 Time Instant [tp27]	[00:02:34,02:46:40]	[00:00:00,02:44:06]		<UNDECIDED>(O)
+	Id = 1 Time Instant [tp1]	[00:16:40,02:46:40]	
+
+
+
+[EPSLPlanner] 1 SOLUTIONS FOUND
+[EPSLPLanner] solving time = 560 msecs
+# [EPSLSolver]: Resolver execution times:
+	- DecisionExpansionResolver : 42 msec
+	- DecisionUnificationResolver : 203 msec
+	- StateVariableGapResolver : 6 msec
+	- SimpleDecisionSchedulingResolver : 15 msec
+# [EPSLSolver]: Propagation time : 22 msecs

@@ -1,0 +1,71 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 36 { Idle [1,483] [1, 483] }
+			token 37 { Channel_B_F [6,488] [1, 487] }
+			token 38 { Idle [7,489] [1, 483] }
+			token 39 { Channel_F_B [12,494] [1, 487] }
+			token 40 { Idle [13,495] [1, 483] }
+			token 41 { Channel_F_B [18,500] [1, 487] }
+			unallocated 42 { [500,500] [0,482] }
+		}
+		main {
+			token 43 { Still [1,483] [1, 483] }
+			token 44 { Forward [6,488] [1, 487] }
+			token 45 { Still [7,489] [1, 483] }
+			token 46 { Backward [18,500] [7, 493] }
+			unallocated 47 { [500,500] [0,482] }
+		}
+		portF {
+			token 48 { Idle [1,483] [1, 483] }
+			token 49 { Sending [6,488] [5, 15] }
+			token 50 { Idle [7,489] [1, 483] }
+			token 51 { Receiving [12,494] [5, 15] }
+			token 52 { Idle [13,495] [1, 483] }
+			token 53 { Receiving [18,500] [5, 15] }
+			unallocated 54 { [500,500] [0,482] }
+		}
+		portB {
+			token 55 { Idle [1,483] [1, 483] }
+			token 56 { Receiving [6,488] [5, 15] }
+			token 57 { Idle [7,489] [1, 483] }
+			token 58 { Sending [12,494] [5, 15] }
+			token 59 { Idle [13,495] [1, 483] }
+			token 60 { Sending [18,500] [5, 15] }
+			unallocated 61 { [500,500] [0,482] }
+		}
+	}
+	relations {
+		channel 36 before [0,500] channel 37
+		channel 37 before [1,500] channel 39
+		channel 39 before [1,500] channel 41
+		channel 41 end_before_end [0,0] portB 60
+		channel 37 start_before_start [0,0] portB 56
+		channel 39 end_before_end [0,0] portB 58
+		portB 55 before [0,500] portB 56
+		portB 56 before [1,500] portB 58
+		portB 58 before [1,500] portB 60
+		channel 41 start_before_start [0,0] portF 53
+		channel 37 end_before_end [0,0] portF 49
+		channel 39 start_before_start [0,0] portF 51
+		portF 48 before [0,500] portF 49
+		portF 51 before [1,500] portF 53
+		channel 41 during [0,infty]  [0,infty] main 46
+		channel 37 during [0,infty]  [0,infty] main 44
+		channel 39 during [0,infty]  [0,infty] main 46
+		main 43 before [0,500] main 44
+		main 44 before [1,500] main 46
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 62 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 63 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

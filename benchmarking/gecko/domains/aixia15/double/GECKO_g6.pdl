@@ -1,0 +1,16 @@
+PROBLEM GECKO_Problem (DOMAIN GECKO_Domain) 
+{
+	f0 <fact> TM_Channel.channel.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f1 <fact> TM_ChangeOverTrace.change_over.CO_FB() AT [0, 0] [1, +INF] [1, +INF];
+	f2 <fact> TM_NeighborF.neighborF.Available() AT [0, 0] [500, 500] [500, 500];
+	f3 <fact> TM_NeighborB.neighborB.Available() AT [0, 0] [500, 500] [500, 500];
+	f4 <fact> TM_NeighborR.neighborR.Available() AT [0, 0] [500, 500] [500, 500];
+	f5 <fact> TM_NeighborL.neighborL.Available() AT [0, 0] [500, 500] [500, 500];
+	
+	g0 <goal,!> TM_Channel.channel.Channel_R1_L2() AT [0, +INF] [1, +INF] [1, +INF];
+	g1 <goal,!> TM_Channel.channel.Channel_B_F() AT [0, +INF] [1, +INF] [1, +INF];
+	g2 <goal,!> TM_Channel.channel.Channel_F_R2() AT [0, +INF] [1, +INF] [1, +INF];
+	g3 <goal,!> TM_Channel.channel.Channel_L1_R2() AT [0, +INF] [1, +INF] [1, +INF];
+	g4 <goal,!> TM_Channel.channel.Channel_F_B() AT [0, +INF] [1, +INF] [1, +INF];
+	g5 <goal,!> TM_Channel.channel.Channel_R2_L2() AT [0, +INF] [1, +INF] [1, +INF];
+}

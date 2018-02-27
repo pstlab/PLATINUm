@@ -1,0 +1,103 @@
+horizon = 500
+plan {
+	timelines {
+		channel {
+			token 1155 { Idle [1,482] [1, 482] }
+			token 1156 { Channel_F_B [6,483] [1, 482] }
+			token 1157 { Idle [11,488] [5, 482] }
+			token 1158 { Channel_L_R [12,489] [1, 478] }
+			token 1159 { Idle [13,490] [1, 478] }
+			token 1160 { Channel_R_L [23,500] [10, 487] }
+			unallocated 1161 { [500,500] [0,477] }
+		}
+		cross {
+			token 1162 { Down [6,483] [6, 483] }
+			token 1163 { MovingUp [11,488] [5, 5] }
+			token 1164 { Up [23,500] [12, 489] }
+			unallocated 1165 { [500,500] [0,477] }
+		}
+		main {
+			token 1166 { Still [1,482] [1, 482] }
+			token 1167 { Backward [6,500] [1, 499] }
+			unallocated 1168 { [500,500] [0,494] }
+		}
+		cconveyor {
+			token 1169 { Still [1,488] [1, 488] }
+			token 1170 { Forward [12,489] [1, 488] }
+			token 1171 { Still [13,490] [1, 478] }
+			token 1172 { Backward [23,500] [10, 487] }
+			unallocated 1173 { [500,500] [0,477] }
+		}
+		portF {
+			token 1174 { Idle [1,482] [1, 482] }
+			token 1175 { Receiving [6,500] [5, 25] }
+			unallocated 1176 { [500,500] [0,494] }
+		}
+		portB {
+			token 1177 { Idle [1,478] [1, 478] }
+			token 1178 { Sending [6,483] [5, 25] }
+			unallocated 1179 { [500,500] [17,494] }
+		}
+		portL {
+			token 1180 { Idle [11,488] [11, 488] }
+			token 1181 { Receiving [16,494] [5, 25] }
+			token 1182 { Idle [18,495] [1, 479] }
+			token 1183 { Sending [23,500] [5, 25] }
+			unallocated 1184 { [500,500] [0,477] }
+		}
+		portR {
+			token 1185 { Idle [1,484] [1, 484] }
+			token 1186 { Sending [12,489] [5, 25] }
+			token 1187 { Idle [13,490] [1, 478] }
+			token 1188 { Receiving [18,495] [5, 25] }
+			unallocated 1189 { [500,500] [5,482] }
+		}
+	}
+	relations {
+		channel 1155 before [0,500] channel 1156
+		channel 1156 before [1,500] channel 1158
+		channel 1158 before [1,500] channel 1160
+		channel 1160 start_before_start [0,0] portR 1188
+		channel 1158 end_before_end [0,0] portR 1186
+		portR 1185 before [0,500] portR 1188
+		portR 1186 before [1,500] portR 1188
+		portR 1186 after [0,500] portR 1185
+		channel 1160 end_before_end [0,0] portL 1183
+		portR 1188 before [0,infty] portL 1183
+		channel 1158 start_before_start [0,0] portL 1181
+		portL 1180 before [0,500] portL 1183
+		portL 1181 before [1,500] portL 1183
+		portL 1181 after [0,500] portL 1180
+		channel 1156 end_before_end [0,0] portB 1178
+		portB 1177 before [0,500] portB 1178
+		channel 1156 start_before_start [0,0] portF 1175
+		portF 1174 before [0,500] portF 1175
+		channel 1160 during [0,infty]  [0,infty] cconveyor 1172
+		channel 1158 during [0,infty]  [0,infty] cconveyor 1170
+		cconveyor 1169 before [0,500] cconveyor 1170
+		cconveyor 1170 before [1,500] cconveyor 1172
+		channel 1156 during [0,infty]  [0,infty] main 1167
+		main 1166 before [0,500] main 1167
+		channel 1160 during [0,infty]  [0,infty] cross 1164
+		channel 1156 during [0,infty]  [0,infty] cross 1162
+		channel 1158 during [0,infty]  [0,infty] cross 1164
+		cross 1162 before [5,500] cross 1164
+	}
+}
+observation {
+	timelines {
+		neighborF {
+			token 1190 { Available [500,500] [500, 500] }
+		}
+		neighborB {
+			token 1191 { Available [500,500] [500, 500] }
+		}
+		neighborL {
+			token 1192 { Available [500,500] [500, 500] }
+		}
+		neighborR {
+			token 1193 { Available [500,500] [500, 500] }
+		}
+	}
+}
+

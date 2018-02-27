@@ -1,0 +1,57 @@
+horizon = 700
+plan {
+	timelines {
+		op_trace {
+			token 876  { Earth [1,511] [1, 511] }
+			token 877  { Slewing [11,521] [10, 10] }
+			token 878  { Science [34,544] [23, 533] }
+			token 879  { Slewing [44,554] [10, 10] }
+			token 880  { Earth [450,555] [1, 511] }
+			token 881 uncontrollable { Comm [465,570] [15, 35] }
+			unallocated 882 { [700,700] [130,235] }
+		}
+		inst1 {
+			token 883  { Idle [8,518] [8, 518] }
+			token 884  { Warmup [11,521] [3, 3] }
+			token 885 uncontrollable { Process [21,531] [10, 30] }
+			token 886  { Turnoff [24,534] [3, 3] }
+			token 887  { Idle [34,700] [10, 676] }
+			unallocated 888 { [700,700] [0,666] }
+		}
+		inst2 {
+			token 889  { Idle [21,531] [21, 531] }
+			token 890  { Warmup [24,534] [3, 3] }
+			token 891 uncontrollable { Process [34,544] [10, 30] }
+			token 892  { Turnoff [37,547] [3, 3] }
+			token 893  { Idle [38,700] [1, 663] }
+			unallocated 894 { [700,700] [0,662] }
+		}
+	}
+	relations {
+		op_trace 878 before [0,infty] op_trace 881
+		op_trace 876 before [0,700] op_trace 881
+		op_trace 878 before [11,700] op_trace 881
+		op_trace 878 after [10,700] op_trace 876
+		op_trace 881 during [0,infty]  [0,infty] window 896
+		op_trace 878 contains [0,infty]  [0,infty] inst2 891
+		inst2 891 before [0,infty] inst2 893
+		inst2 889 before [16,700] inst2 893
+		inst2 891 before [3,700] inst2 893
+		inst2 891 after [3,700] inst2 889
+		op_trace 878 contains [0,infty]  [0,infty] inst1 885
+		inst1 885 before [3,infty] inst2 891
+		inst2 891 during [0,infty]  [0,infty] inst1 887
+		inst1 883 before [3,700] inst1 885
+		inst1 885 before [3,700] inst1 887
+	}
+}
+observation {
+	timelines {
+		window {
+			token 895  { NotAvailable [450,450] [450, 450] }
+			token 896  { Available [500,570] [50, 120] }
+			token 897  { NotAvailable [700,700] [130, 200] }
+		}
+	}
+}
+
