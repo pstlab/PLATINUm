@@ -39,34 +39,42 @@ public class DCDispatcher extends Dispatcher
 		
 		// evaluate current status
 		DCResult answer = this.executive.checker.evaluate(status);
-		// check answer type
-		switch (answer.getType())
-		{
-			case WAIT : 
-			{
-				/*
-				 * TODO : no action to perform
-				 */
-			}
-			break;
 		
-			case DISPATCH : 
+		if (answer != null ) 
+		{
+			// check answer type
+			switch (answer.getType())
 			{
-				
-				/*
-				 * TODO : do dispatch according to DC checker answer
-				 */
-				
-			}
-			break;
+				case WAIT : 
+				{
+					/*
+					 * TODO : no action to perform
+					 */
+				}
+				break;
 			
-			case FAILURE : 
-			{
-				/*
-				 * TODO : do manage DC checker failure 
-				 */
+				
+				case DISPATCH : 
+				{
+					
+					/*
+					 * TODO : do dispatch according to DC checker answer
+					 */
+					
+				}
+				break;
+				
+				case FAILURE : 
+				{
+					/*
+					 * TODO : do manage DC checker failure 
+					 */
+				}
+				break;
 			}
-			break;
+		}
+		else {
+			// null answer
 		}
 	}
 	

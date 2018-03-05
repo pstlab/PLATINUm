@@ -1,5 +1,7 @@
 package it.istc.pst.platinum.executive.dc;
 
+import java.util.List;
+
 import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
@@ -17,7 +19,7 @@ public class DCMonitor extends Monitor
 	 * 
 	 */
 	protected DCMonitor() {
-		super();
+		super();	
 	}
 	
 	/**
@@ -29,9 +31,12 @@ public class DCMonitor extends Monitor
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
 		
-		/*
-		 * TODO : check received notifications 
-		 */
+		// get all received feedbacks and clear executive input queue
+		List<String> feedbacks = this.executive.getAndClearFeedbacks();
+		logger.info("---> Feedback received [" + feedbacks.size()  + "]");
+		for (String feedback : feedbacks) {
+			logger.info("\t\t- Feedback: " + feedback + "\n");
+		}
 		
 		// create notification status
 		PlanExecutionStatus status = new PlanExecutionStatus(tau);
@@ -50,3 +55,5 @@ public class DCMonitor extends Monitor
 		
 	}
 }
+
+

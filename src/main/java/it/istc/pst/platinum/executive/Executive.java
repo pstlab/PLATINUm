@@ -72,6 +72,14 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 	 * 
 	 * @return
 	 */
+	public long getHorizon() {
+		return this.pdb.getHorizon();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public ExecutionStatus getStatus() {
 		return this.status;
 	}
@@ -232,8 +240,6 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 			this.lock.notifyAll();
 		}
 	}
-
-	
 	
 	/**
 	 * Blocking method which start the execution of the plan and waits for completion.
@@ -259,6 +265,9 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 		
 		try
 		{
+			// perform setting operations just before execution
+			this.doPreExecute();
+			
 			// setup the clock
 			this.clock = new AtomicClockManager(this);
 			// start clock
@@ -394,5 +403,12 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 		this.window.setDataSet(this.pdb.getHorizon(), this.getNodes());
 		// display current execution state
 		this.window.display(tau);
+	}
+
+	/**
+	 * Perform some setting operation just before starting execution
+	 */
+	protected void doPreExecute() {
+		// nothing to do by default
 	}
 }
