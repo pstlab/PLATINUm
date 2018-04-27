@@ -17,7 +17,8 @@ public class DDLTemporalRelationType extends CommonTree {
         super(payload);
     }
 
-    void parse() {
+    void parse() 
+    {
         String relation_type = getText();
         if (relation_type.equals("MEETS")) {
             relationType = TemporalRelationType.MEETS;

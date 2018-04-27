@@ -30,7 +30,9 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.AfterR
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.ContainsRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.DuringRelation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EndEndRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EndsDuringRelation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartStartRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartsDuringRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
@@ -55,6 +57,7 @@ import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.MetByIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.StartsDuringIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
+import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 
 /**
  * 
@@ -354,8 +357,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case BEFORE: 
 						{
 							BeforeRelation before = (BeforeRelation) relation;
@@ -380,8 +384,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case CONTAINS: 
 						{
 							ContainsRelation contains = (ContainsRelation) relation;
@@ -406,8 +411,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case DURING: 
 						{
 							DuringRelation during = (DuringRelation) relation;
@@ -432,8 +438,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case ENDS_DURING: 
 						{
 							EndsDuringRelation endsduring = (EndsDuringRelation) relation;
@@ -458,8 +465,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case EQUALS: 
 						{
 							// create temporal constraint
@@ -480,8 +488,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case MEETS: 
 						{
 							// create temporal constraint
@@ -502,8 +511,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case MET_BY: 
 						{
 							// create temporal constraint
@@ -524,8 +534,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
 						case STARTS_DURING: 
 						{
 							StartsDuringRelation startsduring = (StartsDuringRelation) relation;
@@ -550,8 +561,66 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committed.add(constraint);
-							break;
 						}
+						break;
+						
+						case START_START : 
+						{
+							// get relation
+							StartStartRelation ss = (StartStartRelation) relation;
+							// create temporal constraint
+							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+							// check reference
+							if (relation.getReference().equals(goal)) {
+								constraint.setReference(i.getStartTime());
+								constraint.setTarget(relation.getTarget().getToken().getInterval().getStartTime());
+							}
+							
+							// check target
+							if (relation.getTarget().equals(goal)) {
+								constraint.setReference(relation.getReference().getToken().getInterval().getStartTime());
+								constraint.setTarget(i.getStartTime());
+							}
+							
+							// set bounds
+							constraint.setDistanceLowerBound(ss.getLowerBound());
+							constraint.setDistanceUpperBound(ss.getUpperBound());
+							// propagate
+							this.tdb.propagate(constraint);
+							// add to committed
+							committed.add(constraint);
+						}
+						break;
+						
+						case END_END : 
+						{
+							// get relation
+							EndEndRelation ee = (EndEndRelation) relation;
+							// create temporal constraint
+							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+							// check reference
+							if (relation.getReference().equals(goal)) {
+								constraint.setReference(i.getEndTime());
+								constraint.setTarget(relation.getTarget().getToken().getInterval().getEndTime());
+							}
+							
+							// check target
+							if (relation.getTarget().equals(goal)) {
+								constraint.setReference(relation.getReference().getToken().getInterval().getEndTime());
+								constraint.setTarget(i.getEndTime());
+							}
+							
+							// set bounds
+							constraint.setDistanceLowerBound(ee.getLowerBound());
+							constraint.setDistanceUpperBound(ee.getUpperBound());
+							// propagate
+							this.tdb.propagate(constraint);
+							// add to committed
+							committed.add(constraint);
+						}
+						break;
+						
+						
 						default: {
 							throw new RuntimeException("Unknownw relation type: " + relation.getType() + "\n");
 						}
@@ -650,8 +719,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
 						case BEFORE: 
 						{
 							BeforeRelation before = (BeforeRelation) relation;
@@ -676,8 +746,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
 						case CONTAINS: 
 						{
 							ContainsRelation contains = (ContainsRelation) relation;
@@ -702,8 +773,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
 						case DURING: 
 						{
 							DuringRelation during = (DuringRelation) relation;
@@ -728,8 +800,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
 						case ENDS_DURING: 
 						{
 							EndsDuringRelation endsduring = (EndsDuringRelation) relation;
@@ -754,8 +827,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
 						case EQUALS: 
 						{
 							// create temporal constraint
@@ -776,8 +850,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
 						case MEETS: 
 						{
 							// create temporal constraint
@@ -798,8 +873,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
 						case MET_BY: 
 						{
 							// create temporal constraint
@@ -820,8 +896,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
+						
 						case STARTS_DURING: 
 						{
 							StartsDuringRelation startsduring = (StartsDuringRelation) relation;
@@ -846,8 +924,66 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 							this.tdb.propagate(constraint);
 							// add to committed 
 							committedConstraints.add(constraint);
-							break;
 						}
+						break;
+						
+						
+						case START_START : 
+						{
+							// get relation
+							StartStartRelation ss = (StartStartRelation) relation;
+							// create temporal constraint
+							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+							// check reference
+							if (relation.getReference().equals(goal)) {
+								constraint.setReference(i.getStartTime());
+								constraint.setTarget(relation.getTarget().getToken().getInterval().getStartTime());
+							}
+							
+							// check target
+							if (relation.getTarget().equals(goal)) {
+								constraint.setReference(relation.getReference().getToken().getInterval().getStartTime());
+								constraint.setTarget(i.getStartTime());
+							}
+							
+							// set bounds
+							constraint.setDistanceLowerBound(ss.getLowerBound());
+							constraint.setDistanceUpperBound(ss.getUpperBound());
+							// propagate
+							this.tdb.propagate(constraint);
+							// add to committed
+							committedConstraints.add(constraint);
+						}
+						break;
+						
+						case END_END : 
+						{
+							// get relation
+							EndEndRelation ee = (EndEndRelation) relation;
+							// create temporal constraint
+							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+							// check reference
+							if (relation.getReference().equals(goal)) {
+								constraint.setReference(i.getEndTime());
+								constraint.setTarget(relation.getTarget().getToken().getInterval().getEndTime());
+							}
+							
+							// check target
+							if (relation.getTarget().equals(goal)) {
+								constraint.setReference(relation.getReference().getToken().getInterval().getEndTime());
+								constraint.setTarget(i.getEndTime());
+							}
+							
+							// set bounds
+							constraint.setDistanceLowerBound(ee.getLowerBound());
+							constraint.setDistanceUpperBound(ee.getUpperBound());
+							// propagate
+							this.tdb.propagate(constraint);
+							// add to committed
+							committedConstraints.add(constraint);
+						}
+						break;
+						
 						default: {
 							throw new RuntimeException("Unknownw relation type: " + relation.getType() + "\n");
 						}

@@ -8,10 +8,12 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.AfterR
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.ContainsRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.DuringRelation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EndEndRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EndsDuringRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EqualsRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MeetsRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MetByRelation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartStartRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartsDuringRelation;
 
 /**
@@ -55,6 +57,18 @@ public enum RelationType {
 	 * Allen's contains temporal relation
 	 */
 	CONTAINS(ContainsRelation.class.getName(),
+			ConstraintCategory.TEMPORAL_CONSTRAINT),
+	
+	/**
+	 * start-start temporal interval constraint
+	 */
+	START_START(StartStartRelation.class.getName(),
+			ConstraintCategory.TEMPORAL_CONSTRAINT),
+	
+	/**
+	 * end-end temporal interval constraint
+	 */
+	END_END(EndEndRelation.class.getName(), 
 			ConstraintCategory.TEMPORAL_CONSTRAINT),
 	
 	/**

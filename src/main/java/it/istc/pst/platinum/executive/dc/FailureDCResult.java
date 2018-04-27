@@ -10,7 +10,7 @@ public class FailureDCResult extends DCResult
 	/**
 	 * 
 	 */
-	protected FailureDCResult() {
+	public FailureDCResult() {
 		super(DCResultType.FAILURE);
 	}
 }

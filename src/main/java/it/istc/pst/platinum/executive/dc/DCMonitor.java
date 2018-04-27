@@ -1,7 +1,5 @@
 package it.istc.pst.platinum.executive.dc;
 
-import java.util.List;
-
 import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
@@ -19,24 +17,22 @@ public class DCMonitor extends Monitor
 	 * 
 	 */
 	protected DCMonitor() {
-		super();	
+		super();
 	}
 	
 	/**
+	 * @throws Exception 
 	 * 
 	 */
 	@Override
-	public void handleTick(long tick) 
+	public void handleTick(long tick)
 	{
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
 		
-		// get all received feedbacks and clear executive input queue
-		List<String> feedbacks = this.executive.getAndClearFeedbacks();
-		logger.info("---> Feedback received [" + feedbacks.size()  + "]");
-		for (String feedback : feedbacks) {
-			logger.info("\t\t- Feedback: " + feedback + "\n");
-		}
+		/*
+		 * TODO : check received notifications 
+		 */
 		
 		// create notification status
 		PlanExecutionStatus status = new PlanExecutionStatus(tau);
@@ -46,14 +42,17 @@ public class DCMonitor extends Monitor
 		 */
 		
 		// notify DC checker
-		if (!this.executive.checker.notify(status)) {
-			
-			/*
-			 * TODO : handle failure
-			 */
+		try {
+			if (!this.executive.checker.notify(status)) {
+				
+				/*
+				 * TODO : handle failure
+				 */
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}
 }
-
-

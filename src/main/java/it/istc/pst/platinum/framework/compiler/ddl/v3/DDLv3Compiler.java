@@ -565,6 +565,28 @@ public class DDLv3Compiler extends DomainCompiler
 						}
 					});
 		}
+		else if (ddlRelType.getText().equalsIgnoreCase("start-start")) {
+			problem.addTemporalConstraint(RelationType.START_START, reference, target, 
+					new long[][] {
+						new long[] {
+								ddlRelType.getFirstRange().getMin(),
+								ddlRelType.getFirstRange().getMax() > this.horizon ? 
+										this.horizon : 
+										ddlRelType.getFirstRange().getMax()
+						}
+			});
+		}
+		else if (ddlRelType.getText().equalsIgnoreCase("end-end")) {
+			problem.addTemporalConstraint(RelationType.END_END, reference, target, 
+					new long[][] {
+						new long[] {
+								ddlRelType.getFirstRange().getMin(),
+								ddlRelType.getFirstRange().getMax() > this.horizon ? 
+										this.horizon : 
+										ddlRelType.getFirstRange().getMax()
+						}
+			});
+		}
 		else if (ddlRelType.getText().equalsIgnoreCase("starts-during")) {
 			problem.addTemporalConstraint(RelationType.STARTS_DURING, reference, target, 
 					new long[][] {
@@ -2462,6 +2484,33 @@ public class DDLv3Compiler extends DomainCompiler
 									ddlRelType.getFirstRange().getMax()
 						}
 				});
+		}
+		else if (ddlRelType.getText().equalsIgnoreCase("start-start")) {
+			// create start-start constraint
+			rule.addTemporalConstraint(reference, target, 
+					RelationType.START_START, 
+					new long[][] {
+						new long[] {
+								ddlRelType.getFirstRange().getMin(),
+								ddlRelType.getFirstRange().getMax() > this.horizon ? 
+										this.horizon : 
+										ddlRelType.getFirstRange().getMax()
+						}
+			});
+			
+		}
+		else if (ddlRelType.getText().equalsIgnoreCase("end-end")) {
+			// create end-end constraint
+			rule.addTemporalConstraint(reference, target, 
+					RelationType.END_END, 
+					new long[][] {
+						new long[] {
+								ddlRelType.getFirstRange().getMin(),
+								ddlRelType.getFirstRange().getMax() > this.horizon ? 
+										this.horizon : 
+										ddlRelType.getFirstRange().getMax()
+						}
+			});
 		}
 		else if (ddlRelType.getText().equalsIgnoreCase("starts-during")) {
 			rule.addTemporalConstraint(reference, target,

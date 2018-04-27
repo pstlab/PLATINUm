@@ -44,6 +44,7 @@ public class HierarchicalSearchHeuristic extends FlawSelectionHeuristic implemen
 				FlawType.RESOURCE_PLANNING,
 				FlawType.RESOURCE_OVERFLOW,
 				FlawType.TIMELINE_OVERFLOW,
+//				FlawType.TIMELINE_BEHAVIOR_PLANNING,
 		};
 	}
 	

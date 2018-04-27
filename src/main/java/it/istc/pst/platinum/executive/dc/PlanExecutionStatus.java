@@ -12,14 +12,14 @@ import it.istc.pst.platinum.executive.pdb.ExecutionNode;
  */
 public class PlanExecutionStatus 
 {
-	private long time;
-	private Map<String, String> status;
+	public long time;
+	public Map<String, String> status;
 
 	/**
 	 * 
 	 * @param time
 	 */
-	protected PlanExecutionStatus(long time) {
+	public PlanExecutionStatus(long time) {
 		this.time = time;
 		this.status = new HashMap<>();
 	}

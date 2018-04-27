@@ -500,7 +500,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @param constraint
 	 * @throws Exception
 	 */
-	public  void propagate(TemporalConstraint constraint) 
+	public void propagate(TemporalConstraint constraint) 
 			throws TemporalConstraintPropagationException 
 	{
 		try 

@@ -11,6 +11,7 @@ public interface DCChecker
 	 * 
 	 * @param status
 	 * @return
+	 * 
 	 */
 	public DCResult evaluate(PlanExecutionStatus status);
 	
@@ -18,6 +19,7 @@ public interface DCChecker
 	 * 
 	 * @param status
 	 * @return
+	 * 
 	 */
 	public boolean notify(PlanExecutionStatus status);
 	

@@ -9,8 +9,6 @@ PROBLEM BATTERY_SATELLITE_COMPLETE_4G_1S_1W (DOMAIN BATTERY_SATELLITE_COMPLETE) 
 	g0 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
 	g1 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
 	g2 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
-	g3 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];
-
-
+	g3 <goal> Satellite.operations.Science() AT [0, +INF] [0, +INF] [0, +INF];	
 }
 

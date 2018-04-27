@@ -2,9 +2,20 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 {
 	TEMPORAL_MODULE temporal_module = [0, 500], 100;
 	
+	PAR_TYPE EnumerationParameterType priority_param = { low, medium, high };
+	
 	COMP_TYPE RenewableResource ChannelBandwidthType(10)
 	
 	COMP_TYPE ConsumableResource BatteryLevelType (0, 10)
+	
+	COMP_TYPE SingletonStateVariable Example(Value1(priority_param), Value2(priority_param)) {
+		
+		VALUE Value1(?priority) [1, +INF]
+		MEETS {
+			Value2(?priority2);
+		}
+		
+	}
 	
 	COMP_TYPE SingletonStateVariable SatelliteType (Idle(), Science(), _Communicate())
 	{

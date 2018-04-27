@@ -23,10 +23,11 @@ public class DCDispatcher extends Dispatcher
 	}
 	
 	/**
+	 *
 	 * 
 	 */
 	@Override
-	public void handleTick(long tick) 
+	public void handleTick(long tick)
 	{
 		// get tau 
 		long tau = this.executive.convertTickToTau(tick);
@@ -39,42 +40,34 @@ public class DCDispatcher extends Dispatcher
 		
 		// evaluate current status
 		DCResult answer = this.executive.checker.evaluate(status);
-		
-		if (answer != null ) 
+		// check answer type
+		switch (answer.getType())
 		{
-			// check answer type
-			switch (answer.getType())
+			case WAIT : 
 			{
-				case WAIT : 
-				{
-					/*
-					 * TODO : no action to perform
-					 */
-				}
-				break;
-			
-				
-				case DISPATCH : 
-				{
-					
-					/*
-					 * TODO : do dispatch according to DC checker answer
-					 */
-					
-				}
-				break;
-				
-				case FAILURE : 
-				{
-					/*
-					 * TODO : do manage DC checker failure 
-					 */
-				}
-				break;
+				/*
+				 * TODO : no action to perform
+				 */
 			}
-		}
-		else {
-			// null answer
+			break;
+		
+			case DISPATCH : 
+			{
+				
+				/*
+				 * TODO : do dispatch according to DC checker answer
+				 */
+				
+			}
+			break;
+			
+			case FAILURE : 
+			{
+				/*
+				 * TODO : do manage DC checker failure 
+				 */
+			}
+			break;
 		}
 	}
 	
