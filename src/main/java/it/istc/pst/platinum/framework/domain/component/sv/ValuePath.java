@@ -1,6 +1,8 @@
 package it.istc.pst.platinum.framework.domain.component.sv;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
@@ -12,22 +14,37 @@ import it.istc.pst.platinum.framework.domain.component.ComponentValue;
  */
 public class ValuePath implements Comparable<ValuePath> 
 {
-	private List<ComponentValue> steps;
+	private Deque<ComponentValue> steps;
 	
 	/**
 	 * 
 	 * @param steps
 	 */
 	protected ValuePath(List<ComponentValue> steps) {
-		this.steps = new ArrayList<>(steps);
+		this.steps = new LinkedList<>(steps);
+	}
+	
+	/**
+	 * 
+	 */
+	protected ValuePath() {
+		this.steps = new LinkedList<>();
 	}
 	
 	/**
 	 * 
 	 * @param step
 	 */
-	public void addStep(ComponentValue step) {
-		this.steps.add(step);
+	public void addLastStep(ComponentValue step) {
+		this.steps.addLast(step);
+	}
+	
+	/**
+	 * 
+	 * @param step
+	 */
+	public void addFirstStep(ComponentValue step) {
+		this.steps.addFirst(step);
 	}
 	
 	/**
@@ -36,6 +53,15 @@ public class ValuePath implements Comparable<ValuePath>
 	 */
 	public List<ComponentValue> getSteps() {
 		return new ArrayList<>(steps);
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public boolean contains(ComponentValue value) {
+		return this.steps.contains(value);
 	}
 	
 	/**

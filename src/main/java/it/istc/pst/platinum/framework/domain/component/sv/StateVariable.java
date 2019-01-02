@@ -166,29 +166,87 @@ public abstract class StateVariable extends DomainComponent
 	 * @param target
 	 * @return
 	 */
-	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) 
+	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) {
+		// call recursive function to compute all acyclic paths between state variable values
+		return this.computePaths(source, target, new ArrayList<>());
+	}
+	
+	/**
+	 * 
+	 * @param source
+	 * @param target
+	 * @param visited
+	 * @return
+	 */
+	private List<ValuePath> computePaths(ComponentValue source, ComponentValue target, List<ComponentValue> visited)
 	{
-		// list of available paths
+		// result list
 		List<ValuePath> result = new ArrayList<>();
-		// check source and target
-		if (source.equals(target)) 
+		
+		// compare source value and target value
+		if (source.equals(target)) {
+			// create value path
+			ValuePath path = new ValuePath();
+			// add last step
+			path.addLastStep(source);
+			// add to result
+			result.add(path);
+		}
+		else
 		{
-			// initialize the path
-			List<ComponentValue> steps = new ArrayList<>();
-			steps.add(source);
-			// get successors
-			for (ComponentValue value : this.getDirectSuccessors(source)) {
-				// directly calls
-				this.computePaths(steps, value, target, result);
+			// add current node to visited list
+			visited.add(source);
+			// navigate the state variable towards the target value
+			for (ComponentValue value : this.getDirectSuccessors(source))
+			{
+				// check cycle
+				if (!visited.contains(value))
+				{
+					// get partial paths found through recursive call
+					List<ValuePath> paths = this.computePaths(value, target, visited);
+					// aggregate and build the result
+					for (ValuePath path : paths) 
+					{
+						// add current value the current (partial) path 
+						path.addFirstStep(source);
+						// add the current (partial) path to the result list
+						result.add(path);
+					}
+				}
 			}
+			
+			// remove visited value
+			visited.remove(source);
 		}
-		else {
-			// search for paths
-			this.computePaths(new ArrayList<ComponentValue>(), source, target, result);
-		}
-		// get resulting paths
+		
+		// get list of paths
 		return result;
 	}
+	
+	
+//	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) 
+//	{
+//		// list of available paths
+//		List<ValuePath> result = new ArrayList<>();
+//		// check source and target
+//		if (source.equals(target)) 
+//		{
+//			// initialize the path
+//			List<ComponentValue> steps = new ArrayList<>();
+//			steps.add(source);
+//			// get successors
+//			for (ComponentValue value : this.getDirectSuccessors(source)) {
+//				// directly calls
+//				this.computePaths(steps, value, target, result);
+//			}
+//		}
+//		else {
+//			// search for paths
+//			this.computePaths(new ArrayList<ComponentValue>(), source, target, result);
+//		}
+//		// get resulting paths
+//		return result;
+//	}
 	
 	/**
 	 * 
@@ -229,39 +287,39 @@ public abstract class StateVariable extends DomainComponent
 		return "[StateVariable name= " + this.name + " label= " + this.type.getLabel()+ "]";
 	}
 	
-	/**
-	 * 
-	 * @param steps
-	 * @param current
-	 * @param target
-	 * @param result
-	 */
-	private void computePaths(List<ComponentValue> steps, ComponentValue current, ComponentValue target, List<ValuePath> result) 
-	{
-		// base step
-		if (current.equals(target)) {
-			// add target
-			steps.add(current);
-			// add path to the result
-			result.add(new ValuePath(steps));
-			// remove last added element
-			steps.remove(steps.size() -1);
-		}
-		else	// recursive step
-		{
-			//add current value to the path
-			steps.add(current);
-			// recursive calls
-			for (ComponentValue successor : this.getDirectSuccessors(current)) {
-				// check cycle
-				if (!steps.contains(successor)) {
-					// recursive call
-					this.computePaths(steps, successor, target, result);
-				}
-			}
-			// remove last added element
-			steps.remove(steps.size() - 1);
-		}
-	}
+//	/**
+//	 * 
+//	 * @param steps
+//	 * @param current
+//	 * @param target
+//	 * @param result
+//	 */
+//	private void computePaths(List<ComponentValue> steps, ComponentValue current, ComponentValue target, List<ValuePath> result) 
+//	{
+//		// base step
+//		if (current.equals(target)) {
+//			// add target
+//			steps.add(current);
+//			// add path to the result
+//			result.add(new ValuePath(steps));
+//			// remove last added element
+//			steps.remove(steps.size() -1);
+//		}
+//		else	// recursive step
+//		{
+//			//add current value to the path
+//			steps.add(current);
+//			// recursive calls
+//			for (ComponentValue successor : this.getDirectSuccessors(current)) {
+//				// check cycle
+//				if (!steps.contains(successor)) {
+//					// recursive call
+//					this.computePaths(steps, successor, target, result);
+//				}
+//			}
+//			// remove last added element
+//			steps.remove(steps.size() - 1);
+//		}
+//	}
 	
 }
