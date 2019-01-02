@@ -1,6 +1,5 @@
 package it.istc.pst.platinum.framework.microkernel.query;
 
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalPseudoControllabilityQuery;
@@ -59,16 +58,16 @@ public enum TemporalQueryType
 	 * actual duration of the interval is tighter than the "domain"
 	 * duration
 	 */
-	INTERVAL_PSEUDO_CONTROLLABILITY(IntervalPseudoControllabilityQuery.class.getName()),
+	INTERVAL_PSEUDO_CONTROLLABILITY(IntervalPseudoControllabilityQuery.class.getName());
 	
-	/**
-	 * Compute the makespan of the temporal network by taking into account
-	 * controllable events of the network.
-	 * 
-	 * It is possible to specify a subset of temporal intervals for computing the 
-	 * makespan on.
-	 */
-	COMPUTE_MAKESPAN(ComputeMakespanQuery.class.getName());
+//	/**
+//	 * Compute the makespan of the temporal network by taking into account
+//	 * controllable events of the network.
+//	 * 
+//	 * It is possible to specify a subset of temporal intervals for computing the 
+//	 * makespan on.
+//	 */
+//	COMPUTE_MAKESPAN(ComputeMakespanQuery.class.getName());
 	
 	// query class name
 	private String className;

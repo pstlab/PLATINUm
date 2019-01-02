@@ -64,9 +64,18 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		try
 		{
 			// check pessimistic resource profile
-			ReservoirResourceProfile prp = this.component.computePessimisticResourceProfile();
-			// analyze the pessimistic profile and find peaks if any and generate production checkpoints
+			ReservoirResourceProfile prp = this.component.
+					computePessimisticResourceProfile();
+			/*
+			 * Analyze the pessimistic profile and find peaks if 
+			 * any and generate production checkpoints
+			 */
 			flaws = this.doComputeProfilePeaks(prp);
+			
+			
+			
+			
+			
 //			// check if any flaw has been found
 //			if (flaws.isEmpty()) 
 //			{

@@ -29,7 +29,7 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 	protected Set<Relation> rActivated;					// relation activated
 	
 	// abstract/relaxed level needed for strategies and heuristic evaluations
-	private double makespan;							// makespan resulting from the application of the solution
+//	private double makespan;							// makespan resulting from the application of the solution
 	
 	/**
 	 * 
@@ -164,30 +164,30 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 		this.rActivated.addAll(rels);
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public double getMakespan() {
-		return makespan;
-	}
-
-	/**
-	 * 
-	 * @param makespan
-	 */
-	public void setMakespan(double makespan) {
-		this.makespan = makespan;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public int compareTo(FlawSolution o) {
-		// default comparison of solutions on the related makespan
-		return this.makespan <= o.makespan ? -1 : 1;
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public double getMakespan() {
+//		return makespan;
+//	}
+//
+//	/**
+//	 * 
+//	 * @param makespan
+//	 */
+//	public void setMakespan(double makespan) {
+//		this.makespan = makespan;
+//	}
+//	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public int compareTo(FlawSolution o) {
+//		// default comparison of solutions on the related makespan
+//		return this.makespan <= o.makespan ? -1 : 1;
+//	}
 	
 	
 	/**

@@ -38,7 +38,6 @@ import it.istc.pst.platinum.framework.time.lang.allen.EqualsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.MetByIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.StartsDuringIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalPseudoControllabilityQuery;
@@ -367,17 +366,17 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		// check query type
 		switch (query.getType()) 
 		{
-			// compute the makespan of the temporal network
-			case COMPUTE_MAKESPAN : 
-			{
-				// get query
-				ComputeMakespanQuery mkQuery = (ComputeMakespanQuery) query;
-				// get subset of intervals if any
-				double mk = this.computeMakespan(mkQuery.getSubset());
-				// set the value
-				mkQuery.setMakespan(mk);
-			}
-			break;
+//			// compute the makespan of the temporal network
+//			case COMPUTE_MAKESPAN : 
+//			{
+//				// get query
+//				ComputeMakespanQuery mkQuery = (ComputeMakespanQuery) query;
+//				// get subset of intervals if any
+//				double mk = this.computeMakespan(mkQuery.getSubset());
+//				// set the value
+//				mkQuery.setMakespan(mk);
+//			}
+//			break;
 		
 			// check distance between intervals
 			case INTERVAL_DISTANCE : 
@@ -409,18 +408,40 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				TemporalInterval a = overlap.getReference();
 				TemporalInterval b = overlap.getTarget();
 				
-				// check distance between A and B
+				// compute distance between A and B
 				IntervalDistanceQuery distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
 				distance.setReference(a);
 				distance.setTarget(b);
 				// process query
 				this.process(distance);
-				
-				// get min and max
+				// get distance bounds
 				long dmin = distance.getDistanceLowerBound();
 				long dmax = distance.getDistanceUpperBound();
+				// check if A < B 
+				boolean ab = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
+						
+						
+				// compute distance between B and A 
+				distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
+				distance.setReference(b);
+				distance.setTarget(a);
+				// process query
+				this.process(distance);
+				// get distance bounds
+				dmin = distance.getDistanceLowerBound();
+				dmax = distance.getDistanceUpperBound();
+				// check if B < A
+				boolean ba = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
+				
+				
 				// set overlapping result
-				overlap.setOverlapping(!((dmin == 0 && dmax == 0) || (dmin >= 0 && dmax > 0)));
+				overlap.setCanOverlap(!ab && !ba);
+				// print logging message
+				logger.debug("[" + this.getClass().getName() + "] Processing query INTERVAL_OVERLAP:\n"
+						+ "- Temporal Interval (A): " + a + "\n"
+						+ "- Temporal Interval (B): " + b + "\n"
+						+ "- Computed (flexible) distance: [dmin= " + dmin + ", dmax= " + dmax +"]\n"
+						+ "- Answer to query: " + overlap.canOverlap());
 			}
 			break;
 			
@@ -997,47 +1018,47 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		return c;
 	}
 	
-	/**
-	 * 
-	 * @param subset
-	 * @return
-	 */
-	private double computeMakespan(Set<TemporalInterval> subset)
-	{
-		// initialize the makespan
-		double makespan = this.getOrigin();
-		// get the list of intervals to take into account
-		List<TemporalInterval> data = new ArrayList<>();
-		// check if a subset has been specified
-		if (!subset.isEmpty()) {
-			// take into account only a subset of intervals
-			data.addAll(subset);
-		}
-		else {
-			// get only controllable intervals
-			for (TemporalInterval i : this.intervals) {
-				// check controllability property
-				if (i.isControllable()) {
-					data.add(i);
-				}
-			}
-		}
-		
-		// compute the makespan by taking into account controllable intervals only
-		for (TemporalInterval i : data) 
-		{
-			// check interval schedule
-			IntervalScheduleQuery query = this.qf.create(TemporalQueryType.INTERVAL_SCHEDULE);
-			query.setInterval(i);
-			// process
-			this.process(query);
-			// update makespan
-			makespan = Math.max(makespan, i.getEndTime().getLowerBound());
-		}
-		
-		// get the computed value
-		return makespan;
-	}
+//	/**
+//	 * 
+//	 * @param subset
+//	 * @return
+//	 */
+//	private double computeMakespan(Set<TemporalInterval> subset)
+//	{
+//		// initialize the makespan
+//		double makespan = this.getOrigin();
+//		// get the list of intervals to take into account
+//		List<TemporalInterval> data = new ArrayList<>();
+//		// check if a subset has been specified
+//		if (!subset.isEmpty()) {
+//			// take into account only a subset of intervals
+//			data.addAll(subset);
+//		}
+//		else {
+//			// get only controllable intervals
+//			for (TemporalInterval i : this.intervals) {
+//				// check controllability property
+//				if (i.isControllable()) {
+//					data.add(i);
+//				}
+//			}
+//		}
+//		
+//		// compute the makespan by taking into account controllable intervals only
+//		for (TemporalInterval i : data) 
+//		{
+//			// check interval schedule
+//			IntervalScheduleQuery query = this.qf.create(TemporalQueryType.INTERVAL_SCHEDULE);
+//			query.setInterval(i);
+//			// process
+//			this.process(query);
+//			// update makespan
+//			makespan = Math.max(makespan, i.getEndTime().getLowerBound());
+//		}
+//		
+//		// get the computed value
+//		return makespan;
+//	}
 	
 	/**
 	 * This method checks if the STNU is pseudo-controllable. 

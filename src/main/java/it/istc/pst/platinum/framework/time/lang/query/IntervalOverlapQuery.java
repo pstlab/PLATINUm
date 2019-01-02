@@ -12,14 +12,14 @@ public final class IntervalOverlapQuery extends TemporalIntervalQuery
 {
 	private TemporalInterval reference;
 	private TemporalInterval target;
-	boolean overlapping;
+	boolean canOverlap;
 	
 	/**
 	 * 
 	 */
 	protected IntervalOverlapQuery() {
 		super(TemporalQueryType.INTERVAL_OVERLAP);
-		this.overlapping = false;
+		this.canOverlap = false;
 	}
 	
 	/**
@@ -42,8 +42,8 @@ public final class IntervalOverlapQuery extends TemporalIntervalQuery
 	 * 
 	 * @return
 	 */
-	public boolean isOverlapping() {
-		return overlapping;
+	public boolean canOverlap() {
+		return canOverlap;
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public final class IntervalOverlapQuery extends TemporalIntervalQuery
 	 * 
 	 * @param overlaps
 	 */
-	public void setOverlapping(boolean overlaps) {
-		this.overlapping = overlaps;
+	public void setCanOverlap(boolean overlaps) {
+		this.canOverlap = overlaps;
 	}
 }

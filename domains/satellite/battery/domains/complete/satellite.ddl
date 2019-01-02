@@ -8,15 +8,6 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 	
 	COMP_TYPE ConsumableResource BatteryLevelType (0, 10)
 	
-	COMP_TYPE SingletonStateVariable Example(Value1(priority_param), Value2(priority_param)) {
-		
-		VALUE Value1(?priority) [1, +INF]
-		MEETS {
-			Value2(?priority2);
-		}
-		
-	}
-	
 	COMP_TYPE SingletonStateVariable SatelliteType (Idle(), Science(), _Communicate())
 	{
 		VALUE Idle() [1, +INF]

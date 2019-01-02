@@ -7,24 +7,17 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
-import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
-import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
@@ -52,43 +45,39 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	{
 		// get the flaw solution to consider
 		PrecedenceConstraint pc = (PrecedenceConstraint) solution;
-		try 
-		{
-			// get reference and target decisions
-			Decision reference = pc.getReference();
-			Decision target = pc.getTarget();
-				
-			// create relation
-			BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
-			// set bounds
-			before.setBound(new long[] {0, this.component.getHorizon()});
-			// add created relation to solution
-			solution.addCreatedRelation(before);
-			logger.debug("Applying flaw solution:\n"
-					+ "- solution: " + solution + "\n"
-					+ "- created temporal constraint: " + before + "\n");
+		// get reference and target decisions
+		Decision reference = pc.getReference();
+		Decision target = pc.getTarget();
 			
+		// create relation
+		BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
+		// set bounds
+		before.setBound(new long[] {0, this.component.getHorizon()});
+		logger.info("Applying flaw solution:\n"
+				+ "- precedence constraint: " + solution + "\n");
+
+		try
+		{
 			// propagate relations
 			this.component.activate(before);
+			// add created relation to solution
+			solution.addCreatedRelation(before);
 			// add activated relations to solution
 			solution.addActivatedRelation(before);
+			logger.debug("Precedence constraint successfully created and activated:\n"
+					+ "- temporal constraint: " + before + "\n");
 		}
 		catch (RelationPropagationException ex) 
 		{
-			// deactivate activated relations
-			for (Relation rel : solution.getActivatedRelations()) {
-				// get reference component
-				DomainComponent refComp = rel.getReference().getComponent();
-				refComp.deactivate(rel);
-			}
+			// deactivate relation if necessary
+			this.component.deactivate(before);
+			// delete relation
+			this.component.delete(before);
+			// write error message
+			logger.error("Error while applying flaw solution:\n"
+					+ "- solution: " + solution + "\n"
+					+ "- unfeasible precedence constraint: " + before + "\n");
 			
-			// delete created relations
-			for (Relation rel : solution.getCreatedRelations()) {
-				// get reference component
-				DomainComponent refComp = rel.getReference().getComponent();
-				refComp.delete(rel);
-			}
-
 			// not feasible solution
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
@@ -100,46 +89,75 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	@Override
 	protected List<Flaw> doFindFlaws() 
 	{
-		// list of flaws
-		List<OverlappingSet> overlapping = new ArrayList<>();
+		// list of critical sets
+		List<OverlappingSet> CSs = new ArrayList<>();
 		// list of active decisions
 		List<Decision> decisions = this.component.getActiveDecisions();
 		// look for peaks
-		for (int index = 0; index < decisions.size() - 1 && overlapping.isEmpty(); index++)
+		for (int index = 0; index < decisions.size() - 1; index++)
 		{
 			// get active decision A 
 			Decision reference = decisions.get(index);
-			// initialize the overlapping set
-			OverlappingSet set = new OverlappingSet(FLAW_COUNTER.getAndIncrement(), this.component);
-			set.add(reference);
-			// find overlapping decisions
-			for (int jndex = index + 1; jndex < decisions.size() && overlapping.isEmpty(); jndex++)
+			// initialize a critical set
+			OverlappingSet cs = new OverlappingSet(FLAW_COUNTER.getAndIncrement(), this.component);
+			// add the reference token to the current critical set
+			cs.add(reference);
+			// find possibly overlapping decisions
+			for (int jndex = index + 1; jndex < decisions.size(); jndex++)
 			{
-				// get active decision B
+				// get another active decision
 				Decision target = decisions.get(jndex);
-				// check if overlaps all decisions of the current set
-				if (this.overlaps(set, target)) {
+				// check if decisions overlaps
+				logger.debug("Token overlapping check:\n"
+						+ "- component: " + this.component + "\n"
+						+ "- reference token: " + reference + "\n"
+						+ "- target token: " + target + "\n");
+				
+				// check if target decision can temporally overlap all the decisions of the current set
+				if (this.overlaps(cs, target)) 
+				{
 					// add decision to the set
-					set.add(target);
-					// directly add to overlapping set
-					overlapping.add(set);
+					cs.add(target);
+					// peak found
+					logger.debug("Overlapping token found:\n"
+							+ "- component: " + this.component + "\n"
+							+ "- reference token: " + reference + "\n"
+							+ "- current overlapping sets: " + cs + "\n");
 				}
+			}
+			
+			// check if a critical set has been found
+			if (cs.size() > 1) {
+				// add the current set to the (possibly) overlapping sets
+				CSs.add(cs);
 			}
 		}
 		
 		// list of flaws
 		List<Flaw> flaws = new ArrayList<>();
-		// check overlapping sets found
-		if (!overlapping.isEmpty()) {
-			// consider only the maximum overlapping set
-			Collections.sort(overlapping);
-			flaws.add(overlapping.get(0));
+		// check critical sets found
+		if (!CSs.isEmpty()) 
+		{
+			// consider the maximum critical set only
+			Collections.sort(CSs);
+			flaws.add(CSs.get(0));
+			// flaw generation
+			logger.debug("Critical sets found found:\n"
+					+ "- number of cricial sets: " + CSs.size() + "\n"
+					+ "- component: " + this.component + "\n"
+					+ "- maximum overlapping set selected: " + CSs.get(0) + "\n");
 		}
+		
 		// get peaks
 		return flaws;
 	}
 	
 	/**
+	 * Compare a target decision with all the decisions composing an overlapping set and checks whether they overlaps or not. 
+	 * 
+	 * The method returns true if and only if the target decision overlaps all the decisions of the set. Namely, according to 
+	 * the underlying temporal flexibility, if the target decisions can be sorted with respect to at least one of the decisions 
+	 * composing the overlapping set then, the method returns false.
 	 * 
 	 * @param set
 	 * @param target
@@ -148,9 +166,9 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	private boolean overlaps(OverlappingSet set, Decision target) 
 	{
 		// overlapping flag
-		boolean overlaps = false;
+		boolean overlaps = true;
 		// check set decisions
-		for (int index = 0; index < set.size() && !overlaps; index++)
+		for (int index = 0; index < set.size() && overlaps; index++)
 		{
 			// get a decision from the set
 			Decision reference = set.getDecisions().get(index);
@@ -161,8 +179,8 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			query.setTarget(target.getToken().getInterval());
 			// process query
 			this.tdb.process(query);
-			// check overlapping condition
-			overlaps = query.isOverlapping();
+			// check whether the (flexible) temporal interval can overlap or not
+			overlaps = query.canOverlap();
 		}
 		
 		// get result
@@ -176,9 +194,9 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	protected void doComputeFlawSolutions(Flaw flaw) 
 			throws UnsolvableFlawException 
 	{
-		// cast flaw
+		// get the critical set to be solved
 		OverlappingSet set = (OverlappingSet) flaw;
-		// sample the overlapping set by identifying the MCSs
+		// sample the critical set by identifying MCSs (binary MCSs in this case)
 		List<MinimalCriticalSet> MCSs = new ArrayList<MinimalCriticalSet>();
 		for (int index = 0; index < set.size() - 1; index++)
 		{
@@ -195,109 +213,133 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 				mcs.addDecision(reference);
 				// add to current MCS
 				mcs.addDecision(target);
-				// prepare a precedence constraint to solve the MCS
-				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+				
 
-				try
-				{
-					// check the feasibility of the solution "reference < target"
-					before.setReference(reference.getToken().getInterval());
-					before.setTarget(target.getToken().getInterval());
-					// set bounds
-					before.setLowerBound(0);
-					before.setUpperBound(this.tdb.getHorizon());
-					
-					// verify constraint feasibility
-					this.tdb.propagate(before);
-					this.tdb.verify();
-					
-					// compute the resulting preserved space
-					double preserved = this.computePreservedSpaceHeuristicValue(
-							reference.getToken().getInterval().getEndTime(), 
-							target.getToken().getInterval().getStartTime());
-					
-					// compute the resulting makespan
-					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-					// process query
-					this.tdb.process(query);
-					// get computed makespan
-					double makespan = query.getMakespan();
-					
-					// add solution to MCS
-					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved, makespan);
-					// print some debugging information
-					logger.debug("Feasible solution of MCS found:\n"
-							+ "- mcs: " + mcs + "\n"
-							+ "- precedence constraint: " + pc + "\n");
-				}
-				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
-					// warning message
-					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
-				}
-				finally {
-					// retract propagated constraint
-					this.tdb.retract(before);
-					// clear temporal relation
-					before.clear();
-				}
+				// compute the preserved heuristics
+				double preserved = this.computePreservedSpaceHeuristicValue(
+						reference.getToken().getInterval().getEndTime(), 
+						target.getToken().getInterval().getStartTime());
+				// prepare the precedence constraint: reference < target
+				PrecedenceConstraint pc1 = mcs.addSolution(reference, target, preserved);
 				
-				try
-				{
-					// check the feasibility of the solution "target < reference"
-					before.setReference(target.getToken().getInterval());
-					before.setTarget(reference.getToken().getInterval());
-					// set bounds
-					before.setLowerBound(0);
-					before.setUpperBound(this.tdb.getHorizon());
-					
-					// verify constraint feasibility
-					this.tdb.propagate(before);
-					this.tdb.verify();
-					
-					// compute the resulting preserved space
-					double preserved = this.computePreservedSpaceHeuristicValue(
-							target.getToken().getInterval().getEndTime(), 
-							reference.getToken().getInterval().getStartTime());
-					
-					// compute the resulting makespan
-					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-					// process query
-					this.tdb.process(query);
-					// get the computed makespan
-					double makespan = query.getMakespan();
-
-					// add solution to MCS
-					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved, makespan);
-					// print some debugging information
-					logger.debug("Feasible solution of MCS found:\n"
-							+ "- mcs: " + mcs + "\n"
-							+ "- precedence constraint: " + pc + "\n");
-				}
-				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
-					// warning message
-					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
-				}
-				finally {
-					// retract propagated constraint
-					this.tdb.retract(before);
-					// clear temporal relation
-					before.clear();
-				}
+				// compute the preserved heuristics
+				preserved = this.computePreservedSpaceHeuristicValue(
+						target.getToken().getInterval().getEndTime(), 
+						reference.getToken().getInterval().getStartTime());
+				// prepare precedence constraint: target < reference
+				PrecedenceConstraint pc2 = mcs.addSolution(target, reference, preserved);
 				
-				// check solutions
-				if (mcs.getSolutions().isEmpty()) {
-					// unsolvable MCS found
-					throw new UnsolvableFlawException("Unsolvable MCS found on discrete resource " + this.component.getName() + "\n- mcs: " + mcs + "\n"); 
-				}
 				
-				// add MCS to list
+				// add MCS to list of flaw solution
 				MCSs.add(mcs);
+				logger.debug("Possible solution of the Critical Set found:\n"
+						+ "- CS: " + set + "\n"
+						+ "- MCS: " + mcs + "\n"
+						+ "- Possible solutions:\n"
+						+ "\t(a) precedence constraint: " + pc1 + "\n"
+						+ "\t(b) precedence constraint: " + pc2 + "\n");						
+				
+				
+//				// set possible solutions as precedence constraints
+//				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+//
+//				try
+//				{
+//					// check the feasibility of the solution "reference < target"
+//					before.setReference(reference.getToken().getInterval());
+//					before.setTarget(target.getToken().getInterval());
+//					// set bounds
+//					before.setLowerBound(0);
+//					before.setUpperBound(this.tdb.getHorizon());
+//					
+//					// verify constraint feasibility
+//					this.tdb.propagate(before);
+//					this.tdb.verify();
+//					
+//					
+//					
+//					// compute the resulting makespan
+////					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+////					// process query
+////					this.tdb.process(query);
+////					// get computed makespan
+////					double makespan = query.getMakespan();
+//					
+//					// add solution to MCS
+//					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved);	//, makespan);
+//					// print some debugging information
+//					logger.debug("Feasible solution of MCS found:\n"
+//							+ "- mcs: " + mcs + "\n"
+//							+ "- precedence constraint: " + pc + "\n");
+//				}
+//				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+//					// warning message
+//					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
+//				}
+//				finally {
+//					// retract propagated constraint
+//					this.tdb.retract(before);
+//					// clear temporal relation
+//					before.clear();
+//				}
+//				
+//				try
+//				{
+//					// check the feasibility of the solution "target < reference"
+//					before.setReference(target.getToken().getInterval());
+//					before.setTarget(reference.getToken().getInterval());
+//					// set bounds
+//					before.setLowerBound(0);
+//					before.setUpperBound(this.tdb.getHorizon());
+//					
+//					// verify constraint feasibility
+//					this.tdb.propagate(before);
+//					this.tdb.verify();
+//					
+//					// compute the resulting preserved space
+//					double preserved = this.computePreservedSpaceHeuristicValue(
+//							target.getToken().getInterval().getEndTime(), 
+//							reference.getToken().getInterval().getStartTime());
+//					
+//					// compute the resulting makespan
+//					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//					// process query
+//					this.tdb.process(query);
+//					// get the computed makespan
+//					double makespan = query.getMakespan();
+//
+//					// add solution to MCS
+//					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved, makespan);
+//					// print some debugging information
+//					logger.debug("Feasible solution of MCS found:\n"
+//							+ "- mcs: " + mcs + "\n"
+//							+ "- precedence constraint: " + pc + "\n");
+//				}
+//				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+//					// warning message
+//					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
+//				}
+//				finally {
+//					// retract propagated constraint
+//					this.tdb.retract(before);
+//					// clear temporal relation
+//					before.clear();
+//				}
+//				
+//				// check solutions
+//				if (mcs.getSolutions().isEmpty()) {
+//					// unsolvable MCS found
+//					throw new UnsolvableFlawException("Unsolvable MCS found on discrete resource " + this.component.getName() + "\n- mcs: " + mcs + "\n"); 
+//				}
+//				
+//				// add MCS to list
+//				MCSs.add(mcs);
 			}
 		}
 
 		// Select the MCS with the "best" value of preserved space and set the related solutions as solutions of the flaw.
 		Collections.sort(MCSs);
-		// get the "best" MCS
+		// get the "best" MCS according to the computed values of the "preserved space heuristics"
 		MinimalCriticalSet best = MCSs.get(0);
 		
 		// add computed solutions to the flaw
@@ -445,17 +487,16 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 * @param reference
 	 * @param target
 	 * @param preserved
-	 * @param makespan
 	 * @return
 	 */
-	public PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved, double makespan) 
+	public PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved) //, double makespan) 
 	{
 		// create a precedence constraint
 		PrecedenceConstraint pc = new PrecedenceConstraint(this.set, reference, target);
 		// set the value of resulting preserved space
 		pc.setPreservedSpace(preserved);
 		// set the value of the resulting makespan
-		pc.setMakespan(makespan);
+//		pc.setMakespan(makespan);
 		// add solution to the original flaw
 		this.solutions.add(pc);
 		// get constraint
@@ -471,7 +512,7 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 		double p1 = this.getPreservedValue();
 		double p2 = o.getPreservedValue();
 		// take into account solutions with a lower level of preserved value
-		return p1 <= p2 ? -1 : 1;
+		return p1 < p2 ? -1 : p1 > p2 ? 1 : 0;
 	}
 	
 	/**

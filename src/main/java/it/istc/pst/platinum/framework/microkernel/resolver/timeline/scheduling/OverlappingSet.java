@@ -77,7 +77,7 @@ public class OverlappingSet extends Flaw implements Comparable<OverlappingSet>
 	@Override
 	public int compareTo(OverlappingSet o) {
 		// check sizes of overlapping sets
-		return this.size() >= o.size() ? -1 : 1;
+		return this.size() > o.size() ? -1 : this.size() < o.size() ? 1 : 0;
 	}
 	
 	/**

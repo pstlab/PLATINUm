@@ -89,7 +89,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 @FrameworkLoggerConfiguration(
 		
 		// set logging level
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.DEBUG
 )
 public final class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
