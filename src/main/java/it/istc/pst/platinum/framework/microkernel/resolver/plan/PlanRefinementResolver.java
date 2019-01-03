@@ -35,7 +35,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EndsDu
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartStartRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartsDuringRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
-import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleExpansionException;
@@ -56,7 +55,6 @@ import it.istc.pst.platinum.framework.time.lang.allen.EqualsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.MetByIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.allen.StartsDuringIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 
 /**
@@ -278,16 +276,16 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 					// if everything goes right we've found a possible unification
 					GoalUnification unification = new GoalUnification(goal, unif);
 					// set the resulting makespan
-					unification.setMakespan(makespan);
+//					unification.setMakespan(makespan);
 					// add solution
 					goal.addSolution(unification);
-					logger.debug("Feasible unification found:\n"
+					debug("Feasible unification found:\n"
 							+ "- planning goal: " + goal + "\n"
 							+ "- unification decision: " + unification + "\n"
 							+ "- resulting makespan: " + makespan + "\n");
 				}
 				catch (NotFeasibleUnificationException ex) {
-					logger.debug("Not feasible goal unification found:\n"
+					debug("Not feasible goal unification found:\n"
 							+ "- planning goal: " + goal + "\n"
 							+ "- message: \"" + ex.getMessage() + "\"\n");
 				}
@@ -631,10 +629,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			// check temporal consistency
 			this.tdb.verify();
 			// feasible solution, compute the resulting makespan
-			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-			this.tdb.process(query);
-			// set the resulting makespan
-			makespan = query.getMakespan();
+//			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//			this.tdb.process(query);
+//			// set the resulting makespan
+//			makespan = query.getMakespan();
 		} 
 		catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 			// not feasible unification
@@ -995,10 +993,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			// check consistency
 			this.tdb.verify();
 			// feasible solution, compute the resulting makespan
-			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-			this.tdb.process(query);
-			// set the resulting makespan
-			makespan = query.getMakespan();
+//			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//			this.tdb.process(query);
+//			// set the resulting makespan
+//			makespan = query.getMakespan();
 		}
 		catch (TemporalIntervalCreationException | TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 			throw new NotFeasibleExpansionException(ex.getMessage());
@@ -1037,10 +1035,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				// the goal can be justified without applying synchronization rules
 				GoalExpansion expansion = new GoalExpansion(goal);
 				// set the resulting makespan
-				expansion.setMakespan(makespan);
+//				expansion.setMakespan(makespan);
 				// add solution
 				goal.addSolution(expansion);
-				logger.debug("Simple goal found:\n"
+				debug("Simple goal found:\n"
 						+ "- planning goal: " + goal.getDecision() + "\n"
 						+ "- resulting makespan: " + makespan + "\n");
 			}
@@ -1052,10 +1050,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 					// expansion solution
 					GoalExpansion expansion = new GoalExpansion(goal, rule);
 					// set the resulting makespan
-					expansion.setMakespan(makespan);
+//					expansion.setMakespan(makespan);
 					// add solution
 					goal.addSolution(expansion);
-					logger.debug("Complex goal found:\n"
+					debug("Complex goal found:\n"
 							+ "- planning goal: " + goal.getDecision() + "\n"
 							+ "- synchronization rule: " + rule + "\n"
 							+ "- resulting makespan: " + makespan + "\n");
@@ -1063,7 +1061,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			}
 		}
 		catch (NotFeasibleExpansionException ex) {
-			logger.debug("Not feasible goal expansion found:\n"
+			debug("Not feasible goal expansion found:\n"
 					+ "- planning goal: " + goal + "\n"
 					+ "- message: \"" + ex.getMessage() + "\"\n");
 		}

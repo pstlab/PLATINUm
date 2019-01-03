@@ -160,15 +160,43 @@ public abstract class StateVariable extends DomainComponent
 	 * paths between two values.
 	 * 
 	 * Please note that "acyclic" paths do not consider the case in which the 
-	 * source is the same value as the target of the path.
+	 * source is the same value as the target of the path. Indeed, it could be 
+	 * necessary to find acyclic paths that starts and ends with the same state
+	 * variable value
 	 * 
 	 * @param source
 	 * @param target
 	 * @return
 	 */
-	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) {
-		// call recursive function to compute all acyclic paths between state variable values
-		return this.computePaths(source, target, new ArrayList<>());
+	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) 
+	{
+		// list of all acyclic paths that start from the source value and end to the target value
+		List<ValuePath> result = new ArrayList<>();
+		// check the case in which the source value is equal to the target value
+		if (source.equals(target))
+		{
+			// just start the search starting from the direct successors of the current value
+			for (ComponentValue successor : this.getDirectSuccessors(source))
+			{
+				// just avoid reflexive transition (that should not be allowed in the domain specification)
+				if (!source.equals(successor)) {
+					// get list of paths
+					for (ValuePath path : this.computePaths(successor, target, new ArrayList<>())) {
+						// add the source value in front of the path
+						path.addFirstStep(source);
+						// add the path to the result list
+						result.add(path);
+					}
+				}
+			}
+		}
+		else {
+			// call recursive function to compute all acyclic paths between state variable values
+			result = this.computePaths(source, target, new ArrayList<>());
+		}
+		
+		// get the result list
+		return result;
 	}
 	
 	/**

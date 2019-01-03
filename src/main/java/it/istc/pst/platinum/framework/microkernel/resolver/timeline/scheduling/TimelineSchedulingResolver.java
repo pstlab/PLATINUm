@@ -53,7 +53,8 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 		BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
 		// set bounds
 		before.setBound(new long[] {0, this.component.getHorizon()});
-		logger.info("Applying flaw solution:\n"
+		
+		info("Applying flaw solution:\n"
 				+ "- precedence constraint: " + solution + "\n");
 
 		try
@@ -64,7 +65,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			solution.addCreatedRelation(before);
 			// add activated relations to solution
 			solution.addActivatedRelation(before);
-			logger.debug("Precedence constraint successfully created and activated:\n"
+			debug("Precedence constraint successfully created and activated:\n"
 					+ "- temporal constraint: " + before + "\n");
 		}
 		catch (RelationPropagationException ex) 
@@ -74,7 +75,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			// delete relation
 			this.component.delete(before);
 			// write error message
-			logger.error("Error while applying flaw solution:\n"
+			error("Error while applying flaw solution:\n"
 					+ "- solution: " + solution + "\n"
 					+ "- unfeasible precedence constraint: " + before + "\n");
 			
@@ -108,7 +109,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 				// get another active decision
 				Decision target = decisions.get(jndex);
 				// check if decisions overlaps
-				logger.debug("Token overlapping check:\n"
+				debug("Token overlapping check:\n"
 						+ "- component: " + this.component + "\n"
 						+ "- reference token: " + reference + "\n"
 						+ "- target token: " + target + "\n");
@@ -119,7 +120,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 					// add decision to the set
 					cs.add(target);
 					// peak found
-					logger.debug("Overlapping token found:\n"
+					debug("Overlapping token found:\n"
 							+ "- component: " + this.component + "\n"
 							+ "- reference token: " + reference + "\n"
 							+ "- current overlapping sets: " + cs + "\n");
@@ -142,7 +143,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			Collections.sort(CSs);
 			flaws.add(CSs.get(0));
 			// flaw generation
-			logger.debug("Critical sets found found:\n"
+			debug("Critical sets found found:\n"
 					+ "- number of cricial sets: " + CSs.size() + "\n"
 					+ "- component: " + this.component + "\n"
 					+ "- maximum overlapping set selected: " + CSs.get(0) + "\n");
@@ -232,13 +233,12 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 				
 				// add MCS to list of flaw solution
 				MCSs.add(mcs);
-				logger.debug("Possible solution of the Critical Set found:\n"
-						+ "- CS: " + set + "\n"
-						+ "- MCS: " + mcs + "\n"
-						+ "- Possible solutions:\n"
-						+ "\t(a) precedence constraint: " + pc1 + "\n"
-						+ "\t(b) precedence constraint: " + pc2 + "\n");						
-				
+				debug("Possible solution of the Critical Set found:\n"
+					+ "- CS: " + set + "\n"
+					+ "- MCS: " + mcs + "\n"
+					+ "- Possible solutions:\n"
+					+ "\t(a) precedence constraint: " + pc1 + "\n"
+					+ "\t(b) precedence constraint: " + pc2 + "\n");						
 				
 //				// set possible solutions as precedence constraints
 //				BeforeIntervalConstraint before = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);

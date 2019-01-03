@@ -437,7 +437,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				// set overlapping result
 				overlap.setCanOverlap(!ab && !ba);
 				// print logging message
-				logger.debug("[" + this.getClass().getName() + "] Processing query INTERVAL_OVERLAP:\n"
+				debug("[" + this.getClass().getName() + "] Processing query INTERVAL_OVERLAP:\n"
 						+ "- Temporal Interval (A): " + a + "\n"
 						+ "- Temporal Interval (B): " + b + "\n"
 						+ "- Computed (flexible) distance: [dmin= " + dmin + ", dmax= " + dmax +"]\n"

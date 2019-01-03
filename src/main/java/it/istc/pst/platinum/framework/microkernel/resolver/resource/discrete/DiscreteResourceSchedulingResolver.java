@@ -21,14 +21,12 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
-import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
@@ -233,23 +231,23 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 							target.getToken().getInterval().getStartTime());
 					
 					// compute the resulting makespan of the temporal plan after constraint propagation
-					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-					// process query
-					this.tdb.process(query);
-					// get computed makespan
-					double makespan = query.getMakespan();
+//					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//					// process query
+//					this.tdb.process(query);
+//					// get computed makespan
+//					double makespan = query.getMakespan();
 					
 					
 					// create and add solution to the MCS
-					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved, makespan);
+					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved);	//, makespan);
 					// print some debugging information
-					logger.debug("Feasible solution of MCS found:\n"
+					debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
 							+ "- precedence constraint: " + pc + "\n");
 				}
 				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
-					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
+					debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + reference + " < " + target + "\n");
 				}
 				finally {
 					// retract propagated constraint
@@ -285,22 +283,22 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 							reference.getToken().getInterval().getStartTime());
 					
 					// compute the resulting makespan of the temporal plan after constraint propagation
-					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-					// process query
-					this.tdb.process(query);
-					// get computed makespan
-					double makespan = query.getMakespan();
+//					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//					// process query
+//					this.tdb.process(query);
+//					// get computed makespan
+//					double makespan = query.getMakespan();
 					
 					// create and add solution to the MCS
-					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved, makespan);
+					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved);	//, makespan);
 					// print some debugging information
-					logger.debug("Feasible solution of MCS found:\n"
+					debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
 							+ "- precedence constraint: " + pc + "\n");
 				}
 				catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 					// warning message
-					logger.debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
+					debug("Unfeasible solution found for MCS:\n- mcs: " + mcs + "\n- unfeasible precedence constraint: " + target + " < " + reference + "\n");
 				}
 				finally {
 					// retract (inverted) precedence constraint
@@ -392,7 +390,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			before.setBound(new long[] {1, this.tdb.getHorizon()});
 			// add created relation
 			solution.addCreatedRelation(before);
-			logger.debug("Applying flaw solution:\n"
+			debug("Applying flaw solution:\n"
 					+ "- solution: " + solution + "\n"
 					+ "- created temporal constraint: " + before + "\n");
 			
@@ -584,17 +582,16 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 * @param reference
 	 * @param target
 	 * @param preserved
-	 * @param makespan
 	 * @return
 	 */
-	protected PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved, double makespan) 
+	protected PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved)	//, double makespan) 
 	{
 		// create a precedence constraint
 		PrecedenceConstraint pc = new PrecedenceConstraint(this.cs, reference, target);
 		// set the value of resulting preserved space
 		pc.setPreservedSpace(preserved);
 		// set the value of the resulting makespan
-		pc.setMakespan(makespan);
+//		pc.setMakespan(makespan);
 		// add solution to the original flaw
 		this.solutions.add(pc);
 		// get constraint

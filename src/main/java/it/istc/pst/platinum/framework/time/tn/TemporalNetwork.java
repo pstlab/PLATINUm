@@ -245,7 +245,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 					// do notify 
 					obs.notify(info);
 				} catch (NotificationPropagationFailureException ex) {
-					logger.error(ex.getMessage());
+					error(ex.getMessage());
 				}
 			}
 		}
@@ -284,7 +284,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 			catch (InconsistentDistanceConstraintException ex) {
 				// roll-back 
 				rollback = true;
-				logger.error(ex.getMessage());
+				error(ex.getMessage());
 			}
 		}
 		
@@ -302,7 +302,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 						// do notify
 						obs.notify(info);
 					} catch (NotificationPropagationFailureException ex) {
-						logger.error(ex.getMessage());
+						error(ex.getMessage());
 					}
 				}
 			}
@@ -314,7 +314,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 					// delete 
 					this.doRemoveTimePoint(tp);
 				} catch (TimePointNotFoundException ex) {
-					logger.error(ex.getMessage());
+					error(ex.getMessage());
 				}
 			}
 			// throw exception
@@ -387,7 +387,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 					obs.notify(info);
 				}
 				catch (NotificationPropagationFailureException ex) {
-					logger.error(ex.getMessage());
+					error(ex.getMessage());
 				}
 			}
 		}
@@ -451,7 +451,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 					obs.notify(info);
 				}
 				catch (NotificationPropagationFailureException ex) {
-					logger.error(ex.getMessage());
+					error(ex.getMessage());
 				}
 			}
 		}
@@ -497,13 +497,13 @@ public abstract class TemporalNetwork extends FrameworkObject
 						obs.notify(info);
 					}
 					catch (NotificationPropagationFailureException ex) {
-						logger.error(ex.getMessage());
+						error(ex.getMessage());
 					}
 				}
 			}
 		} 
 		catch (TimePointNotFoundException ex) {
-			logger.error(ex.getMessage());
+			error(ex.getMessage());
 		}
 	}
 	
@@ -524,7 +524,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 				info.addTimePoint(tp);
 			}
 			catch (TimePointNotFoundException ex) {
-				logger.error(ex.getMessage());
+				error(ex.getMessage());
 			}
 		}
 		
@@ -542,7 +542,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 						// do notify
 						obs.notify(info);
 					} catch (NotificationPropagationFailureException ex) {
-						logger.error(ex.getMessage());
+						error(ex.getMessage());
 					}
 				}
 			}
@@ -603,7 +603,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 					obs.notify(info);
 				}
 				catch (NotificationPropagationFailureException ex) {
-					logger.error(ex.getMessage());
+					error(ex.getMessage());
 				}
 			}
 		}
@@ -645,7 +645,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 			catch (InconsistentDistanceConstraintException ex ) {
 				// roll-back
 				rollback = true;
-				logger.error(ex.getMessage());
+				error(ex.getMessage());
 			}
 		}
 			
@@ -663,7 +663,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 						// do notify
 						obs.notify(info);
 					} catch (NotificationPropagationFailureException ex) {
-						logger.error(ex.getMessage());
+						error(ex.getMessage());
 					}
 				}
 			}
@@ -679,7 +679,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 					this.doRemoveDistanceConstraint(rel);
 				}
 				catch (DistanceConstraintNotFoundException ex) {
-					logger.error(ex.getMessage());
+					error(ex.getMessage());
 				}
 			}
 			
@@ -724,13 +724,13 @@ public abstract class TemporalNetwork extends FrameworkObject
 						obs.notify(info);
 					}
 					catch (NotificationPropagationFailureException ex) {
-						logger.error(ex.getMessage());
+						error(ex.getMessage());
 					}
 				}
 			}
 		}
 		catch (DistanceConstraintNotFoundException ex) {
-			logger.error(ex.getMessage());
+			error(ex.getMessage());
 		}
 	}
 	
@@ -749,7 +749,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 				info.addRelation(rel);
 			}
 			catch (DistanceConstraintNotFoundException ex) {
-				logger.error(ex.getMessage());
+				error(ex.getMessage());
 			}
 		}
 		
@@ -765,7 +765,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 					obs.notify(info);
 				}
 				catch (NotificationPropagationFailureException ex) {
-					logger.error(ex.getMessage());
+					error(ex.getMessage());
 				}
 			}
 		}

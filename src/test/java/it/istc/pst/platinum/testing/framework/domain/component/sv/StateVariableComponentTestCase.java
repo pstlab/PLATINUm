@@ -60,7 +60,8 @@ public class StateVariableComponentTestCase
 	 * 
 	 */
 	@Before
-	public void init() {
+	public void init() 
+	{
 		System.out.println("**********************************************************************************");
 		System.out.println("************************* State Variable Component Test Case ***********************");
 		System.out.println("**********************************************************************************");
@@ -71,7 +72,10 @@ public class StateVariableComponentTestCase
 		this.pf = ParameterFacadeBuilder.createAndSet(this);
 		// create State Variable
 		this.psv = DomainComponentBuilder.createAndSet("SV1", DomainComponentType.SV_PRIMITIVE, tf, pf);
+		
+		
 	}
+	
 	
 	/**
 	 * 
@@ -197,11 +201,11 @@ public class StateVariableComponentTestCase
 			for (Decision dec : decisions) {
 				System.out.println("\t- " + dec);
 				// check end times
-				if (dec.getValue().equals(v1.getLabel())) {
+				if (dec.getValue().getLabel().equals(v1.getLabel())) {
 					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getLowerBound() == 23);
 					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getUpperBound() == 23);
 				}
-				if (dec.getValue().equals(v2.getLabel())) {
+				if (dec.getValue().getLabel().equals(v2.getLabel())) {
 					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getLowerBound() == 80);
 					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getUpperBound() == 80);
 				} 
@@ -209,7 +213,7 @@ public class StateVariableComponentTestCase
 			
 			
 			// check that only a gap is found
-			List<Flaw> flaws = this.psv.detectFlaws();
+			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_BEHAVIOR_PLANNING);
 			Assert.assertNotNull(flaws);
 			Assert.assertTrue(!flaws.isEmpty());
 			Assert.assertTrue(flaws.size() == 1);
@@ -262,21 +266,31 @@ public class StateVariableComponentTestCase
 		// get paths between v1 and v6
 		List<ValuePath> paths = this.psv.getPaths(v1, v6);
 		Assert.assertNotNull(paths);
+		Assert.assertTrue(paths.size() == 2);
+		System.out.println("Two paths expected between Val-1 and Val-6:");
+		for (ValuePath path : paths) {
+			System.out.println("\t- " + path + "\n");
+		}
 		
 		// get paths between v1 and v6
 		paths = this.psv.getPaths(v1, v1);
 		Assert.assertNotNull(paths);
+		Assert.assertTrue(paths.size() == 4);
+		System.out.println("Four paths expected between Val-1 and Val-1:");
+		for (ValuePath path : paths) {
+			System.out.println("\t- " + path + "\n");
+		}
 		
 		// check no path case
 		paths = this.psv.getPaths(v7, v1);
 		Assert.assertNotNull(paths);
-		System.out.println("No paths expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v1);
+		System.out.println("No path expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v1);
 		Assert.assertTrue(paths.isEmpty());
 		Assert.assertTrue(paths.size() == 0);
 		
 		paths = this.psv.getPaths(v7, v7);
 		Assert.assertNotNull(paths);
-		System.out.println("No paths expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v7);
+		System.out.println("No path expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v7);
 		Assert.assertTrue(paths.isEmpty());
 		Assert.assertTrue(paths.size() == 0);
 	}
@@ -445,16 +459,17 @@ public class StateVariableComponentTestCase
 					new long[] {30, 30}, 
 					v1.getDurationBounds());
 			this.psv.activate(d4);
-					
-			// check flaws
-			List<Flaw> flaws = this.psv.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
-			// get peak
-			Flaw flaw = flaws.get(0);
+			// initialize scheduling step counter
 			int schedulingStepCounter = 0;
+			// initialize the list of flaws
+			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
 			do 
 			{
+				Assert.assertNotNull(flaws);
+				// get peak
+				Flaw flaw = flaws.get(0);
+				Assert.assertTrue(!flaws.isEmpty());
+				
 				// get peak
 				OverlappingSet peak = (OverlappingSet) flaw;
 				// check solutions
@@ -472,12 +487,14 @@ public class StateVariableComponentTestCase
 				// apply 
 				this.psv.commit(solution);
 				schedulingStepCounter++;
+				// check consistency
+				this.tf.verify();
+				
 				// print the network
 				System.out.println("After propagation of flaw solution");
 				System.out.println(this.tf);
 				
-				// check consistency
-				this.tf.verify();
+				
 				
 				// display component after scheduling
 				this.psv.display();
@@ -485,10 +502,6 @@ public class StateVariableComponentTestCase
 				
 				// detect flaws
 				flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
-				Assert.assertNotNull(flaws);
-				if (!flaws.isEmpty()) {
-					flaw = flaws.get(0);
-				}
 			}
 			while (!flaws.isEmpty());
 			// check number of scheduling steps done
@@ -558,9 +571,9 @@ public class StateVariableComponentTestCase
 			Thread.sleep(3000);
 	
 			// check that only a gap is found
-			List<Flaw> flaws = this.psv.detectFlaws();
+			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_BEHAVIOR_PLANNING);
 			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
+			Assert.assertFalse(flaws.isEmpty());
 			Assert.assertTrue(flaws.size() == 1);
 			// a gap has been found
 			System.out.println("Detected flaws");
@@ -573,8 +586,12 @@ public class StateVariableComponentTestCase
 			// check solution
 			Assert.assertTrue(gap.getSolutions().size() == 2);
 			
+			// select a solution to commit
+			FlawSolution sol = flaws.get(0).getSolutions().get(0);
 			// solve the flaw
-			this.psv.commit(flaws.get(0).getSolutions().get(0));
+			this.psv.commit(sol);
+			System.out.println("Committed solution:\n- " + sol + "\n");
+			
 			// check pending decisions
 			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions");

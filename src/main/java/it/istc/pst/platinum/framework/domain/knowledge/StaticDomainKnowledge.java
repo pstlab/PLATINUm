@@ -60,7 +60,7 @@ public class StaticDomainKnowledge extends DomainKnowledge
 		}
 		str += "-----------------------------------";
 		// print resulting decomposition tree
-		logger.info(str);
+		info(str);
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class StaticDomainKnowledge extends DomainKnowledge
 		}
 		str += "-----------------------------------";
 		// print dependency graph
-		logger.info(str);
+		info(str);
 		
 		// compute hierarchy from dependency graph
 		this.computeHierarchy();
@@ -99,7 +99,7 @@ public class StaticDomainKnowledge extends DomainKnowledge
 		}
 		str += "-----------------------------------";
 		// print dependency graph
-		logger.info(str);
+		info(str);
 	}
 	
 	/**
@@ -178,7 +178,7 @@ public class StaticDomainKnowledge extends DomainKnowledge
 						}
 						catch (HierarchyCycleException ex) {
 							// a cycle into the hierarchy has been found
-							logger.warning(ex.getMessage() + "\nIgnore dependency relation between component=" + master + " and component=" + slave);
+							warning(ex.getMessage() + "\nIgnore dependency relation between component=" + master + " and component=" + slave);
 							// remove dependency relation
 							this.dg.get(slave).remove(master);
 						}

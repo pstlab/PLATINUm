@@ -391,7 +391,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		else {
 			// debug information
-			logger.warning("The decision you want to restore is not \"silent\":\n- decision: " + dec + "\n");
+			warning("The decision you want to restore is not \"silent\":\n- decision: " + dec + "\n");
 		}
 	}
 	
@@ -564,7 +564,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		else {
 			// debug information
-			logger.warning("Trying to activate a non pending decision:\n- decision: " + dec + "\n");
+			warning("Trying to activate a non pending decision:\n- decision: " + dec + "\n");
 		}
 		
 		// get list of "local" activated relations
@@ -601,7 +601,7 @@ public abstract class DomainComponent extends FrameworkObject
 					this.pdb.deleteParameter(param);
 				}
 				catch (ParameterNotFoundException ex) {
-					logger.warning(ex.getMessage());
+					warning(ex.getMessage());
 				}
 			}
 			
@@ -616,7 +616,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		else {
 			// debug information
-			logger.debug("The decision you want to deactivate is not active:\n- decision: " + dec + "\n");
+			debug("The decision you want to deactivate is not active:\n- decision: " + dec + "\n");
 		}
 	}
 	
@@ -640,7 +640,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		else {
 			// debug information 
-			logger.debug("The decision you want to delete is not \"pending\":\n- decision: " + dec +"\n");
+			debug("The decision you want to delete is not \"pending\":\n- decision: " + dec +"\n");
 		}
 	}
 	
@@ -1013,7 +1013,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		else {
 			// debugging information
-			logger.warning("The relation you want to delete is active:\n- relation: " + relation + "\n");
+			warning("The relation you want to delete is active:\n- relation: " + relation + "\n");
 		}
 	}
 	
@@ -1112,7 +1112,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		else {
 			// debug information
-			logger.warning("The decision you want to activate is already active or the related decision are not active yet:\n- " + rel + "\n");
+			warning("The decision you want to activate is already active or the related decision are not active yet:\n- " + rel + "\n");
 		}
 	}
 	

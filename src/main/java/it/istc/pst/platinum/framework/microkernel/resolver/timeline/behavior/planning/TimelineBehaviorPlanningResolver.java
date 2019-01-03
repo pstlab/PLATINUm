@@ -1,7 +1,6 @@
 package it.istc.pst.platinum.framework.microkernel.resolver.timeline.behavior.planning;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +16,6 @@ import it.istc.pst.platinum.framework.domain.component.ex.TransitionNotFoundExce
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.Transition;
 import it.istc.pst.platinum.framework.domain.component.sv.ValuePath;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
@@ -28,15 +26,8 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MeetsR
 import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleGapCompletionException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
-import it.istc.pst.platinum.framework.time.TemporalInterval;
-import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
-import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 
@@ -247,7 +238,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			if (query.canOverlap()) 
 			{
 				// precondition not satisfied
-				logger.warning("[Warning] Timeline behavior planning failure:\n"
+				warning("[Warning] Timeline behavior planning failure:\n"
 						+ "- component: " + this.component + "\n"
 						+ "- [reason] Behaviors cannot be plant because potentially overlapping tokens have been found:\n"
 						+ "\t- reference: " + left + "\n"
@@ -262,10 +253,10 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			IntervalDistanceQuery distance = this.tdb.
 					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
 			// set intervals
-			query.setReference(left.getToken().getInterval());
-			query.setTarget(right.getToken().getInterval());
+			distance.setReference(left.getToken().getInterval());
+			distance.setTarget(right.getToken().getInterval());
 			// process query
-			this.tdb.process(query);
+			this.tdb.process(distance);
 			
 			// check if the tokens are directly connected 
 			if (distance.getDistanceLowerBound() == 0 && distance.getDistanceUpperBound() == 0) 
@@ -286,7 +277,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					Gap gap = new Gap(FLAW_COUNTER.getAndIncrement(), this.component, left, right);
 					// add "simple gap"
 					flaws.add(gap);
-					logger.debug("Not a gap has been actually found but transition semantics must be satisfied for execution through a MEETS constraint:\n"
+					debug("Not a gap has been actually found but transition semantics must be satisfied for execution through a MEETS constraint:\n"
 							+ "- componetn: " + this.component + "\n"
 							+ "- reference: " + left + "\n"
 							+ "- target: " + right + "\n");
@@ -302,7 +293,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				);
 				// add gap
 				flaws.add(gap);
-				logger.debug("Gap found on component: "
+				debug("Gap found on component: "
 						+ "- component: " + this.component + "\n"
 						+ "- reference: " + left + "\n"
 						+ "- target: " + right + "\n"
@@ -341,7 +332,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				// check found solutions
 				if (paths.isEmpty()) {
 					// not gap completion found
-					logger.debug("Not gap completion found:\n"
+					debug("Not gap completion found:\n"
 							+ "- gap: " + gap + "\n");
 				}
 				
@@ -354,21 +345,36 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					steps.remove(0);
 					steps.remove(steps.size() - 1);
 					
-					/*
-					 * TODO: VERIFICARE COMPATIBILITA DURATA PERCORSO TEORICO CON DISTANCE TEMPORALE TRA I TOKEN DEL FLAW
-					 */
+					// compute path duration bounds
+					long minDuration = 0;
+					long maxDuration = 0;
+					for (ComponentValue step : steps) {
+						minDuration += step.getDurationLowerBound();
+						maxDuration += step.getDurationUpperBound();
+					}
 					
-					
-					// gap solution
-					GapCompletion solution = new GapCompletion(gap, steps);
-					// add solution to the flaw
-					gap.addSolution(solution);
-					// print gap information
-					logger.debug("Gap found on component " + this.component.getName() + ":\n"
-							+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
-							+ "- left-side decision: " + gap.getLeftDecision() + "\n"
-							+ "- right-side decision: " + gap.getRightDecision() + "\n"
-							+ "- solution path: " + path + "\n");
+					// check the feasibility of the path with respect to the available time 
+					if ((minDuration >= gap.getDmin() || maxDuration >= gap.getDmin()) && 
+							minDuration <= gap.getDmax())
+					{
+						// gap solution
+						GapCompletion solution = new GapCompletion(gap, steps);
+						// add solution to the flaw
+						gap.addSolution(solution);
+						// print gap information
+						debug("Gap found on component " + this.component.getName() + ":\n"
+								+ "- gap distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
+								+ "- left-side decision: " + gap.getLeftDecision() + "\n"
+								+ "- right-side decision: " + gap.getRightDecision() + "\n"
+								+ "- solution path: " + path + "\n");
+					}
+					else {
+						// not feasible solution
+						debug("Unfeasible solution due to path duration:\n"
+								+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
+								+ "- path: " + path + "\n"
+								+ "- path duration: [dmin= " + minDuration + ", " + maxDuration + "]");
+					}
 				}
 				
 //				// check if empty

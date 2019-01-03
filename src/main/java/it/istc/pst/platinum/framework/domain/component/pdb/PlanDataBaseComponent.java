@@ -52,13 +52,11 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.NotEq
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.ParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.microkernel.query.ParameterQueryType;
-import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.parameter.csp.solver.ParameterSolverType;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomain;
 import it.istc.pst.platinum.framework.parameter.lang.ParameterDomainType;
 import it.istc.pst.platinum.framework.parameter.lang.query.ComputeSolutionParameterQuery;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.solver.TemporalSolverType;
 import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
@@ -964,7 +962,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 			}
 			catch (FlawSolutionApplicationException ex) {
 				// error while applying flaw solution
-				logger.warning(ex.getMessage());
+				warning(ex.getMessage());
 				throw new OperatorPropagationException("Error while propagating operator:\n- " + operator + "\n");
 			}
 		}
@@ -994,19 +992,19 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		this.rollback(solution);
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public double computeMakespan() 
-	{
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public double computeMakespan() 
+//	{
 		// query the temporal facade
-		ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-		// process query
-		this.tdb.process(query);
-		// get computed value
-		return query.getMakespan();
-	}
+//		ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//		// process query
+//		this.tdb.process(query);
+//		// get computed value
+//		return query.getMakespan();
+//	}
 	
 	/**
 	 * 

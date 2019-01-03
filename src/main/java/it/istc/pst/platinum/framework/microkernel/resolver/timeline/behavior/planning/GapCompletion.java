@@ -71,6 +71,18 @@ public class GapCompletion extends FlawSolution
 	
 	/**
 	 * 
+	 * @param o
+	 * @return
+	 */
+	@Override
+	public int compareTo(FlawSolution o) {
+		// get other gap completion flaw
+		GapCompletion sol = (GapCompletion) o;
+		return this.path.size() < sol.path.size() ? -1 : this.path.size() > sol.path.size() ? 1 : 0; 
+	}
+	
+	/**
+	 * 
 	 */
 	@Override
 	public String toString() {

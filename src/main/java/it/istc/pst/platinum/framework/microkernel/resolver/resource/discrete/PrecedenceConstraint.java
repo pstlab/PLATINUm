@@ -78,7 +78,7 @@ public class PrecedenceConstraint extends FlawSolution
 	 */
 	@Override
 	public String toString() {
-		return "[PrecedenceConstraint preserved= " + this.preserved + " makespan= " + this.getMakespan() + " reference= " + this.reference +" target= " + this.target + "]";
+		return "[PrecedenceConstraint reference= " + this.reference +", target= " + this.target + ", preserved= " + this.preserved + "]";
 	}
 	
 }

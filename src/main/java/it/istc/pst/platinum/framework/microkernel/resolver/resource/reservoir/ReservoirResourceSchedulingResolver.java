@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.framework.microkernel.resolver.resource.reservoir;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,7 +27,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.BindParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
-import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
@@ -35,7 +35,6 @@ import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationExcep
 import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.query.ComputeMakespanQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
@@ -134,7 +133,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 							double makespan1 = 0;
 							for (ConsumptionScheduling schedule : o1.getSchedulingSolutions()) {
 								preserved1 += schedule.getPreserved();
-								makespan1 += schedule.getMakespan();
+//								makespan1 += schedule.getMakespan();
 							}
 							
 							// set average values 
@@ -146,7 +145,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 							double makespan2 = 0;
 							for (ConsumptionScheduling schedule : o2.getSchedulingSolutions()) {
 								preserved2 += schedule.getPreserved();
-								makespan2 += schedule.getMakespan();
+//								makespan2 += schedule.getMakespan();
 							}
 							
 							// set average values
@@ -172,34 +171,36 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				}
 				
 				// heuristically sort the MCSs
-				Collections.sort(MCSs, new Comparator<MinimalCriticalSet>() {
-					
-					/**
-					 * 
-					 */
-					public int compare(MinimalCriticalSet o1, MinimalCriticalSet o2) 
-					{
-						// compute average make-span
-						double makespan1 = 0;
-						for (ConsumptionScheduling schedule : o1.getSchedulingSolutions()) {
-							makespan1 += schedule.getMakespan();
-						}
-						
-						// set average value
-						makespan1 = makespan1 / o1.getSchedulingSolutions().size();
-						
-						// compute average make-span
-						double makespan2 = 0;
-						for (ConsumptionScheduling schedule : o2.getSchedulingSolutions()) {
-							makespan2 += schedule.getMakespan();
-						}
-						
-						// set average value
-						makespan2 = makespan2 / o2.getSchedulingSolutions().size();
-						// compare resulting make-span
-						return makespan1 <= makespan2 ? -1 : 1;
-					};
-				});
+				Collections.sort(MCSs);
+//				, new Comparator<MinimalCriticalSet>() {
+//					
+//					/**
+//					 * 
+//					 */
+//					public int compare(MinimalCriticalSet o1, MinimalCriticalSet o2) 
+//					{
+//						// compute average make-span
+//						double makespan1 = 0;
+//						for (ConsumptionScheduling schedule : o1.getSchedulingSolutions()) {
+////							makespan1 += schedule.getMakespan();
+//						}
+//						
+//						// set average value
+//						makespan1 = makespan1 / o1.getSchedulingSolutions().size();
+//						
+//						// compute average make-span
+//						double makespan2 = 0;
+//						for (ConsumptionScheduling schedule : o2.getSchedulingSolutions()) {
+////							makespan2 += schedule.getMakespan();
+//						}
+//						
+//						// set average value
+//						makespan2 = makespan2 / o2.getSchedulingSolutions().size();
+//						// compare resulting make-span
+//						return makespan1 <= makespan2 ? -1 : 1;
+//					};
+//				});
+				
 				// keep the most promising MCS
 				MinimalCriticalSet mcs = MCSs.get(0);
 				// add MCS's solutions to the peak
@@ -220,12 +221,12 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				// create solution
 				ProductionUpdate update = new ProductionUpdate(pf, amount);
 				// compute the resulting makespan of the temporal network
-				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-				// process query
-				this.tdb.process(query);
-				// get computed makespan
-				double makespan = query.getMakespan();
-				update.setMakespan(makespan);
+//				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//				// process query
+//				this.tdb.process(query);
+//				// get computed makespan
+//				double makespan = query.getMakespan();
+//				update.setMakespan(makespan);
 				// add flaw solution
 				pf.addSolution(update);
 			}
@@ -367,23 +368,23 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				// check consistency
 				this.tdb.verify();
 				// compute the resulting make-span
-				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-				this.tdb.process(query);
-				// get resulting make-span
-				double makespan = query.getMakespan();
+//				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//				this.tdb.process(query);
+//				// get resulting make-span
+//				double makespan = query.getMakespan();
 				
 				// create resource planning solution
 				ProductionPlanning pp = new ProductionPlanning(mcs.getPeak(), head.getAmount(), beforeProduction, afterProduction);
 				// set resulting make-span
-				pp.setMakespan(makespan);
+//				pp.setMakespan(makespan);
 				// add solution to the peak
 				mcs.addPlanningSolution(pp);
 			}
 			catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
-				logger.debug("It is not possible to schedule new production in order to solve resource over consumption:\n- before-production: " + beforeProduction + "\n- after-production: " + afterProduction + "\n");
+				debug("It is not possible to schedule new production in order to solve resource over consumption:\n- before-production: " + beforeProduction + "\n- after-production: " + afterProduction + "\n");
 			}
 			catch (TemporalIntervalCreationException ex) {
-				logger.debug("Erorr while creating temporal interval for checking the temporal feasibility of production planning\n");
+				debug("Erorr while creating temporal interval for checking the temporal feasibility of production planning\n");
 			}
 			finally 
 			{
@@ -478,11 +479,11 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						preserved = preserved / constraints.size();
 						
 						// compute the resulting makespan of the temporal network
-						ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-						// process query
-						this.tdb.process(query);
-						// get computed makespan
-						double makespan = query.getMakespan();
+//						ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//						// process query
+//						this.tdb.process(query);
+//						// get computed makespan
+//						double makespan = query.getMakespan();
 						
 						// compute the amount of resource the production must generate to maintain the "potential capacity" of next production checkpoint (if any)
 						double amount = checkpoint.getProduction().getAmount() + consumption.getAmount();
@@ -497,12 +498,12 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 								preserved);
 						
 						// set resulting make-span
-						scheduling.setMakespan(makespan);
+//						scheduling.setMakespan(makespan);
 						// add scheduling solution
 						mcs.addSchedulingSolution(scheduling);
 					}
 					catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
-						logger.debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
+						debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
 								+ "- schedule: " + checkpoint.getProduction()+ " < " + consumption  + "\n");
 					}
 					finally 
@@ -577,11 +578,11 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						preserved = preserved / constraints.size();
 						
 						// compute the resulting make-span of the temporal network
-						ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-						// process query
-						this.tdb.process(query);
-						// get computed makespan
-						double makespan = query.getMakespan();
+//						ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//						// process query
+//						this.tdb.process(query);
+//						// get computed makespan
+//						double makespan = query.getMakespan();
 						
 						// compute the amount of resource the production must generate to maintain the "expected" level of resource
 						double amount = checkpoint.getProduction().getAmount() + consumption.getAmount();
@@ -596,12 +597,12 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 								preserved);
 						
 						// set resulting make-span
-						scheduling.setMakespan(makespan);
+//						scheduling.setMakespan(makespan);
 						// add scheduling solution
 						mcs.addSchedulingSolution(scheduling);
 					}
 					catch (ConsistencyCheckException | TemporalConstraintPropagationException ex) {
-						logger.debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
+						debug("Not valid schedule found to solve peak:\n- peak: " + mcs.getPeak() + "\n"
 								+ "- schedule: " + consumption + " < " + checkpoint.getProduction() + "\n");
 					}
 					finally 
@@ -1150,7 +1151,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
  * @author anacleto
  *
  */
-class MinimalCriticalSet
+class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 {
 	private Peak peak;
 	private List<ConsumptionResourceEvent> consumptions;
@@ -1230,6 +1231,14 @@ class MinimalCriticalSet
 			total += event.getAmount();
 		}
 		return total;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public int compareTo(MinimalCriticalSet o) {
+		return this.consumptions.size() > o.consumptions.size() ? -1 : this.consumptions.size() < o.consumptions.size() ? 1 : 0;
 	}
 
 }

@@ -179,15 +179,15 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 //	public void setMakespan(double makespan) {
 //		this.makespan = makespan;
 //	}
-//	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public int compareTo(FlawSolution o) {
-//		// default comparison of solutions on the related makespan
-//		return this.makespan <= o.makespan ? -1 : 1;
-//	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public int compareTo(FlawSolution o) {
+		// default comparison according to the ID
+		return this.id < o.id ? -1 : this.id > o.id ? 1 : 0;
+	}
 	
 	
 	/**
