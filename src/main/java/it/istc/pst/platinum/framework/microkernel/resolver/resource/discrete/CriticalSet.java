@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
-import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceProfileSample;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceEvent;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 
@@ -17,9 +17,11 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
  */
 public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 {
-	private double minCapacity;									// minimum level of resource capacity
-	private double maxCapacity;									// maximum level of resource capacity
-	private Set<RequirementResourceProfileSample> samples;		// profile samples composing the critical set
+//	private double minCapacity;									// minimum level of resource capacity
+//	private double maxCapacity;									// maximum level of resource capacity
+//	private Set<RequirementResourceProfileSample> samples;		// profile samples composing the critical set
+	
+	private Set<RequirementResourceEvent> events;				// requirement events of a critical set
 	
 	/**
 	 * 
@@ -28,109 +30,141 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	 */
 	protected CriticalSet(int id, DiscreteResource resource) {
 		super(id, resource, FlawType.RESOURCE_OVERFLOW);
-		this.samples = new HashSet<>();
-		this.minCapacity = resource.getMinCapacity();
-		this.maxCapacity = resource.getMaxCapacity();
+		this.events = new HashSet<>();
+		
+//		this.samples = new HashSet<>();
+//		this.minCapacity = resource.getMinCapacity();
+//		this.maxCapacity = resource.getMaxCapacity();
+	}
+	
+	/**
+	 * 
+	 * @param event
+	 */
+	public void addRequirementDecision(RequirementResourceEvent event) {
+		this.events.add(event);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public double getMaxCapacity() {
-		return maxCapacity;
+	public List<RequirementResourceEvent> getRequirementEvents() {
+		return new ArrayList<>(this.events);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public double getMinCapacity() {
-		return minCapacity;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public long getTotalRequirement() {
-		// initialize the total amount of resource required
-		long total = 0;
-		for (RequirementResourceProfileSample sample : this.samples) {
-			// update the total
-			total += sample.getAmount();
+	public double getAmountOfRequirement() {
+		double amount = 0;
+		for (RequirementResourceEvent event : this.events) {
+			amount += event.getAmount();
 		}
-		
-		// get computed amount
-		return total;
+		// get total amount
+		return amount;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public List<RequirementResourceProfileSample> getSamples() {
-		// get the list of samples 
-		return new ArrayList<>(this.samples);
-	}
 	
-	/**
-	 * 
-	 * @param sample
-	 */
-	public void addSample(RequirementResourceProfileSample sample) {
-		this.samples.add(sample);
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public double getMaxCapacity() {
+//		return maxCapacity;
+//	}
+//	
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public double getMinCapacity() {
+//		return minCapacity;
+//	}
 	
-	/**
-	 * 
-	 * @param sample
-	 * @return
-	 */
-	public boolean isOverlapping(RequirementResourceProfileSample sample) {
-		// get start time and end time of the current set
-		long start = this.getStartTime();
-		long end = this.getEndTime();
-		
-		// check the start time and the end time of the sample
-		start = Math.max(start, sample.getStart());
-		end = Math.min(end, sample.getEnd());
-		
-		// check overlapping condition;
-		return start < end;
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public long getTotalRequirement() {
+//		// initialize the total amount of resource required
+//		long total = 0;
+//		for (RequirementResourceProfileSample sample : this.samples) {
+//			// update the total
+//			total += sample.getAmount();
+//		}
+//		
+//		// get computed amount
+//		return total;
+//	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public long getStartTime() {
-		// initialize the start time 
-		long start = Long.MIN_VALUE + 1;
-		for (RequirementResourceProfileSample sample : this.samples) {
-			// check maximum start time
-			start = Math.max(start, sample.getStart());
-		}
-		
-		// get computed start time of the critical set
-		return start;
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public List<RequirementResourceProfileSample> getSamples() {
+//		// get the list of samples 
+//		return new ArrayList<>(this.samples);
+//	}
+//	
+//	/**
+//	 * 
+//	 * @param sample
+//	 */
+//	public void addSample(RequirementResourceProfileSample sample) {
+//		this.samples.add(sample);
+//	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public long getEndTime() {
-		// initialize the end time
-		long end = Long.MAX_VALUE - 1;
-		for (RequirementResourceProfileSample sample : this.samples) {
-			// check minimum end time
-			end = Math.min(end, sample.getEnd());
-		}
-		
-		// get computed end time of the critical set
-		return end;
-	}
+//	/**
+//	 * 
+//	 * @param sample
+//	 * @return
+//	 */
+//	public boolean isOverlapping(RequirementResourceProfileSample sample) {
+//		// get start time and end time of the current set
+//		long start = this.getStartTime();
+//		long end = this.getEndTime();
+//		
+//		// check the start time and the end time of the sample
+//		start = Math.max(start, sample.getStart());
+//		end = Math.min(end, sample.getEnd());
+//		
+//		// check overlapping condition;
+//		return start < end;
+//	}
+	
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public long getStartTime() {
+//		// initialize the start time 
+//		long start = Long.MIN_VALUE + 1;
+//		for (RequirementResourceProfileSample sample : this.samples) {
+//			// check maximum start time
+//			start = Math.max(start, sample.getStart());
+//		}
+//		
+//		// get computed start time of the critical set
+//		return start;
+//	}
+	
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public long getEndTime() {
+//		// initialize the end time
+//		long end = Long.MAX_VALUE - 1;
+//		for (RequirementResourceProfileSample sample : this.samples) {
+//			// check minimum end time
+//			end = Math.min(end, sample.getEnd());
+//		}
+//		
+//		// get computed end time of the critical set
+//		return end;
+//	}
 
 	/**
 	 * 
@@ -139,7 +173,7 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((samples == null) ? 0 : samples.hashCode());
+		result = prime * result + ((events == null) ? 0 : events.hashCode());
 		return result;
 	}
 
@@ -155,10 +189,10 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 		if (getClass() != obj.getClass())
 			return false;
 		CriticalSet other = (CriticalSet) obj;
-		if (samples == null) {
-			if (other.samples != null)
+		if (events == null) {
+			if (other.events != null)
 				return false;
-		} else if (!samples.equals(other.samples))
+		} else if (!events.equals(other.events))
 			return false;
 		return true;
 	}
@@ -168,8 +202,9 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	 */
 	@Override
 	public int compareTo(CriticalSet o) {
-		// compare the total amount of resource required 
-		return this.getTotalRequirement() >= o.getTotalRequirement() ? -1 : 1;
+		// compare the amount of required resource
+		return this.getAmountOfRequirement() > o.getAmountOfRequirement()? -1 : this.getAmountOfRequirement() < o.getAmountOfRequirement() ? 1 : 0;
+//		return this.getTotalRequirement() >= o.getTotalRequirement() ? -1 : 1;
 	}
 
 	/**
@@ -177,6 +212,6 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	 */
 	@Override
 	public String toString() {
-		return "[CriticalSet resource-capacity= (min= " + this.minCapacity + ", max= " + this.maxCapacity + "), total-requirement= " + this.getTotalRequirement() + ", #activities= " + this.samples.size() + "]";
+		return "[CriticalSet requirement: " + this.getAmountOfRequirement() + ", conflicting events: " + this.events + "]";
 	}
 }

@@ -39,4 +39,17 @@ public class RequirementResourceEvent extends ResourceEvent<TemporalInterval>
 		// get activity end time
 		return this.event.getEndTime();
 	}
+	
+	/**
+	 * 
+	 * @param o
+	 * @return
+	 */
+	@Override
+	public int compareTo(ResourceEvent<?> o) {
+		// get the other event
+		RequirementResourceEvent other = (RequirementResourceEvent) o;
+		// compare the amount required by the events
+		return this.amount > other.amount ? -1 : this.amount < other.amount ? 1 : 0;
+	}
 }

@@ -2,7 +2,6 @@ package it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,22 +10,22 @@ import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
-import it.istc.pst.platinum.framework.domain.component.ex.ResourceProfileComputationException;
 import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResource;
-import it.istc.pst.platinum.framework.domain.component.resource.discrete.DiscreteResourceProfile;
-import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceProfileSample;
+import it.istc.pst.platinum.framework.domain.component.resource.discrete.RequirementResourceEvent;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
+import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
+import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
@@ -34,7 +33,7 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  * @author anacleto
  *
  */
-public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResource> implements Comparator<RequirementResourceProfileSample> 
+public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResource> 
 { 
 	/**
 	 * 
@@ -43,55 +42,148 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		super(ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getLabel(), 
 				ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
 	}
-
-	/**
-	 * 
-	 */
-	@Override
-	protected List<Flaw> doFindFlaws() 
-	{
-		// list of flaws
-		List<Flaw> flaws = new ArrayList<>();
-		try
-		{
-			// check pessimistic resource profile
-			DiscreteResourceProfile prp = this.component.computePessimisticResourceProfile();
-			// compute flaws on profile
-			List<CriticalSet> CSs = this.computeCriticalSets(prp);
-			
-			// check if any flaw has been found
-			if (CSs.isEmpty()) {
-				// check optimistic resource profile
-				DiscreteResourceProfile orp = this.component.computeOptimisticResourceProfile();
-				// compute flaws on profile
-				CSs = this.computeCriticalSets(orp);
-			}
-			
-			// check if empty
-			if (!CSs.isEmpty()) {
-				// sort CSs according to the total amount of resource requirement and get the the one with the maximum 
-				Collections.sort(CSs);
-				// consider only the CS with the maximum requirement of resource (i.e., the most critical one) 
-				flaws.add(CSs.get(0));
-			}
-		}
-		catch (ResourceProfileComputationException ex) {
-			// profile computation error
-			throw new RuntimeException("Resource profile computation error:\n- " + ex.getMessage() + "\n");
-		}
-		
-		// get computed flaws
-		return flaws;
-	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public int compare(RequirementResourceProfileSample o1, RequirementResourceProfileSample o2) {
-		// compare the amount of resource required
-		return o1.getAmount() >= o2.getAmount() ? -1 : 1;
+	protected List<Flaw> doFindFlaws()
+	{
+		// list of critical sets found
+		List<Flaw> CSs = new ArrayList<>();
+		// list of requirement events
+		List<RequirementResourceEvent> requirements = this.component.getRequirements();
+		// compute "pessimistic resource profiles"
+		for (int index = 0; index < requirements.size() - 1; index++)
+		{
+			// get current requirement event
+			RequirementResourceEvent event = requirements.get(index);
+			// prepare critical set
+			CriticalSet cs = new CriticalSet(FLAW_COUNTER.getAndIncrement(), (DiscreteResource) this.component);
+			// add the current decision 
+			cs.addRequirementDecision(event);
+			// find possibly conflicting events
+			for (int jndex = index + 1; jndex < requirements.size(); jndex++)
+			{
+				// get possibly conflicting event
+				RequirementResourceEvent conflicting = requirements.get(jndex);
+				// check if events conflict
+				debug("Checking possibly conflicting resource requirement events:\n"
+						+ "- component: " + this.component + "\n"
+						+ "- current critical set : " + cs + "\n"
+						+ "- possibly conflicting event: " + conflicting + "\n");
+				
+				// check if the current critical set can temporally overlap with the conflicting one
+				if (this.conflict(cs, conflicting))
+				{
+					// add the event to the critical set
+					cs.addRequirementDecision(conflicting);
+					// conflicting decision found
+					debug("Conflicting event found:\n"
+							+ "- component: " + this.component + "\n"
+							+ "- current critical set : " + cs + "\n"
+							+ "- possibly conflicting event: " + conflicting + "\n");
+				}
+			}
+			
+			// check the amount of requirement of the critical set
+			if (cs.getAmountOfRequirement() > this.component.getMaxCapacity()) {
+				// add the critical set to the flaws
+				CSs.add(cs);
+				// a peak has been found
+				debug("A discrete resource peak has been found:\n"
+						+ "- component: " + this.component + "\n"
+						+ "- critical set: " + cs + "\n"
+						+ "- amount required: " + cs.getAmountOfRequirement() + "\n");
+			}
+		}
+		
+		// get the list of critical sets found
+		return CSs;
 	}
+	
+	
+	/**
+	 * 
+	 * @param set
+	 * @param event
+	 * @return
+	 */
+	private boolean conflict(CriticalSet set, RequirementResourceEvent event) 
+	{
+		// conflicting flag
+		boolean conflict = true;
+		// get events of the critical set
+		List<RequirementResourceEvent> events = set.getRequirementEvents();
+		// check set of events
+		for (int index = 0; index < events.size() && conflict; index++)
+		{
+			// get an event from the set
+			RequirementResourceEvent e = events.get(index);
+			// check if current decision and target overlap
+			IntervalOverlapQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_OVERLAP);
+			// set intervals
+			query.setReference(e.getEvent());
+			query.setTarget(event.getEvent());
+			// process query
+			this.tdb.process(query);
+			// check whether the (flexible) temporal interval can overlap or not
+			conflict = query.canOverlap();
+		}
+		
+		// get result
+		return conflict;
+	}
+
+	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	protected List<Flaw> doFindFlaws() 
+//	{
+//		// list of flaws
+//		List<Flaw> flaws = new ArrayList<>();
+//		try
+//		{
+//			// check pessimistic resource profile
+//			DiscreteResourceProfile prp = this.component.computePessimisticResourceProfile();
+//			// compute flaws on profile
+//			List<CriticalSet> CSs = this.computeCriticalSets(prp);
+//			
+//			// check if any flaw has been found
+//			if (CSs.isEmpty()) {
+//				// check optimistic resource profile
+//				DiscreteResourceProfile orp = this.component.computeOptimisticResourceProfile();
+//				// compute flaws on profile
+//				CSs = this.computeCriticalSets(orp);
+//			}
+//			
+//			// check if empty
+//			if (!CSs.isEmpty()) {
+//				// sort CSs according to the total amount of resource requirement and get the the one with the maximum 
+//				Collections.sort(CSs);
+//				// consider only the CS with the maximum requirement of resource (i.e., the most critical one) 
+//				flaws.add(CSs.get(0));
+//			}
+//		}
+//		catch (ResourceProfileComputationException ex) {
+//			// profile computation error
+//			throw new RuntimeException("Resource profile computation error:\n- " + ex.getMessage() + "\n");
+//		}
+//		
+//		// get computed flaws
+//		return flaws;
+//	}
+	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	public int compare(RequirementResourceProfileSample o1, RequirementResourceProfileSample o2) {
+//		// compare the amount of resource required
+//		return o1.getAmount() >= o2.getAmount() ? -1 : 1;
+//	}
 	
 	/**
 	 * Å critical set (CS) is not necessary minimal. 
@@ -108,26 +200,26 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	{
 		// list of MCSs that can be extracted from the critical set
 		List<MinimalCriticalSet> mcss = new ArrayList<>();
-		// get the samples composing the critical set 
-		List<RequirementResourceProfileSample> list = cs.getSamples();
-		// sort samples in decreasing order of resource requirement
-		Collections.sort(list, this);
+		// get the events composing the critical set 
+		List<RequirementResourceEvent> events = cs.getRequirementEvents();
+		// sort requirements in decreasing order of resource amount needed
+		Collections.sort(events);
 		
 		// sample MCSs from the CS
-		for (int index = 0; index < list.size() -1; index++)  
+		for (int index = 0; index < events.size() -1; index++)  
 		{
-			// get current sample
-			RequirementResourceProfileSample reference = list.get(index);
+			// get current event
+			RequirementResourceEvent reference = events.get(index);
 			// initialize an MCS
 			MinimalCriticalSet mcs = new MinimalCriticalSet(cs);
-			// add the current sample
-			mcs.addSample(reference);
+			// add the current event to the MCS
+			mcs.addEvent(reference);
 			
 			// check other samples
-			for (int jndex = index + 1; jndex < list.size(); jndex++) 
+			for (int jndex = index + 1; jndex < events.size(); jndex++) 
 			{
-				// get other sample
-				RequirementResourceProfileSample other = list.get(jndex);
+				// get other event
+				RequirementResourceEvent other = events.get(jndex);
 				// check the resulting amount 
 				double amount = mcs.getTotalAmount() + other.getAmount();
 				// an MCS is minimal so check the amount of resource required  (minimal condition)
@@ -136,16 +228,20 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					// copy current MCS
 					MinimalCriticalSet copy = new MinimalCriticalSet(mcs);
 					// add sample to the MCS
-					mcs.addSample(other);
+					mcs.addEvent(other);
 					// add to the list of MCSs
 					mcss.add(mcs);
+					debug("Minimal Critical Set sampled:\n"
+							+ "- component: " + this.component + "\n"
+							+ "- critical set: " + cs + "\n"
+							+ "- sampled minimial critical set: " + mcs + "\n");
+					
 					// go on with the search by using the copy 
 					mcs = copy;
-					
 				}
 				else {
-					// simply add the sample and go on
-					mcs.addSample(other);
+					// simply add the event and go on
+					mcs.addEvent(other);
 				}
 			}
 		}
@@ -191,8 +287,8 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	private void computeMinimalCriticalSetSolutions(MinimalCriticalSet mcs) 
 			throws UnsolvableFlawException
 	{
-		// list of samples
-		List<RequirementResourceProfileSample> list = mcs.getSamples();
+		// list of events
+		List<RequirementResourceEvent> list = mcs.getEvents();
 		// for each pair of decisions check the feasibility of a precedence constraint and compute the resulting preserved heuristic value
 		for (int index = 0; index < list.size() - 1; index++)
 		{
@@ -344,20 +440,25 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		
 		try
 		{
+			
+			// sort MCSs according to the total requirement
+			Collections.sort(mcss);	
+			// get the "best" MCS 
+			MinimalCriticalSet best = mcss.get(0);
+			
 			// compute feasible solutions of the sampled MCSs
-			for (MinimalCriticalSet mcs : mcss) {
+//			for (MinimalCriticalSet mcs : mcss) {
 				// compute solutions and the related preserved values
-				this.computeMinimalCriticalSetSolutions(mcs);
-			}
+			
+			this.computeMinimalCriticalSetSolutions(best);
+			
+//			}
 			
 			/*
 			 * Rate MCSs according to the computed preserved heuristic value and select the best one for expansion
 			 */
 			
-			// sort MCSs according to the computed preserved heuristic value
-			Collections.sort(mcss);	
-			// get the "best" MCS 
-			MinimalCriticalSet best = mcss.get(0);
+			
 			// add computed solutions to the flow
 			for (PrecedenceConstraint pc : best.getSolutions()) {
 				// add this precedence constraint as a possible solution of the peak
@@ -421,51 +522,51 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		}
 	}
 	
-	/**
-	 * Compute the list of critical sets (CSs) on a (pessimistic or optimistic) resource profile 
-	 * 
-	 * @param profile
-	 * @return
-	 */
-	private List<CriticalSet> computeCriticalSets(DiscreteResourceProfile profile)
-	{
-		// initialize the list of flaws
-		List<CriticalSet> CSs = new ArrayList<>();
-		// get profile samples
-		List<RequirementResourceProfileSample> samples = profile.getSamples();
-		
-		// data structure to maintain data "learned" during flaw detection
-		for (int index = 0; index < samples.size() - 1; index++)
-		{
-			// get current sample
-			RequirementResourceProfileSample i = samples.get(index);
-			// initialize the critical set
-			CriticalSet cs = new CriticalSet(FLAW_COUNTER.getAndIncrement(), (DiscreteResource) this.component);
-			// add i to the current critical set
-			cs.addSample(i);
-			
-			// check possible critical sets
-			for (int jndex = index + 1; jndex < samples.size(); jndex++)
-			{
-				// get sample
-				RequirementResourceProfileSample j = samples.get(jndex);
-				// verify whether the current sample overlaps the considered critical set
-				if (cs.isOverlapping(j)) {
-					// add the sample to the critical set
-					cs.addSample(j);
-				}
-			}
-			
-			// check critical set condition
-			if (cs.getTotalRequirement() > this.component.getMaxCapacity()) {
-				// a critical set has been found
-				CSs.add(cs);
-			}
-		}
-		
-		// get the list of discovered critical sets
-		return CSs;
-	}
+//	/**
+//	 * Compute the list of critical sets (CSs) on a (pessimistic or optimistic) resource profile 
+//	 * 
+//	 * @param profile
+//	 * @return
+//	 */
+//	private List<CriticalSet> computeCriticalSets(DiscreteResourceProfile profile)
+//	{
+//		// initialize the list of flaws
+//		List<CriticalSet> CSs = new ArrayList<>();
+//		// get profile samples
+//		List<RequirementResourceProfileSample> samples = profile.getSamples();
+//		
+//		// data structure to maintain data "learned" during flaw detection
+//		for (int index = 0; index < samples.size() - 1; index++)
+//		{
+//			// get current sample
+//			RequirementResourceProfileSample i = samples.get(index);
+//			// initialize the critical set
+//			CriticalSet cs = new CriticalSet(FLAW_COUNTER.getAndIncrement(), (DiscreteResource) this.component);
+//			// add i to the current critical set
+//			cs.addSample(i);
+//			
+//			// check possible critical sets
+//			for (int jndex = index + 1; jndex < samples.size(); jndex++)
+//			{
+//				// get sample
+//				RequirementResourceProfileSample j = samples.get(jndex);
+//				// verify whether the current sample overlaps the considered critical set
+//				if (cs.isOverlapping(j)) {
+//					// add the sample to the critical set
+//					cs.addSample(j);
+//				}
+//			}
+//			
+//			// check critical set condition
+//			if (cs.getTotalRequirement() > this.component.getMaxCapacity()) {
+//				// a critical set has been found
+//				CSs.add(cs);
+//			}
+//		}
+//		
+//		// get the list of discovered critical sets
+//		return CSs;
+//	}
 }
 
 /**
@@ -476,7 +577,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 {
 	protected CriticalSet cs;									// the set of overlapping activities
-	private Set<RequirementResourceProfileSample> samples;		// activities composing the MCS
+	private Set<RequirementResourceEvent> events;				// activities composing the MCS
 	private List<PrecedenceConstraint> solutions;				// a MCS can be solved by posting a simple precedence constraint
 	
 	/**
@@ -485,7 +586,7 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 */
 	protected MinimalCriticalSet(CriticalSet cs) {
 		this.cs = cs;
-		this.samples = new HashSet<>();
+		this.events = new HashSet<>();
 		this.solutions = new ArrayList<>();
 	}
 	
@@ -495,7 +596,7 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 */
 	protected MinimalCriticalSet(MinimalCriticalSet mcs) {
 		this.cs = mcs.cs;
-		this.samples = new HashSet<>(mcs.samples);
+		this.events = new HashSet<>(mcs.events);
 		this.solutions = new ArrayList<>(mcs.solutions);
 	}
 	
@@ -504,10 +605,10 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 * 
 	 * @return
 	 */
-	public long getTotalAmount() {
-		long amount = 0;
-		for (RequirementResourceProfileSample sample : this.samples) {
-			amount += sample.getAmount();
+	public double getTotalAmount() {
+		double amount = 0;
+		for (RequirementResourceEvent event : this.events) {
+			amount += event.getAmount();
 		}
 		// get the computed total
 		return amount;
@@ -518,25 +619,25 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 * @param sample
 	 * @return
 	 */
-	public boolean contains(RequirementResourceProfileSample sample) {
-		// check whether the MCS already contains the sample 
-		return this.samples.contains(sample);
+	public boolean contains(RequirementResourceEvent event) {
+		// check whether the MCS already contains the event 
+		return this.events.contains(event);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public List<RequirementResourceProfileSample> getSamples() {
-		return new ArrayList<>(this.samples);
+	public List<RequirementResourceEvent> getEvents() {
+		return new ArrayList<>(this.events);
 	}
 	
 	/**
 	 * 
 	 * @param sample
 	 */
-	public void addSample(RequirementResourceProfileSample sample) {
-		this.samples.add(sample);
+	public void addEvent(RequirementResourceEvent event) {
+		this.events.add(event);
 	}
 	
 	/**
@@ -604,10 +705,14 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	@Override
 	public int compareTo(MinimalCriticalSet o) {
 		// compare two MCS according to their preserved value
-		double p1 = this.getPreservedValue();
-		double p2 = o.getPreservedValue();
-		// take into account solutions with a lower level of preserved value
-		return p1 >= p2 ? -1 : 1;
+//		double p1 = this.getPreservedValue();
+//		double p2 = o.getPreservedValue();
+//		// take into account solutions with a lower level of preserved value
+//		return p1 >= p2 ? -1 : 1;
+		
+		
+		// compare MCSs according to the total amount of resource required
+		return this.getTotalAmount() > o.getTotalAmount() ? -1 : this.getTotalAmount() < o.getTotalAmount() ? 1 : 0;
 	}
 	
 	/**
@@ -615,6 +720,6 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 */
 	@Override
 	public String toString() {
-		return "[MinimalCriticalSet samples= " + this.samples + "]";
+		return "[MinimalCriticalSet requirement: " + this.getTotalAmount() + ", events: " + this.events + "]";
 	}
 }
