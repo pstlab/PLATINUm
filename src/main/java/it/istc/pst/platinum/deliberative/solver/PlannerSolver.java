@@ -172,7 +172,7 @@ public abstract class PlannerSolver extends DeliberativeObject
 			// create child node
 			SearchSpaceNode child = new SearchSpaceNode(current, op);
 			// set computed makespan
-			child.setMakespan(solution.getMakespan());
+//			child.setMakespan(solution.getMakespan());
 			// set resulting agenda
 			List<ComponentValue> goals = new ArrayList<>(current.getAgenda().getGoals());
 			// remove solved goals in the solution

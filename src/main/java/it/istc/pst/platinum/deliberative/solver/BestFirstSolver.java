@@ -68,12 +68,12 @@ public class BestFirstSolver extends PlannerSolver
 				}
 				
 				
-				logger.debug("Solving step " + this.stepCounter);
+				debug("Solving step " + this.stepCounter);
 				
 				// extract next node from the fringe
 				extracted = this.fringe.dequeue();
 				// propagate node
-				logger.debug("Propagating node:\n" + extracted + "\nof " + this.fringe.getFringeSize() + " available in the fringe");
+				debug("Propagating node:\n" + extracted + "\nof " + this.fringe.getFringeSize() + " available in the fringe");
 				
 				// context switch
 				this.contextSwitch(last, extracted);
@@ -83,11 +83,11 @@ public class BestFirstSolver extends PlannerSolver
 				try {
 					// consistency check
 					this.pdb.verify();
-					logger.debug("Plan refinement successfully done... looking for flaws on the current refined plan...");
+					debug("Plan refinement successfully done... looking for flaws on the current refined plan...");
 				}
 				catch (PseudoControllabilityCheckException ex) {
 					// ignoring pseudo-controllability issues
-					logger.debug("BestFirstSolver ignores pseudo-controllability issues of the plan.... continue the search");
+					debug("BestFirstSolver ignores pseudo-controllability issues of the plan.... continue the search");
 				}
 				
  				// get the "best" flaws to solve first
@@ -99,19 +99,19 @@ public class BestFirstSolver extends PlannerSolver
 					for (SearchSpaceNode child : this.expand(extracted, flaw)) {
 						// enqueue node
 						this.fringe.enqueue(child);
-						logger.debug("Expanding the search space with:\n- node= " + child + "\n");
+						debug("Expanding the search space with:\n- node= " + child + "\n");
 					}
 				}
 				
 			}
 			catch (PlanRefinementException | ConsistencyCheckException | UnsolvableFlawException ex) {
 				// unsolvable flaw found
-				logger.error("Error during plan refinement:\n " + ex.getMessage());
+				error("Error during plan refinement:\n " + ex.getMessage());
 			}
 			catch (EmptyFringeException ex) {
 				
 				// impossible to find a solution
-				logger.debug("No more node in the fringe... ");
+				debug("No more node in the fringe... ");
 				
 				/*
 				 * TODO : RETRACT INITIAL PROBLEM
@@ -127,7 +127,7 @@ public class BestFirstSolver extends PlannerSolver
 				this.time = System.currentTimeMillis() - start;
 				// solution found 
 				exit = true;
-				logger.info("Solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
+				info("Solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
 			}
 			
 		} // end while

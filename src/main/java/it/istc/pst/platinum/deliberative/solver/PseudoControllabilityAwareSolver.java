@@ -83,7 +83,7 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 				
 				// extract a node from the fringe
 				node = this.fringe.dequeue();
-				logger.info("Solving step: " + this.stepCounter +"\n"
+				info("Solving step: " + this.stepCounter +"\n"
 						+ "- Extracted node: " + node + "\n"
 						+ "- Applied operator: " + node.getGenerator() + "\n");
 				
@@ -95,7 +95,7 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 				this.pdb.verify();
 				
 				// print information concerning current partial plan	
-				logger.info("Partial plan after propagation of operator: "  + node.getGenerator() + "\n"
+				info("Partial plan after propagation of operator: "  + node.getGenerator() + "\n"
 							+ "- plan:\n"
 							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
 							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n\n"
@@ -116,20 +116,20 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 						// add the node to the fringe
 						this.fringe.enqueue(child);
 						// expand the search space
-						logger.info("Search tree expansion:\n- node: " + child + "\n"
+						info("Search tree expansion:\n- node: " + child + "\n"
 								+ "- generator: " + child.getGenerator() + "\n");
 					}
 				}
 			}
 			catch (PlanRefinementException ex) {
 				// error while refining the current plan
-				logger.warning("Error while refining the current plan\n"
+				warning("Error while refining the current plan\n"
 						+ "- operator: " + node.getGenerator() + "\n"
 						+ "- message: " + ex.getMessage() + "\n");
 			}
 			catch (UnsolvableFlawException | ConsistencyCheckException  ex) {
 				// not feasible partial plan
-				logger.warning("Not feasible partial plan found\n"
+				warning("Not feasible partial plan found\n"
 						+ "- oeprator: " + node.getGenerator() + "\n"
 						+ "- plan:\n"
 							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
@@ -149,7 +149,7 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 				plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABILITY);
 				plan.setSolvingTime(this.time);
 				// pseudo-controllable solution found
-				logger.info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
+				info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			}
 			catch (EmptyFringeException ex) 
 			{
