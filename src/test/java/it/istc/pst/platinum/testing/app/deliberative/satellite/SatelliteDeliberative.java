@@ -21,9 +21,9 @@ public class SatelliteDeliberative
 	private static final String DDL = DOMAIN_HOME  + "/satellite.ddl";
 
 	private static final String PROBLEM_HOME = "domains/satellite/battery/problems";
-	private static final int NUMBER_OF_RECHARGING_WINDOW = 1;
-	private static final int NUMBER_OF_COMMUNICATION_WINDOW = 1;
-	private static final int NUMBER_OF_SCIENCE_OPERATION = 1;
+	private static final int NUMBER_OF_RECHARGING_WINDOW = 3;
+	private static final int NUMBER_OF_COMMUNICATION_WINDOW = 3;
+	private static final int NUMBER_OF_SCIENCE_OPERATION = 2;
 	
 	private static final String PDL = PROBLEM_HOME + "/satellite_"
 			+ "" + DOMAIN_TYPE + "_"

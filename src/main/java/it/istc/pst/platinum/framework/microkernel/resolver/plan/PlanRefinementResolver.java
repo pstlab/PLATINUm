@@ -37,13 +37,11 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.Starts
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleExpansionException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleUnificationException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.microkernel.resolver.plan.GoalJustification.JustificationType;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
-import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.AfterIntervalConstraint;
@@ -68,7 +66,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * 
 	 */
 	protected PlanRefinementResolver() {
-		super(ResolverType.PLAN_REFINEMENT.getLabel(), ResolverType.PLAN_REFINEMENT.getFlawTypes());
+		super(ResolverType.PLAN_REFINEMENT.getLabel(), 
+				ResolverType.PLAN_REFINEMENT.getFlawTypes());
 	}
 	
 	/**
@@ -272,7 +271,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				try
 				{
 					// check unification feasibility
-					double makespan = this.checkUnificationTemporalFeasibility(goal.getDecision(), unif);
+					this.checkUnificationTemporalFeasibility(goal.getDecision(), unif);
 					// if everything goes right we've found a possible unification
 					GoalUnification unification = new GoalUnification(goal, unif);
 					// set the resulting makespan
@@ -281,11 +280,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 					goal.addSolution(unification);
 					debug("Feasible unification found:\n"
 							+ "- planning goal: " + goal + "\n"
-							+ "- unification decision: " + unification + "\n"
-							+ "- resulting makespan: " + makespan + "\n");
+							+ "- unification decision: " + unification + "\n");
 				}
 				catch (NotFeasibleUnificationException ex) {
-					debug("Not feasible goal unification found:\n"
+					debug("No feasible goal unification found:\n"
 							+ "- planning goal: " + goal + "\n"
 							+ "- message: \"" + ex.getMessage() + "\"\n");
 				}
@@ -297,14 +295,13 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * 
 	 * @param goal
 	 * @param decision
-	 * @return
 	 * @throws NotFeasibleUnificationException
 	 */
-	private double checkUnificationTemporalFeasibility(Decision goal,  Decision decision) 
+	private void checkUnificationTemporalFeasibility(Decision goal,  Decision decision) 
 			throws NotFeasibleUnificationException
 	{
 		// initialize the makespan
-		double makespan = Double.MIN_VALUE + 1;
+//		double makespan = Double.MIN_VALUE + 1;
 		// list of propagated temporal constraints
 		List<TemporalConstraint> committed = new ArrayList<>();
 		try 
@@ -316,7 +313,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			// get unification decision temporal interval
 			TemporalInterval i = decision.getToken().getInterval();
 			
-			// propagate "translated" constraints
+			// translate goal-related relations and propagate them to check the temporal feasibility of the unification
 			for (Relation relation : pending)
 			{
 				// get reference component
@@ -389,7 +386,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 						{
 							ContainsRelation contains = (ContainsRelation) relation;
 							// create temporal constraint
-							ContainsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.CONTAINS	);
+							ContainsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.CONTAINS);
 							// check reference
 							if (relation.getReference().equals(goal)) {
 								constraint.setReference(i);
@@ -618,7 +615,6 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 						}
 						break;
 						
-						
 						default: {
 							throw new RuntimeException("Unknownw relation type: " + relation.getType() + "\n");
 						}
@@ -626,8 +622,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				}
 			}
 			
-			// check temporal consistency
+			// check temporal consistency of the plan
 			this.tdb.verify();
+			
+			
 			// feasible solution, compute the resulting makespan
 //			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
 //			this.tdb.process(query);
@@ -642,379 +640,15 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		}
 		finally 
 		{
-			// delete all committed temporal constraints
+			// retract all committed temporal constraints
 			for (TemporalConstraint constraint : committed) {
-				// delete constraint
+				// delete temporal constraint
 				this.tdb.retract(constraint);
 			}
 		}
 		
-		// get computed makespan
-		return makespan;
-	}
-	
-	/**
-	 * 
-	 * @param goal
-	 * @return
-	 * @throws NotFeasibleExpansionException
-	 */
-	private double checkExpansionTemporalFeasibility(Decision goal) 
-			throws NotFeasibleExpansionException
-	{
-		// initialize the makespan
-		double makespan = Double.MIN_VALUE + 1;
-		// list of committed intervals
-		List<TemporalInterval> committedIntervals = new ArrayList<>();
-		List<TemporalConstraint> committedConstraints = new ArrayList<>();
-		try
-		{
-			// create a temporal interval
-			TemporalInterval i = this.tdb.createTemporalInterval(goal.getDuration(), goal.isControllable());
-			// propagate temporal interval
-			committedIntervals.add(i);
-			
-			// get goal component
-			DomainComponent goalComp = goal.getComponent();
-			// check pending decision of the plan concerning the goal
-			Set<Relation> pending = goalComp.getPendingRelations(goal);
-			// try to propagate related temporal constraints
-			for (Relation relation : pending) 
-			{
-				// get reference component
-				DomainComponent refComp = relation.getReference().getComponent();
-				// get target component
-				DomainComponent tarComp = relation.getTarget().getComponent();
-				// check temporal relations concerning the goal
-				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT) && 
-						(refComp.isActive(relation.getReference()) || 
-								tarComp.isActive(relation.getTarget()))) 
-				{
-					// check relation type
-					switch (relation.getType()) 
-					{
-						case AFTER: 
-						{
-							AfterRelation after = (AfterRelation) relation;
-							// create temporal constraint
-							AfterIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.AFTER);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setLowerBound(after.getLowerBound());
-							constraint.setUpperBound(after.getUpperBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case BEFORE: 
-						{
-							BeforeRelation before = (BeforeRelation) relation;
-							// create temporal constraint
-							BeforeIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setLowerBound(before.getLowerBound());
-							constraint.setUpperBound(before.getUpperBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case CONTAINS: 
-						{
-							ContainsRelation contains = (ContainsRelation) relation;
-							// create temporal constraint
-							ContainsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.CONTAINS	);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setStartTimeBound(contains.getStartTimeBound());
-							constraint.setEndTimeBound(contains.getEndTimeBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case DURING: 
-						{
-							DuringRelation during = (DuringRelation) relation;
-							// create temporal constraint
-							DuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.DURING);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setStartTimeBound(during.getStartTimeBound());
-							constraint.setEndTimeBound(during.getEndTimeBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case ENDS_DURING: 
-						{
-							EndsDuringRelation endsduring = (EndsDuringRelation) relation;
-							// create temporal constraint
-							EndsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.ENDS_DURING);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setFirstBound(endsduring.getFirstBound());
-							constraint.setSecondBound(endsduring.getSecondBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case EQUALS: 
-						{
-							// create temporal constraint
-							EqualsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.EQUALS);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case MEETS: 
-						{
-							// create temporal constraint
-							MeetsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case MET_BY: 
-						{
-							// create temporal constraint
-							MetByIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MET_BY);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						
-						case STARTS_DURING: 
-						{
-							StartsDuringRelation startsduring = (StartsDuringRelation) relation;
-							// create temporal constraint
-							StartsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.STARTS_DURING);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setFirstBound(startsduring.getFirstBound());
-							constraint.setSecondBound(startsduring.getSecondBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						
-						case START_START : 
-						{
-							// get relation
-							StartStartRelation ss = (StartStartRelation) relation;
-							// create temporal constraint
-							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i.getStartTime());
-								constraint.setTarget(relation.getTarget().getToken().getInterval().getStartTime());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval().getStartTime());
-								constraint.setTarget(i.getStartTime());
-							}
-							
-							// set bounds
-							constraint.setDistanceLowerBound(ss.getLowerBound());
-							constraint.setDistanceUpperBound(ss.getUpperBound());
-							// propagate
-							this.tdb.propagate(constraint);
-							// add to committed
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						case END_END : 
-						{
-							// get relation
-							EndEndRelation ee = (EndEndRelation) relation;
-							// create temporal constraint
-							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i.getEndTime());
-								constraint.setTarget(relation.getTarget().getToken().getInterval().getEndTime());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval().getEndTime());
-								constraint.setTarget(i.getEndTime());
-							}
-							
-							// set bounds
-							constraint.setDistanceLowerBound(ee.getLowerBound());
-							constraint.setDistanceUpperBound(ee.getUpperBound());
-							// propagate
-							this.tdb.propagate(constraint);
-							// add to committed
-							committedConstraints.add(constraint);
-						}
-						break;
-						
-						default: {
-							throw new RuntimeException("Unknownw relation type: " + relation.getType() + "\n");
-						}
-					}
-				}
-			}
-			
-		
-			// check consistency
-			this.tdb.verify();
-			// feasible solution, compute the resulting makespan
-//			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-//			this.tdb.process(query);
-//			// set the resulting makespan
-//			makespan = query.getMakespan();
-		}
-		catch (TemporalIntervalCreationException | TemporalConstraintPropagationException | ConsistencyCheckException ex) {
-			throw new NotFeasibleExpansionException(ex.getMessage());
-		}
-		finally 
-		{
-			// remove propagated constraints
-			for (TemporalConstraint constraint : committedConstraints) {
-				this.tdb.retract(constraint);
-			}
-			// remove propagated intervals
-			for (TemporalInterval interval : committedIntervals) {
-				this.tdb.deleteTemporalInterval(interval);
-			}
-		}
-		
-		// get computed makespan
-		return makespan;
+//		// get computed makespan
+//		return makespan;
 	}
 	
 	/**
@@ -1023,48 +657,51 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 */
 	private void doComputeExpansionSolutions(Goal goal) 
 	{
-		try 
+//		try 
+//		{
+		// check feasibility of goal expansion
+//			double makespan = this.checkExpansionTemporalFeasibility(goal.getDecision());
+		
+		
+		// check synchronization rules
+		List<SynchronizationRule> rules = this.component.getSynchronizationRules(goal.getDecision().getValue());
+		// check synchronizations
+		if (rules.isEmpty()) 
 		{
-			// check feasibility of goal expansion
-			double makespan = this.checkExpansionTemporalFeasibility(goal.getDecision());
-			// check synchronization rules
-			List<SynchronizationRule> rules = this.component.getSynchronizationRules(goal.getDecision().getValue());
-			// check synchronizations
-			if (rules.isEmpty()) 
-			{
-				// the goal can be justified without applying synchronization rules
-				GoalExpansion expansion = new GoalExpansion(goal);
-				// set the resulting makespan
+			// the goal can be justified without applying synchronization rules
+			GoalExpansion expansion = new GoalExpansion(goal);
+			// set the resulting makespan
 //				expansion.setMakespan(makespan);
+			// add solution
+			goal.addSolution(expansion);
+			debug("Simple goal found no synchronization is triggered after expansion:\n"
+					+ "- planning goal: " + goal.getDecision() + "\n");
+		}
+		else 
+		{
+			// can do expansion
+			for (SynchronizationRule rule : rules) 
+			{
+				// expansion solution
+				GoalExpansion expansion = new GoalExpansion(goal, rule);
+				// set the resulting makespan
+//					expansion.setMakespan(makespan);
 				// add solution
 				goal.addSolution(expansion);
-				debug("Simple goal found:\n"
+				debug("Complex goal found:\n"
 						+ "- planning goal: " + goal.getDecision() + "\n"
-						+ "- resulting makespan: " + makespan + "\n");
-			}
-			else 
-			{
-				// can do expansion
-				for (SynchronizationRule rule : rules) 
-				{
-					// expansion solution
-					GoalExpansion expansion = new GoalExpansion(goal, rule);
-					// set the resulting makespan
-//					expansion.setMakespan(makespan);
-					// add solution
-					goal.addSolution(expansion);
-					debug("Complex goal found:\n"
-							+ "- planning goal: " + goal.getDecision() + "\n"
-							+ "- synchronization rule: " + rule + "\n"
-							+ "- resulting makespan: " + makespan + "\n");
-				}
+						+ "- synchronization rule: " + rule + "\n");
 			}
 		}
-		catch (NotFeasibleExpansionException ex) {
-			debug("Not feasible goal expansion found:\n"
-					+ "- planning goal: " + goal + "\n"
-					+ "- message: \"" + ex.getMessage() + "\"\n");
-		}
+		
+		
+		
+//		}
+//		catch (NotFeasibleExpansionException ex) {
+//			debug("Not feasible goal expansion found:\n"
+//					+ "- planning goal: " + goal + "\n"
+//					+ "- message: \"" + ex.getMessage() + "\"\n");
+//		}
 	}
 	
 	/**
@@ -1600,4 +1237,368 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			break;
 		}
 	}
+	
+//	/**
+//	 * 
+//	 * @param goal
+//	 * @return
+//	 * @throws NotFeasibleExpansionException
+//	 */
+//	private double checkExpansionTemporalFeasibility(Decision goal) 
+//			throws NotFeasibleExpansionException
+//	{
+//		// initialize the makespan
+//		double makespan = Double.MIN_VALUE + 1;
+//		// list of committed intervals
+//		List<TemporalInterval> committedIntervals = new ArrayList<>();
+//		List<TemporalConstraint> committedConstraints = new ArrayList<>();
+//		try
+//		{
+//			// create a temporal interval
+//			TemporalInterval i = this.tdb.createTemporalInterval(goal.getDuration(), goal.isControllable());
+//			// propagate temporal interval
+//			committedIntervals.add(i);
+//			
+//			// get goal component
+//			DomainComponent goalComp = goal.getComponent();
+//			// check pending decision of the plan concerning the goal
+//			Set<Relation> pending = goalComp.getPendingRelations(goal);
+//			// try to propagate related temporal constraints
+//			for (Relation relation : pending) 
+//			{
+//				// get reference component
+//				DomainComponent refComp = relation.getReference().getComponent();
+//				// get target component
+//				DomainComponent tarComp = relation.getTarget().getComponent();
+//				// check temporal relations concerning the goal
+//				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT) && 
+//						(refComp.isActive(relation.getReference()) || 
+//								tarComp.isActive(relation.getTarget()))) 
+//				{
+//					// check relation type
+//					switch (relation.getType()) 
+//					{
+//						case AFTER: 
+//						{
+//							AfterRelation after = (AfterRelation) relation;
+//							// create temporal constraint
+//							AfterIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.AFTER);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setLowerBound(after.getLowerBound());
+//							constraint.setUpperBound(after.getUpperBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case BEFORE: 
+//						{
+//							BeforeRelation before = (BeforeRelation) relation;
+//							// create temporal constraint
+//							BeforeIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setLowerBound(before.getLowerBound());
+//							constraint.setUpperBound(before.getUpperBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case CONTAINS: 
+//						{
+//							ContainsRelation contains = (ContainsRelation) relation;
+//							// create temporal constraint
+//							ContainsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.CONTAINS	);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setStartTimeBound(contains.getStartTimeBound());
+//							constraint.setEndTimeBound(contains.getEndTimeBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case DURING: 
+//						{
+//							DuringRelation during = (DuringRelation) relation;
+//							// create temporal constraint
+//							DuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.DURING);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setStartTimeBound(during.getStartTimeBound());
+//							constraint.setEndTimeBound(during.getEndTimeBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case ENDS_DURING: 
+//						{
+//							EndsDuringRelation endsduring = (EndsDuringRelation) relation;
+//							// create temporal constraint
+//							EndsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.ENDS_DURING);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setFirstBound(endsduring.getFirstBound());
+//							constraint.setSecondBound(endsduring.getSecondBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case EQUALS: 
+//						{
+//							// create temporal constraint
+//							EqualsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.EQUALS);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case MEETS: 
+//						{
+//							// create temporal constraint
+//							MeetsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case MET_BY: 
+//						{
+//							// create temporal constraint
+//							MetByIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MET_BY);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						
+//						case STARTS_DURING: 
+//						{
+//							StartsDuringRelation startsduring = (StartsDuringRelation) relation;
+//							// create temporal constraint
+//							StartsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.STARTS_DURING);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setFirstBound(startsduring.getFirstBound());
+//							constraint.setSecondBound(startsduring.getSecondBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						
+//						case START_START : 
+//						{
+//							// get relation
+//							StartStartRelation ss = (StartStartRelation) relation;
+//							// create temporal constraint
+//							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i.getStartTime());
+//								constraint.setTarget(relation.getTarget().getToken().getInterval().getStartTime());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval().getStartTime());
+//								constraint.setTarget(i.getStartTime());
+//							}
+//							
+//							// set bounds
+//							constraint.setDistanceLowerBound(ss.getLowerBound());
+//							constraint.setDistanceUpperBound(ss.getUpperBound());
+//							// propagate
+//							this.tdb.propagate(constraint);
+//							// add to committed
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						case END_END : 
+//						{
+//							// get relation
+//							EndEndRelation ee = (EndEndRelation) relation;
+//							// create temporal constraint
+//							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i.getEndTime());
+//								constraint.setTarget(relation.getTarget().getToken().getInterval().getEndTime());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval().getEndTime());
+//								constraint.setTarget(i.getEndTime());
+//							}
+//							
+//							// set bounds
+//							constraint.setDistanceLowerBound(ee.getLowerBound());
+//							constraint.setDistanceUpperBound(ee.getUpperBound());
+//							// propagate
+//							this.tdb.propagate(constraint);
+//							// add to committed
+//							committedConstraints.add(constraint);
+//						}
+//						break;
+//						
+//						default: {
+//							throw new RuntimeException("Unknownw relation type: " + relation.getType() + "\n");
+//						}
+//					}
+//				}
+//			}
+//			
+//		
+//			// check consistency
+//			this.tdb.verify();
+//			// feasible solution, compute the resulting makespan
+////			ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+////			this.tdb.process(query);
+////			// set the resulting makespan
+////			makespan = query.getMakespan();
+//		}
+//		catch (TemporalIntervalCreationException | TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+//			throw new NotFeasibleExpansionException(ex.getMessage());
+//		}
+//		finally 
+//		{
+//			// remove propagated constraints
+//			for (TemporalConstraint constraint : committedConstraints) {
+//				this.tdb.retract(constraint);
+//			}
+//			// remove propagated intervals
+//			for (TemporalInterval interval : committedIntervals) {
+//				this.tdb.deleteTemporalInterval(interval);
+//			}
+//		}
+//		
+//		// get computed makespan
+//		return makespan;
+//	}
 }
