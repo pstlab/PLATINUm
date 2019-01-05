@@ -10,7 +10,6 @@ import java.util.Set;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
-import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
  * 
@@ -151,9 +150,9 @@ public class PartialPlan
 			if (this.temporalDominance.get(dec).isEmpty())
 			{
 				// get possible end time
-				TimePoint end = dec.getToken().getInterval().getEndTime();
+				long[] end = dec.getEnd();
 				// update cycle time information
-				makespan = Math.max(makespan, end.getLowerBound());
+				makespan = Math.max(makespan, end[0]);
 			}
 		}
 		
