@@ -18,7 +18,7 @@ public class DepthFirstSearchStrategy extends SearchStrategy
 	 * 
 	 */
 	protected DepthFirstSearchStrategy() {
-		super(SearchStrategyType.DFS.getLabel());
+		super("SearchStrategy:DepthFirst");
 		this.fringe = new Stack<>();
 	}
 	
@@ -40,6 +40,7 @@ public class DepthFirstSearchStrategy extends SearchStrategy
 		if (this.fringe.isEmpty()) {
 			throw new EmptyFringeException("No more nodes in the fringe");
 		}
+		
 		// get the head of the stack
 		return this.fringe.pop();
 	}

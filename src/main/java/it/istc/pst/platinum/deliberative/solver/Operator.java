@@ -13,7 +13,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
 public class Operator implements Comparable<Operator> 
 {
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
-	private int id;
+	private int id;									// operator's ID
 	private FlawSolution solution;					// applied flaw solution 
 	private boolean applied;						// application flag
 	

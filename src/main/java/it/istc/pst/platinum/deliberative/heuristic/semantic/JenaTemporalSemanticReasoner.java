@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.heuristic.filter.semantic;
+package it.istc.pst.platinum.deliberative.heuristic.semantic;
 
 import java.util.ArrayList;
 import java.util.HashMap;

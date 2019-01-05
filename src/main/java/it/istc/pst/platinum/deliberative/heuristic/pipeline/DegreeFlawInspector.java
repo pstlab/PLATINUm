@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.heuristic.filter;
+package it.istc.pst.platinum.deliberative.heuristic.pipeline;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,20 +16,20 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public class DegreeFlawFilter extends FlawFilter implements Comparator<Flaw>
+class DegreeFlawInspector extends FlawInspector implements Comparator<Flaw>
 {
 	/**
 	 * 
 	 */
-	protected DegreeFlawFilter() {
-		super(FlawFilterType.DFF.getLabel());
+	protected DegreeFlawInspector() {
+		super("FlawInspector:DegreeFlawInspector");
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public Set<Flaw> filter() 
+	public Set<Flaw> detectFlaws() 
 			throws UnsolvableFlawException 
 	{
 		// set of filtered list
@@ -73,7 +73,8 @@ public class DegreeFlawFilter extends FlawFilter implements Comparator<Flaw>
 	public int compare(Flaw o1, Flaw o2) {
 		// compare the number of available solutions
 		return o1.getSolutions().size() < o2.getSolutions().size() ? -1 : 
-			o1.getSolutions().size() > o2.getSolutions().size() ? 1 : 0;
+			o1.getSolutions().size() > o2.getSolutions().size() ? 1 : 
+			0;
 	}
 	
 	/**

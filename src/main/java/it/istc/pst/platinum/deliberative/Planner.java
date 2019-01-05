@@ -3,7 +3,7 @@ package it.istc.pst.platinum.deliberative;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.istc.pst.platinum.deliberative.heuristic.SearchAndBuildFlawSelectionHeuristic;
+import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
@@ -44,7 +44,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		solver = PseudoControllabilityAwareSolver.class
 )
 @FlawSelectionHeuristicsConfiguration(
-		heuristics = SearchAndBuildFlawSelectionHeuristic.class
+		heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
 		strategy = DepthFirstSearchStrategy.class

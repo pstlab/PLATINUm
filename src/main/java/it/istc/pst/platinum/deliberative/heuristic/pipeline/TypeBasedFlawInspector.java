@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.heuristic.filter;
+package it.istc.pst.platinum.deliberative.heuristic.pipeline;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,15 +15,15 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public class TypeBasedFlawFilter extends FlawFilter 
+class TypeBasedFlawInspector extends FlawInspector 
 {
 	private FlawType[] preferences;
 
 	/**
 	 * 
 	 */
-	protected TypeBasedFlawFilter() {
-		super(FlawFilterType.TFF.getLabel());
+	protected TypeBasedFlawInspector() {
+		super("FlawInspector:FlawTypeInspector");
 	}
 	
 	/**
@@ -46,14 +46,13 @@ public class TypeBasedFlawFilter extends FlawFilter
 	 * 
 	 */
 	@Override
-	public Set<Flaw> filter() 
+	public Set<Flaw> detectFlaws() 
 			throws UnsolvableFlawException 
 	{
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// look for flaws of a given type
-		for (int index = 0; index < this.preferences.length && set.isEmpty(); index++)
-		{
+		for (int index = 0; index < this.preferences.length && set.isEmpty(); index++) {
 			// get type of flaw
 			FlawType type = this.preferences[index];
 			// detect flaws

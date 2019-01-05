@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.heuristic.filter;
+package it.istc.pst.platinum.deliberative.heuristic.pipeline;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,7 +8,6 @@ import java.util.Set;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.knowledge.DomainKnowledge;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
@@ -16,26 +15,24 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public class HierarchyFlawFilter extends FlawFilter 
+public class HierarchyFlawInspector extends FlawInspector 
 {
 	/**
 	 * 
 	 */
-	protected HierarchyFlawFilter() {
-		super(FlawFilterType.HFF.getLabel());
+	protected HierarchyFlawInspector() {
+		super("FlawInspector:HiearchyFlawInspector");
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public Set<Flaw> filter() 
+	public Set<Flaw> detectFlaws() 
 			throws UnsolvableFlawException 
 	{
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
-		// get goals 
-		List<Flaw> goals = this.pdb.detectFlaws(FlawType.PLAN_REFINEMENT);
 		// get knowledge
 		DomainKnowledge knowledge = this.pdb.getDomainKnowledge();
 		// get the hierarchy
@@ -44,15 +41,8 @@ public class HierarchyFlawFilter extends FlawFilter
 		for (int index = 0; index < hierarchy.length && set.isEmpty(); index++)
 		{
 			// extract flaws of equivalent components
-			for (DomainComponent component : hierarchy[index])
-			{
-				// add related goals
-				for (Flaw goal : goals) {
-					if (goal.getComponent().equals(component)) {
-						set.add(goal);
-					}
-				}
-				// add flaws of the specific component
+			for (DomainComponent component : hierarchy[index]) {
+				// detect flaws
 				set.addAll(component.detectFlaws());
 			}
 		}

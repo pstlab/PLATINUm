@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.heuristic.filter;
+package it.istc.pst.platinum.deliberative.heuristic.pipeline;
 
 import java.util.Collection;
 import java.util.Set;
@@ -14,7 +14,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public abstract class FlawFilter extends DeliberativeObject 
+public abstract class FlawInspector extends DeliberativeObject 
 {
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
@@ -25,7 +25,7 @@ public abstract class FlawFilter extends DeliberativeObject
 	 * 
 	 * @param type
 	 */
-	protected FlawFilter(String label) {
+	protected FlawInspector(String label) {
 		this.label = label;
 	}
 	
@@ -53,7 +53,7 @@ public abstract class FlawFilter extends DeliberativeObject
 	 * @return
 	 * @throws UnsolvableFlawException
 	 */
-	public abstract Set<Flaw> filter() 
+	public abstract Set<Flaw> detectFlaws() 
 			throws UnsolvableFlawException;
 	
 	/**

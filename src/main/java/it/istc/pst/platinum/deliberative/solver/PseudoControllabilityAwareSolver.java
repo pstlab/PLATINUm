@@ -27,7 +27,7 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 	 * @param timeout
 	 */
 	protected PseudoControllabilityAwareSolver(long timeout) {
-		super(PlannerSolverType.PSEUDO_CONTROLLABILITY_AWARE.getLabel(), timeout);
+		super("Solver:PseudoControllabilityAware", timeout);
 	}
 	
 	/**

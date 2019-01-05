@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.istc.pst.platinum.deliberative.heuristic.filter.ex.HierarchyCycleException;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationConstraint;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
 import it.istc.pst.platinum.framework.domain.component.pdb.TokenVariable;
+import it.istc.pst.platinum.framework.domain.knowledge.ex.HierarchyCycleException;
 import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 
 /**

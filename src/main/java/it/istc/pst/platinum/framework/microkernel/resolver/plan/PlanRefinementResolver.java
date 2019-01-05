@@ -684,6 +684,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			{
 				// expansion solution
 				GoalExpansion expansion = new GoalExpansion(goal, rule);
+				
 				// set the resulting makespan
 //					expansion.setMakespan(makespan);
 				// add solution

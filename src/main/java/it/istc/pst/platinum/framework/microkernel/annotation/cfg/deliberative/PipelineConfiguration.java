@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
+import it.istc.pst.platinum.deliberative.heuristic.pipeline.FlawInspector;
 
 /**
  * 
@@ -20,5 +20,5 @@ import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
 public @interface PipelineConfiguration {
 
 	// reference to the pipeline of filters
-	FlawFilterType[] pipeline();
+	Class<? extends FlawInspector>[] pipeline();
 }

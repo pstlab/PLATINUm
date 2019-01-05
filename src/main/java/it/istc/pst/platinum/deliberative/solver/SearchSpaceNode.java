@@ -2,10 +2,14 @@ package it.istc.pst.platinum.deliberative.solver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 
 /**
  * 
@@ -18,7 +22,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	private int id;
 	private List<Operator> operators;	// node generation trace
 	private Agenda agenda;				// plan agenda
-	private double makespan;			// node makespan
+	private PartialPlan pPlan;			// partial plan associated to the node
+	private double cost; 				// partial plan cost
 	
 	/**
 	 * Create a root node
@@ -30,8 +35,12 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.id = ID_COUNTER.getAndIncrement();
 		// initialize operators
 		this.operators = new ArrayList<>();
-		this.makespan = Double.MAX_VALUE - 1;
+		// initialize the agenda
 		this.agenda = new Agenda();
+		// initialize the partial plan
+		this.pPlan = new PartialPlan();
+		// initialize partial plan cost
+		this.cost = 0.0;
 	}
 	
 	/**
@@ -46,11 +55,62 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.operators = new ArrayList<>(parent.getOperators());
 		// add generator
 		this.operators.add(op);
-		// inherit the makespan from the parent node 
-		this.makespan = parent.getMakespan();
-		// inherit the agenda from the parent node
-		this.agenda = parent.getAgenda();
+		// setup node agenda
+		this.setupNodeAgenda(parent, op);
+		// setup partial plan and cost
+		this.setupPartialPlanAndCost();
+		
+		
+		
 	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @param op
+	 */
+	private void setupNodeAgenda(SearchSpaceNode parent, Operator op) {
+		// set child node agenda taking into account the parent node agenda
+		Set<Decision> goals = new HashSet<>(parent.getAgenda().getGoals());
+		// remove solved goals from the agenda
+		for (Decision decision : op.getFlawSolution().getActivatedDecisisons()) {
+			goals.remove(decision.getValue());
+		}
+		
+		// add created pending decisions (subgoals)
+		for (Decision g : op.getFlawSolution().getCreatedDecisions()) {
+			goals.add(g);
+		}
+
+		// add resulting pending decisions to the agenda 
+		for (Decision g : goals) {
+			this.agenda.add(g);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void setupPartialPlanAndCost()
+	{
+		// add partial plan decisions and relations
+		for (Operator o : this.operators) 
+		{
+			// add activated decisions
+			for (Decision dec : o.getFlawSolution().getActivatedDecisisons()) {
+				this.pPlan.addDecision(dec);
+			}
+			
+			// add activated relations
+			for (Relation rel : o.getFlawSolution().getActivatedRelations()) {
+				this.pPlan.addRelation(rel);
+			}
+			
+			// update partial plan cost
+			this.cost += o.getCost();
+		}
+	}
+
 	
 	/**
 	 * 
@@ -68,29 +128,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		return this.operators.size();
 	}
 	
-	/**
-	 * 
-	 * @param makespan
-	 */
-	public void setMakespan(double makespan) {
-		this.makespan = makespan;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public double getMakespan() {
-		return makespan;
-	}
-	
-	/**
-	 * 
-	 * @param agenda
-	 */
-	public void setAgenda(Agenda agenda) {
-		this.agenda = agenda;
-	}
 	
 	/**
 	 * 
@@ -104,21 +141,18 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 * 
 	 * @return
 	 */
+	public PartialPlan getPartialPlan() {
+		// initialize the partial plan 
+		return this.pPlan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public double getCost() {
-		// compute the cost of the current node
-		double cost = 0.0;
-		// get generator operator
-		Operator operator = this.getGenerator();
-		if (operator != null) {
-			// set initial cost
-			cost = operator.getCost();
-			for (Operator op : this.operators) {
-				cost += op.getCost();
-			}
-		}
-		
-		// get node cost
-		return cost;
+		// get the generation cost of the associated partial plan
+		return this.cost;
 	}
 	
 	/**
@@ -126,7 +160,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 * 
 	 * @return
 	 */
-	public Flaw getFlaw() {
+	public Flaw getGeneratingFlaw() {
 		// verify whether the node is root
 		return this.isRootNode() ? null : this.getGenerator().getFlaw();
 	}
@@ -275,6 +309,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	@Override
 	public String toString() {
-		return "[SearchSpaceNode id= " + this.id + " depth= " + this.getDepth() + " cost= " + this.getCost() + " makespan= " + this.makespan + "]";
+		return "[SearchSpaceNode id= " + this.id + ", depth= " + this.getDepth() + ", cost= " + this.getCost() + "]";
 	}
 }

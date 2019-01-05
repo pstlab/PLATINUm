@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.heuristic.filter.semantic;
+package it.istc.pst.platinum.deliberative.heuristic.semantic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +10,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilter;
-import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilterType;
+import it.istc.pst.platinum.deliberative.heuristic.pipeline.FlawInspector;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseEvent;
 import it.istc.pst.platinum.framework.domain.component.pdb.PlanDataBaseObserver;
@@ -28,7 +27,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.plan.Goal;
  * @author anacleto
  *
  */
-public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanDataBaseObserver
+public class SemanticFlawInspector extends FlawInspector implements Runnable, PlanDataBaseObserver
 {
 	private BlockingQueue<PlanDataBaseEvent> queue;			// event queue
 	private Thread process;									// knowledge update process
@@ -37,8 +36,8 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 	/**
 	 * 
 	 */
-	protected SemanticFlawFilter() {
-		super(FlawFilterType.SFF.getLabel());
+	protected SemanticFlawInspector() {
+		super("FlawInspector:SemanticFlawInspector");
 		this.process = new Thread(this);
 		this.queue = new LinkedBlockingQueue<>();
 		// setup knowledge reasoner
@@ -134,7 +133,7 @@ public class SemanticFlawFilter extends FlawFilter implements Runnable, PlanData
 	 * FIXME 
 	 */
 	@Override
-	public Set<Flaw> filter() {
+	public Set<Flaw> detectFlaws() {
 		// TODO Auto-generated method stub
 		return null;
 	}

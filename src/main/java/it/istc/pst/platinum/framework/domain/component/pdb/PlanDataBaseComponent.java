@@ -35,6 +35,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationE
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
+import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Plan;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.problem.ParameterProblemConstraint;
@@ -87,7 +88,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 @FrameworkLoggerConfiguration(
 		
 		// set logging level
-		level = FrameworkLoggingLevel.DEBUG
+		level = FrameworkLoggingLevel.OFF
 )
 public final class PlanDataBaseComponent extends DomainComponent implements PlanDataBase
 {
@@ -897,6 +898,27 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 			list.addAll(comp.detectFlaws());
 		}
 		// get the list of detected flaws in the domain
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 * @throws UnsolvableFlawException
+	 */
+	@Override
+	public List<Flaw> detectFlaws(FlawType type) 
+			throws UnsolvableFlawException
+	{
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		// simply query the components
+		for (DomainComponent comp : this.components.values()) {
+			list.addAll(comp.detectFlaws(type));
+		}
+		
+		// get the list of detected flaws
 		return list;
 	}
 	

@@ -30,7 +30,7 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 * 
 	 */
 	protected SearchAndBuildFlawSelectionHeuristic() {
-		super(FlawSelectionHeuristicType.SEARCH_AND_BUILD.getLabel());
+		super("Heuristics:SerchAndBuild");
 	}
 	
 	/**
@@ -44,13 +44,13 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 				FlawType.PLAN_REFINEMENT,
 				FlawType.RESOURCE_PLANNING,
 				FlawType.RESOURCE_OVERFLOW,
+				FlawType.TIMELINE_OVERFLOW
 		};
 		
 		// set build phase preferences
 		this.buildPreferences = new FlawType[] {
-			FlawType.TIMELINE_OVERFLOW,
-			FlawType.TIMELINE_BEHAVIOR_PLANNING,
 			FlawType.TIMELINE_BEHAVIOR_CHECKING,
+			FlawType.TIMELINE_BEHAVIOR_PLANNING,
 		};
 	}
 	
@@ -128,6 +128,7 @@ public class SearchAndBuildFlawSelectionHeuristic extends FlawSelectionHeuristic
 	@Override
 	public int compare(Flaw o1, Flaw o2) {
 		// compare the number of available solutions
-		return o1.getSolutions().size() <= o2.getSolutions().size() ? -1 : 1; 
+		return o1.getSolutions().size() < o2.getSolutions().size() ? -1 : 
+			o1.getSolutions().size() > o2.getSolutions().size() ? 1 : 0; 
 	}
 }

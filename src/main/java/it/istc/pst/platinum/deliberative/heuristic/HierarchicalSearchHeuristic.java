@@ -29,7 +29,7 @@ public class HierarchicalSearchHeuristic extends FlawSelectionHeuristic implemen
 	 * 
 	 */
 	protected HierarchicalSearchHeuristic() {
-		super(FlawSelectionHeuristicType.HIERARCHICAL.getLabel());
+		super("Heuristics:HierarchicalFlawSelection");
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class HierarchicalSearchHeuristic extends FlawSelectionHeuristic implemen
 				FlawType.RESOURCE_PLANNING,
 				FlawType.RESOURCE_OVERFLOW,
 				FlawType.TIMELINE_OVERFLOW,
-//				FlawType.TIMELINE_BEHAVIOR_PLANNING,
+				FlawType.TIMELINE_BEHAVIOR_PLANNING,
 		};
 	}
 	

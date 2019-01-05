@@ -6,8 +6,6 @@ import java.util.List;
 
 import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
-import it.istc.pst.platinum.framework.domain.component.ComponentValue;
-import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.FlawSelectionHeuristicPlaceholder;
@@ -171,33 +169,6 @@ public abstract class PlannerSolver extends DeliberativeObject
 			Operator op = new Operator(solution);
 			// create child node
 			SearchSpaceNode child = new SearchSpaceNode(current, op);
-			// set computed makespan
-//			child.setMakespan(solution.getMakespan());
-			// set resulting agenda
-			List<ComponentValue> goals = new ArrayList<>(current.getAgenda().getGoals());
-			// remove solved goals in the solution
-			for (Decision decision : solution.getActivatedDecisisons()) {
-				goals.remove(decision.getValue());
-			}
-//			for (ComponentValue solved : solution.getSolvedGoals()) {
-//				goals.remove(solved);
-//			}
-			// add added pending goals in the solution
-//			for (ComponentValue subgoal : solution.getCreatedSubGoals()) {
-//				goals.add(subgoal);
-//			}
-			for (Decision decision : solution.getCreatedDecisions()) {
-				goals.add(decision.getValue());
-			}
-
-			// set solution agenda
-			Agenda agenda = new Agenda();
-			for (ComponentValue goal : goals) {
-				agenda.add(goal);
-			}
-			
-			// set agenda to node
-			child.setAgenda(agenda);
 			// add child
 			list.add(child);
 		}

@@ -3,7 +3,7 @@ package it.istc.pst.platinum.deliberative.heuristic;
 import java.lang.reflect.Constructor;
 import java.util.Set;
 
-import it.istc.pst.platinum.deliberative.heuristic.filter.FlawFilter;
+import it.istc.pst.platinum.deliberative.heuristic.pipeline.FlawInspector;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
@@ -67,7 +67,7 @@ public abstract class FlawSelectionHeuristic extends DeliberativeObject
 	 * @param className
 	 * @return
 	 */
-	protected <T extends FlawFilter> T doCreateFlawFilter(String className) 
+	protected <T extends FlawInspector> T doCreateFlawFilter(String className) 
 	{
 		// create filter instance
 		T filter = this.createFilter(className);
@@ -99,7 +99,7 @@ public abstract class FlawSelectionHeuristic extends DeliberativeObject
 	 * @param className
 	 * @return
 	 */
-	private <T extends FlawFilter> T createFilter(String className) {
+	private <T extends FlawInspector> T createFilter(String className) {
 		// flaw filter
 		T filter = null;
 		try
