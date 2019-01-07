@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.solver;
+package it.istc.pst.platinum.framework.microkernel.lang.plan;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,15 +17,12 @@ import it.istc.pst.platinum.framework.domain.component.DomainComponent;
  */
 public class Agenda 
 {
-//	private Map<DomainComponent, List<ComponentValue>> goals;
-	private Map<DomainComponent, Set<Decision>> goals;
+	private Map<DomainComponent, Set<ComponentBehavior>> goals;
 	
 	/**
 	 * 
-	 * @param name
-	 * @param horizon
 	 */
-	protected Agenda() {
+	public Agenda() {
 		// initialize agenda
 		this.goals = new HashMap<>();
 	}
@@ -34,11 +31,11 @@ public class Agenda
 	 * 
 	 * @return
 	 */
-	public List<Decision> getGoals() {
+	public List<ComponentBehavior> getGoals() {
 		// list of pending decisions
-		List<Decision> list = new ArrayList<>();
+		List<ComponentBehavior> list = new ArrayList<>();
 		// get components' pending decisions of the partial plan
-		for (Set<Decision> pending : this.goals.values()) {
+		for (Set<ComponentBehavior> pending : this.goals.values()) {
 			// add all pending decisions
 			list.addAll(pending);
 		}
@@ -58,8 +55,10 @@ public class Agenda
 			this.goals.put(goal.getComponent(),	new HashSet<>());
 		}
 		
+		// create behavior
+		ComponentBehavior b = new ComponentBehavior(goal.getId(), goal.getValue(), goal.getEnd(), goal.getDuration());
 		// add the goal to the agenda of the partial plan
-		this.goals.get(goal.getComponent()).add(goal);
+		this.goals.get(goal.getComponent()).add(b);
 	}
 	
 	/**

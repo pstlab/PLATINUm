@@ -20,7 +20,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public class HierarchicalSearchHeuristic extends FlawSelectionHeuristic implements Comparator<Flaw>
+public class HierarchicalFlawSelectionHeuristic extends FlawSelectionHeuristic implements Comparator<Flaw>
 {
 	// domain hierarchy
 	private FlawType[] preferences;
@@ -28,7 +28,7 @@ public class HierarchicalSearchHeuristic extends FlawSelectionHeuristic implemen
 	/**
 	 * 
 	 */
-	protected HierarchicalSearchHeuristic() {
+	protected HierarchicalFlawSelectionHeuristic() {
 		super("Heuristics:HierarchicalFlawSelection");
 	}
 	

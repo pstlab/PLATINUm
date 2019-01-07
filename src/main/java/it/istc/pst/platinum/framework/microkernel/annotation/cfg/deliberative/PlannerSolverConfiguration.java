@@ -22,6 +22,6 @@ public @interface PlannerSolverConfiguration {
 	// reference to solver algorithm
 	Class<? extends PlannerSolver> solver();
 	
-	// set a timeout for the solver
+	// set a timeout for the solver (in milliseconds)
 	long timeout() default -1;
 }

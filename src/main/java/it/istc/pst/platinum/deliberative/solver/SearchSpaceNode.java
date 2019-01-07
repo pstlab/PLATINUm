@@ -21,8 +21,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private List<Operator> operators;	// node generation trace
-	private Agenda agenda;				// plan agenda
-	private PartialPlan pPlan;			// partial plan associated to the node
+//	private Agenda agenda;				// plan agenda
+//	private PartialPlan pPlan;			// partial plan associated to the node
 	private double cost; 				// partial plan cost
 	
 	/**
@@ -36,9 +36,9 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		// initialize operators
 		this.operators = new ArrayList<>();
 		// initialize the agenda
-		this.agenda = new Agenda();
-		// initialize the partial plan
-		this.pPlan = new PartialPlan();
+//		this.agenda = new Agenda();
+//		// initialize the partial plan
+//		this.pPlan = new PartialPlan();
 		// initialize partial plan cost
 		this.cost = 0.0;
 	}
@@ -55,61 +55,59 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.operators = new ArrayList<>(parent.getOperators());
 		// add generator
 		this.operators.add(op);
-		// setup node agenda
-		this.setupNodeAgenda(parent, op);
-		// setup partial plan and cost
-		this.setupPartialPlanAndCost();
-		
-		
+//		// setup node agenda
+//		this.setupNodeAgenda(parent, op);
+//		// setup partial plan and cost
+//		this.setupPartialPlanAndCost();
 		
 	}
 	
-	/**
-	 * 
-	 * @param parent
-	 * @param op
-	 */
-	private void setupNodeAgenda(SearchSpaceNode parent, Operator op) {
-		// set child node agenda taking into account the parent node agenda
-		Set<Decision> goals = new HashSet<>(parent.getAgenda().getGoals());
-		// remove solved goals from the agenda
-		for (Decision decision : op.getFlawSolution().getActivatedDecisisons()) {
-			goals.remove(decision.getValue());
-		}
-		
-		// add created pending decisions (subgoals)
-		for (Decision g : op.getFlawSolution().getCreatedDecisions()) {
-			goals.add(g);
-		}
-
-		// add resulting pending decisions to the agenda 
-		for (Decision g : goals) {
-			this.agenda.add(g);
-		}
-	}
+//	/**
+//	 * 
+//	 * @param parent
+//	 * @param op
+//	 */
+//	private void setupNodeAgenda(SearchSpaceNode parent, Operator op) {
+//		// set child node agenda taking into account the parent node agenda
+//		Set<Decision> goals = new HashSet<>(parent.getAgenda().getGoals());
+//		// remove solved goals from the agenda
+//		for (Decision decision : op.getFlawSolution().getActivatedDecisisons()) {
+//			goals.remove(decision.getValue());
+//		}
+//		
+//		// add created pending decisions (subgoals)
+//		for (Decision g : op.getFlawSolution().getCreatedDecisions()) {
+//			goals.add(g);
+//		}
+//
+//		// add resulting pending decisions to the agenda 
+//		for (Decision g : goals) {
+//			this.agenda.add(g);
+//		}
+//	}
 	
-	/**
-	 * 
-	 */
-	private void setupPartialPlanAndCost()
-	{
-		// add partial plan decisions and relations
-		for (Operator o : this.operators) 
-		{
-			// add activated decisions
-			for (Decision dec : o.getFlawSolution().getActivatedDecisisons()) {
-				this.pPlan.addDecision(dec);
-			}
-			
-			// add activated relations
-			for (Relation rel : o.getFlawSolution().getActivatedRelations()) {
-				this.pPlan.addRelation(rel);
-			}
-			
-			// update partial plan cost
-			this.cost += o.getCost();
-		}
-	}
+//	/**
+//	 * 
+//	 */
+//	private void setupPartialPlanAndCost()
+//	{
+//		// add partial plan decisions and relations
+//		for (Operator o : this.operators) 
+//		{
+//			// add activated decisions
+//			for (Decision dec : o.getFlawSolution().getActivatedDecisisons()) {
+//				this.pPlan.addDecision(dec);
+//			}
+//			
+//			// add activated relations
+//			for (Relation rel : o.getFlawSolution().getActivatedRelations()) {
+//				this.pPlan.addRelation(rel);
+//			}
+//			
+//			// update partial plan cost
+//			this.cost += o.getCost();
+//		}
+//	}
 
 	
 	/**
@@ -129,22 +127,22 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	}
 	
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public Agenda getAgenda() {
-		return this.agenda; 
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public Agenda getAgenda() {
+//		return this.agenda; 
+//	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public PartialPlan getPartialPlan() {
-		// initialize the partial plan 
-		return this.pPlan;
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public PartialPlan getPartialPlan() {
+//		// initialize the partial plan 
+//		return this.pPlan;
+//	}
 	
 	/**
 	 * 

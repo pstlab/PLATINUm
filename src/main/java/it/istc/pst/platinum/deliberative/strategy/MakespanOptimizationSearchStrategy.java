@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import it.istc.pst.platinum.deliberative.solver.PartialPlan;
 import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.PartialPlan;
 
 /**
  * 

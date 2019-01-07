@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Agenda;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.PartialPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
 
 /**
@@ -28,8 +30,9 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 	protected Set<Relation> rCreated;					// relation created 
 	protected Set<Relation> rActivated;					// relation activated
 	
-	// abstract/relaxed level needed for strategies and heuristic evaluations
-//	private double makespan;							// makespan resulting from the application of the solution
+	
+	protected PartialPlan partialPlan;					// take track of the partial plan associated to the solution
+	protected Agenda agenda;							// take track of the agenda associated to the solution
 	
 	/**
 	 * 
@@ -44,6 +47,10 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 		this.dActivated = new HashSet<>();
 		this.rCreated = new HashSet<>();
 		this.rActivated = new HashSet<>();
+		// initialize the partial plan 
+		this.partialPlan = new PartialPlan();
+		// initialize the agenda
+		this.agenda = new Agenda();
 	}
 	
 	/**
@@ -164,21 +171,21 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 		this.rActivated.addAll(rels);
 	}
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public double getMakespan() {
-//		return makespan;
-//	}
-//
-//	/**
-//	 * 
-//	 * @param makespan
-//	 */
-//	public void setMakespan(double makespan) {
-//		this.makespan = makespan;
-//	}
+	/**
+	 * 
+	 * @return
+	 */
+	public PartialPlan getPartialPlan() {
+		return partialPlan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Agenda getAgenda() {
+		return agenda;
+	}
 	
 	/**
 	 * 
