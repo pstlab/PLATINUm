@@ -5,11 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Agenda;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.PartialPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 
 /**
  * 
@@ -18,7 +21,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
  */
 public abstract class FlawSolution implements Comparable<FlawSolution>
 {
-	private static int ID_COUNTER = 0;
+	private static final AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	protected Flaw flaw;
 	
@@ -30,7 +33,7 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 	protected Set<Relation> rCreated;					// relation created 
 	protected Set<Relation> rActivated;					// relation activated
 	
-	
+	// representation of the associated partial plan and agenda
 	protected PartialPlan partialPlan;					// take track of the partial plan associated to the solution
 	protected Agenda agenda;							// take track of the agenda associated to the solution
 	
@@ -40,7 +43,9 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 	 */
 	protected FlawSolution(Flaw flaw) 
 	{
-		this.id = getNextId();
+		// set flaw solution ID
+		this.id = ID_COUNTER.getAndIncrement();
+		// set flaw
 		this.flaw = flaw;
 		// initialize data structures
 		this.dCreated = new HashSet<>();
@@ -181,11 +186,47 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 	
 	/**
 	 * 
+	 * @param dec
+	 */
+	public void addDecisionToPartialPlan(Decision dec) {
+		this.partialPlan.addBehavior(dec);
+	}
+	
+	/**
+	 * 
+	 * @param rel
+	 */
+	public void addRelationToPartialPlan(Relation rel) {
+		this.partialPlan.addBehaviorConstraint(rel);
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param reference
+	 * @param target
+	 */
+	public void addRelationToPartialPlan(RelationType type, Decision reference, Decision target) {
+		this.partialPlan.addBehaviorConstraint(type, reference, target);
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public Agenda getAgenda() {
 		return agenda;
 	}
+	
+	/**
+	 * 
+	 * @param goal
+	 */
+	public void addGoalToAgenda(ComponentValue value) {
+		this.agenda.addGoalComponentBehavior(value);
+	}
+	
+	
 	
 	/**
 	 * 
@@ -226,13 +267,5 @@ public abstract class FlawSolution implements Comparable<FlawSolution>
 		if (id != other.id)
 			return false;
 		return true;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private synchronized static int getNextId() {
-		return ID_COUNTER++;
 	}
 }

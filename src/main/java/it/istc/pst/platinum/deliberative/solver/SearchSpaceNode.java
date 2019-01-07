@@ -2,14 +2,12 @@ package it.istc.pst.platinum.deliberative.solver;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Agenda;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.PartialPlan;
 
 /**
  * 
@@ -21,8 +19,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	private int id;
 	private List<Operator> operators;	// node generation trace
-//	private Agenda agenda;				// plan agenda
-//	private PartialPlan pPlan;			// partial plan associated to the node
+	private Agenda agenda;				// plan agenda
+	private PartialPlan pPlan;			// partial plan associated to the node
 	private double cost; 				// partial plan cost
 	
 	/**
@@ -36,9 +34,9 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		// initialize operators
 		this.operators = new ArrayList<>();
 		// initialize the agenda
-//		this.agenda = new Agenda();
-//		// initialize the partial plan
-//		this.pPlan = new PartialPlan();
+		this.agenda = new Agenda();
+		// initialize the partial plan
+		this.pPlan = new PartialPlan();
 		// initialize partial plan cost
 		this.cost = 0.0;
 	}
@@ -55,10 +53,10 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.operators = new ArrayList<>(parent.getOperators());
 		// add generator
 		this.operators.add(op);
-//		// setup node agenda
-//		this.setupNodeAgenda(parent, op);
-//		// setup partial plan and cost
-//		this.setupPartialPlanAndCost();
+		// setup node agenda
+		this.agenda = op.getFlawSolution().getAgenda();
+		// setup partial plan and cost
+		this.pPlan = op.getFlawSolution().getPartialPlan();
 		
 	}
 	
@@ -126,23 +124,22 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		return this.operators.size();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public Agenda getAgenda() {
+		return this.agenda; 
+	}
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public Agenda getAgenda() {
-//		return this.agenda; 
-//	}
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public PartialPlan getPartialPlan() {
-//		// initialize the partial plan 
-//		return this.pPlan;
-//	}
+	/**
+	 * 
+	 * @return
+	 */
+	public PartialPlan getPartialPlan() {
+		// initialize the partial plan 
+		return this.pPlan;
+	}
 	
 	/**
 	 * 

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 
 /**
@@ -46,26 +46,33 @@ public class Agenda
 	
 	/**
 	 * 
-	 * @param goal
+	 * @param comp
+	 * @return
 	 */
-	public void add(Decision goal) {
-		// add the pending decision to the partial plan
-		if (!this.goals.containsKey(goal.getComponent())) {
-			// initialize the entry
-			this.goals.put(goal.getComponent(),	new HashSet<>());
+	public List<ComponentBehavior> getGoalsByComponent(DomainComponent comp) {
+		// list of behaviors
+		List<ComponentBehavior> list = new ArrayList<>();
+		if (this.goals.containsKey(comp)) {
+			list.addAll(this.goals.get(comp));
 		}
-		
-		// create behavior
-		ComponentBehavior b = new ComponentBehavior(goal.getId(), goal.getValue(), goal.getEnd(), goal.getDuration());
-		// add the goal to the agenda of the partial plan
-		this.goals.get(goal.getComponent()).add(b);
+		// get list of goal behaviors
+		return list;
 	}
 	
 	/**
 	 * 
+	 * @param value
 	 */
-	@Override
-	public String toString() {
-		return "[Agenda #goals= " + this.goals.size() + "]";
+	public void addGoalComponentBehavior(ComponentValue value) {
+		// add the pending decision to the partial plan
+		if (!this.goals.containsKey(value.getComponent())) {
+			// initialize the entry
+			this.goals.put(value.getComponent(), new HashSet<>());
+		}
+		
+		// create behavior
+		ComponentBehavior b = new ComponentBehavior(value, null, value.getDurationBounds());
+		// add the goal to the agenda of the partial plan
+		this.goals.get(value.getComponent()).add(b);
 	}
 }

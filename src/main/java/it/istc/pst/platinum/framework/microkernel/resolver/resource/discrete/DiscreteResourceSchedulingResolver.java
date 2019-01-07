@@ -134,56 +134,6 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		// get result
 		return conflict;
 	}
-
-	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	protected List<Flaw> doFindFlaws() 
-//	{
-//		// list of flaws
-//		List<Flaw> flaws = new ArrayList<>();
-//		try
-//		{
-//			// check pessimistic resource profile
-//			DiscreteResourceProfile prp = this.component.computePessimisticResourceProfile();
-//			// compute flaws on profile
-//			List<CriticalSet> CSs = this.computeCriticalSets(prp);
-//			
-//			// check if any flaw has been found
-//			if (CSs.isEmpty()) {
-//				// check optimistic resource profile
-//				DiscreteResourceProfile orp = this.component.computeOptimisticResourceProfile();
-//				// compute flaws on profile
-//				CSs = this.computeCriticalSets(orp);
-//			}
-//			
-//			// check if empty
-//			if (!CSs.isEmpty()) {
-//				// sort CSs according to the total amount of resource requirement and get the the one with the maximum 
-//				Collections.sort(CSs);
-//				// consider only the CS with the maximum requirement of resource (i.e., the most critical one) 
-//				flaws.add(CSs.get(0));
-//			}
-//		}
-//		catch (ResourceProfileComputationException ex) {
-//			// profile computation error
-//			throw new RuntimeException("Resource profile computation error:\n- " + ex.getMessage() + "\n");
-//		}
-//		
-//		// get computed flaws
-//		return flaws;
-//	}
-	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public int compare(RequirementResourceProfileSample o1, RequirementResourceProfileSample o2) {
-//		// compare the amount of resource required
-//		return o1.getAmount() >= o2.getAmount() ? -1 : 1;
-//	}
 	
 	/**
 	 * Å critical set (CS) is not necessary minimal. 
@@ -326,16 +276,10 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 							reference.getToken().getInterval().getEndTime(), 
 							target.getToken().getInterval().getStartTime());
 					
-					// compute the resulting makespan of the temporal plan after constraint propagation
-//					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-//					// process query
-//					this.tdb.process(query);
-//					// get computed makespan
-//					double makespan = query.getMakespan();
-					
-					
 					// create and add solution to the MCS
-					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved);	//, makespan);
+					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved);
+					// add relation to the resulting partial plan 
+					pc.addRelationToPartialPlan(RelationType.BEFORE, reference, target);
 					// print some debugging information
 					debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
@@ -378,15 +322,10 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 							target.getToken().getInterval().getEndTime(), 
 							reference.getToken().getInterval().getStartTime());
 					
-					// compute the resulting makespan of the temporal plan after constraint propagation
-//					ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-//					// process query
-//					this.tdb.process(query);
-//					// get computed makespan
-//					double makespan = query.getMakespan();
-					
 					// create and add solution to the MCS
-					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved);	//, makespan);
+					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved);
+					// add relation to the resulting partial plan 
+					pc.addRelationToPartialPlan(RelationType.BEFORE, target, reference);
 					// print some debugging information
 					debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
@@ -445,19 +384,12 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			Collections.sort(mcss);	
 			// get the "best" MCS 
 			MinimalCriticalSet best = mcss.get(0);
-			
-			// compute feasible solutions of the sampled MCSs
-//			for (MinimalCriticalSet mcs : mcss) {
-				// compute solutions and the related preserved values
-			
+			// compute (minimal) critical set solutions 
 			this.computeMinimalCriticalSetSolutions(best);
-			
-//			}
 			
 			/*
 			 * Rate MCSs according to the computed preserved heuristic value and select the best one for expansion
 			 */
-			
 			
 			// add computed solutions to the flow
 			for (PrecedenceConstraint pc : best.getSolutions()) {
@@ -521,52 +453,6 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			throw new FlawSolutionApplicationException(ex.getMessage());
 		}
 	}
-	
-//	/**
-//	 * Compute the list of critical sets (CSs) on a (pessimistic or optimistic) resource profile 
-//	 * 
-//	 * @param profile
-//	 * @return
-//	 */
-//	private List<CriticalSet> computeCriticalSets(DiscreteResourceProfile profile)
-//	{
-//		// initialize the list of flaws
-//		List<CriticalSet> CSs = new ArrayList<>();
-//		// get profile samples
-//		List<RequirementResourceProfileSample> samples = profile.getSamples();
-//		
-//		// data structure to maintain data "learned" during flaw detection
-//		for (int index = 0; index < samples.size() - 1; index++)
-//		{
-//			// get current sample
-//			RequirementResourceProfileSample i = samples.get(index);
-//			// initialize the critical set
-//			CriticalSet cs = new CriticalSet(FLAW_COUNTER.getAndIncrement(), (DiscreteResource) this.component);
-//			// add i to the current critical set
-//			cs.addSample(i);
-//			
-//			// check possible critical sets
-//			for (int jndex = index + 1; jndex < samples.size(); jndex++)
-//			{
-//				// get sample
-//				RequirementResourceProfileSample j = samples.get(jndex);
-//				// verify whether the current sample overlaps the considered critical set
-//				if (cs.isOverlapping(j)) {
-//					// add the sample to the critical set
-//					cs.addSample(j);
-//				}
-//			}
-//			
-//			// check critical set condition
-//			if (cs.getTotalRequirement() > this.component.getMaxCapacity()) {
-//				// a critical set has been found
-//				CSs.add(cs);
-//			}
-//		}
-//		
-//		// get the list of discovered critical sets
-//		return CSs;
-//	}
 }
 
 /**
@@ -685,14 +571,12 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 * @param preserved
 	 * @return
 	 */
-	protected PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved)	//, double makespan) 
+	protected PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved) 
 	{
 		// create a precedence constraint
 		PrecedenceConstraint pc = new PrecedenceConstraint(this.cs, reference, target);
 		// set the value of resulting preserved space
 		pc.setPreservedSpace(preserved);
-		// set the value of the resulting makespan
-//		pc.setMakespan(makespan);
 		// add solution to the original flaw
 		this.solutions.add(pc);
 		// get constraint
@@ -704,12 +588,6 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 */
 	@Override
 	public int compareTo(MinimalCriticalSet o) {
-		// compare two MCS according to their preserved value
-//		double p1 = this.getPreservedValue();
-//		double p2 = o.getPreservedValue();
-//		// take into account solutions with a lower level of preserved value
-//		return p1 >= p2 ? -1 : 1;
-		
 		
 		// compare MCSs according to the total amount of resource required
 		return this.getTotalAmount() > o.getTotalAmount() ? -1 : this.getTotalAmount() < o.getTotalAmount() ? 1 : 0;

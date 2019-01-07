@@ -894,11 +894,74 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// simply query the components
-		for (DomainComponent comp : this.components.values()) {
-			list.addAll(comp.detectFlaws());
+		for (DomainComponent comp : this.components.values()) 
+		{
+			// query each COMPOSITE component for flaws
+			List<Flaw> flaws = comp.detectFlaws();
+			// check flaw solutions
+			for (Flaw flaw : flaws) 
+			{
+				// check flaw solutions
+				for (FlawSolution solution : flaw.getSolutions())
+				{
+					// set the associated partial plan
+					this.setCurrentPartialPlan(solution);
+					// set the associated agenda 
+					this.setCurrentAgenda(solution);
+				}
+				
+				// add the flaw to the list
+				list.add(flaw);
+			}
 		}
 		// get the list of detected flaws in the domain
 		return list;
+	}
+	
+	/**
+	 * 
+	 * @param solution
+	 */
+	private void setCurrentPartialPlan(FlawSolution solution) 
+	{
+		// get domain components
+		for (DomainComponent comp : this.components.values()) 
+		{
+			// check active decisions
+			for (Decision dec : comp.getActiveDecisions()) {
+				// add decision to the partial plan
+				solution.addDecisionToPartialPlan(dec);
+			}
+			
+			// get local active relations
+			for (Relation rel : comp.getActiveRelations()) {
+				// add relation to the partial plan
+				solution.addRelationToPartialPlan(rel);
+			}
+		}
+		
+		// add also global (active) relations to the partial plan
+		for (Relation rel : this.getGlobalActiveRelations()) {
+			// add relation to the partial plan
+			solution.addRelationToPartialPlan(rel);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param solution
+	 */
+	private void setCurrentAgenda(FlawSolution solution) 
+	{
+		// get domain components
+		for (DomainComponent comp : this.components.values())
+		{
+			// get pending decisions
+			for (Decision goal : comp.getPendingDecisions()) {
+				// add goal decision to the agenda
+				solution.addGoalToAgenda(goal.getValue());
+			}
+		}
 	}
 	
 	/**

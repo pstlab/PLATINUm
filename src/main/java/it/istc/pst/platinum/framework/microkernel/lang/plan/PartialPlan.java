@@ -10,6 +10,7 @@ import java.util.Set;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 
 /**
  * 
@@ -48,7 +49,7 @@ public class PartialPlan
 			}
 			
 			// create behavior 
-			ComponentBehavior b = new ComponentBehavior(dec.getId(), dec.getValue(), dec.getEnd(), dec.getDuration());
+			ComponentBehavior b = new ComponentBehavior(dec.getValue(), dec.getEnd(), dec.getDuration());
 			this.index.put(dec.getId(), b);
 			// add decision to component
 			this.behaviors.get(dec.getComponent()).add(b);
@@ -57,6 +58,58 @@ public class PartialPlan
 			this.temporalDominance.put(b, new HashSet<>());
 		}
  	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param reference
+	 * @param target
+	 */
+	public void addBehaviorConstraint(RelationType type, Decision reference, Decision target)
+	{
+		// check if reference exists
+		this.addBehavior(reference);
+		// check if target exists
+		this.addBehavior(target);
+		
+		// get reference and target behaviors
+		ComponentBehavior refBehavior = this.index.get(reference.getId());
+		ComponentBehavior targetBehavior = this.index.get(target.getId());
+		
+		// create behavior constraint
+		ComponentBehaviorConstraint c = new ComponentBehaviorConstraint(type, refBehavior, targetBehavior);
+		// add constraint the partial plan
+		this.constraints.add(c);
+		// check relation and set related temporal dominance information
+		switch (type) 
+		{
+			case DURING : {
+				// the target decision temporally dominates the reference decision in this case
+				if (!this.temporalDominance.containsKey(refBehavior)) {
+					this.temporalDominance.put(refBehavior, new HashSet<>());
+				}
+				
+				// add temporal dominance
+				this.temporalDominance.get(refBehavior).add(targetBehavior);
+			}
+			break;
+			
+			case CONTAINS : {
+				// the reference decision temporally dominates the target decision in this case
+				if (!this.temporalDominance.containsKey(targetBehavior)) {
+					this.temporalDominance.put(targetBehavior, new HashSet<>());
+				}
+				
+				// add temporal dominance
+				this.temporalDominance.get(targetBehavior).add(refBehavior);
+			}
+			break;
+			
+			default : {
+				// ignore any other case
+			}
+		}
+	}
 	
 	/**
 	 * 

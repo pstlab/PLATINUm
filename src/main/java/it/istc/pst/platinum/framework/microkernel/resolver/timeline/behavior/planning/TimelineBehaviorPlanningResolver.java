@@ -299,10 +299,6 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						+ "- target: " + right + "\n"
 						+ "- distance: [" + distance.getDistanceLowerBound() + ", " + distance.getDistanceUpperBound() + "]\n");
 			}
-//			else {
-//				// not scheduled decisions
-//				isScheduled = false;
-//			}
 		}
 		
 		// get detected gaps
@@ -359,6 +355,10 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					{
 						// gap solution
 						GapCompletion solution = new GapCompletion(gap, steps);
+						// add a decision to the agenda for each step 
+						for (ComponentValue step : steps) {
+							solution.addGoalToAgenda(step);
+						}
 						// add solution to the flaw
 						gap.addSolution(solution);
 						// print gap information
@@ -376,109 +376,6 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 								+ "- path duration: [dmin= " + minDuration + ", " + maxDuration + "]");
 					}
 				}
-				
-//				// check if empty
-//				if (!paths.isEmpty())
-//				{
-//					// consider the subset of paths with the shortest number of steps
-//					Collections.sort(paths);
-//					// list of "optimal" paths
-//					List<ValuePath> optimal = new ArrayList<>();
-//					// get the first
-//					ValuePath oPath = paths.remove(0);
-//					
-//					
-//					// consider the "shortest paths" only for solving the current flaw
-//					optimal.add(oPath);
-//					// list of "non-optimal paths"
-//					List<ValuePath> nonOptimal = new ArrayList<>();
-//					for (ValuePath path : paths) {
-//						// check if optimal path
-//						if (path.size() == oPath.size()) {
-//							optimal.add(path);
-//						}
-//						else {	// non optimal
-//							nonOptimal.add(path);
-//						}
-//					}
-//					
-//					// compute solution for "optimal" paths
-//					for (ValuePath path : optimal)
-//					{
-//						// get steps
-//						List<ComponentValue> steps = path.getSteps();
-//						// remove the source and destination values from the path
-//						steps.remove(0);
-//						steps.remove(steps.size() - 1);
-//						try
-//						{
-//							// check feasibility of gap solution
-//							GapCompletion solution = new GapCompletion(gap, steps);
-//							// check temporal feasibility of solution
-//							double makespan = this.checkBehaviorTemporalFeasibility(solution);
-//							// set the resulting makespan
-//							solution.setMakespan(makespan);
-//							// add solution to the flaw
-//							gap.addSolution(solution);
-//							// print gap information
-//							logger.debug("Gap found on component " + this.component.getName() + ":\n"
-//									+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
-//									+ "- left-side decision: " + gap.getLeftDecision() + "\n"
-//									+ "- right-side decision: " + gap.getRightDecision() + "\n"
-//									+ "- solution path: " + path + "\n");
-//							
-//						}
-//						catch (NotFeasibleGapCompletionException ex) {
-//							// not feasible gap completion found
-//							logger.debug("Not feasible gap completion found:\n"
-//									+ "- gap: " + gap + "\n"
-//									+ "- solution: " + path + "\n"
-//									+ "- message: \"" + ex.getMessage() + "\"\n");
-//						}
-//					}
-					
-//					// check if a solution has been found among optimal paths
-//					if (!gap.isSolvable()) 
-//					{
-//						// compute solution for "non optimal" paths
-//						for (ValuePath path : nonOptimal)
-//						{
-//							System.out.println("\n- gap: " + gap + "\n- path: " + path.getSteps() + "\n");
-//							
-//							// get steps
-//							List<ComponentValue> steps = path.getSteps();
-//							// remove the source and destination values from the path
-//							steps.remove(0);
-//							steps.remove(steps.size() - 1);
-//							try
-//							{
-//								// check feasibility of gap solution
-//								GapCompletion solution = new GapCompletion(gap, steps);
-//								// check temporal feasibility of solution
-//								double makespan = this.checkBehaviorTemporalFeasibility(solution);
-//								// set the resulting makespan
-//								solution.setMakespan(makespan);
-//								// add solution to the flaw
-//								gap.addSolution(solution);
-//								// print gap information
-//								logger.debug("Gap found on component " + this.component.getName() + ":\n"
-//										+ "- distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
-//										+ "- left-side decision: " + gap.getLeftDecision() + "\n"
-//										+ "- right-side decision: " + gap.getRightDecision() + "\n"
-//										+ "- solution path: " + path + "\n"
-//										+ "- resulting makespan: " + makespan + "\n");
-//								
-//							}
-//							catch (NotFeasibleGapCompletionException ex) {
-//								// not feasible gap completion found
-//								logger.debug("Not feasible gap completion found:\n"
-//										+ "- gap: " + gap + "\n"
-//										+ "- solution: " + path + "\n"
-//										+ "- message: \"" + ex.getMessage() + "\"\n");
-//							}
-//						}
-//					}
-//				}
 			}
 			break;
 		
@@ -487,27 +384,10 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			{
 				// direct connection between decisions
 				GapCompletion solution = new GapCompletion(gap, new ArrayList<ComponentValue>());
-				
-				
-//				try
-//				{
-					// check solution feasibility
-//					double makespan = this.checkBehaviorTemporalFeasibility(solution);
-					// set the makespan
-//					solution.setMakespan(makespan);
-				
-				
+				// add only a relation to the current partial plan
+				solution.addRelationToPartialPlan(RelationType.MEETS, gap.getLeftDecision(), gap.getRightDecision());
 				// add gap solution
 				gap.addSolution(solution);
-				
-				
-//				}
-//				catch (NotFeasibleGapCompletionException ex) {
-//					logger.debug("Not feasible gap completion found:\n"
-//							+ "- gap: " + gap + "\n"
-//							+ "- solution: " + solution + "\n"
-//							+ "- message: \""+ ex.getMessage() + "\"\n");
-//				}
 			}
 			break;
 		}
@@ -598,116 +478,4 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 		// get created relations
 		return rels;
 	}
-	
-//	/**
-//	 * 
-//	 * @param completion
-//	 * @return
-//	 * @throws NotFeasibleGapCompletionException
-//	 */
-//	private double checkBehaviorTemporalFeasibility(GapCompletion completion) 
-//			throws NotFeasibleGapCompletionException
-//	{
-//		// initialize makespan
-//		double makespan = Double.MIN_VALUE + 1;
-//		// list of committed relations
-//		List<TemporalConstraint> committedConstraints = new ArrayList<>();
-//		List<TemporalInterval> committedIntervals = new ArrayList<>();
-//		try
-//		{
-//			// check solution path
-//			if (completion.getPath().isEmpty()) 
-//			{
-//				// direct token transition between active decisions
-//				Decision reference = completion.getLeftDecision();
-//				Decision target = completion.getRightDecision();
-//				
-//				// create temporal constraint
-//				MeetsIntervalConstraint meets = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
-//				// set reference 
-//				meets.setReference(reference.getToken().getInterval());
-//				meets.setTarget(target.getToken().getInterval());
-//				
-//				// propagate constraint and check consistency
-//				this.tdb.propagate(meets);
-//				// add to committed constraint
-//				committedConstraints.add(meets);
-//				// check temporal feasibility
-//				this.tdb.verify();
-//				
-////				// feasible solution, compute the resulting makespan
-////				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-////				this.tdb.process(query);
-//				// set the resulting makespan
-////				makespan = query.getMakespan();
-//			}
-//			else 
-//			{
-//				// prepare the sequence of temporal intervals
-//				List<TemporalInterval> intervals = new ArrayList<>();
-//				// add left interval
-//				intervals.add(completion.getLeftDecision().getToken().getInterval());
-//				
-//				// create intermediate intervals
-//				for (ComponentValue value : completion.getPath()) 
-//				{
-//					// create temporal interval
-//					TemporalInterval i = this.tdb.createTemporalInterval(value.getDurationBounds(), value.isControllable());
-//					// add intermediate interval
-//					intervals.add(i);
-//					// add committed interval
-//					committedIntervals.add(i);
-//				}
-//				// add last interval
-//				intervals.add(completion.getRightDecision().getToken().getInterval());
-//							
-//				// try to propagate temporal relations between adjacent intervals
-//				for (int index = 0; index < intervals.size() - 1; index++) 
-//				{
-//					// get adjacent decisions
-//					TemporalInterval i = intervals.get(index);
-//					TemporalInterval j = intervals.get(index + 1);
-//					// create and activate temporal constraint
-//					MeetsIntervalConstraint meets = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
-//					// set reference
-//					meets.setReference(i);
-//					meets.setTarget(j);
-//					
-//					// propagate temporal constraint
-//					this.tdb.propagate(meets);
-//					// add to committed constraints
-//					committedConstraints.add(meets);
-//				}
-//				
-//				// check temporal feasibility
-//				this.tdb.verify();
-////				// feasible solution, compute the resulting makespan
-////				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
-////				this.tdb.process(query);
-////				// set the resulting makespan
-////				makespan = query.getMakespan();
-//			}
-//		}
-//		catch (TemporalIntervalCreationException | TemporalConstraintPropagationException | ConsistencyCheckException ex) {
-//			// throw exception
-//			throw new NotFeasibleGapCompletionException(ex.getMessage());
-//		}
-//		finally 
-//		{
-//			// clear data structure if necessary
-//			for (TemporalConstraint constraint : committedConstraints) {
-//				// retract temporal constraint
-//				this.tdb.retract(constraint);
-//			}
-//			
-//			// clear data structure if necessary
-//			for (TemporalInterval interval : committedIntervals) {
-//				// delete temporal intervals and related time points
-//				this.tdb.deleteTemporalInterval(interval);
-//			}
-//		}
-//		
-//		// get computed makespan
-//		return makespan;
-//	}
 }
