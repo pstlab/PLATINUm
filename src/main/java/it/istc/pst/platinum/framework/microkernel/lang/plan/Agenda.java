@@ -75,4 +75,12 @@ public class Agenda
 		// add the goal to the agenda of the partial plan
 		this.goals.get(value.getComponent()).add(b);
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[Agenda goals: " + this.getGoals() + "]";
+	}
 }

@@ -898,7 +898,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		{
 			// query each COMPOSITE component for flaws
 			List<Flaw> flaws = comp.detectFlaws();
-			// check flaw solutions
+			// check flaws
 			for (Flaw flaw : flaws) 
 			{
 				// check flaw solutions
@@ -917,6 +917,44 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		// get the list of detected flaws in the domain
 		return list;
 	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 * @throws UnsolvableFlawException
+	 */
+	@Override
+	public List<Flaw> detectFlaws(FlawType type) 
+			throws UnsolvableFlawException
+	{
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		// simply query the components
+		for (DomainComponent comp : this.components.values()) {
+			// get the list of flaws
+			List<Flaw> flaws = comp.detectFlaws();
+			// check flaws
+			for (Flaw flaw : flaws)
+			{
+				// check flaw solutions
+				for (FlawSolution solution : flaw.getSolutions())
+				{
+					// set the associated partial plan 
+					this.setCurrentPartialPlan(solution);
+					// set the associated agenda
+					this.setCurrentAgenda(solution);
+				}
+				
+				// add the flaw to the list
+				list.add(flaw);
+			}
+		}
+		
+		// get the list of detected flaws
+		return list;
+	}
+	
 	
 	/**
 	 * 
@@ -962,27 +1000,6 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 				solution.addGoalToAgenda(goal.getValue());
 			}
 		}
-	}
-	
-	/**
-	 * 
-	 * @param type
-	 * @return
-	 * @throws UnsolvableFlawException
-	 */
-	@Override
-	public List<Flaw> detectFlaws(FlawType type) 
-			throws UnsolvableFlawException
-	{
-		// list of flaws to solve
-		List<Flaw> list = new ArrayList<>();
-		// simply query the components
-		for (DomainComponent comp : this.components.values()) {
-			list.addAll(comp.detectFlaws(type));
-		}
-		
-		// get the list of detected flaws
-		return list;
 	}
 	
 	/**

@@ -158,6 +158,7 @@ public class AIJFourByThreeExperimentManager
 								makespan = makespan / EXPERIMETN_RUNS;
 								// append result to the data file
 								try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, true)))) {
+									// add data entry
 									writer.println(cfg.getSimpleName() + ";" + task + ";" + shared + ";" + uncertainty + ";" + makespan + ";" + time);
 								}
 							}
@@ -165,6 +166,12 @@ public class AIJFourByThreeExperimentManager
 								// error while solving planning instance
 								System.out.println("... error while solving domain instance: " + domainName + "\n- message: " + ex.getMessage() +"\n"
 										+ "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+								
+								// log error into the results (use -1 as a special value to indicate failure)
+								try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, true)))) {
+									// add data entry
+									writer.println(cfg.getSimpleName() + ";" + task + ";" + shared + ";" + uncertainty + ";-1;-1");
+								}
 							}
 							finally {
 								// try to clear memory

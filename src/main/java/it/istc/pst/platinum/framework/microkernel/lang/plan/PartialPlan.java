@@ -265,4 +265,12 @@ public class PartialPlan
 			return false;
 		return true;
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[PartialPlan behaviors: " + this.getBehaviors() + "]";
+	}
 }

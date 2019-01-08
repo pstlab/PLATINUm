@@ -65,6 +65,8 @@ public class ComponentBehavior
 
 	@Override
 	public String toString() {
-		return "[ComponentBehavior value: " + this.value.getLabel() + ", end: " + this.end + ", duration: " +  this.duration+ "]";
+		return "[ComponentBehavior value: " + this.value.getLabel() + ", "
+				+ (this.end != null ? "end: {" + this.end[0] + ", " + this.end[1] +"} " : "") 
+				+ "duration: {" +  this.duration[0] + ", " + this.duration[1] + "}]";
 	}
 }
