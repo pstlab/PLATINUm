@@ -22,7 +22,7 @@ public class PartialPlan
 	private Map<Integer, ComponentBehavior> index;									// behavior index
 	private Map<DomainComponent, Set<ComponentBehavior>> behaviors;				// possible behaviors
 	private Set<ComponentBehaviorConstraint> constraints;						// possible behavior constraints
-	private Map<ComponentBehavior, Set<ComponentBehavior>> temporalDominance;	// data structure to keep track of temporal dominance among decisions
+//	private Map<ComponentBehavior, Set<ComponentBehavior>> temporalDominance;	// data structure to keep track of temporal dominance among decisions
 	
 	/**
 	 * 
@@ -31,7 +31,7 @@ public class PartialPlan
 		this.index = new HashMap<>();
 		this.behaviors = new HashMap<>();
 		this.constraints = new HashSet<>();
-		this.temporalDominance = new HashMap<>();
+//		this.temporalDominance = new HashMap<>();
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class PartialPlan
 			this.behaviors.get(dec.getComponent()).add(b);
 			
 			// update temporal dominance data structure
-			this.temporalDominance.put(b, new HashSet<>());
+//			this.temporalDominance.put(b, new HashSet<>());
 		}
  	}
 	
@@ -80,35 +80,36 @@ public class PartialPlan
 		ComponentBehaviorConstraint c = new ComponentBehaviorConstraint(type, refBehavior, targetBehavior);
 		// add constraint the partial plan
 		this.constraints.add(c);
-		// check relation and set related temporal dominance information
-		switch (type) 
-		{
-			case DURING : {
-				// the target decision temporally dominates the reference decision in this case
-				if (!this.temporalDominance.containsKey(refBehavior)) {
-					this.temporalDominance.put(refBehavior, new HashSet<>());
-				}
-				
-				// add temporal dominance
-				this.temporalDominance.get(refBehavior).add(targetBehavior);
-			}
-			break;
-			
-			case CONTAINS : {
-				// the reference decision temporally dominates the target decision in this case
-				if (!this.temporalDominance.containsKey(targetBehavior)) {
-					this.temporalDominance.put(targetBehavior, new HashSet<>());
-				}
-				
-				// add temporal dominance
-				this.temporalDominance.get(targetBehavior).add(refBehavior);
-			}
-			break;
-			
-			default : {
-				// ignore any other case
-			}
-		}
+		
+//		// check relation and set related temporal dominance information
+//		switch (type) 
+//		{
+//			case DURING : {
+//				// the target decision temporally dominates the reference decision in this case
+//				if (!this.temporalDominance.containsKey(refBehavior)) {
+//					this.temporalDominance.put(refBehavior, new HashSet<>());
+//				}
+//				
+//				// add temporal dominance
+//				this.temporalDominance.get(refBehavior).add(targetBehavior);
+//			}
+//			break;
+//			
+//			case CONTAINS : {
+//				// the reference decision temporally dominates the target decision in this case
+//				if (!this.temporalDominance.containsKey(targetBehavior)) {
+//					this.temporalDominance.put(targetBehavior, new HashSet<>());
+//				}
+//				
+//				// add temporal dominance
+//				this.temporalDominance.get(targetBehavior).add(refBehavior);
+//			}
+//			break;
+//			
+//			default : {
+//				// ignore any other case
+//			}
+//		}
 	}
 	
 	/**
@@ -130,35 +131,36 @@ public class PartialPlan
 		ComponentBehaviorConstraint c = new ComponentBehaviorConstraint(rel.getType(), ref, target);
 		// add constraint the partial plan
 		this.constraints.add(c);
-		// check relation and set related temporal dominance information
-		switch (rel.getType()) 
-		{
-			case DURING : {
-				// the target decision temporally dominates the reference decision in this case
-				if (!this.temporalDominance.containsKey(ref)) {
-					this.temporalDominance.put(ref, new HashSet<>());
-				}
-				
-				// add temporal dominance
-				this.temporalDominance.get(ref).add(target);
-			}
-			break;
-			
-			case CONTAINS : {
-				// the reference decision temporally dominates the target decision in this case
-				if (!this.temporalDominance.containsKey(target)) {
-					this.temporalDominance.put(target, new HashSet<>());
-				}
-				
-				// add temporal dominance
-				this.temporalDominance.get(target).add(ref);
-			}
-			break;
-			
-			default : {
-				// ignore any other case
-			}
-		}
+		
+//		// check relation and set related temporal dominance information
+//		switch (rel.getType()) 
+//		{
+//			case DURING : {
+//				// the target decision temporally dominates the reference decision in this case
+//				if (!this.temporalDominance.containsKey(ref)) {
+//					this.temporalDominance.put(ref, new HashSet<>());
+//				}
+//				
+//				// add temporal dominance
+//				this.temporalDominance.get(ref).add(target);
+//			}
+//			break;
+//			
+//			case CONTAINS : {
+//				// the reference decision temporally dominates the target decision in this case
+//				if (!this.temporalDominance.containsKey(target)) {
+//					this.temporalDominance.put(target, new HashSet<>());
+//				}
+//				
+//				// add temporal dominance
+//				this.temporalDominance.get(target).add(ref);
+//			}
+//			break;
+//			
+//			default : {
+//				// ignore any other case
+//			}
+//		}
 	}
 	
 	/**
@@ -209,24 +211,33 @@ public class PartialPlan
 	 */
 	public double estimateMakespan()
 	{
-		// estimated cycle time
+		// estimated the minimum average cycle time cycle time
 		double makespan = 0;
-		
-		// take into account the temporally dominant decisions of the plan
-		for (ComponentBehavior b : this.temporalDominance.keySet())
+		// count components
+		double components = 0;
+		// compute the cycle time for each component of the plan
+		Map<DomainComponent, Double> cMKs = new HashMap<>();
+		// check components
+		for (DomainComponent comp : this.behaviors.keySet()) 
 		{
-			// check temporal dominance
-			if (this.temporalDominance.get(b).isEmpty())
+			// initialize cache
+			cMKs.put(comp, new Double(0.0));
+			// get component's behaviors
+			for (ComponentBehavior behavior : this.behaviors.get(comp))
 			{
-				// get possible end time
-				long[] end = b.getEnd();
-				// update cycle time information
-				makespan = Math.max(makespan, end[0]);
+				// get currently computed cycle time 
+				double mk = cMKs.get(comp);
+				// update the (minimum) component cycle time 
+				cMKs.put(comp, Math.max(mk, behavior.getEnd()[0]));
 			}
+			
+			// increase the total average cycle time
+			makespan += cMKs.get(comp);
+			components++;
 		}
 		
-		// get plan cycle time
-		return makespan;
+		// get the average cycle time of the plan
+		return (makespan / components);
 	}
 
 	/**

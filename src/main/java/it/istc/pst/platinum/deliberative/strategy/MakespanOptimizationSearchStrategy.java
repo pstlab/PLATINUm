@@ -77,6 +77,7 @@ public class MakespanOptimizationSearchStrategy extends SearchStrategy implement
 		// get partial plans
 		PartialPlan p1 = o1.getPartialPlan();
 		PartialPlan p2 = o2.getPartialPlan();
+		
 		// compare node depth and cycle times of the partial plans
 		return o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 : 
 			p1.estimateMakespan() < p2.estimateMakespan() ? -1 : p1.estimateMakespan() > p2.estimateMakespan() ? 1 : 0;
