@@ -34,7 +34,7 @@ public class AIJFourByThreeExperimentManager
 	private static String DATA_FOLDER = "data/AIJ_EXP_FbT";
 	private static String PLAN_FOLDER = DATA_FOLDER + "/plans";
 	// timeout
-	public static final long TIMEOUT = 60000;		// timeout set to 60 seconds
+	public static final long TIMEOUT = 120000;		// timeout set to 60 seconds
 	// domain file folder
 	private static String DOMAIN_FOLDER = "domains/AIJ_EXP_FbT";
 	// temporal horizon 
@@ -200,7 +200,7 @@ public class AIJFourByThreeExperimentManager
 	heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-	strategy = MakespanOptimizationSearchStrategy.class
+	strategy = HRCBalancingSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
 	level = FrameworkLoggingLevel.OFF
@@ -223,7 +223,7 @@ class AIJFbTPlannerA extends Planner {
 	heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-	strategy = HRCBalancingSearchStrategy.class
+	strategy = MakespanOptimizationSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
 	level = FrameworkLoggingLevel.OFF

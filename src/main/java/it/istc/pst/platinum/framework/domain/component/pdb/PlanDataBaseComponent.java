@@ -933,7 +933,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		// simply query the components
 		for (DomainComponent comp : this.components.values()) {
 			// get the list of flaws
-			List<Flaw> flaws = comp.detectFlaws();
+			List<Flaw> flaws = comp.detectFlaws(type);
 			// check flaws
 			for (Flaw flaw : flaws)
 			{

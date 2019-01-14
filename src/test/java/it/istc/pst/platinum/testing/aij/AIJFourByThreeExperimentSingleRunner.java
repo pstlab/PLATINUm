@@ -4,7 +4,6 @@ import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
-import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStrategy;
 import it.istc.pst.platinum.deliberative.strategy.fbt.HRCBalancingSearchStrategy;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
@@ -63,6 +62,8 @@ public class AIJFourByThreeExperimentSingleRunner
 			System.out.println(plan.export());
 			System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 			System.out.print(plan);
+			// display the planner
+			planner.display();
 		}
 		catch (Exception ex) {
 			// error while solving planning instance

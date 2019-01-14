@@ -8,6 +8,7 @@ import java.util.List;
 import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
 import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.ComponentBehavior;
 
 /**
  * 
@@ -75,41 +76,106 @@ public class HRCBalancingSearchStrategy extends SearchStrategy implements Compar
 	public int compare(SearchSpaceNode o1, SearchSpaceNode o2) 
 	{
 		// estimate the number of tasks assigned to the human 
-		long o1HTasks = 0;
+		long o1HLoad = 0;
 		// estimate the number of tasks assigned to the robot
-		long o1RTasks = 0;
+		long o1RLoad = 0;
 		
-		// get tasks currently assigned to the human
-		o1HTasks += o1.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Human")).size();
-		// get tasks currently assigned to the robot
-		o1RTasks += o1.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Robot")).size();
-		// get pending tasks for the human
-		o1HTasks += o1.getAgenda().getGoalsByComponent(this.pdb.getComponentByName("Human")).size();
-		// get pending task for the robot
-		o1RTasks += o1.getAgenda().getGoalsByComponent(this.pdb.getComponentByName("Robot")).size();
+		// compute minimum load of the human operator
+		for (ComponentBehavior b : o1.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Human"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o1HLoad++;
+			}
+		}
 		
+		// take into account also the agenda
+		for (ComponentBehavior b : o1.getAgenda().getGoals(this.pdb.getComponentByName("Human"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o1HLoad++;
+			}
+		}
+		
+		// compute minimum load of the robot
+		for (ComponentBehavior b : o1.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Robot"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o1RLoad++;
+			}
+		}
+		
+		// take into account also the agenda
+		for (ComponentBehavior b : o1.getAgenda().getGoals(this.pdb.getComponentByName("Robot"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o1RLoad++;
+			}
+		}
+		
+		// compute HRC balance
+		double o1HRCBalance = Math.abs(o1HLoad - o1RLoad);
 		
 		
 		// estimate the number of tasks assigned to the human 
-		long o2HTasks = 0;
+		long o2HLoad = 0;
 		// estimate the number of tasks assigned to the robot
-		long o2RTasks = 0;
+		long o2RLoad = 0;
 		
-		// get tasks currently assigned to the human
-		o2HTasks += o2.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Human")).size();
-		// get tasks currently assigned to the robot
-		o2RTasks += o2.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Robot")).size();
-		// get pending tasks for the human
-		o2HTasks += o2.getAgenda().getGoalsByComponent(this.pdb.getComponentByName("Human")).size();
-		// get pending task for the robot
-		o2RTasks += o2.getAgenda().getGoalsByComponent(this.pdb.getComponentByName("Robot")).size();
+		// compute minimum load of the human operator
+		for (ComponentBehavior b : o2.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Human"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o2HLoad++;
+			}
+		}
 		
-		// compute balancing 
-		long o1Balancing = Math.abs(o1HTasks - o1RTasks);
-		long o2Balancing = Math.abs(o2HTasks - o2RTasks);
+		// take into account also the agenda
+		for (ComponentBehavior b : o2.getAgenda().getGoals(this.pdb.getComponentByName("Human"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o2HLoad++;
+			}
+		}
+		
+		// compute minimum load of the robot
+		for (ComponentBehavior b : o2.getPartialPlan().getBehaviors(this.pdb.getComponentByName("Robot"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o2RLoad++;
+			}
+		}
+		
+		// take into account also the agenda
+		for (ComponentBehavior b : o2.getAgenda().getGoals(this.pdb.getComponentByName("Robot"))) {
+			// check behavior 
+			if (!b.getValue().getLabel().contains("Idle")) {
+				// update load with task duration lower bound
+				o2RLoad++;
+			}
+		}
+		
+		// compute HRC balance
+		double o2HRCBalance = Math.abs(o2HLoad - o2RLoad);
 		
 		// compare node depth and HR balancing of the partial plans
-		return o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 : 
-			o1Balancing < o2Balancing ? -1 : o1Balancing > o2Balancing ? 1 : 0;
+		int result = o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 : 
+			o1HRCBalance < o2HRCBalance ? -1 : o1HRCBalance > o2HRCBalance ? 1 : 
+				o1RLoad > o2RLoad ? -1 : o1RLoad < o2RLoad ? 1 : 0;
+//		// print data 
+//		System.out.println("\n"
+//				+ "o1(depth: " + o1.getDepth() + "): R-Load: " + o1RLoad + " H-Load: " + o1HLoad + " HRC-Balance: " + o1HRCBalance + "\n"
+//				+ "o2(depth: " + o2.getDepth() + "): R-Load: " + o2RLoad + " H-Load: " + o2HLoad + " HRC-Balance: " + o2HRCBalance + "\n"
+//				+ "result: " + result + "\n"
+//				+ "\n");
+		
+		// return comparison result		
+		return result;
 	}
 }

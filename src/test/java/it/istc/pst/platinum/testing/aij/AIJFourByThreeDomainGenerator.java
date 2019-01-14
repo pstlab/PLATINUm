@@ -75,7 +75,7 @@ public class AIJFourByThreeDomainGenerator
 						// model robot arm motions
 						ddl += prepareRoboticArmSV(topTasks, bottomTasks);
 						// model robot tool configuration
-						ddl += prepareRobotToolConfigurationSV();
+//						ddl += prepareRobotToolConfigurationSV();
 						// model tool 
 						ddl += prepareToolSV();
 						
@@ -93,7 +93,7 @@ public class AIJFourByThreeDomainGenerator
 						// model robot task internal coordination
 						ddl += prepareRobotRules(topTasks, bottomTasks);
 						// model robot tool change rules
-						ddl += prepareToolChangeRules();
+//						ddl += prepareToolChangeRules();
 						// close domain description
 						ddl += "}\n";
 						
@@ -192,7 +192,7 @@ public class AIJFourByThreeDomainGenerator
 		for (int i = 1; i <= bottomTask; i++) {
 			HTaskList += "_UnscrewBottomBolt" + i + "(), ";
 		}
-		HTaskList += "_SetWorkPiece(), _MountTool1(), _MountTool2(), _RemoveWaxPart()";
+		HTaskList += "_SetWorkPiece(), _RemoveWaxPart()"; // ", _MountTool1(), _MountTool2()";
 		
 		// model human operator capabilities
 		String ddl = "\tCOMP_TYPE SingletonStateVariable HumanSV (" + HTaskList + ") {\n\n"
@@ -200,14 +200,14 @@ public class AIJFourByThreeDomainGenerator
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tIdle();\n"
 				+ "\t\t}\n\n"
-				+ "\t\tVALUE _MountTool1() [11, " + (11 + uncertainty) + "]\n"
-				+ "\t\tMEETS {\n"
-				+ "\t\t\tIdle();\n"
-				+ "\t\t}\n\n"
-				+ "\t\tVALUE _MountTool2() [7, " + (7 + uncertainty) + "]\n"
-				+ "\t\tMEETS {\n"
-				+ "\t\t\tIdle();\n"
-				+ "\t\t}\n\n"
+//				+ "\t\tVALUE _MountTool1() [11, " + (11 + uncertainty) + "]\n"
+//				+ "\t\tMEETS {\n"
+//				+ "\t\t\tIdle();\n"
+//				+ "\t\t}\n\n"
+//				+ "\t\tVALUE _MountTool2() [7, " + (7 + uncertainty) + "]\n"
+//				+ "\t\tMEETS {\n"
+//				+ "\t\t\tIdle();\n"
+//				+ "\t\t}\n\n"
 				+ "\t\tVALUE _RemoveWaxPart() [18, " + (18 + uncertainty) + "]\n"
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tIdle();\n"
@@ -215,13 +215,13 @@ public class AIJFourByThreeDomainGenerator
 		
 		
 		for (int i = 1; i <= topTask; i++) {
-			ddl += "\t\tVALUE _UnscrewTopBolt" + i + "() [3, " + (3 + uncertainty) + "]\n"
+			ddl += "\t\tVALUE _UnscrewTopBolt" + i + "() [8, " + (8 + uncertainty) + "]\n"
 					+ "\t\tMEETS {\n"
 					+ "\t\t\tIdle();\n"
 					+ "\t\t}\n\n";
 		}
 		for (int i = 1; i <= bottomTask; i++) {
-			ddl += "\t\tVALUE _UnscrewBottomBolt" + i + "() [6, " + (6 + uncertainty) + "]\n"
+			ddl += "\t\tVALUE _UnscrewBottomBolt" + i + "() [16, " + (16 + uncertainty) + "]\n"
 					+ "\t\tMEETS {\n"
 					+ "\t\t\tIdle();\n"
 					+ "\t\t}\n\n";
@@ -237,8 +237,8 @@ public class AIJFourByThreeDomainGenerator
 		}
 		
 		ddl += "\t\t\t_SetWorkPiece();\n"
-				+ "\t\t\t_MountTool1();\n"
-				+ "\t\t\t_MountTool2();\n"
+//				+ "\t\t\t_MountTool1();\n"
+//				+ "\t\t\t_MountTool2();\n"
 				+ "\t\t\t_RemoveWaxPart();\n"
 				+ "\t\t}\n";
 		ddl += "\t}\n\n";
@@ -329,7 +329,7 @@ public class AIJFourByThreeDomainGenerator
 					+ "\t\t}\n\n";
 		}
 		
-		ddl += "\t\tVALUE Moving() [5, 45]\n"
+		ddl += "\t\tVALUE Moving() [3, 5]\n"
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tSetOnBase();\n";
 		for (int i = 1; i <= topTask; i++) {
@@ -345,29 +345,29 @@ public class AIJFourByThreeDomainGenerator
 		return ddl;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	private String prepareRobotToolConfigurationSV()
-	{
-		// return SV description
-		return "\tCOMP_TYPE SingletonStateVariable RobotToolConfigurationSV (None(), Tool1Mounted(), Tool2Mounted()) {\n\n"
-				+ "\t\tVALUE None() [1, +INF]\n"
-				+ "\t\tMEETS {\n"
-				+ "\t\t\tTool1Mounted();\n"
-				+ "\t\t\tTool2Mounted();\n"
-				+ "\t\t}\n\n"
-				+ "\t\tVALUE Tool1Mounted() [1, +INF]\n"
-				+ "\t\tMEETS {\n"
-				+ "\t\t\tNone();\n"
-				+ "\t\t}\n\n"
-				+ "\t\tVALUE Tool2Mounted() [1, +INF]\n"
-				+ "\t\tMEETS {\n"
-				+ "\t\t\tNone();\n"
-				+ "\t\t}\n\n"
-				+ "\t}\n\n";
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	private String prepareRobotToolConfigurationSV()
+//	{
+//		// return SV description
+//		return "\tCOMP_TYPE SingletonStateVariable RobotToolConfigurationSV (None(), Tool1Mounted(), Tool2Mounted()) {\n\n"
+//				+ "\t\tVALUE None() [1, +INF]\n"
+//				+ "\t\tMEETS {\n"
+//				+ "\t\t\tTool1Mounted();\n"
+//				+ "\t\t\tTool2Mounted();\n"
+//				+ "\t\t}\n\n"
+//				+ "\t\tVALUE Tool1Mounted() [1, +INF]\n"
+//				+ "\t\tMEETS {\n"
+//				+ "\t\t\tNone();\n"
+//				+ "\t\t}\n\n"
+//				+ "\t\tVALUE Tool2Mounted() [1, +INF]\n"
+//				+ "\t\tMEETS {\n"
+//				+ "\t\t\tNone();\n"
+//				+ "\t\t}\n\n"
+//				+ "\t}\n\n";
+//	}
 	
 	/**
 	 * 
@@ -376,16 +376,16 @@ public class AIJFourByThreeDomainGenerator
 	private String prepareToolSV()
 	{
 		// return SV description
-				return "\tCOMP_TYPE SingletonStateVariable ToolSV (Idle(), UnscrewBolt()) {\n\n"
-						+ "\t\tVALUE Idle() [1, +INF]\n"
-						+ "\t\tMEETS {\n"
-						+ "\t\t\tUnscrewBolt();\n"
-						+ "\t\t}\n\n"
-						+ "\t\tVALUE UnscrewBolt() [7, 7]\n"
-						+ "\t\tMEETS {\n"
-						+ "\t\t\tIdle();\n"
-						+ "\t\t}\n\n"
-						+ "\t}\n\n";
+		return "\tCOMP_TYPE SingletonStateVariable ToolSV (Idle(), UnscrewBolt()) {\n\n"
+				+ "\t\tVALUE Idle() [1, +INF]\n"
+				+ "\t\tMEETS {\n"
+				+ "\t\t\tUnscrewBolt();\n"
+				+ "\t\t}\n\n"
+				+ "\t\tVALUE UnscrewBolt() [3, 3]\n"
+				+ "\t\tMEETS {\n"
+				+ "\t\t\tIdle();\n"
+				+ "\t\t}\n\n"
+				+ "\t}\n\n";
 	}
 	
 	/**
@@ -399,9 +399,9 @@ public class AIJFourByThreeDomainGenerator
 				+ "\tCOMPONENT Human {FLEXIBLE operator(primitive)} : HumanSV;\n"
 				+ "\tCOMPONENT Robot {FLEXIBLE cobot(functional)} : RobotSV;\n"
 				+ "\tCOMPONENT Arm {FLEXIBLE motions(primitive)} : RoboticArmSV;\n"
-				+ "\tCOMPONENT RobotTool {FLEXIBLE configuration(primitive)} : RobotToolConfigurationSV;\n"
-				+ "\tCOMPONENT Tool1 {FLEXIBLE t1(primitive)} : ToolSV;\n"
-				+ "\tCOMPONENT Tool2 {FLEXIBLE t2(primitive)} : ToolSV;\n"
+//				+ "\tCOMPONENT RobotTool {FLEXIBLE configuration(primitive)} : RobotToolConfigurationSV;\n"
+				+ "\tCOMPONENT Tool {FLEXIBLE screwdriver(primitive)} : ToolSV;\n"
+//				+ "\tCOMPONENT Tool2 {FLEXIBLE t2(primitive)} : ToolSV;\n"
 				+ "\n\n";
 	}
 	
@@ -517,10 +517,8 @@ public class AIJFourByThreeDomainGenerator
 			ddl += "\t\tVALUE UnscrewTopBolt" + i + "() {\n\n"
 					+ "\t\t\tp0 Arm.motions.SetOnTopBolt" + i + "();\n"
 					+ "\t\t\tDURING [0, +INF] [0, +INF] p0;\n\n"
-					+ "\t\t\tt0 RobotTool.configuration.Tool1Mounted();\n"
-					+ "\t\t\tDURING [0, +INF] [0, +INF] t0;\n\n"
-					+ "\t\t\to0 Tool1.t1.UnscrewBolt();\n"
-					+ "\t\t\tCONTAINS [0, +INF] [0, +INF] o0;\n"
+					+ "\t\t\tt0 <!> Tool.screwdriver.UnscrewBolt();\n"
+					+ "\t\t\tEQUALS t0;\n"
 					+ "\t\t}\n\n";
 		}
 		
@@ -529,10 +527,8 @@ public class AIJFourByThreeDomainGenerator
 			ddl += "\t\tVALUE UnscrewBottomBolt" + i + "() {\n\n"
 					+ "\t\t\tp0 Arm.motions.SetOnBottomBolt" + i + "();\n"
 					+ "\t\t\tDURING [0, +INF] [0, +INF] p0;\n\n"
-					+ "\t\t\tt0 RobotTool.configuration.Tool2Mounted();\n"
-					+ "\t\t\tDURING [0, +INF] [0, +INF] t0;\n\n"
-					+ "\t\t\to0 Tool2.t2.UnscrewBolt();\n"
-					+ "\t\t\tCONTAINS [0, +INF] [0, +INF] o0;\n"
+					+ "\t\t\tt0 Tool.screwdriver.UnscrewBolt();\n"
+					+ "\t\t\tEQUALS t0;\n"
 					+ "\t\t}\n\n";
 		}
 		
@@ -541,28 +537,28 @@ public class AIJFourByThreeDomainGenerator
 		return ddl;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	private String prepareToolChangeRules()
-	{
-		// get domain description
-		return "\tSYNCHRONIZE RobotTool.configuration {\n\n"
-				+ "\t\tVALUE Tool1Mounted() {\n\n"
-				+ "\t\t\th0 Human.operator._MountTool1();\n"
-				+ "\t\t\tMET-BY h0;\n"
-				+ "\t\t\tm0 Arm.motions.SetOnBase();\n"
-				+ "\t\t\th0 DURING [0, +INF] [0, +INF] m0;\n"
-				+ "\t\t}\n\n"
-				+ "\t\tVALUE Tool2Mounted() {\n\n"
-				+ "\t\t\th0 Human.operator._MountTool2();\n"
-				+ "\t\t\tMET-BY h0;\n"
-				+ "\t\t\tm0 Arm.motions.SetOnBase();\n"
-				+ "\t\t\th0 DURING [0, +INF] [0, +INF] m0;\n"
-				+ "\t\t}\n"
-				+ "\t}\n\n";
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	private String prepareToolChangeRules()
+//	{
+//		// get domain description
+//		return "\tSYNCHRONIZE RobotTool.configuration {\n\n"
+//				+ "\t\tVALUE Tool1Mounted() {\n\n"
+//				+ "\t\t\th0 Human.operator._MountTool1();\n"
+//				+ "\t\t\tMET-BY h0;\n"
+//				+ "\t\t\tm0 Arm.motions.SetOnBase();\n"
+//				+ "\t\t\th0 DURING [0, +INF] [0, +INF] m0;\n"
+//				+ "\t\t}\n\n"
+//				+ "\t\tVALUE Tool2Mounted() {\n\n"
+//				+ "\t\t\th0 Human.operator._MountTool2();\n"
+//				+ "\t\t\tMET-BY h0;\n"
+//				+ "\t\t\tm0 Arm.motions.SetOnBase();\n"
+//				+ "\t\t\th0 DURING [0, +INF] [0, +INF] m0;\n"
+//				+ "\t\t}\n"
+//				+ "\t}\n\n";
+//	}
 	
 	
 	/**
@@ -578,9 +574,7 @@ public class AIJFourByThreeDomainGenerator
 				+ "\tfact1 <fact> Human.operator.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
 				+ "\tfact2 <fact> Robot.cobot.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
 				+ "\tfact3 <fact> Arm.motions.SetOnBase() AT [0, 0] [0, +INF] [1, +INF];\n"
-				+ "\tfact4 <fact> RobotTool.configuration.None() AT [0, 0] [0, +INF] [1, +INF];\n"
-				+ "\tfact5 <fact> Tool1.t1.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
-				+ "\tfact6 <fact> Tool2.t2.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
+				+ "\tfact4 <fact> Tool.screwdriver.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
 				+ "\n\n"
 				+ "\tgoal0 <goal> Production.process.Assembly() AT [0, +INF] [0, +INF] [1, +INF];\n\n"
 				+ "\n\n"	

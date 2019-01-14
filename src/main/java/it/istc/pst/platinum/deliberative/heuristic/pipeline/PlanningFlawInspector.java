@@ -15,14 +15,14 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-class TypeBasedFlawInspector extends FlawInspector 
+class PlanningFlawInspector extends FlawInspector 
 {
 	private FlawType[] preferences;
 
 	/**
 	 * 
 	 */
-	protected TypeBasedFlawInspector() {
+	protected PlanningFlawInspector() {
 		super("FlawInspector:FlawTypeInspector");
 	}
 	
@@ -36,9 +36,7 @@ class TypeBasedFlawInspector extends FlawInspector
 				FlawType.PLAN_REFINEMENT,
 				FlawType.RESOURCE_PLANNING,
 				FlawType.RESOURCE_OVERFLOW,
-				FlawType.TIMELINE_OVERFLOW,
-				FlawType.TIMELINE_BEHAVIOR_PLANNING,
-				FlawType.TIMELINE_BEHAVIOR_CHECKING
+				FlawType.TIMELINE_OVERFLOW
 		};
 	}
 	

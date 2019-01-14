@@ -19,7 +19,7 @@ import it.istc.pst.platinum.framework.utils.reflection.FrameworkReflectionUtils;
  *
  */
 @PipelineConfiguration(pipeline= {
-		TypeBasedFlawInspector.class,
+		PlanningFlawInspector.class,
 		HierarchyFlawInspector.class,
 		DegreeFlawInspector.class
 })
@@ -27,6 +27,7 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 {
 	@PipelinePlaceholder
 	private List<FlawInspector> inspectors;
+	private FlawInspector behaviorBuilder;
 	
 	/**
 	 * 
@@ -35,6 +36,8 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 		super("Heuristics:Pipeline");
 		// initialize filter list
 		this.inspectors = new ArrayList<>();
+		// initialize behavior builder
+		this.behaviorBuilder = null;
 	}
 	
 	/**
@@ -52,6 +55,9 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 			// add filter 
 			this.inspectors.add(filter);
 		}
+		
+		// create flaw filter
+		this.behaviorBuilder = this.doCreateFlawFilter(BehaviorFlawInspector.class.getName());
 	}
 	
 	/**
@@ -71,6 +77,12 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 			FlawInspector i = this.inspectors.get(index);
 			// apply inspector and get the subset of flaws
 			flaws = i.filter(flaws);
+		}
+		
+		// check the plan has been solved
+		if (flaws.isEmpty()) {
+			// build behaviors
+			flaws = this.behaviorBuilder.detectFlaws();
 		}
 		
 		// check if any flaw has been found

@@ -49,7 +49,7 @@ public class Agenda
 	 * @param comp
 	 * @return
 	 */
-	public List<ComponentBehavior> getGoalsByComponent(DomainComponent comp) {
+	public List<ComponentBehavior> getGoals(DomainComponent comp) {
 		// list of behaviors
 		List<ComponentBehavior> list = new ArrayList<>();
 		if (this.goals.containsKey(comp)) {

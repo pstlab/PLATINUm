@@ -45,19 +45,9 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 		}
 	}
 
-	COMP_TYPE SingletonStateVariable HumanSV (Idle(), _UnscrewTopBolt1(), _UnscrewTopBolt2(), _UnscrewTopBolt3(), _UnscrewTopBolt4(), _UnscrewTopBolt5(), _UnscrewTopBolt6(), _UnscrewTopBolt7(), _UnscrewBottomBolt1(), _UnscrewBottomBolt2(), _UnscrewBottomBolt3(), _UnscrewBottomBolt4(), _UnscrewBottomBolt5(), _UnscrewBottomBolt6(), _UnscrewBottomBolt7(), _UnscrewBottomBolt8(), _SetWorkPiece(), _MountTool1(), _MountTool2(), _RemoveWaxPart()) {
+	COMP_TYPE SingletonStateVariable HumanSV (Idle(), _UnscrewTopBolt1(), _UnscrewTopBolt2(), _UnscrewTopBolt3(), _UnscrewTopBolt4(), _UnscrewTopBolt5(), _UnscrewTopBolt6(), _UnscrewTopBolt7(), _UnscrewBottomBolt1(), _UnscrewBottomBolt2(), _UnscrewBottomBolt3(), _UnscrewBottomBolt4(), _UnscrewBottomBolt5(), _UnscrewBottomBolt6(), _UnscrewBottomBolt7(), _UnscrewBottomBolt8(), _SetWorkPiece(), _RemoveWaxPart()) {
 
 		VALUE _SetWorkPiece() [7, 27]
-		MEETS {
-			Idle();
-		}
-
-		VALUE _MountTool1() [11, 31]
-		MEETS {
-			Idle();
-		}
-
-		VALUE _MountTool2() [7, 27]
 		MEETS {
 			Idle();
 		}
@@ -67,77 +57,77 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt1() [3, 23]
+		VALUE _UnscrewTopBolt1() [8, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt2() [3, 23]
+		VALUE _UnscrewTopBolt2() [8, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt3() [3, 23]
+		VALUE _UnscrewTopBolt3() [8, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt4() [3, 23]
+		VALUE _UnscrewTopBolt4() [8, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt5() [3, 23]
+		VALUE _UnscrewTopBolt5() [8, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt6() [3, 23]
+		VALUE _UnscrewTopBolt6() [8, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt7() [3, 23]
+		VALUE _UnscrewTopBolt7() [8, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt1() [6, 26]
+		VALUE _UnscrewBottomBolt1() [16, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt2() [6, 26]
+		VALUE _UnscrewBottomBolt2() [16, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt3() [6, 26]
+		VALUE _UnscrewBottomBolt3() [16, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt4() [6, 26]
+		VALUE _UnscrewBottomBolt4() [16, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt5() [6, 26]
+		VALUE _UnscrewBottomBolt5() [16, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt6() [6, 26]
+		VALUE _UnscrewBottomBolt6() [16, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt7() [6, 26]
+		VALUE _UnscrewBottomBolt7() [16, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt8() [6, 26]
+		VALUE _UnscrewBottomBolt8() [16, 36]
 		MEETS {
 			Idle();
 		}
@@ -160,8 +150,6 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			_UnscrewBottomBolt7();
 			_UnscrewBottomBolt8();
 			_SetWorkPiece();
-			_MountTool1();
-			_MountTool2();
 			_RemoveWaxPart();
 		}
 	}
@@ -345,7 +333,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			Moving();
 		}
 
-		VALUE Moving() [5, 45]
+		VALUE Moving() [3, 5]
 		MEETS {
 			SetOnBase();
 			SetOnTopBolt1();
@@ -366,26 +354,6 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 		}
 	}
 
-	COMP_TYPE SingletonStateVariable RobotToolConfigurationSV (None(), Tool1Mounted(), Tool2Mounted()) {
-
-		VALUE None() [1, +INF]
-		MEETS {
-			Tool1Mounted();
-			Tool2Mounted();
-		}
-
-		VALUE Tool1Mounted() [1, +INF]
-		MEETS {
-			None();
-		}
-
-		VALUE Tool2Mounted() [1, +INF]
-		MEETS {
-			None();
-		}
-
-	}
-
 	COMP_TYPE SingletonStateVariable ToolSV (Idle(), UnscrewBolt()) {
 
 		VALUE Idle() [1, +INF]
@@ -393,7 +361,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			UnscrewBolt();
 		}
 
-		VALUE UnscrewBolt() [7, 7]
+		VALUE UnscrewBolt() [3, 3]
 		MEETS {
 			Idle();
 		}
@@ -405,9 +373,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 	COMPONENT Human {FLEXIBLE operator(primitive)} : HumanSV;
 	COMPONENT Robot {FLEXIBLE cobot(functional)} : RobotSV;
 	COMPONENT Arm {FLEXIBLE motions(primitive)} : RoboticArmSV;
-	COMPONENT RobotTool {FLEXIBLE configuration(primitive)} : RobotToolConfigurationSV;
-	COMPONENT Tool1 {FLEXIBLE t1(primitive)} : ToolSV;
-	COMPONENT Tool2 {FLEXIBLE t2(primitive)} : ToolSV;
+	COMPONENT Tool {FLEXIBLE screwdriver(primitive)} : ToolSV;
 
 
 	SYNCHRONIZE Production.process {
@@ -509,11 +475,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt1();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool1Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool1.t1.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 <!> Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewTopBolt2() {
@@ -521,11 +484,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt2();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool1Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool1.t1.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 <!> Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewTopBolt3() {
@@ -533,11 +493,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt3();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool1Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool1.t1.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 <!> Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewTopBolt4() {
@@ -545,11 +502,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt4();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool1Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool1.t1.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 <!> Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewTopBolt5() {
@@ -557,11 +511,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt5();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool1Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool1.t1.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 <!> Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewTopBolt6() {
@@ -569,11 +520,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt6();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool1Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool1.t1.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 <!> Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewTopBolt7() {
@@ -581,11 +529,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt7();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool1Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool1.t1.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 <!> Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt1() {
@@ -593,11 +538,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt1();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt2() {
@@ -605,11 +547,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt2();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt3() {
@@ -617,11 +556,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt3();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt4() {
@@ -629,11 +565,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt4();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt5() {
@@ -641,11 +574,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt5();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt6() {
@@ -653,11 +583,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt6();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt7() {
@@ -665,11 +592,8 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt7();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
 		VALUE UnscrewBottomBolt8() {
@@ -677,32 +601,10 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnBottomBolt8();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 RobotTool.configuration.Tool2Mounted();
-			DURING [0, +INF] [0, +INF] t0;
-
-			o0 Tool2.t2.UnscrewBolt();
-			CONTAINS [0, +INF] [0, +INF] o0;
+			t0 Tool.screwdriver.UnscrewBolt();
+			EQUALS t0;
 		}
 
-	}
-
-	SYNCHRONIZE RobotTool.configuration {
-
-		VALUE Tool1Mounted() {
-
-			h0 Human.operator._MountTool1();
-			MET-BY h0;
-			m0 Arm.motions.SetOnBase();
-			h0 DURING [0, +INF] [0, +INF] m0;
-		}
-
-		VALUE Tool2Mounted() {
-
-			h0 Human.operator._MountTool2();
-			MET-BY h0;
-			m0 Arm.motions.SetOnBase();
-			h0 DURING [0, +INF] [0, +INF] m0;
-		}
 	}
 
 }

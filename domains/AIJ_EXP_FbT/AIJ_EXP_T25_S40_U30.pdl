@@ -4,9 +4,7 @@ PROBLEM AIJ_EXP_T25_S40_U30_PLANNING (DOMAIN AIJ_EXP_T25_S40_U30) {
 	fact1 <fact> Human.operator.Idle() AT [0, 0] [0, +INF] [1, +INF];
 	fact2 <fact> Robot.cobot.Idle() AT [0, 0] [0, +INF] [1, +INF];
 	fact3 <fact> Arm.motions.SetOnBase() AT [0, 0] [0, +INF] [1, +INF];
-	fact4 <fact> RobotTool.configuration.None() AT [0, 0] [0, +INF] [1, +INF];
-	fact5 <fact> Tool1.t1.Idle() AT [0, 0] [0, +INF] [1, +INF];
-	fact6 <fact> Tool2.t2.Idle() AT [0, 0] [0, +INF] [1, +INF];
+	fact4 <fact> Tool.screwdriver.Idle() AT [0, 0] [0, +INF] [1, +INF];
 
 
 	goal0 <goal> Production.process.Assembly() AT [0, +INF] [0, +INF] [1, +INF];
