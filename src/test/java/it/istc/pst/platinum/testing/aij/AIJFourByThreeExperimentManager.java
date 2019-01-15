@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
-import it.istc.pst.platinum.deliberative.heuristic.HierarchicalFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
@@ -16,11 +15,13 @@ import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStra
 import it.istc.pst.platinum.deliberative.strategy.fbt.HRCBalancingSearchStrategy;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
+import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PlannerSolverConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.SearchStrategyConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Timeline;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
@@ -34,7 +35,7 @@ public class AIJFourByThreeExperimentManager
 	private static String DATA_FOLDER = "data/AIJ_EXP_FbT";
 	private static String PLAN_FOLDER = DATA_FOLDER + "/plans";
 	// timeout
-	public static final long TIMEOUT = 120000;		// timeout set to 60 seconds
+	public static final long TIMEOUT = 3000000;		// timeout set to 5 minutes
 	// domain file folder
 	private static String DOMAIN_FOLDER = "domains/AIJ_EXP_FbT";
 	// temporal horizon 
@@ -72,7 +73,6 @@ public class AIJFourByThreeExperimentManager
 		AIJFbTPlannerA.class,
 		AIJFbTPlannerB.class,
 		AIJFbTPlannerC.class,
-		AIJFbTPlannerD.class
 	};
 	
 	/**
@@ -99,7 +99,7 @@ public class AIJFourByThreeExperimentManager
 			// create file and write the header of the CSV
 			try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(dataFile)))) {
 				// write file
-				writer.println("cfg;#tasks;%shared;#uncertainty;makespan;time (secs)");
+				writer.println("cfg;#tasks;%shared;#uncertainty;#hTasks;#rTasks;makespan;time (secs)");
 			}
 			
 			// run experiments
@@ -121,6 +121,10 @@ public class AIJFourByThreeExperimentManager
 							double time = 0;
 							// average cycle time of the found solutions
 							double makespan = 0;
+							// number of human tasks
+							double hTasks = 0;
+							// number of robot tasks
+							double rTasks = 0;
 							try
 							{
 								// run experiments and take the average solving time
@@ -134,6 +138,31 @@ public class AIJFourByThreeExperimentManager
 			
 									// start planning
 									SolutionPlan plan = planner.plan();
+									
+									// get number of human assigned tasks
+									for (Timeline tl : plan.getTimelines()) {
+										// check human behavior
+										if (tl.getComponent().getName().equals("Human")) {
+											for (Token tk : tl.getTokens()) {
+												// check token 
+												if (!tk.getPredicate().getValue().getLabel().contains("Idle")) {
+													hTasks++;
+												}
+											}
+										}
+										
+										// check robot behavior
+										if (tl.getComponent().getName().equals("Robot")) {
+											for (Token tk : tl.getTokens()) {
+												// check token 
+												if (!tk.getPredicate().getValue().getLabel().contains("Idle")) {
+													rTasks++;
+												}
+											}
+										}
+									}
+									
+									
 									// update solving time 
 									time +=  plan.getSolvingTime();
 									// update average cycle time
@@ -152,6 +181,9 @@ public class AIJFourByThreeExperimentManager
 									}
 								}
 								
+								// update number of human and robot tasks
+								hTasks = hTasks / EXPERIMETN_RUNS;
+								rTasks = rTasks / EXPERIMETN_RUNS; 
 								// get the average time
 								time = (time / EXPERIMETN_RUNS) / 1000;
 								// get average cycle time of the solutions
@@ -159,7 +191,7 @@ public class AIJFourByThreeExperimentManager
 								// append result to the data file
 								try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(dataFile, true)))) {
 									// add data entry
-									writer.println(cfg.getSimpleName() + ";" + task + ";" + shared + ";" + uncertainty + ";" + makespan + ";" + time);
+									writer.println(cfg.getSimpleName() + ";" + task + ";" + shared + ";" + uncertainty + ";" + hTasks + ";" + rTasks + ";" + makespan + ";" + time);
 								}
 							}
 							catch (Exception ex) {
@@ -258,26 +290,4 @@ class AIJFbTPlannerC extends Planner {
 	}
 }
 
-
-//PLANNER CONFIGURATION D
-
-@PlannerSolverConfiguration(
-	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreeExperimentManager.TIMEOUT
-)
-@FlawSelectionHeuristicsConfiguration(
-	heuristics = HierarchicalFlawSelectionHeuristic.class
-)
-@SearchStrategyConfiguration(
-	strategy = DepthFirstSearchStrategy.class
-)
-@FrameworkLoggerConfiguration(
-	level = FrameworkLoggingLevel.OFF
-)
-class AIJFbTPlannerD extends Planner {
-	
-	protected AIJFbTPlannerD() {
-		super();
-	}
-}
 
