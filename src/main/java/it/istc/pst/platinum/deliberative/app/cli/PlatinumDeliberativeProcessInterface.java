@@ -7,11 +7,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import it.istc.pst.platinum.deliberative.app.cli.ex.DeliberativeCommandLineInterfaceException;
+import it.istc.pst.platinum.framework.domain.component.ComponentValue;
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
+import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
-import it.istc.pst.platinum.framework.protocol.lang.ParameterTypeDescriptor;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Timeline;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
-import it.istc.pst.platinum.framework.protocol.lang.TimelineProtocolDescriptor;
-import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
 import it.istc.pst.platinum.framework.protocol.query.ProtocolQueryType;
 import it.istc.pst.platinum.framework.protocol.query.get.GetFlexibleTimelinesProtocolQuery;
 import it.istc.pst.platinum.framework.protocol.query.get.GetSingleFlexibleTimelineProtocolQuery;
@@ -50,7 +51,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			do {
 				
 				// display prompt
-				System.out.print("epsl-agent$ ");
+				System.out.print("platinum-deliberative$ ");
 				String input = reader.readLine();
 				try 
 				{
@@ -98,7 +99,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 		// get command
 		final String cmd = splits[0].toUpperCase();
 		// check command
-		if (cmd.equals(PlatinumDeliberativeCommandLineCommand.HELP.getCmd())) 
+		if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.HELP.getCmd().toLowerCase())) 
 		{
 			// help commands
 			System.out.println("Available commands");
@@ -106,11 +107,11 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				System.out.println("- " + cliCommand.getCmd() + "\t" + cliCommand.getHelp());
 			}
 		}
-		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.EXIT.getCmd())) {
+		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.EXIT.getCmd().toLowerCase())) {
 			// exit command
 			exit = true;
 		}
-		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.INITIALIZE.getCmd())) 
+		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.INITIALIZE.getCmd().toLowerCase())) 
 		{
 			// check data
 			if (splits.length < 3 || splits[1] == null || splits[2] == null) {
@@ -133,7 +134,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			
 			System.out.println();
 		}
-		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.DISPLAY.getCmd())) 
+		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.DISPLAY.getCmd().toLowerCase())) 
 		{
 			if (this.planner != null) {
 				try 
@@ -167,7 +168,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			}
 			System.out.println();
 		}
-		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.EXPORT.getCmd())) 
+		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.EXPORT.getCmd().toLowerCase())) 
 		{
 			// export plan request
 			if (splits.length < 2 || splits[1] == null) {
@@ -191,7 +192,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				System.out.println(ex.getMessage());
 			}
 		}
-		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.PLAN.getCmd())) 
+		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.PLAN.getCmd().toLowerCase())) 
 		{
 			try 
 			{
@@ -206,87 +207,108 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			}
 			System.out.println();
 		}
-		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.GET.getCmd())) 
+		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.GET.getCmd().toLowerCase())) 
 		{
 			// get command
 			if (splits.length < 2 || splits[1] == null) {
 				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> " + PlatinumDeliberativeCommandLineCommand.GET.getHelp());
 			}
 			
+			// check current solution
+			if (this.currentSolution == null) {
+				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No plan ready to display ");
+			}
+			
+			
 			// check command's parameter and create query
 			if (splits[1].equals("all")) 
 			{
 				// plan database projection
 				GetFlexibleTimelinesProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.GET_FLEXIBLE_TIMELINES);
-				
-				/*
-				 * FIXME : TO IMPLEMENT
-				 */
-//				// send query
-//				this.query(query);
-//				// print query result
-//				for (TimelineProtocolDescriptor tl : query.getTimelines()) {
-//					System.out.println("Flexible Timeline " + tl);
-//					for (TokenProtocolDescriptor token : tl.getTokens()) {
-//						System.out.println("Flexible Token " + token);
-//					}
-//					System.out.println();
-//				}
+				// check temporal behaviors
+				for (Timeline cTl : this.currentSolution.getTimelines()) 
+				{
+					// print component information
+					System.out.println("\n- " + cTl.getComponent().getName() + " Flexible temporal behavior:");
+					for (Token cTk : cTl.getTokens())
+					{
+						// print token description
+						System.out.println("\t- " + cTk.getPredicate() + " AT "
+								+ "[" + cTk.getInterval().getStartTime().getLowerBound() + "," + cTk.getInterval().getStartTime().getUpperBound() + "] "
+								+ "[" + cTk.getInterval().getEndTime().getLowerBound() + "," + cTk.getInterval().getEndTime().getUpperBound() + "] "
+								+ "[" + cTk.getInterval().getDurationLowerBound() + "," + cTk.getInterval().getDurationUpperBound() + "]");
+					}
+				}
 			}
 			else 
 			{
-				// get input component and timeline
+				// get input specified component
 				String[] data = splits[1].split("\\.");
-				// single timeline projection
 				GetSingleFlexibleTimelineProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.GET_SINGLE_FLEXIBLE_TIMELINE);
 				query.setQueryComponent(data[0]);
-				query.setQueryTimelineName(data[1]);
 				
-				/*
-				 * FIXME : TO IMPLEMENT
-				 */
+				// get timeline
+				Timeline cTl = null; 
+				for (Timeline t : this.currentSolution.getTimelines()) {
+					if (t.getName().contains(query.getComponent())) 
+					{
+						// found
+						cTl = t;
+						break;
+					}
+				}
 				
-//				// send query
-//				this.query(query);
-//				// get resulting timeline
-//				TimelineProtocolDescriptor timelineDescriptor = query.getTimelineDescriptor();
-//				// print timeline's tokens information
-//				System.out.println("Flexible Timeline " + timelineDescriptor);
-//				for (TokenProtocolDescriptor token : timelineDescriptor.getTokens()) {
-//					// print token
-//					System.out.println("Flexible Token " + token);
-//				}
-//				System.out.println();
+				// check timeline
+				if (cTl == null) {
+					throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No timeline found with the given name: " + query.getComponent());
+				}
+				
+				System.out.println("\n- " + cTl.getName() + " Flexible temporal behavior:");
+				for (Token cTk : cTl.getTokens())
+				{
+					// print token description
+					System.out.println("\t- " + cTk.getPredicate().getValue().getLabel() + " AT "
+							+ "[" + cTk.getInterval().getStartTime().getLowerBound() + "," + cTk.getInterval().getStartTime().getUpperBound() + "] "
+							+ "[" + cTk.getInterval().getEndTime().getLowerBound() + "," + cTk.getInterval().getEndTime().getUpperBound() + "] "
+							+ "[" + cTk.getInterval().getDurationLowerBound() + "," + cTk.getInterval().getDurationUpperBound() + "]");
+				}
 			}
 		}
 		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.SHOW.getCmd())) 
 		{
-			// show command
-			if (splits.length < 2 || splits[1] == null) {
-				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> " + PlatinumDeliberativeCommandLineCommand.SHOW.getHelp());
+			// check plan database
+			if (this.pdb == null) {
+				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No planning domain set");
 			}
 			
-			// check command parameter and create query
-			if (splits[1].equals("components")) 
+			// show domain components
+			ShowComponentProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.SHOW_COMPONENTS);
+			// check component name if any
+			if (splits.length > 1 && splits[1] != null)
 			{
-				// show domain components
-				ShowComponentProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.SHOW_COMPONENTS);
+				// get component by name
+				DomainComponent comp = this.pdb.getComponentByName(splits[1].trim());
+				if (comp == null) {
+					throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No domain component found with name " + splits[1]);
+				}
 				
-				/*
-				 * FIXME : TO IMPLEMENT
-				 */
-				
-//				// send query
-//				this.query(query);
-//				// print result
-//				System.out.println("Domain Components");
-//				for (String comp : query.getComponents()) {
-//					System.out.println("- " + comp);
-//				}
+				// check type 
+				System.out.println("\n- [" + comp.getType().getLabel() + "] " + comp.getName() + " description:");
+				for (ComponentValue v : comp.getValues()) {
+					System.out.println("\t- " + v.getLabel() + " [" + v.getDurationLowerBound() + ", " + v.getDurationUpperBound() + "] ");
+				}
 			}
-			else {
-				// unknown command option
-				System.out.println("Unknown command option");
+			else 
+			{
+				// print component information
+				for (DomainComponent comp : this.pdb.getComponents())
+				{
+					// check type 
+					System.out.println("\n- [" + comp.getType().getLabel() + "] " + comp.getName() + " description:");
+					for (ComponentValue v : comp.getValues()) {
+						System.out.println("\t- " + v.getLabel() + " [" + v.getDurationLowerBound() + ", " + v.getDurationUpperBound() + "] ");
+					}
+				}
 			}
 		}
 		else 
@@ -303,96 +325,4 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 		return exit;
 	}
 	
-	/**
-	 * 
-	 * @param strings
-	 * @return
-	 * @throws DeliberativeCommandLineInterfaceException
-	 */
-	private TokenProtocolDescriptor extractTokenDescription(String[] strings) 
-			throws DeliberativeCommandLineInterfaceException 
-	{
-		// check parameters
-		TokenProtocolDescriptor token = null;
-		if (strings.length >= 2) 
-		{
-			// get token name
-			String[] tokenName = strings[1].split("\\.");
-			String[] temporalParams = strings[2].split(",");
-			String[] params = strings.length >= 4 ? strings[3].split(",") : null;
-			
-			// get token information
-			if (tokenName == null || tokenName.length < 3) {
-				throw new DeliberativeCommandLineInterfaceException("Wrong \"plan\" command token name information -> component.timeline.predicate");
-			}
-			
-			// create timeline descriptor
-			TimelineProtocolDescriptor timeline = this.langFactory.createTimelineDescriptor(tokenName[0], tokenName[1], false);
-			String predicate = tokenName[2];
-			
-			// parse temporal parameters
-			if (temporalParams == null || temporalParams.length != 3) {
-				throw new DeliberativeCommandLineInterfaceException("Wrong \"plan\" command temporal information -> stLb-stUb,etLb-etUb,dLb-dUb");
-			}
-			
-			// get start time bounds
-			String[] startTime = temporalParams[0].split("-");
-			long[] startTimeBounds = new long[] {Long.parseLong(startTime[0]), Long.parseLong(startTime[1]) };
-			// get end time bounds
-			String[] endTime = temporalParams[1].split("-");
-			long[] endTimeBounds = new long[] {Long.parseLong(endTime[0]), Long.parseLong(endTime[1])};
-			// get duration time bounds
-			String[] durationTime = temporalParams[2].split("-");
-			long[] durationBounds = new long[] {Long.parseLong(durationTime[0]), Long.parseLong(durationTime[1])};
-	
-			// prepare parameters
-			String[] paramNames = new String[]{};
-			ParameterTypeDescriptor[] paramTypes = new ParameterTypeDescriptor[]{};
-			long[][] paramBounds = new long[][] {};
-			String[][] paramValues = new String[][] {};
-			
-			// parse parameters
-			if (params != null && params.length > 0) 
-			{
-				// initialize parameters
-				paramNames = new String[params.length];
-				paramTypes = new ParameterTypeDescriptor[params.length];
-				paramBounds = new long[params.length][];
-				paramValues = new String[params.length][];
-				// get values
-				for (int index = 0; index < params.length; index++) {
-					// get parameter
-					String[] currentParameter = params[index].split("-");
-					// parse parameter data
-					String name = "?" + currentParameter[0];
-					ParameterTypeDescriptor type = currentParameter[1].equals("e") ? ParameterTypeDescriptor.ENUMERATION : ParameterTypeDescriptor.NUMERIC; 
-					long[] bounds = new long[] {};
-					String[] values = new String[] {};
-					// check parameter type
-					if (type.equals(ParameterTypeDescriptor.ENUMERATION)) {
-						// enumeration parameters
-						values = currentParameter[2].split("|");
-					}
-					else {
-						// numeric parameter
-						long val = Long.parseLong(currentParameter[2]);
-						bounds = new long[] {val, val};
-					}
-					
-					paramNames[index] = name;
-					paramTypes[index] = type;
-					paramBounds[index] = bounds;
-					paramValues[index] = values;
-				}
-			}
-			
-			token = this.langFactory.createTokenDescriptor(
-					timeline, predicate, 
-					startTimeBounds, endTimeBounds, durationBounds, 
-					paramNames, paramTypes, paramBounds, paramValues);
-		}
-		
-		// get token descriptor
-		return token;
-	}
 }

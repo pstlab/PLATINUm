@@ -30,7 +30,7 @@ public enum PlatinumDeliberativeCommandLineCommand
 	/**
 	 * show domain information
 	 */
-	SHOW("show", "show components"),
+	SHOW("show", "show information about domain components"),
 	
 	/**
 	 * 

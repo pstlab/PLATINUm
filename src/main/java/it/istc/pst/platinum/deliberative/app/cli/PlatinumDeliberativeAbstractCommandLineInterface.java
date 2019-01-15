@@ -23,6 +23,7 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 {
 	protected ProtocolLanguageFactory langFactory;
 	protected ProtocolQueryFactory queryFactory;
+	protected PlanDataBase pdb;
 	protected Planner planner;
 	protected SolutionPlan currentSolution;
 	
@@ -45,11 +46,10 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 	protected void init(String ddl, String pdl) 
 			throws DeliberativeCommandLineInterfaceInitializationException 
 	{
-		try {
+		try 
+		{
 			// initialize the plan database
-			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(ddl, pdl);
-			// initialize the planner
-			this.planner = PlannerBuilder.createAndSet(pdb);
+			this.pdb = PlanDataBaseBuilder.createAndSet(ddl, pdl);
 		}
 		catch (SynchronizationCycleException | ProblemInitializationException ex) {
 			// command line interface initialization exception
@@ -66,10 +66,12 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 			throws DeliberativeCommandLineInterfaceInitializationException, NoSolutionFoundException 
 	{
 		// check planner
-		if (this.planner == null) {
-			throw new DeliberativeCommandLineInterfaceInitializationException("Planner Not Initialized yet!");
+		if (this.pdb == null) {
+			throw new DeliberativeCommandLineInterfaceInitializationException("No planning domain set!");
 		}
 		
+		// initialize the planner
+		this.planner = PlannerBuilder.createAndSet(this.pdb);
 		// run the planner on the desired goal
 		this.currentSolution = this.planner.plan();
 	}
@@ -84,7 +86,7 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 	{
 		// check if a solution has been generated
 		if (this.currentSolution == null) {
-			throw new DeliberativeCommandLineInterfaceInitializationException("No soluion to extract found!");
+			throw new DeliberativeCommandLineInterfaceInitializationException("No soluion to extract!");
 		}
 		
 		// generate plan descriptor 
@@ -92,28 +94,4 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 		// get the plan
 		return plan;
 	}
-	
-//	/**
-//	 * FIXME : TO IMPLEMENT!!! 
-//	 *
-//	 * @param query
-//	 * @throws DeliberativeCommandLineInterfaceInitializationException
-//	 */
-//	protected void query(ProtocolQuery query) 
-//			throws DeliberativeCommandLineInterfaceInitializationException
-//	{
-//		// check planner
-//		if (this.planner == null) {
-//			throw new DeliberativeCommandLineInterfaceInitializationException("Planner Not Initialized yet!");
-//		}
-//		
-//		try {
-//			// process query
-//			this.planner.query(query);
-//		}
-//		catch (InterruptedException ex) {
-//			// interrupted
-//			System.err.println(ex.getMessage());
-//		}
-//	}
 }
