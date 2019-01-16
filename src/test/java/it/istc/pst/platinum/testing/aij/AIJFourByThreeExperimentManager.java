@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
+import it.istc.pst.platinum.deliberative.heuristic.RandomFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
@@ -35,7 +36,7 @@ public class AIJFourByThreeExperimentManager
 	private static String DATA_FOLDER = "data/AIJ_EXP_FbT";
 	private static String PLAN_FOLDER = DATA_FOLDER + "/plans";
 	// timeout
-	public static final long TIMEOUT = 3000000;		// timeout set to 5 minutes
+	public static final long TIMEOUT = 180000;		// timeout set to 3 minutes
 	// domain file folder
 	private static String DOMAIN_FOLDER = "domains/AIJ_EXP_FbT";
 	// temporal horizon 
@@ -73,6 +74,7 @@ public class AIJFourByThreeExperimentManager
 		AIJFbTPlannerA.class,
 		AIJFbTPlannerB.class,
 		AIJFbTPlannerC.class,
+		AIJFbTPlannerD.class
 	};
 	
 	/**
@@ -290,4 +292,26 @@ class AIJFbTPlannerC extends Planner {
 	}
 }
 
+
+//PLANNER CONFIGURATION D
+
+@PlannerSolverConfiguration(
+	solver = PseudoControllabilityAwareSolver.class,
+	timeout = AIJFourByThreeExperimentManager.TIMEOUT
+)
+@FlawSelectionHeuristicsConfiguration(
+	heuristics = RandomFlawSelectionHeuristic.class
+)
+@SearchStrategyConfiguration(
+	strategy = DepthFirstSearchStrategy.class
+)
+@FrameworkLoggerConfiguration(
+	level = FrameworkLoggingLevel.OFF
+)
+class AIJFbTPlannerD extends Planner {
+	
+	protected AIJFbTPlannerD() {
+		super();
+	}
+}
 

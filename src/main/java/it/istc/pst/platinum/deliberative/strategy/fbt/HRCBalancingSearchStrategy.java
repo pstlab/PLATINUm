@@ -1,9 +1,8 @@
 package it.istc.pst.platinum.deliberative.strategy.fbt;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
 import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
@@ -17,14 +16,14 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.ComponentBehavior;
  */
 public class HRCBalancingSearchStrategy extends SearchStrategy implements Comparator<SearchSpaceNode> 
 {
-	private List<SearchSpaceNode> fringe;
+	private Queue<SearchSpaceNode> fringe;
 	
 	/**
 	 * 
 	 */
 	protected HRCBalancingSearchStrategy() {
 		super("SearchStrategy:MakespanOptimization");
-		this.fringe = new ArrayList<SearchSpaceNode>();
+		this.fringe = new PriorityQueue<>(this);
 	}
 	
 	/**
@@ -47,10 +46,8 @@ public class HRCBalancingSearchStrategy extends SearchStrategy implements Compar
 			throw new EmptyFringeException("No more nodes in the fringe");
 		}
 		
-		// sort elements of the list
-		Collections.sort(this.fringe, this);
 		// remove the first element of the queue
-		SearchSpaceNode best = this.fringe.remove(0);
+		SearchSpaceNode best = this.fringe.poll();
 		// debug information
 		debug("[" + this.label + "] Selected node from the fringe:\n"
 				+ "- node: " + best + "\n"
@@ -66,7 +63,7 @@ public class HRCBalancingSearchStrategy extends SearchStrategy implements Compar
 	@Override
 	public void enqueue(SearchSpaceNode node) {
 		// add the node to the priority queue
-		this.fringe.add(node);
+		this.fringe.offer(node);
 	}
 	
 	/**
@@ -168,13 +165,6 @@ public class HRCBalancingSearchStrategy extends SearchStrategy implements Compar
 		int result = o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 : 
 			o1HRCBalance < o2HRCBalance ? -1 : o1HRCBalance > o2HRCBalance ? 1 : 
 				o1RLoad > o2RLoad ? -1 : o1RLoad < o2RLoad ? 1 : 0;
-//		// print data 
-//		System.out.println("\n"
-//				+ "o1(depth: " + o1.getDepth() + "): R-Load: " + o1RLoad + " H-Load: " + o1HLoad + " HRC-Balance: " + o1HRCBalance + "\n"
-//				+ "o2(depth: " + o2.getDepth() + "): R-Load: " + o2RLoad + " H-Load: " + o2HLoad + " HRC-Balance: " + o2HRCBalance + "\n"
-//				+ "result: " + result + "\n"
-//				+ "\n");
-		
 		// return comparison result		
 		return result;
 	}
