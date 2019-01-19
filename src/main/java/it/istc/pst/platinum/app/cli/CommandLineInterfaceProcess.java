@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.app.cli;
+package it.istc.pst.platinum.app.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import it.istc.pst.platinum.deliberative.app.cli.ex.DeliberativeCommandLineInterfaceException;
+import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
@@ -23,14 +23,15 @@ import it.istc.pst.platinum.framework.protocol.query.show.ShowComponentProtocolQ
  * @author alessandroumbrico
  *
  */
-public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAbstractCommandLineInterface implements Runnable
+public class CommandLineInterfaceProcess extends AbstractCommandLineInterface implements Runnable
 {
+	private static final String CLI_PROMPT = "epsl-agent$ ";		// KEEN-compliant CLI prompt - do not change
 	private static final long HORIZON = Long.MAX_VALUE - 1;			// default horizon
 	
 	/**
 	 * 
 	 */
-	protected PlatinumDeliberativeProcessInterface() {
+	protected CommandLineInterfaceProcess() {
 		super(HORIZON);
 	}
 	
@@ -51,7 +52,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			do {
 				
 				// display prompt
-				System.out.print("platinum-deliberative$ ");
+				System.out.print(CLI_PROMPT);
 				String input = reader.readLine();
 				try 
 				{
@@ -59,7 +60,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 					exit = this.process(input);
 					System.out.println();
 				} 
-				catch (DeliberativeCommandLineInterfaceException ex) {
+				catch (CommandLineInterfaceException ex) {
 					System.out.println("> !" + ex.getMessage() + "\n");
 					// go on
 				}
@@ -83,15 +84,15 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 	 * 
 	 * @param input
 	 * @return
-	 * @throws DeliberativeCommandLineInterfaceException
+	 * @throws CommandLineInterfaceException
 	 */
 	private boolean process(String input) 
-			throws DeliberativeCommandLineInterfaceException {
+			throws CommandLineInterfaceException {
 		
 		boolean exit = false;
 		// check input string 
 		if (input == null) {
-			throw new DeliberativeCommandLineInterfaceException("Specify a valid command!");
+			throw new CommandLineInterfaceException("Specify a valid command!");
 		}
 		
 		// check command type
@@ -99,23 +100,23 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 		// get command
 		final String cmd = splits[0].toUpperCase();
 		// check command
-		if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.HELP.getCmd().toLowerCase())) 
+		if (cmd.toLowerCase().equals(CommandLineCommand.HELP.getCmd().toLowerCase())) 
 		{
 			// help commands
 			System.out.println("Available commands");
-			for (PlatinumDeliberativeCommandLineCommand cliCommand : PlatinumDeliberativeCommandLineCommand.values()) {
+			for (CommandLineCommand cliCommand : CommandLineCommand.values()) {
 				System.out.println("- " + cliCommand.getCmd() + "\t" + cliCommand.getHelp());
 			}
 		}
-		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.EXIT.getCmd().toLowerCase())) {
+		else if (cmd.toLowerCase().equals(CommandLineCommand.EXIT.getCmd().toLowerCase())) {
 			// exit command
 			exit = true;
 		}
-		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.INITIALIZE.getCmd().toLowerCase())) 
+		else if (cmd.toLowerCase().equals(CommandLineCommand.INITIALIZE.getCmd().toLowerCase())) 
 		{
 			// check data
 			if (splits.length < 3 || splits[1] == null || splits[2] == null) {
-				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> " + PlatinumDeliberativeCommandLineCommand.INITIALIZE.getHelp());
+				throw new CommandLineInterfaceException("Bad command usage -> " + CommandLineCommand.INITIALIZE.getHelp());
 			}
 			
 			// get DDL and PDL files
@@ -134,7 +135,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			
 			System.out.println();
 		}
-		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.DISPLAY.getCmd().toLowerCase())) 
+		else if (cmd.toLowerCase().equals(CommandLineCommand.DISPLAY.getCmd().toLowerCase())) 
 		{
 			if (this.planner != null) {
 				try 
@@ -168,11 +169,11 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 			}
 			System.out.println();
 		}
-		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.EXPORT.getCmd().toLowerCase())) 
+		else if (cmd.toLowerCase().equals(CommandLineCommand.EXPORT.getCmd().toLowerCase())) 
 		{
 			// export plan request
 			if (splits.length < 2 || splits[1] == null) {
-				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> " + PlatinumDeliberativeCommandLineCommand.EXPORT.getHelp());
+				throw new CommandLineInterfaceException("Bad command usage -> " + CommandLineCommand.EXPORT.getHelp());
 			}
 			
 			try 
@@ -192,31 +193,41 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				System.out.println(ex.getMessage());
 			}
 		}
-		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.PLAN.getCmd().toLowerCase())) 
+		else if (cmd.toLowerCase().equals(CommandLineCommand.PLAN.getCmd().toLowerCase())) 
 		{
 			try 
 			{
-				// plan
+				// initialize and run the planner if possible
 				this.plan();
 			} 
 			catch (NoSolutionFoundException ex) {
 				System.out.println("No valid plan found:\n- " + ex.getMessage() + "\n");
 			} 
-			catch (DeliberativeCommandLineInterfaceException  ex) {
+			catch (CommandLineInterfaceException  ex) {
 				System.out.println(ex.getMessage());
 			}
-			System.out.println();
 		}
-		else if (cmd.toLowerCase().equals(PlatinumDeliberativeCommandLineCommand.GET.getCmd().toLowerCase())) 
+		else if (cmd.toLowerCase().equals(CommandLineCommand.EXEC.getCmd().toLowerCase())) 
+		{
+			try
+			{
+				// initialize and run the executive if possible
+				this.execute();
+			}
+			catch (CommandLineInterfaceException ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
+		else if (cmd.toLowerCase().equals(CommandLineCommand.GET.getCmd().toLowerCase())) 
 		{
 			// get command
 			if (splits.length < 2 || splits[1] == null) {
-				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> " + PlatinumDeliberativeCommandLineCommand.GET.getHelp());
+				throw new CommandLineInterfaceException("Bad command usage -> " + CommandLineCommand.GET.getHelp());
 			}
 			
 			// check current solution
 			if (this.currentSolution == null) {
-				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No plan ready to display ");
+				throw new CommandLineInterfaceException("Bad command usage -> No plan ready to display ");
 			}
 			
 			
@@ -260,7 +271,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				
 				// check timeline
 				if (cTl == null) {
-					throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No timeline found with the given name: " + query.getComponent());
+					throw new CommandLineInterfaceException("Bad command usage -> No timeline found with the given name: " + query.getComponent());
 				}
 				
 				System.out.println("\n- " + cTl.getName() + " Flexible temporal behavior:");
@@ -274,11 +285,11 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				}
 			}
 		}
-		else if (cmd.equals(PlatinumDeliberativeCommandLineCommand.SHOW.getCmd())) 
+		else if (cmd.equals(CommandLineCommand.SHOW.getCmd())) 
 		{
 			// check plan database
 			if (this.pdb == null) {
-				throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No planning domain set");
+				throw new CommandLineInterfaceException("Bad command usage -> No planning domain set");
 			}
 			
 			// show domain components
@@ -289,7 +300,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 				// get component by name
 				DomainComponent comp = this.pdb.getComponentByName(splits[1].trim());
 				if (comp == null) {
-					throw new DeliberativeCommandLineInterfaceException("Bad command usage -> No domain component found with name " + splits[1]);
+					throw new CommandLineInterfaceException("Bad command usage -> No domain component found with name " + splits[1]);
 				}
 				
 				// check type 
@@ -315,7 +326,7 @@ public class PlatinumDeliberativeProcessInterface extends PlatinumDeliberativeAb
 		{
 			// unknown command
 			String msg = "Unknown Command!\nAvailable commands:\n";
-			for (PlatinumDeliberativeCommandLineCommand cliCommand : PlatinumDeliberativeCommandLineCommand.values()) {
+			for (CommandLineCommand cliCommand : CommandLineCommand.values()) {
 				msg += "- " + cliCommand.getCmd() + "\t" + cliCommand.getHelp() + "\n";
 			}
 			msg += "\n";

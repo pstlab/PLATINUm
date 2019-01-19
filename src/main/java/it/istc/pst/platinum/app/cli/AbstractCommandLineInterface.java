@@ -1,8 +1,10 @@
-package it.istc.pst.platinum.deliberative.app.cli;
+package it.istc.pst.platinum.app.cli;
 
+import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
-import it.istc.pst.platinum.deliberative.app.cli.ex.DeliberativeCommandLineInterfaceInitializationException;
+import it.istc.pst.platinum.executive.Executive;
+import it.istc.pst.platinum.executive.ExecutiveBuilder;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
@@ -19,7 +21,7 @@ import it.istc.pst.platinum.framework.protocol.query.ProtocolQueryFactory;
  * @author alessandroumbrico
  *
  */
-public abstract class PlatinumDeliberativeAbstractCommandLineInterface 
+public abstract class AbstractCommandLineInterface 
 {
 	protected ProtocolLanguageFactory langFactory;
 	protected ProtocolQueryFactory queryFactory;
@@ -31,7 +33,7 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 	 * 
 	 * @param horizon
 	 */
-	protected PlatinumDeliberativeAbstractCommandLineInterface(long horizon) {
+	protected AbstractCommandLineInterface(long horizon) {
 		this.langFactory = ProtocolLanguageFactory.getSingletonInstance(horizon);
 		this.queryFactory = ProtocolQueryFactory.getSingletonInstance();
 		this.currentSolution = null;
@@ -41,33 +43,37 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 	 * 
 	 * @param ddl
 	 * @param pdl
-	 * @throws DeliberativeCommandLineInterfaceInitializationException
+	 * @throws CommandLineInterfaceInitializationException
 	 */
 	protected void init(String ddl, String pdl) 
-			throws DeliberativeCommandLineInterfaceInitializationException 
+			throws CommandLineInterfaceException 
 	{
 		try 
 		{
 			// initialize the plan database
 			this.pdb = PlanDataBaseBuilder.createAndSet(ddl, pdl);
+			// clear planner
+			if (this.planner != null) {
+				this.planner = null;
+			}
 		}
 		catch (SynchronizationCycleException | ProblemInitializationException ex) {
 			// command line interface initialization exception
-			throw new DeliberativeCommandLineInterfaceInitializationException(ex.getMessage());
+			throw new CommandLineInterfaceException(ex.getMessage());
 		}
 	}
 	
 	/**
 	 * 
-	 * @throws DeliberativeCommandLineInterfaceInitializationException
+	 * @throws CommandLineInterfaceInitializationException
 	 * @throws NoSolutionFoundException
 	 */
 	protected void plan() 
-			throws DeliberativeCommandLineInterfaceInitializationException, NoSolutionFoundException 
+			throws CommandLineInterfaceException, NoSolutionFoundException 
 	{
 		// check planner
 		if (this.pdb == null) {
-			throw new DeliberativeCommandLineInterfaceInitializationException("No planning domain set!");
+			throw new CommandLineInterfaceException("No planning domain set!");
 		}
 		
 		// initialize the planner
@@ -78,15 +84,41 @@ public abstract class PlatinumDeliberativeAbstractCommandLineInterface
 	
 	/**
 	 * 
+	 * @throws CommandLineInterfaceException
+	 */
+	protected void execute() 
+			throws CommandLineInterfaceException
+	{
+		// check if a solution exists
+		if (this.currentSolution == null && this.planner != null) {
+			throw new CommandLineInterfaceException("No plan to execute!");
+		}
+		
+		try
+		{
+			// create the executive 
+			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
+			// initialize the executive
+			exec.initialize(this.planner.export(this.currentSolution));
+			// run the executive
+			exec.execute();
+		}
+		catch (Exception ex) {
+			throw new CommandLineInterfaceException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * 
 	 * @return
-	 * @throws DeliberativeCommandLineInterfaceInitializationException
+	 * @throws CommandLineInterfaceInitializationException
 	 */
 	protected PlanProtocolDescriptor export() 
-			throws DeliberativeCommandLineInterfaceInitializationException
+			throws CommandLineInterfaceException
 	{
 		// check if a solution has been generated
 		if (this.currentSolution == null) {
-			throw new DeliberativeCommandLineInterfaceInitializationException("No soluion to extract!");
+			throw new CommandLineInterfaceException("No soluion to extract!");
 		}
 		
 		// generate plan descriptor 

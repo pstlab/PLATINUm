@@ -1,11 +1,11 @@
-package it.istc.pst.platinum.deliberative.app.cli;
+package it.istc.pst.platinum.app.cli;
 
 /**
  * 
  * @author alessandroumbrico
  *
  */
-public enum PlatinumDeliberativeCommandLineCommand 
+public enum CommandLineCommand 
 {
 	/**
 	 * help command
@@ -21,6 +21,11 @@ public enum PlatinumDeliberativeCommandLineCommand
 	 * plan command
 	 */
 	PLAN("plan", "solve the loaded timeline-based problem"),
+	
+	/**
+	 * plan execution command
+	 */
+	EXEC("exec", "execute a previously generated plan through the internal simulator"),
 	
 	/**
 	 * get all or single timeline temporal projections 
@@ -55,7 +60,7 @@ public enum PlatinumDeliberativeCommandLineCommand
 	 * @param cmd
 	 * @param usage
 	 */
-	private PlatinumDeliberativeCommandLineCommand(String cmd, String usage) {
+	private CommandLineCommand(String cmd, String usage) {
 		this.cmd = cmd;
 		this.usage = usage;
 	}

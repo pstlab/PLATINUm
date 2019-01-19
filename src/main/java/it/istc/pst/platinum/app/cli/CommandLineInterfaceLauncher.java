@@ -1,11 +1,11 @@
-package it.istc.pst.platinum.deliberative.app.cli;
+package it.istc.pst.platinum.app.cli;
 
 /**
  * 
  * @author alessandroumbrico
  *
  */
-public class PlatinumCommandLineInterfaceLauncher 
+public class CommandLineInterfaceLauncher 
 {
 	/**
 	 * 
@@ -15,7 +15,7 @@ public class PlatinumCommandLineInterfaceLauncher
 	{
 		try 
 		{
-			Thread thread = new Thread(new PlatinumDeliberativeProcessInterface());
+			Thread thread = new Thread(new CommandLineInterfaceProcess());
 			thread.start();
 			thread.join();
 		}catch (InterruptedException ex) {

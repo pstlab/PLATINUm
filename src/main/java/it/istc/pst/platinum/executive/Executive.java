@@ -29,9 +29,15 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
  * @author anacleto
  *
  */
-@FrameworkLoggerConfiguration(level = FrameworkLoggingLevel.DEBUG)
-@MonitorConfiguration(monitor = EarliestStartTimePlanMonitor.class)
-@DispatcherConfiguration(dispatcher = EarliestStartTimePlanDispatcher.class)
+@FrameworkLoggerConfiguration(
+		level = FrameworkLoggingLevel.DEBUG
+)
+@MonitorConfiguration(
+		monitor = EarliestStartTimePlanMonitor.class
+)
+@DispatcherConfiguration(
+		dispatcher = EarliestStartTimePlanDispatcher.class
+)
 public class Executive extends ExecutiveObject implements ExecutionManager
 {
 	@ExecutivePlanDataBasePlaceholder
