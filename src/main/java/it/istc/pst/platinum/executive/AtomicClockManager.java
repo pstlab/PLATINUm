@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
-import it.istc.pst.platinum.executive.ex.ExecutionException;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 
 /**

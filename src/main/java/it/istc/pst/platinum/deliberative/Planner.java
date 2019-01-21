@@ -180,8 +180,9 @@ public class Planner extends DeliberativeObject
 			
 				// create token descriptor
 				TokenProtocolDescriptor tokenDescriptor = factory.createTokenDescriptor(
-						timelineDescriptor, 
-						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
+						timelineDescriptor,
+						token.getPredicate().getValue().getLabel(),
+//						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
 						new long [] {
 								token.getInterval().getStartTime().getLowerBound(), 
 								token.getInterval().getEndTime().getUpperBound()
@@ -274,7 +275,8 @@ public class Planner extends DeliberativeObject
 				// create token descriptor
 				TokenProtocolDescriptor tokenDescriptor = factory.createTokenDescriptor(
 						timelineDescriptor, 
-						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
+						token.getPredicate().getValue().getLabel(),
+//						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
 						new long [] {
 								token.getInterval().getStartTime().getLowerBound(), 
 								token.getInterval().getEndTime().getUpperBound()

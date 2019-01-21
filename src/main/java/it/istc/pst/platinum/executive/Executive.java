@@ -2,13 +2,23 @@ package it.istc.pst.platinum.executive;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
-import it.istc.pst.platinum.executive.dispatcher.EarliestStartTimePlanDispatcher;
-import it.istc.pst.platinum.executive.ex.ExecutionException;
-import it.istc.pst.platinum.executive.monitor.EarliestStartTimePlanMonitor;
+import it.istc.pst.platinum.executive.dispatcher.ConditionCheckingDispatcher;
+import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
+import it.istc.pst.platinum.executive.lang.ExecutionFeedbackType;
+import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.ex.ObservationSynchronizationException;
+import it.istc.pst.platinum.executive.lang.ex.TokenDispatchingException;
+import it.istc.pst.platinum.executive.monitor.ConditionCheckingMonitor;
 import it.istc.pst.platinum.executive.monitor.Monitor;
+import it.istc.pst.platinum.executive.pdb.ControllabilityType;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.executive.pdb.ExecutivePlanDataBase;
@@ -20,6 +30,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.Di
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.MonitorPlaceholder;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
@@ -33,32 +44,37 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
 		level = FrameworkLoggingLevel.DEBUG
 )
 @MonitorConfiguration(
-		monitor = EarliestStartTimePlanMonitor.class
+		monitor = ConditionCheckingMonitor.class
 )
 @DispatcherConfiguration(
-		dispatcher = EarliestStartTimePlanDispatcher.class
+		dispatcher = ConditionCheckingDispatcher.class
 )
-public class Executive extends ExecutiveObject implements ExecutionManager
+public class Executive extends ExecutiveObject implements ExecutionManager, ExecutivePlatformObserver
 {
 	@ExecutivePlanDataBasePlaceholder
 	protected ExecutivePlanDataBase pdb;										// the (executive) plan to execute
 	
 	@MonitorPlaceholder
-	protected Monitor monitor;													// plan monitor
+	protected Monitor<?> monitor;												// plan monitor
 	
 	@DispatcherPlaceholder
-	protected Dispatcher dispatcher;											// dispatching process
+	protected Dispatcher<?> dispatcher;											// dispatching process
 	
 	
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
 	private FilePropertyReader config;											// configuration property file
 	
+	private ExecutionStatus status;												// executive's operating status
 	private final Object lock;													// executive's status lock
 	private ClockManager clock;													// execution clock controller
-	private ExecutionStatus status;												// executive's operating status
+	private long currentTick;															// current tick
 	
+	private ExecutiveWindow window;												// executive window
+	private Map<String, ExecutionNode> dispatchedIndex;							// keep track of dispatched nodes
+	private AtomicBoolean failure;												// execution failure flag
+	private ExecutionFailureCause cause;										// execution failure cause
 	
-	private ExecutiveWindow window;				// executive window
+	private ExecutivePlatformProxy platformProxy;								// platform PROXY to send commands to 
 	
 	/**
 	 * 
@@ -72,6 +88,19 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 		this.status = ExecutionStatus.INACTIVE;
 		// create executive window
 		this.window = new ExecutiveWindow("Executive Window");
+		// initialize clock manager
+		this.clock = new AtomicClockManager(this);
+		// initialize the PROXY and the observer
+		this.platformProxy = null;
+	}
+
+	/**
+	 * 
+	 * @param proxy
+	 */
+	public void bind(ExecutivePlatformProxy proxy) {
+		// bind the executive
+		this.platformProxy = proxy;
 	}
 	
 	/**
@@ -188,30 +217,101 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 	
 	/**
 	 * 
+	 * @param tick
 	 * @param node
 	 * @param start
-	 * @throws Exception
+	 * @throws ExecutionException
 	 */
-	public void scheduleStartTime(ExecutionNode node, long start) 
-			throws Exception 
+	public void scheduleTokenStart(ExecutionNode node, long start) 
+			throws ExecutionException 
 	{
-		// propagate scheduled start time
-		this.pdb.scheduleStartTime(node, start);
-		this.pdb.checkSchedule(node);
+		// check controllability type
+		ControllabilityType type = node.getControllabilityType();
+		switch (type)
+		{
+			// schedule uncontrollable token
+			case UNCONTROLLABLE : 
+			{
+				// simply set the proper state - no propagation is needed in this case
+				this.updateNode(node, ExecutionNodeStatus.STARTING);
+			}
+			break;
+		
+			case PARTIALLY_CONTROLLABLE : 
+			case CONTROLLABLE : 
+			{
+				try
+				{
+					// actually schedule the start time of the token
+					this.pdb.scheduleStartTime(node, start);
+					// update node status
+					this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
+				}
+				catch (TemporalConstraintPropagationException ex) 
+				{
+					// error while propagating token start time
+					// TODO : create failure cause
+					throw new TokenDispatchingException(ex.getMessage(), null);
+				}
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @param start
+	 * @throws ExecutionException
+	 */
+	public void scheduleUncontrollableTokenStart(ExecutionNode node, long start) 
+			throws ExecutionException
+	{
+		try
+		{
+			// schedule the observed start time of the token
+			this.pdb.scheduleStartTime(node, start);
+			// update node status
+			this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
+		}
+		catch (TemporalConstraintPropagationException ex) {
+			// synchronization exception
+			// TODO : create failure cause
+			throw new ObservationSynchronizationException(ex.getMessage(), null);
+		}
 	}
 	
 	/**
 	 * 
 	 * @param node
 	 * @param duration
-	 * @throws Exception
+	 * @throws ExecutionException
 	 */
-	public void scheduleDuration(ExecutionNode node, long duration) 
-			throws Exception 
+	public void scheduleTokenDuration(ExecutionNode node, long duration) 
+			throws ExecutionException
 	{
-		// propagate scheduled duration time
-		this.pdb.scheduleDuration(node, duration);
-		this.pdb.checkSchedule(node);
+		try
+		{
+			// check nominal duration upper bound to verify whether propagation is needed or not
+			if (!node.getGroundSignature().contains("Idle")) {
+				// propagate scheduled duration time
+				this.pdb.scheduleDuration(node, duration);
+			}
+			
+			// the node can be considered as executed
+			this.updateNode(node, ExecutionNodeStatus.EXECUTED);
+		}
+		catch (TemporalConstraintPropagationException ex) 
+		{
+			// create execution failure message
+			ExecutionFailureCause cause = new DurationOverflow(this.currentTick, node, duration);
+			// throw synchronization exception
+			throw new ObservationSynchronizationException(
+					"The observed duration does not comply with the expected one:\n"
+					+ "\t- duration: " + duration + "\n"
+					+ "\t- node: " + node + "\n", 
+					cause);
+		}
 	}
 	
 	/**
@@ -271,11 +371,11 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 		
 		try
 		{
-			// perform setting operations just before execution
-			this.doPreExecute();
+			// perform setting operations before execution
+			this.doPrepareExecute();
 			
-			// setup the clock
-			this.clock = new AtomicClockManager(this);
+			// initialize dispatching index
+			this.dispatchedIndex = new HashMap<>();
 			// start clock
 			this.clock.start();
 			// wait execution completes
@@ -370,6 +470,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 		boolean complete = false;
 		try 
 		{
+			// take track of the current tick
+			this.currentTick = tick;
 			// prepare logging message
 			String msg = "\n##################################################\n";
 			msg += "#### Handle tick = " + tick + " ####\n";
@@ -414,7 +516,98 @@ public class Executive extends ExecutiveObject implements ExecutionManager
 	/**
 	 * Perform some setting operation just before starting execution
 	 */
-	protected void doPreExecute() {
-		// nothing to do by default
+	protected void doPrepareExecute() 
+	{
+		// check whether the executive has been bound to a platform or not
+		if (this.platformProxy != null) {
+			// register the executive to the platform
+			this.platformProxy.register(this);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 */
+	public void dispatchNodeToThePlatform(ExecutionNode node) 
+	{
+		// check if a platform PROXY exists
+		if (this.platformProxy != null) 
+		{
+			// marshal command according to the protocol
+			String cmd = node.getGroundSignature() + "@" + node.getComponent();
+			// send command and take operation ID
+			String opId = this.platformProxy.sendCommand(cmd);
+			// add entry to the index
+			this.dispatchedIndex.put(opId, node);
+		}
+		else {
+			
+			// nothing to do, no platform PROXY available
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void success(String opId, Object data) 
+	{
+		// check operation id 
+		if (this.dispatchedIndex.containsKey(opId))
+		{
+			// get execution node
+			ExecutionNode node = this.dispatchedIndex.get(opId);
+			// check node current status
+			if (node.getStatus().equals(ExecutionNodeStatus.STARTING)) 
+			{
+				// got start execution feedback from a completely uncontrollable token
+				logger.debug("Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
+						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+				// create execution feedback
+				ExecutionFeedback feedback = new ExecutionFeedback(
+						node, 
+						ExecutionFeedbackType.UNCONTROLLABLE_TOKEN_START);
+				// forward the feedback to the monitor
+				this.monitor.addExecutionFeedback(feedback);
+			}
+			else if (node.getStatus().equals(ExecutionNodeStatus.IN_EXECUTION))
+			{
+				// got end execution feedback from either a partially-controllable or uncontrollable token
+				logger.debug("Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
+						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+				// create execution feedback
+				ExecutionFeedback feedback = new ExecutionFeedback(
+						node, 
+						node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) ? 
+								ExecutionFeedbackType.UNCONTROLLABLE_TOKEN_COMPLETE : 
+								ExecutionFeedbackType.PARTIALLY_CONTROLLABLE_TOKEN_COMPLETE);
+				// forward feedback to the monitor
+				this.monitor.addExecutionFeedback(feedback);
+				// remove operation ID from index
+				this.dispatchedIndex.remove(opId);
+			}
+			else 
+			{
+				// nothing to do
+			}
+			
+		}
+		else 
+		{
+			// no operation ID found 
+			logger.debug("Receiving feedback about an unknown operation:\n\t- opId: " + opId + "\n\t-data: " + data + "\n");
+		}
+	}
+	
+
+	/**
+	 * 
+	 */
+	@Override
+	public void failure(String opId, Object data) 
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -41,17 +41,6 @@ public class ExecutiveBuilder
 	 * 
 	 * @return
 	 */
-	public synchronized static <T extends Executive> T createAndSet(Class<T> eClass)
-	{
-		// create executive
-		return ExecutiveBuilder.createAndSet(eClass, EPSLExecutivePlanDataBase.class, 0, Long.MAX_VALUE - 1);
-	}
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
 	public synchronized static <T extends Executive> T createAndSet(Class<T> eClass, long origin, long horizon)
 	{
 		// create executive

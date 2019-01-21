@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.executive.lang;
+package it.istc.pst.platinum.executive.lang.ex;
 
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 
@@ -18,7 +18,7 @@ public class StartOverflow extends ExecutionFailureCause
 	 * @param observedStartTime
 	 */
 	public StartOverflow(long tick, ExecutionNode node, long observedStartTime) {
-		super(tick, node, ExecutionFailureCauseType.DURATION_OVERFLOW);
+		super(tick, node, ExecutionFailureCauseType.START_OVERFLOW);
 		this.observedStartTime = observedStartTime;
 	}
 	

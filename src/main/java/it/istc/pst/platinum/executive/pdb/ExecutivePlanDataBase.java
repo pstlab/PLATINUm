@@ -300,14 +300,14 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 					msg += "\tNode execution starting conditions:\n";
 					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
 					for (ExecutionNode dep : dependencies.keySet()) {
-						msg += "\t\tCan start if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep) + "\n";
+						msg += "\t\tCan start if -> " + dep.getId() + ":"+ dep.getGroundSignature() + " is in " + dependencies.get(dep) + "\n";
 					}
 					
 					// get end conditions
 					dependencies = this.getNodeEndDependencies(node);
 					msg += "\tNode execution ending conditions:\n";
 					for (ExecutionNode dep : dependencies.keySet()) {
-						msg += "\t\tCan end if -> " + dep.getGroundSignature() + " is in " + dependencies.get(dep) + "\n";
+						msg += "\t\tCan end if -> " + dep.getId() + ":" + dep.getGroundSignature() + " is in " + dependencies.get(dep) + "\n";
 					}
 				}
 			}

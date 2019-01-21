@@ -1,10 +1,14 @@
 package it.istc.pst.platinum.testing.aij;
 
+import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
+import it.istc.pst.platinum.app.sim.hrc.HRCPlatformSimulator;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.fbt.HRCBalancingSearchStrategy;
+import it.istc.pst.platinum.executive.Executive;
+import it.istc.pst.platinum.executive.ExecutiveBuilder;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
@@ -26,9 +30,9 @@ public class AIJFourByThreeExperimentSingleRunner
 	// domain file folder
 	private static String DOMAIN_FOLDER = "domains/AIJ_EXP_FbT";
 	// number of tasks composing the assembly process
-	private static int TASKS = 20;	// 10, 15, 20, 25, 30
+	private static int TASKS = 10;	// 10, 15, 20, 25, 30
 	// number of shared tasks composing the assembly process
-	private static int SHARED = 100; // 20, 40, 60, 80, 100
+	private static int SHARED = 60; // 20, 40, 60, 80, 100
 	// amount of uncertainty about human task execution
 	private static int UNCERTAINTY = 20; // 10, 20, 30
 		
@@ -64,6 +68,37 @@ public class AIJFourByThreeExperimentSingleRunner
 			System.out.print(plan);
 			// display the planner
 			planner.display();
+			
+			
+			
+			
+			
+			
+			try
+			{
+				// create HRC simulator
+				HRCPlatformSimulator sim = new HRCPlatformSimulator();
+				
+				// create the executive 
+				Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, plan.getHorizon());
+				// initialize the executive
+				exec.initialize(planner.export(plan));
+				// bind the executive to the platform
+				exec.bind(sim);
+				
+				
+				// start simulator
+				sim.start();
+				// run the executive
+				exec.execute();
+				// stop simulator
+				sim.stop();
+			}
+			catch (Exception ex) {
+				throw new CommandLineInterfaceException(ex.getMessage());
+			}
+			
+			
 		}
 		catch (Exception ex) {
 			// error while solving planning instance

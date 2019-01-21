@@ -1,6 +1,6 @@
 package it.istc.pst.platinum.executive;
 
-import it.istc.pst.platinum.executive.ex.ExecutionException;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 
 /**
  * 

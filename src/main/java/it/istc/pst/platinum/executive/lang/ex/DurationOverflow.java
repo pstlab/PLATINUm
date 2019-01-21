@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.executive.lang;
+package it.istc.pst.platinum.executive.lang.ex;
 
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 
