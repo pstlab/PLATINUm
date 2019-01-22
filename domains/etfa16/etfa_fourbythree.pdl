@@ -1,0 +1,10 @@
+PROBLEM FourByThree_Problem (DOMAIN ETFA16)
+{
+	f1 <fact> ALFA.use_case.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	f2 <fact> Human.operator.Idle() AT [0, 0] [1, +INF] [1, +INF];
+ 	f3 <fact> RobotController.functions.Idle() AT [0,0] [1,+INF] [1,+INF];
+ 	f4 <fact> RobotArmController.motion.Idle(?l = l_base_station) AT [0,0] [1,+INF] [1,+INF];
+ 	f5 <fact> ScrewDriverController.driver.Unset() AT [0,0] [1,+INF] [1,+INF];
+
+	g1 <goal,!> ALFA.use_case.Assembly(?piece1 = 1) AT [0, +INF] [0, +INF] [0, +INF];
+}

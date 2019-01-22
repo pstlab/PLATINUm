@@ -1,0 +1,36 @@
+PROBLEM ICO_Problem (DOMAIN ICO_v1) 
+{
+	// guest position
+	f0 <fact> Guest1.guest1_position.At(?guest1Location) AT [0, 0] [0, +INF] [0, +INF];
+	
+	// mug position
+	f1 <fact> Mug1.mug1_position.On(?mug1Location, ?mug1PlArea) AT [0, 0] [0, +INF] [0, +INF];
+	f2 <fact> Mug2.mug2_position.On(?mug2Location, ?mug2PlArea) AT [0, 0] [0, +INF] [0, +INF];
+	
+	// robot's initial state
+	f4 <fact> LeftArmController.left_arm.Idle() AT [0, 0] [0, +INF] [0, +INF];
+	f5 <fact> LeftArm.left_arm_posture.Posture(?leftArmPosture) AT [0, 0] [0, +INF] [0, +INF];
+	f6 <fact> RobotTorso.robot_torso_posture.Posture(?leftTorsoPosture) AT [0, 0] [0, +INF] [0, +INF];
+	f7 <fact> LeftHand.left_hand.Free() AT [0, 0] [0, +INF] [0, +INF];
+	
+	f8 <fact> RobotBase.base.At(?robotInitialPosition) AT [0, 0] [0, +INF] [0, +INF];
+	f9 <fact> RobotCamera.camera.Idle() AT [0, 0] [0, +INF] [0, +INF];
+	f10 <fact> RobotController.robot.Idle() AT [0, 0] [0, +INF] [0, +INF];
+		
+	// serve coffee task
+	g0 <goal> Mission.ico.ServeCoffeeTo(?guest0) AT [0, +INF] [0, +INF] [0, +INF];
+	
+	
+	?guest0 = guest1;
+	?guest1Location = manipulationAreaSouthTable1;
+	
+	?mug1Location = manipulationAreaEastCounter1;
+	?mug1PlArea = placingAreaLeft;
+	
+	?mug2Location = manipulationAreaEastCounter1;
+	?mug2PlArea = placingAreaRight;
+	
+	?leftArmPosture = tucked;
+	?leftTorsoPosture = down;
+	?robotInitialPosition = floor;
+}

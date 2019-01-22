@@ -1,0 +1,327 @@
+horizon = 500
+plan {
+	timelines {
+		Tool {
+			 token 4  { Idle [8, 433] [8,433] }
+			 token 2021  { UnscrewBolt [11, 436] [3,3] }
+			 token 2033  { Idle [14, 439] [3,428] }
+			 token 2023  { UnscrewBolt [17, 442] [3,3] }
+			 token 2044  { Idle [20, 445] [3,428] }
+			 token 2026  { UnscrewBolt [23, 448] [3,3] }
+			 token 2040  { Idle [45, 485] [18,462] }
+			 token 2027  { UnscrewBolt [48, 488] [3,3] }
+			 token 2034  { Idle [51, 491] [3,443] }
+			 token 2028  { UnscrewBolt [54, 494] [3,3] }
+			 token 2032  { Idle [57, 497] [3,443] }
+			 token 2019  { UnscrewBolt [60, 500] [3,3] }
+		}
+		Human {
+			 token 1  { Idle [1, 422] [1,422] }
+			 token 2014 uncontrollable { SetWorkPiece [8, 429] [7,17] }
+			 token 2035  { Idle [9, 430] [1,422] }
+			 token 2013 uncontrollable { UnscrewTopBolt2 [17, 438] [8,18] }
+			 token 2038  { Idle [18, 439] [1,422] }
+			 token 2012 uncontrollable { UnscrewTopBolt1 [26, 447] [8,18] }
+			 token 2039  { Idle [27, 448] [1,422] }
+			 token 2011 uncontrollable { RemoveWaxPart [45, 466] [18,28] }
+			 token 2043  { Idle [46, 467] [1,422] }
+			 token 2015 uncontrollable { UnscrewBottomBolt1 [62, 483] [16,26] }
+			 token 2031  { Idle [63, 484] [1,422] }
+			 token 2016 uncontrollable { UnscrewBottomBolt2 [79, 500] [16,26] }
+		}
+		Production {
+			 token 0  { Idle [1, 500] [1,500] }
+			 token 2000  { Assembly [79, 500] [78,500] }
+		}
+		Arm {
+			 token 3  { SetOnBase [1, 430] [1,430] }
+			 token 2037  { Moving [4, 433] [3,5] }
+			 token 2020  { SetOnTopBolt5 [11, 436] [3,432] }
+			 token 2030  { Moving [14, 439] [3,5] }
+			 token 2017  { SetOnTopBolt4 [17, 442] [3,428] }
+			 token 2042  { Moving [20, 445] [3,5] }
+			 token 2024  { SetOnTopBolt3 [23, 482] [3,462] }
+			 token 2041  { Moving [26, 485] [3,5] }
+			 token 2025  { SetOnBottomBolt3 [48, 488] [3,462] }
+			 token 2029  { Moving [51, 491] [3,5] }
+			 token 2022  { SetOnBottomBolt4 [54, 494] [3,443] }
+			 token 2036  { Moving [57, 497] [3,5] }
+			 token 2018  { SetOnBottomBolt5 [60, 500] [3,443] }
+		}
+		Assembly {
+			 token 2001  { PreparePiece [8, 430] [7,430] }
+			 token 2004  { RemoveTopCover [26, 448] [17,440] }
+			 token 2002  { RemovePart [45, 467] [18,441] }
+			 token 2003  { RemoveBottomCover [79, 500] [33,455] }
+		}
+		Robot {
+			 token 2  { Idle [1, 500] [1,500] }
+			 token 2008  { UnscrewTopBolt5 [11, 436] [3,3] }
+			 token 2010  { UnscrewTopBolt4 [17, 442] [3,3] }
+			 token 2006  { UnscrewTopBolt3 [23, 448] [3,3] }
+			 token 2005  { UnscrewBottomBolt3 [48, 488] [3,3] }
+			 token 2007  { UnscrewBottomBolt4 [54, 494] [3,3] }
+			 token 2009  { UnscrewBottomBolt5 [60, 500] [3,3] }
+		}
+	}
+	relations {
+		Production 2000 CONTAINS [0, 500]  [0,500]  Assembly 2001
+		Production 2000 CONTAINS [0, 500]  [0,500]  Assembly 2004
+		Production 2000 CONTAINS [0, 500]  [0,500]  Assembly 2002
+		Production 2000 CONTAINS [0, 500]  [0,500]  Assembly 2003
+		Assembly 2001 BEFORE [0, 500]  Assembly 2004
+		Assembly 2004 BEFORE [0, 500]  Assembly 2002
+		Assembly 2002 BEFORE [0, 500]  Assembly 2003
+		Assembly 2001 CONTAINS [0, 500]  [0,500]  Human 2014
+		Assembly 2002 CONTAINS [0, 500]  [0,500]  Human 2011
+		Assembly 2003 CONTAINS [0, 500]  [0,500]  Human 2015
+		Assembly 2003 CONTAINS [0, 500]  [0,500]  Human 2016
+		Assembly 2003 CONTAINS [0, 500]  [0,500]  Robot 2005
+		Assembly 2003 CONTAINS [0, 500]  [0,500]  Robot 2007
+		Assembly 2003 CONTAINS [0, 500]  [0,500]  Robot 2009
+		Assembly 2004 CONTAINS [0, 500]  [0,500]  Robot 2006
+		Assembly 2004 CONTAINS [0, 500]  [0,500]  Robot 2010
+		Assembly 2004 CONTAINS [0, 500]  [0,500]  Robot 2008
+		Assembly 2004 CONTAINS [0, 500]  [0,500]  Human 2012
+		Assembly 2004 CONTAINS [0, 500]  [0,500]  Human 2013
+		Robot 2005 DURING [0, 500]  [0,500]  Arm 2025
+		Robot 2005 EQUALS Tool 2027
+		Robot 2006 DURING [0, 500]  [0,500]  Arm 2024
+		Robot 2006 EQUALS Tool 2026
+		Robot 2007 DURING [0, 500]  [0,500]  Arm 2022
+		Robot 2007 EQUALS Tool 2028
+		Robot 2008 DURING [0, 500]  [0,500]  Arm 2020
+		Robot 2008 EQUALS Tool 2021
+		Robot 2009 DURING [0, 500]  [0,500]  Arm 2018
+		Robot 2009 EQUALS Tool 2019
+		Robot 2010 DURING [0, 500]  [0,500]  Arm 2017
+		Robot 2010 EQUALS Tool 2023
+		Human 1 BEFORE [0, 500]  Human 2014
+		Human 2013 BEFORE [0, 500]  Human 2012
+		Human 2015 BEFORE [0, 500]  Human 2016
+		Arm 3 BEFORE [0, 500]  Arm 2025
+		Arm 3 BEFORE [0, 500]  Arm 2022
+		Tool 4 BEFORE [0, 500]  Tool 2026
+		Tool 4 BEFORE [0, 500]  Tool 2021
+		Arm 2017 BEFORE [0, 500]  Arm 2024
+		Tool 2027 BEFORE [0, 500]  Tool 2028
+		Tool 4 BEFORE [0, 500]  Tool 2023
+		Tool 2021 BEFORE [0, 500]  Tool 2023
+		Arm 2020 BEFORE [0, 500]  Arm 2025
+		Arm 3 BEFORE [0, 500]  Arm 2018
+		Arm 2020 BEFORE [0, 500]  Arm 2022
+		Tool 2027 BEFORE [0, 500]  Tool 2019
+		Tool 2028 BEFORE [0, 500]  Tool 2019
+		Arm 2017 BEFORE [0, 500]  Arm 2018
+		Arm 2024 BEFORE [0, 500]  Arm 2025
+		Arm 3 BEFORE [0, 500]  Arm 2020
+		Arm 2020 BEFORE [0, 500]  Arm 2024
+		Arm 2024 BEFORE [0, 500]  Arm 2022
+		Arm 2025 BEFORE [0, 500]  Arm 2018
+		Arm 3 BEFORE [0, 500]  Arm 2017
+		Arm 2020 BEFORE [0, 500]  Arm 2017
+		Arm 2025 BEFORE [0, 500]  Arm 2022
+		Arm 2022 BEFORE [0, 500]  Arm 2018
+		Arm 2025 MEETS Arm 2029
+		Arm 2029 MEETS Arm 2022
+		Arm 2020 MEETS Arm 2030
+		Arm 2030 MEETS Arm 2017
+		Human 2015 MEETS Human 2031
+		Human 2031 MEETS Human 2016
+		Human 1 MEETS Human 2014
+		Tool 2028 MEETS Tool 2032
+		Tool 2032 MEETS Tool 2019
+		Tool 2021 MEETS Tool 2033
+		Tool 2033 MEETS Tool 2023
+		Tool 2027 MEETS Tool 2034
+		Tool 2034 MEETS Tool 2028
+		Human 2014 MEETS Human 2035
+		Human 2035 MEETS Human 2013
+		Arm 2022 MEETS Arm 2036
+		Arm 2036 MEETS Arm 2018
+		Arm 3 MEETS Arm 2037
+		Arm 2037 MEETS Arm 2020
+		Human 2013 MEETS Human 2038
+		Human 2038 MEETS Human 2012
+		Human 2012 MEETS Human 2039
+		Human 2039 MEETS Human 2011
+		Tool 2026 MEETS Tool 2040
+		Tool 2040 MEETS Tool 2027
+		Arm 2024 MEETS Arm 2041
+		Arm 2041 MEETS Arm 2025
+		Arm 2017 MEETS Arm 2042
+		Arm 2042 MEETS Arm 2024
+		Human 2011 MEETS Human 2043
+		Human 2043 MEETS Human 2015
+		Tool 2023 MEETS Tool 2044
+		Tool 2044 MEETS Tool 2026
+		Tool 4 MEETS Tool 2021
+	}
+}
+observation {
+	timelines {
+	}
+}
+
+
+Plan (H= 500, makespan= 79.0 controllability= PSEUDO_CONTROLLABILITY #timelines= 6, #observations= 0, #relations= 91)
+timelines {
+	Tool {
+		[Token 4:Idle start= [0,0] end= [8,433] duration= [8,433]]
+		[Token 29:UnscrewBolt start= [8,433] end= [11,436] duration= [3,3]]
+		[Token 38:Idle start= [11,436] end= [14,439] duration= [3,428]]
+		[Token 32:UnscrewBolt start= [14,439] end= [17,442] duration= [3,3]]
+		[Token 49:Idle start= [17,442] end= [20,445] duration= [3,428]]
+		[Token 25:UnscrewBolt start= [20,445] end= [23,448] duration= [3,3]]
+		[Token 45:Idle start= [23,448] end= [45,485] duration= [18,462]]
+		[Token 23:UnscrewBolt start= [45,485] end= [48,488] duration= [3,3]]
+		[Token 39:Idle start= [48,488] end= [51,491] duration= [3,443]]
+		[Token 27:UnscrewBolt start= [51,491] end= [54,494] duration= [3,3]]
+		[Token 37:Idle start= [54,494] end= [57,497] duration= [3,443]]
+		[Token 31:UnscrewBolt start= [57,497] end= [60,500] duration= [3,3]]
+	}
+	Human {
+		[Token 1:Idle start= [0,0] end= [1,422] duration= [1,422]]
+		[Token 10:_SetWorkPiece start= [1,422] end= [8,429] duration= [7,17]]
+		[Token 40:Idle start= [8,429] end= [9,430] duration= [1,422]]
+		[Token 17:_UnscrewTopBolt2 start= [9,430] end= [17,438] duration= [8,18]]
+		[Token 43:Idle start= [17,438] end= [18,439] duration= [1,422]]
+		[Token 21:_UnscrewTopBolt1 start= [18,439] end= [26,447] duration= [8,18]]
+		[Token 44:Idle start= [26,447] end= [27,448] duration= [1,422]]
+		[Token 11:_RemoveWaxPart start= [27,448] end= [45,466] duration= [18,28]]
+		[Token 48:Idle start= [45,466] end= [46,467] duration= [1,422]]
+		[Token 13:_UnscrewBottomBolt1 start= [46,467] end= [62,483] duration= [16,26]]
+		[Token 36:Idle start= [62,483] end= [63,484] duration= [1,422]]
+		[Token 14:_UnscrewBottomBolt2 start= [63,484] end= [79,500] duration= [16,26]]
+	}
+	Production {
+		[Token 0:Idle start= [0,0] end= [1,500] duration= [1,500]]
+		[Token 5:Assembly start= [0,422] end= [79,500] duration= [78,500]]
+	}
+	Arm {
+		[Token 3:SetOnBase start= [0,0] end= [1,430] duration= [1,430]]
+		[Token 42:Moving start= [1,430] end= [4,433] duration= [3,5]]
+		[Token 28:SetOnTopBolt5 start= [4,433] end= [11,436] duration= [3,432]]
+		[Token 35:Moving start= [11,436] end= [14,439] duration= [3,5]]
+		[Token 33:SetOnTopBolt4 start= [14,439] end= [17,442] duration= [3,428]]
+		[Token 47:Moving start= [17,442] end= [20,445] duration= [3,5]]
+		[Token 24:SetOnTopBolt3 start= [20,445] end= [23,482] duration= [3,462]]
+		[Token 46:Moving start= [23,482] end= [26,485] duration= [3,5]]
+		[Token 22:SetOnBottomBolt3 start= [26,485] end= [48,488] duration= [3,462]]
+		[Token 34:Moving start= [48,488] end= [51,491] duration= [3,5]]
+		[Token 26:SetOnBottomBolt4 start= [51,491] end= [54,494] duration= [3,443]]
+		[Token 41:Moving start= [54,494] end= [57,497] duration= [3,5]]
+		[Token 30:SetOnBottomBolt5 start= [57,497] end= [60,500] duration= [3,443]]
+	}
+	Assembly {
+		[Token 6:PreparePiece start= [0,422] end= [8,430] duration= [7,430]]
+		[Token 7:RemoveTopCover start= [8,430] end= [26,448] duration= [17,440]]
+		[Token 8:RemovePart start= [26,448] end= [45,467] duration= [18,441]]
+		[Token 9:RemoveBottomCover start= [45,467] end= [79,500] duration= [33,455]]
+	}
+	Robot {
+		[Token 2:Idle start= [0,0] end= [1,500] duration= [1,500]]
+		[Token 20:UnscrewTopBolt5 start= [8,433] end= [11,436] duration= [3,3]]
+		[Token 19:UnscrewTopBolt4 start= [14,439] end= [17,442] duration= [3,3]]
+		[Token 18:UnscrewTopBolt3 start= [20,445] end= [23,448] duration= [3,3]]
+		[Token 15:UnscrewBottomBolt3 start= [45,485] end= [48,488] duration= [3,3]]
+		[Token 16:UnscrewBottomBolt4 start= [51,491] end= [54,494] duration= [3,3]]
+		[Token 12:UnscrewBottomBolt5 start= [57,497] end= [60,500] duration= [3,3]]
+	}
+}
+
+observations {
+}
+relations {
+	 CONTAINS {5:Assembly, 6:PreparePiece}
+	 CONTAINS {5:Assembly, 7:RemoveTopCover}
+	 CONTAINS {5:Assembly, 8:RemovePart}
+	 CONTAINS {5:Assembly, 9:RemoveBottomCover}
+	 BEFORE {6:PreparePiece, 7:RemoveTopCover}
+	 BEFORE {7:RemoveTopCover, 8:RemovePart}
+	 BEFORE {8:RemovePart, 9:RemoveBottomCover}
+	 CONTAINS {6:PreparePiece, 10:_SetWorkPiece}
+	 CONTAINS {8:RemovePart, 11:_RemoveWaxPart}
+	 CONTAINS {9:RemoveBottomCover, 13:_UnscrewBottomBolt1}
+	 CONTAINS {9:RemoveBottomCover, 14:_UnscrewBottomBolt2}
+	 CONTAINS {9:RemoveBottomCover, 15:UnscrewBottomBolt3}
+	 CONTAINS {9:RemoveBottomCover, 16:UnscrewBottomBolt4}
+	 CONTAINS {9:RemoveBottomCover, 12:UnscrewBottomBolt5}
+	 CONTAINS {7:RemoveTopCover, 18:UnscrewTopBolt3}
+	 CONTAINS {7:RemoveTopCover, 19:UnscrewTopBolt4}
+	 CONTAINS {7:RemoveTopCover, 20:UnscrewTopBolt5}
+	 CONTAINS {7:RemoveTopCover, 21:_UnscrewTopBolt1}
+	 CONTAINS {7:RemoveTopCover, 17:_UnscrewTopBolt2}
+	 DURING {15:UnscrewBottomBolt3, 22:SetOnBottomBolt3}
+	 EQUALS {15:UnscrewBottomBolt3, 23:UnscrewBolt}
+	 DURING {18:UnscrewTopBolt3, 24:SetOnTopBolt3}
+	 EQUALS {18:UnscrewTopBolt3, 25:UnscrewBolt}
+	 DURING {16:UnscrewBottomBolt4, 26:SetOnBottomBolt4}
+	 EQUALS {16:UnscrewBottomBolt4, 27:UnscrewBolt}
+	 DURING {20:UnscrewTopBolt5, 28:SetOnTopBolt5}
+	 EQUALS {20:UnscrewTopBolt5, 29:UnscrewBolt}
+	 DURING {12:UnscrewBottomBolt5, 30:SetOnBottomBolt5}
+	 EQUALS {12:UnscrewBottomBolt5, 31:UnscrewBolt}
+	 DURING {19:UnscrewTopBolt4, 33:SetOnTopBolt4}
+	 EQUALS {19:UnscrewTopBolt4, 32:UnscrewBolt}
+	 BEFORE {1:Idle, 10:_SetWorkPiece}
+	 BEFORE {17:_UnscrewTopBolt2, 21:_UnscrewTopBolt1}
+	 BEFORE {13:_UnscrewBottomBolt1, 14:_UnscrewBottomBolt2}
+	 BEFORE {3:SetOnBase, 22:SetOnBottomBolt3}
+	 BEFORE {3:SetOnBase, 26:SetOnBottomBolt4}
+	 BEFORE {4:Idle, 25:UnscrewBolt}
+	 BEFORE {4:Idle, 29:UnscrewBolt}
+	 BEFORE {33:SetOnTopBolt4, 24:SetOnTopBolt3}
+	 BEFORE {23:UnscrewBolt, 27:UnscrewBolt}
+	 BEFORE {4:Idle, 32:UnscrewBolt}
+	 BEFORE {29:UnscrewBolt, 32:UnscrewBolt}
+	 BEFORE {28:SetOnTopBolt5, 22:SetOnBottomBolt3}
+	 BEFORE {3:SetOnBase, 30:SetOnBottomBolt5}
+	 BEFORE {28:SetOnTopBolt5, 26:SetOnBottomBolt4}
+	 BEFORE {23:UnscrewBolt, 31:UnscrewBolt}
+	 BEFORE {27:UnscrewBolt, 31:UnscrewBolt}
+	 BEFORE {33:SetOnTopBolt4, 30:SetOnBottomBolt5}
+	 BEFORE {24:SetOnTopBolt3, 22:SetOnBottomBolt3}
+	 BEFORE {3:SetOnBase, 28:SetOnTopBolt5}
+	 BEFORE {28:SetOnTopBolt5, 24:SetOnTopBolt3}
+	 BEFORE {24:SetOnTopBolt3, 26:SetOnBottomBolt4}
+	 BEFORE {22:SetOnBottomBolt3, 30:SetOnBottomBolt5}
+	 BEFORE {3:SetOnBase, 33:SetOnTopBolt4}
+	 BEFORE {28:SetOnTopBolt5, 33:SetOnTopBolt4}
+	 BEFORE {22:SetOnBottomBolt3, 26:SetOnBottomBolt4}
+	 BEFORE {26:SetOnBottomBolt4, 30:SetOnBottomBolt5}
+	 MEETS {22:SetOnBottomBolt3, 34:Moving}
+	 MEETS {34:Moving, 26:SetOnBottomBolt4}
+	 MEETS {28:SetOnTopBolt5, 35:Moving}
+	 MEETS {35:Moving, 33:SetOnTopBolt4}
+	 MEETS {13:_UnscrewBottomBolt1, 36:Idle}
+	 MEETS {36:Idle, 14:_UnscrewBottomBolt2}
+	 MEETS {1:Idle, 10:_SetWorkPiece}
+	 MEETS {27:UnscrewBolt, 37:Idle}
+	 MEETS {37:Idle, 31:UnscrewBolt}
+	 MEETS {29:UnscrewBolt, 38:Idle}
+	 MEETS {38:Idle, 32:UnscrewBolt}
+	 MEETS {23:UnscrewBolt, 39:Idle}
+	 MEETS {39:Idle, 27:UnscrewBolt}
+	 MEETS {10:_SetWorkPiece, 40:Idle}
+	 MEETS {40:Idle, 17:_UnscrewTopBolt2}
+	 MEETS {26:SetOnBottomBolt4, 41:Moving}
+	 MEETS {41:Moving, 30:SetOnBottomBolt5}
+	 MEETS {3:SetOnBase, 42:Moving}
+	 MEETS {42:Moving, 28:SetOnTopBolt5}
+	 MEETS {17:_UnscrewTopBolt2, 43:Idle}
+	 MEETS {43:Idle, 21:_UnscrewTopBolt1}
+	 MEETS {21:_UnscrewTopBolt1, 44:Idle}
+	 MEETS {44:Idle, 11:_RemoveWaxPart}
+	 MEETS {25:UnscrewBolt, 45:Idle}
+	 MEETS {45:Idle, 23:UnscrewBolt}
+	 MEETS {24:SetOnTopBolt3, 46:Moving}
+	 MEETS {46:Moving, 22:SetOnBottomBolt3}
+	 MEETS {33:SetOnTopBolt4, 47:Moving}
+	 MEETS {47:Moving, 24:SetOnTopBolt3}
+	 MEETS {11:_RemoveWaxPart, 48:Idle}
+	 MEETS {48:Idle, 13:_UnscrewBottomBolt1}
+	 MEETS {32:UnscrewBolt, 49:Idle}
+	 MEETS {49:Idle, 25:UnscrewBolt}
+	 MEETS {4:Idle, 29:UnscrewBolt}
+}
