@@ -1,7 +1,0 @@
-PROBLEM ACTA_SATELLITE_Problem (DOMAIN ACTA_SATELLITE) 
-{
-	f0 <fact> PointingMode.pm.Earth() AT [0, 0] [1, +INF] [1, +INF];
-	
-
-	g0 <goal> PointingMode.pm.Science() AT [10, +INF] [0, +INF] [0, +INF];
-}

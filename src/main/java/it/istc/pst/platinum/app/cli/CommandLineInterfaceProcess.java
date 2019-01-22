@@ -49,8 +49,8 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			// get input reader
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			boolean exit = false;
-			do {
-				
+			do 
+			{
 				// display prompt
 				System.out.print(CLI_PROMPT);
 				String input = reader.readLine();
@@ -70,7 +70,6 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 				}
 			}
 			while (!exit);
-			
 			// exiting
 			System.out.println("\nBye!\n");
 		}

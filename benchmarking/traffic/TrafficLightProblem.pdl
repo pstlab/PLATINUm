@@ -1,7 +1,0 @@
-PROBLEM TrafficProblem (DOMAIN TrafficLight)
-{
-	start1 <fact> TL1.timeline1.Green() AT [0, +INF] [0, +INF] [0, +INF];
-	start2 <fact> TL2.timeline2.Red() AT [0, +INF] [0, +INF] [0, +INF];
-	
-	end2 <goal> TL2.timeline2.Yellow() AT [0, +INF] [0, +INF] [0, +INF]; 
-}

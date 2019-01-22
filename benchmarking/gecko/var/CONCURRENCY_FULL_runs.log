@@ -1,7 +1,0 @@
-$ HFS on [CONCURRENCY_FULL/GECKO_flex10.ddl,CONCURRENCY_FULL/GECKO_1g.pdl] -> Solution found after [685] msecs
-$ HFS on [CONCURRENCY_FULL/GECKO_flex10.ddl,CONCURRENCY_FULL/GECKO_2g.pdl] -> Solution found after [486] msecs
-$ HFS on [CONCURRENCY_FULL/GECKO_flex10.ddl,CONCURRENCY_FULL/GECKO_3g.pdl] -> Solution found after [793] msecs
-$ HFS on [CONCURRENCY_FULL/GECKO_flex10.ddl,CONCURRENCY_FULL/GECKO_4g.pdl] -> Solution found after [1785] msecs
-$ HFS on [CONCURRENCY_FULL/GECKO_flex10.ddl,CONCURRENCY_FULL/GECKO_5g.pdl] -> No Solution found after [181127] msecs
-$ HFS on [CONCURRENCY_FULL/GECKO_flex10.ddl,CONCURRENCY_FULL/GECKO_6g.pdl] -> No Solution found after [181722] msecs
-$ HFS on [CONCURRENCY_FULL/GECKO_flex10.ddl,CONCURRENCY_FULL/GECKO_7g.pdl] -> No Solution found after [186510] msecs

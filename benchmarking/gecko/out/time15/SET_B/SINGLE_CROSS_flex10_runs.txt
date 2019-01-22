@@ -1,5 +1,0 @@
-$ [SINGLE_CROSS/GECKO_flex10.ddl,GECKO_1g.pdl] -> Solution found after [65] msecs
-$ [SINGLE_CROSS/GECKO_flex10.ddl,GECKO_2g.pdl] -> Solution found after [188] msecs
-$ [SINGLE_CROSS/GECKO_flex10.ddl,GECKO_3g.pdl] -> Solution found after [670] msecs
-$ [SINGLE_CROSS/GECKO_flex10.ddl,GECKO_4g.pdl] -> Solution found after [3392] msecs
-$ [SINGLE_CROSS/GECKO_flex10.ddl,GECKO_5g.pdl] -> Solution found after [12407] msecs
