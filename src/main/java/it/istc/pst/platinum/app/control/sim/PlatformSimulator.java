@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.app.sim;
+package it.istc.pst.platinum.app.control.sim;
 
 import java.util.ArrayList;
 import java.util.HashMap;

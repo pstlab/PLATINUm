@@ -525,8 +525,4 @@ DOMAIN ICO_v1 {
 			MET-BY cd0;
 		}
 	}
-SYNCHRONIZE Mug2.mug2_position {
-	}
-SYNCHRONIZE RobotTorso.robot_torso_posture {
-	}
 }

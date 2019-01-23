@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.dispatcher.ConditionCheckingDispatcher;
+import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedbackType;
 import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
@@ -41,7 +41,7 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.DEBUG
+		level = FrameworkLoggingLevel.INFO
 )
 @MonitorConfiguration(
 		monitor = ConditionCheckingMonitor.class
@@ -101,6 +101,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	public void bind(ExecutivePlatformProxy proxy) {
 		// bind the executive
 		this.platformProxy = proxy;
+		// register to the PROXY
+		this.platformProxy.register(this);
 	}
 	
 	/**
@@ -192,6 +194,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	public List<ExecutionNode> getNodes() {
 		List<ExecutionNode> list = new ArrayList<>();
 		list.addAll(this.getNodes(ExecutionNodeStatus.WAITING));
+		list.addAll(this.getNodes(ExecutionNodeStatus.STARTING));
 		list.addAll(this.getNodes(ExecutionNodeStatus.IN_EXECUTION));
 		list.addAll(this.getNodes(ExecutionNodeStatus.EXECUTED));
 		Collections.sort(list);
@@ -242,8 +245,12 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 			{
 				try
 				{
-					// actually schedule the start time of the token
-					this.pdb.scheduleStartTime(node, start);
+					// check if virtual node
+					if (!node.isVirtual()) {
+						// actually schedule the start time of the token
+						this.pdb.scheduleStartTime(node, start);
+					}
+					
 					// update node status
 					this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 				}
@@ -292,8 +299,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	{
 		try
 		{
-			// check nominal duration upper bound to verify whether propagation is needed or not
-			if (!node.getGroundSignature().contains("Idle")) {
+			// check if virtual node
+			if (!node.isVirtual()) {
 				// propagate scheduled duration time
 				this.pdb.scheduleDuration(node, duration);
 			}
@@ -372,7 +379,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 		try
 		{
 			// perform setting operations before execution
-			this.doPrepareExecute();
+			this.doPrepareExecution();
 			
 			// initialize dispatching index
 			this.dispatchedIndex = new HashMap<>();
@@ -383,6 +390,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 		}
 		catch (InterruptedException ex) 
 		{
+			// execution interrupted
 			logger.error("Execution error:\n- message: " + ex.getMessage() + "\n");
 			// set error state
 			synchronized (this.lock) {
@@ -459,6 +467,23 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 		}
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ExecutionFailureCause getFailureCause() {
+		return this.cause;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isFailure() {
+		return this.failure.get();
+	}
+	
 	/**
 	 * 
 	 * @param tick
@@ -467,30 +492,41 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	@Override
 	public boolean onTick(long tick)
 	{
+		// execution completion flag
 		boolean complete = false;
 		try 
 		{
-			// take track of the current tick
+			// handle current tick
 			this.currentTick = tick;
-			// prepare logging message
-			String msg = "\n##################################################\n";
-			msg += "#### Handle tick = " + tick + " ####\n";
-			msg += "#### Synchronization step ####\n";
+			logger.info("{Executive} -> Handle tick: " + tick + "\n");
+			
 			// synchronization step
+			logger.info("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 			this.monitor.handleTick(tick);
-			msg += "#### Dispatching step ####\n";
+			
 			// dispatching step
+			logger.info("{Executive} {tick: " + tick + "} -> Dispatching step\n");
 			this.dispatcher.handleTick(tick);
-			msg += "##################################################\n";
-			// print info 
-			logger.info(msg);
+			
 			// display executive window
 			this.displayWindow();
 			// check if execution is complete
 			complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
+					this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING).isEmpty() && 
 					this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
 		}
+		catch (ExecutionException ex) {
+			// set execution failure flag
+			this.failure.set(true);
+			// set execution failure cause
+			this.cause = ex.getFailureCause();
+			// error message
+			logger.error(ex.getMessage());
+			// end execution
+			complete = true;
+		}
 		catch (InterruptedException ex) {
+			// execution error
 			logger.error(ex.getMessage());
 		}
 		
@@ -516,20 +552,18 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	/**
 	 * Perform some setting operation just before starting execution
 	 */
-	protected void doPrepareExecute() 
+	protected void doPrepareExecution() 
 	{
-		// check whether the executive has been bound to a platform or not
-		if (this.platformProxy != null) {
-			// register the executive to the platform
-			this.platformProxy.register(this);
-		}
+		/*
+		 * TODO : set some parametric procedure
+		 */
 	}
 	
 	/**
 	 * 
 	 * @param node
 	 */
-	public void dispatchNodeToThePlatform(ExecutionNode node) 
+	public void dispatchCommandToThePlatform(ExecutionNode node) 
 	{
 		// check if a platform PROXY exists
 		if (this.platformProxy != null) 
@@ -562,7 +596,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 			if (node.getStatus().equals(ExecutionNodeStatus.STARTING)) 
 			{
 				// got start execution feedback from a completely uncontrollable token
-				logger.debug("Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
+				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				// create execution feedback
 				ExecutionFeedback feedback = new ExecutionFeedback(
@@ -574,7 +608,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 			else if (node.getStatus().equals(ExecutionNodeStatus.IN_EXECUTION))
 			{
 				// got end execution feedback from either a partially-controllable or uncontrollable token
-				logger.debug("Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
+				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				// create execution feedback
 				ExecutionFeedback feedback = new ExecutionFeedback(
@@ -596,7 +630,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 		else 
 		{
 			// no operation ID found 
-			logger.debug("Receiving feedback about an unknown operation:\n\t- opId: " + opId + "\n\t-data: " + data + "\n");
+			logger.warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- opId: " + opId + "\n\t-data: " + data + "\n");
 		}
 	}
 	

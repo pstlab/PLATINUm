@@ -71,6 +71,14 @@ public class EPSLExecutivePlanDataBase extends ExecutivePlanDataBase
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
 						}
 						
+						// set virtual flag
+						boolean virtual = true;
+						if (token.getPredicate().startsWith("_") || 
+								token.getPredicate().startsWith("r")) {
+							// not a virtual node
+							virtual = false;
+						}
+						
 						// set parameter information
 						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
@@ -99,7 +107,7 @@ public class EPSLExecutivePlanDataBase extends ExecutivePlanDataBase
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability);
+								start, end, duration, controllability, virtual);
 						
 						// add node
 						this.addNode(node);
@@ -136,6 +144,14 @@ public class EPSLExecutivePlanDataBase extends ExecutivePlanDataBase
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
 						}
 						
+						// set virtual flag
+						boolean virtual = true;
+						if (token.getPredicate().startsWith("_") || 
+								token.getPredicate().startsWith("r")) {
+							// not a virtual node
+							virtual = false;
+						}
+						
 						// set parameter information
 						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
@@ -164,7 +180,7 @@ public class EPSLExecutivePlanDataBase extends ExecutivePlanDataBase
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability);
+								start, end, duration, controllability, virtual);
 						
 						// add node
 						this.addNode(node);

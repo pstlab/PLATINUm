@@ -376,12 +376,12 @@ public class AIJFourByThreeDomainGenerator
 	private String prepareToolSV()
 	{
 		// return SV description
-		return "\tCOMP_TYPE SingletonStateVariable ToolSV (Idle(), UnscrewBolt()) {\n\n"
+		return "\tCOMP_TYPE SingletonStateVariable ToolSV (Idle(), rUnscrewBolt()) {\n\n"
 				+ "\t\tVALUE Idle() [1, +INF]\n"
 				+ "\t\tMEETS {\n"
-				+ "\t\t\tUnscrewBolt();\n"
+				+ "\t\t\trUnscrewBolt();\n"
 				+ "\t\t}\n\n"
-				+ "\t\tVALUE UnscrewBolt() [3, 3]\n"
+				+ "\t\tVALUE rUnscrewBolt() [3, 3]\n"
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tIdle();\n"
 				+ "\t\t}\n\n"
@@ -443,11 +443,11 @@ public class AIJFourByThreeDomainGenerator
 		String ddl = "\tSYNCHRONIZE Assembly.hrc {\n\n"
 				+ "\t\tVALUE PreparePiece() {\n\n"
 				+ "\t\t\ttask0 <!> Human.operator._SetWorkPiece();\n"
-				+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task0;\n\n"
+				+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task0;\n"
 				+ "\t\t}\n\n"
 				+ "\t\tVALUE RemovePart() {\n\n"
 				+ "\t\t\ttask0 <!> Human.operator._RemoveWaxPart();\n"
-				+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task0;\n\n"
+				+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task0;\n"
 				+ "\t\t}\n\n";
 		
 		// take into account possible sharing possibility for the task "RemoveTopCover" 
@@ -511,14 +511,13 @@ public class AIJFourByThreeDomainGenerator
 	{
 		// prepare domain description
 		String ddl = "\tSYNCHRONIZE Robot.cobot {\n\n";
-		
 		for (int i = 1; i <= topTasks; i++)
 		{
 			ddl += "\t\tVALUE UnscrewTopBolt" + i + "() {\n\n"
 					+ "\t\t\tp0 Arm.motions.SetOnTopBolt" + i + "();\n"
 					+ "\t\t\tDURING [0, +INF] [0, +INF] p0;\n\n"
-					+ "\t\t\tt0 <!> Tool.screwdriver.UnscrewBolt();\n"
-					+ "\t\t\tEQUALS t0;\n"
+					+ "\t\t\tt0 <!> Tool.screwdriver.rUnscrewBolt();\n"
+					+ "\t\t\tCONTAINS [0, +INF] [0, +INF] t0;\n"
 					+ "\t\t}\n\n";
 		}
 		
@@ -527,8 +526,8 @@ public class AIJFourByThreeDomainGenerator
 			ddl += "\t\tVALUE UnscrewBottomBolt" + i + "() {\n\n"
 					+ "\t\t\tp0 Arm.motions.SetOnBottomBolt" + i + "();\n"
 					+ "\t\t\tDURING [0, +INF] [0, +INF] p0;\n\n"
-					+ "\t\t\tt0 Tool.screwdriver.UnscrewBolt();\n"
-					+ "\t\t\tEQUALS t0;\n"
+					+ "\t\t\tt0 Tool.screwdriver.rUnscrewBolt();\n"
+					+ "\t\t\tCONTAINS [0, +INF] [0, +INF] t0;\n"
 					+ "\t\t}\n\n";
 		}
 		

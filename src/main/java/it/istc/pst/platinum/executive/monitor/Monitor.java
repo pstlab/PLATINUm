@@ -5,6 +5,7 @@ import java.util.List;
 
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
@@ -46,7 +47,7 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	 * 
 	 * @return
 	 */
-	protected List<ExecutionFeedback> checkObservations() 
+	protected List<ExecutionFeedback> getObservations() 
 	{
 		// list of received observations
 		List<ExecutionFeedback> list = new ArrayList<>();
@@ -67,6 +68,8 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	/**
 	 * 
 	 * @param tick
+	 * @throws ExecutionException
 	 */
-	public abstract void handleTick(long tick);
+	public abstract void handleTick(long tick) 
+			throws ExecutionException;
 }

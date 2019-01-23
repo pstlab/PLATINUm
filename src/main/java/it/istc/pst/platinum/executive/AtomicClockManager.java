@@ -30,7 +30,8 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 	 * 
 	 * @param exec
 	 */
-	public AtomicClockManager(ExecutionManager exec) {
+	public AtomicClockManager(ExecutionManager exec) 
+	{
 		super();
 		// set tick start
 		this.tickStart = 0;

@@ -136,7 +136,8 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 		}
 		else if (cmd.toLowerCase().equals(CommandLineCommand.DISPLAY.getCmd().toLowerCase())) 
 		{
-			if (this.planner != null) {
+			if (this.planner != null && this.currentSolution != null) 
+			{
 				try 
 				{
 					// prepare thread

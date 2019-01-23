@@ -47,62 +47,62 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 
 	COMP_TYPE SingletonStateVariable HumanSV (Idle(), _UnscrewTopBolt1(), _UnscrewTopBolt2(), _UnscrewTopBolt3(), _UnscrewTopBolt4(), _UnscrewTopBolt5(), _UnscrewBottomBolt1(), _UnscrewBottomBolt2(), _UnscrewBottomBolt3(), _UnscrewBottomBolt4(), _UnscrewBottomBolt5(), _SetWorkPiece(), _RemoveWaxPart()) {
 
-		VALUE _SetWorkPiece() [7, 27]
+		VALUE _SetWorkPiece() [1, 21]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _RemoveWaxPart() [18, 38]
+		VALUE _RemoveWaxPart() [1, 21]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt1() [8, 28]
+		VALUE _UnscrewTopBolt1() [1, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt2() [8, 28]
+		VALUE _UnscrewTopBolt2() [1, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt3() [8, 28]
+		VALUE _UnscrewTopBolt3() [1, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt4() [8, 28]
+		VALUE _UnscrewTopBolt4() [1, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt5() [8, 28]
+		VALUE _UnscrewTopBolt5() [1, 28]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt1() [16, 36]
+		VALUE _UnscrewBottomBolt1() [1, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt2() [16, 36]
+		VALUE _UnscrewBottomBolt2() [1, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt3() [16, 36]
+		VALUE _UnscrewBottomBolt3() [1, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt4() [16, 36]
+		VALUE _UnscrewBottomBolt4() [1, 36]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt5() [16, 36]
+		VALUE _UnscrewBottomBolt5() [1, 36]
 		MEETS {
 			Idle();
 		}
@@ -264,14 +264,14 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 		}
 	}
 
-	COMP_TYPE SingletonStateVariable ToolSV (Idle(), UnscrewBolt()) {
+	COMP_TYPE SingletonStateVariable ToolSV (Idle(), rUnscrewBolt()) {
 
 		VALUE Idle() [1, +INF]
 		MEETS {
-			UnscrewBolt();
+			rUnscrewBolt();
 		}
 
-		VALUE UnscrewBolt() [3, 3]
+		VALUE rUnscrewBolt() [3, 3]
 		MEETS {
 			Idle();
 		}
@@ -313,14 +313,12 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 
 			task0 <!> Human.operator._SetWorkPiece();
 			CONTAINS [0, +INF] [0, +INF] task0;
-
 		}
 
 		VALUE RemovePart() {
 
 			task0 <!> Human.operator._RemoveWaxPart();
 			CONTAINS [0, +INF] [0, +INF] task0;
-
 		}
 
 		VALUE RemoveTopCover() {
@@ -408,8 +406,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnTopBolt1();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewTopBolt2() {
@@ -417,8 +415,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnTopBolt2();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewTopBolt3() {
@@ -426,8 +424,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnTopBolt3();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewTopBolt4() {
@@ -435,8 +433,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnTopBolt4();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewTopBolt5() {
@@ -444,8 +442,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnTopBolt5();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewBottomBolt1() {
@@ -453,8 +451,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnBottomBolt1();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewBottomBolt2() {
@@ -462,8 +460,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnBottomBolt2();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewBottomBolt3() {
@@ -471,8 +469,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnBottomBolt3();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewBottomBolt4() {
@@ -480,8 +478,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnBottomBolt4();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 		VALUE UnscrewBottomBolt5() {
@@ -489,8 +487,8 @@ DOMAIN AIJ_EXP_T10_S40_U20 {
 			p0 Arm.motions.SetOnBottomBolt5();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 Tool.screwdriver.UnscrewBolt();
-			EQUALS t0;
+			t0 Tool.screwdriver.rUnscrewBolt();
+			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
 	}

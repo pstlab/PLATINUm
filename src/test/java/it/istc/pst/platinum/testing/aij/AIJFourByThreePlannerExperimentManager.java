@@ -30,7 +30,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public class AIJFourByThreeExperimentManager 
+public class AIJFourByThreePlannerExperimentManager 
 {
 	// data folder
 	private static String DATA_FOLDER = "data/AIJ_EXP_FbT";
@@ -83,19 +83,18 @@ public class AIJFourByThreeExperimentManager
 	 */
 	public static void main(String[] args) 
 	{
+		// experiment generator
+		AIJFourByThreeDomainGenerator generator = new AIJFourByThreeDomainGenerator(
+				DOMAIN_FOLDER,
+				TASKS,
+				SHARED,
+				UNCERTAINTY,
+				HORIZON);
+		// generate experiment domains
+		generator.generate();
+
 		try
 		{
-			// experiment generator
-			AIJFourByThreeDomainGenerator generator = new AIJFourByThreeDomainGenerator(
-					DOMAIN_FOLDER,
-					TASKS,
-					SHARED,
-					UNCERTAINTY,
-					HORIZON);
-			
-			// generate experiment domains
-			generator.generate();
-			
 			// create data file
 			File dataFile = new File(DATA_FOLDER + "/exp_runs_" + System.currentTimeMillis() + ".csv");
 			// create file and write the header of the CSV
@@ -228,7 +227,7 @@ public class AIJFourByThreeExperimentManager
 
 @PlannerSolverConfiguration(
 	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreeExperimentManager.TIMEOUT
+	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
 )
 @FlawSelectionHeuristicsConfiguration(
 	heuristics = PipelineFlawSelectionHeuristic.class
@@ -251,7 +250,7 @@ class AIJFbTPlannerA extends Planner {
 
 @PlannerSolverConfiguration(
 	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreeExperimentManager.TIMEOUT
+	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
 )
 @FlawSelectionHeuristicsConfiguration(
 	heuristics = PipelineFlawSelectionHeuristic.class
@@ -274,7 +273,7 @@ class AIJFbTPlannerB extends Planner {
 
 @PlannerSolverConfiguration(
 	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreeExperimentManager.TIMEOUT
+	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
 )
 @FlawSelectionHeuristicsConfiguration(
 	heuristics = PipelineFlawSelectionHeuristic.class
@@ -297,7 +296,7 @@ class AIJFbTPlannerC extends Planner {
 
 @PlannerSolverConfiguration(
 	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreeExperimentManager.TIMEOUT
+	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
 )
 @FlawSelectionHeuristicsConfiguration(
 	heuristics = RandomFlawSelectionHeuristic.class

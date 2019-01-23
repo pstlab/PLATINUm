@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.app.cli;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
+import it.istc.pst.platinum.app.control.sim.hrc.HRCPlatformSimulator;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
@@ -37,6 +38,8 @@ public abstract class AbstractCommandLineInterface
 		this.langFactory = ProtocolLanguageFactory.getSingletonInstance(horizon);
 		this.queryFactory = ProtocolQueryFactory.getSingletonInstance();
 		this.currentSolution = null;
+		this.planner = null;
+		this.pdb = null;
 	}
 	
 	/**
@@ -50,16 +53,21 @@ public abstract class AbstractCommandLineInterface
 	{
 		try 
 		{
+			// clear plan database
+			this.pdb = null;
 			// initialize the plan database
 			this.pdb = PlanDataBaseBuilder.createAndSet(ddl, pdl);
 			// clear planner
-			if (this.planner != null) {
-				this.planner = null;
-			}
+			this.planner = null;
+			this.currentSolution = null;
 		}
 		catch (SynchronizationCycleException | ProblemInitializationException ex) {
 			// command line interface initialization exception
 			throw new CommandLineInterfaceException(ex.getMessage());
+		}
+		finally {
+			// call garbage collector
+			System.gc();
 		}
 	}
 	
@@ -77,7 +85,7 @@ public abstract class AbstractCommandLineInterface
 		}
 		
 		// initialize the planner
-		this.planner = PlannerBuilder.createAndSet(this.pdb);
+		this.planner = PlannerBuilder.createAndSet(Planner.class, this.pdb);
 		// run the planner on the desired goal
 		this.currentSolution = this.planner.plan();
 	}
@@ -90,21 +98,39 @@ public abstract class AbstractCommandLineInterface
 			throws CommandLineInterfaceException
 	{
 		// check if a solution exists
-		if (this.currentSolution == null && this.planner != null) {
+		if (this.currentSolution == null && this.planner == null) {
 			throw new CommandLineInterfaceException("No plan to execute!");
 		}
 		
+		// create HRC simulator
+		HRCPlatformSimulator sim = new HRCPlatformSimulator();
 		try
 		{
 			// create the executive 
 			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
 			// initialize the executive
 			exec.initialize(this.planner.export(this.currentSolution));
+			
+			
+			// bind the executive to the platform
+			exec.bind(sim);
+			// start simulator
+			sim.start();
 			// run the executive
 			exec.execute();
 		}
 		catch (Exception ex) {
 			throw new CommandLineInterfaceException(ex.getMessage());
+		}
+		finally 
+		{
+			try {
+				// stop simulator
+				sim.stop();
+			}
+			catch (InterruptedException ex) {
+				throw new RuntimeException(ex.getMessage());
+			}
 		}
 	}
 	

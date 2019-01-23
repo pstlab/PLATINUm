@@ -157,6 +157,14 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
 						}
 						
+						// check if virtual node
+						boolean virtual = true;
+						if (token.getPredicate().startsWith("_") || 
+								token.getPredicate().startsWith("r")) {
+							// not a virtual node
+							virtual = false;
+						}
+						
 						// set parameter information
 						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
@@ -185,7 +193,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability);
+								start, end, duration, controllability, virtual);
 						
 						// add node
 						this.addNode(node);
@@ -222,6 +230,14 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 							controllability = ControllabilityType.PARTIALLY_CONTROLLABLE;
 						}
 						
+						// set virtual flag
+						boolean virtual = true;
+						if (token.getPredicate().startsWith("_") ||
+								token.getPredicate().startsWith("r")) {
+							// not a virtual node
+							virtual = false;
+						}
+						
 						// set parameter information
 						String signature = token.getPredicate();
 						String[] paramValues = new String[token.getParameters().size()];
@@ -250,7 +266,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability);
+								start, end, duration, controllability, virtual);
 						
 						// add node
 						this.addNode(node);
@@ -711,13 +727,15 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 	 * @param end
 	 * @param duration
 	 * @param controllability
+	 * @param virtual
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
 	protected ExecutionNode createNode(String component, String timeline, 
 			String signature, ParameterType[] pTypes, String[] pValues, 
 			long[] start, long[] end, long[] duration, 
-			ControllabilityType controllability) 
+			ControllabilityType controllability,
+			boolean virtual) 
 			throws TemporalIntervalCreationException  
 	{
 //		// check interval controllability
@@ -729,7 +747,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		// create predicate
 		NodePredicate predicate = new NodePredicate(component, timeline, signature, pTypes, pValues); 
 		// create execution node
-		return new ExecutionNode(predicate, interval, controllability);
+		return new ExecutionNode(predicate, interval, controllability, virtual);
 	}
 	
 	/**
@@ -813,13 +831,13 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 			throws TemporalConstraintPropagationException 
 	{
 		// check node controllability and duration
-		if ((node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) || 
-				node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE)) && 
-				(duration < node.getDuration()[0] || duration > node.getDuration()[1]))
-		{
-			// inconsistent duration to schedule
-			throw new TemporalConstraintPropagationException("Invalid duration constraint for node\n- duration= " + duration +"\n- node= " + node + "\n");
-		}
+//		if ((node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) || 
+//				node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE)) && 
+//				(duration < node.getDuration()[0] || duration > node.getDuration()[1]))
+//		{
+//			// inconsistent duration to schedule
+//			throw new TemporalConstraintPropagationException("Invalid duration constraint for node\n- duration= " + duration +"\n- node= " + node + "\n");
+//		}
 			
 		// fix start time first
 		FixIntervalDurationConstraint fix = this.facade.
@@ -857,7 +875,8 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		fix.setTime(time);
 		// propagate constraint
 		this.facade.propagate(fix);
-		try {
+		try 
+		{
 			// check consistency of the resulting network
 			this.facade.verify();
 		}

@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.testing.aij;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
-import it.istc.pst.platinum.app.sim.hrc.HRCPlatformSimulator;
+import it.istc.pst.platinum.app.control.sim.hrc.HRCPlatformSimulator;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
@@ -23,7 +23,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public class AIJFourByThreeExperimentSingleRunner 
+public class AIJFourByThreeActingExperimentRunner 
 {
 	// timeout
 	public static final long TIMEOUT = 60000;		// timeout set to 60 seconds
@@ -69,23 +69,18 @@ public class AIJFourByThreeExperimentSingleRunner
 			// display the planner
 			planner.display();
 			
-			
-			
-			
-			
-			
+
 			try
 			{
-				// create HRC simulator
-				HRCPlatformSimulator sim = new HRCPlatformSimulator();
-				
 				// create the executive 
 				Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, plan.getHorizon());
 				// initialize the executive
 				exec.initialize(planner.export(plan));
+				
+				// create HRC simulator
+				HRCPlatformSimulator sim = new HRCPlatformSimulator();
 				// bind the executive to the platform
 				exec.bind(sim);
-				
 				
 				// start simulator
 				sim.start();
@@ -112,7 +107,7 @@ public class AIJFourByThreeExperimentSingleRunner
 
 @PlannerSolverConfiguration(
 	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreeExperimentSingleRunner.TIMEOUT
+	timeout = AIJFourByThreeActingExperimentRunner.TIMEOUT
 )
 @FlawSelectionHeuristicsConfiguration(
 	heuristics = PipelineFlawSelectionHeuristic.class

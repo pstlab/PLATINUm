@@ -1,7 +1,7 @@
-package it.istc.pst.platinum.app.sim.hrc;
+package it.istc.pst.platinum.app.control.sim.hrc;
 
-import it.istc.pst.platinum.app.sim.PlatformSimulator;
-import it.istc.pst.platinum.app.sim.SerialAgentSimulator;
+import it.istc.pst.platinum.app.control.sim.PlatformSimulator;
+import it.istc.pst.platinum.app.control.sim.SerialAgentSimulator;
 import it.istc.pst.platinum.executive.ExecutivePlatformObserver;
 
 /**
