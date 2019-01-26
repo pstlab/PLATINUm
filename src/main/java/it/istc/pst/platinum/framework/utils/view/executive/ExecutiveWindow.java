@@ -159,7 +159,7 @@ public class ExecutiveWindow extends JFrame {
 						// create a sub-task
 						Task subTask = new Task(node.getGroundSignature(),
 								new Date(node.getStart()[0]),
-								new Date(node.getEnd()[0]));
+								new Date(node.getStart()[0] + node.getDuration()[0]));
 						
 						// add sub-task
 						task.addSubtask(subTask);

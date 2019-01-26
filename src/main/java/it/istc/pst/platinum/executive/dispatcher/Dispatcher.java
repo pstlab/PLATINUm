@@ -21,6 +21,7 @@ public abstract class Dispatcher<T extends Executive> extends ExecutiveObject
 	 * The method handle the current tick of the executor's clock
 	 * 
 	 * @param tick
+	 * @throws ExecutionException
 	 */
 	public abstract void handleTick(long tick) 
 			throws ExecutionException;
@@ -29,6 +30,8 @@ public abstract class Dispatcher<T extends Executive> extends ExecutiveObject
 	 * Dispatch the node to start execution
 	 * 
 	 * @param node
+	 * @throws ExecutionException
 	 */
-	public abstract void dispatch(ExecutionNode node); 
+	public abstract void dispatch(ExecutionNode node) 
+			throws ExecutionException; 
 }

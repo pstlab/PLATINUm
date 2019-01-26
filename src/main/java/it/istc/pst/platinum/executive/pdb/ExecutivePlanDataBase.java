@@ -830,15 +830,6 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 	public final void scheduleDuration(ExecutionNode node, long duration) 
 			throws TemporalConstraintPropagationException 
 	{
-		// check node controllability and duration
-//		if ((node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) || 
-//				node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE)) && 
-//				(duration < node.getDuration()[0] || duration > node.getDuration()[1]))
-//		{
-//			// inconsistent duration to schedule
-//			throw new TemporalConstraintPropagationException("Invalid duration constraint for node\n- duration= " + duration +"\n- node= " + node + "\n");
-//		}
-			
 		// fix start time first
 		FixIntervalDurationConstraint fix = this.facade.
 				createTemporalConstraint(TemporalConstraintType.FIX_INTERVAL_DURATION);

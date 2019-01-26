@@ -1,0 +1,25 @@
+package it.istc.pst.platinum.control.platform.sim;
+
+import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
+
+/**
+ * 
+ * @author anacleto
+ *
+ */
+public interface PlatformAgentObserver 
+{
+
+	/**
+	 * 
+	 * @param cmd
+	 */
+	void notifySuccess(PlatformCommand cmd);
+	
+	/**
+	 * 
+	 * @param cmd
+	 */
+	public void notifyFailure(PlatformCommand cmd);
+
+}

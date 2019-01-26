@@ -5,7 +5,7 @@ package it.istc.pst.platinum.executive.lang.ex;
  * @author anacleto
  *
  */
-public abstract class ExecutionException extends Exception {
+public class ExecutionException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
 	protected ExecutionFailureCause cause; 

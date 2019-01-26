@@ -1,8 +1,8 @@
 package it.istc.pst.platinum.executive.dispatcher;
 
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
-import it.istc.pst.platinum.executive.pdb.ControllabilityType;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 
@@ -59,7 +59,7 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 					this.executive.scheduleTokenStart(node, node.getStart()[1]);
 					// dispatch node
 					this.dispatch(node);
-					logger.warning("{Dispatcher} {tick = " + tick + " } {tau: " + tau + "} -> (Late) Start executing node at time= " + node.getStart()[1] + "\n"
+					logger.warning("{Dispatcher} {tick = " + tick + " } {tau: " + tau + "} -> (Late) Start executing node at time: " + node.getStart()[1] + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				else  
@@ -83,13 +83,18 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 	 */
 	@Override
 	public void dispatch(ExecutionNode node) 
+			throws ExecutionException 
 	{
-		// check node controllability properties
-		if (node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE) ||
-				node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE)) 
-		{
+		try {
 			// dispatch the command through the executive if needed
 			this.executive.dispatchCommandToThePlatform(node);
+		}
+		catch (PlatformException ex) {
+			
+			/*
+			 * TODO : add exception cause
+			 */
+			throw new ExecutionException(ex.getMessage(), null);
 		}
 	}
 }

@@ -1,7 +1,8 @@
 package it.istc.pst.platinum.testing.aij;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
-import it.istc.pst.platinum.app.control.sim.hrc.HRCPlatformSimulator;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulatorBuilder;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
@@ -23,7 +24,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  * @author anacleto
  *
  */
-public class AIJFourByThreeActingExperimentRunner 
+public class AIJFbTActingExperimentRunner 
 {
 	// timeout
 	public static final long TIMEOUT = 60000;		// timeout set to 60 seconds
@@ -34,8 +35,10 @@ public class AIJFourByThreeActingExperimentRunner
 	// number of shared tasks composing the assembly process
 	private static int SHARED = 60; // 20, 40, 60, 80, 100
 	// amount of uncertainty about human task execution
-	private static int UNCERTAINTY = 20; // 10, 20, 30
-		
+	private static int UNCERTAINTY = 30; // 10, 20, 30
+	
+	private static String PLATFORM_CFG_FOLDER = "etc/platform/AIJ_EXP_FbT";
+	private static int PLATFORM_UNCERTAINTY = 10; // 10, 15, 20, 25
 	
 	/**
 	 * 
@@ -77,8 +80,13 @@ public class AIJFourByThreeActingExperimentRunner
 				// initialize the executive
 				exec.initialize(planner.export(plan));
 				
-				// create HRC simulator
-				HRCPlatformSimulator sim = new HRCPlatformSimulator();
+				
+				// set platform configuration file
+				String cfgFileName = "AIJ_EXP_PLATFORM_CONFIG_U" + PLATFORM_UNCERTAINTY;
+				// file path
+				String path = PLATFORM_CFG_FOLDER + "/" + cfgFileName + ".xml";
+				// build platform simulator
+				PlatformSimulator sim = PlatformSimulatorBuilder.build(path);
 				// bind the executive to the platform
 				exec.bind(sim);
 				
@@ -107,7 +115,7 @@ public class AIJFourByThreeActingExperimentRunner
 
 @PlannerSolverConfiguration(
 	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreeActingExperimentRunner.TIMEOUT
+	timeout = AIJFbTActingExperimentRunner.TIMEOUT
 )
 @FlawSelectionHeuristicsConfiguration(
 	heuristics = PipelineFlawSelectionHeuristic.class

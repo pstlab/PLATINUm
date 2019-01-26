@@ -1,7 +1,8 @@
 package it.istc.pst.platinum.app.cli;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
-import it.istc.pst.platinum.app.control.sim.hrc.HRCPlatformSimulator;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulatorBuilder;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
@@ -94,7 +95,7 @@ public abstract class AbstractCommandLineInterface
 	 * 
 	 * @throws CommandLineInterfaceException
 	 */
-	protected void execute() 
+	protected void execute(String path) 
 			throws CommandLineInterfaceException
 	{
 		// check if a solution exists
@@ -102,15 +103,16 @@ public abstract class AbstractCommandLineInterface
 			throw new CommandLineInterfaceException("No plan to execute!");
 		}
 		
-		// create HRC simulator
-		HRCPlatformSimulator sim = new HRCPlatformSimulator();
+		// create simulator
+		PlatformSimulator sim = null;
 		try
 		{
+			// create platform simulator
+			sim = PlatformSimulatorBuilder.build(path);
 			// create the executive 
 			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
 			// initialize the executive
 			exec.initialize(this.planner.export(this.currentSolution));
-			
 			
 			// bind the executive to the platform
 			exec.bind(sim);
@@ -124,9 +126,13 @@ public abstract class AbstractCommandLineInterface
 		}
 		finally 
 		{
-			try {
-				// stop simulator
-				sim.stop();
+			try 
+			{
+				// check simulator to stop
+				if (sim != null) {
+					// stop simulator
+					sim.stop();
+				}
 			}
 			catch (InterruptedException ex) {
 				throw new RuntimeException(ex.getMessage());

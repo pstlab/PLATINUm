@@ -11,6 +11,13 @@ public interface ExecutionManager
 {
 	/**
 	 * 
+	 * @param property
+	 * @return
+	 */
+	public String getProperty(String property); 
+	
+	/**
+	 * 
 	 * @param tick
 	 * @return
 	 * @throws ExecutionException

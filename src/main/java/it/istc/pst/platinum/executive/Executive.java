@@ -2,11 +2,15 @@ package it.istc.pst.platinum.executive;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import it.istc.pst.platinum.control.platform.PlatformObserver;
+import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.executive.dispatcher.ConditionCheckingDispatcher;
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
@@ -49,7 +53,7 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
 @DispatcherConfiguration(
 		dispatcher = ConditionCheckingDispatcher.class
 )
-public class Executive extends ExecutiveObject implements ExecutionManager, ExecutivePlatformObserver
+public class Executive extends ExecutiveObject implements ExecutionManager, PlatformObserver
 {
 	@ExecutivePlanDataBasePlaceholder
 	protected ExecutivePlanDataBase pdb;										// the (executive) plan to execute
@@ -70,11 +74,11 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	private long currentTick;															// current tick
 	
 	private ExecutiveWindow window;												// executive window
-	private Map<String, ExecutionNode> dispatchedIndex;							// keep track of dispatched nodes
+	private Map<PlatformCommand, ExecutionNode> dispatchedIndex;				// keep track of dispatched nodes
 	private AtomicBoolean failure;												// execution failure flag
 	private ExecutionFailureCause cause;										// execution failure cause
 	
-	private ExecutivePlatformProxy platformProxy;								// platform PROXY to send commands to 
+	private PlatformSimulator platformProxy;								// platform PROXY to send commands to 
 	
 	/**
 	 * 
@@ -92,13 +96,23 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 		this.clock = new AtomicClockManager(this);
 		// initialize the PROXY and the observer
 		this.platformProxy = null;
+		// set failure flag
+		this.failure = new AtomicBoolean(false);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String getProperty(String property) {
+		return this.config.getProperty(property);
 	}
 
 	/**
 	 * 
 	 * @param proxy
 	 */
-	public void bind(ExecutivePlatformProxy proxy) {
+	public void bind(PlatformSimulator proxy) {
 		// bind the executive
 		this.platformProxy = proxy;
 		// register to the PROXY
@@ -249,6 +263,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 					if (!node.isVirtual()) {
 						// actually schedule the start time of the token
 						this.pdb.scheduleStartTime(node, start);
+						// check resulting schedule
+						this.checkSchedule(node);
 					}
 					
 					// update node status
@@ -257,7 +273,11 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 				catch (TemporalConstraintPropagationException ex) 
 				{
 					// error while propagating token start time
-					// TODO : create failure cause
+
+					/* 
+					 * TODO : create failure cause
+					 */
+					
 					throw new TokenDispatchingException(ex.getMessage(), null);
 				}
 			}
@@ -278,12 +298,18 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 		{
 			// schedule the observed start time of the token
 			this.pdb.scheduleStartTime(node, start);
+			// check resulting schedule
+			this.checkSchedule(node);
 			// update node status
 			this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 		}
 		catch (TemporalConstraintPropagationException ex) {
 			// synchronization exception
-			// TODO : create failure cause
+
+			/* 
+			 * TODO : create failure cause
+			 */
+			
 			throw new ObservationSynchronizationException(ex.getMessage(), null);
 		}
 	}
@@ -303,10 +329,25 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 			if (!node.isVirtual()) {
 				// propagate scheduled duration time
 				this.pdb.scheduleDuration(node, duration);
+				// if controllable send a stop command
+				if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
+					// also send stop command execution request
+					this.platformProxy.stopCommand(node);
+				}
 			}
 			
+			// check schedule
+			this.checkSchedule(node);
 			// the node can be considered as executed
 			this.updateNode(node, ExecutionNodeStatus.EXECUTED);
+		}
+		catch (PlatformException ex) {
+			
+			/*
+			 *  TODO : create platform failure message
+			 */
+			
+			throw new ExecutionException("Error while sending stop request to the platform", null);
 		}
 		catch (TemporalConstraintPropagationException ex) 
 		{
@@ -382,7 +423,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 			this.doPrepareExecution();
 			
 			// initialize dispatching index
-			this.dispatchedIndex = new HashMap<>();
+			this.dispatchedIndex = new ConcurrentHashMap<>();
 			// start clock
 			this.clock.start();
 			// wait execution completes
@@ -499,15 +540,12 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 			// handle current tick
 			this.currentTick = tick;
 			logger.info("{Executive} -> Handle tick: " + tick + "\n");
-			
 			// synchronization step
 			logger.info("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 			this.monitor.handleTick(tick);
-			
 			// dispatching step
 			logger.info("{Executive} {tick: " + tick + "} -> Dispatching step\n");
 			this.dispatcher.handleTick(tick);
-			
 			// display executive window
 			this.displayWindow();
 			// check if execution is complete
@@ -562,18 +600,33 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	/**
 	 * 
 	 * @param node
+	 * @throws PlatformException
 	 */
 	public void dispatchCommandToThePlatform(ExecutionNode node) 
+			throws PlatformException
 	{
 		// check if a platform PROXY exists
 		if (this.platformProxy != null) 
 		{
-			// marshal command according to the protocol
-			String cmd = node.getGroundSignature() + "@" + node.getComponent();
-			// send command and take operation ID
-			String opId = this.platformProxy.sendCommand(cmd);
-			// add entry to the index
-			this.dispatchedIndex.put(opId, node);
+			// check controllability type 
+			if (node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE) || 
+					node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE))
+			{
+				// send command and take operation ID
+				PlatformCommand cmd = this.platformProxy.executedCommand(node);
+				// add entry to the index
+				this.dispatchedIndex.put(cmd, node);
+			}
+			else
+			{
+				// check if controllable token is virtual
+				if (!node.isVirtual()) {
+					// require execution start
+					PlatformCommand cmd = this.platformProxy.startCommand(node);
+					// add entry to the index
+					this.dispatchedIndex.put(cmd, node);
+				}
+			}
 		}
 		else {
 			
@@ -585,33 +638,32 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	 * 
 	 */
 	@Override
-	public void success(String opId, Object data) 
+	public void success(PlatformCommand cmd) 
 	{
-		// check operation id 
-		if (this.dispatchedIndex.containsKey(opId))
+		// check command  
+		if (this.dispatchedIndex.containsKey(cmd))
 		{
 			// get execution node
-			ExecutionNode node = this.dispatchedIndex.get(opId);
+			ExecutionNode node = this.dispatchedIndex.get(cmd);
 			// check node current status
 			if (node.getStatus().equals(ExecutionNodeStatus.STARTING)) 
 			{
-				// got start execution feedback from a completely uncontrollable token
-				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
-						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				// create execution feedback
 				ExecutionFeedback feedback = new ExecutionFeedback(
+						this.currentTick,
 						node, 
 						ExecutionFeedbackType.UNCONTROLLABLE_TOKEN_START);
 				// forward the feedback to the monitor
 				this.monitor.addExecutionFeedback(feedback);
+				// got start execution feedback from a completely uncontrollable token
+				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
+						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 			}
 			else if (node.getStatus().equals(ExecutionNodeStatus.IN_EXECUTION))
 			{
-				// got end execution feedback from either a partially-controllable or uncontrollable token
-				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
-						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				// create execution feedback
 				ExecutionFeedback feedback = new ExecutionFeedback(
+						this.currentTick,
 						node, 
 						node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) ? 
 								ExecutionFeedbackType.UNCONTROLLABLE_TOKEN_COMPLETE : 
@@ -619,7 +671,10 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 				// forward feedback to the monitor
 				this.monitor.addExecutionFeedback(feedback);
 				// remove operation ID from index
-				this.dispatchedIndex.remove(opId);
+				this.dispatchedIndex.remove(cmd);
+				// got end execution feedback from either a partially-controllable or uncontrollable token
+				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
+						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 			}
 			else 
 			{
@@ -630,7 +685,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 		else 
 		{
 			// no operation ID found 
-			logger.warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- opId: " + opId + "\n\t-data: " + data + "\n");
+			logger.warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
 		}
 	}
 	
@@ -639,7 +694,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Exec
 	 * 
 	 */
 	@Override
-	public void failure(String opId, Object data) 
+	public void failure(PlatformCommand cmd) 
 	{
 		// TODO Auto-generated method stub
 		

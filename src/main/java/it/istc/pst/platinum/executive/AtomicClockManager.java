@@ -1,10 +1,6 @@
 package it.istc.pst.platinum.executive;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
@@ -18,7 +14,6 @@ import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 public final class AtomicClockManager extends ExecutiveObject implements Runnable, ClockManager
 {
 	private static final String CLOCK_RATE_PROPERTY = "clock_frequency";	// property specifying sampling time rate (in milliseconds)
-	private Properties config;												// executive configuration file
 	private long clockSart;													// clock start time (in milliseconds)
 	private Thread process;													// clock updating process
 	
@@ -40,20 +35,6 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 		// initialize clock thread and tick
 		this.tick = null;
 		this.process = null;
-		try 
-		{
-			// create property file
-			this.config = new Properties();
-			// load file property
-			try (InputStream input = new FileInputStream("etc/executive.properties")) { 
-				// load file
-				this.config.load(input);
-			}
-		}
-		catch (IOException ex) {
-			// problems locating property file
-			throw new RuntimeException(ex.getMessage());
-		}
 	}
 	
 	/**
@@ -148,7 +129,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 			try 
 			{
 				// get sampling rate from the configuration file
-				long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
+				long sampling = Long.parseLong(this.executive.getProperty(CLOCK_RATE_PROPERTY));
 				// wait latency
 				Thread.sleep(sampling);
 
@@ -194,7 +175,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 	@Override
 	public double convertClockTickToSeconds(long tick) {
 		// get sampling rate in milliseconds
-		long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
+		long sampling = Long.parseLong(this.executive.getProperty(CLOCK_RATE_PROPERTY));
 		// convert to seconds
 		return (tick * sampling) / 1000.0;
 	}
@@ -205,7 +186,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 	@Override
 	public double convertSecondsToClockTick(long seconds) {
 		// get sampling rate in milliseconds
-		long sampling = Long.parseLong(this.config.getProperty(CLOCK_RATE_PROPERTY));
+		long sampling = Long.parseLong(this.executive.getProperty(CLOCK_RATE_PROPERTY));
 		// convert to tick
 		return (seconds * 1000) / sampling;
 	}

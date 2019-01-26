@@ -8,75 +8,19 @@ import java.io.PrintWriter;
 
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
-import it.istc.pst.platinum.deliberative.heuristic.RandomFlawSelectionHeuristic;
-import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
-import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
-import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
-import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStrategy;
-import it.istc.pst.platinum.deliberative.strategy.fbt.HRCBalancingSearchStrategy;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.domain.component.Token;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PlannerSolverConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.SearchStrategyConfiguration;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Timeline;
-import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class AIJFourByThreePlannerExperimentManager 
+public class AIJFbTPlannerExperimentManager extends AIJFbT 
 {
-	// data folder
-	private static String DATA_FOLDER = "data/AIJ_EXP_FbT";
-	private static String PLAN_FOLDER = DATA_FOLDER + "/plans";
-	// timeout
-	public static final long TIMEOUT = 180000;		// timeout set to 3 minutes
-	// domain file folder
-	private static String DOMAIN_FOLDER = "domains/AIJ_EXP_FbT";
-	// temporal horizon 
-	private static int HORIZON = 500;
-	// number of tasks composing the assembly process
-	private static int[] TASKS = {		
-		10,
-		15,
-		20,
-		25,
-		30
-	};
-	
-	// number of shared tasks composing the assembly process
-	private static int[] SHARED = {
-		20,
-		40,
-		60,
-		80,
-		100
-	};
-	
-	// amount of uncertainty about human task execution
-	private static int[] UNCERTAINTY = {
-		10,
-		20,
-		30
-	};
-		
-	// number of run for each experiment
-	private static int EXPERIMETN_RUNS = 3;
-	
-	// planner configurations
-	private static Class[] CONFIGURATIONS = {
-		AIJFbTPlannerA.class,
-		AIJFbTPlannerB.class,
-		AIJFbTPlannerC.class,
-		AIJFbTPlannerD.class
-	};
-	
 	/**
 	 * 
 	 * @param args
@@ -84,7 +28,7 @@ public class AIJFourByThreePlannerExperimentManager
 	public static void main(String[] args) 
 	{
 		// experiment generator
-		AIJFourByThreeDomainGenerator generator = new AIJFourByThreeDomainGenerator(
+		AIJFbTPlanningDomainGenerator generator = new AIJFbTPlanningDomainGenerator(
 				DOMAIN_FOLDER,
 				TASKS,
 				SHARED,
@@ -218,99 +162,6 @@ public class AIJFourByThreePlannerExperimentManager
 		catch (IOException ex) {
 			System.err.println(ex.getMessage());
 		}
-	}
-}
-
-
-//PLANNER CONFIGURATION A
-
-
-@PlannerSolverConfiguration(
-	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
-)
-@FlawSelectionHeuristicsConfiguration(
-	heuristics = PipelineFlawSelectionHeuristic.class
-)
-@SearchStrategyConfiguration(
-	strategy = HRCBalancingSearchStrategy.class
-)
-@FrameworkLoggerConfiguration(
-	level = FrameworkLoggingLevel.OFF
-)
-class AIJFbTPlannerA extends Planner {
-	
-	protected AIJFbTPlannerA() {
-		super();
-	}
-}
-	
-	
-// PLANNER CONFIGURATION B
-
-@PlannerSolverConfiguration(
-	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
-)
-@FlawSelectionHeuristicsConfiguration(
-	heuristics = PipelineFlawSelectionHeuristic.class
-)
-@SearchStrategyConfiguration(
-	strategy = MakespanOptimizationSearchStrategy.class
-)
-@FrameworkLoggerConfiguration(
-	level = FrameworkLoggingLevel.OFF
-)
-class AIJFbTPlannerB extends Planner {
-	
-	protected AIJFbTPlannerB() {
-		super();
-	}
-}
-	
-	
-// PLANNER CONFIGURATION C
-
-@PlannerSolverConfiguration(
-	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
-)
-@FlawSelectionHeuristicsConfiguration(
-	heuristics = PipelineFlawSelectionHeuristic.class
-)
-@SearchStrategyConfiguration(
-	strategy = DepthFirstSearchStrategy.class
-)
-@FrameworkLoggerConfiguration(
-	level = FrameworkLoggingLevel.OFF
-)
-class AIJFbTPlannerC extends Planner {
-	
-	protected AIJFbTPlannerC() {
-		super();
-	}
-}
-
-
-//PLANNER CONFIGURATION D
-
-@PlannerSolverConfiguration(
-	solver = PseudoControllabilityAwareSolver.class,
-	timeout = AIJFourByThreePlannerExperimentManager.TIMEOUT
-)
-@FlawSelectionHeuristicsConfiguration(
-	heuristics = RandomFlawSelectionHeuristic.class
-)
-@SearchStrategyConfiguration(
-	strategy = DepthFirstSearchStrategy.class
-)
-@FrameworkLoggerConfiguration(
-	level = FrameworkLoggingLevel.OFF
-)
-class AIJFbTPlannerD extends Planner {
-	
-	protected AIJFbTPlannerD() {
-		super();
 	}
 }
 

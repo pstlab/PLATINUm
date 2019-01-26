@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.executive.monitor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.istc.pst.platinum.executive.Executive;
@@ -19,7 +20,7 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	@ExecutivePlaceholder
 	protected T executive;
 	
-	protected final List<ExecutionFeedback> observations;
+	protected List<ExecutionFeedback> observations;
 	
 	/**
 	 * 
@@ -27,7 +28,7 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	protected Monitor() {
 		super();
 		// initialize list of observations
-		this.observations = new ArrayList<>();
+		this.observations = new ArrayList<ExecutionFeedback>();
 	}
 	
 	/**
@@ -35,11 +36,10 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	 * @param feedback
 	 */
 	public void addExecutionFeedback(ExecutionFeedback feedback) {
-		// synchronize access to shared resource
+		// protected access to the list of observations
 		synchronized (this.observations) {
 			// add received feedback
 			this.observations.add(feedback);
-			this.observations.notifyAll();
 		}
 	}
 	
@@ -49,19 +49,19 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	 */
 	protected List<ExecutionFeedback> getObservations() 
 	{
-		// list of received observations
+		// list of observations
 		List<ExecutionFeedback> list = new ArrayList<>();
-		// access shared resource
+		// protect access to the list of observations
 		synchronized (this.observations) {
-			// get all received observations
-			list.addAll(this.observations);
+			// list of received observations
+			list = new ArrayList<>(this.observations);
+			// sort observations
+			Collections.sort(list);
 			// clear observation queue
 			this.observations.clear();
-			// notify all
-			this.observations.notifyAll();
 		}
 		
-		// get observations
+		// get received observations
 		return list;
 	}
 	

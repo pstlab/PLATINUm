@@ -209,10 +209,17 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 		}
 		else if (cmd.toLowerCase().equals(CommandLineCommand.EXEC.getCmd().toLowerCase())) 
 		{
+			// check data
+			if (splits.length < 2 || splits[1] == null) {
+				throw new CommandLineInterfaceException("Bad command usage -> " + CommandLineCommand.EXEC.getHelp());
+			}
+			
+			// get platform configuration file
+			String cfgFilePath = splits[1].trim();
 			try
 			{
 				// initialize and run the executive if possible
-				this.execute();
+				this.execute(cfgFilePath);
 			}
 			catch (CommandLineInterfaceException ex) {
 				System.err.println(ex.getMessage());

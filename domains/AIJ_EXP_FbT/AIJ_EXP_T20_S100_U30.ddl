@@ -47,112 +47,112 @@ DOMAIN AIJ_EXP_T20_S100_U30 {
 
 	COMP_TYPE SingletonStateVariable HumanSV (Idle(), _UnscrewTopBolt1(), _UnscrewTopBolt2(), _UnscrewTopBolt3(), _UnscrewTopBolt4(), _UnscrewTopBolt5(), _UnscrewTopBolt6(), _UnscrewTopBolt7(), _UnscrewTopBolt8(), _UnscrewTopBolt9(), _UnscrewTopBolt10(), _UnscrewBottomBolt1(), _UnscrewBottomBolt2(), _UnscrewBottomBolt3(), _UnscrewBottomBolt4(), _UnscrewBottomBolt5(), _UnscrewBottomBolt6(), _UnscrewBottomBolt7(), _UnscrewBottomBolt8(), _UnscrewBottomBolt9(), _UnscrewBottomBolt10(), _SetWorkPiece(), _RemoveWaxPart()) {
 
-		VALUE _SetWorkPiece() [1, 31]
+		VALUE _SetWorkPiece() [1, 52]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _RemoveWaxPart() [1, 31]
+		VALUE _RemoveWaxPart() [1, 61]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt1() [1, 38]
+		VALUE _UnscrewTopBolt1() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt2() [1, 38]
+		VALUE _UnscrewTopBolt2() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt3() [1, 38]
+		VALUE _UnscrewTopBolt3() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt4() [1, 38]
+		VALUE _UnscrewTopBolt4() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt5() [1, 38]
+		VALUE _UnscrewTopBolt5() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt6() [1, 38]
+		VALUE _UnscrewTopBolt6() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt7() [1, 38]
+		VALUE _UnscrewTopBolt7() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt8() [1, 38]
+		VALUE _UnscrewTopBolt8() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt9() [1, 38]
+		VALUE _UnscrewTopBolt9() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewTopBolt10() [1, 38]
+		VALUE _UnscrewTopBolt10() [1, 56]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt1() [1, 46]
+		VALUE _UnscrewBottomBolt1() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt2() [1, 46]
+		VALUE _UnscrewBottomBolt2() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt3() [1, 46]
+		VALUE _UnscrewBottomBolt3() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt4() [1, 46]
+		VALUE _UnscrewBottomBolt4() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt5() [1, 46]
+		VALUE _UnscrewBottomBolt5() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt6() [1, 46]
+		VALUE _UnscrewBottomBolt6() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt7() [1, 46]
+		VALUE _UnscrewBottomBolt7() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt8() [1, 46]
+		VALUE _UnscrewBottomBolt8() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt9() [1, 46]
+		VALUE _UnscrewBottomBolt9() [1, 58]
 		MEETS {
 			Idle();
 		}
 
-		VALUE _UnscrewBottomBolt10() [1, 46]
+		VALUE _UnscrewBottomBolt10() [1, 58]
 		MEETS {
 			Idle();
 		}
@@ -311,114 +311,114 @@ DOMAIN AIJ_EXP_T20_S100_U30 {
 		}
 	}
 
-	COMP_TYPE SingletonStateVariable RoboticArmSV (SetOnTopBolt1(), SetOnTopBolt2(), SetOnTopBolt3(), SetOnTopBolt4(), SetOnTopBolt5(), SetOnTopBolt6(), SetOnTopBolt7(), SetOnTopBolt8(), SetOnTopBolt9(), SetOnTopBolt10(), SetOnBottomBolt1(), SetOnBottomBolt2(), SetOnBottomBolt3(), SetOnBottomBolt4(), SetOnBottomBolt5(), SetOnBottomBolt6(), SetOnBottomBolt7(), SetOnBottomBolt8(), SetOnBottomBolt9(), SetOnBottomBolt10(), SetOnBase(), Moving()) {
+	COMP_TYPE SingletonStateVariable RoboticArmSV (SetOnTopBolt1(), SetOnTopBolt2(), SetOnTopBolt3(), SetOnTopBolt4(), SetOnTopBolt5(), SetOnTopBolt6(), SetOnTopBolt7(), SetOnTopBolt8(), SetOnTopBolt9(), SetOnTopBolt10(), SetOnBottomBolt1(), SetOnBottomBolt2(), SetOnBottomBolt3(), SetOnBottomBolt4(), SetOnBottomBolt5(), SetOnBottomBolt6(), SetOnBottomBolt7(), SetOnBottomBolt8(), SetOnBottomBolt9(), SetOnBottomBolt10(), SetOnBase(), _Moving()) {
 
 		VALUE SetOnBase() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt1() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt2() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt3() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt4() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt5() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt6() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt7() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt8() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt9() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnTopBolt10() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt1() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt2() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt3() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt4() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt5() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt6() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt7() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt8() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt9() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
 		VALUE SetOnBottomBolt10() [1, +INF]
 		MEETS {
-			Moving();
+			_Moving();
 		}
 
-		VALUE Moving() [3, 5]
+		VALUE _Moving() [1, 48]
 		MEETS {
 			SetOnBase();
 			SetOnTopBolt1();
@@ -451,7 +451,7 @@ DOMAIN AIJ_EXP_T20_S100_U30 {
 			rUnscrewBolt();
 		}
 
-		VALUE rUnscrewBolt() [3, 3]
+		VALUE rUnscrewBolt() [6, 6]
 		MEETS {
 			Idle();
 		}

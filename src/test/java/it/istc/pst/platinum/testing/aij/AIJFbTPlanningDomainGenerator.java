@@ -11,7 +11,7 @@ import java.io.OutputStreamWriter;
  * @author anacleto
  *
  */
-public class AIJFourByThreeDomainGenerator 
+public class AIJFbTPlanningDomainGenerator extends AIJFbT 
 {
 	// domain name
 	private String domainFolder;
@@ -20,11 +20,13 @@ public class AIJFourByThreeDomainGenerator
 	private int[] domainUncertaintyVariability;
 	private int domainHorizon;
 	
+	
+	
 	/**
 	 * 
 	 * @param domainFolder
 	 */
-	protected AIJFourByThreeDomainGenerator(
+	protected AIJFbTPlanningDomainGenerator(
 			String domainFolder,
 			int[] domainTasks,
 			int[] domainSharedTasks,
@@ -73,9 +75,7 @@ public class AIJFourByThreeDomainGenerator
 						// model robot capabilities
 						ddl += prepareRobotSV(topTasks, bottomTasks);
 						// model robot arm motions
-						ddl += prepareRoboticArmSV(topTasks, bottomTasks);
-						// model robot tool configuration
-//						ddl += prepareRobotToolConfigurationSV();
+						ddl += prepareRoboticArmSV(topTasks, bottomTasks, uncertainty);
 						// model tool 
 						ddl += prepareToolSV();
 						
@@ -92,8 +92,6 @@ public class AIJFourByThreeDomainGenerator
 						ddl += prepareHRCRules(topTasks, sharedTopTasks, bottomTasks, sharedBottomTasks);
 						// model robot task internal coordination
 						ddl += prepareRobotRules(topTasks, bottomTasks);
-						// model robot tool change rules
-//						ddl += prepareToolChangeRules();
 						// close domain description
 						ddl += "}\n";
 						
@@ -192,36 +190,34 @@ public class AIJFourByThreeDomainGenerator
 		for (int i = 1; i <= bottomTask; i++) {
 			HTaskList += "_UnscrewBottomBolt" + i + "(), ";
 		}
-		HTaskList += "_SetWorkPiece(), _RemoveWaxPart()"; // ", _MountTool1(), _MountTool2()";
+		HTaskList += "_SetWorkPiece(), _RemoveWaxPart()"; 
 		
 		// model human operator capabilities
 		String ddl = "\tCOMP_TYPE SingletonStateVariable HumanSV (" + HTaskList + ") {\n\n"
-				+ "\t\tVALUE _SetWorkPiece() [7, " + (7 + uncertainty) + "]\n"
+				// task duration: 22
+				+ "\t\tVALUE _SetWorkPiece() [" + (Math.max(1, 22 - uncertainty)) + ", " + (Math.min(22 + uncertainty, HORIZON)) + "]\n"
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tIdle();\n"
 				+ "\t\t}\n\n"
-//				+ "\t\tVALUE _MountTool1() [11, " + (11 + uncertainty) + "]\n"
-//				+ "\t\tMEETS {\n"
-//				+ "\t\t\tIdle();\n"
-//				+ "\t\t}\n\n"
-//				+ "\t\tVALUE _MountTool2() [7, " + (7 + uncertainty) + "]\n"
-//				+ "\t\tMEETS {\n"
-//				+ "\t\t\tIdle();\n"
-//				+ "\t\t}\n\n"
-				+ "\t\tVALUE _RemoveWaxPart() [18, " + (18 + uncertainty) + "]\n"
+				// task duration: 31
+				+ "\t\tVALUE _RemoveWaxPart() [" + (Math.max(1, 31 - uncertainty)) + ", " + (Math.min(31 + uncertainty, HORIZON)) + "]\n"
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tIdle();\n"
 				+ "\t\t}\n\n";
 		
-		
+		// top bolts 
 		for (int i = 1; i <= topTask; i++) {
-			ddl += "\t\tVALUE _UnscrewTopBolt" + i + "() [8, " + (8 + uncertainty) + "]\n"
+			// task duration: 26
+			ddl += "\t\tVALUE _UnscrewTopBolt" + i + "() [" + (Math.max(1, 26 - uncertainty)) +", " + (Math.min(26 + uncertainty, HORIZON)) + "]\n"
 					+ "\t\tMEETS {\n"
 					+ "\t\t\tIdle();\n"
 					+ "\t\t}\n\n";
 		}
+		
+		// bottom bolts
 		for (int i = 1; i <= bottomTask; i++) {
-			ddl += "\t\tVALUE _UnscrewBottomBolt" + i + "() [16, " + (16 + uncertainty) + "]\n"
+			// task duration: 28
+			ddl += "\t\tVALUE _UnscrewBottomBolt" + i + "() [" + (Math.max(1, 28 - uncertainty)) + ", " + (Math.min(28 + uncertainty, HORIZON)) + "]\n"
 					+ "\t\tMEETS {\n"
 					+ "\t\t\tIdle();\n"
 					+ "\t\t}\n\n";
@@ -237,8 +233,6 @@ public class AIJFourByThreeDomainGenerator
 		}
 		
 		ddl += "\t\t\t_SetWorkPiece();\n"
-//				+ "\t\t\t_MountTool1();\n"
-//				+ "\t\t\t_MountTool2();\n"
 				+ "\t\t\t_RemoveWaxPart();\n"
 				+ "\t\t}\n";
 		ddl += "\t}\n\n";
@@ -298,7 +292,7 @@ public class AIJFourByThreeDomainGenerator
 	 * @param bottomTask
 	 * @return
 	 */
-	private String prepareRoboticArmSV(int topTask, int bottomTask) {
+	private String prepareRoboticArmSV(int topTask, int bottomTask, int uncertainty) {
 		// prepare list of human tasks
 		String ArmTaskList = "";
 		for (int i = 1; i <= topTask; i++) {
@@ -307,29 +301,30 @@ public class AIJFourByThreeDomainGenerator
 		for (int i = 1; i <= bottomTask; i++) {
 			ArmTaskList += "SetOnBottomBolt" + i + "(), ";
 		}
-		ArmTaskList += "SetOnBase(), Moving()";
+		ArmTaskList += "SetOnBase(), _Moving()";
 		
 		// model human operator capabilities
 		String ddl = "\tCOMP_TYPE SingletonStateVariable RoboticArmSV (" + ArmTaskList + ") {\n\n"
 				+ "\t\tVALUE SetOnBase() [1, +INF]\n"
 				+ "\t\tMEETS {\n"
-				+ "\t\t\tMoving();\n"
+				+ "\t\t\t_Moving();\n"
 				+ "\t\t}\n\n";
 		
 		for (int i = 1; i <= topTask; i++) {
 			ddl += "\t\tVALUE SetOnTopBolt" + i + "() [1, +INF]\n"
 					+ "\t\tMEETS {\n"
-					+ "\t\t\tMoving();\n"
+					+ "\t\t\t_Moving();\n"
 					+ "\t\t}\n\n";
 		}
 		for (int i = 1; i <= bottomTask; i++) {
 			ddl += "\t\tVALUE SetOnBottomBolt" + i + "() [1, +INF]\n"
 					+ "\t\tMEETS {\n"
-					+ "\t\t\tMoving();\n"
+					+ "\t\t\t_Moving();\n"
 					+ "\t\t}\n\n";
 		}
 		
-		ddl += "\t\tVALUE Moving() [3, 5]\n"
+		// task duration: 18
+		ddl += "\t\tVALUE _Moving() [" + (Math.max(1, 18 - uncertainty)) + ", " + (Math.min(18 + uncertainty, HORIZON)) + "]\n"
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tSetOnBase();\n";
 		for (int i = 1; i <= topTask; i++) {
@@ -345,30 +340,6 @@ public class AIJFourByThreeDomainGenerator
 		return ddl;
 	}
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	private String prepareRobotToolConfigurationSV()
-//	{
-//		// return SV description
-//		return "\tCOMP_TYPE SingletonStateVariable RobotToolConfigurationSV (None(), Tool1Mounted(), Tool2Mounted()) {\n\n"
-//				+ "\t\tVALUE None() [1, +INF]\n"
-//				+ "\t\tMEETS {\n"
-//				+ "\t\t\tTool1Mounted();\n"
-//				+ "\t\t\tTool2Mounted();\n"
-//				+ "\t\t}\n\n"
-//				+ "\t\tVALUE Tool1Mounted() [1, +INF]\n"
-//				+ "\t\tMEETS {\n"
-//				+ "\t\t\tNone();\n"
-//				+ "\t\t}\n\n"
-//				+ "\t\tVALUE Tool2Mounted() [1, +INF]\n"
-//				+ "\t\tMEETS {\n"
-//				+ "\t\t\tNone();\n"
-//				+ "\t\t}\n\n"
-//				+ "\t}\n\n";
-//	}
-	
 	/**
 	 * 
 	 * @return
@@ -381,7 +352,8 @@ public class AIJFourByThreeDomainGenerator
 				+ "\t\tMEETS {\n"
 				+ "\t\t\trUnscrewBolt();\n"
 				+ "\t\t}\n\n"
-				+ "\t\tVALUE rUnscrewBolt() [3, 3]\n"
+				// task duration: 6 (controllable)
+				+ "\t\tVALUE rUnscrewBolt() [6, 6]\n"
 				+ "\t\tMEETS {\n"
 				+ "\t\t\tIdle();\n"
 				+ "\t\t}\n\n"
@@ -399,9 +371,7 @@ public class AIJFourByThreeDomainGenerator
 				+ "\tCOMPONENT Human {FLEXIBLE operator(primitive)} : HumanSV;\n"
 				+ "\tCOMPONENT Robot {FLEXIBLE cobot(functional)} : RobotSV;\n"
 				+ "\tCOMPONENT Arm {FLEXIBLE motions(primitive)} : RoboticArmSV;\n"
-//				+ "\tCOMPONENT RobotTool {FLEXIBLE configuration(primitive)} : RobotToolConfigurationSV;\n"
 				+ "\tCOMPONENT Tool {FLEXIBLE screwdriver(primitive)} : ToolSV;\n"
-//				+ "\tCOMPONENT Tool2 {FLEXIBLE t2(primitive)} : ToolSV;\n"
 				+ "\n\n";
 	}
 	
@@ -536,30 +506,6 @@ public class AIJFourByThreeDomainGenerator
 		return ddl;
 	}
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	private String prepareToolChangeRules()
-//	{
-//		// get domain description
-//		return "\tSYNCHRONIZE RobotTool.configuration {\n\n"
-//				+ "\t\tVALUE Tool1Mounted() {\n\n"
-//				+ "\t\t\th0 Human.operator._MountTool1();\n"
-//				+ "\t\t\tMET-BY h0;\n"
-//				+ "\t\t\tm0 Arm.motions.SetOnBase();\n"
-//				+ "\t\t\th0 DURING [0, +INF] [0, +INF] m0;\n"
-//				+ "\t\t}\n\n"
-//				+ "\t\tVALUE Tool2Mounted() {\n\n"
-//				+ "\t\t\th0 Human.operator._MountTool2();\n"
-//				+ "\t\t\tMET-BY h0;\n"
-//				+ "\t\t\tm0 Arm.motions.SetOnBase();\n"
-//				+ "\t\t\th0 DURING [0, +INF] [0, +INF] m0;\n"
-//				+ "\t\t}\n"
-//				+ "\t}\n\n";
-//	}
-	
-	
 	/**
 	 * 
 	 * @param domain
@@ -578,6 +524,18 @@ public class AIJFourByThreeDomainGenerator
 				+ "\tgoal0 <goal> Production.process.Assembly() AT [0, +INF] [0, +INF] [1, +INF];\n\n"
 				+ "\n\n"	
 				+ "}\n\n";
+	}
+	
+	public static void main(String[] args) {
+		// experiment generator
+				AIJFbTPlanningDomainGenerator generator = new AIJFbTPlanningDomainGenerator(
+						DOMAIN_FOLDER,
+						TASKS,
+						SHARED,
+						UNCERTAINTY,
+						HORIZON);
+				// generate experiment domains
+				generator.generate();
 	}
 }
 
