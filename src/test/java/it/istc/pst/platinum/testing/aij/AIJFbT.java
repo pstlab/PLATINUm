@@ -68,11 +68,13 @@ public abstract class AIJFbT
 	
 	
 	protected static String PLATFORM_CONFIGURATION_FOLDER = "etc/platform/AIJ_EXP_FbT";
-	protected int[] PLATOFROM_EXECUTION_UNCERTAINTY = new int[] {
+	protected static int[] PLATOFROM_EXECUTION_UNCERTAINTY = new int[] {
+		5,	
 		10,
 		15,
 		20,
-		25
+		25,
+		30
 	};
 }
 

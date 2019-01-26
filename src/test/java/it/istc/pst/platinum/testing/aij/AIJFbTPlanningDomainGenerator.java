@@ -109,6 +109,14 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 							// write file
 							writer.write(pdl);
 						}
+						
+						// prepare goal-free problem specification file
+						pdl = this.prepareGoalFreeSingletonProblemDescription(domainName);
+						pdlFile = new File(this.domainFolder + "/" + domainName + "_GFREE.pdl");
+						try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdlFile), "UTF-8"))) {
+							// write file
+							writer.write(pdl);
+						}
 					}
 					catch (IOException ex) {
 						System.err.println(ex.getMessage());
@@ -526,6 +534,28 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 				+ "}\n\n";
 	}
 	
+	/**
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	private String prepareGoalFreeSingletonProblemDescription(String domain)
+	{
+		// get problem specification
+		return "PROBLEM " + domain + "_PLANNING (DOMAIN " + domain + ") {\n\n"
+				+ "\tfact0 <fact> Production.process.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
+				+ "\tfact1 <fact> Human.operator.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
+				+ "\tfact2 <fact> Robot.cobot.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
+				+ "\tfact3 <fact> Arm.motions.SetOnBase() AT [0, 0] [0, +INF] [1, +INF];\n"
+				+ "\tfact4 <fact> Tool.screwdriver.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
+				+ "\n\n"	
+				+ "}\n\n";
+	}
+	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// experiment generator
 				AIJFbTPlanningDomainGenerator generator = new AIJFbTPlanningDomainGenerator(

@@ -44,7 +44,7 @@ public class AIJFbTPlatformConfigurationGenerator extends AIJFbT
 				// set configuration file name
 				String configFileName = "AIJ_EXP_PLATFORM_CONFIG_U" + uncertainty;
 				// prepare the XML configuration file 
-				String xml = "<platform>";
+				String xml = "<platform>\n\n";
 				
 				// add human agent specification 
 				xml += this.prepareHumanAgentConfiguration(uncertainty);
@@ -157,7 +157,7 @@ public class AIJFbTPlatformConfigurationGenerator extends AIJFbT
 		// experiment generator
 		AIJFbTPlatformConfigurationGenerator generator = new AIJFbTPlatformConfigurationGenerator(
 						PLATFORM_CONFIGURATION_FOLDER,
-						UNCERTAINTY);
+						PLATOFROM_EXECUTION_UNCERTAINTY);
 		// generate experiment domains
 		generator.generate();
 	}
