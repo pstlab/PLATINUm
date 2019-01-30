@@ -1,18 +1,28 @@
 package it.istc.pst.platinum.framework.microkernel.lang.plan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
+import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
-import it.istc.pst.platinum.framework.time.tn.TimePoint;
+import it.istc.pst.platinum.framework.parameter.lang.EnumerationParameter;
+import it.istc.pst.platinum.framework.parameter.lang.NumericParameter;
+import it.istc.pst.platinum.framework.parameter.lang.Parameter;
+import it.istc.pst.platinum.framework.parameter.lang.ParameterType;
+import it.istc.pst.platinum.framework.protocol.lang.ParameterTypeDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.ProtocolLanguageFactory;
+import it.istc.pst.platinum.framework.protocol.lang.TimelineProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
+import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDescriptor;
 
 /**
  * 
@@ -202,99 +212,246 @@ public class SolutionPlan
 	
 	/**
 	 * 
+	 * @param plan
 	 * @return
 	 */
-	public String export() 
+	public PlanProtocolDescriptor export() {
+		// generate protocol plan descriptor
+		return this.generatePlanDescriptor();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected PlanProtocolDescriptor generatePlanDescriptor() 
 	{
-		// prepare plan description
-		String plan = "horizon = " + this.horizion + "\n";
-		plan += "plan {\n";
+		// get language factory
+		ProtocolLanguageFactory factory = ProtocolLanguageFactory.getSingletonInstance(this.horizion);
 		
-		// print timelines
-		plan += "\ttimelines {\n";
-		for (Timeline tl : this.timelines) {
-			plan += "\t\t" + tl.getName() + " {\n";
-			for (Token token : tl.getTokens()) {
-				// get token's value
-				String value = token.getPredicate().getValue().getLabel().replaceFirst("_", "");
-				TimePoint end = token.getInterval().getEndTime();
-				// add token description
-				plan += "\t\t\t token " + token.getInterval().getId() + " " + (token.isControllable() ? "" : "uncontrollable") +  " {"
-							+ " " + value + " [" + end.getLowerBound() + ", " + end.getUpperBound() + "] "
-							+ "[" + token.getInterval().getDurationLowerBound() + "," + token.getInterval().getDurationUpperBound() + "] "
-						+ "}\n";
-			}
-			plan += "\t\t}\n";
-		}
-		plan += "\t}\n";
-		
-		// print relations
-		plan += "\trelations {\n";
-		for (Relation rel : this.relations) {
-			// check relation type
-			switch (rel.getCategory()) 
+		// create plan descriptor
+		PlanProtocolDescriptor plan = factory.createPlanDescriptor(0, this.horizion);
+		// create an index
+		Map<Token, TokenProtocolDescriptor> index = new HashMap<>();
+		// create timeline descriptors
+		for (Timeline tl : this.timelines) 
+		{
+			// get the state variable related to the timeline
+			StateVariable comp = tl.getComponent();
+			// initialize descriptor
+			TimelineProtocolDescriptor timelineDescriptor = factory.createTimelineDescriptor(comp.getName(), tl.getName(), tl.isObservation());
+			
+			// get tokens of the timeline
+			for (Token token : tl.getTokens()) 
 			{
-				// temporal relation
-				case TEMPORAL_CONSTRAINT : 
+				// prepare the array of parameter names, values, and types
+				String[] paramNames = new String[token.getPredicate().getParameters().length];
+				ParameterTypeDescriptor[] paramTypes = new ParameterTypeDescriptor[token.getPredicate().getParameters().length];
+				long[][] paramBounds = new long[token.getPredicate().getParameters().length][];
+				String[][] paramValues = new String[token.getPredicate().getParameters().length][];
+				for (int i = 0; i < token.getPredicate().getParameters().length; i++)
 				{
-					// get temporal relation
-					TemporalRelation trel = (TemporalRelation) rel;
-					// get elements
-					Decision ref = trel.getReference();
-					Decision target = trel.getTarget();
-					long[][] bounds = trel.getBounds();
-					// add relation description
-					plan += "\t\t" + ref.getComponent().getName() + " " + ref.getToken().getInterval().getId() + ""
-							+ " " + trel.getType().name() + "";
-					// check type
-					if (trel.getType().equals(RelationType.MEETS) || 
-							rel.getType().equals(RelationType.MET_BY) || 
-							trel.getType().equals(RelationType.EQUALS)) {
-						// do not print temporal bounds
-						plan += " " + target.getComponent().getName() + " " + target.getToken().getInterval().getId() + ""
-								+ "\n";
-					} else {
-						// print temporal bounds
-						plan += "" + (bounds.length >= 1 && bounds[0] != null && bounds[0].length == 2 ? " [" + bounds[0][0] + ", " + bounds[0][1] + "] " : "") + ""
-								+ "" + (bounds.length >= 2 && bounds[1] != null && bounds[1].length == 2 ? " [" + bounds[1][0] + "," + bounds[1][1] + "] " : "") + ""
-								+ " " + target.getComponent().getName() + " " + target.getToken().getInterval().getId() + ""
-								+ "\n";
+					// get parameter
+					Parameter<?> param = token.getPredicate().getParameterByIndex(i);
+					// set parameter name
+					paramNames[i] = param.getLabel();
+					
+					// check parameter type
+					if (param.getType().equals(ParameterType.NUMERIC_PARAMETER_TYPE)) 
+					{
+						// get numeric parameter
+						NumericParameter numPar = (NumericParameter) param;
+						// set lower bound and upper bound
+						paramBounds[i] = new long[] {
+								numPar.getLowerBound(),
+								numPar.getUpperBound()
+						};
+						// set default value to parameter values
+						paramValues[i] = new String[] {};
+						// set parameter type
+						paramTypes[i] = ParameterTypeDescriptor.NUMERIC;
+					}
+					else if (param.getType().equals(ParameterType.ENUMERATION_PARAMETER_TYPE)) 
+					{
+						// enumeration parameter
+						EnumerationParameter enuPar = (EnumerationParameter) param;
+						// one single value is expected
+						paramValues[i] = new String[] {
+								enuPar.getValues()[0]
+						};
+						// set default value to parameter bounds
+						paramBounds[i] = new long[] {};
+						// set parameter type
+						paramTypes[i] = ParameterTypeDescriptor.ENUMERATION;
+					}
+					else {
+						throw new RuntimeException("Unknown parameter type:\n- type: " + param.getType() + "\n");
 					}
 				}
-				break;
-				
-				// parameter relation
-				case PARAMETER_CONSTRAINT : {
-					
-					/*
-					 * TODO <<<<----
-					 */
+			
+				// create token descriptor
+				TokenProtocolDescriptor tokenDescriptor = factory.createTokenDescriptor(
+						timelineDescriptor,
+						token.getPredicate().getValue().getLabel(),
+//						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
+						new long [] {
+								token.getInterval().getStartTime().getLowerBound(), 
+								token.getInterval().getEndTime().getUpperBound()
+						}, 
+						new long[] {
+								token.getInterval().getEndTime().getLowerBound(),
+								token.getInterval().getEndTime().getUpperBound()
+						}, 
+						new long[] {
+								token.getInterval().getDurationLowerBound(),
+								token.getInterval().getDurationUpperBound()
+						}, 
+						paramNames, paramTypes, paramBounds, paramValues);
+
+				// update index
+				index.put(token, tokenDescriptor);
+			}
+			
+			// add an undefined gap for the last token if necessary
+			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
+			// check schedule
+			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
+				// create "empty" token description
+				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
+						new long[] {
+								last.getInterval().getEndTime().getLowerBound(),
+								last.getInterval().getEndTime().getUpperBound()
+						}, 
+						new long [] {
+								this.horizion,
+								this.horizion
+						}, 
+						new long [] {
+								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
+								(this.horizion - last.getInterval().getEndTime().getLowerBound())
+						});
+			}
+			
+			// add timeline to plan
+			plan.addTimeline(timelineDescriptor);
+		}
+		
+		// create timeline descriptors
+		for (Timeline tl : this.observations) 
+		{
+			// get the state variable related to the timeline
+			StateVariable comp = tl.getComponent();
+			// initialize descriptor
+			TimelineProtocolDescriptor timelineDescriptor = factory.createTimelineDescriptor(comp.getName(), tl.getName(), tl.isObservation());
+			
+			// get tokens of the timeline
+			for (Token token : tl.getTokens()) 
+			{
+				// prepare the array of parameter names, values, and types
+				String[] paramNames = new String[token.getPredicate().getParameters().length];
+				ParameterTypeDescriptor[] paramTypes = new ParameterTypeDescriptor[token.getPredicate().getParameters().length];
+				long[][] paramBounds = new long[token.getPredicate().getParameters().length][];
+				String[][] paramValues = new String[token.getPredicate().getParameters().length][];
+				for (int i = 0; i < token.getPredicate().getParameters().length; i++)
+				{
+					// get parameter
+					Parameter<?> param = token.getPredicate().getParameterByIndex(i);
+					// check parameter type
+					if (param.getType().equals(ParameterType.NUMERIC_PARAMETER_TYPE)) {
+						// get numeric parameter
+						NumericParameter numPar = (NumericParameter) param;
+						// set lower bound and upper bound
+						paramBounds[i] = new long[] {
+								numPar.getLowerBound(),
+								numPar.getUpperBound()
+						};
+						// set default value to parameter values
+						paramValues[i] = new String[] {};
+					}
+					else if (param.getType().equals(ParameterType.ENUMERATION_PARAMETER_TYPE)) {
+						// enumeration parameter
+						EnumerationParameter enuPar = (EnumerationParameter) param;
+						// one single value is expected
+						paramValues[i] = new String[] {
+								enuPar.getValues()[0]
+						};
+						// set default value to parameter bounds
+						paramBounds[i] = new long[] {};
+					}
+					else {
+						throw new RuntimeException("Unknown parameter type:\n- type: " + param.getType() + "\n");
+					}
 				}
-				break;
+			
+				// create token descriptor
+				TokenProtocolDescriptor tokenDescriptor = factory.createTokenDescriptor(
+						timelineDescriptor, 
+						token.getPredicate().getValue().getLabel(),
+//						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
+						new long [] {
+								token.getInterval().getStartTime().getLowerBound(), 
+								token.getInterval().getEndTime().getUpperBound()
+						}, 
+						new long[] {
+								token.getInterval().getEndTime().getLowerBound(),
+								token.getInterval().getEndTime().getUpperBound()
+						}, 
+						new long[] {
+								token.getInterval().getDurationLowerBound(),
+								token.getInterval().getDurationUpperBound()
+						}, 
+						paramNames, paramTypes, paramBounds, paramValues);
+
+				// update index
+				index.put(token, tokenDescriptor);
+			}
+			
+			// add an undefined gap for the last token if necessary
+			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
+			// check schedule
+			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
+				// create "empty" token description
+				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
+						new long[] {
+								last.getInterval().getEndTime().getLowerBound(),
+								last.getInterval().getEndTime().getUpperBound()
+						}, 
+						new long [] {
+								this.horizion,
+								this.horizion
+						}, 
+						new long [] {
+								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
+								(this.horizion - last.getInterval().getEndTime().getLowerBound())
+						});
+			}
+			
+			// add timeline to plan
+			plan.addTimeline(timelineDescriptor);
+		}
+		
+		// create relation descriptors
+		for (Relation relation : this.relations)
+		{
+			// export temporal relations only
+			if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT))
+			{
+				// get temporal relation
+				TemporalRelation trel = (TemporalRelation) relation;
+				// create relation description 
+				RelationProtocolDescriptor relDescriptor = factory.createRelationDescriptor(
+						relation.getType().name().toUpperCase(), 
+						index.get(relation.getReference().getToken()), 
+						index.get(relation.getTarget().getToken()));
+				
+				// set bounds
+				relDescriptor.setBounds(trel.getBounds());
+				// add relation descriptor to plan
+				plan.addRelation(relDescriptor);
 			}
 		}
-		plan += "\t}\n";
 		
-		// close plan
-		plan += "}\n";
-		
-		// print observations
-		plan += "observation {\n";
-		plan += "\ttimelines {\n";
-		for (Timeline tl : this.observations) {
-			plan += "\t\t" + tl.getName() + " {\n";
-			for (Token token : tl.getTokens()) {
-				plan += "\t\t\t token " + token.getInterval().getId() + " {"
-							+ " " + token.getPredicate().getValue().getLabel() + ""
-							+ " [" + token.getInterval().getEndTime().getLowerBound() + ", " + token.getInterval().getEndTime().getUpperBound() + "]"
-							+ " [" + token.getInterval().getNominalDurationLowerBound() + ", " + token.getInterval().getNominalDurationUpperBound() + "]"
-						+ " }\n";
-			}
-			plan += "\t\t}\n";
-		}
-		plan += "\t}\n";
-		// end observations
-		plan += "}\n";
+		// return plan descriptor
 		return plan;
 	}
 

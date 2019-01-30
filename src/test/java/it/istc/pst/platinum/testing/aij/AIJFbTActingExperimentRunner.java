@@ -78,7 +78,7 @@ public class AIJFbTActingExperimentRunner
 				// create the executive 
 				Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, plan.getHorizon());
 				// initialize the executive
-				exec.initialize(planner.export(plan));
+				exec.initialize(plan.export());
 				
 				
 				// set platform configuration file
@@ -88,7 +88,7 @@ public class AIJFbTActingExperimentRunner
 				// build platform simulator
 				PlatformSimulator sim = PlatformSimulatorBuilder.build(path);
 				// bind the executive to the platform
-				exec.bind(sim);
+				exec.link(sim);
 				
 				// start simulator
 				sim.start();

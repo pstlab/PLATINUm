@@ -142,7 +142,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		// reset predicate counter
 		PREDICATE_COUNTER.set(0);
 		// reset decision counter
-		DECISION_COUNTER.set(0);
+		DecisionIdCounter.set(0);
 		// reset relation counter
 		RELATION_COUNTER.set(0);
 	}

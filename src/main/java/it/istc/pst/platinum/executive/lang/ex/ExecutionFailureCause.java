@@ -27,6 +27,14 @@ public abstract class ExecutionFailureCause
 	
 	/**
 	 * 
+	 * @param type
+	 */
+	public ExecutionFailureCause(ExecutionFailureCauseType type) {
+		this.type = type;
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public ExecutionFailureCauseType getType() {
@@ -47,5 +55,13 @@ public abstract class ExecutionFailureCause
 	 */
 	public ExecutionNode getInterruptNode() {
 		return this.interruptNode;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "[FailureCause tick: " + this.interruptionTick + ", type: " + this.type + "]";
 	}
 }

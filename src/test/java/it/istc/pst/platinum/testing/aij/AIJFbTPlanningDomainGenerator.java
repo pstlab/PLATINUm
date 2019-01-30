@@ -109,14 +109,6 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 							// write file
 							writer.write(pdl);
 						}
-						
-						// prepare goal-free problem specification file
-						pdl = this.prepareGoalFreeSingletonProblemDescription(domainName);
-						pdlFile = new File(this.domainFolder + "/" + domainName + "_GFREE.pdl");
-						try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdlFile), "UTF-8"))) {
-							// write file
-							writer.write(pdl);
-						}
 					}
 					catch (IOException ex) {
 						System.err.println(ex.getMessage());
@@ -393,10 +385,10 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 		// return production constraints
 		return "\tSYNCHRONIZE Production.process {\n\n"
 				+ "\t\tVALUE Assembly() {\n\n"
-				+ "\t\t\ttask1 <!> Assembly.hrc.PreparePiece();\n"
-				+ "\t\t\ttask2 <!> Assembly.hrc.RemoveTopCover();\n"
-				+ "\t\t\ttask3 <!> Assembly.hrc.RemovePart();\n"
-				+ "\t\t\ttask4 <!> Assembly.hrc.RemoveBottomCover();\n\n"
+				+ "\t\t\ttask1 Assembly.hrc.PreparePiece();\n"
+				+ "\t\t\ttask2 Assembly.hrc.RemoveTopCover();\n"
+				+ "\t\t\ttask3 Assembly.hrc.RemovePart();\n"
+				+ "\t\t\ttask4 Assembly.hrc.RemoveBottomCover();\n\n"
 				+ "\t\t\ttask1 BEFORE [0, +INF] task2;\n"
 				+ "\t\t\ttask2 BEFORE [0, +INF] task3;\n"
 				+ "\t\t\ttask3 BEFORE [0, +INF] task4;\n\n"
@@ -420,11 +412,11 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 		// prepare domain description
 		String ddl = "\tSYNCHRONIZE Assembly.hrc {\n\n"
 				+ "\t\tVALUE PreparePiece() {\n\n"
-				+ "\t\t\ttask0 <!> Human.operator._SetWorkPiece();\n"
+				+ "\t\t\ttask0 Human.operator._SetWorkPiece();\n"
 				+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task0;\n"
 				+ "\t\t}\n\n"
 				+ "\t\tVALUE RemovePart() {\n\n"
-				+ "\t\t\ttask0 <!> Human.operator._RemoveWaxPart();\n"
+				+ "\t\t\ttask0  Human.operator._RemoveWaxPart();\n"
 				+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task0;\n"
 				+ "\t\t}\n\n";
 		
@@ -437,12 +429,12 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 			// get number of "human only" tasks
 			int hOnly = topTasks - choice;
 			for (int i = 1; i <= hOnly; i++) {
-				ddl+= "\t\t\ttask" + i + " <!> Human.operator._UnscrewTopBolt" + i + "();\n"
+				ddl+= "\t\t\ttask" + i + "  Human.operator._UnscrewTopBolt" + i + "();\n"
 						+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task" + i + ";\n\n";
 			}
 			
 			for (int i = hOnly + 1; i <= topTasks; i++) {
-				ddl += "\t\t\ttask" + i + " <!> Robot.cobot.UnscrewTopBolt" + i + "();\n"
+				ddl += "\t\t\ttask" + i + "  Robot.cobot.UnscrewTopBolt" + i + "();\n"
 						+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task" + i + ";\n\n";
 			}
 		
@@ -460,12 +452,12 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 			// get number of "human only" tasks
 			int hOnly = bottomTasks - choice;
 			for (int i = 1; i <= hOnly; i++) {
-				ddl+= "\t\t\ttask" + i + " <!> Human.operator._UnscrewBottomBolt" + i + "();\n"
+				ddl+= "\t\t\ttask" + i + "  Human.operator._UnscrewBottomBolt" + i + "();\n"
 						+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task" + i + ";\n\n";
 			}
 			
 			for (int i = hOnly + 1; i <= bottomTasks; i++) {
-				ddl += "\t\t\ttask" + i + " <!> Robot.cobot.UnscrewBottomBolt" + i + "();\n"
+				ddl += "\t\t\ttask" + i + "  Robot.cobot.UnscrewBottomBolt" + i + "();\n"
 						+ "\t\t\tCONTAINS [0, +INF] [0, +INF] task" + i + ";\n\n";
 			}
 		
@@ -494,7 +486,7 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 			ddl += "\t\tVALUE UnscrewTopBolt" + i + "() {\n\n"
 					+ "\t\t\tp0 Arm.motions.SetOnTopBolt" + i + "();\n"
 					+ "\t\t\tDURING [0, +INF] [0, +INF] p0;\n\n"
-					+ "\t\t\tt0 <!> Tool.screwdriver.rUnscrewBolt();\n"
+					+ "\t\t\tt0  Tool.screwdriver.rUnscrewBolt();\n"
 					+ "\t\t\tCONTAINS [0, +INF] [0, +INF] t0;\n"
 					+ "\t\t}\n\n";
 		}
@@ -530,24 +522,6 @@ public class AIJFbTPlanningDomainGenerator extends AIJFbT
 				+ "\tfact4 <fact> Tool.screwdriver.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
 				+ "\n\n"
 				+ "\tgoal0 <goal> Production.process.Assembly() AT [0, +INF] [0, +INF] [1, +INF];\n\n"
-				+ "\n\n"	
-				+ "}\n\n";
-	}
-	
-	/**
-	 * 
-	 * @param domain
-	 * @return
-	 */
-	private String prepareGoalFreeSingletonProblemDescription(String domain)
-	{
-		// get problem specification
-		return "PROBLEM " + domain + "_PLANNING (DOMAIN " + domain + ") {\n\n"
-				+ "\tfact0 <fact> Production.process.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
-				+ "\tfact1 <fact> Human.operator.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
-				+ "\tfact2 <fact> Robot.cobot.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
-				+ "\tfact3 <fact> Arm.motions.SetOnBase() AT [0, 0] [0, +INF] [1, +INF];\n"
-				+ "\tfact4 <fact> Tool.screwdriver.Idle() AT [0, 0] [0, +INF] [1, +INF];\n"
 				+ "\n\n"	
 				+ "}\n\n";
 	}

@@ -2,12 +2,18 @@ package it.istc.pst.platinum.executive.monitor;
 
 import java.util.List;
 
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
+import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.ex.ObservationException;
+import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
 import it.istc.pst.platinum.executive.pdb.ControllabilityType;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
+import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 
 /**
  * 
@@ -29,7 +35,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 	 */
 	@Override
 	public void handleTick(long tick) 
-			throws ExecutionException
+			throws ExecutionException, PlatformException
 	{
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
@@ -52,10 +58,25 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 					long receptionTau = this.executive.convertTickToTau(feedback.getTick());
 					// compute node duration of the token in execution 
 					long duration = Math.max(1, tau - receptionTau);
-					// do propagate observed duration
-					this.executive.scheduleTokenDuration(node, duration);
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
-							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					try
+					{
+						// do propagate observed duration
+						this.executive.scheduleTokenDuration(node, duration);
+						logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
+								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					}
+					catch (TemporalConstraintPropagationException ex) {
+						// the node can be considered as executed
+						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						// create execution failure message
+						ExecutionFailureCause cause = new DurationOverflow(tick, node, duration);
+						// throw execution exception
+						throw new ObservationException(
+								"The observed duration does not comply with the expected one:\n"
+								+ "\t- duration: " + duration + "\n"
+								+ "\t- node: " + node + "\n", 
+								cause);
+					}
 				}
 				break;
 				
@@ -63,10 +84,23 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 				{
 					// convert feedback registration time
 					long receptionTau = this.executive.convertTickToTau(feedback.getTick());
-					// schedule the start of uncontrollable token
-					this.executive.scheduleUncontrollableTokenStart(node, receptionTau);
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
-							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					try
+					{
+						// schedule the start of uncontrollable token
+						this.executive.scheduleUncontrollableTokenStart(node, receptionTau);
+						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
+								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					}
+					catch (TemporalConstraintPropagationException ex) {
+						// create execution cause
+						ExecutionFailureCause cause = new StartOverflow(tick, node, receptionTau);
+						// throw execution exception
+						throw new ObservationException(
+								"The observed start time of the token does not comply with the expected one:\n"
+								+ "\t- start: " + receptionTau + "\n"
+								+ "\t- node: " + node + "\n", 
+								cause);
+					}
 				}
 				break;
 				
@@ -95,12 +129,25 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 					{
 						// compute (controllable) execution duration
 						long duration = Math.max(1, tau - node.getStart()[0]);
-						// schedule token duration
-						this.executive.scheduleTokenDuration(node, duration);
-						// token scheduled
-						logger.info("{Monitor} {tick: " + tick + " } {tau: " + tau + "} -> Scheduling duration for controllable token\n"
-								+ "\t- duration: " + duration + "\n"
-								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+						try
+						{
+							// schedule token duration
+							this.executive.scheduleTokenDuration(node, duration);
+							// token scheduled
+							logger.info("{Monitor} {tick: " + tick + " } {tau: " + tau + "} -> Scheduling duration for controllable token\n"
+									+ "\t- duration: " + duration + "\n"
+									+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+						}
+						catch (TemporalConstraintPropagationException ex) {
+							// create execution failure message
+							ExecutionFailureCause cause = new DurationOverflow(tick, node, duration);
+							// throw execution exception
+							throw new ObservationException(
+									"The planned duration does not comply with the current plan:\n"
+									+ "\t- duration: " + duration + "\n"
+									+ "\t- node: " + node + "\n", 
+									cause);
+						}
 					}
 					else 
 					{

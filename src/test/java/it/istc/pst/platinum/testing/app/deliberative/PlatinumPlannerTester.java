@@ -52,7 +52,7 @@ public class PlatinumPlannerTester
 			// print plan to file 
 			try (BufferedWriter writer = new BufferedWriter(new FileWriter(OUT + "/plan.txt"))) { 
 				// export plan encoding 
-				String enconding = plan.export();
+				String enconding = plan.export().toString();
 				// write exported file
 				writer.write(enconding);
 				// print the resulting plan

@@ -380,10 +380,10 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 
 		VALUE Assembly() {
 
-			task1 <!> Assembly.hrc.PreparePiece();
-			task2 <!> Assembly.hrc.RemoveTopCover();
-			task3 <!> Assembly.hrc.RemovePart();
-			task4 <!> Assembly.hrc.RemoveBottomCover();
+			task1 Assembly.hrc.PreparePiece();
+			task2 Assembly.hrc.RemoveTopCover();
+			task3 Assembly.hrc.RemovePart();
+			task4 Assembly.hrc.RemoveBottomCover();
 
 			task1 BEFORE [0, +INF] task2;
 			task2 BEFORE [0, +INF] task3;
@@ -401,65 +401,65 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 
 		VALUE PreparePiece() {
 
-			task0 <!> Human.operator._SetWorkPiece();
+			task0 Human.operator._SetWorkPiece();
 			CONTAINS [0, +INF] [0, +INF] task0;
 		}
 
 		VALUE RemovePart() {
 
-			task0 <!> Human.operator._RemoveWaxPart();
+			task0  Human.operator._RemoveWaxPart();
 			CONTAINS [0, +INF] [0, +INF] task0;
 		}
 
 		VALUE RemoveTopCover() {
 
-			task1 <!> Human.operator._UnscrewTopBolt1();
+			task1  Human.operator._UnscrewTopBolt1();
 			CONTAINS [0, +INF] [0, +INF] task1;
 
-			task2 <!> Human.operator._UnscrewTopBolt2();
+			task2  Human.operator._UnscrewTopBolt2();
 			CONTAINS [0, +INF] [0, +INF] task2;
 
-			task3 <!> Human.operator._UnscrewTopBolt3();
+			task3  Human.operator._UnscrewTopBolt3();
 			CONTAINS [0, +INF] [0, +INF] task3;
 
-			task4 <!> Human.operator._UnscrewTopBolt4();
+			task4  Human.operator._UnscrewTopBolt4();
 			CONTAINS [0, +INF] [0, +INF] task4;
 
-			task5 <!> Human.operator._UnscrewTopBolt5();
+			task5  Human.operator._UnscrewTopBolt5();
 			CONTAINS [0, +INF] [0, +INF] task5;
 
-			task6 <!> Human.operator._UnscrewTopBolt6();
+			task6  Human.operator._UnscrewTopBolt6();
 			CONTAINS [0, +INF] [0, +INF] task6;
 
-			task7 <!> Robot.cobot.UnscrewTopBolt7();
+			task7  Robot.cobot.UnscrewTopBolt7();
 			CONTAINS [0, +INF] [0, +INF] task7;
 
 		}
 
 		VALUE RemoveBottomCover() {
 
-			task1 <!> Human.operator._UnscrewBottomBolt1();
+			task1  Human.operator._UnscrewBottomBolt1();
 			CONTAINS [0, +INF] [0, +INF] task1;
 
-			task2 <!> Human.operator._UnscrewBottomBolt2();
+			task2  Human.operator._UnscrewBottomBolt2();
 			CONTAINS [0, +INF] [0, +INF] task2;
 
-			task3 <!> Human.operator._UnscrewBottomBolt3();
+			task3  Human.operator._UnscrewBottomBolt3();
 			CONTAINS [0, +INF] [0, +INF] task3;
 
-			task4 <!> Human.operator._UnscrewBottomBolt4();
+			task4  Human.operator._UnscrewBottomBolt4();
 			CONTAINS [0, +INF] [0, +INF] task4;
 
-			task5 <!> Human.operator._UnscrewBottomBolt5();
+			task5  Human.operator._UnscrewBottomBolt5();
 			CONTAINS [0, +INF] [0, +INF] task5;
 
-			task6 <!> Human.operator._UnscrewBottomBolt6();
+			task6  Human.operator._UnscrewBottomBolt6();
 			CONTAINS [0, +INF] [0, +INF] task6;
 
-			task7 <!> Human.operator._UnscrewBottomBolt7();
+			task7  Human.operator._UnscrewBottomBolt7();
 			CONTAINS [0, +INF] [0, +INF] task7;
 
-			task8 <!> Robot.cobot.UnscrewBottomBolt8();
+			task8  Robot.cobot.UnscrewBottomBolt8();
 			CONTAINS [0, +INF] [0, +INF] task8;
 
 		}
@@ -473,7 +473,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt1();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			t0  Tool.screwdriver.rUnscrewBolt();
 			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
@@ -482,7 +482,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt2();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			t0  Tool.screwdriver.rUnscrewBolt();
 			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
@@ -491,7 +491,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt3();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			t0  Tool.screwdriver.rUnscrewBolt();
 			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
@@ -500,7 +500,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt4();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			t0  Tool.screwdriver.rUnscrewBolt();
 			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
@@ -509,7 +509,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt5();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			t0  Tool.screwdriver.rUnscrewBolt();
 			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
@@ -518,7 +518,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt6();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			t0  Tool.screwdriver.rUnscrewBolt();
 			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 
@@ -527,7 +527,7 @@ DOMAIN AIJ_EXP_T15_S20_U20 {
 			p0 Arm.motions.SetOnTopBolt7();
 			DURING [0, +INF] [0, +INF] p0;
 
-			t0 <!> Tool.screwdriver.rUnscrewBolt();
+			t0  Tool.screwdriver.rUnscrewBolt();
 			CONTAINS [0, +INF] [0, +INF] t0;
 		}
 

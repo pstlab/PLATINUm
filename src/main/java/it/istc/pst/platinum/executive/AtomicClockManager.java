@@ -3,7 +3,6 @@ package it.istc.pst.platinum.executive;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
-import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 
 /**
@@ -138,7 +137,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 				// notify executive
 				complete = this.executive.onTick(currentTick);
 			} 
-			catch (ExecutionException | InterruptedException ex) {
+			catch (InterruptedException ex) {
 				// complete execution
 				logger.error("Execution Interrupted\n" + ex.getMessage());
 				complete = true;

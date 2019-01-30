@@ -15,5 +15,10 @@ public enum ExecutionFailureCauseType
 	/**
 	 * 
 	 */
-	START_OVERFLOW
+	START_OVERFLOW,
+	
+	/**
+	 * 
+	 */
+	PLATFORM_ERROR
 }

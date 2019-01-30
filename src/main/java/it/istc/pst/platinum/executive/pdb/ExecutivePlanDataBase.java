@@ -660,7 +660,6 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		synchronized (this.locks[node.getStatus().getIndex()]) {
 			// remove node from list
 			this.nodes.get(node.getStatus()).remove(node);
-			
 		}
 		
 		// add node to the new status

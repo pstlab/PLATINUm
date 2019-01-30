@@ -15,11 +15,9 @@ import it.istc.pst.platinum.executive.dispatcher.ConditionCheckingDispatcher;
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedbackType;
-import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
-import it.istc.pst.platinum.executive.lang.ex.ObservationSynchronizationException;
-import it.istc.pst.platinum.executive.lang.ex.TokenDispatchingException;
+import it.istc.pst.platinum.executive.lang.ex.PlatformError;
 import it.istc.pst.platinum.executive.monitor.ConditionCheckingMonitor;
 import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.executive.pdb.ControllabilityType;
@@ -66,6 +64,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	
 	
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
+	private static final String DISPLAY_PLAN_PROPERTY = "display_plan";			// property specifying the display plan flag
 	private FilePropertyReader config;											// configuration property file
 	
 	private ExecutionStatus status;												// executive's operating status
@@ -78,7 +77,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	private AtomicBoolean failure;												// execution failure flag
 	private ExecutionFailureCause cause;										// execution failure cause
 	
-	private PlatformSimulator platformProxy;								// platform PROXY to send commands to 
+	private PlatformSimulator platformProxy;									// platform PROXY to send commands to 
 	
 	/**
 	 * 
@@ -90,14 +89,18 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		// set clock and initial status
 		this.lock = new Object();
 		this.status = ExecutionStatus.INACTIVE;
-		// create executive window
-		this.window = new ExecutiveWindow("Executive Window");
 		// initialize clock manager
 		this.clock = new AtomicClockManager(this);
 		// initialize the PROXY and the observer
 		this.platformProxy = null;
 		// set failure flag
 		this.failure = new AtomicBoolean(false);
+		
+		// check plan display property
+		if (this.getProperty(DISPLAY_PLAN_PROPERTY).equals("1")) {
+			// create executive window
+			this.window = new ExecutiveWindow("Executive Window");
+		}
 	}
 	
 	/**
@@ -112,11 +115,24 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * 
 	 * @param proxy
 	 */
-	public void bind(PlatformSimulator proxy) {
+	public void link(PlatformSimulator proxy) {
 		// bind the executive
 		this.platformProxy = proxy;
 		// register to the PROXY
 		this.platformProxy.register(this);
+	}
+	
+	/***
+	 * 
+	 */
+	public void unlink() {
+		// unlink form simulator
+		if (this.platformProxy != null) {
+			// unregister
+			this.platformProxy.unregister(this);
+			// clear data
+			this.platformProxy = null;
+		}
 	}
 	
 	/**
@@ -184,12 +200,22 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @throws InterruptedException
 	 */
 	public long getTau() 
-			throws InterruptedException 
-	{
+			throws InterruptedException {
 		// current tick
 		long tick = this.clock.getCurrentTick();
 		// cover to tau
 		return this.convertTickToTau(tick);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws InterruptedException
+	 */
+	public long getTick() 
+			throws InterruptedException {
+		// return current tick
+		return this.clock.getCurrentTick();
 	}
 	
 	/**
@@ -234,13 +260,12 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	
 	/**
 	 * 
-	 * @param tick
 	 * @param node
 	 * @param start
-	 * @throws ExecutionException
+	 * @throws TemporalConstraintPropagationException
 	 */
 	public void scheduleTokenStart(ExecutionNode node, long start) 
-			throws ExecutionException 
+			throws TemporalConstraintPropagationException 
 	{
 		// check controllability type
 		ControllabilityType type = node.getControllabilityType();
@@ -257,29 +282,16 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			case PARTIALLY_CONTROLLABLE : 
 			case CONTROLLABLE : 
 			{
-				try
-				{
-					// check if virtual node
-					if (!node.isVirtual()) {
-						// actually schedule the start time of the token
-						this.pdb.scheduleStartTime(node, start);
-						// check resulting schedule
-						this.checkSchedule(node);
-					}
-					
-					// update node status
-					this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
+				// check if virtual node
+				if (!node.isVirtual()) {
+					// actually schedule the start time of the token
+					this.pdb.scheduleStartTime(node, start);
+					// check resulting schedule
+					this.checkSchedule(node);
 				}
-				catch (TemporalConstraintPropagationException ex) 
-				{
-					// error while propagating token start time
-
-					/* 
-					 * TODO : create failure cause
-					 */
-					
-					throw new TokenDispatchingException(ex.getMessage(), null);
-				}
+				
+				// update node status
+				this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 			}
 			break;
 		}
@@ -292,74 +304,41 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @throws ExecutionException
 	 */
 	public void scheduleUncontrollableTokenStart(ExecutionNode node, long start) 
-			throws ExecutionException
+			throws TemporalConstraintPropagationException
 	{
-		try
-		{
-			// schedule the observed start time of the token
-			this.pdb.scheduleStartTime(node, start);
-			// check resulting schedule
-			this.checkSchedule(node);
-			// update node status
-			this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
-		}
-		catch (TemporalConstraintPropagationException ex) {
-			// synchronization exception
-
-			/* 
-			 * TODO : create failure cause
-			 */
-			
-			throw new ObservationSynchronizationException(ex.getMessage(), null);
-		}
+		// schedule the observed start time of the token
+		this.pdb.scheduleStartTime(node, start);
+		// check resulting schedule
+		this.checkSchedule(node);
+		// update node status
+		this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 	}
 	
 	/**
 	 * 
 	 * @param node
 	 * @param duration
-	 * @throws ExecutionException
+	 * @throws TemporalConstraintPropagationException
+	 * @throws PlatformException
 	 */
 	public void scheduleTokenDuration(ExecutionNode node, long duration) 
-			throws ExecutionException
+			throws TemporalConstraintPropagationException, PlatformException
 	{
-		try
-		{
-			// check if virtual node
-			if (!node.isVirtual()) {
-				// propagate scheduled duration time
-				this.pdb.scheduleDuration(node, duration);
-				// if controllable send a stop command
-				if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
-					// also send stop command execution request
-					this.platformProxy.stopCommand(node);
-				}
+		// check if virtual node
+		if (!node.isVirtual()) {
+			// propagate scheduled duration time
+			this.pdb.scheduleDuration(node, duration);
+			// if controllable send a stop command
+			if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
+				// also send stop command execution request
+				this.platformProxy.stopCommand(node);
 			}
-			
-			// check schedule
-			this.checkSchedule(node);
-			// the node can be considered as executed
-			this.updateNode(node, ExecutionNodeStatus.EXECUTED);
 		}
-		catch (PlatformException ex) {
-			
-			/*
-			 *  TODO : create platform failure message
-			 */
-			
-			throw new ExecutionException("Error while sending stop request to the platform", null);
-		}
-		catch (TemporalConstraintPropagationException ex) 
-		{
-			// create execution failure message
-			ExecutionFailureCause cause = new DurationOverflow(this.currentTick, node, duration);
-			// throw synchronization exception
-			throw new ObservationSynchronizationException(
-					"The observed duration does not comply with the expected one:\n"
-					+ "\t- duration: " + duration + "\n"
-					+ "\t- node: " + node + "\n", 
-					cause);
-		}
+		
+		// check schedule
+		this.checkSchedule(node);
+		// the node can be considered as executed
+		this.updateNode(node, ExecutionNodeStatus.EXECUTED);
 	}
 	
 	/**
@@ -398,11 +377,11 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	/**
 	 * Blocking method which start the execution of the plan and waits for completion.
 	 * 
+	 * @return
 	 * @throws InterruptedException
-	 * @throws ExecutionException
 	 */
-	public final void execute() 
-			throws InterruptedException, ExecutionException
+	public final boolean execute() 
+			throws InterruptedException
 	{
 		// check status
 		synchronized (this.lock) 
@@ -417,97 +396,49 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			this.lock.notifyAll();
 		}
 		
-		try
-		{
-			// perform setting operations before execution
-			this.doPrepareExecution();
+		// perform setting operations before execution
+		this.doPrepareExecution();
+		
+		// initialize dispatching index
+		this.dispatchedIndex = new ConcurrentHashMap<>();
+		// start clock
+		this.clock.start();
+		// wait execution completes
+		this.clock.join();
 			
-			// initialize dispatching index
-			this.dispatchedIndex = new ConcurrentHashMap<>();
-			// start clock
-			this.clock.start();
-			// wait execution completes
-			this.clock.join();
-		}
-		catch (InterruptedException ex) 
-		{
-			// execution interrupted
-			logger.error("Execution error:\n- message: " + ex.getMessage() + "\n");
-			// set error state
+		
+		// check execution failure or not 
+		if (this.failure.get()) {
+			// execution failure
+			logger.error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
+					+ "\t- cause: " + this.cause.getType() + "\n"
+					+ "\t- node: " + this.cause.getInterruptNode() + "\n");
+			
+			// update executive status
 			synchronized (this.lock) {
 				// set error state
 				this.status = ExecutionStatus.ERROR;
+				// send signal 
 				this.lock.notifyAll();
 			}
 		}
-		finally 
+		else 
 		{
-			// execution complete
-			synchronized (this.lock) 
-			{
-				// change status if not in error or interrupted and send a signal
-				if (!this.status.equals(ExecutionStatus.INTERRUPTED) && 
-						!this.status.equals(ExecutionStatus.ERROR)) 
-				{
-					// update execution status
-					this.status = ExecutionStatus.INACTIVE;
-				}
+			// successful execution 
+			logger.info("Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");
+			
+			// update executive status
+			synchronized (this.lock) {
+				// set inactive status
+				this.status = ExecutionStatus.INACTIVE;
+				// send signal 
 				this.lock.notifyAll();
 			}
 		}
-	}
-	
-	/**
-	 * 
-	 */
-	public final void interrupt() 
-	{
-		// check status
-		synchronized (this.lock) 
-		{
-			// check if in execution
-			if (this.status.equals(ExecutionStatus.EXECUTING)) {
-				try {
-					// interrupt the clock
-					this.clock.stop();
-				}
-				catch (InterruptedException ex) {
-					throw new RuntimeException(ex.getMessage());
-				}
-			}
 			
-			// update status and send signal
-			this.status = ExecutionStatus.INTERRUPTED;
-			this.lock.notifyAll();
-		}
+		// return execution result
+		return !this.failure.get();
 	}
-	
-	/**
-	 * 
-	 */
-	public final void error() 
-	{
-		// check status
-		synchronized (this.lock) 
-		{
-			// check if in execution
-			if (this.status.equals(ExecutionStatus.EXECUTING)) 
-			{
-				try {
-					// interrupt the clock
-					this.clock.stop();
-				}
-				catch (InterruptedException ex) {
-					throw new RuntimeException(ex.getMessage());
-				}
-			}
-			
-			// update status and send signal
-			this.status = ExecutionStatus.ERROR;
-			this.lock.notifyAll();
-		}
-	}
-	
 	
 	/**
 	 * 
@@ -537,54 +468,103 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		boolean complete = false;
 		try 
 		{
-			// handle current tick
-			this.currentTick = tick;
-			logger.info("{Executive} -> Handle tick: " + tick + "\n");
-			// synchronization step
-			logger.info("{Executive} {tick: " + tick + "} -> Synchronization step\n");
-			this.monitor.handleTick(tick);
-			// dispatching step
-			logger.info("{Executive} {tick: " + tick + "} -> Dispatching step\n");
-			this.dispatcher.handleTick(tick);
+			// check failure flag
+			if (!this.failure.get()) {
+				// handle current tick
+				this.currentTick = tick;
+				logger.debug("{Executive} -> Handle tick: " + tick + "\n");
+				// synchronization step
+				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
+				this.monitor.handleTick(tick);
+				// dispatching step
+				logger.debug("{Executive} {tick: " + tick + "} -> Dispatching step\n");
+				this.dispatcher.handleTick(tick);
+				
+				// check if execution is complete
+				complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
+						this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING).isEmpty() && 
+						this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
+			}
+			else 
+			{
+				// handle current tick
+				this.currentTick = tick;
+				logger.debug("{Executive} -> Handle tick: " + tick + "\n");
+				// synchronization step only in "failure" mode
+				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
+				this.monitor.handleTick(tick);
+				
+				// hypothesis
+				complete = true;
+				// get nodes in execution 
+				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
+					// check if the node belongs to an external variable
+					if (node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE)) {
+						// the executive cannot complete 
+						complete = false;
+						// waiting for a feedback of the node 
+						logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
+								+ "\t- node: " + node + "\n");
+					}
+				}
+			}
+			
+			// get tau
+			long tau = this.convertTickToTau(tick);
 			// display executive window
-			this.displayWindow();
-			// check if execution is complete
-			complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
-					this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING).isEmpty() && 
-					this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
+			this.displayWindow(tau);
 		}
-		catch (ExecutionException ex) {
+		catch (ExecutionException ex) 
+		{
 			// set execution failure flag
 			this.failure.set(true);
+			// complete execution in this case
+			complete = true;
 			// set execution failure cause
 			this.cause = ex.getFailureCause();
 			// error message
-			logger.error(ex.getMessage());
-			// end execution
-			complete = true;
+			logger.error("{Executive} {tick: " + tick + "} -> Error while executing plan:\n"
+					+ "\t- message: " + ex.getMessage() + "\n\n"
+					+ "Wait for execution feedbacks of pending controllable and partially-controllable tokens if any... \n\n");
+		}
+		catch (PlatformException ex) 
+		{
+			// set failure
+			this.failure.set(true);
+			// set cause
+			this.cause = new PlatformError();
+			// error message
+			logger.error("{Executive} {tick: " + tick + "} -> Platform error:\n"
+					+ "\t- message: " + ex.getMessage() + "\n");
 		}
 		catch (InterruptedException ex) {
 			// execution error
 			logger.error(ex.getMessage());
+			// set execution failure 
+			this.failure.set(true);
+			// complete execution
+			complete = true;
 		}
-		
+
 		// get boolean flag
 		return complete;
 	} 
 	
 	/**
 	 * 
+	 * @param tau
 	 * @throws InterruptedException
 	 */
-	private void displayWindow() 
+	private void displayWindow(long tau) 
 			throws InterruptedException 
 	{
-		// get tau
-		long tau = this.getTau();
-		// set the data-set to show
-		this.window.setDataSet(this.pdb.getHorizon(), this.getNodes());
-		// display current execution state
-		this.window.display(tau);
+		// check property
+		if (this.getProperty(DISPLAY_PLAN_PROPERTY).equals("1")) {
+			// set the data-set to show
+			this.window.setDataSet(this.pdb.getHorizon(), this.getNodes());
+			// display current execution state
+			this.window.display(tau);
+		}
 	}
 
 	/**

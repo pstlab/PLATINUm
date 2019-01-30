@@ -41,12 +41,21 @@ public class ExecutiveBuilder
 	 * 
 	 * @return
 	 */
-	public synchronized static <T extends Executive> T createAndSet(Class<T> eClass, long origin, long horizon)
-	{
+	public synchronized static <T extends Executive> T createAndSet(Class<T> eClass, long origin, long horizon) {
 		// create executive
 		return ExecutiveBuilder.createAndSet(eClass, EPSLExecutivePlanDataBase.class, origin, horizon);
 	}
 	
+	/**
+	 * 
+	 * @param origin
+	 * @param horizon
+	 * @return
+	 */
+	public synchronized static Executive createAndSet(long origin, long horizon) {
+		// create executive
+		return ExecutiveBuilder.createAndSet(Executive.class, EPSLExecutivePlanDataBase.class, origin, horizon);
+	}
 	
 	/**
 	 * 

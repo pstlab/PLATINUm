@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.executive.dispatcher;
 
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
@@ -22,16 +23,17 @@ public abstract class Dispatcher<T extends Executive> extends ExecutiveObject
 	 * 
 	 * @param tick
 	 * @throws ExecutionException
+	 * @throws PlatformException
 	 */
 	public abstract void handleTick(long tick) 
-			throws ExecutionException;
+			throws ExecutionException, PlatformException;
 	
 	/**
 	 * Dispatch the node to start execution
 	 * 
 	 * @param node
-	 * @throws ExecutionException
+	 * @throws PlatformException
 	 */
 	public abstract void dispatch(ExecutionNode node) 
-			throws ExecutionException; 
+			throws PlatformException; 
 }

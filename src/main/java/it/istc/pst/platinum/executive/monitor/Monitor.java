@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
@@ -69,7 +70,8 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	 * 
 	 * @param tick
 	 * @throws ExecutionException
+	 * @throws PlatformException
 	 */
 	public abstract void handleTick(long tick) 
-			throws ExecutionException;
+			throws ExecutionException, PlatformException;
 }

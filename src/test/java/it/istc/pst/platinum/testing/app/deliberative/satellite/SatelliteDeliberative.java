@@ -49,7 +49,7 @@ public class SatelliteDeliberative
 			// solution found
 			System.out.println("... solution found after " + plan.getSolvingTime() + " msecs\n");
 			// export plan encoding 
-			String enconding = plan.export();
+			String enconding = plan.export().toString();
 			// print the resulting plan
 			System.out.println("Resulting plan:\n" + plan + "\n");
 			System.out.println("Exporting encoding:\n" + enconding + "\n");

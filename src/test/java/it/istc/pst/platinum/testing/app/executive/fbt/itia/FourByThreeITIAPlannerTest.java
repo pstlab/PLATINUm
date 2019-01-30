@@ -4,7 +4,6 @@ import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.ExecutiveBuilder;
-import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
@@ -47,11 +46,11 @@ public class FourByThreeITIAPlannerTest
 			// build executive plan database
 			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, pdb.getOrigin(), pdb.getHorizon());
 			// export solution plan
-			exec.initialize(planner.export(plan));
+			exec.initialize(plan.export());
 			// start executing the plan
 			exec.execute();
 		}
-		catch (ExecutionException | SynchronizationCycleException  | ProblemInitializationException | NoSolutionFoundException ex) {
+		catch (SynchronizationCycleException  | ProblemInitializationException | NoSolutionFoundException ex) {
 			System.err.println(ex.getMessage());
 		}
 		catch (InterruptedException ex) {

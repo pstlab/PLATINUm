@@ -112,10 +112,10 @@ public abstract class AbstractCommandLineInterface
 			// create the executive 
 			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
 			// initialize the executive
-			exec.initialize(this.planner.export(this.currentSolution));
+			exec.initialize(this.currentSolution.export());
 			
 			// bind the executive to the platform
-			exec.bind(sim);
+			exec.link(sim);
 			// start simulator
 			sim.start();
 			// run the executive
@@ -154,7 +154,7 @@ public abstract class AbstractCommandLineInterface
 		}
 		
 		// generate plan descriptor 
-		PlanProtocolDescriptor plan = this.planner.export(this.currentSolution);
+		PlanProtocolDescriptor plan = this.currentSolution.export();
 		// get the plan
 		return plan;
 	}

@@ -19,18 +19,18 @@ import it.istc.pst.platinum.control.platform.lang.PlatformCommandDescription;
 public class PlatformAgent 
 {
 	private static final AtomicLong CmdIdCounter = new AtomicLong(0);
-	private String id;											// agent id
-	private String label;										// agent label
-	private final Object lock = new Object();					// agent status lock
-	private PlatformAgentStatus status;						// agent status
+	private String id;													// agent id
+	private String label;												// agent label
+	private final Object lock = new Object();							// agent status lock
+	private PlatformAgentStatus status;									// agent status
 	
 	// agent configuration information 
-	private long uncertainty;									// uncertainty about the execution of a command
-	private Map<String, PlatformCommandDescription> commands;	// descriptions of commands the agent can perform 
+	private long uncertainty;											// uncertainty about the execution of a command
+	private Map<String, PlatformCommandDescription> commands;			// descriptions of commands the agent can perform 
 	
 	private List<PlatformAgentObserver> observers;						// list of agent observers
-	private PlatformCommand cmd;								// command currently in execution
-	private Thread handler;										// asynchronous command execution handler
+	private PlatformCommand cmd;										// command currently in execution
+	private Thread handler;												// asynchronous command execution handler
 	
 	/**
 	 * 
@@ -246,7 +246,6 @@ public class PlatformAgent
 			this.status = PlatformAgentStatus.IDLE;
 			lock.notifyAll();
 		}
-		
 		
 		// start asynchronous command handler
 		this.handler.start();

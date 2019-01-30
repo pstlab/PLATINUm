@@ -80,7 +80,7 @@ public abstract class DomainComponent extends FrameworkObject
 	protected static final Set<Relation> globalRelations = new HashSet<>();
 	// predicate ID counter
 	protected static final AtomicInteger PREDICATE_COUNTER = new AtomicInteger(0);
-	protected static final AtomicInteger DECISION_COUNTER = new AtomicInteger(0);
+	protected static final AtomicInteger DecisionIdCounter = new AtomicInteger(0);
 	protected static final AtomicInteger RELATION_COUNTER = new AtomicInteger(0);
 	
 	/**
@@ -492,7 +492,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		
 		// initialize decision
-		Decision dec = new Decision(DECISION_COUNTER.getAndIncrement(), value, labels, start, end, duration);
+		Decision dec = new Decision(DecisionIdCounter.getAndIncrement(), value, labels, start, end, duration);
 		// add decision the the agenda
 		this.decisions.get(PlanElementStatus.PENDING).add(dec);
 		// get initialized decision
