@@ -178,6 +178,48 @@ public class PlanProtocolDescriptor
 	 */
 	@Override
 	public String toString() {
-		return this.export();
+		String plan = "horizon = " + this.horizon + "\n";
+		plan += "plan {\n";
+		
+		// print timelines
+		plan += "\ttimelines {\n";
+		for (TimelineProtocolDescriptor tl : this.timelines) {
+			plan += "\t\t" + tl.getName() + " {\n";
+			for (TokenProtocolDescriptor token : tl.getTokens()) {
+				plan += "\t\t\t" + token.export() + "\n";
+			}
+			plan += "\t\t}\n";
+		}
+		plan += "\t}\n";
+		
+		// print relations
+		plan += "\trelations {\n";
+		for (RelationProtocolDescriptor rel : this.relations) {
+			// avoid meets on tokens of the same timeline
+			plan += "\t\t" + rel.export() + "\n";
+		}
+		plan += "\t}\n";
+		
+		// close plan
+		plan += "}\n";
+		
+		// check observations
+		if (!this.observations.isEmpty()) {
+			// print observations
+			plan += "observation {\n";
+			plan += "\ttimelines {\n";
+			for (TimelineProtocolDescriptor tl : this.observations) {
+				plan += "\t\t" + tl.getName() + " {\n";
+				for (TokenProtocolDescriptor token : tl.getTokens()) {
+					plan += "\t\t\t" + token.export() + "\n";
+				}
+				plan += "\t\t}\n";
+			}
+			plan += "\t}\n";
+			// end observations
+			plan += "}\n";
+		}
+		// get the plan
+		return plan;
 	}
 }

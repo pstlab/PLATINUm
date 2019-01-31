@@ -34,8 +34,12 @@ public class Timeline implements Comparator<Token>
 	public List<Token> getTokens() {
 		List<Token> tokens = new ArrayList<>();
 		for (Decision dec : this.sv.getActiveDecisions()) {
-			tokens.add(dec.getToken());
+			// get token
+			Token token = dec.getToken();
+			// add token
+			tokens.add(token);
 		}
+		
 		// sort tokens
 		Collections.sort(tokens, this);
 		// get sorted tokens
@@ -76,9 +80,8 @@ public class Timeline implements Comparator<Token>
 		TemporalInterval i2 = o2.getInterval();
 		
 		// compare intervals
-		return i1.getStartTime().getLowerBound() < i2.getStartTime().getLowerBound() ? -1 : 
-			i1.getStartTime().getLowerBound() == i2.getStartTime().getLowerBound() && 
-			i1.getDurationLowerBound() <= i2.getDurationLowerBound() ? -1 : 1;
+		return i1.getStartTime().getLowerBound() < i2.getStartTime().getLowerBound() ? -1 :
+			i1.getStartTime().getLowerBound() > i2.getStartTime().getLowerBound() ? 1 : 0;
 	}
 	
 	/**

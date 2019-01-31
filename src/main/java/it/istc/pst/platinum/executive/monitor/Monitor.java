@@ -74,4 +74,12 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	 */
 	public abstract void handleTick(long tick) 
 			throws ExecutionException, PlatformException;
+	
+	/**
+	 * 
+	 * @param tick
+	 * @throws PlatformException
+	 */
+	public abstract void handleObservations(long tick) 
+			throws PlatformException;
 }

@@ -33,6 +33,9 @@ public class Goal implements Comparable<Goal>
 	private ExecutionFailureCause failureCause;			// goal execution failure cause
 	private Map<String, List<ExecutionNode>> trace;		// execution trace
 	
+	private boolean repaired;
+	private long executionTick;
+	
 	
 	/**
 	 * 
@@ -51,6 +54,40 @@ public class Goal implements Comparable<Goal>
 		this.plans = new ArrayList<>();
 		this.trace = new HashMap<>();
 		this.failureCause = null;
+		this.repaired = false;
+		this.executionTick = 0;
+	}
+	
+	/**
+	 * 
+	 * @param repaired
+	 */
+	public void setRepaired(boolean repaired) {
+		this.repaired = repaired;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isRepaired() {
+		return this.repaired;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getExecutionTick() {
+		return executionTick;
+	}
+	
+	/**
+	 * 
+	 * @param executionTick
+	 */
+	public void setExecutionTick(long executionTick) {
+		this.executionTick = executionTick;
 	}
 	
 	/**

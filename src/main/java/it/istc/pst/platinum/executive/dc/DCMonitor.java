@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.executive.dc;
 
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
@@ -53,6 +54,12 @@ public class DCMonitor extends Monitor
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+	
+	@Override
+	public void handleObservations(long tick) throws PlatformException {
+		// TODO Auto-generated method stub
 		
 	}
 }

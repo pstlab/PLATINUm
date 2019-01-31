@@ -12,6 +12,7 @@ import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
+import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
 
 /**
  * 
@@ -57,7 +58,7 @@ public class ExecutiveProcess implements Runnable
 			{
 				// take a goal to plan for
 				Goal goal = this.agent.waitGoal(GoalStatus.COMMITTED);
-				System.out.println("executing goal ...\n" + goal.getPlan() + "\n");
+				System.out.println("executing goal ...\n" + goal + "\n");
 				// execute extracted goal
 				boolean success = this.agent.execute(goal);
 				// check executive result
@@ -89,9 +90,12 @@ public class ExecutiveProcess implements Runnable
 		SolutionPlan plan = goal.getPlan();
 		// build executive
 		Executive exec = ExecutiveBuilder.createAndSet(0, plan.getHorizon());
-		
+		// export plan 
+		PlanProtocolDescriptor desc = plan.export();
+		System.out.println("\n\nREADY TO EXECUTE PLAN:\n" + desc + "\n\n");
 		// initialize the executive according to the plan being executed
-		exec.initialize(plan.export());
+		exec.initialize(desc);
+		
 		// bind simulator if any
 		if (this.simulator != null) {
 			// bind simulator
@@ -101,8 +105,8 @@ public class ExecutiveProcess implements Runnable
 		}
 		
 		
-		// run the executive
-		boolean complete = exec.execute();
+		// run the executive starting at a given tick
+		boolean complete = exec.execute(goal.getExecutionTick());
 		// stop simulator if any
 		if (this.simulator != null) {
 			// unlink from simulator
@@ -117,11 +121,22 @@ public class ExecutiveProcess implements Runnable
 			ExecutionFailureCause cause = exec.getFailureCause();
 			// set failure cause
 			goal.setFailureCause(cause);
+			// set repaired 
+			goal.setRepaired(false);
+			// set goal interruption tick
+			goal.setExecutionTick(cause.getInterruptionTick());
 			// set execution trace by taking into account executed nodes
 			for (ExecutionNode node : exec.getNodes(ExecutionNodeStatus.EXECUTED)) {
 				// add the node to the goal execution trace
 				goal.addNodeToExecutionTrace(node);
 			}
+			
+//			// set execution trace by taking into account also (virtual) nodes in-execution
+//			for (ExecutionNode node : exec.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
+//				System.out.println(">>>> adding in-execution to the trace:\n\t" + node + "\n");
+//				// add the node to the goal execution trace
+//				goal.addNodeToExecutionTrace(node);
+//			}
 			
 			// throw exception
 			throw new ExecutionException("Execution failure... try to repair the plan through replanning... \n"

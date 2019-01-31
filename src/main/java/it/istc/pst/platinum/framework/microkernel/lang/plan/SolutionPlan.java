@@ -217,7 +217,9 @@ public class SolutionPlan
 	 */
 	public PlanProtocolDescriptor export() {
 		// generate protocol plan descriptor
-		return this.generatePlanDescriptor();
+		PlanProtocolDescriptor exported = this.generatePlanDescriptor();
+		// get exported plan
+		return exported;
 	}
 	
 	/**
@@ -239,7 +241,10 @@ public class SolutionPlan
 			// get the state variable related to the timeline
 			StateVariable comp = tl.getComponent();
 			// initialize descriptor
-			TimelineProtocolDescriptor timelineDescriptor = factory.createTimelineDescriptor(comp.getName(), tl.getName(), tl.isObservation());
+			TimelineProtocolDescriptor timelineDescriptor = factory.createTimelineDescriptor(
+					comp.getName(), 
+					tl.getName(), 
+					tl.isObservation());
 			
 			// get tokens of the timeline
 			for (Token token : tl.getTokens()) 
@@ -293,10 +298,9 @@ public class SolutionPlan
 				TokenProtocolDescriptor tokenDescriptor = factory.createTokenDescriptor(
 						timelineDescriptor,
 						token.getPredicate().getValue().getLabel(),
-//						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
 						new long [] {
 								token.getInterval().getStartTime().getLowerBound(), 
-								token.getInterval().getEndTime().getUpperBound()
+								token.getInterval().getStartTime().getUpperBound()
 						}, 
 						new long[] {
 								token.getInterval().getEndTime().getLowerBound(),
@@ -306,31 +310,31 @@ public class SolutionPlan
 								token.getInterval().getDurationLowerBound(),
 								token.getInterval().getDurationUpperBound()
 						}, 
-						paramNames, paramTypes, paramBounds, paramValues);
+						paramNames, paramTypes, paramBounds, paramValues, token.getStartExecutionState());
 
 				// update index
 				index.put(token, tokenDescriptor);
 			}
 			
-			// add an undefined gap for the last token if necessary
-			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
-			// check schedule
-			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
-				// create "empty" token description
-				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
-						new long[] {
-								last.getInterval().getEndTime().getLowerBound(),
-								last.getInterval().getEndTime().getUpperBound()
-						}, 
-						new long [] {
-								this.horizion,
-								this.horizion
-						}, 
-						new long [] {
-								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
-								(this.horizion - last.getInterval().getEndTime().getLowerBound())
-						});
-			}
+//			// add an undefined gap for the last token if necessary
+//			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
+//			// check schedule
+//			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
+//				// create "empty" token description
+//				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
+//						new long[] {
+//								last.getInterval().getEndTime().getLowerBound(),
+//								last.getInterval().getEndTime().getUpperBound()
+//						}, 
+//						new long [] {
+//								this.horizion,
+//								this.horizion
+//						}, 
+//						new long [] {
+//								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
+//								(this.horizion - last.getInterval().getEndTime().getLowerBound())
+//						});
+//			}
 			
 			// add timeline to plan
 			plan.addTimeline(timelineDescriptor);
@@ -342,7 +346,10 @@ public class SolutionPlan
 			// get the state variable related to the timeline
 			StateVariable comp = tl.getComponent();
 			// initialize descriptor
-			TimelineProtocolDescriptor timelineDescriptor = factory.createTimelineDescriptor(comp.getName(), tl.getName(), tl.isObservation());
+			TimelineProtocolDescriptor timelineDescriptor = factory.createTimelineDescriptor(
+					comp.getName(), 
+					tl.getName(), 
+					tl.isObservation());
 			
 			// get tokens of the timeline
 			for (Token token : tl.getTokens()) 
@@ -387,10 +394,9 @@ public class SolutionPlan
 				TokenProtocolDescriptor tokenDescriptor = factory.createTokenDescriptor(
 						timelineDescriptor, 
 						token.getPredicate().getValue().getLabel(),
-//						token.getPredicate().getValue().getLabel().replaceFirst("_", ""), 
 						new long [] {
 								token.getInterval().getStartTime().getLowerBound(), 
-								token.getInterval().getEndTime().getUpperBound()
+								token.getInterval().getStartTime().getUpperBound()
 						}, 
 						new long[] {
 								token.getInterval().getEndTime().getLowerBound(),
@@ -400,31 +406,31 @@ public class SolutionPlan
 								token.getInterval().getDurationLowerBound(),
 								token.getInterval().getDurationUpperBound()
 						}, 
-						paramNames, paramTypes, paramBounds, paramValues);
+						paramNames, paramTypes, paramBounds, paramValues, token.getStartExecutionState());
 
 				// update index
 				index.put(token, tokenDescriptor);
 			}
 			
-			// add an undefined gap for the last token if necessary
-			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
-			// check schedule
-			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
-				// create "empty" token description
-				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
-						new long[] {
-								last.getInterval().getEndTime().getLowerBound(),
-								last.getInterval().getEndTime().getUpperBound()
-						}, 
-						new long [] {
-								this.horizion,
-								this.horizion
-						}, 
-						new long [] {
-								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
-								(this.horizion - last.getInterval().getEndTime().getLowerBound())
-						});
-			}
+//			// add an undefined gap for the last token if necessary
+//			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
+//			// check schedule
+//			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
+//				// create "empty" token description
+//				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
+//						new long[] {
+//								last.getInterval().getEndTime().getLowerBound(),
+//								last.getInterval().getEndTime().getUpperBound()
+//						}, 
+//						new long [] {
+//								this.horizion,
+//								this.horizion
+//						}, 
+//						new long [] {
+//								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
+//								(this.horizion - last.getInterval().getEndTime().getLowerBound())
+//						});
+//			}
 			
 			// add timeline to plan
 			plan.addTimeline(timelineDescriptor);

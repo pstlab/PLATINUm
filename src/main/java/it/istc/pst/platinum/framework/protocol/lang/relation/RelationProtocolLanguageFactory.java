@@ -100,7 +100,8 @@ public class RelationProtocolLanguageFactory
 			
 			case "met_by" : {
 				// get met by relation
-				return new MetByRelationProtocolDescriptor(to, from);
+				return new MeetsRelationProtocolDescriptor(to, from);
+//				return new MetByRelationProtocolDescriptor(to, from);
 			}
 			
 			case "starts" : {

@@ -247,6 +247,7 @@ public class PlatformAgent
 			lock.notifyAll();
 		}
 		
+		System.out.println("[" + this.label + "] Starting agent simulator... ");
 		// start asynchronous command handler
 		this.handler.start();
 	}

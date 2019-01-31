@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.framework.domain.component;
 
+import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.parameter.lang.Parameter;
 
 /**
@@ -21,6 +22,9 @@ public class Decision implements Comparable<Decision>
 	// solving knowledge
 	private boolean mandatoryExpansion;
 	private boolean mandatoryUnification;
+	
+	// execution knowledge
+	private ExecutionNodeStatus startExecutionState;
 	
 	/**
 	 * 
@@ -49,6 +53,50 @@ public class Decision implements Comparable<Decision>
 		// set solving knowledge
 		this.mandatoryExpansion = false;
 		this.mandatoryUnification = false;
+
+		// set default start execution state
+		this.startExecutionState = ExecutionNodeStatus.WAITING;
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param value
+	 * @param labels
+	 * @param start
+	 * @param end
+	 * @param nominalDuration
+	 * @param status
+	 */
+	protected Decision(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] nominalDuration, ExecutionNodeStatus status) 
+	{
+		// set id
+		this.id = id;
+		// set parameter labels
+		this.labels = labels;
+		// set causal link
+		this.causalLink = null;
+		// set related value
+		this.value = value;
+		this.start = start;
+		this.end = end;
+		this.nominalDuration = nominalDuration;
+		this.token = null;
+		
+		// set solving knowledge
+		this.mandatoryExpansion = false;
+		this.mandatoryUnification = false;
+
+		// set default start execution state
+		this.startExecutionState = status;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public ExecutionNodeStatus getStartExecutionState() {
+		return startExecutionState;
 	}
 	
 	/**

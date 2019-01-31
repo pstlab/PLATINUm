@@ -107,7 +107,7 @@ public class EPSLExecutivePlanDataBase extends ExecutivePlanDataBase
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability, virtual);
+								start, end, duration, controllability, virtual, ExecutionNodeStatus.WAITING);
 						
 						// add node
 						this.addNode(node);
@@ -180,7 +180,7 @@ public class EPSLExecutivePlanDataBase extends ExecutivePlanDataBase
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability, virtual);
+								start, end, duration, controllability, virtual, ExecutionNodeStatus.WAITING);
 						
 						// add node
 						this.addNode(node);

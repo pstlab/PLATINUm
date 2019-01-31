@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.framework.protocol.lang;
 
+import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDescriptor;
 import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolLanguageFactory;
 
@@ -48,14 +49,15 @@ public class ProtocolLanguageFactory
 	 * @param paramTypes
 	 * @param paramBounds
 	 * @param paramValues
+	 * @param status
 	 * @return
 	 */
 	public TokenProtocolDescriptor createTokenDescriptor(TimelineProtocolDescriptor timeline, String predicate,
 			long[] startTimeBounds, long[] endTimeBounds, long[] durationBounds,
-			String[] paramNames, ParameterTypeDescriptor[] paramTypes, long[][] paramBounds, String[][] paramValues) 
+			String[] paramNames, ParameterTypeDescriptor[] paramTypes, long[][] paramBounds, String[][] paramValues, ExecutionNodeStatus status) 
 	{
 		// initialize token
-		TokenProtocolDescriptor token = new TokenProtocolDescriptor(getNextTokenId(), timeline, predicate);
+		TokenProtocolDescriptor token = new TokenProtocolDescriptor(getNextTokenId(), timeline, predicate, status);
 		
 		
 		// set temporal information

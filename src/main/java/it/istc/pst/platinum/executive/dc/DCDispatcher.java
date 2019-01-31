@@ -70,16 +70,4 @@ public class DCDispatcher extends Dispatcher
 			break;
 		}
 	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void dispatch(ExecutionNode node) 
-	{
-		
-		/*
-		 * TODO : dispatch a node according to the results of the DC checker
-		 */
-	}
 }

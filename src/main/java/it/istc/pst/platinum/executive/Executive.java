@@ -286,8 +286,6 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				if (!node.isVirtual()) {
 					// actually schedule the start time of the token
 					this.pdb.scheduleStartTime(node, start);
-					// check resulting schedule
-					this.checkSchedule(node);
 				}
 				
 				// update node status
@@ -308,8 +306,6 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	{
 		// schedule the observed start time of the token
 		this.pdb.scheduleStartTime(node, start);
-		// check resulting schedule
-		this.checkSchedule(node);
 		// update node status
 		this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 	}
@@ -324,21 +320,19 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	public void scheduleTokenDuration(ExecutionNode node, long duration) 
 			throws TemporalConstraintPropagationException, PlatformException
 	{
-		// check if virtual node
+		// check if not virtual
 		if (!node.isVirtual()) {
 			// propagate scheduled duration time
 			this.pdb.scheduleDuration(node, duration);
-			// if controllable send a stop command
-			if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
-				// also send stop command execution request
-				this.platformProxy.stopCommand(node);
-			}
 		}
 		
-		// check schedule
-		this.checkSchedule(node);
 		// the node can be considered as executed
 		this.updateNode(node, ExecutionNodeStatus.EXECUTED);
+		// if controllable send a stop command
+		if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
+			// send stop signal to the platform
+			this.sendStopCommandSignalToPlatform(node);
+		}
 	}
 	
 	/**
@@ -363,6 +357,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			this.lock.notifyAll();
 		}
 		
+		
 		// initialize plan data-base
 		this.pdb.setup(plan);
 		
@@ -375,12 +370,23 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	}
 	
 	/**
-	 * Blocking method which start the execution of the plan and waits for completion.
 	 * 
 	 * @return
 	 * @throws InterruptedException
 	 */
 	public final boolean execute() 
+			throws InterruptedException {
+		// call executive starting at tick 0
+		return this.execute(0);
+	}
+	
+	/**
+	 * Blocking method which start the execution of the plan and waits for completion.
+	 * 
+	 * @return
+	 * @throws InterruptedException
+	 */
+	public final boolean execute(long startTick) 
 			throws InterruptedException
 	{
 		// check status
@@ -402,7 +408,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		// initialize dispatching index
 		this.dispatchedIndex = new ConcurrentHashMap<>();
 		// start clock
-		this.clock.start();
+		this.clock.start(startTick);
 		// wait execution completes
 		this.clock.join();
 			
@@ -492,14 +498,25 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				logger.debug("{Executive} -> Handle tick: " + tick + "\n");
 				// synchronization step only in "failure" mode
 				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
-				this.monitor.handleTick(tick);
+				// handle observations
+				this.monitor.handleObservations(tick);
 				
 				// hypothesis
 				complete = true;
+				// get nodes in starting state
+				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING)) {
+					if (!node.isVirtual()) {
+						// the executive cannot complete 
+						complete = false;
+						// waiting for a feedback of the node 
+						logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
+								+ "\t- node: " + node + "\n");
+					}
+				}
+				
 				// get nodes in execution 
 				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
-					// check if the node belongs to an external variable
-					if (node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE)) {
+					if (!node.isVirtual()) {
 						// the executive cannot complete 
 						complete = false;
 						// waiting for a feedback of the node 
@@ -518,8 +535,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		{
 			// set execution failure flag
 			this.failure.set(true);
-			// complete execution in this case
-			complete = true;
+			// do not complete execution to wait for pending signals
+			complete = false;
 			// set execution failure cause
 			this.cause = ex.getFailureCause();
 			// error message
@@ -531,6 +548,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		{
 			// set failure
 			this.failure.set(true);
+			// complete execution in this case
+			complete = true;
 			// set cause
 			this.cause = new PlatformError();
 			// error message
@@ -542,7 +561,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			logger.error(ex.getMessage());
 			// set execution failure 
 			this.failure.set(true);
-			// complete execution
+			// complete execution in this case
 			complete = true;
 		}
 
@@ -582,7 +601,21 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @param node
 	 * @throws PlatformException
 	 */
-	public void dispatchCommandToThePlatform(ExecutionNode node) 
+	public void sendStopCommandSignalToPlatform(ExecutionNode node) 
+			throws PlatformException
+	{
+		if (!node.isVirtual()) {
+			// also send stop command execution request
+			this.platformProxy.stopCommand(node);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @throws PlatformException
+	 */
+	public void sendStartCommandSignalToPlatform(ExecutionNode node) 
 			throws PlatformException
 	{
 		// check if a platform PROXY exists
@@ -677,6 +710,6 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	public void failure(PlatformCommand cmd) 
 	{
 		// TODO Auto-generated method stub
-		
+		throw new RuntimeException("TODO : Handle failure signals from platform");
 	}
 }

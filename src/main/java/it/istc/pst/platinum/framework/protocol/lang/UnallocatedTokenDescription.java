@@ -1,5 +1,7 @@
 package it.istc.pst.platinum.framework.protocol.lang;
 
+import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
+
 /**
  * 
  * @author alessandroumbrico
@@ -13,7 +15,7 @@ public class UnallocatedTokenDescription extends TokenProtocolDescriptor {
 	 * @param timeline
 	 */
 	protected UnallocatedTokenDescription(int id, TimelineProtocolDescriptor timeline) {
-		super(id, timeline, "unallocated");
+		super(id, timeline, "unallocated",ExecutionNodeStatus.EXECUTED);
 	}
 	
 	/**

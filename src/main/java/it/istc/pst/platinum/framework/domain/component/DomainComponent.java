@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
@@ -500,6 +501,30 @@ public abstract class DomainComponent extends FrameworkObject
 	}
 	
 	/**
+	 * 
+	 * @param value
+	 * @param labels
+	 * @param start
+	 * @param end
+	 * @param duration
+	 * @return
+	 */
+	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus status) 
+	{
+		// check if value is known to the component
+		if (!value.getComponent().equals(this)) {
+			throw new RuntimeException("Trying to add a decision with a value unknown to the component:\n- component: " + this.name + "\n- value: " + value + "\n");
+		}
+		
+		// initialize decision
+		Decision dec = new Decision(DecisionIdCounter.getAndIncrement(), value, labels, start, end, duration, status);
+		// add decision the the agenda
+		this.decisions.get(PlanElementStatus.PENDING).add(dec);
+		// get initialized decision
+		return dec;
+	}
+	
+	/**
 	 * The method adds a pending decision to the current plan. The status of the decision 
 	 * changes from PENDING to ACTIVE.
 	 * 
@@ -534,7 +559,8 @@ public abstract class DomainComponent extends FrameworkObject
 						dec.getParameterLabels(),
 						dec.getStart(), 
 						dec.getEnd(), 
-						dec.getNominalDuration());
+						dec.getNominalDuration(),
+						dec.getStartExecutionState());
 				
 				// set token to decision 
 				dec.setToken(token);
@@ -1325,15 +1351,18 @@ public abstract class DomainComponent extends FrameworkObject
 	
 	/**
 	 * 
+	 * @param id
 	 * @param value
+	 * @param labels
 	 * @param start
 	 * @param end
 	 * @param duration
+	 * @param state
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 * @throws ParameterCreationException
 	 */
-	public Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
+	public Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus state) 
 			throws TemporalIntervalCreationException, ParameterCreationException
 	{
 		// create a temporal interval
@@ -1366,6 +1395,6 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		
 		// create token
-		return new Token(id, this, interval, predicate);
+		return new Token(id, this, interval, predicate, state);
 	}
 }

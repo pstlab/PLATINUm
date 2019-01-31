@@ -121,6 +121,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		return this.facade.getHorizon();
 	}
 	
+	
 	/**
 	 * 
 	 * @param plan
@@ -138,7 +139,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 				for (TokenProtocolDescriptor token : tl.getTokens()) 
 				{
 					// check predicate
-					if (!token.getPredicate().equals("unallocated")) 
+					if (!token.getPredicate().toLowerCase().equals("unallocated")) 
 					{
 						// get token's bound
 						long[] start = token.getStartTimeBounds();
@@ -193,7 +194,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability, virtual);
+								start, end, duration, controllability, virtual, token.getStartExecutionState());
 						
 						// add node
 						this.addNode(node);
@@ -210,7 +211,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 				for (TokenProtocolDescriptor token : tl.getTokens()) 
 				{
 					// check predicate
-					if (!token.getPredicate().equals("unallocated")) 
+					if (!token.getPredicate().toLowerCase().equals("unallocated")) 
 					{
 						// get token's bound
 						long[] start = token.getStartTimeBounds();
@@ -266,7 +267,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 						// create a node
 						ExecutionNode node = this.createNode(tl.getComponent(), tl.getName(), 
 								signature, paramTypes, paramValues, 
-								start, end, duration, controllability, virtual);
+								start, end, duration, controllability, virtual, token.getStartExecutionState());
 						
 						// add node
 						this.addNode(node);
@@ -708,9 +709,11 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 	 */
 	public void addNode(ExecutionNode node) 
 	{
-		// insert node
-		node.setStatus(ExecutionNodeStatus.WAITING);
-		this.nodes.get(ExecutionNodeStatus.WAITING).add(node);
+		// check expected initial execution state
+		ExecutionNodeStatus initial = node.getStartExecutionState();
+		node.setStatus(initial);
+		this.nodes.get(initial).add(node);
+		// setup dependency graph data structures
 		this.sdg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
 		this.edg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
 	}
@@ -727,6 +730,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 	 * @param duration
 	 * @param controllability
 	 * @param virtual
+	 * @param toExecute
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
@@ -734,19 +738,16 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 			String signature, ParameterType[] pTypes, String[] pValues, 
 			long[] start, long[] end, long[] duration, 
 			ControllabilityType controllability,
-			boolean virtual) 
+			boolean virtual, ExecutionNodeStatus state) 
 			throws TemporalIntervalCreationException  
 	{
-//		// check interval controllability
-//		boolean controllableInterval = controllability.equals(ControllabilityType.UNCONTROLLABLE) || 
-//				controllability.equals(ControllabilityType.PARTIALLY_CONTROLLABLE) ? false : true;
 		// create temporal interval - consider all intervals as controllable during execution
 		TemporalInterval interval = this.facade.createTemporalInterval(start, end, duration, true);
 		
 		// create predicate
 		NodePredicate predicate = new NodePredicate(component, timeline, signature, pTypes, pValues); 
 		// create execution node
-		return new ExecutionNode(predicate, interval, controllability, virtual);
+		return new ExecutionNode(predicate, interval, controllability, virtual, state);
 	}
 	
 	/**

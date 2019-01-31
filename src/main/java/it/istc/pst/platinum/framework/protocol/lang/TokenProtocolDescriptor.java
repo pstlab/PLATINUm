@@ -3,6 +3,8 @@ package it.istc.pst.platinum.framework.protocol.lang;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
+
 /**
  * 
  * @author alessandroumbrico
@@ -12,7 +14,7 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 {
 	private long id;								// token's id
 	private TimelineProtocolDescriptor timeline;	// timeline
-	private String predicate;					// token predicate
+	private String predicate;						// token predicate
 	// predicate's parameter information
 	private List<ParameterDescriptor> params;
 	// token's temporal information
@@ -20,20 +22,40 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 	private long[] endTimeBounds;				// token's end time interval
 	private long[] durationBounds;				// token's duration interval
 	
+	// start execution state
+	private ExecutionNodeStatus startExecutionState;	
+	
 	/**
 	 * 
 	 * @param id
 	 * @param timeline
 	 * @param predicate
+	 * @param state
 	 */
-	public TokenProtocolDescriptor(long id, TimelineProtocolDescriptor timeline, String predicate) {
+	public TokenProtocolDescriptor(long id, TimelineProtocolDescriptor timeline, String predicate, ExecutionNodeStatus state) {
 		this.id = id;
 		this.timeline = timeline;
 		this.predicate = predicate;
 		this.params = new ArrayList<ParameterDescriptor>();
-		
+		this.startExecutionState = state;
 		// add token to timeline
 		timeline.addToken(this);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ExecutionNodeStatus getStartExecutionState() {
+		return startExecutionState;
+	}
+	
+	/**
+	 * 
+	 * @param startExecutionState
+	 */
+	public void setStartExecutionState(ExecutionNodeStatus startExecutionState) {
+		this.startExecutionState = startExecutionState;
 	}
 
 	/**
@@ -150,29 +172,39 @@ public class TokenProtocolDescriptor implements Comparable<TokenProtocolDescript
 		return durationBounds;
 	}
 	
-	/**
-	 * 
-	 */
+	
+	
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
-		// get instance
-		return (obj instanceof TokenProtocolDescriptor) &&
-				this.timeline.equals(((TokenProtocolDescriptor) obj).timeline) &&
-				this.predicate.equals(((TokenProtocolDescriptor) obj).predicate) &&
-				this.startTimeBounds[0] == ((TokenProtocolDescriptor) obj).startTimeBounds[0] &&
-				this.startTimeBounds[1] == ((TokenProtocolDescriptor) obj).startTimeBounds[1] &&
-				this.endTimeBounds[0] == ((TokenProtocolDescriptor) obj).endTimeBounds[0] &&
-				this.endTimeBounds[1] == ((TokenProtocolDescriptor) obj).endTimeBounds[1] &&
-				this.durationBounds[0] == ((TokenProtocolDescriptor) obj).durationBounds[0] &&
-				this.durationBounds[1] == ((TokenProtocolDescriptor) obj).durationBounds[1];
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TokenProtocolDescriptor other = (TokenProtocolDescriptor) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	public int compareTo(TokenProtocolDescriptor o) {
-		return this.startTimeBounds[0] <= o.getStartTimeBounds()[0] ? -1 : 1;
+		return this.startTimeBounds[0] < o.startTimeBounds[0] ? -1 : 
+			this.startTimeBounds[0] > o.startTimeBounds[0] ? 1 : 0;
 	}
 	
 	/**

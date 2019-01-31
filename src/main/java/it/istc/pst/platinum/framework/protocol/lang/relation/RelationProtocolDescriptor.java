@@ -72,22 +72,6 @@ public abstract class RelationProtocolDescriptor
 		}
 	}
 	
-//	/**
-//	 * 
-//	 * @param first
-//	 */
-//	public void setFirstBound(long[] first) {
-//		this.first = first;
-//	}
-//	
-//	/**
-//	 * 
-//	 * @param second
-//	 */
-//	public void setSecondBound(long[] second) {
-//		this.second = second;
-//	}
-	
 	/**
 	 * 
 	 * @return

@@ -43,15 +43,8 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 	public synchronized void start() 
 			throws InterruptedException 
 	{
-		// check process
-		if (this.process == null) {
-			// set tick start
-			this.tickStart = 0;
-			// create and start process
-			this.process = new Thread(this);
-			// start clock thread
-			this.process.start();
-		}
+		// start clock manager at tick 0
+		this.start(0);
 	}
 	
 	/**

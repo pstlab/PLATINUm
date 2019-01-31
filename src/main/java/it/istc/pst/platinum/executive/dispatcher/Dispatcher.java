@@ -3,7 +3,6 @@ package it.istc.pst.platinum.executive.dispatcher;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
-import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
@@ -26,14 +25,5 @@ public abstract class Dispatcher<T extends Executive> extends ExecutiveObject
 	 * @throws PlatformException
 	 */
 	public abstract void handleTick(long tick) 
-			throws ExecutionException, PlatformException;
-	
-	/**
-	 * Dispatch the node to start execution
-	 * 
-	 * @param node
-	 * @throws PlatformException
-	 */
-	public abstract void dispatch(ExecutionNode node) 
-			throws PlatformException; 
+			throws ExecutionException, PlatformException; 
 }

@@ -656,7 +656,8 @@ public class GoalOrientedActingAgent
 		boolean complete = true;
 		// start execution time
 		long now = System.currentTimeMillis();
-		try {
+		try 
+		{
 			// execution the plan synthesized for the goal
 			this.executive.doExecute(goal);
 		}
@@ -735,7 +736,7 @@ public class GoalOrientedActingAgent
 					// get value
 					ComponentValue value = component.getValueByName(node.getSignature());
 					// create fact 
-					Decision fact = component.create(value, node.getParameters(), node.getStart(), node.getEnd(), node.getDuration());
+					Decision fact = component.create(value, node.getParameters(), node.getStart(), node.getEnd(), node.getDuration(), node.getStatus());
 					// activate fact
 					component.activate(fact);
 					// add fact
@@ -798,13 +799,14 @@ public class GoalOrientedActingAgent
 				goals.add(decision);
 			}
 			
-			
-			
 			// deliberate on the current status of the plan database
 			SolutionPlan plan = this.contingencyHandler.doHandle(this.pdb);
-			System.out.println("\nRepaired plan\n" + plan.export() + "\n");
 			// set repaired plan
 			goal.setPlan(plan);
+			// set goal as repaired
+			goal.setRepaired(true);
+			// set the tick the execution will start
+			goal.setExecutionTick(goal.getFailureCause().getInterruptionTick());
 		}
 		catch (Exception ex) 
 		{
@@ -898,7 +900,7 @@ public class GoalOrientedActingAgent
 			
 			// initialize the agent
 			agent.initialize(
-					"domains/AIJ_EXP_FbT/AIJ_EXP_T10_S60_U10.ddl", 					// DDL specification
+					"domains/AIJ_EXP_FbT/AIJ_EXP_T10_S60_U30.ddl", 					// DDL specification
 					"etc/platform/AIJ_EXP_FbT/AIJ_EXP_PLATFORM_CONFIG_U30.xml"		// platform simulator configuration
 					);
 			

@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.framework.domain.component;
 
+import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.time.TemporalInterval;
 
 /**
@@ -14,17 +15,37 @@ public final class Token implements Comparable<Token>
 	protected TemporalInterval interval;	// temporal interval
 	protected Predicate predicate;			// predicate
 	
+	// start execution state
+	private ExecutionNodeStatus startExecutionState;
+	
 	/**
 	 * 
 	 * @param component
 	 * @param interval
 	 * @param predicate
 	 */
-	protected Token(int id, DomainComponent component, TemporalInterval interval, Predicate predicate) {
+	protected Token(int id, DomainComponent component, TemporalInterval interval, Predicate predicate, ExecutionNodeStatus state) {
 		this.id = id;
 		this.component = component;
 		this.interval = interval;
 		this.predicate = predicate;
+		this.startExecutionState = state;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ExecutionNodeStatus getStartExecutionState() {
+		return startExecutionState;
+	}
+
+	/**
+	 * 
+	 * @param startExecutionState
+	 */
+	public void setStartExecutionState(ExecutionNodeStatus startExecutionState) {
+		this.startExecutionState = startExecutionState;
 	}
 	
 	/**
@@ -76,21 +97,16 @@ public final class Token implements Comparable<Token>
 		return this.interval.compareTo(o.interval);
 	}
 	
-	/**
-	 * 
-	 */
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((component == null) ? 0 : component.hashCode());
-		result = prime * result + ((predicate == null) ? 0 : predicate.hashCode());
+		result = prime * result + id;
 		return result;
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -100,19 +116,11 @@ public final class Token implements Comparable<Token>
 		if (getClass() != obj.getClass())
 			return false;
 		Token other = (Token) obj;
-		if (component == null) {
-			if (other.component != null)
-				return false;
-		} else if (!component.equals(other.component))
-			return false;
-		if (predicate == null) {
-			if (other.predicate != null)
-				return false;
-		} else if (!predicate.equals(other.predicate))
+		if (id != other.id)
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * 
 	 */

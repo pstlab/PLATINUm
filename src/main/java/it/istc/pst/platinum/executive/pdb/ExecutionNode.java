@@ -23,13 +23,18 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 	private final Object lock = new Object();
 	private ExecutionNodeStatus status;
 	
+	// start execution knowledge
+	private ExecutionNodeStatus startExecutionState;
+	
 	/**
 	 * 
 	 * @param predicate
 	 * @param interval
 	 * @param type
+	 * @param virtual
+	 * @param toExecute
 	 */
-	protected ExecutionNode(NodePredicate predicate, TemporalInterval interval, ControllabilityType type, boolean virtual) 
+	protected ExecutionNode(NodePredicate predicate, TemporalInterval interval, ControllabilityType type, boolean virtual, ExecutionNodeStatus status) 
 	{
 		this.id = COUNTER.getAndIncrement();
 		this.controllability = type;
@@ -38,6 +43,16 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 		this.predicate = predicate;
 		// set virtual flag
 		this.virtual = virtual;
+		// set initial execution status
+		this.startExecutionState = status;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ExecutionNodeStatus getStartExecutionState() {
+		return startExecutionState;
 	}
 
 	/**
