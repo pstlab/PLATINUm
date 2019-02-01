@@ -470,7 +470,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 			
 			case "met-by" : {
 				// prepare after constraint
-				this.prepareAfterTemporalConstraint(reference, target, new long[][] {
+				this.prepareMeetsTemporalConstraint(target, reference, new long[][] {
 					{0, 0}
 				});
 			}
@@ -1010,7 +1010,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
 		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
 		
-		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
+//		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.WAITING);
 		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
 	}
 	
@@ -1039,7 +1039,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
 		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
 		
-		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+//		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
 		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
 	}
 	
@@ -1062,11 +1062,10 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
 		// add execution dependencies
-		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-		
-		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
-		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+//		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+//		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
+//		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.WAITING);
+//		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
 	}
 	
 	/**

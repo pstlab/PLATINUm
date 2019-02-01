@@ -46,18 +46,14 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 		{
 			// get node 
 			ExecutionNode node = feedback.getNode();
-			// check the schedule of the node
-			this.executive.checkSchedule(node);
 			// check execution result
 			switch (feedback.getType())
 			{
 				case PARTIALLY_CONTROLLABLE_TOKEN_COMPLETE : 
 				case UNCONTROLLABLE_TOKEN_COMPLETE : 
 				{
-					// check the time unit when 
-					long receptionTau = this.executive.convertTickToTau(feedback.getTick());
 					// compute node duration of the token in execution 
-					long duration = Math.max(1, tau - receptionTau);
+					long duration = Math.max(1, tau - node.getStart()[0]);
 					try
 					{
 						// do propagate observed duration
@@ -66,8 +62,8 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
-						// the node can be considered as executed
-						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						// set token as in failure
+						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 						// create execution failure message
 						ExecutionFailureCause cause = new DurationOverflow(tick, node, duration);
 						// throw execution exception
@@ -82,24 +78,22 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 				
 				case UNCONTROLLABLE_TOKEN_START : 
 				{
-					// get feedback reception tau
-					long receptionTau = this.executive.convertTickToTau(feedback.getTick());
 					try
 					{
 						// schedule the start of uncontrollable token
-						this.executive.scheduleUncontrollableTokenStart(node, receptionTau);
-						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + receptionTau + "\n"
+						this.executive.scheduleUncontrollableTokenStart(node, tau);
+						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
 						// the node can be considered as in execution
-						this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
+						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 						// create execution cause
-						ExecutionFailureCause cause = new StartOverflow(tick, node, receptionTau);
+						ExecutionFailureCause cause = new StartOverflow(tick, node, tau);
 						// throw execution exception
 						throw new ObservationException(
 								"The observed start time of the token does not comply with the expected one:\n"
-								+ "\t- start: " + receptionTau + "\n"
+								+ "\t- start: " + tau + "\n"
 								+ "\t- node: " + node + "\n", 
 								cause);
 					}
@@ -171,12 +165,11 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 		}
 	}
 	
-	
 	/**
 	 * 
 	 */
 	@Override
-	public void handleObservations(long tick) 
+	public void handleExecutionFailure(long tick, ExecutionFailureCause cause) 
 			throws PlatformException
 	{
 		// convert tick to tau
@@ -188,18 +181,21 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 		{
 			// get node 
 			ExecutionNode node = feedback.getNode();
+			// check node schedule
+			this.executive.checkSchedule(node);
 			// check execution result
 			switch (feedback.getType())
 			{
 				case PARTIALLY_CONTROLLABLE_TOKEN_COMPLETE : 
 				case UNCONTROLLABLE_TOKEN_COMPLETE : 
 				{
-					// check the time unit when 
-					long receptionTau = this.executive.convertTickToTau(feedback.getTick());
 					// compute node duration of the token in execution 
-					long duration = Math.max(1, tau - receptionTau);
+					long duration = Math.max(1, tau - node.getStart()[0]);
 					// the node can be considered as executed
-					this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+					// add repair information
+					cause.addRepairInfo(node, duration);
+					// info message
 					logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
@@ -207,11 +203,14 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 				
 				case UNCONTROLLABLE_TOKEN_START : 
 				{
-					// get feedback reception tau
-					long receptionTau = this.executive.convertTickToTau(feedback.getTick());
+					/*
+					 * TODO : GESTIRE ANCHE QUESTE INFORMAZIONI NEL PLAN REPAIR ?
+					 * 
+					 */
+					
 					// update node status
-					this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + receptionTau + "\n"
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+					logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
@@ -241,10 +240,12 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 						// compute (controllable) execution duration
 						long duration = Math.max(1, tau - node.getStart()[0]);
 						// the node can be considered as executed
-						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 						// simply send stop command
 						this.executive.sendStopCommandSignalToPlatform(node);
-						// token scheduled
+						// add repair information
+						cause.addRepairInfo(node, duration);
+						// info message
 						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
 								+ "\t- duration: " + duration + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");

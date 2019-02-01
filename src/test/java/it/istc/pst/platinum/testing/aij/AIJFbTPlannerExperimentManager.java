@@ -34,6 +34,7 @@ public class AIJFbTPlannerExperimentManager extends AIJFbT
 				SHARED,
 				UNCERTAINTY,
 				HORIZON);
+		
 		// generate experiment domains
 		generator.generate();
 

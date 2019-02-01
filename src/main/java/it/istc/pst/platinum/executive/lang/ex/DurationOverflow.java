@@ -18,7 +18,7 @@ public class DurationOverflow extends ExecutionFailureCause
 	 * @param observedDuration
 	 */
 	public DurationOverflow(long tick, ExecutionNode node, long observedDuration) {
-		super(tick, node, ExecutionFailureCauseType.DURATION_OVERFLOW);
+		super(tick, ExecutionFailureCauseType.DURATION_OVERFLOW, node);
 		this.observedDuration = observedDuration;
 	}
 	
@@ -36,7 +36,6 @@ public class DurationOverflow extends ExecutionFailureCause
 	@Override
 	public String toString() {
 		return "[DurationOverflow] The observed duration exceeds the upper bound of the domain specification\n"
-				+ "\t- observed-duration= " + this.observedDuration + "\n"
-				+ "\t- node= " + this.getInterruptNode() + "\n";
+				+ "\t- observed-duration= " + this.observedDuration + "\n";
 	}
 }

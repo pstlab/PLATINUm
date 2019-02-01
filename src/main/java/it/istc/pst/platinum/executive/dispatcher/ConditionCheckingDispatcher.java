@@ -56,6 +56,8 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
+						// set token as in execution to wait for feedbacks
+						this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 						// create execution cause
 						ExecutionFailureCause cause = new StartOverflow(tick, node, tau);
 						// throw execution exception

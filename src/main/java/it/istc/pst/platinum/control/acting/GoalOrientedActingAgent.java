@@ -11,8 +11,12 @@ import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.GoalStatus;
 import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
+import it.istc.pst.platinum.executive.lang.ex.PlanRepairInformation;
+import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
+import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
@@ -22,6 +26,9 @@ import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationExc
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
+import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MeetsRelation;
 
 /**
  * 
@@ -148,9 +155,15 @@ public class GoalOrientedActingAgent
 				this.queue.wait();
 			}
 			
-			// take a goal
+			// take aborted goals
 			goals.addAll(this.queue.get(GoalStatus.ABORTED));
+			// clear queue
+			this.queue.get(GoalStatus.ABORTED).clear();
+			// take finished goals
 			goals.addAll(this.queue.get(GoalStatus.FINISHED));
+			// clear queue
+			this.queue.get(GoalStatus.FINISHED).clear();
+			
 			// send signal
 			this.queue.notifyAll();
 		}
@@ -390,7 +403,7 @@ public class GoalOrientedActingAgent
 	 * 
 	 * @throws InterruptedException
 	 */
-	protected void clear() 
+	public void clear() 
 			throws InterruptedException
 	{
 		synchronized (this.lock) {
@@ -406,9 +419,14 @@ public class GoalOrientedActingAgent
 			this.lock.notifyAll();
 		}
 		
-		/*
-		 * TODO : Do something
-		 */
+		// clear queue
+		this.queue.clear();
+		// clear domain file specification
+		this.ddl = null;
+		// clear plan database 
+		this.pdb = null;
+		// clear simulator configuration
+		this.cfg = null;
 		
 		synchronized (this.lock) {
 			// change status
@@ -715,8 +733,11 @@ public class GoalOrientedActingAgent
 		
 		// list of activated facts
 		List<Decision> facts = new ArrayList<>();
+		// list of activated relations
+		List<Relation> relations = new ArrayList<>();
 		// list of planning goals
 		List<Decision> goals = new ArrayList<>();
+		
 		// repairing result
 		boolean success = true;
 		// start contingency handling time
@@ -727,6 +748,9 @@ public class GoalOrientedActingAgent
 			this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
 			// initialize the platform simulator of executive process
 			this.executive.initialize(this.cfg);
+			
+			System.out.println("\n\nREPAIRING PROBLEM SPECIFICATION:\n");
+			
 			// setup the initial fact leveraging goal execution trace
 			for (DomainComponent component : this.pdb.getComponents()) 
 			{
@@ -736,13 +760,153 @@ public class GoalOrientedActingAgent
 					// get value
 					ComponentValue value = component.getValueByName(node.getSignature());
 					// create fact 
-					Decision fact = component.create(value, node.getParameters(), node.getStart(), node.getEnd(), node.getDuration(), node.getStatus());
+					Decision fact = component.create(
+							value, 
+							node.getParameters(), 
+							node.getStart(), 
+							node.getEnd(), 
+							node.getDuration(), 
+							node.getStatus());
+					
 					// activate fact
 					component.activate(fact);
+					// activated fact
+					System.out.println(">>>>> FACT : " + node.getStatus() + " : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
+							+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
+									+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
+									+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
 					// add fact
 					facts.add(fact);
 				}
 			}
+			
+			// check also failure cause and add the related node as fact
+			switch (goal.getFailureCause().getType()) 
+			{
+				// start overflow contingency
+				case START_OVERFLOW : {
+					// get cause
+					StartOverflow cause = (StartOverflow) goal.getFailureCause();
+					// get observed start
+					long start = cause.getObservedStartTime();
+					// get node 
+					ExecutionNode node = cause.getInterruptionNode();
+					// get component
+					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
+					// get value
+					// get value
+					ComponentValue value = comp.getValueByName(node.getSignature());
+					// create fact 
+					Decision fact = comp.create(
+							value, 
+							node.getParameters(), 
+							new long[] {start, start}, 
+							node.getEnd(), 
+							node.getDuration(), 
+							ExecutionNodeStatus.EXECUTED);
+					
+					// activate fact
+					comp.activate(fact);
+					// activated fact
+					System.out.println(">>>>> OBSERVED-FACT : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
+							+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
+									+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
+									+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
+					// add fact
+					facts.add(fact);
+				}
+				break;
+			
+				// duration overflow contingency
+				case DURATION_OVERFLOW : {
+					// get cause
+					DurationOverflow cause = (DurationOverflow) goal.getFailureCause();
+					// get observed duration
+					long duration = cause.getObservedDuration();
+					// get node 
+					ExecutionNode node = cause.getInterruptionNode();
+					// get component
+					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
+					// get value
+					// get value
+					ComponentValue value = comp.getValueByName(node.getSignature());
+					// create fact 
+					Decision fact = comp.create(
+							value, 
+							node.getParameters(), 
+							node.getStart(), 
+							node.getEnd(), 
+							new long[] {duration, duration}, 
+							ExecutionNodeStatus.EXECUTED);
+					
+					// activate fact
+					comp.activate(fact);
+					// activated fact
+					System.out.println(">>>>> OBSERVED-FACT : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
+							+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
+									+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
+									+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
+					// add fact
+					facts.add(fact);
+				}
+				break;
+			}
+			
+			// check other plan repair information 
+			for (PlanRepairInformation info : goal.getFailureCause().getRepairInfo()) 
+			{
+				// get node 
+				ExecutionNode node = info.getNode();
+				// get component
+				DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
+				// get value
+				// get value
+				ComponentValue value = comp.getValueByName(node.getSignature());
+				// create fact 
+				Decision fact = comp.create(
+						value, 
+						node.getParameters(),
+						node.getStart(),
+						node.getEnd(), 
+						new long[] {info.getDuration(), info.getDuration()}, 
+						ExecutionNodeStatus.EXECUTED);
+				
+				// activate fact
+				comp.activate(fact);
+				// activated fact
+				System.out.println(">>>>> REPAIR-INFO-FACT : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
+						+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
+								+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
+								+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
+				// add fact
+				facts.add(fact);
+			}
+			
+			
+			
+			// add meets relations to enforce the timeline semantics
+			for (DomainComponent component : this.pdb.getComponents()) 
+			{
+				// enforce timeline semantics through meets relations
+				List<Decision> list = component.getActiveDecisions();
+				for (int index = 0; index < list.size() -1; index++) 
+				{
+					// create meet relations between adjacent tokens
+					Decision reference = list.get(index);
+					Decision target = list.get(index + 1);
+					// create meets relation
+					MeetsRelation rel = component.create(RelationType.MEETS, reference, target);
+					// activate relation
+					component.activate(rel);
+					// add relation to the list of activated relations
+					relations.add(rel);
+					
+					System.out.println(">>>> RELATION: [" + reference.getId() + "]:" + reference.getComponent().getName() + "." + reference.getValue().getLabel() + " "
+							+ "" + rel.getType() + " "
+							+ " [" + target.getId() + "]: " + target.getComponent().getName() + "." + target.getValue().getLabel());
+				}
+			}
+			
 			
 			// get task description
 			AgentTaskDescription task = goal.getTaskDescription();
@@ -792,8 +956,8 @@ public class GoalOrientedActingAgent
 						labels,
 						start,
 						end,
-						duration
-						);
+						duration,
+						ExecutionNodeStatus.IN_EXECUTION);
 				
 				// add decision to goal list
 				goals.add(decision);
@@ -807,6 +971,8 @@ public class GoalOrientedActingAgent
 			goal.setRepaired(true);
 			// set the tick the execution will start
 			goal.setExecutionTick(goal.getFailureCause().getInterruptionTick());
+			// clear execution trace
+			goal.clearExecutionTrace();
 		}
 		catch (Exception ex) 
 		{
@@ -827,6 +993,14 @@ public class GoalOrientedActingAgent
 				g.getComponent().deactivate(g);
 				g.getComponent().free(g);
 			}
+			
+			
+			// remove all relations (only local expected)
+			for (Relation rel : relations) {
+				DomainComponent comp = rel.getReference().getComponent();
+				comp.deactivate(rel);
+				comp.delete(rel);
+			}
 		}
 		finally 
 		{
@@ -834,6 +1008,7 @@ public class GoalOrientedActingAgent
 			long time = System.currentTimeMillis() - now;
 			// add planning time attempt to the goal
 			goal.addContingencyHandlingAttempt(time);
+			goal.addPlanningAttempt(time);
 		}
 		
 		
@@ -881,100 +1056,5 @@ public class GoalOrientedActingAgent
 		
 		// get extracted goal
 		return goal;
-	}
-	
-
-
-	/**
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-		// create agent
-		GoalOrientedActingAgent agent = new GoalOrientedActingAgent();
-		try
-		{
-			// start agent
-			agent.start();
-			
-			// initialize the agent
-			agent.initialize(
-					"domains/AIJ_EXP_FbT/AIJ_EXP_T10_S60_U30.ddl", 					// DDL specification
-					"etc/platform/AIJ_EXP_FbT/AIJ_EXP_PLATFORM_CONFIG_U30.xml"		// platform simulator configuration
-					);
-			
-			
-			
-			// create task description
-			AgentTaskDescription description = new AgentTaskDescription();
-			description.addFactDescription(new TokenDescription(
-					"Production", 
-					"Idle", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 500}, 
-					new long[] {0, 500}));
-			
-			description.addFactDescription(new TokenDescription(
-					"Human", 
-					"Idle", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 500}, 
-					new long[] {0, 500}));
-			
-			description.addFactDescription(new TokenDescription(
-					"Robot", 
-					"Idle", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 500}, 
-					new long[] {0, 500}));
-			
-			description.addFactDescription(new TokenDescription(
-					"Arm", 
-					"SetOnBase", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 500}, 
-					new long[] {0, 500}));
-			
-			description.addFactDescription(new TokenDescription(
-					"Tool", 
-					"Idle", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 500}, 
-					new long[] {0, 500}));
-			
-			
-			description.addGoalDescription(new TokenDescription(
-					"Production", 
-					"Assembly"));
-			
-			// buffer task description
-			agent.buffer(description);
-			
-			// get managed goals
-			List<Goal> goals = agent.getResults();
-			for (Goal goal : goals) {
-				System.out.println("Completed goal " + goal +":\n"
-						+ "\t- planning-time: " + goal.getTotalPlanningTime() +"\n"
-						+ "\t- execution-time: " + goal.getTotalExecutionTime() + "\n"
-						+ "\t- contingency-time: " + goal.getTotalContingencyHandlingTime() + "\n\n");
-			}
-			
-			// stop agent
-			agent.stop();
-		}
-		catch (Exception ex) {
-			System.err.println(ex.getMessage());
-		}
-		
-		
-		
-		
-		
 	}
 }

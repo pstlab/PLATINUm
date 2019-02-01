@@ -259,8 +259,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		try 
 		{
 			// create flexible end time
-			e = this.tn.addTimePoint(end[0], end[1]);
-		} catch (InconsistentDistanceConstraintException | InconsistentTpValueException ex) {
+			e = this.tn.addTimePoint();//end[0], end[1]);
+		} catch (InconsistentDistanceConstraintException ex) {
 			// delete start time
 			this.tn.removeTimePoint(s);
 			throw new InconsistentIntervaEndTimeException(ex.getMessage());
@@ -274,7 +274,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 			d = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 			d.setReference(s);
 			d.setTarget(e);
-			d.setDistanceLowerBound(duration[0]);
+			d.setDistanceLowerBound(Math.max(1,duration[0]));
 			d.setDistanceUpperBound(duration[1]);
 			d.setControllable(controllable);
 			

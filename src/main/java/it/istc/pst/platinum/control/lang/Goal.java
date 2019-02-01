@@ -1,6 +1,8 @@
 package it.istc.pst.platinum.control.lang;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,13 +12,14 @@ import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
+import it.istc.pst.platinum.framework.time.tn.TimePoint;
 
 /**
  * 
  * @author anacleto
  *
  */
-public class Goal implements Comparable<Goal> 
+public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 {
 	private static AtomicLong GoalIdCounter = new AtomicLong(0);
 	private long id;
@@ -64,6 +67,16 @@ public class Goal implements Comparable<Goal>
 	 */
 	public void setRepaired(boolean repaired) {
 		this.repaired = repaired;
+	}
+	
+	/**
+	 * 
+	 */
+	public void clearExecutionTrace() {
+		// clear trace
+		this.trace.clear();
+		// clear failure cause
+		this.failureCause = null;
 	}
 	
 	/**
@@ -130,6 +143,8 @@ public class Goal implements Comparable<Goal>
 			list.addAll(this.trace.get(name));
 		}
 		
+		// sort the trace
+		Collections.sort(list, this);
 		// get the list
 		return list;
 	}
@@ -142,6 +157,14 @@ public class Goal implements Comparable<Goal>
 	public void addPlanningAttempt(long time) {
 		// add planning time
 		this.planningAttempts.add(new Long(time));
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getPlanningAttempts() {
+		return this.planningAttempts.size();
 	}
 	
 	/**
@@ -175,6 +198,14 @@ public class Goal implements Comparable<Goal>
 	 * 
 	 * @return
 	 */
+	public int getExecutionAttempts() {
+		return this.executionAttempts.size();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public long getTotalExecutionTime() {
 		// compute total execution time 
 		long total = 0;
@@ -194,6 +225,14 @@ public class Goal implements Comparable<Goal>
 	public void addContingencyHandlingAttempt(long time) {
 		// add contingency time
 		this.contingencyAttempts.add(new Long(time));
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getContingencyHandlingAttempts() {
+		return this.contingencyAttempts.size();
 	}
 	
 	/**
@@ -289,6 +328,18 @@ public class Goal implements Comparable<Goal>
 	public int compareTo(Goal o) {
 		// chronological order
 		return this.timestamp < o.timestamp ? -1 : this.timestamp > o.timestamp ? 1 : 0;
+	}
+	
+	/**
+	 * Completely instantiated nodes are expected
+	 */
+	@Override
+	public int compare(ExecutionNode o1, ExecutionNode o2) {
+		// compare start times
+		TimePoint s1 = o1.getInterval().getStartTime();
+		TimePoint s2 = o2.getInterval().getStartTime();
+		// compare lower bounds
+		return s1.getLowerBound() < s2.getLowerBound() ? -1 : s1.getLowerBound() > s2.getLowerBound() ? 1 : 0;
 	}
 	
 	/**

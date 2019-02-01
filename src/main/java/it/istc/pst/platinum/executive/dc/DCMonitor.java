@@ -1,6 +1,8 @@
 package it.istc.pst.platinum.executive.dc;
 
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.ex.PlanRepairInformation;
 import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
@@ -58,7 +60,9 @@ public class DCMonitor extends Monitor
 	}
 	
 	@Override
-	public void handleObservations(long tick) throws PlatformException {
+	public void handleExecutionFailure(long tick, ExecutionFailureCause cause) 
+			throws PlatformException 
+	{
 		// TODO Auto-generated method stub
 		
 	}

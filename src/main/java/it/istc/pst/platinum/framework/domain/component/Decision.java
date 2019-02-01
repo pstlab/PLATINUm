@@ -325,7 +325,7 @@ public class Decision implements Comparable<Decision>
 	public int compareTo(Decision o) {
 		// check tokens if not null, the IDs otherwise
 		return this.token != null && o.token != null ? this.token.compareTo(o.token) :
-			this.id <= o.id ? -1 : 1;
+			this.id < o.id ? -1 : this.id > o.id ? 1 : 0;
 	}
 
 	/**

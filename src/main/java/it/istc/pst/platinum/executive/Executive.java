@@ -43,7 +43,7 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.INFO
+		level = FrameworkLoggingLevel.OFF
 )
 @MonitorConfiguration(
 		monitor = ConditionCheckingMonitor.class
@@ -70,7 +70,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	private ExecutionStatus status;												// executive's operating status
 	private final Object lock;													// executive's status lock
 	private ClockManager clock;													// execution clock controller
-	private long currentTick;															// current tick
+	private long currentTick;													// current tick
 	
 	private ExecutiveWindow window;												// executive window
 	private Map<PlatformCommand, ExecutionNode> dispatchedIndex;				// keep track of dispatched nodes
@@ -417,8 +417,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		if (this.failure.get()) {
 			// execution failure
 			logger.error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
-					+ "\t- cause: " + this.cause.getType() + "\n"
-					+ "\t- node: " + this.cause.getInterruptNode() + "\n");
+					+ "\t- cause: " + this.cause.getType() + "\n");
 			
 			// update executive status
 			synchronized (this.lock) {
@@ -499,7 +498,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				// synchronization step only in "failure" mode
 				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 				// handle observations
-				this.monitor.handleObservations(tick);
+				this.monitor.handleExecutionFailure(tick, this.cause);
 				
 				// hypothesis
 				complete = true;

@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.deliberative.strategy.fbt;
+package it.istc.pst.platinum.deliberative.strategy.hrc;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -22,7 +22,7 @@ public class HRCBalancingSearchStrategy extends SearchStrategy implements Compar
 	 * 
 	 */
 	protected HRCBalancingSearchStrategy() {
-		super("SearchStrategy:MakespanOptimization");
+		super("SearchStrategy:HRCBalancing");
 		this.fringe = new PriorityQueue<>(this);
 	}
 	
@@ -161,10 +161,16 @@ public class HRCBalancingSearchStrategy extends SearchStrategy implements Compar
 		// compute HRC balance
 		double o2HRCBalance = Math.abs(o2HLoad - o2RLoad);
 		
+		// cost generator o1
+		double o1Cost = o1.getGenerator() != null ? o1.getGenerator().getCost() + 1.0 : 1.0;
+		// cost generator o2
+		double o2Cost = o2.getGenerator() != null ? o2.getGenerator().getCost() + 1.0 : 1.0;
+		
 		// compare node depth and HR balancing of the partial plans
-		int result = o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 : 
-			o1HRCBalance < o2HRCBalance ? -1 : o1HRCBalance > o2HRCBalance ? 1 : 
-				o1RLoad > o2RLoad ? -1 : o1RLoad < o2RLoad ? 1 : 0;
+		int result = o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 :
+			(o1HRCBalance * o1Cost) < (o2HRCBalance * o2Cost) ? -1 : 
+				(o1HRCBalance * o1Cost) > (o2HRCBalance * o2Cost) ? 1 : 
+					o1RLoad > o2RLoad ? -1 : o1RLoad < o2RLoad ? 1 : 0;
 		// return comparison result		
 		return result;
 	}

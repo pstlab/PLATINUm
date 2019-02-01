@@ -332,49 +332,48 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 							+ "- gap: " + gap + "\n");
 				}
 				
-				// create a solution for each possible path
-				for (ValuePath path : paths)
+				
+				// take the first path which is the shortest one
+				ValuePath path = paths.get(0);
+				// get steps
+				List<ComponentValue> steps = path.getSteps();
+				// remove the source and destination values from the path
+				steps.remove(0);
+				steps.remove(steps.size() - 1);
+				
+				// compute path duration bounds
+				long minDuration = 0;
+				long maxDuration = 0;
+				for (ComponentValue step : steps) {
+					minDuration += step.getDurationLowerBound();
+					maxDuration += step.getDurationUpperBound();
+				}
+				
+				// check the feasibility of the path with respect to the available time 
+				if ((minDuration >= gap.getDmin() || maxDuration >= gap.getDmin()) && 
+						minDuration <= gap.getDmax())
 				{
-					// get steps
-					List<ComponentValue> steps = path.getSteps();
-					// remove the source and destination values from the path
-					steps.remove(0);
-					steps.remove(steps.size() - 1);
-					
-					// compute path duration bounds
-					long minDuration = 0;
-					long maxDuration = 0;
+					// gap solution
+					GapCompletion solution = new GapCompletion(gap, steps);
+					// add a decision to the agenda for each step 
 					for (ComponentValue step : steps) {
-						minDuration += step.getDurationLowerBound();
-						maxDuration += step.getDurationUpperBound();
+						solution.addGoalToAgenda(step);
 					}
-					
-					// check the feasibility of the path with respect to the available time 
-					if ((minDuration >= gap.getDmin() || maxDuration >= gap.getDmin()) && 
-							minDuration <= gap.getDmax())
-					{
-						// gap solution
-						GapCompletion solution = new GapCompletion(gap, steps);
-						// add a decision to the agenda for each step 
-						for (ComponentValue step : steps) {
-							solution.addGoalToAgenda(step);
-						}
-						// add solution to the flaw
-						gap.addSolution(solution);
-						// print gap information
-						debug("Gap found on component " + this.component.getName() + ":\n"
-								+ "- gap distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
-								+ "- left-side decision: " + gap.getLeftDecision() + "\n"
-								+ "- right-side decision: " + gap.getRightDecision() + "\n"
-								+ "- solution path: " + path + "\n");
-					}
-					else {
-						// not feasible solution
-						debug("Unfeasible solution due to path duration:\n"
-								+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
-								+ "- path: " + path + "\n"
-								+ "- path duration: [dmin= " + minDuration + ", " + maxDuration + "]");
-					}
+					// add solution to the flaw
+					gap.addSolution(solution);
+					// print gap information
+					debug("Gap found on component " + this.component.getName() + ":\n"
+							+ "- gap distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
+							+ "- left-side decision: " + gap.getLeftDecision() + "\n"
+							+ "- right-side decision: " + gap.getRightDecision() + "\n"
+							+ "- solution path: " + path + "\n");
+				}
+				else {
+					// not feasible solution
+					debug("Unfeasible solution due to path duration:\n"
+							+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
+							+ "- path: " + path + "\n"
+							+ "- path duration: [dmin= " + minDuration + ", " + maxDuration + "]");
 				}
 			}
 			break;

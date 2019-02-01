@@ -8,6 +8,7 @@ import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
 
@@ -78,8 +79,9 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 	/**
 	 * 
 	 * @param tick
+	 * @param cause
 	 * @throws PlatformException
 	 */
-	public abstract void handleObservations(long tick) 
+	public abstract void handleExecutionFailure(long tick, ExecutionFailureCause cause) 
 			throws PlatformException;
 }

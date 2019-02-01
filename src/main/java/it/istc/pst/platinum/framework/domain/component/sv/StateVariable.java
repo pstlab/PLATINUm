@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.framework.domain.component.sv;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -195,6 +196,8 @@ public abstract class StateVariable extends DomainComponent
 			result = this.computePaths(source, target, new ArrayList<>());
 		}
 		
+		// sort paths according to their length
+		Collections.sort(result);
 		// get the result list
 		return result;
 	}

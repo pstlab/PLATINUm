@@ -1,7 +1,11 @@
 package it.istc.pst.platinum.control.acting;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.GoalStatus;
+import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.control.platform.sim.PlatformSimulatorBuilder;
@@ -107,6 +111,8 @@ public class ExecutiveProcess implements Runnable
 		
 		// run the executive starting at a given tick
 		boolean complete = exec.execute(goal.getExecutionTick());
+		
+		
 		// stop simulator if any
 		if (this.simulator != null) {
 			// unlink from simulator
@@ -131,12 +137,20 @@ public class ExecutiveProcess implements Runnable
 				goal.addNodeToExecutionTrace(node);
 			}
 			
-//			// set execution trace by taking into account also (virtual) nodes in-execution
-//			for (ExecutionNode node : exec.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
-//				System.out.println(">>>> adding in-execution to the trace:\n\t" + node + "\n");
-//				// add the node to the goal execution trace
-//				goal.addNodeToExecutionTrace(node);
-//			}
+			// get the name of of goal components
+			Set<String> components = new HashSet<>();
+			for (TokenDescription t : goal.getTaskDescription().getGoals()) {
+				components.add(t.getComponent());
+			}
+			
+			// set execution trace by taking into account also (virtual) nodes in-execution
+			for (ExecutionNode node : exec.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
+				// do not consider nodes belonging to "goal component"
+				if (!components.contains(node.getComponent())) {
+					// add the node to the goal execution trace
+					goal.addNodeToExecutionTrace(node);
+				}
+			}
 			
 			// throw exception
 			throw new ExecutionException("Execution failure... try to repair the plan through replanning... \n"

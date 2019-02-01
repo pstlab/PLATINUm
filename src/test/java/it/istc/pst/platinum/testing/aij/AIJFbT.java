@@ -6,7 +6,7 @@ import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectio
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
 import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStrategy;
-import it.istc.pst.platinum.deliberative.strategy.fbt.HRCBalancingSearchStrategy;
+import it.istc.pst.platinum.deliberative.strategy.hrc.HRCBalancingSearchStrategy;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PlannerSolverConfiguration;
@@ -75,6 +75,27 @@ public abstract class AIJFbT
 		20,
 		25,
 		30
+	};
+	
+	
+	// Planning and execution test
+	
+	// timeout
+	protected static final long ACTING_DELIBERATIVE_TIMEOUT = 180000;		// timeout set to 60 seconds
+	// folder of simulator configurations
+	protected static String PLATFORM_CFG_FOLDER = "etc/platform/AIJ_EXP_FbT";
+	// number of tasks composing the assembly process
+	protected static int ACTING_DELIBERATIVE_TASKS = 10;	// 10, 15, 20, 25, 30
+	// number of shared tasks composing the assembly process
+	protected static int ACTING_DELIBERATIVE_SHARED = 60; // 20, 40, 60, 80, 100
+	// simulator uncertainty
+	protected static int[] ACTING_PLATFORM_UNCERTAINTY = new int[] {
+			5, 10, 15, 20, 25, 30
+	};
+	
+	// amount of uncertainty about human task execution
+	protected static int[] ACTING_DELIBERATIVE_UNCERTAINTY = {
+		30, 20, 10
 	};
 }
 

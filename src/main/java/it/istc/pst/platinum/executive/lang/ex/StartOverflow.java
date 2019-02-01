@@ -18,7 +18,7 @@ public class StartOverflow extends ExecutionFailureCause
 	 * @param observedStartTime
 	 */
 	public StartOverflow(long tick, ExecutionNode node, long observedStartTime) {
-		super(tick, node, ExecutionFailureCauseType.START_OVERFLOW);
+		super(tick, ExecutionFailureCauseType.START_OVERFLOW, node);
 		this.observedStartTime = observedStartTime;
 	}
 	
@@ -36,7 +36,6 @@ public class StartOverflow extends ExecutionFailureCause
 	@Override
 	public String toString() {
 		return "[StartOverflow] The observed start-time exceeds the upper bound of the plan\n"
-				+ "\t- observed-start-time= " + this.observedStartTime + "\n"
-				+ "\t- node= " + this.getInterruptNode() + "\n";
+				+ "\t- observed-start-time= " + this.observedStartTime + "\n";
 	}
 }
