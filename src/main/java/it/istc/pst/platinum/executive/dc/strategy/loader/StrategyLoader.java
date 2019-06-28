@@ -37,25 +37,25 @@ public class StrategyLoader {
 
 	//------------------------CONSTRUCTORS---------------------------
 	
-	public StrategyLoader(int horizon) {
+	public StrategyLoader(long horizon) {
 		this.strategy = new Strategy(horizon);
 		this.isValid = false;
 	}
 	
 	// from InputStream
-	public StrategyLoader (InputStream file, int horizon) throws FileNotFoundException {
+	public StrategyLoader (InputStream file, long horizon) throws FileNotFoundException {
 		this(horizon);
 		this.reader = new BufferedReader( new InputStreamReader(file));
 	}
 
 	//this doesn't work
-	public StrategyLoader (String file, int horizon, boolean test, boolean test2) throws FileNotFoundException {
+	public StrategyLoader (String file, long horizon, boolean test, boolean test2) throws FileNotFoundException {
 		this(horizon);
 		this.reader = new LineNumberReader(new FileReader(file));
 	}
 
 	//Generates a strategy from a plan using plan2tiga and UppalTiga, given the absolute path of all of them
-	public StrategyLoader (String plan2tiga, String verifytga, String pathPlan, int horizon) throws IOException { //works only for linux
+	public StrategyLoader (String plan2tiga, String verifytga, String pathPlan, long horizon) throws IOException { //works only for linux
 		this(horizon);
 		ProcessBuilder builder = new ProcessBuilder("bash", "-c", plan2tiga + " " + pathPlan +
 													" && " + verifytga + " -w0 " + pathPlan + ".xta"); 
@@ -65,7 +65,7 @@ public class StrategyLoader {
 	}
 	
 	//Generates a strategy from a plan using plan2tiga and UppalTiga, without being given the absolute path of the first two
-	public StrategyLoader (String pathPlan, int horizon) throws IOException { //works only for linux
+	public StrategyLoader (String pathPlan, long horizon) throws IOException { //works only for linux
 			this(horizon);
 			ProcessBuilder builder = new ProcessBuilder("bash", "-c", "plan2tiga" + " " + pathPlan +
 														" && " + "verifytga" + " -w0 " + pathPlan + ".xta"); 
@@ -75,14 +75,14 @@ public class StrategyLoader {
 		}
 
 	//from a string (test purpose)
-	public StrategyLoader(String nomeLettore, int horizon, boolean test) {
+	public StrategyLoader(String nomeLettore, long horizon, boolean test) {
 		this(horizon);
 		this.reader = new BufferedReader(new StringReader(nomeLettore));
 	}
 
 	//-------------------------------METHODS-------------------------
 	//creates strategy reading lines, validating if a strategy is found and finding states (box 1)
-	public void readStrategy() throws IOException {
+	public void readStrategy() throws IOException, Exception {
 		try {
 			String line = reader.readLine(); 
 
@@ -105,8 +105,13 @@ public class StrategyLoader {
 			e.printStackTrace();
 		} 
 		try {
-			if(this.isValid==false) System.out.println("Il file non contiene una strategia\n");
-			reader.close();
+			if(this.isValid==false) {
+				
+				reader.close();
+				System.out.println("Il file non contiene una strategia\n");
+				throw new Exception("Il file non contiene una strategia\n");
+			}
+			
 
 		} catch (IOException e) { //closing error
 			e.printStackTrace();
@@ -128,14 +133,14 @@ public class StrategyLoader {
 	
 	//this function's results are clocks with the appendix "_clock", if message passed avoids those it's unnecessary
 	private void getLocalClocks(String line) {
-		Map<String,Integer> timelineClocks = new HashMap<>();
+		Map<String,Long> timelineClocks = new HashMap<>();
 		line = line.substring(1,line.length()-1).trim();
 		String[] split = line.split(" ");
 		for(String words : split) {
 			String[] clocks = words.split("=="); 
 			for(String c : clocks) { 
 				if(c.length()>2) 
-					timelineClocks.put(cleanClock(c),0);}
+					timelineClocks.put(cleanClock(c),0l);}
 		}
 		this.strategy.setTimelineClocks(timelineClocks);
 

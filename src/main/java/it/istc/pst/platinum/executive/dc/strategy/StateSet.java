@@ -34,7 +34,7 @@ public class StateSet {
 		return this.stateSet.equals(stateStatus);
 	}
 	
-	public StateStrategy searchNextStepStrategy(Map<String,Integer> status) throws Exception {
+	public StateStrategy searchNextStepStrategy(Map<String,Long> status) throws Exception {
 		for( StateStrategy ss : stateStrategies) {
 			if(ss.getClockRelations().evaluate(status)) return ss;
 		}

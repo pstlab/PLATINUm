@@ -12,14 +12,14 @@ import it.istc.pst.platinum.executive.dc.strategy.result.Action;
 import it.istc.pst.platinum.executive.dc.strategy.result.Transition;
 
 public class Strategy {
-	int horizon;
+	long horizon;
 	private Set<StateSet> states;
-	private Map<String,Integer> timelineClocks;
+	private Map<String,Long> timelineClocks;
 	private Map<String,String> expectedState;
 
 	// ------------------------------ CONSTRUCTORS ------------------
 	
-	public Strategy(int horizon) {
+	public Strategy(long horizon) {
 		this.horizon = horizon;
 		this.states = new HashSet<>();
 		this.expectedState = new HashMap<>();
@@ -28,7 +28,7 @@ public class Strategy {
 	//---------------------------------- METHODS --------------------
 
 	//returns next strategy step (repeat until wait!!) using plan clock
-	public List<Action> askAllStrategySteps(int plan_clock, Map<String,String> actualState, boolean isPlanClock) throws Exception {
+	public List<Action> askAllStrategySteps(long plan_clock, Map<String,String> actualState, boolean isPlanClock) throws Exception {
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
 		this.updateClocks(plan_clock-(this.timelineClocks.get("plan")));
@@ -42,7 +42,7 @@ public class Strategy {
 	}
 	
 	//returns next strategy step (repeat until wait!!) using tic
-	public List<Action> askAllStrategySteps(int tic, Map<String,String> actualState) throws Exception {
+	public List<Action> askAllStrategySteps(long tic, Map<String,String> actualState) throws Exception {
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
 		this.updateClocks(tic);
@@ -82,7 +82,7 @@ public class Strategy {
 	// Resets the local clocks of uncontrollable events that took place in the tic
 	void resetClock(String timeline) {
 		//this.timelineClocks.put(timeline+"."+timeline+"_clock",0);
-		this.timelineClocks.put(timeline, 0);
+		this.timelineClocks.put(timeline, 0l);
 	}
 
 	//updates, after a winning transition, the next expected state
@@ -94,7 +94,7 @@ public class Strategy {
 	}
 
 	//updates clocks through plan clock
-	void updateClocks(int n) {
+	void updateClocks(long n) {
 		for(String c : this.timelineClocks.keySet()) {
 			this.timelineClocks.put(c, this.timelineClocks.get(c)+n);
 		}
@@ -116,11 +116,11 @@ public class Strategy {
 		this.states.add(states);
 	}
 	
-	public Map<String,Integer> getTimelineClocks() {
+	public Map<String,Long> getTimelineClocks() {
 		return this.timelineClocks;
 	}
 	
-	public void setTimelineClocks(Map<String,Integer> tc) {
+	public void setTimelineClocks(Map<String,Long> tc) {
 		this.timelineClocks = tc;
 	}
 	

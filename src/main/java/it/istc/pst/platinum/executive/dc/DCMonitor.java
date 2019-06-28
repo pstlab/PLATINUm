@@ -11,7 +11,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.Ex
  * @author anacleto
  *
  */
-public class DCMonitor extends Monitor
+public class DCMonitor extends Monitor<DCExecutive>
 {
 	@ExecutivePlaceholder
 	private DCExecutive executive;
@@ -45,7 +45,8 @@ public class DCMonitor extends Monitor
 		 */
 		
 		// notify DC checker
-		try {
+		try 
+		{
 			if (!this.executive.checker.notify(status)) {
 				
 				/*

@@ -28,10 +28,10 @@ public class ClockRelation {
 	//---------------------METHODS -----------------------
 
 	//verifies if the clockrelation is acceptable in the status
-	public boolean verify(Map<String, Integer> status) throws Exception {
+	public boolean verify(Map<String, Long> status) throws Exception {
 
-		int valueInt1 = evaluateExpression(status,this.value1);;
-		int valueInt2 = evaluateExpression(status,this.value2);;
+		long valueInt1 = evaluateExpression(status,this.value1);;
+		long valueInt2 = evaluateExpression(status,this.value2);;
 
 		if (this.relation == ">=") return (valueInt1>=valueInt2);
 		else if (this.relation == "<=") return (valueInt1<=valueInt2);
@@ -42,8 +42,8 @@ public class ClockRelation {
 	}
 
 	//evaluate the actual expression of the clockrelation in a numeric value
-	private int evaluateExpression(Map<String, Integer> status,String value) {
-		int valueInt;
+	private long evaluateExpression(Map<String, Long> status,String value) {
+		long valueInt;
 		try { 
 			valueInt = Integer.parseInt(value); 	
 		}
