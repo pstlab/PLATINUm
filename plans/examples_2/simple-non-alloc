@@ -1,0 +1,24 @@
+
+horizon = 100
+
+plan {
+   timelines {
+       pm
+       { token 1 { earth [10,30] [10,20] }
+	 token 2
+	        { comm [80,80] [50,70] }
+	    }
+}
+    relations {
+             gv 2 contains [0,infty][0,infty] pm 2
+      }
+}
+
+observation {
+		timelines{
+			gv{ token 1 { chiusa [5,20] [5,20]}
+				token 2{ aperta [80,80] [0,infty] }
+		
+		}
+	}
+}

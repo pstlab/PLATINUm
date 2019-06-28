@@ -1,0 +1,27 @@
+clock plan_clock, R1_clock;
+const int H = 200;
+
+process pm ()
+{
+clock pm_clock;
+state 
+	start,
+	pm1 { plan_clock <= 20 and pm_clock <= 20 },
+	pm2 { plan_clock <= 80 and pm_clock <= 70 },
+	pm3 { plan_clock <= 100 and pm_clock <= 30 },
+	finish;
+init pm1;
+trans
+	start -> pm1 { assign plan_clock := 0, pm_clock := 0 ;},
+	pm1 -> pm2  { guard plan_clock >= 10 and pm_clock >= 10;
+			assign pm_clock := 0,
+			 R1_clock  := H ;  },
+	pm2 -> pm3  { guard plan_clock >= 70 and pm_clock >= 50
+			and  R1_clock  >= H + 60 and  R1_clock  <= H + 70;
+		    assign pm_clock := 0; },
+	pm3 -> finish { guard plan_clock ==100 and pm_clock >= 20; 
+			assign pm_clock := 0 ; }
+	;
+}
+
+system pm;

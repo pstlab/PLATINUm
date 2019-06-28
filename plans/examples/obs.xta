@@ -1,0 +1,53 @@
+clock plan_clock, R1_clock;
+const int H = 200;
+chan uno;
+
+process pm() {
+clock pm_clock;
+state
+    start,
+    pm1 {plan_clock <= 20 and pm_clock <= 20},
+    pm9 {plan_clock <= 100},
+    finish;
+init start;
+trans
+    start -> pm1 { guard plan_clock==0;  },
+    pm1 -> pm9 { guard plan_clock >= 10 and pm_clock >= 10; assign pm_clock := 0;  },
+    pm9 -> finish { guard plan_clock >= 100 and pm_clock >= 0;  };
+}
+
+process prima() {
+clock prima_clock;
+state
+    start,
+    prima1 {plan_clock <= 80},
+    prima2 {plan_clock <= 100},
+    finish;
+init start;
+trans
+    start -> prima1 { guard plan_clock==0;  },
+    prima1 -u-> prima2 { guard plan_clock >= 50 and prima_clock >= 0;
+    	   	       	 sync uno! ; 
+    	    	       	 assign prima_clock := 0,
+			 R1_clock  := H;  },
+    prima2 -> finish { guard plan_clock >= 100;  };
+}
+
+process seconda() {
+clock seconda_clock;
+state
+    start,
+    seconda1 {plan_clock <= 80},
+    seconda2 {plan_clock <= 100},
+    finish;
+init start;
+trans
+    start -> seconda1 { guard plan_clock==0;  },
+    /** */
+    seconda1 -> seconda2 { guard plan_clock >= 50 and seconda_clock >= 0
+			and  R1_clock  >= H + 0 and  R1_clock  <= H + 0; 
+			sync uno? ;
+			assign seconda_clock := 0;  },
+    seconda2 -> finish { guard plan_clock >= 100;  };
+}
+system seconda, prima, pm;

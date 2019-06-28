@@ -1,0 +1,35 @@
+clock plan_clock, R2_clock, R1_clock;
+const int H = 200;
+
+process pm1() {
+ clock pm1_clock;
+state
+	Before {plan_clock <= 0},
+	During {plan_clock <= 20 and pm1_clock <= 20 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 0; 
+		assign pm1_clock :=0 ; },
+	During  -> After { guard plan_clock >= 10 and pm1_clock >= 10; 
+		assign  R1_clock  := H ,
+			 R2_clock  := H ; };
+}
+
+process pm3() {
+ clock pm3_clock;
+state
+	Before {plan_clock <= 80},
+	During {plan_clock <= 100 and pm3_clock <= 30 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 70
+			and  R1_clock  >= H + 60 and  R1_clock  <= H + 70
+			and  R2_clock  >= H + 50 and  R2_clock  <= H + 70; 
+		assign pm3_clock :=0 ; },
+	During  -> After { guard plan_clock >= 100 and pm3_clock >= 20;  };
+}
+
+
+system pm1, pm3;

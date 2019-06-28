@@ -1,0 +1,157 @@
+clock plan_clock, R7_clock, R6_clock, R1_clock, R2_clock, R4_clock, R5_clock;
+const int H = 700;
+
+chan gv5_meets_gv6, gv4_meets_gv5, gv3_meets_gv4, gv2_meets_gv3, gv1_meets_gv2, pm8_meets_pm9, pm5_meets_pm6, pm4_meets_pm5, pm1_meets_pm2;
+
+process pm1() {
+ clock pm1_clock;
+state
+	Before {plan_clock <= 0},
+	During {plan_clock <= 20 and pm1_clock <= 20 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 0
+			and plan_clock <= 0 and plan_clock >= 0; assign pm1_clock :=0 ; },
+	During  -> After { guard plan_clock >= 10 and pm1_clock >= 10; 
+		sync pm1_meets_pm2! ;  };
+}
+
+process pm4() {
+ clock pm4_clock;
+state
+	Before {plan_clock <= 130},
+	During {plan_clock <= 160 and pm4_clock <= 30 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 110; assign pm4_clock :=0 ; },
+	During  -> After { guard plan_clock >= 140 and pm4_clock >= 30; 
+		sync pm4_meets_pm5! ;  };
+}
+
+process pm5() {
+ clock pm5_clock;
+state
+	Before {plan_clock <= 160},
+	During {plan_clock <= 200 and pm5_clock <= 50 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 140
+			and  R5_clock  >= H + 0 and  R5_clock  <= H + 50; sync pm4_meets_pm5? ; assign pm5_clock :=0 ; },
+	During  -> After { guard plan_clock >= 190 and pm5_clock >= 40; 
+		sync pm5_meets_pm6! ; 
+		assign  R4_clock  := H ; };
+}
+
+process pm8() {
+ clock pm8_clock;
+state
+	Before {plan_clock <= 250},
+	During {plan_clock <= 300 and pm8_clock <= 50 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 230
+			and  R4_clock  >= H + 0 and  R4_clock  <= H + 50
+			and  R1_clock  >= H + 0; assign pm8_clock :=0 ; },
+	During  -u-> After { guard plan_clock >= 260 and pm8_clock >= 30; 
+		sync pm8_meets_pm9! ; 
+		assign  R2_clock  := H ; };
+}
+
+process pm9() {
+ clock pm9_clock;
+state
+	Before {plan_clock <= 300},
+	During {plan_clock <= 350 and pm9_clock <= 90 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 260; sync pm8_meets_pm9? ; assign pm9_clock :=0 ; },
+	During  -> After { guard plan_clock >= 350 and pm9_clock >= 50;  };
+}
+
+
+process gv1() {
+ clock gv1_clock;
+state
+	Before {plan_clock <= 0},
+	During {plan_clock <= 100 and gv1_clock <= 100 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 0; assign gv1_clock :=0 ; },
+	During  -u-> After { guard plan_clock >= 60 and gv1_clock >= 60; 
+		sync gv1_meets_gv2! ;  };
+}
+
+process gv2() {
+ clock gv2_clock;
+state
+	Before {plan_clock <= 100},
+	During {plan_clock <= 130 and gv2_clock <= 100 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 60; sync gv1_meets_gv2? ; assign gv2_clock :=0 ; },
+	During  -u-> After { guard plan_clock >= 90 and gv2_clock >= 1; 
+		sync gv2_meets_gv3! ;  };
+}
+
+process gv3() {
+ clock gv3_clock;
+state
+	Before {plan_clock <= 130},
+	During {plan_clock <= 190 and gv3_clock <= 100 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 90; sync gv2_meets_gv3? ; assign gv3_clock :=0 ; },
+	During  -u-> After { guard plan_clock >= 150 and gv3_clock >= 60; 
+		sync gv3_meets_gv4! ;  };
+}
+
+process gv4() {
+ clock gv4_clock;
+state
+	Before {plan_clock <= 190},
+	During {plan_clock <= 250 and gv4_clock <= 100 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 150; sync gv3_meets_gv4? ; assign gv4_clock :=0 ; },
+	During  -u-> After { guard plan_clock >= 210 and gv4_clock >= 1; 
+		sync gv4_meets_gv5! ;  };
+}
+
+process gv5() {
+ clock gv5_clock;
+state
+	Before {plan_clock <= 250},
+	During {plan_clock <= 320 and gv5_clock <= 100 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 210; sync gv4_meets_gv5? ; assign gv5_clock :=0,
+			 R1_clock  := H  ; },
+	During  -u-> After { guard plan_clock >= 300 and gv5_clock >= 60
+			and  R2_clock  >= H + 0; 
+		sync gv5_meets_gv6! ;  };
+}
+
+process gv6() {
+ clock gv6_clock;
+state
+	Before {plan_clock <= 320},
+	During {plan_clock <= 350 and gv6_clock <= 100 },
+	After;
+init Before;
+trans
+	Before -> During { guard plan_clock >= 300; sync gv5_meets_gv6? ; assign gv6_clock :=0 ; },
+	During  -u-> After { guard plan_clock >= 350 and gv6_clock >= 1;  };
+}
+
+
+system pm1, pm4, pm5, pm8, pm9, gv1, gv2, gv3, gv4, gv5, gv6;

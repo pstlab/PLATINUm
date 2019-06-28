@@ -1,0 +1,13 @@
+
+horizon = 30
+plan {
+   timelines {
+         prima { token 1 { v1 [10,10] [10,10] }
+	         unallocated 2 { [20,20] }
+		 token 3 { v2 [30,30] [10,10] } }
+         seconda { token 1 { v1 [10,10] [10,10] }
+	         unallocated 2 { [20,20] }
+		 token 3 { v2 [30,30] [10,10] } }
+
+             }
+       }

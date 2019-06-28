@@ -1,0 +1,73 @@
+clock plan_clock, R1_clock, R2_clock, R4_clock;
+const int H = 700;
+
+process pm ()
+{
+clock pm_clock;
+state 
+	start,
+	pm1 { plan_clock <= 20 and pm_clock <= 20 },
+	pm2 { plan_clock <= 130 and pm_clock <= 110 },
+	pm4 { plan_clock <= 160 and pm_clock <= 30 },
+	pm5 { plan_clock <= 200 and pm_clock <= 50 },
+	pm6 { plan_clock <= 250 },
+	pm8 { plan_clock <= 300 and pm_clock <= 50 },
+	pm9 { plan_clock <= 350 and pm_clock <= 90 },
+	finish;
+init start;
+trans
+	start -> pm1 { guard plan_clock==0; assign plan_clock := 0, pm_clock := 0 ;},
+	pm1 -> pm2  { guard plan_clock >= 10 and pm_clock >= 10;
+			assign pm_clock := 0; },
+	pm2 -> pm4  { guard plan_clock >= 110 and pm_clock >= 100;
+			assign pm_clock := 0; },
+	pm4 -> pm5  { guard plan_clock >= 140 and pm_clock >= 30;
+			assign pm_clock := 0; },
+	pm5 -> pm6  { guard plan_clock >= 190 and pm_clock >= 40;
+			assign pm_clock := 0,
+			 R4_clock  := H ;  },
+	pm6 -> pm8  { guard plan_clock >= 230 and pm_clock >= 0
+			and  R4_clock  >= H + 0 and  R4_clock  <= H + 50
+			and  R1_clock  >= H + 0;
+		    assign pm_clock := 0; },
+	pm8 -u-> pm9  { guard plan_clock >= 260 and pm_clock >= 30;
+			assign pm_clock := 0,
+			 R2_clock  := H ;  },
+	pm9 -> finish { guard plan_clock >= 350 and pm_clock >= 50; 
+			assign pm_clock := 0 ; }
+	;
+}
+
+process gv ()
+{
+clock gv_clock;
+state 
+	start,
+	gv1 { plan_clock <= 100 and gv_clock <= 100 },
+	gv2 { plan_clock <= 130 and gv_clock <= 100 },
+	gv3 { plan_clock <= 190 and gv_clock <= 100 },
+	gv4 { plan_clock <= 250 and gv_clock <= 100 },
+	gv5 { plan_clock <= 320 and gv_clock <= 100 },
+	gv6 { plan_clock <= 350 and gv_clock <= 100 },
+	finish;
+init start;
+trans
+	start -> gv1 { guard plan_clock==0; assign plan_clock := 0, gv_clock := 0 ;},
+	gv1 -u-> gv2  { guard plan_clock >= 60 and gv_clock >= 60;
+			assign gv_clock := 0; },
+	gv2 -u-> gv3  { guard plan_clock >= 90 and gv_clock >= 1;
+			assign gv_clock := 0; },
+	gv3 -u-> gv4  { guard plan_clock >= 150 and gv_clock >= 60;
+			assign gv_clock := 0; },
+	gv4 -u-> gv5  { guard plan_clock >= 210 and gv_clock >= 1;
+			assign gv_clock := 0,
+			 R1_clock  := H ;  },
+	gv5 -u-> gv6  { guard plan_clock >= 300 and gv_clock >= 60
+			and  R2_clock  >= H + 0;
+		    assign gv_clock := 0; },
+	gv6 -> finish { guard plan_clock >= 350; 
+			assign gv_clock := 0 ; }
+	;
+}
+
+system gv, pm;

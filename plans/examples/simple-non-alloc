@@ -1,0 +1,17 @@
+
+horizon = 100
+
+plan {
+   timelines {
+       pm
+       { token 1 { earth [10,20] [10,20] }
+	 unallocated 2
+	        {  [70,80] [50,70] }
+	 token 3 { slewing [100,100] [20,30] }
+	    }
+}
+    relations {
+#              gv 5 contains [0,infty][0,infty] pm 8
+      	      pm 1 before [60,70] pm 3
+       }
+}

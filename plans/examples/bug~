@@ -1,0 +1,20 @@
+horizon = 100
+
+plan {
+  timelines {
+     pm { token 1 uncontrollable { earth [10,20] [10,20] }    
+       	  token 2 uncontrollable { comm [40,50] [20,40] }
+	  token 3 { qualcosa [100,100] [1,100] } }
+      }
+  relations {
+    gv 2 start_before_start [0,infty] pm 2
+    pm 2 end_before_end [0,infty] gv 2 }
+}
+
+observation {
+   timelines {
+      gv { token 1 {not_visible [10,40] [10,40 ] }
+           token 2 {visible [20,80] [1,100] } 
+           token 3 {not_visible [100,100] [1,100] } }
+   } 
+}
