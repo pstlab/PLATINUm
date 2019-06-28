@@ -58,10 +58,10 @@ public class StateStrategy {
 	}
 	
 	//applies post conditions after transition
-	public Map<String,Integer> applyPostConditions(Map<String,Integer> status, int horizon){  
+	public Map<String,Long> applyPostConditions(Map<String,Long> status, long horizon){  
 		for(String cond : this.postConditions.keySet()) {
 			if(this.postConditions.keySet().equals("0")) {
-				status.put(cond, 0);
+				status.put(cond, 0l);
 			}
 			if(this.postConditions.keySet().equals("H")) {
 				status.put(cond, horizon);

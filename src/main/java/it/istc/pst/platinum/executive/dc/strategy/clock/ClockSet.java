@@ -26,7 +26,7 @@ public class ClockSet {
 //----------------- METHODS ------------------
 	
 	//evaluates if the conditions of the actual status respect the request for the strategy
-	public boolean evaluate(Map <String,Integer> status) throws Exception{
+	public boolean evaluate(Map <String,Long> status) throws Exception{
 		Boolean result = true;
 		for(ClockRelation cr : clockSet) {
 			result = result && cr.verify(status);

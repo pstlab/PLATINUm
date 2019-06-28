@@ -1,7 +1,10 @@
 package it.istc.pst.platinum.executive.dc;
 
+import java.io.IOException;
+
 import it.istc.pst.platinum.executive.Executive;
-import it.istc.pst.platinum.executive.dc.tga.TGADCChecker;
+import it.istc.pst.platinum.executive.dc.strategy.Strategy;
+import it.istc.pst.platinum.executive.dc.strategy.loader.StrategyLoader;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.DispatcherConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.MonitorConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
@@ -15,7 +18,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConst
 @DispatcherConfiguration(dispatcher = DCDispatcher.class)
 public class DCExecutive extends Executive 
 {
-	protected DCChecker checker;			// dynamic controllability checker
+	protected Strategy dcs;					// DC strategy manager
 	
 	/**
 	 * 
@@ -30,7 +33,22 @@ public class DCExecutive extends Executive
 	@PostConstruct
 	protected void init() 
 	{
-		// create DC checker
-		this.checker = new TGADCChecker(pdb.getHorizon());
+		try
+		{
+			// strategy loader
+	//		StrategyLoader loader = new StrategyLoader(plan2tiga, verifytga, pathPlan, horizon);
+			
+			// load strategy manager
+			StrategyLoader loader = new StrategyLoader("", pdb.getHorizon());
+			// read computed strategy
+			loader.readStrategy();
+			
+			// get strategy
+			this.dcs = loader.getStrategy();
+		}
+		catch (Exception ex) {
+			System.err.println(ex.getMessage());
+		}
+		
 	}
 }
