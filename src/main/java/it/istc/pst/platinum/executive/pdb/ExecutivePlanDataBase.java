@@ -1,5 +1,9 @@
 package it.istc.pst.platinum.executive.pdb;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -64,8 +68,10 @@ import it.istc.pst.platinum.framework.time.tn.TemporalNetworkType;
 )
 public class ExecutivePlanDataBase extends ExecutiveObject 
 {
+	private PlanProtocolDescriptor plan;				// the plan to execute								
+	
 	@TemporalFacadePlaceholder
-	protected TemporalFacade facade;			// temporal data base
+	protected TemporalFacade facade;					// temporal data base
 	
 	// plan locks
 	private final Object[] locks;
@@ -121,6 +127,30 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 		return this.facade.getHorizon();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public String export() throws IOException 
+	{
+		// prepare file 
+		File output = new File("plans/exported/plan.txt");
+		// export current plan (if any) to a known file
+		if (this.plan != null) 
+		{
+			// get plan encoding
+			String encoding = this.plan.export();
+			// write to a file
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
+				// get data
+				writer.write(encoding);
+			}
+		}
+		
+		// get absolute file 
+		return output.getAbsolutePath();
+	}
+	
 	
 	/**
 	 * 
@@ -130,6 +160,8 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 	{
 		try 
 		{
+			// get plan descriptor
+			this.plan = plan;
 			// map token descriptor to nodes
 			Map<TokenProtocolDescriptor, ExecutionNode> dictionary = new HashMap<>();
 			// check time-lines
