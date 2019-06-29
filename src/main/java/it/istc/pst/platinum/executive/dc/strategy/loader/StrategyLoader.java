@@ -68,7 +68,8 @@ public class StrategyLoader {
 	public StrategyLoader (String pathPlan, long horizon) throws IOException { //works only for linux
 			this(horizon);
 			ProcessBuilder builder = new ProcessBuilder("bash", "-c", "plan2tiga" + " " + pathPlan +
-														" && " + "verifytga" + " -w0 " + pathPlan + ".xta"); 
+														" && " + "verifytga" + " -w0 " + pathPlan + ".xta");
+			
 			builder.redirectErrorStream(true);
 			Process process = builder.start();
 			this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

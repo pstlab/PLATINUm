@@ -3,7 +3,7 @@ package it.istc.pst.platinum.deliberative;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
-import it.istc.pst.platinum.deliberative.strategy.hrc.HRCBalancingSearchStrategy;
+import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStrategy;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
@@ -28,8 +28,8 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-//		strategy = MakespanOptimizationSearchStrategy.class
-		strategy = HRCBalancingSearchStrategy.class
+		strategy = MakespanOptimizationSearchStrategy.class
+//		strategy = HRCBalancingSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
 		level = FrameworkLoggingLevel.OFF
