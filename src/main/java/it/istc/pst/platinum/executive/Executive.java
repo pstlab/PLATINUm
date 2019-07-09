@@ -88,6 +88,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		this.config = FilePropertyReader.getExecutivePropertyFile();
 		// set clock and initial status
 		this.lock = new Object();
+		// set status
 		this.status = ExecutionStatus.INACTIVE;
 		// initialize clock manager
 		this.clock = new AtomicClockManager(this);

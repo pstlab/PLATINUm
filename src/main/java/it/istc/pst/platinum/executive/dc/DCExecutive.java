@@ -7,7 +7,6 @@ import it.istc.pst.platinum.executive.monitor.ConditionCheckingMonitor;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.DispatcherConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.MonitorConfiguration;
-import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
 /**
@@ -26,7 +25,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 )
 public class DCExecutive extends Executive 
 {
-	protected Strategy dcs;					// DC strategy manager
+	protected Strategy checker;					// DC strategy manager
 	
 	/**
 	 * 
@@ -54,7 +53,7 @@ public class DCExecutive extends Executive
 			loader.readStrategy();
 			
 			// get strategy
-			this.dcs = loader.getStrategy();
+			this.checker = loader.getStrategy();
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());

@@ -7,9 +7,12 @@ import it.istc.pst.platinum.executive.dc.strategy.result.Action;
 import it.istc.pst.platinum.executive.dc.strategy.result.Transition;
 import it.istc.pst.platinum.executive.dc.strategy.result.Wait;
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
+import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.ex.ObservationException;
+import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
-import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.ExecutivePlaceholder;
+import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 
 /**
  * 
@@ -18,9 +21,6 @@ import it.istc.pst.platinum.framework.microkernel.annotation.inject.executive.Ex
  */
 public class DCDispatcher extends Dispatcher<DCExecutive>
 {
-	@ExecutivePlaceholder
-	private DCExecutive executive;
-	
 	/**
 	 * 
 	 */
@@ -37,7 +37,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 	{
 		// get tau 
 		long tau = this.executive.convertTickToTau(tick);
-		// initialize status
+		// current status
 		PlanExecutionStatus status = new PlanExecutionStatus(tau);
 		// add the status of the timelines
 		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
@@ -48,10 +48,14 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 		try 
 		{
 			// ask the strategy actions to perform
-			List<Action> result = this.executive.dcs.askAllStrategySteps(
+			List<Action> result = this.executive.checker.askAllStrategySteps(
 					status.getTime(), 
 					status.getStatus(),
 					true);
+			
+			// print the list of actions received
+			logger.debug("[Dispatcher] [tick: " + tick + "] DC checker query result:\n"
+					+ "\t- result= " + result + "\n");
 				
 			// check actions
 			for (Action a : result) 
@@ -62,7 +66,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 					 * wait
 					 */
 					
-					System.out.println("[Dispatching] [tick: " + tick +"] action: Wait");
+					logger.debug("[Dispatching] [tick: " + tick +"] action: Wait");
 					
 				}
 				else if (a instanceof Transition) 
@@ -77,7 +81,31 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 					// name of the timeline
 					String tlName = s.getTimeline();
 					
-					System.out.println("[Dispatching] [tick: " + tick +"] action: Dispatch -> " + tlName + "." + tokenName);
+					// get node >>>>> TODO
+					ExecutionNode node = null;
+					
+					try
+					{
+						// dispatch the command through the executive if needed
+						this.executive.sendStartCommandSignalToPlatform(node);
+						// schedule token start time
+						this.executive.scheduleTokenStart(node, tau);
+						// start node execution
+						logger.info("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start executing node at time: " + tau + "\n"
+								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					}
+					catch (TemporalConstraintPropagationException ex) {
+						// set token as in execution to wait for feedbacks
+						this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
+						// create execution cause
+						ExecutionFailureCause cause = new StartOverflow(tick, node, tau);
+						// throw execution exception
+						throw new ObservationException(
+								"The dispatched start time of the token does not comply with the plan:\n"
+								+ "\t- start: " + tau + "\n"
+								+ "\t- node: " + node + "\n", 
+								cause);
+					}
 					
 				}
 				else {
@@ -87,7 +115,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 			}
 		}
 		catch (Exception ex) {
-			System.err.println("Error while asking actions to the strategy manager\n\t- message: " + ex.getMessage() + "\n");
+			logger.error("Error while asking actions to the strategy manager\n\t- message: " + ex.getMessage() + "\n");
 		}
 
 	}
