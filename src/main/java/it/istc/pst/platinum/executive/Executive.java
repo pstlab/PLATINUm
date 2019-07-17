@@ -606,7 +606,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	{
 		if (!node.isVirtual()) {
 			// also send stop command execution request
-			this.platformProxy.stopCommand(node);
+			this.platformProxy.stopNode(node);
 		}
 	}
 	
@@ -626,7 +626,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 					node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE))
 			{
 				// send command and take operation ID
-				PlatformCommand cmd = this.platformProxy.executedCommand(node);
+				PlatformCommand cmd = this.platformProxy.executeNode(node);
 				// add entry to the index
 				this.dispatchedIndex.put(cmd, node);
 			}
@@ -635,7 +635,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				// check if controllable token is virtual
 				if (!node.isVirtual()) {
 					// require execution start
-					PlatformCommand cmd = this.platformProxy.startCommand(node);
+					PlatformCommand cmd = this.platformProxy.startNode(node);
 					// add entry to the index
 					this.dispatchedIndex.put(cmd, node);
 				}

@@ -11,7 +11,6 @@ import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.GoalStatus;
 import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.PlatformProxy;
-import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.PlanRepairInformation;
@@ -110,7 +109,7 @@ public class GoalOrientedActingAgent
 		this.contingencyHandler = new ContingencyHandlerProcess(this);
 		this.processes.add(new Thread(this.contingencyHandler));
 		
-		// initialize proxy refernce
+		// initialize proxy reference
 		this.proxy = null;
 	}
 	
@@ -301,7 +300,7 @@ public class GoalOrientedActingAgent
 	 * @throws InterruptedException
 	 */
 	public void stop() 
-			throws InterruptedException
+			throws InterruptedException, PlatformException
 	{
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.READY) && 
@@ -322,6 +321,11 @@ public class GoalOrientedActingAgent
 			p.interrupt();
 			p.join();
 		}
+		
+//		// stop proxy
+//		if (this.proxy != null) {
+//			this.proxy.stop();
+//		}
 
 		synchronized (this.lock) {
 			// change status
@@ -333,14 +337,12 @@ public class GoalOrientedActingAgent
 	
 	/**
 	 * 
-	 * @param proxyClass
-	 * @param proxyConfigFile
 	 * @param ddl
 	 * @throws InterruptedException
 	 * @throws SynchronizationCycleException
 	 * @throws PlatformException
 	 */
-	public void initialize(Class<? extends PlatformProxy> proxyClass, String proxyConfigFile, String ddl) 
+	public void initialize(PlatformProxy proxy, String ddl) 
 			throws InterruptedException, SynchronizationCycleException, PlatformException
 	{
 		synchronized (this.lock) {
@@ -355,13 +357,13 @@ public class GoalOrientedActingAgent
 			this.lock.notifyAll();
 		}
 		
+		// set platform proxy
+		this.proxy = proxy;
 		// set domain specification file
 		this.ddl = ddl;
 		// initialize plan database on the given planning domain
 		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
 		
-		// build platform proxy
-		this.proxy = PlatformProxyBuilder.build(proxyClass, proxyConfigFile);
 		
 		synchronized (this.lock) {
 			// change status
@@ -370,78 +372,6 @@ public class GoalOrientedActingAgent
 			this.lock.notifyAll();
 		}
 	}
-	
-	/**
-	 * 
-	 * @param proxyClass
-	 * @param ddl
-	 * @throws InterruptedException
-	 * @throws SynchronizationCycleException
-	 * @throws PlatformException
-	 */
-	public void initialize(Class<? extends PlatformProxy> proxyClass, String ddl) 
-			throws InterruptedException, SynchronizationCycleException, PlatformException
-	{
-		synchronized (this.lock) {
-			while(!this.status.equals(ActingAgentStatus.RUNNING)) {
-				// wait a signal
-				this.lock.wait();
-			}
-			
-			// change status
-			this.status = ActingAgentStatus.INITIALIZING;
-			// send signal 
-			this.lock.notifyAll();
-		}
-		
-		// set domain specification file
-		this.ddl = ddl;
-		// initialize plan database on the given planning domain
-		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
-		
-		// build platform proxy
-		this.proxy = PlatformProxyBuilder.build(proxyClass);
-		
-		synchronized (this.lock) {
-			// change status
-			this.status = ActingAgentStatus.READY;
-			// send signal
-			this.lock.notifyAll();
-		}
-	}
-	
-	
-//	public void initialize(String ddl, String cfg) 
-//			throws InterruptedException, SynchronizationCycleException, PlatformException
-//	{
-//		synchronized (this.lock) {
-//			while(!this.status.equals(ActingAgentStatus.RUNNING)) {
-//				// wait a signal
-//				this.lock.wait();
-//			}
-//			
-//			// change status
-//			this.status = ActingAgentStatus.INITIALIZING;
-//			// send signal 
-//			this.lock.notifyAll();
-//		}
-//		
-//		// set domain specification file
-//		this.ddl = ddl;
-//		// initialize plan database on the given planning domain
-//		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
-//		// set configuration file
-//		this.cfg = cfg;
-//		// initialize the platform simulator of executive process
-//		this.executive.initialize(this.proxy);
-//		
-//		synchronized (this.lock) {
-//			// change status
-//			this.status = ActingAgentStatus.READY;
-//			// send signal
-//			this.lock.notifyAll();
-//		}
-//	}
 	
 	/**
 	 * 
@@ -469,8 +399,6 @@ public class GoalOrientedActingAgent
 		this.ddl = null;
 		// clear plan database 
 		this.pdb = null;
-//		// clear simulator configuration
-//		this.cfg = null;
 		// clear proxy
 		this.proxy = null;
 		

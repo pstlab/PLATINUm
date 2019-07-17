@@ -10,6 +10,7 @@ import it.istc.pst.platinum.control.acting.GoalOrientedActingAgent;
 import it.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.TokenDescription;
+import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
 import it.istc.pst.platinum.control.platform.hrc.HRCPlatformSimulator;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
@@ -130,12 +131,18 @@ public class AIJFbTActingExperimentManager extends AIJFbT
 					agent.start();
 					System.out.println("Starting agent...");
 					
+					// configuration loader
+					HRCPlatformSimulator simulator = PlatformProxyBuilder.build(
+							HRC_PLATFORM_SIMULATOR_CLASS,
+							PLATFORM_CFG_FOLDER + "/AIJ_EXP_PLATFORM_CONFIG_U" + platformUncertainty + ".xml");
+					// start simulator
+					simulator.start();
+					
 					try
 					{
 						// initialize the agent
 						agent.initialize(
-								HRC_PLATFORM_SIMULATOR_CLASS,
-								PLATFORM_CFG_FOLDER + "/AIJ_EXP_PLATFORM_CONFIG_U" + platformUncertainty + ".xml",
+								simulator,
 								DOMAIN_FOLDER + "/AIJ_EXP_T" + ACTING_DELIBERATIVE_TASKS + "_S" + ACTING_DELIBERATIVE_SHARED + "_U" + modelUncertainty  +".ddl");
 	
 						// create task description 
@@ -171,6 +178,10 @@ public class AIJFbTActingExperimentManager extends AIJFbT
 					}
 					catch (SynchronizationCycleException | PlatformException ex) {
 						System.err.println(ex.getMessage());
+					}
+					finally {
+						// stop simulator
+						simulator.stop();
 					}
 					
 					

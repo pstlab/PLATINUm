@@ -42,8 +42,7 @@ public class ExecutiveProcess implements Runnable
 	 * @throws PlatformException
 	 */
 	public void initialize(PlatformProxy proxy) 
-			throws PlatformException 
-	{
+			throws PlatformException {
 		// set proxy reference
 		this.simulator = proxy;
 	}
@@ -104,10 +103,7 @@ public class ExecutiveProcess implements Runnable
 		if (this.simulator != null) {
 			// bind simulator
 			exec.link(this.simulator);
-			// start simulator
-			this.simulator.start();
 		}
-		
 		
 		// run the executive starting at a given tick
 		boolean complete = exec.execute(goal.getExecutionTick());
@@ -117,7 +113,6 @@ public class ExecutiveProcess implements Runnable
 		if (this.simulator != null) {
 			// unlink from simulator
 			exec.unlink();
-			this.simulator.stop();
 		}
 		
 		// check execution result 

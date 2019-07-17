@@ -1,8 +1,8 @@
 package it.istc.pst.platinum.app.cli;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
-import it.istc.pst.platinum.control.platform.PlatformProxy;
 import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
+import it.istc.pst.platinum.control.platform.RunnablePlatformProxy;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
@@ -31,7 +31,7 @@ public abstract class AbstractCommandLineInterface
 	protected PlanDataBase pdb;
 	protected Planner planner;
 	protected SolutionPlan currentSolution;
-	protected PlatformProxy proxy;
+	protected RunnablePlatformProxy proxy;
 	
 	/**
 	 * 
@@ -53,7 +53,7 @@ public abstract class AbstractCommandLineInterface
 	 * @param pdl
 	 * @throws CommandLineInterfaceInitializationException
 	 */
-	protected void init(String ddl, String pdl, Class<? extends PlatformProxy> pClass) 
+	protected void init(String ddl, String pdl, Class<? extends RunnablePlatformProxy> pClass) 
 			throws CommandLineInterfaceException 
 	{
 		try 
@@ -87,7 +87,7 @@ public abstract class AbstractCommandLineInterface
 	 * @param cfgFile
 	 * @throws CommandLineInterfaceException
 	 */
-	protected void init(String ddl, String pdl, Class<? extends PlatformProxy> pClass, String cfgFile) 
+	protected void init(String ddl, String pdl, Class<? extends RunnablePlatformProxy> pClass, String cfgFile) 
 			throws CommandLineInterfaceException 
 	{
 		try 
@@ -146,6 +146,12 @@ public abstract class AbstractCommandLineInterface
 		
 		try
 		{
+			// check if proxy has been set
+			if (this.proxy != null) {
+				// start simulator
+				this.proxy.start();
+			}
+			
 			// create the executive 
 			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
 			// initialize the executive
@@ -153,8 +159,6 @@ public abstract class AbstractCommandLineInterface
 			
 			// bind the executive to the platform
 			exec.link(this.proxy);
-			// start simulator
-			this.proxy.start();
 			// run the executive
 			exec.execute();
 		}

@@ -327,7 +327,7 @@ public class HRCPlatformAgent
 	 * 
 	 * It is supposed that only controllable commands can be stopped synchronously. Therefore,
 	 * there is not need to send a notification to the executive in this case. This call is 
-	 * managed as a "blocking call". If the returned object is not null the operation succeded
+	 * managed as a "blocking call". If the returned object is not null the operation succeeded
 	 * 
 	 * @param cmd
 	 * @throws InterruptedException
@@ -361,6 +361,9 @@ public class HRCPlatformAgent
 		return stopped;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -369,6 +372,9 @@ public class HRCPlatformAgent
 		return result;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
