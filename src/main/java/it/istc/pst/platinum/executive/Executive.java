@@ -8,9 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.istc.pst.platinum.control.platform.PlatformObserver;
+import it.istc.pst.platinum.control.platform.PlatformProxy;
 import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
-import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.executive.dispatcher.ConditionCheckingDispatcher;
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
@@ -77,7 +77,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	private AtomicBoolean failure;												// execution failure flag
 	private ExecutionFailureCause cause;										// execution failure cause
 	
-	private PlatformSimulator platformProxy;									// platform PROXY to send commands to 
+	private PlatformProxy platformProxy;										// platform PROXY to send commands to 
 	
 	/**
 	 * 
@@ -116,7 +116,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * 
 	 * @param proxy
 	 */
-	public void link(PlatformSimulator proxy) {
+	public void link(PlatformProxy proxy) {
 		// bind the executive
 		this.platformProxy = proxy;
 		// register to the PROXY

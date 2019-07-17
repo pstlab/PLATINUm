@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
+import it.istc.pst.platinum.control.platform.hrc.HRCPlatformSimulator;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
@@ -14,9 +15,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundExcepti
 import it.istc.pst.platinum.framework.microkernel.lang.plan.Timeline;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
 import it.istc.pst.platinum.framework.protocol.query.ProtocolQueryType;
-import it.istc.pst.platinum.framework.protocol.query.get.GetFlexibleTimelinesProtocolQuery;
 import it.istc.pst.platinum.framework.protocol.query.get.GetSingleFlexibleTimelineProtocolQuery;
-import it.istc.pst.platinum.framework.protocol.query.show.ShowComponentProtocolQuery;
 
 /**
  * 
@@ -25,6 +24,8 @@ import it.istc.pst.platinum.framework.protocol.query.show.ShowComponentProtocolQ
  */
 public class CommandLineInterfaceProcess extends AbstractCommandLineInterface implements Runnable
 {
+	private static final String HRC_PLATFORM_PROXY_CONFIG_FILE_PATH = "etc/platform/hrc/cfg.xml";
+	private static final Class<HRCPlatformSimulator> HRC_PLATFORM_PROXY_CLASS = HRCPlatformSimulator.class;
 	private static final String CLI_PROMPT = "epsl-agent$ ";		// KEEN-compliant CLI prompt - do not change
 	private static final long HORIZON = Long.MAX_VALUE - 1;			// default horizon
 	
@@ -124,8 +125,12 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			
 			// check files
 			if (ddl.exists() && !ddl.isDirectory() && pdl.exists() && !pdl.isDirectory()) {
-				// initialize
-				this.init(ddl.getAbsolutePath(), pdl.getAbsolutePath());
+				// initialize on default HRC platform proxy using default configuration file
+				this.init(
+						ddl.getAbsolutePath(), 
+						pdl.getAbsolutePath(), 
+						HRC_PLATFORM_PROXY_CLASS, 
+						HRC_PLATFORM_PROXY_CONFIG_FILE_PATH);
 			}
 			else {
 				// files not found
@@ -242,7 +247,7 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			if (splits[1].equals("all")) 
 			{
 				// plan database projection
-				GetFlexibleTimelinesProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.GET_FLEXIBLE_TIMELINES);
+//				GetFlexibleTimelinesProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.GET_FLEXIBLE_TIMELINES);
 				// check temporal behaviors
 				for (Timeline cTl : this.currentSolution.getTimelines()) 
 				{
@@ -300,7 +305,7 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			}
 			
 			// show domain components
-			ShowComponentProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.SHOW_COMPONENTS);
+//			ShowComponentProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.SHOW_COMPONENTS);
 			// check component name if any
 			if (splits.length > 1 && splits[1] != null)
 			{

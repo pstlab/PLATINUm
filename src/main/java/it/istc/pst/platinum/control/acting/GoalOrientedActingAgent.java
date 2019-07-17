@@ -10,9 +10,10 @@ import it.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.GoalStatus;
 import it.istc.pst.platinum.control.lang.TokenDescription;
+import it.istc.pst.platinum.control.platform.PlatformProxy;
+import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
-import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.executive.lang.ex.PlanRepairInformation;
 import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
@@ -44,17 +45,19 @@ public class GoalOrientedActingAgent
 	
 	private String ddl;										// path to the domain specification file
 	private PlanDataBase pdb;								// internal plan database representation
-	private String cfg;										// simulator configuration file
 	
 	private List<Thread> processes;							// goal oriented processes
 	private DeliberativeProcess deliberative;				// internal deliberative process
 	private ExecutiveProcess executive;						// internal executive process
 	private ContingencyHandlerProcess contingencyHandler;	// internal contingency handler process
 	
+	private PlatformProxy proxy;
+	
 	/**
 	 * 
 	 */
-	public GoalOrientedActingAgent() {
+	public GoalOrientedActingAgent() 
+	{
 		// initialize lock and status
 		this.lock = new Object(); 
 		this.status = ActingAgentStatus.OFFLINE;
@@ -67,7 +70,6 @@ public class GoalOrientedActingAgent
 		
 		// initialize internal plan database representation
 		this.pdb = null;
-		this.cfg = null;
 		// initialize the list of processes
 		this.processes = new ArrayList<>();
 		// initialize goal listener thread
@@ -98,15 +100,18 @@ public class GoalOrientedActingAgent
 		
 		// initialize goal deliberative
 		this.deliberative = new DeliberativeProcess(this);
-		this.processes.add(new Thread(deliberative));
+		this.processes.add(new Thread(this.deliberative));
 	
 		// initialize goal executive
 		this.executive = new ExecutiveProcess(this);
-		this.processes.add(new Thread(executive));
+		this.processes.add(new Thread(this.executive));
 	
 		// initialize goal failure handler
 		this.contingencyHandler = new ContingencyHandlerProcess(this);
-		this.processes.add(new Thread(contingencyHandler));
+		this.processes.add(new Thread(this.contingencyHandler));
+		
+		// initialize proxy refernce
+		this.proxy = null;
 	}
 	
 	/**
@@ -192,7 +197,8 @@ public class GoalOrientedActingAgent
 	/**
 	 * 
 	 */
-	protected void commit(Goal goal) {
+	protected void commit(Goal goal) 
+	{
 		// protect access to the queue
 		synchronized (this.queue) {
 			// remove goal form the current queue
@@ -327,47 +333,14 @@ public class GoalOrientedActingAgent
 	
 	/**
 	 * 
+	 * @param proxyClass
+	 * @param proxyConfigFile
 	 * @param ddl
-	 * @throws InterruptedException
-	 * @throws SynchronizationCycleException
-	 */
-	public void initialize(String ddl) 
-			throws InterruptedException, SynchronizationCycleException
-	{
-		synchronized (this.lock) {
-			while(!this.status.equals(ActingAgentStatus.RUNNING)) {
-				// wait a signal
-				this.lock.wait();
-			}
-			
-			// change status
-			this.status = ActingAgentStatus.INITIALIZING;
-			// send signal 
-			this.lock.notifyAll();
-		}
-		
-		// set domain specification file
-		this.ddl = ddl;
-		// initialize plan database on the given planning domain
-		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
-		
-		synchronized (this.lock) {
-			// change status
-			this.status = ActingAgentStatus.READY;
-			// send signal
-			this.lock.notifyAll();
-		}
-	}
-	
-	/**
-	 * 
-	 * @param ddl
-	 * @param cfg
 	 * @throws InterruptedException
 	 * @throws SynchronizationCycleException
 	 * @throws PlatformException
 	 */
-	public void initialize(String ddl, String cfg) 
+	public void initialize(Class<? extends PlatformProxy> proxyClass, String proxyConfigFile, String ddl) 
 			throws InterruptedException, SynchronizationCycleException, PlatformException
 	{
 		synchronized (this.lock) {
@@ -386,10 +359,9 @@ public class GoalOrientedActingAgent
 		this.ddl = ddl;
 		// initialize plan database on the given planning domain
 		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
-		// set configuration file
-		this.cfg = cfg;
-		// initialize the platform simulator of executive process
-		this.executive.initialize(this.cfg);
+		
+		// build platform proxy
+		this.proxy = PlatformProxyBuilder.build(proxyClass, proxyConfigFile);
 		
 		synchronized (this.lock) {
 			// change status
@@ -398,6 +370,78 @@ public class GoalOrientedActingAgent
 			this.lock.notifyAll();
 		}
 	}
+	
+	/**
+	 * 
+	 * @param proxyClass
+	 * @param ddl
+	 * @throws InterruptedException
+	 * @throws SynchronizationCycleException
+	 * @throws PlatformException
+	 */
+	public void initialize(Class<? extends PlatformProxy> proxyClass, String ddl) 
+			throws InterruptedException, SynchronizationCycleException, PlatformException
+	{
+		synchronized (this.lock) {
+			while(!this.status.equals(ActingAgentStatus.RUNNING)) {
+				// wait a signal
+				this.lock.wait();
+			}
+			
+			// change status
+			this.status = ActingAgentStatus.INITIALIZING;
+			// send signal 
+			this.lock.notifyAll();
+		}
+		
+		// set domain specification file
+		this.ddl = ddl;
+		// initialize plan database on the given planning domain
+		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
+		
+		// build platform proxy
+		this.proxy = PlatformProxyBuilder.build(proxyClass);
+		
+		synchronized (this.lock) {
+			// change status
+			this.status = ActingAgentStatus.READY;
+			// send signal
+			this.lock.notifyAll();
+		}
+	}
+	
+	
+//	public void initialize(String ddl, String cfg) 
+//			throws InterruptedException, SynchronizationCycleException, PlatformException
+//	{
+//		synchronized (this.lock) {
+//			while(!this.status.equals(ActingAgentStatus.RUNNING)) {
+//				// wait a signal
+//				this.lock.wait();
+//			}
+//			
+//			// change status
+//			this.status = ActingAgentStatus.INITIALIZING;
+//			// send signal 
+//			this.lock.notifyAll();
+//		}
+//		
+//		// set domain specification file
+//		this.ddl = ddl;
+//		// initialize plan database on the given planning domain
+//		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
+//		// set configuration file
+//		this.cfg = cfg;
+//		// initialize the platform simulator of executive process
+//		this.executive.initialize(this.proxy);
+//		
+//		synchronized (this.lock) {
+//			// change status
+//			this.status = ActingAgentStatus.READY;
+//			// send signal
+//			this.lock.notifyAll();
+//		}
+//	}
 	
 	/**
 	 * 
@@ -425,8 +469,10 @@ public class GoalOrientedActingAgent
 		this.ddl = null;
 		// clear plan database 
 		this.pdb = null;
-		// clear simulator configuration
-		this.cfg = null;
+//		// clear simulator configuration
+//		this.cfg = null;
+		// clear proxy
+		this.proxy = null;
 		
 		synchronized (this.lock) {
 			// change status
@@ -676,10 +722,12 @@ public class GoalOrientedActingAgent
 		long now = System.currentTimeMillis();
 		try 
 		{
+			// initialize the executive on proxy
+			this.executive.initialize(this.proxy);
 			// execution the plan synthesized for the goal
 			this.executive.doExecute(goal);
 		}
-		catch (ExecutionException ex) {
+		catch (Exception ex) {
 			// execution failure
 			complete = false;
 		}
@@ -746,9 +794,6 @@ public class GoalOrientedActingAgent
 		{
 			// initialize plan database on the given planning domain
 			this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
-			// initialize the platform simulator of executive process
-			this.executive.initialize(this.cfg);
-			
 			System.out.println("\n\nREPAIRING PROBLEM SPECIFICATION:\n");
 			
 			// setup the initial fact leveraging goal execution trace
@@ -848,6 +893,13 @@ public class GoalOrientedActingAgent
 									+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
 					// add fact
 					facts.add(fact);
+				}
+				break;
+				
+				default: {
+					
+					// unknown failure type
+					System.err.println("Unknown goal execution failure type : " + goal.getFailureCause().getType() + "\n");
 				}
 				break;
 			}

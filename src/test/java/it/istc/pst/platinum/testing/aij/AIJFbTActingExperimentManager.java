@@ -10,6 +10,7 @@ import it.istc.pst.platinum.control.acting.GoalOrientedActingAgent;
 import it.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.TokenDescription;
+import it.istc.pst.platinum.control.platform.hrc.HRCPlatformSimulator;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 
@@ -20,6 +21,8 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleEx
  */
 public class AIJFbTActingExperimentManager extends AIJFbT 
 {
+	private static final Class<HRCPlatformSimulator> HRC_PLATFORM_SIMULATOR_CLASS = HRCPlatformSimulator.class;
+	
 	/**
 	 * 
 	 * @return
@@ -131,10 +134,10 @@ public class AIJFbTActingExperimentManager extends AIJFbT
 					{
 						// initialize the agent
 						agent.initialize(
-								DOMAIN_FOLDER + "/AIJ_EXP_T" + ACTING_DELIBERATIVE_TASKS + "_S" + ACTING_DELIBERATIVE_SHARED + "_U" + modelUncertainty  +".ddl", 					// DDL specification
-								PLATFORM_CFG_FOLDER + "/AIJ_EXP_PLATFORM_CONFIG_U" + platformUncertainty + ".xml");
+								HRC_PLATFORM_SIMULATOR_CLASS,
+								PLATFORM_CFG_FOLDER + "/AIJ_EXP_PLATFORM_CONFIG_U" + platformUncertainty + ".xml",
+								DOMAIN_FOLDER + "/AIJ_EXP_T" + ACTING_DELIBERATIVE_TASKS + "_S" + ACTING_DELIBERATIVE_SHARED + "_U" + modelUncertainty  +".ddl");
 	
-						
 						// create task description 
 						AgentTaskDescription task = createTaskDescription();
 						// buffer task description

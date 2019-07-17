@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.control.platform.sim;
+package it.istc.pst.platinum.control.platform.hrc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,19 +16,19 @@ import it.istc.pst.platinum.control.platform.lang.PlatformCommandDescription;
  * @author anacleto
  *
  */
-public class PlatformAgent 
+public class HRCPlatformAgent 
 {
 	private static final AtomicLong CmdIdCounter = new AtomicLong(0);
 	private String id;													// agent id
 	private String label;												// agent label
 	private final Object lock = new Object();							// agent status lock
-	private PlatformAgentStatus status;									// agent status
+	private HRCPlatformAgentStatus status;									// agent status
 	
 	// agent configuration information 
 	private long uncertainty;											// uncertainty about the execution of a command
 	private Map<String, PlatformCommandDescription> commands;			// descriptions of commands the agent can perform 
 	
-	private List<PlatformAgentObserver> observers;						// list of agent observers
+	private List<HRCPlatformAgentObserver> observers;						// list of agent observers
 	private PlatformCommand cmd;										// command currently in execution
 	private Thread handler;												// asynchronous command execution handler
 	
@@ -38,7 +38,7 @@ public class PlatformAgent
 	 * @param label
 	 * @param uncertainty
 	 */
-	protected PlatformAgent(String id, String label, long uncertainty) 
+	protected HRCPlatformAgent(String id, String label, long uncertainty) 
 	{
 		// set id 
 		this.id = id;
@@ -53,7 +53,7 @@ public class PlatformAgent
 		// initialize observers
 		this.observers = new ArrayList<>();
 		// set initial status
-		this.status = PlatformAgentStatus.OFFLINE;
+		this.status = HRCPlatformAgentStatus.OFFLINE;
 		// create asynchronous command handler
 		this.handler = new Thread(new Runnable() {
 			
@@ -70,12 +70,12 @@ public class PlatformAgent
 					{
 						// wait a command to execute asynchronously
 						synchronized (lock) {
-							while (!status.equals(PlatformAgentStatus.COMMAND_EXECUTION_REQUEST)) {
+							while (!status.equals(HRCPlatformAgentStatus.COMMAND_EXECUTION_REQUEST)) {
 								lock.wait();
 							}
 							
 							// set status
-							status = PlatformAgentStatus.COMMAND_EXECUTION_HANDLING;
+							status = HRCPlatformAgentStatus.COMMAND_EXECUTION_HANDLING;
 							// send signal
 							lock.notifyAll();
 						}
@@ -85,12 +85,12 @@ public class PlatformAgent
 						try
 						{
 							// asynchronously execute command
-							System.out.println("[" + PlatformAgent.this.label + "] Start command execution:\n\t- " + cmd + "\n");
+							System.out.println("[" + HRCPlatformAgent.this.label + "] Start command execution:\n\t- " + cmd + "\n");
 							
 							// get command expected duration
 							float execTime = cmd.getExecutionTime();
 							// check agent uncertainty and set minimum execution time (avoid execution times lower than 0)
-							int min = Math.round(Math.max(1, execTime - PlatformAgent.this.uncertainty));
+							int min = Math.round(Math.max(1, execTime - HRCPlatformAgent.this.uncertainty));
 							// check agent uncertainty and set maximum execution time
 							int max = Math.round(execTime + uncertainty);
 							
@@ -101,7 +101,7 @@ public class PlatformAgent
 							
 							// wait for a random amount of seconds 
 							Thread.sleep(time * 1000);
-							System.out.println("[" + PlatformAgent.this.label + "] Stop command execution:\n\t- " + cmd + "\n");
+							System.out.println("[" + HRCPlatformAgent.this.label + "] Stop command execution:\n\t- " + cmd + "\n");
 						}
 						catch (Exception ex) {
 							// command execution failure
@@ -113,7 +113,7 @@ public class PlatformAgent
 							if (success) 
 							{
 								// notify observers
-								for (PlatformAgentObserver obs : observers) {
+								for (HRCPlatformAgentObserver obs : observers) {
 									// notify success to observers
 									obs.notifySuccess(cmd);
 								}
@@ -122,7 +122,7 @@ public class PlatformAgent
 								// successful execution
 								synchronized (lock) {
 									// update status
-									status = PlatformAgentStatus.IDLE;
+									status = HRCPlatformAgentStatus.IDLE;
 									// send signal
 									lock.notifyAll();
 								}
@@ -130,7 +130,7 @@ public class PlatformAgent
 							else 
 							{
 								// notify observers
-								for (PlatformAgentObserver obs : observers) {
+								for (HRCPlatformAgentObserver obs : observers) {
 									// notify success to observers
 									obs.notifyFailure(cmd);
 								}
@@ -139,7 +139,7 @@ public class PlatformAgent
 								// execution failure
 								synchronized (lock) {
 									// update status
-									status = PlatformAgentStatus.FAILURE;
+									status = HRCPlatformAgentStatus.FAILURE;
 									// send signal
 									lock.notifyAll();
 								}
@@ -158,7 +158,7 @@ public class PlatformAgent
 	 * 
 	 * @param obs
 	 */
-	public void register(PlatformAgentObserver obs) { 
+	public void register(HRCPlatformAgentObserver obs) { 
 		synchronized (this.observers) {
 			this.observers.add(obs);
 		}
@@ -168,7 +168,7 @@ public class PlatformAgent
 	 * 
 	 * @param obs
 	 */
-	public void unregister(PlatformAgentObserver obs) {
+	public void unregister(HRCPlatformAgentObserver obs) {
 		synchronized (this.observers) {
 			this.observers.remove(obs);
 		}
@@ -238,12 +238,12 @@ public class PlatformAgent
 	{
 		synchronized (lock) {
 			// check status
-			while (!this.status.equals(PlatformAgentStatus.OFFLINE)) {
+			while (!this.status.equals(HRCPlatformAgentStatus.OFFLINE)) {
 				lock.wait();
 			}
 			
 			// update status and send signal
-			this.status = PlatformAgentStatus.IDLE;
+			this.status = HRCPlatformAgentStatus.IDLE;
 			lock.notifyAll();
 		}
 		
@@ -261,12 +261,12 @@ public class PlatformAgent
 	{
 		synchronized (lock) {
 			// check status
-			while (!this.status.equals(PlatformAgentStatus.IDLE)) {
+			while (!this.status.equals(HRCPlatformAgentStatus.IDLE)) {
 				lock.wait();
 			}
 			
 			// update status and send signal
-			this.status = PlatformAgentStatus.OFFLINE;
+			this.status = HRCPlatformAgentStatus.OFFLINE;
 			lock.notifyAll();
 		}
 		
@@ -285,14 +285,14 @@ public class PlatformAgent
 			throws InterruptedException 
 	{
 		synchronized (lock) {
-			while (!this.status.equals(PlatformAgentStatus.IDLE)) {
+			while (!this.status.equals(HRCPlatformAgentStatus.IDLE)) {
 				lock.wait();
 			}
 			
 			// set the command to execute
 			this.cmd = cmd;
 			// set the status 
-			this.status = PlatformAgentStatus.COMMAND_EXECUTION_REQUEST;
+			this.status = HRCPlatformAgentStatus.COMMAND_EXECUTION_REQUEST;
 			// notify 
 			lock.notifyAll();
 		}
@@ -308,7 +308,7 @@ public class PlatformAgent
 			throws InterruptedException 
 	{
 		synchronized (lock) {
-			while (!this.status.equals(PlatformAgentStatus.IDLE)) {
+			while (!this.status.equals(HRCPlatformAgentStatus.IDLE)) {
 				lock.wait();
 			}
 		
@@ -316,7 +316,7 @@ public class PlatformAgent
 			this.cmd = cmd;
 			System.out.println("[" + this.label + "] START : " + this.cmd + "\n");
 			// set the status 
-			this.status = PlatformAgentStatus.COMMAND_START_REQUEST;
+			this.status = HRCPlatformAgentStatus.COMMAND_START_REQUEST;
 			// notify 
 			lock.notifyAll();
 		}
@@ -336,12 +336,12 @@ public class PlatformAgent
 			throws InterruptedException 
 	{
 		synchronized (lock) {
-			while (!this.status.equals(PlatformAgentStatus.COMMAND_START_REQUEST)) {
+			while (!this.status.equals(HRCPlatformAgentStatus.COMMAND_START_REQUEST)) {
 				lock.wait();
 			}
 			
 			// set the status 
-			this.status = PlatformAgentStatus.COMMAND_EXECUTION_HANDLING;
+			this.status = HRCPlatformAgentStatus.COMMAND_EXECUTION_HANDLING;
 			// notify 
 			lock.notifyAll();
 		}
@@ -352,7 +352,7 @@ public class PlatformAgent
 		// execution of "controllable" commands succeed always 
 		synchronized (lock) {
 			// change status 
-			this.status = PlatformAgentStatus.IDLE;
+			this.status = HRCPlatformAgentStatus.IDLE;
 			// send signal
 			lock.notifyAll();
 		}
@@ -377,7 +377,7 @@ public class PlatformAgent
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PlatformAgent other = (PlatformAgent) obj;
+		HRCPlatformAgent other = (HRCPlatformAgent) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

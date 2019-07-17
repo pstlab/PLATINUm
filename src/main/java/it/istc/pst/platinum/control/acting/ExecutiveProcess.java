@@ -6,9 +6,8 @@ import java.util.Set;
 import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.GoalStatus;
 import it.istc.pst.platinum.control.lang.TokenDescription;
+import it.istc.pst.platinum.control.platform.PlatformProxy;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
-import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
-import it.istc.pst.platinum.control.platform.sim.PlatformSimulatorBuilder;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.ExecutiveBuilder;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
@@ -26,7 +25,7 @@ import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;
 public class ExecutiveProcess implements Runnable 
 {
 	private GoalOrientedActingAgent agent;
-	private PlatformSimulator simulator;
+	private PlatformProxy simulator;
 	
 	/**
 	 * 
@@ -39,14 +38,14 @@ public class ExecutiveProcess implements Runnable
 	
 	/**
 	 * 
-	 * @param path
+	 * @param proxy
 	 * @throws PlatformException
 	 */
-	public void initialize(String path) 
+	public void initialize(PlatformProxy proxy) 
 			throws PlatformException 
 	{
-		// build platform simulator
-		this.simulator = PlatformSimulatorBuilder.build(path);
+		// set proxy reference
+		this.simulator = proxy;
 	}
 	
 	
@@ -86,9 +85,10 @@ public class ExecutiveProcess implements Runnable
 	 * @param goal
 	 * @throws InterruptedException
 	 * @throws ExecutionException
+	 * @throws PlatformException
 	 */
 	protected void doExecute(Goal goal) 
-			throws InterruptedException, ExecutionException  
+			throws InterruptedException, ExecutionException, PlatformException  
 	{
 		// get solution plan 
 		SolutionPlan plan = goal.getPlan();

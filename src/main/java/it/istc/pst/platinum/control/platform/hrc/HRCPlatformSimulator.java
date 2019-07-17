@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.control.platform.sim;
+package it.istc.pst.platinum.control.platform.hrc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,61 +18,53 @@ import it.istc.pst.platinum.executive.pdb.ExecutionNode;
  * @author anacleto
  *
  */
-public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver 
+public class HRCPlatformSimulator extends PlatformProxy implements HRCPlatformAgentObserver 
 {
-	private final List<PlatformObserver> observers;								// list of observers
-	private Map<String, PlatformAgent> index;							// index agents by commands they can execute
-	private List<PlatformAgent> agents;									// list of registered agents
-	private Map<ExecutionNode, PlatformCommand> trace;							// cache of executed commands
+	private static final String DEFAULT_CFG_FILE_PATH = "etc/platform/hrc/config.xml";	// default configuration file
+	private Map<String, HRCPlatformAgent> index;										// index agents by commands they can execute
+	private List<HRCPlatformAgent> agents;												// list of registered agents
 	
 	/**
 	 * 
 	 */
-	protected PlatformSimulator() {
+	protected HRCPlatformSimulator() {
 		super();
 		// initialize data structures
-		this.observers = new ArrayList<>();
 		this.index = new HashMap<>();
 		this.agents = new ArrayList<>();
-		this.trace = new HashMap<>();
+		
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public void register(PlatformObserver observer) {
-		// register a new observer
-		synchronized (this.observers) {
-			// add the observer
-			this.observers.add(observer);
-			// send signal
-			this.observers.notifyAll();
-		}
+	public void initialize() 
+			throws PlatformException 
+	{
+		// initialize the plaform on the default configuration file
+		this.initialize(DEFAULT_CFG_FILE_PATH);
 	}
 	
 	/**
-	 * Unregister a (previously) registered observer to a particular (physical) platform.
 	 * 
-	 * 
-	 * @param observer
 	 */
 	@Override
-	public void unregister(PlatformObserver observer) {
-		// unregister observers
-		synchronized (this.observers) {
-			// remove observer
-			this.observers.remove(observer);
-			// send signal
-			this.observers.notifyAll();
-		}
+	public void initialize(String cfgFile) 
+			throws PlatformException 
+	{
+		// create configuration loader
+		HRCPlatformSimulatorConfigurationLoader loader = new HRCPlatformSimulatorConfigurationLoader(this, cfgFile);
+		// load configuration
+		loader.load();
 	}
+	
 	
 	/**
 	 * 
 	 * @param agent
 	 */
-	public void add(PlatformAgent agent) {
+	public void add(HRCPlatformAgent agent) {
 		// add the agent to the platform
 		this.agents.add(agent);
 		// index the agent 
@@ -89,7 +81,7 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 	 * 
 	 * @param agent
 	 */
-	public void remove(PlatformAgent agent) {
+	public void remove(HRCPlatformAgent agent) {
 		// stop observing the agent
 		agent.unregister(this);
 		// remove the agent from the platform
@@ -142,11 +134,9 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 	 * 
 	 */
 	@Override
-	public PlatformCommand executedCommand(ExecutionNode node) 
-			throws PlatformException
+	protected PlatformCommand doExecuteCommand(ExecutionNode node) 
+			throws PlatformException 
 	{
-		// platform command
-		PlatformCommand cmd = null;
 		// extract command name 
 		String name = this.extractCommandName(node);
 		// extract command parameter values
@@ -158,7 +148,7 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 		}
 		
 		// get the simulator that can handle the execution of this command
-		PlatformAgent agent = this.index.get(name);
+		HRCPlatformAgent agent = this.index.get(name);
 		// get associated command description 
 		PlatformCommandDescription desc = agent.getCommandDescription(name);
 		if (desc == null) {
@@ -166,19 +156,18 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 		}
 		
 		// create command with parameters
-		cmd = agent.create(desc, params);
+		PlatformCommand cmd = agent.create(desc, params);
+		
 		try {
 			// ask the agent to execute the node
 			agent.execute(cmd);
-			// add entry to the cache
-			this.trace.put(node, cmd);
 		}
 		catch (InterruptedException ex) {
 			// platform exception
 			throw new PlatformException(ex.getMessage());
 		}
 		
-		// get command
+		// return executed command
 		return cmd;
 	}
 	
@@ -186,7 +175,7 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 	 * 
 	 */
 	@Override
-	public PlatformCommand startCommand(ExecutionNode node) 
+	public PlatformCommand doStartCommand(ExecutionNode node) 
 			throws PlatformException
 	{
 		// platform command
@@ -202,7 +191,7 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 		}
 		
 		// get the simulator that can handle the execution of this command
-		PlatformAgent agent = this.index.get(name);
+		HRCPlatformAgent agent = this.index.get(name);
 		// get associated command description 
 		PlatformCommandDescription desc = agent.getCommandDescription(name);
 		if (desc == null) {
@@ -215,8 +204,7 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 		try {
 			// ask the agent to start the execution of the node
 			agent.startCommand(cmd);
-			// add entry to the execution trace
-			this.trace.put(node, cmd);
+			
 		}
 		catch (InterruptedException ex) {
 			throw new PlatformException(ex.getMessage());
@@ -230,28 +218,19 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 	 * 
 	 */
 	@Override
-	public PlatformCommand stopCommand(ExecutionNode node) 
+	public void doStopCommand(PlatformCommand cmd) 
 			throws PlatformException 
 	{
-		// check execution trace
-		if (!this.trace.containsKey(node)) {
-			throw new PlatformException("No command associated to the requested node:\n\t- node: " + node + "\n");
-		}
-		
-		// get associated command
-		PlatformCommand cmd = this.trace.get(node);
 		// get the agent 
-		PlatformAgent agent = this.index.get(cmd.getName());
-		try {
+		HRCPlatformAgent agent = this.index.get(cmd.getName());
+		try 
+		{
 			// ask the agent to stop the execution of the command
 			agent.stopCommand();
 		}
 		catch (InterruptedException ex) {
 			throw new PlatformException(ex.getMessage());
 		}
-		
-		// get stopped command
-		return cmd;
 	}
 	
 	
@@ -293,30 +272,57 @@ public class PlatformSimulator implements PlatformProxy, PlatformAgentObserver
 	
 	/**
 	 * 
-	 * @throws InterruptedException
 	 */
+	@Override
 	public void start() 
-			throws InterruptedException
+			throws PlatformException
 	{
-		// start simulator agents
-		for (PlatformAgent agent : this.agents) {
-			// start agent
-			agent.start();
+		// list of started agents
+		List<HRCPlatformAgent> started = new ArrayList<>();
+		try
+		{
+			// start simulator agents
+			for (HRCPlatformAgent agent : this.agents) {
+				// start agent
+				agent.start();
+				started.add(agent);
+			}
+		}
+		catch (InterruptedException ex) 
+		{
+			// stop started agents
+			for (HRCPlatformAgent agent : started) 
+			{
+				try
+				{
+					agent.stop();
+				}
+				catch (Exception exx) {
+					System.err.println(exx.getMessage());
+				}
+			}
+			
+			throw new PlatformException(ex.getMessage());
 		}
 	}
 	
 	/**
-	 * Stop simulator 
 	 * 
-	 * @throws InterruptedException
 	 */
 	public void stop() 
-			throws InterruptedException
+			throws PlatformException
 	{
 		// stop agents
-		for (PlatformAgent agent : this.agents) {
-			// stop and wait agent
-			agent.stop();
+		for (HRCPlatformAgent agent : this.agents) 
+		{
+			try
+			{
+				// stop and wait agent
+				agent.stop();
+			}
+			catch (Exception ex) {
+				System.err.println(ex.getMessage());
+			}
 		}
 	}
 }

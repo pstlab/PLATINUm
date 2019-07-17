@@ -1,8 +1,9 @@
 package it.istc.pst.platinum.app.cli;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
-import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
-import it.istc.pst.platinum.control.platform.sim.PlatformSimulatorBuilder;
+import it.istc.pst.platinum.control.platform.PlatformProxy;
+import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
@@ -30,17 +31,20 @@ public abstract class AbstractCommandLineInterface
 	protected PlanDataBase pdb;
 	protected Planner planner;
 	protected SolutionPlan currentSolution;
+	protected PlatformProxy proxy;
 	
 	/**
 	 * 
 	 * @param horizon
 	 */
-	protected AbstractCommandLineInterface(long horizon) {
+	protected AbstractCommandLineInterface(long horizon) 
+	{
 		this.langFactory = ProtocolLanguageFactory.getSingletonInstance(horizon);
 		this.queryFactory = ProtocolQueryFactory.getSingletonInstance();
 		this.currentSolution = null;
 		this.planner = null;
 		this.pdb = null;
+		this.proxy = null;
 	}
 	
 	/**
@@ -49,11 +53,14 @@ public abstract class AbstractCommandLineInterface
 	 * @param pdl
 	 * @throws CommandLineInterfaceInitializationException
 	 */
-	protected void init(String ddl, String pdl) 
+	protected void init(String ddl, String pdl, Class<? extends PlatformProxy> pClass) 
 			throws CommandLineInterfaceException 
 	{
 		try 
 		{
+			// create proxy
+			this.proxy = PlatformProxyBuilder.build(pClass);
+			
 			// clear plan database
 			this.pdb = null;
 			// initialize the plan database
@@ -62,7 +69,41 @@ public abstract class AbstractCommandLineInterface
 			this.planner = null;
 			this.currentSolution = null;
 		}
-		catch (SynchronizationCycleException | ProblemInitializationException ex) {
+		catch (SynchronizationCycleException | ProblemInitializationException | PlatformException ex) {
+			// command line interface initialization exception
+			throw new CommandLineInterfaceException(ex.getMessage());
+		}
+		finally {
+			// call garbage collector
+			System.gc();
+		}
+	}
+	
+	/**
+	 * 
+	 * @param ddl
+	 * @param pdl
+	 * @param pClass
+	 * @param cfgFile
+	 * @throws CommandLineInterfaceException
+	 */
+	protected void init(String ddl, String pdl, Class<? extends PlatformProxy> pClass, String cfgFile) 
+			throws CommandLineInterfaceException 
+	{
+		try 
+		{
+			// create proxy
+			this.proxy = PlatformProxyBuilder.build(pClass, cfgFile);
+			
+			// clear plan database
+			this.pdb = null;
+			// initialize the plan database
+			this.pdb = PlanDataBaseBuilder.createAndSet(ddl, pdl);
+			// clear planner
+			this.planner = null;
+			this.currentSolution = null;
+		}
+		catch (SynchronizationCycleException | ProblemInitializationException | PlatformException ex) {
 			// command line interface initialization exception
 			throw new CommandLineInterfaceException(ex.getMessage());
 		}
@@ -103,21 +144,17 @@ public abstract class AbstractCommandLineInterface
 			throw new CommandLineInterfaceException("No plan to execute!");
 		}
 		
-		// create simulator
-		PlatformSimulator sim = null;
 		try
 		{
-			// create platform simulator
-			sim = PlatformSimulatorBuilder.build(path);
 			// create the executive 
 			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
 			// initialize the executive
 			exec.initialize(this.currentSolution.export());
 			
 			// bind the executive to the platform
-			exec.link(sim);
+			exec.link(this.proxy);
 			// start simulator
-			sim.start();
+			this.proxy.start();
 			// run the executive
 			exec.execute();
 		}
@@ -129,12 +166,12 @@ public abstract class AbstractCommandLineInterface
 			try 
 			{
 				// check simulator to stop
-				if (sim != null) {
+				if (this.proxy != null) {
 					// stop simulator
-					sim.stop();
+					this.proxy.stop();
 				}
 			}
-			catch (InterruptedException ex) {
+			catch (PlatformException ex) {
 				throw new RuntimeException(ex.getMessage());
 			}
 		}
