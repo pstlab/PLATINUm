@@ -444,7 +444,8 @@ public class GoalOrientedActingAgent
 			// get task description
 			AgentTaskDescription task = goal.getTaskDescription();
 			// set known information concerning components
-			for (TokenDescription f : task.getFacts()) {
+			for (TokenDescription f : task.getFacts()) 
+			{
 				// get domain component
 				DomainComponent component = this.pdb.getComponentByName(f.getComponent());
 				// get goal referred value

@@ -54,7 +54,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 					true);
 			
 			// print the list of actions received
-			logger.debug("[Dispatcher] [tick: " + tick + "] DC checker query result:\n"
+			logger.debug("[DCDispatcher] [tick: " + tick + "] DC checker query result:\n"
 					+ "\t- result= " + result + "\n");
 				
 			// check actions
@@ -66,7 +66,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 					 * wait
 					 */
 					
-					logger.debug("[Dispatching] [tick: " + tick +"] action: Wait");
+					logger.debug("[DCDispatcher] [tick: " + tick +"] action: Wait");
 					
 				}
 				else if (a instanceof Transition) 
@@ -81,41 +81,68 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 					// name of the timeline
 					String tlName = s.getTimeline();
 					
-					// get node >>>>> TODO
-					ExecutionNode node = null;
+					/*
+					 * TODO - ESTRARRE NODO DEL PIANO DA ESEGUIRE 
+					 */
 					
-					try
-					{
-						// dispatch the command through the executive if needed
-						this.executive.sendStartCommandSignalToPlatform(node);
-						// schedule token start time
-						this.executive.scheduleTokenStart(node, tau);
-						// start node execution
-						logger.info("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start executing node at time: " + tau + "\n"
-								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					logger.debug("[DCDispatcher] [tick: " + tick + "] Transition action:\n"
+							+ "- Source state of transition\n\t- timelineName= " + t.getTransitionFrom().getTimeline() + "\n\t- tokenName= " + t.getTransitionFrom().getToken() + "\n"
+							+ "- Target state of transition\n\t- timelineName= " + tlName + "\n\t- tokenName= " + tokenName);
+
+					// check nodes waiting for execution
+					List<ExecutionNode> nodes = this.executive.getNodes(ExecutionNodeStatus.WAITING);
+					// find the node to dispatch according to the transition
+					ExecutionNode node = null;
+					for (ExecutionNode n : nodes) {
+						// check timeline and predicate
+						if (n.getPredicate().getTimeline().equalsIgnoreCase(tlName) && 
+								n.getPredicate().getSignature().equalsIgnoreCase(tokenName)) {
+							// node found
+							node = n;
+							break;
+						}
 					}
-					catch (TemporalConstraintPropagationException ex) {
-						// set token as in execution to wait for feedbacks
-						this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
-						// create execution cause
-						ExecutionFailureCause cause = new StartOverflow(tick, node, tau);
-						// throw execution exception
-						throw new ObservationException(
-								"The dispatched start time of the token does not comply with the plan:\n"
-								+ "\t- start: " + tau + "\n"
-								+ "\t- node: " + node + "\n", 
-								cause);
+					
+					// check if a node has been found
+					if (node != null)
+					{
+						try
+						{
+							// dispatch the command through the executive if needed
+							this.executive.sendStartCommandSignalToPlatform(node);
+							// schedule token start time
+							this.executive.scheduleTokenStart(node, tau);
+							// start node execution
+							logger.info("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start executing node at time: " + tau + "\n"
+									+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+						}
+						catch (TemporalConstraintPropagationException ex) {
+							// set token as in execution to wait for feedbacks
+							this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
+							// create execution cause
+							ExecutionFailureCause cause = new StartOverflow(tick, node, tau);
+							// throw execution exception
+							throw new ObservationException(
+									"The dispatched start time of the token does not comply with the plan:\n"
+									+ "\t- start: " + tau + "\n"
+									+ "\t- node: " + node + "\n", 
+									cause);
+						}
+					}
+					else 
+					{
+						logger.error("[DCDispatcher] [tick: " + tick + "] Transition token not found:\n- timelineName= " + tlName + "\n- tokenName= " + tokenName + "\n");
 					}
 					
 				}
 				else {
 					
-					throw new Exception("Unknown Action: " + a.getClass().getName() + "\n");
+					throw new Exception("[DCDispatcher] [tick: " + tick +"] Unknown Action: " + a.getClass().getName() + "\n");
 				}
 			}
 		}
 		catch (Exception ex) {
-			logger.error("Error while asking actions to the strategy manager\n\t- message: " + ex.getMessage() + "\n");
+			logger.error("[DCDispatcher] [tick: " + tick + "] Error while asking actions to the strategy manager\n\t- message: " + ex.getMessage() + "\n");
 		}
 
 	}
