@@ -118,6 +118,7 @@ public class StrategyLoader {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+		System.out.println("\n\n" + this.strategy + "\n\n");
 	}
 
 	//extract only initial state of strategy ()
@@ -155,15 +156,18 @@ public class StrategyLoader {
 
 	//separates case WAIT and TRANSITION and creates StateStrategies for stateset passed
 	private String readStateStrategy(String line) throws IOException {
+		System.out.println(line);
 		StateSet set = readState(line);
 		line = reader.readLine();
 
 		while (line!=null) { //if a state is found, search for lines that represent actions and the clocks referred to them
 
 			if(line.startsWith(MARKER_WAIT)) { //wait action
+				System.out.println(line + "\n\n");
 				for (ClockSet clocks : readClockSets(line)) set.addStateStrategy(new StateStrategy(clocks,new Wait()));
 			}
 			else if(line.startsWith(MARKER_TRANSITION)) { //transition action
+				System.out.println(line + "\n\n");
 				for(ClockSet clocks : readClockSets(line)) set.addStateStrategy(new StateStrategy(clocks,line));
 			}
 			else break; //if not an action, next state to find

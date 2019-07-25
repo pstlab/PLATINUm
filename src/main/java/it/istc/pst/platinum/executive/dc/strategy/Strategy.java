@@ -29,10 +29,12 @@ public class Strategy {
 
 	//returns next strategy step (repeat until wait!!) using plan clock
 	public List<Action> askAllStrategySteps(long plan_clock, Map<String,String> actualState, boolean isPlanClock) throws Exception {
+		System.out.println(expectedState + "plan clock " + plan_clock + "\n\n" + "clock " + this.timelineClocks);
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
 		this.updateClocks(plan_clock-(this.timelineClocks.get("plan")));
-		Action action = askSingleStrategyStep(actualState);
+		Action action = askSingleStrategyStep(expectedState);
+		System.out.println(action + "\n");
 		actions.add(action);
 		while(action.getClass().equals(Transition.class)) {
 			action = askSingleStrategyStep(this.expectedState);
@@ -43,10 +45,11 @@ public class Strategy {
 	
 	//returns next strategy step (repeat until wait!!) using tic
 	public List<Action> askAllStrategySteps(long tic, Map<String,String> actualState) throws Exception {
+		System.out.println(expectedState + "tic " + tic + "\n\n");
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
 		this.updateClocks(tic);
-		Action action = askSingleStrategyStep(actualState);
+		Action action = askSingleStrategyStep(this.expectedState);
 		actions.add(action);
 		while(action.getClass().equals(Transition.class)) {
 			action = askSingleStrategyStep(this.expectedState);
@@ -66,6 +69,7 @@ public class Strategy {
 				return win.getAction();
 			}
 		}
+		
 		throw new Exception();
 	}
 
