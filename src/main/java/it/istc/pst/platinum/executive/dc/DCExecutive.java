@@ -4,7 +4,6 @@ import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.dc.strategy.Strategy;
 import it.istc.pst.platinum.executive.dc.strategy.loader.StrategyLoader;
 import it.istc.pst.platinum.executive.monitor.ConditionCheckingMonitor;
-import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.DispatcherConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.MonitorConfiguration;
@@ -16,7 +15,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.ERROR
 )
 @MonitorConfiguration(
 		monitor = ConditionCheckingMonitor.class

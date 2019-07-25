@@ -10,6 +10,7 @@ import java.util.Set;
 
 import it.istc.pst.platinum.executive.dc.strategy.result.Action;
 import it.istc.pst.platinum.executive.dc.strategy.result.Transition;
+import it.istc.pst.platinum.executive.dc.strategy.result.Wait;
 
 public class Strategy {
 	long horizon;
@@ -28,7 +29,7 @@ public class Strategy {
 	//---------------------------------- METHODS --------------------
 
 	//returns next strategy step (repeat until wait!!) using plan clock
-	public List<Action> askAllStrategySteps(long plan_clock, Map<String,String> actualState, boolean isPlanClock) throws Exception {
+	public List<Action> askAllStrategySteps(long plan_clock, Map<String,String> actualState, boolean isPlanClock) { //throws Exception {
 		System.out.println(expectedState + "plan clock " + plan_clock + "\n\n" + "clock " + this.timelineClocks);
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
@@ -44,7 +45,7 @@ public class Strategy {
 	}
 	
 	//returns next strategy step (repeat until wait!!) using tic
-	public List<Action> askAllStrategySteps(long tic, Map<String,String> actualState) throws Exception {
+	public List<Action> askAllStrategySteps(long tic, Map<String,String> actualState) { // throws Exception {
 		System.out.println(expectedState + "tic " + tic + "\n\n");
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
@@ -59,23 +60,30 @@ public class Strategy {
 	}
 
 	//returns one action predicted for next step
-	private Action askSingleStrategyStep(Map<String, String> actualState) throws Exception {
+	private Action askSingleStrategyStep(Map<String, String> actualState) { // throws Exception {
 		System.out.println(actualState + "\n\n");
-		for(StateSet s : this.states) {
-			if(s.isStateSetStatus(actualState)) { //change in map
-				StateStrategy win = s.searchNextStepStrategy(timelineClocks);
-				this.timelineClocks = win.applyPostConditions(this.timelineClocks, this.horizon);
-				updateExpectedState(win.getAction());
-				return win.getAction();
+		try
+		{
+			for(StateSet s : this.states) {
+				if(s.isStateSetStatus(actualState)) { //change in map
+					StateStrategy win = s.searchNextStepStrategy(timelineClocks);
+					this.timelineClocks = win.applyPostConditions(this.timelineClocks, this.horizon);
+					updateExpectedState(win.getAction());
+					return win.getAction();
+				}
 			}
 		}
+		catch (Exception ex) {
+			System.out.println("Warning: no state or clock found -> return default action WAIT\n");
+		}
 		
-		throw new Exception();
+		// default action
+		return new Wait();
 	}
 
 	//update list of expected states with list of actual states given, resets local clocks if state changed
 	void updateExpectedState(Map<String,String> actualStates) {
-		for(String timeline : actualStates.keySet()) {
+		for(String timeline : actualStates.keySet()) {			
 			if(!this.expectedState.get(timeline).equals(actualStates.get(timeline))) {
 				this.expectedState.put(timeline, actualStates.get(timeline));
 				resetClock(timeline);

@@ -3,8 +3,6 @@ package it.istc.pst.platinum.executive.dc;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.istc.pst.platinum.executive.pdb.ExecutionNode;
-
 /**
  * 
  * @author anacleto
@@ -23,17 +21,11 @@ public class PlanExecutionStatus
 		this.time = time;
 		this.status = new HashMap<>();
 	}
+
 	
-	/**
-	 * 
-	 */
-	public void addTimelineStatus(ExecutionNode node) {
-		// get timeline description
-		String tl = node.getComponent() + "." + node.getTimeline();
-		// get token (ground) signature
-		String signature = node.getGroundSignature();
-		// add entry to the map
-		this.status.put(tl, signature);
+	public void addTimelineStatus(String tl, String token) {
+		// add entry
+		this.status.put(tl, token);
 	}
 	
 	/**
