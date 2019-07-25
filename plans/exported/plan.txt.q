@@ -1,0 +1,1 @@
+control: A<> (pointingmode.finish)

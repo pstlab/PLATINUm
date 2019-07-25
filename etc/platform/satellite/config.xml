@@ -1,0 +1,32 @@
+<platform>
+
+	<agent id="a01" label="PointingMode" type="acting" uncertainty="1">
+
+		<command type="pc">
+			<name>comm</name>
+			<duration>20</duration>
+		</command>
+		
+		<command type="c">
+			<name>slewing</name>
+			<duration>3</duration>
+		</command>
+		
+		<command type="c">
+			<name>science</name>
+			<duration>15</duration>
+		</command>
+		
+		<command type="c">
+			<name>earth</name>
+			<duration>10</duration>
+		</command>
+		
+		<ccommand type="c">
+			<name>maintenance</name>
+			<duration>8</duration>
+		</ccommand>
+		
+	</agent>
+
+</platform>
