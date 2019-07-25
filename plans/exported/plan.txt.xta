@@ -1,0 +1,51 @@
+/*
+Primitive Relations in the input plan:
+R1: pointingmode 0 end_before_start[0,100] pointingmode 2
+R2: pointingmode 2 end_before_start[0,100] pointingmode 5
+
+
+Warning: the end time of the last token of the variable pointingmode should be (100,100).
+Adding an unallcated temporal slot at the end
+
+*/
+
+clock plan_clock, R1_clock, R2_clock;
+const int H = 200;
+
+process pointingmode ()
+{
+clock pointingmode_clock;
+state 
+	start,
+	pointingmode0 { plan_clock <= 67 and pointingmode_clock <= 67 },
+	pointingmode1 { plan_clock <= 70 and pointingmode_clock <= 3 },
+	pointingmode2 { plan_clock <= 81 and pointingmode_clock <= 18 },
+	pointingmode3 { plan_clock <= 84 and pointingmode_clock <= 3 },
+	pointingmode4 { plan_clock <= 85 and pointingmode_clock <= 67 },
+	pointingmode5 { plan_clock <= 100 and pointingmode_clock <= 23 },
+	pointingmode6 { plan_clock <= 100 },
+	finish;
+init start;
+trans
+	start -> pointingmode0 { guard plan_clock==0; },
+	pointingmode0 -> pointingmode1  { guard plan_clock >= 1 and pointingmode_clock >= 1;
+			assign pointingmode_clock := 0,
+			 R1_clock  := H ;  },
+	pointingmode1 -> pointingmode2  { guard plan_clock >= 4 and pointingmode_clock >= 3
+			and  R1_clock  >= H + 0 and  R1_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode2 -> pointingmode3  { guard plan_clock >= 15 and pointingmode_clock >= 11;
+			assign pointingmode_clock := 0,
+			 R2_clock  := H ;  },
+	pointingmode3 -> pointingmode4  { guard plan_clock >= 18 and pointingmode_clock >= 3;
+			assign pointingmode_clock := 0; },
+	pointingmode4 -> pointingmode5  { guard plan_clock >= 19 and pointingmode_clock >= 1
+			and  R2_clock  >= H + 0 and  R2_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode5 -> pointingmode6  { guard plan_clock >= 34 and pointingmode_clock >= 15;
+			assign pointingmode_clock := 0; },
+	pointingmode6 -> finish { guard plan_clock >= 100 and pointingmode_clock >= 0;   }
+	;
+}
+
+system pointingmode;

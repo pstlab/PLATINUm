@@ -19,10 +19,18 @@ public class ClockRelation {
 		String[] split = clockRelation.split(relation);
 		 this.value1 = split[0];
 		 this.value2 = split[1];
-		if(this.value1.contains("_")) this.value1 = this.value1.substring(0,this.value1.indexOf("_"));
-		if(this.value1.contains(".")) this.value1 = this.value1.substring(0,this.value1.indexOf("."));
-		if(this.value2.contains("_")) this.value2 = this.value2.substring(0,this.value2.indexOf("_"));
-		if(this.value2.contains(".")) this.value2 = this.value2.substring(0,this.value2.indexOf("."));
+		this.value1 = cleanString(this.value1);
+		this.value2 = cleanString(this.value2);
+	}
+
+	private String cleanString(String clock) {
+		clock = clock.replace("_clock", "");
+		if(clock.contains(".")) {
+			if(clock.contains("-") && clock.indexOf("-")<clock.indexOf(".")) clock = clock.substring(0,clock.indexOf("."));
+			else if(clock.contains("-") && clock.indexOf(".")<clock.indexOf("-")) clock = clock.substring(clock.indexOf(".")+1,clock.length());
+				else clock = clock.substring(clock.indexOf(".")+1);
+		}
+		return clock;	
 	}
 
 	//---------------------METHODS -----------------------

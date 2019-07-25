@@ -2,36 +2,16 @@ horizon = 100
 plan {
 	timelines {
 		PointingMode {
-			token 0  { Earth [1,17] [1, 17] }
-			token 1  { Slewing [4,20] [3, 3] }
-			token 2  { Science [15,31] [11, 18] }
-			token 3  { Slewing [18,34] [3, 3] }
-			token 4  { Science [29,45] [11, 18] }
-			token 5  { Slewing [32,48] [3, 3] }
-			token 6  { Earth [33,49] [1, 17] }
-			token 7 uncontrollable { _Comm [48,64] [15, 23] }
-			token 8  { Earth [49,65] [1, 17] }
-			token 9 uncontrollable { _Comm [64,80] [15, 23] }
+			token 0  { Earth [1,67] [1, 67] }
+			token 1  { Slewing [4,70] [3, 3] }
+			token 2  { Science [15,81] [11, 18] }
+			token 3  { Slewing [18,84] [3, 3] }
+			token 4  { Earth [19,85] [1, 67] }
+			token 5  { Comm [34,100] [15, 23] }
 		}
 	}
 	relations {
-		PointingMode 2 before [0,100] PointingMode 7
-		PointingMode 4 before [0,100] PointingMode 9
-		PointingMode 7 during [0,100]  [0,100] Window 11
-		PointingMode 9 during [0,100]  [0,100] Window 11
-		PointingMode 0 before [0,100] PointingMode 7
 		PointingMode 0 before [0,100] PointingMode 2
-		PointingMode 4 before [0,100] PointingMode 7
-		PointingMode 7 before [0,100] PointingMode 9
-		PointingMode 2 before [0,100] PointingMode 4
-	}
-}
-observation {
-	timelines {
-		Window {
-			token 10  { NotVisible [10,10] [10, 10] }
-			token 11  { Visible [80,80] [70, 70] }
-			token 12  { NotVisible [100,100] [20, 20] }
-		}
+		PointingMode 2 before [0,100] PointingMode 5
 	}
 }
