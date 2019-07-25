@@ -34,7 +34,7 @@ DOMAIN ACTA_SATELLITE
 		} 
 	}
 	
-<<<<<<< HEAD
+
 //	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (Visible(), NotVisible())
 //	{
 //		VALUE Visible() [1, +INF]
@@ -50,11 +50,6 @@ DOMAIN ACTA_SATELLITE
 	
 	COMPONENT PointingMode {FLEXIBLE pm(trex_internal_dispatch_asap)} : PointingModeType;
 //	COMPONENT Window {FLEXIBLE channel(uncontrollable)} : GroundStationVisibilityType;
-=======
-	
-	
-	COMPONENT PointingMode {FLEXIBLE pm(trex_internal_dispatch_asap)} : PointingModeType;
->>>>>>> 5da96feb219c840067d6abbefbdb936813aa0491
 		
 	SYNCHRONIZE PointingMode.pm
 	{
@@ -64,7 +59,6 @@ DOMAIN ACTA_SATELLITE
 			
 			BEFORE [0, +INF] cd0; 
 		}
-<<<<<<< HEAD
 		
 //		VALUE _Comm()
 //		{
@@ -72,7 +66,6 @@ DOMAIN ACTA_SATELLITE
 //			
 //			DURING [0, +INF] [0, +INF] cd0;
 //		}
-=======
->>>>>>> 5da96feb219c840067d6abbefbdb936813aa0491
+
 	}
 }
