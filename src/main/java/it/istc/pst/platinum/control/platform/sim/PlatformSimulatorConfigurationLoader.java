@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.control.platform.hrc;
+package it.istc.pst.platinum.control.platform.sim;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,17 +24,17 @@ import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
  * @author alessandroumbrico
  *
  */
-public class HRCPlatformSimulatorConfigurationLoader 
+public class PlatformSimulatorConfigurationLoader 
 {
 	private String xmlFilePath;							// configuration file path
-	private HRCPlatformSimulator simulator;				// HRC platform simulator
+	private PlatformSimulator simulator;				// HRC platform simulator
 	
 	/**
 	 * 
 	 * @param simulator
 	 * @param path
 	 */
-	protected HRCPlatformSimulatorConfigurationLoader(HRCPlatformSimulator simulator, String path) {
+	protected PlatformSimulatorConfigurationLoader(PlatformSimulator simulator, String path) {
 		this.simulator = simulator;
 		this.xmlFilePath = path;
 	}
@@ -78,7 +78,7 @@ public class HRCPlatformSimulatorConfigurationLoader
 					String uncertainty = el.getAttribute("uncertainty");
 					
 					// create agent
-					HRCPlatformAgent agent = new HRCPlatformAgent(id, label, Long.parseLong(uncertainty));
+					PlatformAgent agent = new PlatformAgent(id, label, Long.parseLong(uncertainty));
 					
 					// parse agent commands
 					XPath cmdXpath = XPathFactory.newInstance().newXPath();

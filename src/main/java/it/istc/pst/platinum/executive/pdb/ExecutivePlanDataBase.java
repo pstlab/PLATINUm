@@ -167,6 +167,10 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 			// check time-lines
 			for (TimelineProtocolDescriptor tl : plan.getTimelines()) 
 			{
+				// setup node arrays
+				ExecutionNode[] list = new ExecutionNode[tl.getTokens().size()];
+				// list index
+				int counter = 0;
 				// create an execution node for each token
 				for (TokenProtocolDescriptor token : tl.getTokens()) 
 				{
@@ -232,13 +236,48 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 						this.addNode(node);
 						// add entry to the dictionary
 						dictionary.put(token, node);
+						
+						// add node to list
+						list[counter] = node;
+						counter++;
 					}
 				}
+				
+				// link subsequent nodes
+				for (int pos = 0; pos < list.length; pos++)
+				{
+					// check first node
+					if (pos == 0) {
+						// first node of the timeline
+						ExecutionNode first = list[pos];
+						// set next node
+						first.setNext(list[pos+1]);
+					}
+					else if (pos == list.length - 1) {
+						// last node of the timeline
+						ExecutionNode last = list[pos];
+						// set previous ndoe
+						last.setPrev(list[pos-1]);
+					}
+					else {
+						// intermediate node
+						ExecutionNode i = list[pos];
+						// set prev
+						i.setPrev(list[pos-1]);
+						// set next
+						i.setNext(list[pos+1]);
+					}
+				}
+				
 			}
 			
 			// check observations
 			for (TimelineProtocolDescriptor tl : plan.getObservations()) 
 			{
+				// setup node arrays
+				ExecutionNode[] list = new ExecutionNode[tl.getTokens().size()];
+				// list index
+				int counter = 0;
 				// create an execution node for each token
 				for (TokenProtocolDescriptor token : tl.getTokens()) 
 				{
@@ -305,6 +344,37 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 						this.addNode(node);
 						// add entry to the dictionary
 						dictionary.put(token, node);
+						
+						// add node to list
+						list[counter] = node;
+						counter++;
+					}
+					
+				}
+				
+				// link subsequent nodes
+				for (int pos = 0; pos < list.length; pos++)
+				{
+					// check first node
+					if (pos == 0) {
+						// first node of the timeline
+						ExecutionNode first = list[pos];
+						// set next node
+						first.setNext(list[pos+1]);
+					}
+					else if (pos == list.length - 1) {
+						// last node of the timeline
+						ExecutionNode last = list[pos];
+						// set previous ndoe
+						last.setPrev(list[pos-1]);
+					}
+					else {
+						// intermediate node
+						ExecutionNode i = list[pos];
+						// set prev
+						i.setPrev(list[pos-1]);
+						// set next
+						i.setNext(list[pos+1]);
 					}
 				}
 			}

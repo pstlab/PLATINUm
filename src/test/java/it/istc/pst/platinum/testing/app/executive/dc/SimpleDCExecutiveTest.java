@@ -1,16 +1,12 @@
 package it.istc.pst.platinum.testing.app.executive.dc;
 
+import it.istc.pst.platinum.control.acting.GoalOrientedActingAgent;
+import it.istc.pst.platinum.control.lang.AgentTaskDescription;
+import it.istc.pst.platinum.control.lang.TokenDescription;
+import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.deliberative.Planner;
-import it.istc.pst.platinum.deliberative.PlannerBuilder;
-import it.istc.pst.platinum.executive.Executive;
-import it.istc.pst.platinum.executive.ExecutiveBuilder;
 import it.istc.pst.platinum.executive.dc.DCExecutive;
-import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
-import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.ProblemInitializationException;
-import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 
 /**
  * 
@@ -19,9 +15,6 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
  */
 public class SimpleDCExecutiveTest 
 {
-	private static final String DDL = "domains/satellite/acta/satellite.ddl";
-	private static final String PDL = "domains/satellite/acta/satellite.pdl";
-
 	/**
 	 * 
 	 * @param args
@@ -30,33 +23,82 @@ public class SimpleDCExecutiveTest
 	{
 		try 
 		{
-			// create plan database
-			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(DDL, PDL);
-			// create planner
-			Planner planner = PlannerBuilder.createAndSet(pdb);
-			// start deliberative process 
-			SolutionPlan plan = planner.plan();
-			System.out.println();
-			System.out.println("... solution found after " + plan.getSolvingTime() + " msecs\n");
-			System.out.println(plan);
-			System.out.println();
+			// create goal oriented agent
+			GoalOrientedActingAgent agent = new GoalOrientedActingAgent(Planner.class, DCExecutive.class);
+			agent.start();
+			System.out.println("Starting agent...");
 			
-			// display solution plan
-			planner.display();
+			// crate satellite platform simulator
+			PlatformSimulator simulator = PlatformProxyBuilder.build(
+					PlatformSimulator.class,
+					"etc/platform/satellite/config.xml");
+			// start simulator
+			simulator.start();
 			
-			// build executive plan database
-			Executive exec = ExecutiveBuilder.createAndSet(DCExecutive.class, pdb.getOrigin(), pdb.getHorizon());
-			// export solution plan
-			exec.initialize(plan.export());
-			// start executing the plan
-			exec.execute();
+			// initialize the agent
+			agent.initialize(
+					simulator, 
+					"domains/satellite/acta/satellite.ddl");
+			
+			// create task description
+			AgentTaskDescription task = createTaskDescription();
+			// buffer task description
+			agent.buffer(task);
+			
+			
+			// build the plan database
+//			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(
+//					"domains/satellite/acta/satellite.ddl",
+//					"domains/satellite/acta/satellite.pdl");
+//			// initialize a planning instance of the plan database
+//			Planner planner = PlannerBuilder.createAndSet(pdb);
+//			// plan 
+//			SolutionPlan plan = planner.plan();
+//			// display solution plan
+//			planner.display();
+//			// export plan 
+//			PlanProtocolDescriptor exported = plan.export();
+//			System.out.println("Plan to execute:\n\n" + exported + "\n");
+//			
+//
+//			// build executive plan database
+//			Executive exec = ExecutiveBuilder.createAndSet(
+//					DCExecutive.class, 
+//					pdb.getOrigin(), 
+//					pdb.getHorizon());
+//			
+//			// export solution plan
+//			exec.initialize(exported);
+//			// start executing the plan
+//			exec.execute();
+			
 		}
-		catch (SynchronizationCycleException  | ProblemInitializationException | NoSolutionFoundException ex) {
+		catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-		catch (InterruptedException ex) {
-			System.err.println(ex.getMessage());
-		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private static AgentTaskDescription createTaskDescription() 
+	{
+		// create task description
+		AgentTaskDescription description = new AgentTaskDescription();
+		description.addFactDescription(new TokenDescription(
+				"PointingMode", 
+				"Earth", 
+				new String[] {}, 
+				new long[] {0, 0}, 
+				new long[] {0, 100}, 
+				new long[] {1, 100}));
 		
+		description.addGoalDescription(new TokenDescription(
+				"PointingMode", 
+				"Science"));
+		
+		// get task description
+		return description;
 	}
 }

@@ -1,11 +1,11 @@
-package it.istc.pst.platinum.control.platform.hrc;
+package it.istc.pst.platinum.control.platform.sim;
 
 /**
  * 
  * @author anacleto
  *
  */
-public enum HRCPlatformAgentStatus 
+public enum PlatformAgentStatus 
 {
 	/**
 	 * 

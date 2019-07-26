@@ -42,6 +42,7 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 		synchronized (this.observations) {
 			// add received feedback
 			this.observations.add(feedback);
+			this.observations.notifyAll();
 		}
 	}
 	
@@ -61,6 +62,8 @@ public abstract class Monitor<T extends Executive> extends ExecutiveObject
 			Collections.sort(list);
 			// clear observation queue
 			this.observations.clear();
+			// notify
+			this.observations.notifyAll();
 		}
 		
 		// get received observations

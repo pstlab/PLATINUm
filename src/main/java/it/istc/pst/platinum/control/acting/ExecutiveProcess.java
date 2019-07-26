@@ -26,14 +26,17 @@ public class ExecutiveProcess implements Runnable
 {
 	private GoalOrientedActingAgent agent;
 	private PlatformProxy simulator;
+	private Class<? extends Executive> eClass;
 	
 	/**
 	 * 
+	 * @param eClass
 	 * @param agent
 	 */
-	protected ExecutiveProcess(GoalOrientedActingAgent agent) {
+	protected ExecutiveProcess(Class<? extends Executive> eClass, GoalOrientedActingAgent agent) {
 		this.agent = agent;
 		this.simulator = null;
+		this.eClass = eClass;
 	}
 	
 	/**
@@ -92,7 +95,7 @@ public class ExecutiveProcess implements Runnable
 		// get solution plan 
 		SolutionPlan plan = goal.getPlan();
 		// build executive
-		Executive exec = ExecutiveBuilder.createAndSet(0, plan.getHorizon());
+		Executive exec = ExecutiveBuilder.createAndSet(this.eClass, 0, plan.getHorizon());
 		// export plan 
 		PlanProtocolDescriptor desc = plan.export();
 		System.out.println("\n\nREADY TO EXECUTE PLAN:\n" + desc + "\n\n");

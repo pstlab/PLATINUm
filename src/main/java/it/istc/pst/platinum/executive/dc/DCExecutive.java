@@ -3,7 +3,6 @@ package it.istc.pst.platinum.executive.dc;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.dc.strategy.Strategy;
 import it.istc.pst.platinum.executive.dc.strategy.loader.StrategyLoader;
-import it.istc.pst.platinum.executive.monitor.ConditionCheckingMonitor;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.DispatcherConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.MonitorConfiguration;
@@ -15,10 +14,10 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.ERROR
+		level = FrameworkLoggingLevel.DEBUG
 )
 @MonitorConfiguration(
-		monitor = ConditionCheckingMonitor.class
+		monitor = DCMonitor.class
 )
 @DispatcherConfiguration(
 		dispatcher = DCDispatcher.class
@@ -44,11 +43,6 @@ public class DCExecutive extends Executive
 		{
 			// export plan to a file according to the expected encoding
 			String path = this.pdb.export();
-			
-			/*
-			 * TODO - VERIFICARE CREAZIONE LOADER 
-			 */
-			
 			// load strategy manager
 			StrategyLoader loader = new StrategyLoader(path, this.pdb.getHorizon());
 			// read computed strategy

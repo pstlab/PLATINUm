@@ -6,12 +6,12 @@ process pointingmode ()
 clock pointingmode_clock;
 state 
 	start,
-	pointingmode0 { plan_clock <= 67 and pointingmode_clock <= 67 },
-	pointingmode1 { plan_clock <= 70 and pointingmode_clock <= 3 },
-	pointingmode2 { plan_clock <= 81 and pointingmode_clock <= 18 },
+	pointingmode0 { plan_clock <= 68 and pointingmode_clock <= 68 },
+	pointingmode1 { plan_clock <= 71 and pointingmode_clock <= 3 },
+	pointingmode2 { plan_clock <= 81 and pointingmode_clock <= 20 },
 	pointingmode3 { plan_clock <= 84 and pointingmode_clock <= 3 },
-	pointingmode4 { plan_clock <= 85 and pointingmode_clock <= 67 },
-	pointingmode5 { plan_clock <= 100 and pointingmode_clock <= 23 },
+	pointingmode4 { plan_clock <= 85 and pointingmode_clock <= 68 },
+	pointingmode5 { plan_clock <= 100 and pointingmode_clock <= 25 },
 	pointingmode6 { plan_clock <= 100 },
 	finish;
 init start;
@@ -23,15 +23,15 @@ trans
 	pointingmode1 -> pointingmode2  { guard plan_clock >= 4 and pointingmode_clock >= 3
 			and  R1_clock  >= H + 0 and  R1_clock  <= H + 100;
 		    assign pointingmode_clock := 0; },
-	pointingmode2 -> pointingmode3  { guard plan_clock >= 15 and pointingmode_clock >= 11;
+	pointingmode2 -> pointingmode3  { guard plan_clock >= 14 and pointingmode_clock >= 10;
 			assign pointingmode_clock := 0,
 			 R2_clock  := H ;  },
-	pointingmode3 -> pointingmode4  { guard plan_clock >= 18 and pointingmode_clock >= 3;
+	pointingmode3 -> pointingmode4  { guard plan_clock >= 17 and pointingmode_clock >= 3;
 			assign pointingmode_clock := 0; },
-	pointingmode4 -> pointingmode5  { guard plan_clock >= 19 and pointingmode_clock >= 1
+	pointingmode4 -> pointingmode5  { guard plan_clock >= 18 and pointingmode_clock >= 1
 			and  R2_clock  >= H + 0 and  R2_clock  <= H + 100;
 		    assign pointingmode_clock := 0; },
-	pointingmode5 -> pointingmode6  { guard plan_clock >= 34 and pointingmode_clock >= 15;
+	pointingmode5 -u-> pointingmode6  { guard plan_clock >= 33 and pointingmode_clock >= 15;
 			assign pointingmode_clock := 0; },
 	pointingmode6 -> finish { guard plan_clock >= 100 and pointingmode_clock >= 0;   }
 	;

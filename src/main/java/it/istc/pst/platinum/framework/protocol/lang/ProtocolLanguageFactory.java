@@ -12,31 +12,21 @@ import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolLan
  */
 public class ProtocolLanguageFactory 
 {
-	private static ProtocolLanguageFactory INSTANCE = null;
-	private static int TOKEN_ID_COUNTER = 0;
-	private static int TOKEN_PARAMETER_ID_COUNTER = 0;
-	private static int TIMELINE_ID_COUNTER = 0;
+	private int tokenIdCounter;
+	private int tokenParameterIdCounter;
+	private int timelineIdCounter;
 	private RelationProtocolLanguageFactory relFactory;
 	
 	/**
 	 * Private Factory instance constructor
 	 */
-	private ProtocolLanguageFactory(long horizon) {
-		this.relFactory = RelationProtocolLanguageFactory.getSingletonInstance(horizon);
+	public ProtocolLanguageFactory(long horizon) {
+		this.tokenIdCounter = 0;
+		this.tokenParameterIdCounter = 0;
+		this.timelineIdCounter = 0;
+		this.relFactory = new RelationProtocolLanguageFactory(horizon);
 	}
 	
-	/**
-	 * 
-	 * @param horizon
-	 * @return
-	 */
-	public static ProtocolLanguageFactory getSingletonInstance(long horizon) {
-		if (INSTANCE == null) {
-			INSTANCE = new ProtocolLanguageFactory(horizon);
-		}
-		
-		return INSTANCE;
-	}
 
 	/**
 	 * 
@@ -57,7 +47,7 @@ public class ProtocolLanguageFactory
 			String[] paramNames, ParameterTypeDescriptor[] paramTypes, long[][] paramBounds, String[][] paramValues, ExecutionNodeStatus status) 
 	{
 		// initialize token
-		TokenProtocolDescriptor token = new TokenProtocolDescriptor(getNextTokenId(), timeline, predicate, status);
+		TokenProtocolDescriptor token = new TokenProtocolDescriptor(this.getNextTokenId(), timeline, predicate, status);
 		
 		
 		// set temporal information
@@ -102,7 +92,7 @@ public class ProtocolLanguageFactory
 			long[] startTimeBounds, long[] endTimeBounds, long[] durationBounds) 
 	{
 		// initialize descriptor
-		UnallocatedTokenDescription token = new UnallocatedTokenDescription(getNextTokenId(), timeline);
+		UnallocatedTokenDescription token = new UnallocatedTokenDescription(this.getNextTokenId(), timeline);
 		// set temporal information
 		token.setTemporalInformation(startTimeBounds, endTimeBounds, durationBounds);
 		// get token
@@ -161,23 +151,23 @@ public class ProtocolLanguageFactory
 	 * 
 	 * @return
 	 */
-	protected static synchronized int getNextTokenId() {
-		return TOKEN_ID_COUNTER++;
+	protected synchronized int getNextTokenId() {
+		return this.tokenIdCounter++;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	protected static synchronized int getNextParameterId() {
-		return TOKEN_PARAMETER_ID_COUNTER++;
+	protected synchronized int getNextParameterId() {
+		return this.tokenParameterIdCounter++;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	protected static synchronized int getNextTimelineId() {
-		return TIMELINE_ID_COUNTER++;
+	protected synchronized int getNextTimelineId() {
+		return this.timelineIdCounter++;
 	}
 }

@@ -1,6 +1,6 @@
 <platform>
 
-	<agent id="a01" label="PointingMode" type="acting" uncertainty="1">
+	<agent id="a01" label="PointingMode" type="acting" uncertainty="3">
 
 		<command type="pc">
 			<name>comm</name>
@@ -17,12 +17,7 @@
 			<duration>15</duration>
 		</command>
 		
-		<command type="c">
-			<name>earth</name>
-			<duration>10</duration>
-		</command>
-		
-		<ccommand type="c">
+		<ccommand type="pc">
 			<name>maintenance</name>
 			<duration>8</duration>
 		</ccommand>

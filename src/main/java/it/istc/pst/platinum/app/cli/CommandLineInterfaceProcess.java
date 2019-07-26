@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
-import it.istc.pst.platinum.control.platform.hrc.HRCPlatformSimulator;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.domain.component.Token;
@@ -25,7 +25,7 @@ import it.istc.pst.platinum.framework.protocol.query.get.GetSingleFlexibleTimeli
 public class CommandLineInterfaceProcess extends AbstractCommandLineInterface implements Runnable
 {
 	private static final String HRC_PLATFORM_PROXY_CONFIG_FILE_PATH = "etc/platform/hrc/cfg.xml";
-	private static final Class<HRCPlatformSimulator> HRC_PLATFORM_PROXY_CLASS = HRCPlatformSimulator.class;
+	private static final Class<PlatformSimulator> HRC_PLATFORM_PROXY_CLASS = PlatformSimulator.class;
 	private static final String CLI_PROMPT = "epsl-agent$ ";		// KEEN-compliant CLI prompt - do not change
 	private static final long HORIZON = Long.MAX_VALUE - 1;			// default horizon
 	

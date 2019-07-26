@@ -90,11 +90,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				String tokenName = s.getToken();
 				// name of the timeline
 				String tlName = s.getTimeline();
-				
-				/*
-				 * TODO - ESTRARRE NODO DEL PIANO DA ESEGUIRE 
-				 */
-				
+				// transition action
 				logger.debug("[DCDispatcher] [tick: " + tick + "] Transition action:\n"
 						+ "- Source state of transition\n\t- timelineName= " + t.getTransitionFrom().getTimeline() + "\n\t- tokenName= " + t.getTransitionFrom().getToken() + "\n"
 						+ "- Target state of transition\n\t- timelineName= " + tlName + "\n\t- tokenName= " + tokenName);
@@ -125,12 +121,18 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				{
 					try
 					{
-						// dispatch the command through the executive if needed
-						this.executive.sendStartCommandSignalToPlatform(node);
 						// schedule token start time
 						this.executive.scheduleTokenStart(node, tau);
+						// check schedule
+						this.executive.checkSchedule(node);
+						// update the status of the previous node if any
+						ExecutionNode prev = node.getPrev();
+						if (prev != null) {
+							// update status to executed
+							this.executive.updateNode(prev, ExecutionNodeStatus.EXECUTED);
+						}
 						// start node execution
-						logger.info("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start executing node at time: " + tau + "\n"
+						logger.info("[DCDispatcher] [tick: " + tick + "] [tau: " + tau + "] -> Start executing node at time: " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {

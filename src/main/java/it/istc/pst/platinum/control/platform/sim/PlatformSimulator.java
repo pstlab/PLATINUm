@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.control.platform.hrc;
+package it.istc.pst.platinum.control.platform.sim;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,17 +18,17 @@ import it.istc.pst.platinum.executive.pdb.ExecutionNode;
  * @author anacleto
  *
  */
-public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPlatformAgentObserver 
+public class PlatformSimulator extends RunnablePlatformProxy implements PlatformAgentObserver 
 {
 	private static final String DEFAULT_CFG_FILE_PATH = "etc/platform/hrc/config.xml";	// default configuration file
-	private Map<String, HRCPlatformAgent> index;										// index agents by commands they can execute
-	private List<HRCPlatformAgent> agents;												// list of registered agents
+	private Map<String, PlatformAgent> index;										// index agents by commands they can execute
+	private List<PlatformAgent> agents;												// list of registered agents
 	protected Map<ExecutionNode, PlatformCommand> trace;								// cache of executed commands
 	
 	/**
 	 * 
 	 */
-	protected HRCPlatformSimulator() {
+	protected PlatformSimulator() {
 		super();
 		// initialize data structures
 		this.index = new HashMap<>();
@@ -55,7 +55,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 			throws PlatformException 
 	{
 		// create configuration loader
-		HRCPlatformSimulatorConfigurationLoader loader = new HRCPlatformSimulatorConfigurationLoader(this, cfgFile);
+		PlatformSimulatorConfigurationLoader loader = new PlatformSimulatorConfigurationLoader(this, cfgFile);
 		// load configuration
 		loader.load();
 	}
@@ -64,7 +64,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 	 * 
 	 * @param agent
 	 */
-	public void add(HRCPlatformAgent agent) {
+	public void add(PlatformAgent agent) {
 		// add the agent to the platform
 		this.agents.add(agent);
 		// index the agent 
@@ -81,7 +81,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 	 * 
 	 * @param agent
 	 */
-	public void remove(HRCPlatformAgent agent) {
+	public void remove(PlatformAgent agent) {
 		// stop observing the agent
 		agent.unregister(this);
 		// remove the agent from the platform
@@ -148,7 +148,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 		}
 		
 		// get the simulator that can handle the execution of this command
-		HRCPlatformAgent agent = this.index.get(name);
+		PlatformAgent agent = this.index.get(name);
 		// get associated command description 
 		PlatformCommandDescription desc = agent.getCommandDescription(name);
 		if (desc == null) {
@@ -193,7 +193,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 		}
 		
 		// get the simulator that can handle the execution of this command
-		HRCPlatformAgent agent = this.index.get(name);
+		PlatformAgent agent = this.index.get(name);
 		// get associated command description 
 		PlatformCommandDescription desc = agent.getCommandDescription(name);
 		if (desc == null) {
@@ -234,7 +234,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 			// get associated command
 			PlatformCommand cmd = this.trace.get(node);
 			// get the agent 
-			HRCPlatformAgent agent = this.index.get(cmd.getName());
+			PlatformAgent agent = this.index.get(cmd.getName());
 			// ask the agent to stop the execution of the command
 			agent.stopCommand();
 		}
@@ -287,11 +287,11 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 			throws PlatformException
 	{
 		// list of started agents
-		List<HRCPlatformAgent> started = new ArrayList<>();
+		List<PlatformAgent> started = new ArrayList<>();
 		try
 		{
 			// start simulator agents
-			for (HRCPlatformAgent agent : this.agents) {
+			for (PlatformAgent agent : this.agents) {
 				// start agent
 				agent.start();
 				started.add(agent);
@@ -300,7 +300,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 		catch (InterruptedException ex) 
 		{
 			// stop started agents
-			for (HRCPlatformAgent agent : started) 
+			for (PlatformAgent agent : started) 
 			{
 				try
 				{
@@ -322,7 +322,7 @@ public class HRCPlatformSimulator extends RunnablePlatformProxy implements HRCPl
 			throws PlatformException
 	{
 		// stop agents
-		for (HRCPlatformAgent agent : this.agents) 
+		for (PlatformAgent agent : this.agents) 
 		{
 			try
 			{

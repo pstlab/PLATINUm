@@ -259,14 +259,15 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		this.pdb.checkSchedule(node);
 	}
 	
-	/**
+	/***
 	 * 
 	 * @param node
 	 * @param start
 	 * @throws TemporalConstraintPropagationException
+	 * @throws PlatformException
 	 */
 	public void scheduleTokenStart(ExecutionNode node, long start) 
-			throws TemporalConstraintPropagationException 
+			throws TemporalConstraintPropagationException, PlatformException 
 	{
 		// check controllability type
 		ControllabilityType type = node.getControllabilityType();
@@ -284,16 +285,21 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			case CONTROLLABLE : 
 			{
 				// check if virtual node
-				if (!node.isVirtual()) {
+//				if (!node.isVirtual()) {
 					// actually schedule the start time of the token
 					this.pdb.scheduleStartTime(node, start);
-				}
+					
+//				}
 				
 				// update node status
 				this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 			}
 			break;
 		}
+		
+		
+		// dispatch the command through the executive if needed
+		this.sendStartCommandSignalToPlatform(node);
 	}
 	
 	/**
@@ -322,10 +328,12 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			throws TemporalConstraintPropagationException, PlatformException
 	{
 		// check if not virtual
-		if (!node.isVirtual()) {
+//		if (!node.isVirtual()) {
+			
 			// propagate scheduled duration time
 			this.pdb.scheduleDuration(node, duration);
-		}
+			
+//		}
 		
 		// the node can be considered as executed
 		this.updateNode(node, ExecutionNodeStatus.EXECUTED);

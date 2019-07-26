@@ -16,13 +16,16 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 public class DeliberativeProcess implements Runnable 
 {
 	private GoalOrientedActingAgent agent;
+	private Class<? extends Planner> pClass;
 	
 	/**
 	 * 
+	 * @param pClass
 	 * @param agent
 	 */
-	protected DeliberativeProcess(GoalOrientedActingAgent agent) {
+	protected DeliberativeProcess(Class<? extends Planner> pClass, GoalOrientedActingAgent agent) {
 		this.agent = agent;
+		this.pClass = pClass;
 	}
 	
 	/**
@@ -65,7 +68,7 @@ public class DeliberativeProcess implements Runnable
 			throws NoSolutionFoundException 
 	{
 		// setup planner on the current status of the plan database
-		Planner planner = PlannerBuilder.createAndSet(pdb);
+		Planner planner = PlannerBuilder.createAndSet(this.pClass, pdb);
 		// start planning 
 		SolutionPlan plan = planner.plan();
 		// get plan found

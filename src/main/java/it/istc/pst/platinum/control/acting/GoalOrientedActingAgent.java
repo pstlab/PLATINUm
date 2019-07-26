@@ -12,6 +12,8 @@ import it.istc.pst.platinum.control.lang.GoalStatus;
 import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.PlatformProxy;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.deliberative.Planner;
+import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.PlanRepairInformation;
 import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
@@ -47,10 +49,14 @@ public class GoalOrientedActingAgent
 	
 	private List<Thread> processes;							// goal oriented processes
 	private DeliberativeProcess deliberative;				// internal deliberative process
+	private Class<? extends Planner> pClass;				// planner class
+	
 	private ExecutiveProcess executive;						// internal executive process
 	private ContingencyHandlerProcess contingencyHandler;	// internal contingency handler process
+	private Class<? extends Executive> eClass;				// executive class
 	
 	private PlatformProxy proxy;
+	
 	
 	/**
 	 * 
@@ -69,6 +75,48 @@ public class GoalOrientedActingAgent
 		
 		// initialize internal plan database representation
 		this.pdb = null;
+
+		// set default planner class
+		this.pClass = Planner.class;
+		this.eClass = Executive.class;
+		
+		// setup deliberative and executive processes
+		this.setupProcesses();
+	}
+	
+	/**
+	 * 
+	 * @param pClass
+	 * @param eClass
+	 */
+	public GoalOrientedActingAgent(Class<? extends Planner> pClass, Class<? extends Executive> eClass)
+	{
+		// initialize lock and status
+		this.lock = new Object(); 
+		this.status = ActingAgentStatus.OFFLINE;
+		// initialize goal buffer
+		this.queue = new HashMap<>();
+		// initialize goal queue
+		for (GoalStatus s : GoalStatus.values()) {
+			this.queue.put(s, new LinkedList<>());
+		}
+		
+		// initialize internal plan database representation
+		this.pdb = null;
+
+		// set default planner class
+		this.pClass = pClass;
+		this.eClass = eClass;
+		
+		// setup deliberative and executive processes
+		this.setupProcesses();
+	}
+	
+	/**
+	 * 
+	 */
+	private void setupProcesses() 
+	{
 		// initialize the list of processes
 		this.processes = new ArrayList<>();
 		// initialize goal listener thread
@@ -97,12 +145,13 @@ public class GoalOrientedActingAgent
 			}
 		}));
 		
+		
 		// initialize goal deliberative
-		this.deliberative = new DeliberativeProcess(this);
+		this.deliberative = new DeliberativeProcess(this.pClass, this);
 		this.processes.add(new Thread(this.deliberative));
 	
 		// initialize goal executive
-		this.executive = new ExecutiveProcess(this);
+		this.executive = new ExecutiveProcess(this.eClass, this);
 		this.processes.add(new Thread(this.executive));
 	
 		// initialize goal failure handler
@@ -110,8 +159,9 @@ public class GoalOrientedActingAgent
 		this.processes.add(new Thread(this.contingencyHandler));
 		
 		// initialize proxy reference
-		this.proxy = null;
+		this.proxy = null;	
 	}
+	
 	
 	/**
 	 * 

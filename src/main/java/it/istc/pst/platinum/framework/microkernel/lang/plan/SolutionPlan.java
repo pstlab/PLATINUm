@@ -229,7 +229,7 @@ public class SolutionPlan
 	protected PlanProtocolDescriptor generatePlanDescriptor() 
 	{
 		// get language factory
-		ProtocolLanguageFactory factory = ProtocolLanguageFactory.getSingletonInstance(this.horizion);
+		ProtocolLanguageFactory factory = new ProtocolLanguageFactory(this.horizion);
 		
 		// create plan descriptor
 		PlanProtocolDescriptor plan = factory.createPlanDescriptor(0, this.horizion);

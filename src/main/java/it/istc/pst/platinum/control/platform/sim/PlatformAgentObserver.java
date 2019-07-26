@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.control.platform.hrc;
+package it.istc.pst.platinum.control.platform.sim;
 
 import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
 
@@ -7,7 +7,7 @@ import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
  * @author anacleto
  *
  */
-public interface HRCPlatformAgentObserver 
+public interface PlatformAgentObserver 
 {
 
 	/**

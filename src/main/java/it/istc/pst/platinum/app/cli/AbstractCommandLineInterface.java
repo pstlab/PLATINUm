@@ -39,7 +39,7 @@ public abstract class AbstractCommandLineInterface
 	 */
 	protected AbstractCommandLineInterface(long horizon) 
 	{
-		this.langFactory = ProtocolLanguageFactory.getSingletonInstance(horizon);
+		this.langFactory =  new ProtocolLanguageFactory(horizon);
 		this.queryFactory = ProtocolQueryFactory.getSingletonInstance();
 		this.currentSolution = null;
 		this.planner = null;

@@ -11,8 +11,8 @@ import it.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
-import it.istc.pst.platinum.control.platform.hrc.HRCPlatformSimulator;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 
 /**
@@ -22,7 +22,7 @@ import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleEx
  */
 public class AIJFbTActingExperimentManager extends AIJFbT 
 {
-	private static final Class<HRCPlatformSimulator> HRC_PLATFORM_SIMULATOR_CLASS = HRCPlatformSimulator.class;
+	private static final Class<PlatformSimulator> HRC_PLATFORM_SIMULATOR_CLASS = PlatformSimulator.class;
 	
 	/**
 	 * 
@@ -132,7 +132,7 @@ public class AIJFbTActingExperimentManager extends AIJFbT
 					System.out.println("Starting agent...");
 					
 					// configuration loader
-					HRCPlatformSimulator simulator = PlatformProxyBuilder.build(
+					PlatformSimulator simulator = PlatformProxyBuilder.build(
 							HRC_PLATFORM_SIMULATOR_CLASS,
 							PLATFORM_CFG_FOLDER + "/AIJ_EXP_PLATFORM_CONFIG_U" + platformUncertainty + ".xml");
 					// start simulator

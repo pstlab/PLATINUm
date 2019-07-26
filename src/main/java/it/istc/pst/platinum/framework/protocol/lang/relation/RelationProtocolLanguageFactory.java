@@ -9,29 +9,16 @@ import it.istc.pst.platinum.framework.protocol.lang.TokenProtocolDescriptor;
  */
 public class RelationProtocolLanguageFactory 
 {
-	private static RelationProtocolLanguageFactory INSTANCE = null;
 	private long horizon;
 	
 	/**
 	 * 
 	 * @param horizon
 	 */
-	private RelationProtocolLanguageFactory(long horizon) {
+	public RelationProtocolLanguageFactory(long horizon) {
 		this.horizon = horizon;
 	}
-	
-	/**
-	 * 
-	 * @param horizon
-	 * @return
-	 */
-	public static RelationProtocolLanguageFactory getSingletonInstance(long horizon) {
-		if (INSTANCE == null) {
-			INSTANCE = new RelationProtocolLanguageFactory(horizon);
-		}
-		return INSTANCE;
-	}
-	
+
 	/**
 	 * 
 	 * @param type

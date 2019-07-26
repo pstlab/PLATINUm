@@ -2,12 +2,12 @@ horizon = 100
 plan {
 	timelines {
 		PointingMode {
-			token 0  { Earth [1,67] [1, 67] }
-			token 1  { Slewing [4,70] [3, 3] }
-			token 2  { Science [15,81] [11, 18] }
-			token 3  { Slewing [18,84] [3, 3] }
-			token 4  { Earth [19,85] [1, 67] }
-			token 5  { Comm [34,100] [15, 23] }
+			token 0  { Earth [1,68] [1, 68] }
+			token 1  { Slewing [4,71] [3, 3] }
+			token 2  { Science [14,81] [10, 20] }
+			token 3  { Slewing [17,84] [3, 3] }
+			token 4  { Earth [18,85] [1, 68] }
+			token 5 uncontrollable { _Comm [33,100] [15, 25] }
 		}
 	}
 	relations {
