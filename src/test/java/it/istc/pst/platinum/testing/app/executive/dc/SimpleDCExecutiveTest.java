@@ -44,33 +44,7 @@ public class SimpleDCExecutiveTest
 			AgentTaskDescription task = createTaskDescription();
 			// buffer task description
 			agent.buffer(task);
-			
-			
-			// build the plan database
-//			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(
-//					"domains/satellite/acta/satellite.ddl",
-//					"domains/satellite/acta/satellite.pdl");
-//			// initialize a planning instance of the plan database
-//			Planner planner = PlannerBuilder.createAndSet(pdb);
-//			// plan 
-//			SolutionPlan plan = planner.plan();
-//			// display solution plan
-//			planner.display();
-//			// export plan 
-//			PlanProtocolDescriptor exported = plan.export();
-//			System.out.println("Plan to execute:\n\n" + exported + "\n");
-//			
-//
-//			// build executive plan database
-//			Executive exec = ExecutiveBuilder.createAndSet(
-//					DCExecutive.class, 
-//					pdb.getOrigin(), 
-//					pdb.getHorizon());
-//			
-//			// export solution plan
-//			exec.initialize(exported);
-//			// start executing the plan
-//			exec.execute();
+
 			
 		}
 		catch (Exception ex) {
