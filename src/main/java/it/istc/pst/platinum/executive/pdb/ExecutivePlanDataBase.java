@@ -244,31 +244,33 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 				}
 				
 				// link subsequent nodes
-				for (int pos = 0; pos < list.length; pos++)
+				if (list.length > 1) 
 				{
-					// check first node
-					if (pos == 0) {
-						// first node of the timeline
-						ExecutionNode first = list[pos];
-						// set next node
-						first.setNext(list[pos+1]);
-					}
-					else if (pos == list.length - 1) {
-						// last node of the timeline
-						ExecutionNode last = list[pos];
-						// set previous ndoe
-						last.setPrev(list[pos-1]);
-					}
-					else {
-						// intermediate node
-						ExecutionNode i = list[pos];
-						// set prev
-						i.setPrev(list[pos-1]);
-						// set next
-						i.setNext(list[pos+1]);
+					for (int pos = 0; pos < list.length; pos++)
+					{
+						// check first node
+						if (pos == 0) {
+							// first node of the timeline
+							ExecutionNode first = list[pos];
+							// set next node
+							first.setNext(list[pos+1]);
+						}
+						else if (pos == list.length - 1) {
+							// last node of the timeline
+							ExecutionNode last = list[pos];
+							// set previous ndoe
+							last.setPrev(list[pos-1]);
+						}
+						else {
+							// intermediate node
+							ExecutionNode i = list[pos];
+							// set prev
+							i.setPrev(list[pos-1]);
+							// set next
+							i.setNext(list[pos+1]);
+						}
 					}
 				}
-				
 			}
 			
 			// check observations

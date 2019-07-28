@@ -47,8 +47,6 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 				{
 					try
 					{
-						// dispatch the command through the executive if needed
-						this.executive.sendStartCommandSignalToPlatform(node);
 						// schedule token start time
 						this.executive.scheduleTokenStart(node, tau);
 						// start node execution
@@ -68,28 +66,6 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 								cause);
 					}
 				}
-//				else if (tau > node.getStart()[1]) 
-//				{
-//					try
-//					{
-//						// dispatch the command through the executive if needed
-//						this.executive.sendStartCommandSignalToPlatform(node);
-//						// keep going with the execution by scheduling to the upper bound
-//						this.executive.scheduleTokenStart(node, node.getStart()[1]);
-//						logger.warning("{Dispatcher} {tick: " + tick + " } {tau: " + tau + "} -> (Late) Start executing node at time: " + node.getStart()[1] + "\n"
-//								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-//					}
-//					catch (TemporalConstraintPropagationException ex) {
-//						// create execution cause
-//						ExecutionFailureCause cause = new StartOverflow(tick, node, tau);
-//						// throw execution exception
-//						throw new ObservationException(
-//								"The dispatched start time of the token does not comply with the plan:\n"
-//								+ "\t- start: " + tau + "\n"
-//								+ "\t- node: " + node + "\n", 
-//								cause);
-//					}
-//				}
 				else  
 				{
 					// wait - not ready for dispatching

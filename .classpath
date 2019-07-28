@@ -24,7 +24,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/alessandro/Development/eclipse_ws/PLATINUm/lib/epsl-lang.jar"/>
+	<classpathentry kind="lib" path="/Users/alessandroumbrico/Development/cnr-istc/eclipse-workspace/PLATINUm/lib/epsl-lang.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
