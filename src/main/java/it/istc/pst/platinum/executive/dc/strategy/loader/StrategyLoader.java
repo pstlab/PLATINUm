@@ -38,6 +38,7 @@ public class StrategyLoader {
 	//------------------------CONSTRUCTORS---------------------------
 	
 	public StrategyLoader(long horizon) {
+		System.out.println("\nStarting Strategy Loader ... : \n");
 		this.strategy = new Strategy(horizon);
 		this.isValid = false;
 	}
@@ -67,12 +68,15 @@ public class StrategyLoader {
 	//Generates a strategy from a plan using plan2tiga and UppalTiga, without being given the absolute path of the first two
 	public StrategyLoader (String pathPlan, long horizon) throws IOException { //works only for linux
 			this(horizon);
+			long time = System.currentTimeMillis();
 			ProcessBuilder builder = new ProcessBuilder("bash", "-c", "plan2tiga" + " " + pathPlan +
 														" && " + "verifytga" + " -w0 " + pathPlan + ".xta");
 			
 			builder.redirectErrorStream(true);
 			Process process = builder.start();
 			this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			time = System.currentTimeMillis() - time;
+			System.out.println("\n" + "Plan2Tiga  + VerifyTga = " + time + "ms\n");
 		}
 
 	//from a string (test purpose)
@@ -84,6 +88,8 @@ public class StrategyLoader {
 	//-------------------------------METHODS-------------------------
 	//creates strategy reading lines, validating if a strategy is found and finding states (box 1)
 	public void readStrategy() throws IOException, Exception {
+			System.out.println("\nReading Strategy..... :\n");
+			long time = System.currentTimeMillis();
 		try {
 			String line = reader.readLine(); 
 
@@ -118,6 +124,8 @@ public class StrategyLoader {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("\n" + "Reading Strategy Time: " + time + "ms\n");
 		System.out.println("\n\n" + this.strategy + "\n\n");
 	}
 

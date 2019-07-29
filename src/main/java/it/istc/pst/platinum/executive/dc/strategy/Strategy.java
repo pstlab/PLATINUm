@@ -31,6 +31,7 @@ public class Strategy {
 	//returns next strategy step (repeat until wait!!) using plan clock
 	public List<Action> askAllStrategySteps(long plan_clock, Map<String,String> actualState, boolean isPlanClock) { //throws Exception {
 		System.out.println(expectedState + "plan clock " + plan_clock + "\n\n" + "clock " + this.timelineClocks);
+		long time  = System.currentTimeMillis();
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
 		this.updateClocks(plan_clock-(this.timelineClocks.get("plan")));
@@ -41,12 +42,15 @@ public class Strategy {
 			action = askSingleStrategyStep(this.expectedState);
 			actions.add(action);
 		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("\n"+ "Answer all strategy steps: " + time + "ms\n");
 		return actions;
 	}
 	
 	//returns next strategy step (repeat until wait!!) using tic
 	public List<Action> askAllStrategySteps(long tic, Map<String,String> actualState) { // throws Exception {
 		System.out.println(expectedState + "tic " + tic + "\n\n");
+		long time  = System.currentTimeMillis();
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
 		this.updateClocks(tic);
@@ -56,12 +60,15 @@ public class Strategy {
 			action = askSingleStrategyStep(this.expectedState);
 			actions.add(action);
 		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("\n"+ "Answer all strategy steps: " + time + "ms\n");
 		return actions;
 	}
 
 	//returns one action predicted for next step
 	private Action askSingleStrategyStep(Map<String, String> actualState) { // throws Exception {
 		System.out.println(actualState + "\n\n");
+		long time  = System.currentTimeMillis();
 		try
 		{
 			for(StateSet s : this.states) {
@@ -69,12 +76,16 @@ public class Strategy {
 					StateStrategy win = s.searchNextStepStrategy(timelineClocks);
 					this.timelineClocks = win.applyPostConditions(this.timelineClocks, this.horizon);
 					updateExpectedState(win.getAction());
+					time = System.currentTimeMillis() - time;
+					System.out.println("\n"+ "Answer single strategy steps: " + time + "ms\n");
 					return win.getAction();
 				}
 			}
 		}
 		catch (Exception ex) {
 			System.out.println("Warning: no state or clock found -> return default action WAIT\n");
+			time = System.currentTimeMillis() - time;
+			System.out.println("\n"+ "Answer single strategy steps: " + time + "ms\n");
 		}
 		
 		// default action
