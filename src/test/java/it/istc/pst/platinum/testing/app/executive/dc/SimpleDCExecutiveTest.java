@@ -15,49 +15,99 @@ import it.istc.pst.platinum.executive.dc.DCExecutive;
  */
 public class SimpleDCExecutiveTest 
 {
+	private static int HORIZON = 100;								// in seconds
+	
+	private static int[] UNCERTAINTY = new int[] {
+			5, 10, 15, 20, 25, 30
+	};
+	
+	private static int[] GOAL = new int[] {
+			1, 2, 3, 4, 5
+	};
+	
 	/**
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) 
 	{
-		try 
+		for (int uncertainty : UNCERTAINTY) 
 		{
-			// create goal oriented agent
-			GoalOrientedActingAgent agent = new GoalOrientedActingAgent(Planner.class, DCExecutive.class);
-			agent.start();
-			System.out.println("Starting agent...");
+			for (int goal : GOAL) 
+			{
+				try
+				{
+					// create a thread managing the execution
+					Thread thread = new Thread(new Runnable() {
+						
+						/**
+						 * 
+						 */
+						@Override
+						public void run() 
+						{
+							try 
+							{
+								// create goal oriented agent
+								GoalOrientedActingAgent agent = new GoalOrientedActingAgent(Planner.class, DCExecutive.class);
+								// starting agent
+								System.out.println("Starting goal-oriented agent...");
+								// start agent
+								agent.start();
+								
+								
+								
+								// crate satellite platform simulator
+								PlatformSimulator simulator = PlatformProxyBuilder.build(
+										PlatformSimulator.class,
+										"etc/platform/dc/satellite/config_u" + uncertainty + ".xml");
+								
+								// start platform simulator
+								System.out.println("Starting platform on configuration file [\"etc/platform/dc/satellite/config_u\"" + uncertainty + "\".xml\"]\n");
+								simulator.start();
+								
+								// initialize and start the agent
+								System.out.println("Initializing goal-oriented agent on planning domain [domains/satellite/dc/satellite_u\"" + uncertainty + "\".ddl] with #goal " + goal + "\n");
+								agent.initialize(
+										simulator, 
+										"domains/satellite/dc/satellite_u" + uncertainty + ".ddl");
+								
+								
+								// create task description
+								AgentTaskDescription task = createTaskDescription(goal);
+								// buffer task description
+								agent.buffer(task);
+							}
+							catch (Exception ex) {
+								System.err.println("Interrupting agent execution");
+							}
+						}
+					});
+					
+					// start thread
+					thread.start();
+					Thread.sleep((HORIZON + 10) * 1000);
+					thread.interrupt();
+				
+				}
+				catch (InterruptedException ex) {
+					System.err.println(ex.getMessage());
+				}
+				
+				
+			}
 			
-			// crate satellite platform simulator
-			PlatformSimulator simulator = PlatformProxyBuilder.build(
-					PlatformSimulator.class,
-					"etc/platform/satellite/config.xml");
 			
-			// start simulator
-			simulator.start();
-			
-			// initialize the agent
-			agent.initialize(
-					simulator, 
-					"domains/satellite/acta/satellite.ddl");
-			
-			// create task description
-			AgentTaskDescription task = createTaskDescription();
-			// buffer task description
-			agent.buffer(task);
+		}
 
-			
-		}
-		catch (Exception ex) {
-			System.err.println(ex.getMessage());
-		}
 	}
 	
 	/**
 	 * 
+	 * @param goals
 	 * @return
 	 */
-	private static AgentTaskDescription createTaskDescription() 
+	private static AgentTaskDescription createTaskDescription(int goals) 
 	{
 		// create task description
 		AgentTaskDescription description = new AgentTaskDescription();
@@ -74,28 +124,32 @@ public class SimpleDCExecutiveTest
 				"_NotVisible", 
 				new String[] {}, 
 				new long[] {0, 0}, 
-				new long[] {5, 10}, 
-				new long[] {5, 10}));
+				new long[] {10, 10}, 
+				new long[] {10, 10}));
 		
 		description.addFactDescription(new TokenDescription(
 				"Window", 
 				"_Visible", 
 				new String[] {}, 
-				new long[] {5, 10}, 
-				new long[] {90, 95}, 
-				new long[] {80, 90}));
+				new long[] {10, 10}, 
+				new long[] {40, 40}, 
+				new long[] {30, 30}));
 		
 		description.addFactDescription(new TokenDescription(
 				"Window", 
 				"_NotVisible", 
 				new String[] {}, 
-				new long[] {90, 95}, 
-				new long[] {100, 100}, 
-				new long[] {5, 10}));
+				new long[] {40, 40}, 
+				new long[] {50, 50}, 
+				new long[] {10, 10}));
 		
-		description.addGoalDescription(new TokenDescription(
-				"PointingMode", 
-				"Science"));
+		// create planning goals
+		for (int index = 0; index < goals; index++) {
+			// create planning goal
+			description.addGoalDescription(new TokenDescription(
+					"PointingMode", 
+					"Science"));
+		}
 		
 		// get task description
 		return description;
