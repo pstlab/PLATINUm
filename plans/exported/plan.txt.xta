@@ -1,4 +1,31 @@
-clock plan_clock, R1_clock, R2_clock, R3_clock, R4_clock, R5_clock, R6_clock;
+/*
+Primitive Relations in the input plan:
+R1: window 7 start_before_start[0,100] pointingmode 5
+R2: pointingmode 5 end_before_end[0,100] window 7
+R3: pointingmode 0 end_before_start[0,100] pointingmode 2
+R4: window 6 end_before_start[0,100] window 7
+R5: window 7 end_before_start[0,100] window 8
+R6: pointingmode 2 end_before_start[0,100] pointingmode 5
+
+***Removing the trivial relation window 6 end_before_start[0,100] window 7
+***Removing the trivial relation window 7 end_before_start[0,100] window 8
+
+Primitive Relations left:
+R1: window 7 start_before_start[0,100] pointingmode 5
+R2: pointingmode 5 end_before_end[0,100] window 7
+R3: pointingmode 0 end_before_start[0,100] pointingmode 2
+R6: pointingmode 2 end_before_start[0,100] pointingmode 5
+
+Warning: the end time of the last token of the variable pointingmode should be (100,100).
+Adding an unallcated temporal slot at the end
+
+
+Warning: the end time of the last token of the variable window should be (100,100).
+Adding an unallcated temporal slot at the end
+
+*/
+
+clock plan_clock, R1_clock, R2_clock, R3_clock, R6_clock;
 const int H = 200;
 
 process pointingmode ()
@@ -6,12 +33,12 @@ process pointingmode ()
 clock pointingmode_clock;
 state 
 	start,
-	pointingmode0 { plan_clock <= 58 and pointingmode_clock <= 58 },
-	pointingmode1 { plan_clock <= 61 and pointingmode_clock <= 7 },
-	pointingmode2 { plan_clock <= 71 and pointingmode_clock <= 20 },
-	pointingmode3 { plan_clock <= 74 and pointingmode_clock <= 7 },
-	pointingmode4 { plan_clock <= 75 and pointingmode_clock <= 58 },
-	pointingmode5 { plan_clock <= 90 and pointingmode_clock <= 25 },
+	pointingmode0 { plan_clock <= 63 and pointingmode_clock <= 63 },
+	pointingmode1 { plan_clock <= 66 and pointingmode_clock <= 7 },
+	pointingmode2 { plan_clock <= 76 and pointingmode_clock <= 20 },
+	pointingmode3 { plan_clock <= 79 and pointingmode_clock <= 7 },
+	pointingmode4 { plan_clock <= 80 and pointingmode_clock <= 63 },
+	pointingmode5 { plan_clock <= 95 and pointingmode_clock <= 25 },
 	pointingmode6 { plan_clock <= 100 },
 	finish;
 init start;
@@ -44,25 +71,21 @@ process window ()
 clock window_clock;
 state 
 	start,
-	window6 { plan_clock <= 20 and window_clock <= 20 },
-	window7 { plan_clock <= 90 and window_clock <= 80 },
-	window8 { plan_clock <= 100 and window_clock <= 20 },
+	window6 { plan_clock <= 10 and window_clock <= 10 },
+	window7 { plan_clock <= 95 and window_clock <= 90 },
+	window8 { plan_clock <= 100 and window_clock <= 10 },
 	window9 { plan_clock <= 100 },
 	finish;
 init start;
 trans
 	start -> window6 { guard plan_clock==0; },
-	window6 -u-> window7  { guard plan_clock >= 10 and window_clock >= 10
-			and  R4_clock  >= H + 0 and  R4_clock  <= H + 100;
-		    assign window_clock := 0,
-			 R4_clock  := H ,
+	window6 -u-> window7  { guard plan_clock >= 5 and window_clock >= 5;
+			assign window_clock := 0,
 			 R1_clock  := H ;  },
-	window7 -u-> window8  { guard plan_clock >= 80 and window_clock >= 60
-			and  R2_clock  >= H + 0 and  R2_clock  <= H + 100
-			and  R5_clock  >= H + 0 and  R5_clock  <= H + 100;
-		    assign window_clock := 0,
-			 R5_clock  := H ;  },
-	window8 -u-> window9  { guard plan_clock >= 90 and window_clock >= 10;
+	window7 -u-> window8  { guard plan_clock >= 90 and window_clock >= 80
+			and  R2_clock  >= H + 0 and  R2_clock  <= H + 100;
+		    assign window_clock := 0; },
+	window8 -u-> window9  { guard plan_clock >= 95 and window_clock >= 5;
 			assign window_clock := 0; },
 	window9 -> finish { guard plan_clock >= 100 and window_clock >= 0;   }
 	;
