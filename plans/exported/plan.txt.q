@@ -1,1 +1,1 @@
-control: A<> (pointingmode.finish)
+control: A<> (pointingmode.finish && window.finish)

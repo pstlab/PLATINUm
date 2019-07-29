@@ -2,24 +2,26 @@ DOMAIN ACTA_SATELLITE
 {
 	TEMPORAL_MODULE temporal_module = [0, 100], 100;
 	
-	COMP_TYPE SingletonStateVariable PointingModeType (Earth(), rSlewing(), rScience(), _Comm(), _Maintenance())
+	COMP_TYPE SingletonStateVariable PointingModeType (
+		Earth(), Slewing(), Science(), _Comm(), _Maintenance()
+	)
 	{
 		VALUE Earth() [1, +INF]
 		MEETS {
-			rSlewing();
+			Slewing();
 			_Comm();
 			_Maintenance();
 		}
 		
-		VALUE rSlewing() [3, 7]
+		VALUE Slewing() [3, 7]
 		MEETS {
 			Earth();
-			rScience();
+			Science();
 		}
 		
-		VALUE rScience() [10, 20]
+		VALUE Science() [10, 20]
 		MEETS {
-			rSlewing();
+			Slewing();
 		}
 		
 		VALUE _Comm() [15, 25]
@@ -53,7 +55,7 @@ DOMAIN ACTA_SATELLITE
 		
 	SYNCHRONIZE PointingMode.pm
 	{
-		VALUE rScience()
+		VALUE Science()
 		{
 			cd0 PointingMode.pm._Comm();
 			

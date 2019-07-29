@@ -7,16 +7,6 @@
 			<duration>20</duration>
 		</command>
 		
-		<command type="c">
-			<name>slewing</name>
-			<duration>3</duration>
-		</command>
-		
-		<command type="c">
-			<name>science</name>
-			<duration>15</duration>
-		</command>
-		
 		<command type="pc">
 			<name>maintenance</name>
 			<duration>8</duration>

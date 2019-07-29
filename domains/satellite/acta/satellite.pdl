@@ -6,7 +6,7 @@ PROBLEM ACTA_SATELLITE_Problem (DOMAIN ACTA_SATELLITE)
 	win1 <fact> Window.channel._Visible() AT [10, 10] [80, 80] [70, 70];
 	win2 <fact> Window.channel._NotVisible() AT [80, 80] [100, 100] [20, 20];
 
-	g0 <goal> PointingMode.pm.rScience() AT [0, +INF] [0, +INF] [0, +INF];
+	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 //	g1 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 	
 //	g0 BEFORE [0, +INF] g1;

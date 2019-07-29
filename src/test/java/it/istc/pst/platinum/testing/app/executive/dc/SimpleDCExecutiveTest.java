@@ -95,7 +95,7 @@ public class SimpleDCExecutiveTest
 		
 		description.addGoalDescription(new TokenDescription(
 				"PointingMode", 
-				"rScience"));
+				"Science"));
 		
 		// get task description
 		return description;
