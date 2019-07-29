@@ -94,7 +94,6 @@ public class StrategyLoader {
 			String line = reader.readLine(); 
 
 			while (line != null) { //reading input
-
 				//get local clocks
 				if(line.contains(MARKER_PRECONDITIONS)) { //getInitialState(reader.readLine()); getLocalClocks(reader.readLine()); 
 					getInitialState(reader.readLine()); getLocalClocks(reader.readLine()); line = reader.readLine();

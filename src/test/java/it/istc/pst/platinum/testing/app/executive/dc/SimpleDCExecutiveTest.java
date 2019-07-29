@@ -32,6 +32,7 @@ public class SimpleDCExecutiveTest
 			PlatformSimulator simulator = PlatformProxyBuilder.build(
 					PlatformSimulator.class,
 					"etc/platform/satellite/config.xml");
+			
 			// start simulator
 			simulator.start();
 			
@@ -68,9 +69,33 @@ public class SimpleDCExecutiveTest
 				new long[] {0, 100}, 
 				new long[] {1, 100}));
 		
+		description.addFactDescription(new TokenDescription(
+				"Window", 
+				"_NotVisible", 
+				new String[] {}, 
+				new long[] {0, 0}, 
+				new long[] {10, 20}, 
+				new long[] {10, 20}));
+		
+		description.addFactDescription(new TokenDescription(
+				"Window", 
+				"_Visible", 
+				new String[] {}, 
+				new long[] {10, 20}, 
+				new long[] {80, 90}, 
+				new long[] {60, 80}));
+		
+		description.addFactDescription(new TokenDescription(
+				"Window", 
+				"_NotVisible", 
+				new String[] {}, 
+				new long[] {80, 90}, 
+				new long[] {100, 100}, 
+				new long[] {10, 20}));
+		
 		description.addGoalDescription(new TokenDescription(
 				"PointingMode", 
-				"Science"));
+				"rScience"));
 		
 		// get task description
 		return description;

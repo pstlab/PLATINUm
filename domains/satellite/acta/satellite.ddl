@@ -2,24 +2,24 @@ DOMAIN ACTA_SATELLITE
 {
 	TEMPORAL_MODULE temporal_module = [0, 100], 100;
 	
-	COMP_TYPE SingletonStateVariable PointingModeType (Earth(), Slewing(), Science(), _Comm(), _Maintenance())
+	COMP_TYPE SingletonStateVariable PointingModeType (Earth(), rSlewing(), rScience(), _Comm(), _Maintenance())
 	{
 		VALUE Earth() [1, +INF]
 		MEETS {
-			Slewing();
+			rSlewing();
 			_Comm();
 			_Maintenance();
 		}
 		
-		VALUE Slewing() [3, 3]
+		VALUE rSlewing() [3, 7]
 		MEETS {
 			Earth();
-			Science();
+			rScience();
 		}
 		
-		VALUE Science() [10, 20]
+		VALUE rScience() [10, 20]
 		MEETS {
-			Slewing();
+			rSlewing();
 		}
 		
 		VALUE _Comm() [15, 25]
@@ -35,38 +35,37 @@ DOMAIN ACTA_SATELLITE
 	}
 	
 
-//	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (Visible(), NotVisible())
-//	{
-//		VALUE Visible() [1, +INF]
-//		MEETS {
-//			NotVisible();
-//		}
-//		
-//		VALUE NotVisible() [1, +INF]
-//		MEETS {
-//			Visible();
-//		}
-//	}
+	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (_Visible(), _NotVisible())
+	{
+		VALUE _Visible() [1, +INF]
+		MEETS {
+			_NotVisible();
+		}
+		
+		VALUE _NotVisible() [1, +INF]
+		MEETS {
+			_Visible();
+		}
+	}
 	
-	COMPONENT PointingMode {FLEXIBLE pm(trex_internal_dispatch_asap)} : PointingModeType;
-//	COMPONENT Window {FLEXIBLE channel(uncontrollable)} : GroundStationVisibilityType;
+	COMPONENT PointingMode {FLEXIBLE pm(primitive)} : PointingModeType;
+	COMPONENT Window {FLEXIBLE channel(primitive)} : GroundStationVisibilityType;
 		
 	SYNCHRONIZE PointingMode.pm
 	{
-		VALUE Science()
+		VALUE rScience()
 		{
 			cd0 PointingMode.pm._Comm();
 			
 			BEFORE [0, +INF] cd0; 
 		}
 		
-		
-//		VALUE _Comm()
-//		{
-//			cd0 <?> Window.channel.Visible();
-//			
-//			DURING [0, +INF] [0, +INF] cd0;
-//		}
+		VALUE _Comm()
+		{
+			cd0 <?> Window.channel._Visible();
+			
+			DURING [0, +INF] [0, +INF] cd0;
+		}
 
 	}
 }
