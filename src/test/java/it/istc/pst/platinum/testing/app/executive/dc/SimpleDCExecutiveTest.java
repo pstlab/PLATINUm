@@ -86,7 +86,7 @@ public class SimpleDCExecutiveTest
 					
 					// start thread
 					thread.start();
-					Thread.sleep((HORIZON + 10) * 1000);
+					Thread.sleep((HORIZON * 1000) + 5000);
 					thread.interrupt();
 				
 				}
