@@ -3,9 +3,9 @@ plan {
 	timelines {
 		PointingMode {
 			token 0  { Earth [1,58] [1, 58] }
-			token 1  { rSlewing [4,61] [3, 7] }
-			token 2  { rScience [14,71] [10, 20] }
-			token 3  { rSlewing [17,74] [3, 7] }
+			token 1  { Slewing [4,61] [3, 7] }
+			token 2  { Science [14,71] [10, 20] }
+			token 3  { Slewing [17,74] [3, 7] }
 			token 4  { Earth [18,75] [1, 58] }
 			token 5 uncontrollable { _Comm [33,90] [15, 25] }
 		}

@@ -74,24 +74,24 @@ public class SimpleDCExecutiveTest
 				"_NotVisible", 
 				new String[] {}, 
 				new long[] {0, 0}, 
-				new long[] {10, 20}, 
-				new long[] {10, 20}));
+				new long[] {5, 10}, 
+				new long[] {5, 10}));
 		
 		description.addFactDescription(new TokenDescription(
 				"Window", 
 				"_Visible", 
 				new String[] {}, 
-				new long[] {10, 20}, 
-				new long[] {80, 90}, 
-				new long[] {60, 80}));
+				new long[] {5, 10}, 
+				new long[] {90, 95}, 
+				new long[] {80, 90}));
 		
 		description.addFactDescription(new TokenDescription(
 				"Window", 
 				"_NotVisible", 
 				new String[] {}, 
-				new long[] {80, 90}, 
+				new long[] {90, 95}, 
 				new long[] {100, 100}, 
-				new long[] {10, 20}));
+				new long[] {5, 10}));
 		
 		description.addGoalDescription(new TokenDescription(
 				"PointingMode", 

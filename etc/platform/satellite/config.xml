@@ -24,7 +24,7 @@
 		
 		<command type="pc">
 			<name>notvisible</name>
-			<duration>20</duration>
+			<duration>10</duration>
 		</command>
 		
 	</agent>
