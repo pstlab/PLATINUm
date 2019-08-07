@@ -14,6 +14,7 @@ import it.istc.pst.platinum.executive.dc.strategy.result.Wait;
 
 public class Strategy {
 	long horizon;
+	long time;
 	private Set<StateSet> states;
 	private Map<String,Long> timelineClocks;
 	private Map<String,String> expectedState;
@@ -26,6 +27,7 @@ public class Strategy {
 		this.states = new HashSet<>();
 		this.expectedState = new HashMap<>();
 		this.uPostConditions = new HashMap<>();
+		this.time = 0;
 	}
 
 	//---------------------------------- METHODS --------------------
@@ -37,16 +39,17 @@ public class Strategy {
 		List<Action> actions = new ArrayList<>();
 		this.updateExpectedState(actualState);
 		this.updateClocks(plan_clock-(this.timelineClocks.get("plan")));
-		System.out.println(expectedState + "plan clock " + plan_clock + "\n\n" + "clock " + this.timelineClocks);
+		System.out.println(expectedState + "plan clock " + plan_clock + "clock " + this.timelineClocks);
 		Action action = askSingleStrategyStep(expectedState);
-		System.out.println(action + "\n");
+		//System.out.println(action + "\n");
 		actions.add(action);
 		while(action.getClass().equals(Transition.class)) {
 			action = askSingleStrategyStep(this.expectedState);
 			actions.add(action);
 		}
 		time = System.currentTimeMillis() - time;
-		System.out.println("\n"+ "Answer all strategy steps: " + time + "ms\n");
+		this.time = this.time + time;
+		System.out.println(">>>>>>> Answer all strategy steps: " + time + "ms, " + "current time: " + this.time + "\n");
 		return actions;
 	}
 
@@ -64,13 +67,13 @@ public class Strategy {
 			actions.add(action);
 		}
 		time = System.currentTimeMillis() - time;
-		System.out.println("\n"+ "Answer all strategy steps: " + time + "ms\n");
+		System.out.println("\n"+ "Answer all strategy steps: " + time + "ms, " + "\n");
 		return actions;
 	}
 
 	//returns one action predicted for next step
 	private Action askSingleStrategyStep(Map<String, String> actualState) { // throws Exception {
-		System.out.println(actualState + "\n\n");
+		//System.out.println(actualState + "\n\n");
 		long time  = System.currentTimeMillis();
 		try
 		{
@@ -80,7 +83,7 @@ public class Strategy {
 					this.timelineClocks = win.applyPostConditions(this.timelineClocks, this.horizon);
 					updateExpectedState(win.getAction());
 					time = System.currentTimeMillis() - time;
-					System.out.println("\n"+ "Answer single strategy steps: " + time + "ms\n");
+					//System.out.println("\n"+ "Answer single strategy steps: " + time + "ms\n");
 					return win.getAction();
 				}
 			}
@@ -88,7 +91,7 @@ public class Strategy {
 		catch (Exception ex) {
 			System.out.println("Warning: no state or clock found -> return default action WAIT\n");
 			time = System.currentTimeMillis() - time;
-			System.out.println("\n"+ "Answer single strategy steps: " + time + "ms\n");
+			//System.out.println("\n"+ "Answer single strategy steps: " + time + "ms\n");
 		}
 
 		// default action
@@ -108,9 +111,9 @@ public class Strategy {
 	// Resets the local clocks of uncontrollable events that took place in the tic
 	void resetClocks(String timeline,String token) {
 		//this.timelineClocks.put(timeline+"."+timeline+"_clock",0);
-		System.out.println(" RESET CLOCK : " + timeline + " " + token + "<<<<<<<<<<<<<<<<<<<\n");
+		//System.out.println(" RESET CLOCK : " + timeline + " " + token + "<<<<<<<<<<<<<<<<<<<\n");
 		Map<String,String> condToken = this.uPostConditions.get(token);
-		System.out.println("CONDTOKEN : " + condToken + "\n");
+		//System.out.println("CONDTOKEN : " + condToken + "\n");
 		if(condToken!=null) {
 			for(String cond : condToken.keySet()) {
 				if(condToken.get(cond).contains("0")) {

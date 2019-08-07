@@ -122,7 +122,7 @@ public class StrategyLoader {
 		}
 		time = System.currentTimeMillis() - time;
 		System.out.println("\n" + "Reading Strategy Time: " + time + "ms\n");
-		System.out.println("\n\n" + this.strategy + "\n\n");
+		//System.out.println("\n\n" + this.strategy + "\n\n");
 	}
 
 	private Map<String,Map<String,String>> extractUPostConditions() throws Exception {
@@ -148,7 +148,7 @@ public class StrategyLoader {
 			}
 			else line = this.reader.readLine();
 		}	
-		System.out.println(">>>>>>>>>>>>>>> POST CONDITIONS ON UNCONTROLLABLES" + "\n" + result + "<<<<<<<<<<<<\n");
+		//System.out.println(">>>>>>>>>>>>>>> POST CONDITIONS ON UNCONTROLLABLES" + "\n" + result + "<<<<<<<<<<<<\n");
 		return result;
 	}
 
@@ -166,7 +166,7 @@ public class StrategyLoader {
 
 	//this function's results are clocks with the appendix "_clock", if message passed avoids those it's unnecessary
 	private void getLocalClocks(String line) {
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + line + "\n");
+		//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + line + "\n");
 		Map<String,Long> timelineClocks = new HashMap<>();
 		line = line.substring(1,line.length()-1).trim();
 		String[] split = line.split(" ");
@@ -188,18 +188,18 @@ public class StrategyLoader {
 
 	//separates case WAIT and TRANSITION and creates StateStrategies for stateset passed
 	private String readStateStrategy(String line) throws IOException {
-		System.out.println(line);
+		//System.out.println(line);
 		StateSet set = readState(line);
 		line = reader.readLine();
 
 		while (line!=null) { //if a state is found, search for lines that represent actions and the clocks referred to them
 
 			if(line.startsWith(MARKER_WAIT)) { //wait action
-				System.out.println(line + "\n\n");
+				//System.out.println(line + "\n\n");
 				for (ClockSet clocks : readClockSets(line)) set.addStateStrategy(new StateStrategy(clocks,new Wait()));
 			}
 			else if(line.startsWith(MARKER_TRANSITION)) { //transition action
-				System.out.println(line + "\n\n");
+				//System.out.println(line + "\n\n");
 				for(ClockSet clocks : readClockSets(line)) set.addStateStrategy(new StateStrategy(clocks,line));
 			}
 			else break; //if not an action, next state to find
