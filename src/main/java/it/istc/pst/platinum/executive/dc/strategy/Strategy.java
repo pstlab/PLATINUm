@@ -19,6 +19,8 @@ public class Strategy {
 	private Map<String,Long> timelineClocks;
 	private Map<String,String> expectedState;
 	private Map<String,Map<String,String>> uPostConditions;
+	
+	private Map<Long,Integer> out;
 
 	// ------------------------------ CONSTRUCTORS ------------------
 
@@ -28,6 +30,7 @@ public class Strategy {
 		this.expectedState = new HashMap<>();
 		this.uPostConditions = new HashMap<>();
 		this.time = 0;
+		this.out = new HashMap<>();
 	}
 
 	//---------------------------------- METHODS --------------------
@@ -49,7 +52,9 @@ public class Strategy {
 		}
 		time = System.currentTimeMillis() - time;
 		this.time = this.time + time;
-		System.out.println(">>>>>>> Answer all strategy steps: " + time + "ms, " + "current time: " + this.time + "\n");
+		if(this.out.containsKey(time)) this.out.put(time, this.out.get(time)+1);
+		else this.out.put(time, 1);
+		System.out.println(">>>>>>> Answer all strategy steps: " + time + "ms, " + "current time: " + this.time + "\n" + this.out + "\n");
 		return actions;
 	}
 
