@@ -1,15 +1,15 @@
 <platform>
 
-	<agent id="a01" label="PointingMode" type="acting" uncertainty="3">
+	<agent id="a01" label="PointingMode" type="acting" uncertainty="10">
 
 		<command type="pc">
 			<name>comm</name>
-			<duration>20</duration>
+			<duration>2</duration>
 		</command>
 		
 		<command type="pc">
 			<name>maintenance</name>
-			<duration>8</duration>
+			<duration>3</duration>
 		</command>
 		
 	</agent>
@@ -19,7 +19,7 @@
 
 		<command type="pc">s
 			<name>visible</name>
-			<duration>80</duration>
+			<duration>30</duration>
 		</command>
 		
 		<command type="pc">

@@ -1,6 +1,6 @@
-DOMAIN ACTA_SATELLITE
+DOMAIN DC_SATELLITE_u5
 {
-	TEMPORAL_MODULE temporal_module = [0, 500], 100;
+	TEMPORAL_MODULE temporal_module = [0, 100], 100;
 	
 	COMP_TYPE SingletonStateVariable PointingModeType (
 		Earth(), Slewing(), Science(), _Comm(), _Maintenance()
@@ -19,18 +19,18 @@ DOMAIN ACTA_SATELLITE
 			Science();
 		}
 		
-		VALUE Science() [5, 5]
+		VALUE Science() [3, 3]
 		MEETS {
 			Slewing();
 		}
 		
-		VALUE _Comm() [10, 25]
+		VALUE _Comm() [1, 8]
 		MEETS {
 			Earth();
 			_Maintenance();
 		}
 		
-		VALUE _Maintenance() [1, 12]
+		VALUE _Maintenance() [1, 9]
 		MEETS {
 			Earth();
 		} 
@@ -39,12 +39,12 @@ DOMAIN ACTA_SATELLITE
 
 	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (_Visible(), _NotVisible())
 	{
-		VALUE _Visible() [1, +INF]
+		VALUE _Visible() [10, 30]
 		MEETS {
 			_NotVisible();
 		}
 		
-		VALUE _NotVisible() [1, +INF]
+		VALUE _NotVisible() [10, 20]
 		MEETS {
 			_Visible();
 		}
@@ -57,7 +57,7 @@ DOMAIN ACTA_SATELLITE
 	{
 		VALUE Science()
 		{
-			cd0 PointingMode.pm._Comm();
+			cd0 <!> PointingMode.pm._Comm();
 			
 			BEFORE [0, +INF] cd0; 
 		}
