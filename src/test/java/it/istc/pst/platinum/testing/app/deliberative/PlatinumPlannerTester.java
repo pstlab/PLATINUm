@@ -18,8 +18,8 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
  */
 public class PlatinumPlannerTester 
 {
-	private static final String DDL = "domains/satellite/acta/satellite.ddl";
-	private static final String PDL = "domains/satellite/acta/satellite.pdl";
+	private static final String DDL = "domains/roman19/roman19.ddl";
+	private static final String PDL = "domains/roman19/roman19.pdl";
 	private static final String OUT = "plans";
 	
 	
