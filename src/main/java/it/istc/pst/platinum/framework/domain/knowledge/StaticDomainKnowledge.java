@@ -171,6 +171,16 @@ public class StaticDomainKnowledge extends DomainKnowledge
 					{
 						try 
 						{
+							// check if slave exists in the DG
+							if (!this.dg.containsKey(slave)) {
+								this.dg.put(slave, new HashSet<>());
+							}
+							
+							// check if master exists in the DG
+							if (!this.dg.containsKey(master)) {
+								this.dg.put(master, new HashSet<>());
+							}
+							
 							// update the dependency graph - recall: the dg is an incident graph
 							this.dg.get(slave).add(master);
 							// check hierarchy cycle
