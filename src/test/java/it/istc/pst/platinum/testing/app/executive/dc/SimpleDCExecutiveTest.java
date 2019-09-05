@@ -59,7 +59,6 @@ public class SimpleDCExecutiveTest
 							PlatformSimulator.class,
 							"etc/platform/dc/satellite/config_u" + uncertainty + ".xml");
 					
-					
 					// create executive
 					Executive exec  = ExecutiveBuilder.createAndSet(DCExecutive.class, 0, solution.getHorizon());
 					// link executive to platform simulator
