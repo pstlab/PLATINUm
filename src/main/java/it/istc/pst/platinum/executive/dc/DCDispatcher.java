@@ -159,5 +159,54 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				throw new PlatformException("[DCDispatcher] [tick: " + tick +"] Unknown Action: " + a.getClass().getName() + "\n");
 			}
 		}
+		
+		
+		/* 
+		 * Finally for each executed action of the timeline check whether
+		 * then next token has been dispatched (if any)
+		 */
+		
+		
+		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.EXECUTED)) 
+		{
+			// get next node
+			ExecutionNode next = node.getNext();
+			// check if node has a next token
+			if (next != null)
+			{
+				// check next node of the associated timeline
+				if (next.getStatus().equals(ExecutionNodeStatus.WAITING))
+				{
+					// dispatch start time
+					logger.debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
+							+ "\t- start-tau: " + tau + "\n"
+							+ "\t- node: " + next.getGroundSignature() + " (" + next + ")\n");
+					
+					try
+					{
+						// dispatch start time 
+						this.executive.scheduleTokenStart(next, tau);
+						// check schedule
+						this.executive.checkSchedule(next);
+						// dispatch start time
+						logger.debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
+								+ "\t- start-tau: " + tau + "\n"
+								+ "\t- node: " + next.getGroundSignature() + " (" + next + ")\n");
+					}
+					catch (TemporalConstraintPropagationException ex) {
+						// set token as in failure
+						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+						// create execution failure message
+						ExecutionFailureCause cause = new StartOverflow(tick, node, tau);
+						// throw execution exception
+						throw new ExecutionException(
+								"Start time does not comply with the expected one:\n"
+								+ "\t- start: " + tau + "\n"
+								+ "\t- node: " + next + "\n", 
+								cause);
+					}
+				}
+			}
+		}
 	}
 }

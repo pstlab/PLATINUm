@@ -4,6 +4,7 @@ import java.util.List;
 
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
+import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.lang.ex.ObservationException;
@@ -55,14 +56,14 @@ public class DCMonitor extends Monitor<DCExecutive>
 				case UNCONTROLLABLE_TOKEN_COMPLETE : 
 				{
 					// set next node in execution if any
-					ExecutionNode next = node.getNext();
+//					ExecutionNode next = node.getNext();
+					// compute node duration of the token in execution 
+					long duration = Math.max(1, tau - node.getStart()[0]);
+					logger.info("[DCMonitor] [tick: " + tick + "] [tau: " +  tau + "] -> Observed token execution with duration " + duration + " \n"
+							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					
 					try 
 					{
-						// compute node duration of the token in execution 
-						long duration = Math.max(1, tau - node.getStart()[0]);
-						logger.info("[DCMonitor] [tick: " + tick + "] [tau: " +  tau + "] -> Observed token execution with duration " + duration + " \n"
-								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-						
 						// update node state
 						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
 						// schedule token duration
@@ -71,34 +72,17 @@ public class DCMonitor extends Monitor<DCExecutive>
 						this.executive.checkSchedule(node);
 						logger.info("[DCMonitor] [tick: " + tick + "] [tau: " +  tau + "] -> Observed token execution with duration " + duration + " \n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-						
-						// check next node to dispatch
-						if (next != null) {
-							// dispatch start time
-							logger.debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
-									+ "\t- start-tau: " + tau + "\n"
-									+ "\t- node: " + next.getGroundSignature() + " (" + next + ")\n");
-							
-							// dispatch start time 
-							this.executive.scheduleTokenStart(next, tau);
-							// check schedule
-							this.executive.checkSchedule(next);
-							// dispatch start time
-							logger.debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
-									+ "\t- start-tau: " + tau + "\n"
-									+ "\t- node: " + next.getGroundSignature() + " (" + next + ")\n");
-						}
 					}
 					catch (TemporalConstraintPropagationException ex) {
 						// set token as in failure
 						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 						// create execution failure message
-						ExecutionFailureCause cause = new StartOverflow(tick, next, tau);
+						ExecutionFailureCause cause = new DurationOverflow(tick, node, tau);
 						// throw execution exception
 						throw new ObservationException(
-								"Scheduled start time does not comply with the expected one:\n"
-								+ "\t- start: " + tau + "\n"
-								+ "\t- node: " + next + "\n", 
+								"Observed duration time does not comply with the expected one:\n"
+								+ "\t- duration: " + duration + "\n"
+								+ "\t- node: " + node + "\n", 
 								cause);
 					}
 				}
