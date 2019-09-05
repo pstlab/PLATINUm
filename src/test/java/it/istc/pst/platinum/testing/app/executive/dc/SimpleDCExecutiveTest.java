@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.testing.app.executive.dc;
 
 import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
+import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
@@ -36,6 +37,8 @@ public class SimpleDCExecutiveTest
 		{
 			for (int goal : GOAL) 
 			{
+				// simulator
+				PlatformSimulator simulator = null;
 				try
 				{
 					// build the plan database
@@ -55,7 +58,7 @@ public class SimpleDCExecutiveTest
 					
 					
 					// crate satellite platform simulator
-					PlatformSimulator simulator = PlatformProxyBuilder.build(
+					simulator = PlatformProxyBuilder.build(
 							PlatformSimulator.class,
 							"etc/platform/dc/satellite/config_u" + uncertainty + ".xml");
 					
@@ -86,13 +89,23 @@ public class SimpleDCExecutiveTest
 								+ "\t- failure-tick: " + exec.getFailureCause().getInterruptionTick() + "\n"
 								+ "\t- failure-node: " + exec.getFailureCause().getInterruptionNode() + "\n");
 					}
-					
-					// stop simulator
-					simulator.stop();
-
 				}
 				catch (Exception ex) {
 					System.err.println(ex.getMessage());
+				}
+				finally 
+				{
+					// check simulator variable
+					if (simulator != null) {
+						try
+						{
+							// stop simulator
+							simulator.stop();
+						}
+						catch (PlatformException ex) {
+							System.err.println(ex.getMessage());
+						}
+					}
 				}
 			}
 		} 
