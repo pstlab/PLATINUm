@@ -22,21 +22,22 @@ plan {
 		}
 	}
 	relations {
-		PointingMode 6 before [0,100] PointingMode 9
-		PointingMode 4 before [0,100] PointingMode 11
-		PointingMode 2 before [0,100] PointingMode 13
-		PointingMode 11 during [0,100]  [0,100] Window 14
-		PointingMode 13 during [0,100]  [0,100] Window 14
+		PointingMode 4 before [0,100] PointingMode 9
+		PointingMode 2 before [0,100] PointingMode 11
 		PointingMode 9 during [0,100]  [0,100] Window 14
+		PointingMode 11 during [0,100]  [0,100] Window 14
+		PointingMode 6 before [0,100] PointingMode 13
+		PointingMode 13 during [0,100]  [0,100] Window 14
 		PointingMode 0 before [0,100] PointingMode 2
 		PointingMode 0 before [0,100] PointingMode 4
 		PointingMode 2 before [0,100] PointingMode 4
-		PointingMode 4 before [0,100] PointingMode 13
+		PointingMode 4 before [0,100] PointingMode 11
 		PointingMode 0 before [0,100] PointingMode 6
-		PointingMode 11 before [0,100] PointingMode 13
+		PointingMode 9 before [0,100] PointingMode 11
 		PointingMode 2 before [0,100] PointingMode 6
 		PointingMode 4 before [0,100] PointingMode 6
-		PointingMode 6 before [0,100] PointingMode 11
-		PointingMode 9 before [0,100] PointingMode 11
+		PointingMode 6 before [0,100] PointingMode 9
+		PointingMode 9 before [0,100] PointingMode 13
+		PointingMode 11 before [0,100] PointingMode 13
 	}
 }
