@@ -2,59 +2,72 @@ horizon = 100
 plan {
 	timelines {
 		PointingMode {
-			token 0  { Earth [1,5] [1, 5] }
-			token 1  { Slewing [4,8] [3, 3] }
-			token 2  { Science [7,11] [3, 3] }
-			token 3  { Slewing [10,14] [3, 3] }
-			token 4  { Science [13,17] [3, 3] }
-			token 5  { Slewing [16,20] [3, 3] }
-			token 6  { Science [19,23] [3, 3] }
-			token 7  { Slewing [22,26] [3, 3] }
-			token 8  { Science [25,29] [3, 3] }
-			token 9  { Slewing [28,32] [3, 3] }
-			token 10  { Earth [29,33] [1, 5] }
-			token 11 uncontrollable { _Comm [30,34] [1, 5] }
-			token 12  { Earth [31,35] [1, 5] }
-			token 13 uncontrollable { _Comm [32,36] [1, 5] }
-			token 14  { Earth [33,37] [1, 5] }
-			token 15 uncontrollable { _Comm [34,38] [1, 5] }
-			token 16  { Earth [35,39] [1, 5] }
-			token 17 uncontrollable { _Comm [36,40] [1, 5] }
+			token 0  { Earth [1,69] [1, 69] }
+			token 1  { Slewing [2,70] [1, 1] }
+			token 2  { Science [5,73] [3, 3] }
+			token 3  { Slewing [6,74] [1, 1] }
+			token 4  { Science [9,77] [3, 3] }
+			token 5  { Slewing [10,78] [1, 1] }
+			token 6  { Science [13,81] [3, 3] }
+			token 7  { Slewing [14,82] [1, 1] }
+			token 8  { Science [17,85] [3, 3] }
+			token 9  { Slewing [18,86] [1, 1] }
+			token 10  { Science [21,89] [3, 3] }
+			token 11  { Slewing [22,90] [1, 1] }
+			token 12  { Earth [23,91] [1, 69] }
+			token 13 uncontrollable { _Comm [24,92] [1, 8] }
+			token 14  { Earth [25,93] [1, 69] }
+			token 15 uncontrollable { _Comm [26,94] [1, 8] }
+			token 16  { Earth [27,95] [1, 69] }
+			token 17 uncontrollable { _Comm [28,96] [1, 8] }
+			token 18  { Earth [29,97] [1, 69] }
+			token 19 uncontrollable { _Comm [30,98] [1, 8] }
+			token 20  { Earth [31,99] [1, 69] }
+			token 21 uncontrollable { _Comm [32,100] [1, 8] }
 		}
 		Window {
-			token 18 uncontrollable { _NotVisible [10,10] [10, 10] }
-			token 19 uncontrollable { _Visible [40,40] [30, 30] }
-			token 20 uncontrollable { _NotVisible [50,50] [10, 10] }
+			token 22 uncontrollable { _Visible [32,100] [20, 80] }
 		}
 	}
 	relations {
-		PointingMode 8 before [0,100] PointingMode 11
-		PointingMode 11 during [0,100]  [0,100] Window 19
-		PointingMode 6 before [0,100] PointingMode 13
-		PointingMode 13 during [0,100]  [0,100] Window 19
-		PointingMode 4 before [0,100] PointingMode 15
-		PointingMode 15 during [0,100]  [0,100] Window 19
-		PointingMode 2 before [0,100] PointingMode 17
-		PointingMode 17 during [0,100]  [0,100] Window 19
+		PointingMode 2 before [0,100] PointingMode 13
+		PointingMode 6 before [0,100] PointingMode 15
+		PointingMode 4 before [0,100] PointingMode 17
+		PointingMode 10 before [0,100] PointingMode 19
+		PointingMode 8 before [0,100] PointingMode 21
+		PointingMode 15 during [0,100]  [0,100] Window 22
+		PointingMode 17 during [0,100]  [0,100] Window 22
+		PointingMode 19 during [0,100]  [0,100] Window 22
+		PointingMode 21 during [0,100]  [0,100] Window 22
+		PointingMode 13 during [0,100]  [0,100] Window 22
 		PointingMode 0 before [0,100] PointingMode 2
 		PointingMode 0 before [0,100] PointingMode 4
 		PointingMode 2 before [0,100] PointingMode 4
-		PointingMode 4 before [0,100] PointingMode 11
-		PointingMode 11 before [0,100] PointingMode 13
+		PointingMode 4 before [0,100] PointingMode 13
 		PointingMode 0 before [0,100] PointingMode 6
+		PointingMode 2 before [0,100] PointingMode 6
 		PointingMode 4 before [0,100] PointingMode 6
-		PointingMode 6 before [0,100] PointingMode 11
-		PointingMode 6 before [0,100] PointingMode 15
-		PointingMode 11 before [0,100] PointingMode 15
-		PointingMode 13 before [0,100] PointingMode 15
 		PointingMode 0 before [0,100] PointingMode 8
-		PointingMode 4 before [0,100] PointingMode 17
+		PointingMode 6 before [0,100] PointingMode 13
 		PointingMode 2 before [0,100] PointingMode 8
+		PointingMode 13 before [0,100] PointingMode 15
+		PointingMode 4 before [0,100] PointingMode 8
 		PointingMode 6 before [0,100] PointingMode 8
+		PointingMode 8 before [0,100] PointingMode 13
+		PointingMode 0 before [0,100] PointingMode 10
 		PointingMode 6 before [0,100] PointingMode 17
+		PointingMode 13 before [0,100] PointingMode 21
+		PointingMode 2 before [0,100] PointingMode 10
 		PointingMode 8 before [0,100] PointingMode 17
-		PointingMode 11 before [0,100] PointingMode 17
+		PointingMode 15 before [0,100] PointingMode 21
+		PointingMode 4 before [0,100] PointingMode 10
 		PointingMode 13 before [0,100] PointingMode 17
+		PointingMode 6 before [0,100] PointingMode 10
 		PointingMode 15 before [0,100] PointingMode 17
+		PointingMode 8 before [0,100] PointingMode 10
+		PointingMode 17 before [0,100] PointingMode 19
+		PointingMode 10 before [0,100] PointingMode 13
+		PointingMode 17 before [0,100] PointingMode 21
+		PointingMode 19 before [0,100] PointingMode 21
 	}
 }

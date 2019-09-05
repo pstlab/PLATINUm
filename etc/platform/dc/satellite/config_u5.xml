@@ -17,14 +17,14 @@
 	
 	<agent id="a02" label="Window" type="acting" uncertainty="0">
 
-		<command type="pc">s
+		<command type="pc">
 			<name>visible</name>
-			<duration>30</duration>
+			<duration>79</duration>
 		</command>
 		
 		<command type="pc">
 			<name>notvisible</name>
-			<duration>10</duration>
+			<duration>4</duration>
 		</command>
 		
 	</agent>

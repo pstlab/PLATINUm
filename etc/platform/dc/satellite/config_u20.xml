@@ -19,12 +19,12 @@
 
 		<command type="pc">s
 			<name>visible</name>
-			<duration>30</duration>
+			<duration>79</duration>
 		</command>
 		
 		<command type="pc">
 			<name>notvisible</name>
-			<duration>10</duration>
+			<duration>4</duration>
 		</command>
 		
 	</agent>

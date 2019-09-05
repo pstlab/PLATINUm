@@ -1,0 +1,10 @@
+PROBLEM DC_SATELLITE_u30_g1 (DOMAIN DC_SATELLITE_u30) {
+
+	f0 <fact> PointingMode.pm.Earth() AT [0, 0] [1, +INF] [1, +INF];
+	
+	win1 <fact> Window.channel._Visible() AT [0, +INF] [0, +INF] [70, 80];	
+
+	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
+}
+
+

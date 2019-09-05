@@ -13,7 +13,7 @@ DOMAIN DC_SATELLITE_u5
 			_Maintenance();
 		}
 		
-		VALUE Slewing() [3, 3]
+		VALUE Slewing() [1, 1]
 		MEETS {
 			Earth();
 			Science();
@@ -37,14 +37,16 @@ DOMAIN DC_SATELLITE_u5
 	}
 	
 
-	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (_Visible(), _NotVisible())
+	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (
+		_Visible(), _NotVisible()
+	)
 	{
-		VALUE _Visible() [10, 30]
+		VALUE _Visible() [20, 80]
 		MEETS {
 			_NotVisible();
 		}
 		
-		VALUE _NotVisible() [10, 20]
+		VALUE _NotVisible() [1, 5]
 		MEETS {
 			_Visible();
 		}

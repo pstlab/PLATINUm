@@ -37,14 +37,16 @@ DOMAIN DC_SATELLITE_u10
 	}
 	
 
-	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (_Visible(), _NotVisible())
+	COMP_TYPE SingletonStateVariable GroundStationVisibilityType (
+		_Visible(), _NotVisible()
+	)
 	{
-		VALUE _Visible() [10, 30]
+		VALUE _Visible() [20, 80]
 		MEETS {
 			_NotVisible();
 		}
 		
-		VALUE _NotVisible() [10, 20]
+		VALUE _NotVisible() [1, 5]
 		MEETS {
 			_Visible();
 		}

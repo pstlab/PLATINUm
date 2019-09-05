@@ -22,7 +22,8 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  *
  */
 @PlannerSolverConfiguration(
-		solver = PseudoControllabilityAwareSolver.class
+		solver = PseudoControllabilityAwareSolver.class,
+		timeout = 60000												// set solving timeout to 60 seconds
 )
 @FlawSelectionHeuristicsConfiguration(
 		heuristics = PipelineFlawSelectionHeuristic.class
