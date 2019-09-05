@@ -1,16 +1,19 @@
 package it.istc.pst.platinum.executive.dc.strategy.loader;
 
 import java.io.BufferedReader;
+import java.io.File;
 
 // manca connessione a file o a output di tiga
 //manca retrieve dello stato
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,9 +37,11 @@ public class StrategyLoader {
 	public final static String MARKER_TRANSITION = "When you are in ";
 
 	private BufferedReader reader;
+	//private PrintWriter writer;
 	private String pathPlanXta;
 	private Strategy strategy;
 	private Boolean isValid;
+	//int test = 1;
 
 	//------------------------CONSTRUCTORS---------------------------
 
@@ -44,6 +49,7 @@ public class StrategyLoader {
 		System.out.println("\nStarting Strategy Loader ... : \n");
 		this.strategy = new Strategy(horizon);
 		this.isValid = false;
+		
 	}
 
 	//Generates a strategy from a plan using plan2tiga and UppalTiga, given the absolute path of all of them
@@ -61,6 +67,9 @@ public class StrategyLoader {
 	public StrategyLoader (String pathPlan, long horizon) throws IOException { //works only for linux
 		this(horizon);
 		this.pathPlanXta = pathPlan + ".xta";
+		/* File file = new File(pathPlan + "_" + test + ".txt");
+        FileWriter w = new FileWriter(pathPlan + "_" + test + ".txt");
+		this.writer = new PrintWriter(w); */
 		long time = System.currentTimeMillis();
 		ProcessBuilder builder = new ProcessBuilder("bash", "-c", "plan2tiga" + " " + pathPlan +
 				" && " + "verifytga" + " -w0 " + pathPlan + ".xta");
@@ -70,6 +79,8 @@ public class StrategyLoader {
 		this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		time = System.currentTimeMillis() - time;
 		System.out.println("\n" + "Plan2Tiga  + VerifyTga = " + time + "ms\n");
+		//writer.println("\n" + "Plan2Tiga  + VerifyTga = " + time + "ms\n");
+		//this.strategy.setWriter(writer);
 	}
 
 	//from a string (test purpose)
@@ -86,7 +97,8 @@ public class StrategyLoader {
 		try {
 			String line = reader.readLine(); 
 
-			while (line != null) { //reading input
+			while (line != null) { //reading input 
+				System.out.println(line + "\n");
 				//get local clocks
 				if(line.contains(MARKER_PRECONDITIONS)) { //getInitialState(reader.readLine()); getLocalClocks(reader.readLine()); 
 					getInitialState(reader.readLine()); getLocalClocks(reader.readLine()); line = reader.readLine();

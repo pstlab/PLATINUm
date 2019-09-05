@@ -1,6 +1,7 @@
 package it.istc.pst.platinum.executive.dc.strategy;
 
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public class Strategy {
 	private Map<String,Map<String,String>> uPostConditions;
 	
 	private Map<Long,Integer> out;
+	//private PrintWriter writer;
 
 	// ------------------------------ CONSTRUCTORS ------------------
 
@@ -186,4 +188,9 @@ public class Strategy {
 	public void setuPostConditions(Map<String, Map<String, String>> uPostConditions) {
 		this.uPostConditions = uPostConditions;
 	}
+
+	/*public void setWriter(PrintWriter writer) {
+		this.writer = writer;
+		
+	}*/
 }

@@ -31,7 +31,8 @@ public class SimpleDCExecutiveTest
 	 */
 	public static void main(String[] args) 
 	{
-		for (int uncertainty : UNCERTAINTY) 
+		
+		/*for (int uncertainty : UNCERTAINTY) 
 		{
 			for (int goal : GOAL) 
 			{
@@ -40,9 +41,6 @@ public class SimpleDCExecutiveTest
 					// create a thread managing the execution
 					Thread thread = new Thread(new Runnable() {
 						
-						/**
-						 * 
-						 */
 						@Override
 						public void run() 
 						{
@@ -98,7 +96,47 @@ public class SimpleDCExecutiveTest
 			}
 			
 			
-		}
+		} */
+		
+		
+		// -------------------------------------------------------------
+		int uncertainty = 30;
+		int goal = 4;
+		try {// create goal oriented agent
+		GoalOrientedActingAgent agent = new GoalOrientedActingAgent(Planner.class, DCExecutive.class);
+		// starting agent
+		System.out.println("Starting goal-oriented agent...");
+		// start agent
+		agent.start();
+		
+		
+		
+		// crate satellite platform simulator
+		PlatformSimulator simulator = PlatformProxyBuilder.build(
+				PlatformSimulator.class,
+				"etc/platform/dc/satellite/config_u" + uncertainty + ".xml");
+		
+		// start platform simulator
+		System.out.println("Starting platform on configuration file [\"etc/platform/dc/satellite/config_u\"" + uncertainty + "\".xml\"]\n");
+		simulator.start();
+		
+		// initialize and start the agent
+		System.out.println("Initializing goal-oriented agent on planning domain [domains/satellite/dc/satellite_u\"" + uncertainty + "\".ddl] with #goal " + goal + "\n");
+		agent.initialize(
+				simulator, 
+				"domains/satellite/dc/satellite_u" + uncertainty + ".ddl");
+		
+		
+		// create task description
+		AgentTaskDescription task = createTaskDescription(goal);
+		// buffer task description
+		agent.buffer(task);
+	}
+	catch (Exception ex) {
+		System.err.println("Interrupting agent execution");
+	}
+		
+		// -------------------------------------------------------------
 
 	}
 	

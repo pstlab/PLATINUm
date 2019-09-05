@@ -1,9 +1,37 @@
 /*
 Primitive Relations in the input plan:
-R1: window 7 start_before_start[0,100] pointingmode 5
-R2: pointingmode 5 end_before_end[0,100] window 7
-R3: pointingmode 0 end_before_start[0,100] pointingmode 2
-R4: pointingmode 2 end_before_start[0,100] pointingmode 5
+R1: pointingmode 8 end_before_start[0,100] pointingmode 11
+R2: window 19 start_before_start[0,100] pointingmode 11
+R3: pointingmode 11 end_before_end[0,100] window 19
+R4: pointingmode 6 end_before_start[0,100] pointingmode 13
+R5: window 19 start_before_start[0,100] pointingmode 13
+R6: pointingmode 13 end_before_end[0,100] window 19
+R7: pointingmode 4 end_before_start[0,100] pointingmode 15
+R8: window 19 start_before_start[0,100] pointingmode 15
+R9: pointingmode 15 end_before_end[0,100] window 19
+R10: pointingmode 2 end_before_start[0,100] pointingmode 17
+R11: window 19 start_before_start[0,100] pointingmode 17
+R12: pointingmode 17 end_before_end[0,100] window 19
+R13: pointingmode 0 end_before_start[0,100] pointingmode 2
+R14: pointingmode 0 end_before_start[0,100] pointingmode 4
+R15: pointingmode 2 end_before_start[0,100] pointingmode 4
+R16: pointingmode 4 end_before_start[0,100] pointingmode 11
+R17: pointingmode 11 end_before_start[0,100] pointingmode 13
+R18: pointingmode 0 end_before_start[0,100] pointingmode 6
+R19: pointingmode 4 end_before_start[0,100] pointingmode 6
+R20: pointingmode 6 end_before_start[0,100] pointingmode 11
+R21: pointingmode 6 end_before_start[0,100] pointingmode 15
+R22: pointingmode 11 end_before_start[0,100] pointingmode 15
+R23: pointingmode 13 end_before_start[0,100] pointingmode 15
+R24: pointingmode 0 end_before_start[0,100] pointingmode 8
+R25: pointingmode 4 end_before_start[0,100] pointingmode 17
+R26: pointingmode 2 end_before_start[0,100] pointingmode 8
+R27: pointingmode 6 end_before_start[0,100] pointingmode 8
+R28: pointingmode 6 end_before_start[0,100] pointingmode 17
+R29: pointingmode 8 end_before_start[0,100] pointingmode 17
+R30: pointingmode 11 end_before_start[0,100] pointingmode 17
+R31: pointingmode 13 end_before_start[0,100] pointingmode 17
+R32: pointingmode 15 end_before_start[0,100] pointingmode 17
 
 
 Warning: the end time of the last token of the variable pointingmode should be (100,100).
@@ -15,7 +43,7 @@ Adding an unallcated temporal slot at the end
 
 */
 
-clock plan_clock, R1_clock, R2_clock, R3_clock, R4_clock;
+clock plan_clock, R1_clock, R2_clock, R3_clock, R4_clock, R5_clock, R6_clock, R7_clock, R8_clock, R9_clock, R10_clock, R11_clock, R12_clock, R13_clock, R14_clock, R15_clock, R16_clock, R17_clock, R18_clock, R19_clock, R20_clock, R21_clock, R22_clock, R23_clock, R24_clock, R25_clock, R26_clock, R27_clock, R28_clock, R29_clock, R30_clock, R31_clock, R32_clock;
 const int H = 200;
 
 process pointingmode ()
@@ -23,36 +51,122 @@ process pointingmode ()
 clock pointingmode_clock;
 state 
 	start,
-	pointingmode0 { plan_clock <= 29 and pointingmode_clock <= 29 },
-	pointingmode1 { plan_clock <= 32 and pointingmode_clock <= 3 },
-	pointingmode2 { plan_clock <= 35 and pointingmode_clock <= 3 },
-	pointingmode3 { plan_clock <= 38 and pointingmode_clock <= 3 },
-	pointingmode4 { plan_clock <= 39 and pointingmode_clock <= 29 },
-	pointingmode5 { plan_clock <= 40 and pointingmode_clock <= 8 },
-	pointingmode6 { plan_clock <= 100 },
+	pointingmode0 { plan_clock <= 5 and pointingmode_clock <= 5 },
+	pointingmode1 { plan_clock <= 8 and pointingmode_clock <= 3 },
+	pointingmode2 { plan_clock <= 11 and pointingmode_clock <= 3 },
+	pointingmode3 { plan_clock <= 14 and pointingmode_clock <= 3 },
+	pointingmode4 { plan_clock <= 17 and pointingmode_clock <= 3 },
+	pointingmode5 { plan_clock <= 20 and pointingmode_clock <= 3 },
+	pointingmode6 { plan_clock <= 23 and pointingmode_clock <= 3 },
+	pointingmode7 { plan_clock <= 26 and pointingmode_clock <= 3 },
+	pointingmode8 { plan_clock <= 29 and pointingmode_clock <= 3 },
+	pointingmode9 { plan_clock <= 32 and pointingmode_clock <= 3 },
+	pointingmode10 { plan_clock <= 33 and pointingmode_clock <= 5 },
+	pointingmode11 { plan_clock <= 34 and pointingmode_clock <= 5 },
+	pointingmode12 { plan_clock <= 35 and pointingmode_clock <= 5 },
+	pointingmode13 { plan_clock <= 36 and pointingmode_clock <= 5 },
+	pointingmode14 { plan_clock <= 37 and pointingmode_clock <= 5 },
+	pointingmode15 { plan_clock <= 38 and pointingmode_clock <= 5 },
+	pointingmode16 { plan_clock <= 39 and pointingmode_clock <= 5 },
+	pointingmode17 { plan_clock <= 40 and pointingmode_clock <= 5 },
+	pointingmode18 { plan_clock <= 100 },
 	finish;
 init start;
 trans
 	start -> pointingmode0 { guard plan_clock==0; },
 	pointingmode0 -> pointingmode1  { guard plan_clock >= 1 and pointingmode_clock >= 1;
 			assign pointingmode_clock := 0,
-			 R3_clock  := H ;  },
+			 R24_clock  := H ,
+			 R18_clock  := H ,
+			 R14_clock  := H ,
+			 R13_clock  := H ;  },
 	pointingmode1 -> pointingmode2  { guard plan_clock >= 4 and pointingmode_clock >= 3
-			and  R3_clock  >= H + 0 and  R3_clock  <= H + 100;
+			and  R13_clock  >= H + 0 and  R13_clock  <= H + 100;
 		    assign pointingmode_clock := 0; },
 	pointingmode2 -> pointingmode3  { guard plan_clock >= 7 and pointingmode_clock >= 3;
 			assign pointingmode_clock := 0,
+			 R26_clock  := H ,
+			 R15_clock  := H ,
+			 R10_clock  := H ;  },
+	pointingmode3 -> pointingmode4  { guard plan_clock >= 10 and pointingmode_clock >= 3
+			and  R15_clock  >= H + 0 and  R15_clock  <= H + 100
+			and  R14_clock  >= H + 0 and  R14_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode4 -> pointingmode5  { guard plan_clock >= 13 and pointingmode_clock >= 3;
+			assign pointingmode_clock := 0,
+			 R25_clock  := H ,
+			 R19_clock  := H ,
+			 R16_clock  := H ,
+			 R7_clock  := H ;  },
+	pointingmode5 -> pointingmode6  { guard plan_clock >= 16 and pointingmode_clock >= 3
+			and  R19_clock  >= H + 0 and  R19_clock  <= H + 100
+			and  R18_clock  >= H + 0 and  R18_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode6 -> pointingmode7  { guard plan_clock >= 19 and pointingmode_clock >= 3;
+			assign pointingmode_clock := 0,
+			 R28_clock  := H ,
+			 R27_clock  := H ,
+			 R21_clock  := H ,
+			 R20_clock  := H ,
 			 R4_clock  := H ;  },
-	pointingmode3 -> pointingmode4  { guard plan_clock >= 10 and pointingmode_clock >= 3;
+	pointingmode7 -> pointingmode8  { guard plan_clock >= 22 and pointingmode_clock >= 3
+			and  R27_clock  >= H + 0 and  R27_clock  <= H + 100
+			and  R26_clock  >= H + 0 and  R26_clock  <= H + 100
+			and  R24_clock  >= H + 0 and  R24_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode8 -> pointingmode9  { guard plan_clock >= 25 and pointingmode_clock >= 3;
+			assign pointingmode_clock := 0,
+			 R29_clock  := H ,
+			 R1_clock  := H ;  },
+	pointingmode9 -> pointingmode10  { guard plan_clock >= 28 and pointingmode_clock >= 3;
 			assign pointingmode_clock := 0; },
-	pointingmode4 -> pointingmode5  { guard plan_clock >= 11 and pointingmode_clock >= 1
-			and  R4_clock  >= H + 0 and  R4_clock  <= H + 100
+	pointingmode10 -> pointingmode11  { guard plan_clock >= 29 and pointingmode_clock >= 1
+			and  R20_clock  >= H + 0 and  R20_clock  <= H + 100
+			and  R16_clock  >= H + 0 and  R16_clock  <= H + 100
+			and  R2_clock  >= H + 0 and  R2_clock  <= H + 100
 			and  R1_clock  >= H + 0 and  R1_clock  <= H + 100;
 		    assign pointingmode_clock := 0; },
-	pointingmode5 -u-> pointingmode6  { guard plan_clock >= 12 and pointingmode_clock >= 1;
+	pointingmode11 -u-> pointingmode12  { guard plan_clock >= 30 and pointingmode_clock >= 1;
 			assign pointingmode_clock := 0,
-			 R2_clock  := H ;  },
-	pointingmode6 -> finish { guard plan_clock >= 100 and pointingmode_clock >= 0;   }
+			 R30_clock  := H ,
+			 R22_clock  := H ,
+			 R17_clock  := H ,
+			 R3_clock  := H ;  },
+	pointingmode12 -> pointingmode13  { guard plan_clock >= 31 and pointingmode_clock >= 1
+			and  R17_clock  >= H + 0 and  R17_clock  <= H + 100
+			and  R5_clock  >= H + 0 and  R5_clock  <= H + 100
+			and  R4_clock  >= H + 0 and  R4_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode13 -u-> pointingmode14  { guard plan_clock >= 32 and pointingmode_clock >= 1;
+			assign pointingmode_clock := 0,
+			 R31_clock  := H ,
+			 R23_clock  := H ,
+			 R6_clock  := H ;  },
+	pointingmode14 -> pointingmode15  { guard plan_clock >= 33 and pointingmode_clock >= 1
+			and  R23_clock  >= H + 0 and  R23_clock  <= H + 100
+			and  R22_clock  >= H + 0 and  R22_clock  <= H + 100
+			and  R21_clock  >= H + 0 and  R21_clock  <= H + 100
+			and  R8_clock  >= H + 0 and  R8_clock  <= H + 100
+			and  R7_clock  >= H + 0 and  R7_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode15 -u-> pointingmode16  { guard plan_clock >= 34 and pointingmode_clock >= 1;
+			assign pointingmode_clock := 0,
+			 R32_clock  := H ,
+			 R9_clock  := H ;  },
+	pointingmode16 -> pointingmode17  { guard plan_clock >= 35 and pointingmode_clock >= 1
+			and  R32_clock  >= H + 0 and  R32_clock  <= H + 100
+			and  R31_clock  >= H + 0 and  R31_clock  <= H + 100
+			and  R30_clock  >= H + 0 and  R30_clock  <= H + 100
+			and  R29_clock  >= H + 0 and  R29_clock  <= H + 100
+			and  R28_clock  >= H + 0 and  R28_clock  <= H + 100
+			and  R25_clock  >= H + 0 and  R25_clock  <= H + 100
+			and  R11_clock  >= H + 0 and  R11_clock  <= H + 100
+			and  R10_clock  >= H + 0 and  R10_clock  <= H + 100;
+		    assign pointingmode_clock := 0; },
+	pointingmode17 -u-> pointingmode18  { guard plan_clock >= 36 and pointingmode_clock >= 1;
+			assign pointingmode_clock := 0,
+			 R12_clock  := H ;  },
+	pointingmode18 -> finish { guard plan_clock >= 100 and pointingmode_clock >= 0;   }
 	;
 }
 
@@ -61,23 +175,29 @@ process window ()
 clock window_clock;
 state 
 	start,
-	window6 { plan_clock <= 10 and window_clock <= 10 },
-	window7 { plan_clock <= 40 and window_clock <= 30 },
-	window8 { plan_clock <= 50 and window_clock <= 10 },
-	window9 { plan_clock <= 100 },
+	window18 { plan_clock <= 10 and window_clock <= 10 },
+	window19 { plan_clock <= 40 and window_clock <= 30 },
+	window20 { plan_clock <= 50 and window_clock <= 10 },
+	window21 { plan_clock <= 100 },
 	finish;
 init start;
 trans
-	start -> window6 { guard plan_clock==0; },
-	window6 -u-> window7  { guard plan_clock >= 10 and window_clock >= 10;
+	start -> window18 { guard plan_clock==0; },
+	window18 -u-> window19  { guard plan_clock >= 10 and window_clock >= 10;
 			assign window_clock := 0,
-			 R1_clock  := H ;  },
-	window7 -u-> window8  { guard plan_clock >= 40 and window_clock >= 30
-			and  R2_clock  >= H + 0 and  R2_clock  <= H + 100;
+			 R11_clock  := H ,
+			 R8_clock  := H ,
+			 R5_clock  := H ,
+			 R2_clock  := H ;  },
+	window19 -u-> window20  { guard plan_clock >= 40 and window_clock >= 30
+			and  R12_clock  >= H + 0 and  R12_clock  <= H + 100
+			and  R9_clock  >= H + 0 and  R9_clock  <= H + 100
+			and  R6_clock  >= H + 0 and  R6_clock  <= H + 100
+			and  R3_clock  >= H + 0 and  R3_clock  <= H + 100;
 		    assign window_clock := 0; },
-	window8 -u-> window9  { guard plan_clock >= 50 and window_clock >= 10;
+	window20 -u-> window21  { guard plan_clock >= 50 and window_clock >= 10;
 			assign window_clock := 0; },
-	window9 -> finish { guard plan_clock >= 100 and window_clock >= 0;   }
+	window21 -> finish { guard plan_clock >= 100 and window_clock >= 0;   }
 	;
 }
 
