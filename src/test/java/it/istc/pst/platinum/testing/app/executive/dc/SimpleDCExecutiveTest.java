@@ -13,13 +13,15 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 
 /**
  * 
- * @author alessandro
+ * @author alessandrod
+ * 
+ * 
  *
  */
 public class SimpleDCExecutiveTest 
 {
-	private static int UNCERTAINTY = 5;		 // 10, 15, 20, 25, 30
-	private static int GOAL = 1; 			 // 2, 3, 4, 5
+//	private static int UNCERTAINTY = 5;		 // 10, 15, 20, 25, 30
+//	private static int GOAL = 1; 			 // 2, 3, 4, 5
 	
 	/**
 	 * 
@@ -27,14 +29,18 @@ public class SimpleDCExecutiveTest
 	 */
 	public static void main(String[] args)
 	{
+		int uncertainty = Integer.parseInt(args[0]);
+		int goal = Integer.parseInt(args[1]);
+				
+		
 		// simulator
 		PlatformSimulator simulator = null;
 		try
 		{
 			// build the plan database
 			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(
-					"domains/satellite/dc/satellite_u" + UNCERTAINTY + ".ddl", 
-					"domains/satellite/dc/satellite_u" + UNCERTAINTY + "_g" + GOAL + ".pdl");
+					"domains/satellite/dc/satellite_u" + uncertainty + ".ddl", 
+					"domains/satellite/dc/satellite_u" + uncertainty + "_g" + goal + ".pdl");
 			
 			// create planner 
 			Planner planner = PlannerBuilder.createAndSet(pdb);
@@ -50,7 +56,7 @@ public class SimpleDCExecutiveTest
 			// crate satellite platform simulator
 			simulator = PlatformProxyBuilder.build(
 					PlatformSimulator.class,
-					"etc/platform/dc/satellite/config_u" + UNCERTAINTY + ".xml");
+					"etc/platform/dc/satellite/config_u" + uncertainty + ".xml");
 			
 			// create executive
 			Executive exec  = ExecutiveBuilder.createAndSet(DCExecutive.class, 0, solution.getHorizon());
@@ -62,7 +68,7 @@ public class SimpleDCExecutiveTest
 			// get start time
 			long start  = System.currentTimeMillis();
 			// start platform simulator
-			System.out.println("Starting platform on configuration file [\"etc/platform/dc/satellite/config_u\"" + UNCERTAINTY + "\".xml\"]\n");
+			System.out.println("Starting platform on configuration file [\"etc/platform/dc/satellite/config_u\"" + uncertainty + "\".xml\"]\n");
 			simulator.start();
 			// start plan execution
 			System.out.println("Starting plan execution...");
