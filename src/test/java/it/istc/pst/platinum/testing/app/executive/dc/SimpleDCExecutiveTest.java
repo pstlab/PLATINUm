@@ -20,11 +20,11 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 public class SimpleDCExecutiveTest 
 {
 	private static int[] UNCERTAINTY = new int[] {
-			5, //10, 15, 20, 25, 30
+			5, 10, 15, 20, 25, 30
 	};
 	
 	private static int[] GOAL = new int[] {
-			3, //2, 3, 4, 5
+			1, 2, 3, 4, 5
 	};
 	
 	/**
