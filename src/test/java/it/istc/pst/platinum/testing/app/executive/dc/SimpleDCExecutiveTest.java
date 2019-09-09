@@ -20,18 +20,15 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
  */
 public class SimpleDCExecutiveTest 
 {
-//	private static int UNCERTAINTY = 5;		 // 10, 15, 20, 25, 30
-//	private static int GOAL = 1; 			 // 2, 3, 4, 5
-	
 	/**
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args)
 	{
-		int uncertainty = Integer.parseInt(args[0]);
-		int goal = Integer.parseInt(args[1]);
-				
+		int set = Integer.parseInt(args[0]);					// domain set
+		int uncertainty = Integer.parseInt(args[1]);			// domain uncertainty
+		int goal = Integer.parseInt(args[2]);					// number of goals
 		
 		// simulator
 		PlatformSimulator simulator = null;
@@ -39,8 +36,8 @@ public class SimpleDCExecutiveTest
 		{
 			// build the plan database
 			PlanDataBase pdb = PlanDataBaseBuilder.createAndSet(
-					"domains/satellite/dc/satellite_u" + uncertainty + ".ddl", 
-					"domains/satellite/dc/satellite_u" + uncertainty + "_g" + goal + ".pdl");
+					"domains/satellite/dc/set" + set + "/satellite_u" + uncertainty + ".ddl", 
+					"domains/satellite/dc/set" + set + "/satellite_u" + uncertainty + "_g" + goal + ".pdl");
 			
 			// create planner 
 			Planner planner = PlannerBuilder.createAndSet(pdb);
@@ -56,7 +53,7 @@ public class SimpleDCExecutiveTest
 			// crate satellite platform simulator
 			simulator = PlatformProxyBuilder.build(
 					PlatformSimulator.class,
-					"etc/platform/dc/satellite/config_u" + uncertainty + ".xml");
+					"etc/platform/dc/satellite/set" + set + "/config_u" + uncertainty + ".xml");
 			
 			// create executive
 			Executive exec  = ExecutiveBuilder.createAndSet(DCExecutive.class, 0, solution.getHorizon());
