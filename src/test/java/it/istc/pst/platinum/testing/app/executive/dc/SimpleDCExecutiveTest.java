@@ -11,11 +11,11 @@ import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 
+
+
 /**
  * 
- * @author alessandrod
- * 
- * 
+ * @author alessandro
  *
  */
 public class SimpleDCExecutiveTest 
