@@ -4,22 +4,22 @@
 
 		<command type="pc">
 			<name>comm</name>
-			<duration>2</duration>
+			<duration>5</duration>
 		</command>
 		
 	</agent>
 	
 	
-	<agent id="a02" label="Window" type="acting" uncertainty="0">
+	<agent id="a02" label="GroundStation" type="acting" uncertainty="0">
 
-		<command type="pc">s
+		<command type="pc">
 			<name>visible</name>
-			<duration>279</duration>
+			<duration>59</duration>
 		</command>
 		
 		<command type="pc">
 			<name>notvisible</name>
-			<duration>4</duration>
+			<duration>19</duration>
 		</command>
 		
 	</agent>

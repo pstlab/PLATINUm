@@ -40,9 +40,6 @@ public class ICAPS20ActingExperiments
 	// planning timeout
 	protected static final int TIMEOUT = 60000;
 	
-	// number of run for each experiment
-	protected static int EXPERIMETN_RUNS = 3;
-	
 	// planning horizons
 	protected static int[] HORIZON = {		
 		100,
@@ -84,65 +81,181 @@ public class ICAPS20ActingExperiments
 	/**
 	 * 
 	 * @param horizon
-	 * @param uncdertainty
 	 * @param window
 	 * @param instrument
 	 * @param goal
 	 * @return
 	 */
-	private static AgentTaskDescription createTaskDescription(int horizon, int uncdertainty, int window, int instrument, int goal) 
+	private static AgentTaskDescription createTaskDescription(int horizon, int window, int instrument, int goal) 
 	{
 		// create task description
 		AgentTaskDescription description = new AgentTaskDescription();
+		
+		// add orbit related facts
+		if (horizon == 100) 
+		{
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"Orbit", 
+					"PERI", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {30, 30}, 
+					new long[] {30, 30}));
+			
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"Orbit", 
+					"INT", 
+					new String[] {}, 
+					new long[] {30, 30}, 
+					new long[] {70, 70}, 
+					new long[] {40, 40}));
+			
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"Orbit", 
+					"APO", 
+					new String[] {}, 
+					new long[] {70, 70}, 
+					new long[] {100, 100}, 
+					new long[] {30, 30}));
+		}
+		
+		
+		// add ground station related facts
+		if (window == 1) {
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"GroundStation", 
+					"NotVisible", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {20, 20}, 
+					new long[] {20, 20}));
+			
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"GroundStation", 
+					"Visible", 
+					new String[] {}, 
+					new long[] {20, 20}, 
+					new long[] {80, 80}, 
+					new long[] {60, 60}));
+			
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"GroundStation", 
+					"NotVisible", 
+					new String[] {}, 
+					new long[] {80, 80}, 
+					new long[] {100, 100}, 
+					new long[] {20, 20}));
+		}
+		
+		
+		// add pointing fact
 		description.addFactDescription(new TokenDescription(
-				"Production", 
-				"Idle", 
+				"PointingMode", 
+				"Earth", 
 				new String[] {}, 
 				new long[] {0, 0}, 
-				new long[] {0, 500}, 
-				new long[] {0, 500}));
-		
-		description.addFactDescription(new TokenDescription(
-				"Human", 
-				"Idle", 
-				new String[] {}, 
-				new long[] {0, 0}, 
-				new long[] {0, 500}, 
-				new long[] {0, 500}));
-		
-		description.addFactDescription(new TokenDescription(
-				"Robot", 
-				"Idle", 
-				new String[] {}, 
-				new long[] {0, 0}, 
-				new long[] {0, 500}, 
-				new long[] {0, 500}));
-		
-		description.addFactDescription(new TokenDescription(
-				"Arm", 
-				"SetOnBase", 
-				new String[] {}, 
-				new long[] {0, 0}, 
-				new long[] {0, 500}, 
-				new long[] {0, 500}));
-		
-		description.addFactDescription(new TokenDescription(
-				"Tool", 
-				"Idle", 
-				new String[] {}, 
-				new long[] {0, 0}, 
-				new long[] {0, 500}, 
-				new long[] {0, 500}));
+				new long[] {0, 100}, 
+				new long[] {1, 100}));
 		
 		
-		description.addGoalDescription(new TokenDescription(
-				"Production", 
-				"Assembly"));
+		// add instrument related facts
+		if (instrument == 1) 
+		{
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"Instrument", 
+					"Off", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+		}
+		else if (instrument == 2)
+		{
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"Instrument1", 
+					"Off", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"Instrument2", 
+					"Off", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"InstLock", 
+					"None", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+		}
+		else if (instrument == 3)
+		{
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"Instrument1", 
+					"Off", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"Instrument2", 
+					"Off", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"Instrument3", 
+					"Off", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"InstLock", 
+					"None", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+		}
+
+		
+		// add goals
+		for (int i = 0; i < goal; i++) {
+			// add goal 
+			description.addGoalDescription(new TokenDescription(
+					"RSA", 
+					"Scien"));
+		}
 		
 		// get task description
 		return description;
-	}
-	
+	}	
 	/**
 	 * 
 	 * @param args
@@ -220,10 +333,14 @@ public class ICAPS20ActingExperiments
 										try
 										{
 											// set goal-oriented agent
-											agent = new GoalOrientedActingAgent();
-											System.out.println("Starting agent...");
+											agent = new GoalOrientedActingAgent(
+													ICAPS20Planner.class,
+													ICAPS20DispatchabilityExecutive.class);
+											
+											System.out.println("Starting agent... ");
 											agent.start();
 											
+											System.out.println("Starting platform simulator... ");
 											// configuration loader
 											simulator = PlatformProxyBuilder.build(
 													PLATFORM_SIMULATOR_CLASS,
@@ -232,14 +349,16 @@ public class ICAPS20ActingExperiments
 											// start simulator
 											simulator.start();
 											
+											System.out.println("Initialize agent... ");
 											// set the agent
 											agent.initialize(
 													simulator,
 													DDL);
 						
 											// create task description 
-											AgentTaskDescription task = createTaskDescription(horizon, uncertainty, window, instrument, g);
+											AgentTaskDescription task = createTaskDescription(horizon, window, instrument, g);
 											
+											System.out.println("Enter task... ");
 											// buffer task description
 											agent.buffer(task);
 											
