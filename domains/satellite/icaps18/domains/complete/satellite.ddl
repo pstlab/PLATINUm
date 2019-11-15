@@ -139,4 +139,6 @@ DOMAIN BATTERY_SATELLITE_COMPLETE
 			EQUALS cd0;
 		}
 	}
+SYNCHRONIZE GroundStationWindow.channel {
+	}
 }

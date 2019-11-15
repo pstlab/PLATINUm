@@ -1,0 +1,35 @@
+PROBLEM RSA_H100_W1_G1 (DOMAIN RSA_H100_U30_I3) 
+{
+	// set orbit external - no uncertainty
+	f11 <fact> Orbit.orbit.PERI() AT [0, 0] [30, 30] [30, 30];
+	f12 <fact> Orbit.orbit.INT() AT [30, 30] [70, 70] [40, 40];
+	f13 <fact> Orbit.orbit.APO() AT [70, 70] [100, 100] [30, 30];
+	
+	
+	// set visibility window - uncertainty = 5
+	f21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [35, 40] [35, 40];
+	f22 <fact> GroundStation.visibility.Visible() AT [35, 40] [60, 65] [20, 30];
+	f23 <fact> GroundStation.visibility.NotVisible() AT [60, 65] [100, 100] [35, 40];
+	
+	// set idle state 
+	f31 <fact> RSA.operations.Idle() AT [0, 0] [0, 100] [1, 100];
+	
+	// set point state
+	f41 <fact> PointingMode.pointing.Earth() AT [0, 0] [0, 100] [1, 100];
+	
+	// set instrument state
+	f51 <fact> Instrument1.inst1.Off() AT [0, 0] [0, 100] [1, 100];
+	f52 <fact> Instrument2.inst2.Off() AT [0, 0] [0, 100] [1, 100];
+	f53 <fact> Instrument3.inst3.Off() AT [0, 0] [0, 100] [1, 100];
+	
+	// set instrument lock 
+	f61 <fact> InstLock.locking.None() AT [0, 0] [0, 100] [1, 100];
+	
+	
+	
+	// set goal 
+	g1 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+	g2 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+	g3 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+}
+
