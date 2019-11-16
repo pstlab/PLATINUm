@@ -1,38 +1,31 @@
-PROBLEM RSA_H100_W3_G4 (DOMAIN RSA_H100_U10_I3) 
-{
-	// set orbit external - no uncertainty
-	f11 <fact> Orbit.orbit.PERI() AT [0, 0] [30, 30] [30, 30];
-	f12 <fact> Orbit.orbit.INT() AT [30, 30] [70, 70] [40, 40];
-	f13 <fact> Orbit.orbit.APO() AT [70, 70] [100, 100] [30, 30];
-	
-	
-	// set visibility window - uncertainty
-	f21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [30, 35] [30, 35];
-	f22 <fact> GroundStation.visibility.Visible() AT [30, 35] [40, 45] [10, 15];
-	f23 <fact> GroundStation.visibility.NotVisible() AT [40, 45] [40, 45] [1, 5];
-	f24 <fact> GroundStation.visibility.Visible() AT [40, 45] [50, 55] [10, 15];
-	f25 <fact> GroundStation.visibility.NotVisible() AT [50, 55] [50, 55] [1, 5];
-	f26 <fact> GroundStation.visibility.Visible() AT [50, 55] [60, 75] [10, 15];
-	f27 <fact> GroundStation.visibility.NotVisible() AT [60, 75] [100, 100] [25, 40];
-	
-	// set idle state 
-	f31 <fact> RSA.operations.Idle() AT [0, 0] [0, 100] [1, 100];
-	
-	// set point state
-	f41 <fact> PointingMode.pointing.Earth() AT [0, 0] [0, 100] [1, 100];
-	
-	// set instrument state
-	f51 <fact> Instrument1.inst1.Off() AT [0, 0] [0, 100] [1, 100];
-	f52 <fact> Instrument1.inst1.Off() AT [0, 0] [0, 100] [1, 100];
-	f53 <fact> Instrument3.inst3.Off() AT [0, 0] [0, 100] [1, 100];
-	
-	// set instrument lock 
-	f61 <fact> InstLock.locking.None() AT [0, 0] [0, 100] [1, 100];
-	
-	// set goal 
-	g1 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
-	g2 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
-	g3 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
-	g4 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+PROBLEM RSA_H100_W3_G4 (DOMAIN RSA_H100_U10_I3) {
+
+		f11 <fact> Orbit.orbit.PERI() AT [0, 0] [30, 30] [30, 30];
+		f12 <fact> Orbit.orbit.INT() AT [30, 30] [70, 70] [40, 40];
+		f13 <fact> Orbit.orbit.APO() AT [70, 70] [100, 100] [30, 30];
+
+		f21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [30, 35] [30, 35];
+		f22 <fact> GroundStation.visibility.Visible() AT [30, 35] [40, 45] [10, 15];
+		f23 <fact> GroundStation.visibility.NotVisible() AT [40, 45] [40, 45] [1, 5];
+		f24 <fact> GroundStation.visibility.Visible() AT [40, 45] [50, 55] [10, 15];
+		f25 <fact> GroundStation.visibility.NotVisible() AT [50, 55] [50, 55] [1, 5];
+		f26 <fact> GroundStation.visibility.Visible() AT [50, 55] [60, 75] [10, 15];
+		f27 <fact> GroundStation.visibility.NotVisible() AT [60, 75] [100, 100] [25, 40];
+
+		f31 <fact> RSA.operations.Idle() AT [0, 0] [0, 100] [1, 100];
+
+		f41 <fact> PointingMode.pointing.Earth() AT [0, 0] [0, 100] [1, 100];
+
+		f51 <fact> Instrument1.inst1.Off() AT [0, 0] [0, 100] [1, 100];
+		f52 <fact> Instrument2.inst2.Off() AT [0, 0] [0, 100] [1, 100];
+		f53 <fact> Instrument3.inst3.Off() AT [0, 0] [0, 100] [1, 100];
+
+		f61 <fact> InstLock.locking.None() AT [0, 0] [0, 100] [1, 100];
+
+		g1 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+		g2 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+		g3 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+		g4 <goal> RSA.operations.Scien() AT [0, 100] [0, 100] [1, 100];
+
 }
 

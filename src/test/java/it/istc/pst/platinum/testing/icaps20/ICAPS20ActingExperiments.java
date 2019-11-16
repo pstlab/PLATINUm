@@ -364,6 +364,10 @@ public class ICAPS20ActingExperiments
 											
 											// get managed goals
 											goals = agent.getResults();
+											
+											
+											// wait a bit before starting next run
+											Thread.sleep(5000);
 										}
 										catch (Exception ex) {
 											System.err.println(ex.getMessage());

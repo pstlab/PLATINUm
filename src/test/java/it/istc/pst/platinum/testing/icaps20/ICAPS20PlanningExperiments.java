@@ -33,14 +33,6 @@ public class ICAPS20PlanningExperiments
 	// planning timeout
 	protected static final int TIMEOUT = 60000;
 	
-	// number of run for each experiment
-	protected static int EXPERIMETN_RUNS = 3;
-	
-	// planner configurations
-	protected static Class<?>[] CONFIGURATIONS = {
-		ICAPS20Planner.class,
-	};
-	
 	// planning horizons
 	protected static int[] HORIZON = {		
 		100,
@@ -128,7 +120,6 @@ public class ICAPS20PlanningExperiments
 									Planner planner = PlannerBuilder.createAndSet(
 											ICAPS20Planner.class, 
 											pdb);
-			
 									
 									// start planning
 									System.out.println("Run planner on problem \"" + problemName + "\" ... ");
@@ -137,6 +128,7 @@ public class ICAPS20PlanningExperiments
 									
 									// get plan solving time
 									time = plan.getSolvingTime();
+									planner.display();
 									
 									// print solving information
 									System.out.println("... problem \"" + problemName + "\" solved after " + time + " msecs\nSolution plan:\n" + plan + "\n"
@@ -150,6 +142,11 @@ public class ICAPS20PlanningExperiments
 										writer.println();
 										writer.print(plan);
 									}
+									
+									
+									// wait some seconds before starting next run
+									Thread.sleep(5000);
+									
 								}
 								catch (Exception ex) 
 								{
