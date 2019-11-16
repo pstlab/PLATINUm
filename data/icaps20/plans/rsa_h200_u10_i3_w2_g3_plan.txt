@@ -1,0 +1,553 @@
+horizon = 200
+plan {
+	timelines {
+		Instrument1 {
+			token 0  { Off [3,14] [3, 14] }
+			token 1  { WarmUp [6,17] [3, 3] }
+			token 2  { Process [9,20] [3, 8] }
+			token 3  { TurnOff [10,21] [1, 1] }
+			token 4  { Off [23,34] [13, 24] }
+			token 5  { WarmUp [26,37] [3, 3] }
+			token 6  { Process [29,40] [3, 8] }
+			token 7  { TurnOff [30,41] [1, 1] }
+			token 8  { Off [43,54] [13, 24] }
+			token 9  { WarmUp [46,57] [3, 3] }
+			token 10  { Process [49,60] [3, 8] }
+		}
+		Instrument2 {
+			token 11  { Off [11,22] [11, 22] }
+			token 12  { WarmUp [14,25] [3, 3] }
+			token 13  { Process [17,28] [3, 8] }
+			token 14  { TurnOff [18,29] [1, 1] }
+			token 15  { Off [27,38] [9, 20] }
+			token 16  { WarmUp [30,41] [3, 3] }
+			token 17  { Process [33,44] [3, 8] }
+			token 18  { TurnOff [34,45] [1, 1] }
+			token 19  { Off [39,50] [5, 16] }
+			token 20  { WarmUp [42,53] [3, 3] }
+			token 21  { Process [45,56] [3, 8] }
+		}
+		Instrument3 {
+			token 22  { Off [7,18] [7, 18] }
+			token 23  { WarmUp [10,21] [3, 3] }
+			token 24  { Process [13,24] [3, 8] }
+			token 25  { TurnOff [14,25] [1, 1] }
+			token 26  { Off [19,30] [5, 16] }
+			token 27  { WarmUp [22,33] [3, 3] }
+			token 28  { Process [25,36] [3, 8] }
+			token 29  { TurnOff [26,37] [1, 1] }
+			token 30  { Off [35,46] [9, 20] }
+			token 31  { WarmUp [38,49] [3, 3] }
+			token 32  { Process [41,52] [3, 8] }
+		}
+		PointingMode {
+			token 33  { Earth [1,12] [1, 12] }
+			token 34  { Slew [6,17] [5, 5] }
+			token 35  { Planet [17,28] [11, 22] }
+			token 36  { Slew [22,33] [5, 5] }
+			token 37  { Planet [33,44] [11, 22] }
+			token 38  { Slew [38,49] [5, 5] }
+			token 39  { Planet [55,60] [11, 22] }
+			token 40  { Slew [60,65] [5, 5] }
+			token 41  { Earth [65,74] [5, 14] }
+			token 42  { Slew [70,79] [5, 5] }
+			token 43  { Earth [75,84] [5, 14] }
+			token 44  { Slew [80,89] [5, 5] }
+			token 45  { Earth [85,140] [5, 60] }
+		}
+		GroundStation {
+			token 46  { NotVisible [60,65] [60, 65] }
+			token 47  { Visible [90,94] [25, 34] }
+			token 48  { NotVisible [91,95] [1, 5] }
+			token 49  { Visible [130,140] [35, 49] }
+			token 50  { NotVisible [131,200] [1, 70] }
+		}
+		Orbit {
+			token 51  { PERI [60,60] [60, 60] }
+			token 52  { INT [140,140] [80, 80] }
+			token 53  { APO [200,200] [60, 60] }
+		}
+		InstLock {
+			token 54  { None [1,17] [1, 17] }
+			token 55  { Inst1 [9,20] [3, 19] }
+			token 56  { None [10,21] [1, 12] }
+			token 57  { Inst3 [13,24] [3, 14] }
+			token 58  { None [14,25] [1, 12] }
+			token 59  { Inst2 [17,32] [3, 18] }
+			token 60  { None [18,33] [1, 16] }
+			token 61  { Inst3 [25,36] [3, 18] }
+			token 62  { None [26,37] [1, 12] }
+			token 63  { Inst1 [29,40] [3, 14] }
+			token 64  { None [30,41] [1, 12] }
+			token 65  { Inst2 [33,48] [3, 18] }
+			token 66  { None [34,49] [1, 16] }
+			token 67  { Inst3 [41,52] [3, 18] }
+			token 68  { None [42,53] [1, 12] }
+			token 69  { Inst2 [45,56] [3, 14] }
+			token 70  { None [46,57] [1, 12] }
+			token 71  { Inst1 [49,200] [3, 154] }
+		}
+		RSA {
+			token 72  { Idle [6,17] [6, 17] }
+			token 73  { Scien [17,28] [11, 22] }
+			token 74  { Idle [22,33] [5, 16] }
+			token 75  { Scien [33,44] [11, 22] }
+			token 76  { Idle [38,49] [5, 16] }
+			token 77  { Scien [49,60] [11, 22] }
+			token 78  { Idle [60,69] [5, 20] }
+			token 79 uncontrollable { _Comm [65,74] [5, 14] }
+			token 80  { Idle [70,79] [5, 14] }
+			token 81 uncontrollable { _Comm [75,84] [5, 14] }
+			token 82  { Idle [80,89] [5, 14] }
+			token 83 uncontrollable { _Comm [85,94] [5, 14] }
+		}
+	}
+	relations {
+		RSA 73 during [0,200]  [0,200] PointingMode 35
+		RSA 73 contains [0,200]  [0,200] Instrument1 2
+		RSA 73 before [0,200] RSA 79
+		RSA 73 contains [0,200]  [0,200] Instrument2 13
+		RSA 73 contains [0,200]  [0,200] Instrument3 24
+		RSA 77 during [0,200]  [0,200] PointingMode 39
+		RSA 77 contains [0,200]  [0,200] Instrument1 10
+		RSA 77 before [0,200] RSA 81
+		RSA 77 contains [0,200]  [0,200] Instrument2 21
+		RSA 77 contains [0,200]  [0,200] Instrument3 32
+		RSA 75 during [0,200]  [0,200] PointingMode 37
+		RSA 75 contains [0,200]  [0,200] Instrument1 6
+		RSA 75 before [0,200] RSA 83
+		RSA 75 contains [0,200]  [0,200] Instrument2 17
+		RSA 75 contains [0,200]  [0,200] Instrument3 28
+		RSA 83 during [0,200]  [0,200] GroundStation 47
+		RSA 83 during [0,200]  [0,200] PointingMode 45
+		RSA 81 during [0,200]  [0,200] GroundStation 47
+		RSA 81 during [0,200]  [0,200] PointingMode 43
+		RSA 79 during [0,200]  [0,200] GroundStation 47
+		RSA 79 during [0,200]  [0,200] PointingMode 41
+		Instrument1 2 during [0,200]  [0,200] InstLock 55
+		Instrument3 28 during [0,200]  [0,200] InstLock 61
+		Instrument3 24 during [0,200]  [0,200] InstLock 57
+		Instrument3 32 during [0,200]  [0,200] InstLock 67
+		Instrument2 21 during [0,200]  [0,200] InstLock 69
+		PointingMode 39 during [0,200]  [0,200] Orbit 51
+		Instrument1 10 during [0,200]  [0,200] InstLock 71
+		Instrument1 6 during [0,200]  [0,200] InstLock 63
+		Instrument2 13 during [0,200]  [0,200] InstLock 59
+		Instrument2 17 during [0,200]  [0,200] InstLock 65
+		PointingMode 45 during [0,200]  [0,200] Orbit 52
+		PointingMode 35 during [0,200]  [0,200] Orbit 51
+		PointingMode 43 during [0,200]  [0,200] Orbit 52
+		PointingMode 37 during [0,200]  [0,200] Orbit 51
+		PointingMode 41 during [0,200]  [0,200] Orbit 52
+		RSA 72 before [0,200] RSA 73
+		RSA 72 before [0,200] RSA 75
+		RSA 73 before [0,200] RSA 75
+		RSA 79 before [0,200] RSA 81
+		RSA 72 before [0,200] RSA 77
+		RSA 73 before [0,200] RSA 77
+		RSA 75 before [0,200] RSA 77
+		RSA 79 before [0,200] RSA 83
+		RSA 81 before [0,200] RSA 83
+		Instrument3 22 before [0,200] Instrument3 24
+		PointingMode 33 before [0,200] PointingMode 39
+		Instrument2 11 before [0,200] Instrument2 13
+		Instrument1 0 before [0,200] Instrument1 2
+		GroundStation 46 before [0,200] GroundStation 50
+		PointingMode 33 before [0,200] PointingMode 37
+		PointingMode 41 before [0,200] PointingMode 43
+		PointingMode 33 before [0,200] PointingMode 35
+		GroundStation 46 before [0,200] GroundStation 48
+		PointingMode 35 before [0,200] PointingMode 37
+		PointingMode 35 before [0,200] PointingMode 39
+		GroundStation 47 before [0,200] GroundStation 50
+		GroundStation 46 before [0,200] GroundStation 49
+		PointingMode 37 before [0,200] PointingMode 39
+		PointingMode 41 before [0,200] PointingMode 45
+		GroundStation 48 before [0,200] GroundStation 49
+		GroundStation 46 before [0,200] GroundStation 47
+		PointingMode 43 before [0,200] PointingMode 45
+		GroundStation 47 before [0,200] GroundStation 48
+		GroundStation 49 before [0,200] GroundStation 50
+		InstLock 54 before [0,200] InstLock 67
+		InstLock 54 before [0,200] InstLock 69
+		InstLock 54 before [0,200] InstLock 71
+		InstLock 54 before [0,200] InstLock 61
+		InstLock 59 before [0,200] InstLock 61
+		InstLock 54 before [0,200] InstLock 63
+		InstLock 63 before [0,200] InstLock 65
+		InstLock 67 before [0,200] InstLock 69
+		InstLock 54 before [0,200] InstLock 55
+		InstLock 55 before [0,200] InstLock 71
+		InstLock 55 before [0,200] InstLock 67
+		InstLock 61 before [0,200] InstLock 71
+		InstLock 54 before [0,200] InstLock 57
+		InstLock 55 before [0,200] InstLock 57
+		InstLock 57 before [0,200] InstLock 61
+		InstLock 59 before [0,200] InstLock 63
+		InstLock 57 before [0,200] InstLock 67
+		InstLock 63 before [0,200] InstLock 67
+		InstLock 65 before [0,200] InstLock 67
+		InstLock 54 before [0,200] InstLock 59
+		InstLock 55 before [0,200] InstLock 59
+		InstLock 57 before [0,200] InstLock 59
+		InstLock 61 before [0,200] InstLock 63
+		InstLock 63 before [0,200] InstLock 71
+		InstLock 65 before [0,200] InstLock 71
+		InstLock 67 before [0,200] InstLock 71
+		InstLock 69 before [0,200] InstLock 71
+		RSA 77 meets RSA 78
+		RSA 78 meets RSA 79
+		Instrument3 24 meets Instrument3 25
+		Instrument3 25 meets Instrument3 26
+		Instrument3 26 meets Instrument3 27
+		Instrument3 27 meets Instrument3 28
+		Instrument1 0 meets Instrument1 1
+		Instrument1 1 meets Instrument1 2
+		RSA 79 meets RSA 80
+		RSA 80 meets RSA 81
+		Instrument3 28 meets Instrument3 29
+		Instrument3 29 meets Instrument3 30
+		Instrument3 30 meets Instrument3 31
+		Instrument3 31 meets Instrument3 32
+		InstLock 59 meets InstLock 60
+		InstLock 60 meets InstLock 61
+		RSA 81 meets RSA 82
+		RSA 82 meets RSA 83
+		InstLock 69 meets InstLock 70
+		InstLock 70 meets InstLock 71
+		RSA 75 meets RSA 76
+		RSA 76 meets RSA 77
+		Instrument3 22 meets Instrument3 23
+		Instrument3 23 meets Instrument3 24
+		GroundStation 49 meets GroundStation 50
+		PointingMode 39 meets PointingMode 40
+		PointingMode 40 meets PointingMode 41
+		Instrument2 13 meets Instrument2 14
+		Instrument2 14 meets Instrument2 15
+		Instrument2 15 meets Instrument2 16
+		Instrument2 16 meets Instrument2 17
+		InstLock 55 meets InstLock 56
+		InstLock 56 meets InstLock 57
+		PointingMode 43 meets PointingMode 44
+		PointingMode 44 meets PointingMode 45
+		GroundStation 48 meets GroundStation 49
+		PointingMode 41 meets PointingMode 42
+		PointingMode 42 meets PointingMode 43
+		Instrument2 17 meets Instrument2 18
+		Instrument2 18 meets Instrument2 19
+		Instrument2 19 meets Instrument2 20
+		Instrument2 20 meets Instrument2 21
+		Orbit 51 meets Orbit 52
+		Instrument1 6 meets Instrument1 7
+		Instrument1 7 meets Instrument1 8
+		Instrument1 8 meets Instrument1 9
+		Instrument1 9 meets Instrument1 10
+		RSA 72 meets RSA 73
+		PointingMode 37 meets PointingMode 38
+		PointingMode 38 meets PointingMode 39
+		GroundStation 46 meets GroundStation 47
+		PointingMode 35 meets PointingMode 36
+		PointingMode 36 meets PointingMode 37
+		GroundStation 47 meets GroundStation 48
+		Instrument1 2 meets Instrument1 3
+		Instrument1 3 meets Instrument1 4
+		Instrument1 4 meets Instrument1 5
+		Instrument1 5 meets Instrument1 6
+		InstLock 63 meets InstLock 64
+		InstLock 64 meets InstLock 65
+		InstLock 67 meets InstLock 68
+		InstLock 68 meets InstLock 69
+		RSA 73 meets RSA 74
+		RSA 74 meets RSA 75
+		InstLock 65 meets InstLock 66
+		InstLock 66 meets InstLock 67
+		Instrument2 11 meets Instrument2 12
+		Instrument2 12 meets Instrument2 13
+		PointingMode 33 meets PointingMode 34
+		PointingMode 34 meets PointingMode 35
+		Orbit 52 meets Orbit 53
+		InstLock 57 meets InstLock 58
+		InstLock 58 meets InstLock 59
+		InstLock 61 meets InstLock 62
+		InstLock 62 meets InstLock 63
+		InstLock 54 meets InstLock 55
+	}
+}
+
+
+Plan (H= 200, makespan= 200.0 controllability= PSEUDO_CONTROLLABILITY #timelines= 8, #observations= 0, #relations= 168)
+timelines {
+	Instrument1 {
+		[Token 10:Off start= [0,0] end= [3,14] duration= [3,14]]
+		[Token 57:WarmUp start= [3,14] end= [6,17] duration= [3,3]]
+		[Token 19:Process start= [6,17] end= [9,20] duration= [3,8]]
+		[Token 82:TurnOff start= [9,20] end= [10,21] duration= [1,1]]
+		[Token 83:Off start= [10,21] end= [23,34] duration= [13,24]]
+		[Token 84:WarmUp start= [23,34] end= [26,37] duration= [3,3]]
+		[Token 29:Process start= [26,37] end= [29,40] duration= [3,8]]
+		[Token 77:TurnOff start= [29,40] end= [30,41] duration= [1,1]]
+		[Token 78:Off start= [30,41] end= [43,54] duration= [13,24]]
+		[Token 79:WarmUp start= [43,54] end= [46,57] duration= [3,3]]
+		[Token 24:Process start= [46,57] end= [49,60] duration= [3,8]]
+	}
+	Instrument2 {
+		[Token 11:Off start= [0,0] end= [11,22] duration= [11,22]]
+		[Token 89:WarmUp start= [11,22] end= [14,25] duration= [3,3]]
+		[Token 21:Process start= [14,25] end= [17,28] duration= [3,8]]
+		[Token 68:TurnOff start= [17,28] end= [18,29] duration= [1,1]]
+		[Token 69:Off start= [18,29] end= [27,38] duration= [9,20]]
+		[Token 70:WarmUp start= [27,38] end= [30,41] duration= [3,3]]
+		[Token 31:Process start= [30,41] end= [33,44] duration= [3,8]]
+		[Token 74:TurnOff start= [33,44] end= [34,45] duration= [1,1]]
+		[Token 75:Off start= [34,45] end= [39,50] duration= [5,16]]
+		[Token 76:WarmUp start= [39,50] end= [42,53] duration= [3,3]]
+		[Token 26:Process start= [42,53] end= [45,56] duration= [3,8]]
+	}
+	Instrument3 {
+		[Token 12:Off start= [0,0] end= [7,18] duration= [7,18]]
+		[Token 66:WarmUp start= [7,18] end= [10,21] duration= [3,3]]
+		[Token 17:Process start= [10,21] end= [13,24] duration= [3,8]]
+		[Token 54:TurnOff start= [13,24] end= [14,25] duration= [1,1]]
+		[Token 55:Off start= [14,25] end= [19,30] duration= [5,16]]
+		[Token 56:WarmUp start= [19,30] end= [22,33] duration= [3,3]]
+		[Token 27:Process start= [22,33] end= [25,36] duration= [3,8]]
+		[Token 59:TurnOff start= [25,36] end= [26,37] duration= [1,1]]
+		[Token 60:Off start= [26,37] end= [35,46] duration= [9,20]]
+		[Token 61:WarmUp start= [35,46] end= [38,49] duration= [3,3]]
+		[Token 22:Process start= [38,49] end= [41,52] duration= [3,8]]
+	}
+	PointingMode {
+		[Token 9:Earth start= [0,0] end= [1,12] duration= [1,12]]
+		[Token 90:Slew start= [1,12] end= [6,17] duration= [5,5]]
+		[Token 18:Planet start= [6,17] end= [17,28] duration= [11,22]]
+		[Token 81:Slew start= [17,28] end= [22,33] duration= [5,5]]
+		[Token 28:Planet start= [22,33] end= [33,44] duration= [11,22]]
+		[Token 80:Slew start= [33,44] end= [38,49] duration= [5,5]]
+		[Token 23:Planet start= [38,49] end= [55,60] duration= [11,22]]
+		[Token 67:Slew start= [55,60] end= [60,65] duration= [5,5]]
+		[Token 37:Earth start= [60,65] end= [65,74] duration= [5,14]]
+		[Token 73:Slew start= [65,74] end= [70,79] duration= [5,5]]
+		[Token 35:Earth start= [70,79] end= [75,84] duration= [5,14]]
+		[Token 72:Slew start= [75,84] end= [80,89] duration= [5,5]]
+		[Token 33:Earth start= [80,89] end= [85,140] duration= [5,60]]
+	}
+	GroundStation {
+		[Token 3:NotVisible start= [0,0] end= [60,65] duration= [60,65]]
+		[Token 4:Visible start= [60,65] end= [90,94] duration= [25,34]]
+		[Token 5:NotVisible start= [90,94] end= [91,95] duration= [1,5]]
+		[Token 6:Visible start= [91,95] end= [130,140] duration= [35,49]]
+		[Token 7:NotVisible start= [130,140] end= [131,200] duration= [1,70]]
+	}
+	Orbit {
+		[Token 0:PERI start= [0,0] end= [60,60] duration= [60,60]]
+		[Token 1:INT start= [60,60] end= [140,140] duration= [80,80]]
+		[Token 2:APO start= [140,140] end= [200,200] duration= [60,60]]
+	}
+	InstLock {
+		[Token 13:None start= [0,0] end= [1,17] duration= [1,17]]
+		[Token 38:Inst1 start= [1,17] end= [9,20] duration= [3,19]]
+		[Token 71:None start= [9,20] end= [10,21] duration= [1,12]]
+		[Token 40:Inst3 start= [10,21] end= [13,24] duration= [3,14]]
+		[Token 91:None start= [13,24] end= [14,25] duration= [1,12]]
+		[Token 46:Inst2 start= [14,25] end= [17,32] duration= [3,18]]
+		[Token 62:None start= [17,32] end= [18,33] duration= [1,16]]
+		[Token 39:Inst3 start= [18,33] end= [25,36] duration= [3,18]]
+		[Token 92:None start= [25,36] end= [26,37] duration= [1,12]]
+		[Token 45:Inst1 start= [26,37] end= [29,40] duration= [3,14]]
+		[Token 85:None start= [29,40] end= [30,41] duration= [1,12]]
+		[Token 47:Inst2 start= [30,41] end= [33,48] duration= [3,18]]
+		[Token 88:None start= [33,48] end= [34,49] duration= [1,16]]
+		[Token 41:Inst3 start= [34,49] end= [41,52] duration= [3,18]]
+		[Token 86:None start= [41,52] end= [42,53] duration= [1,12]]
+		[Token 42:Inst2 start= [42,53] end= [45,56] duration= [3,14]]
+		[Token 64:None start= [45,56] end= [46,57] duration= [1,12]]
+		[Token 44:Inst1 start= [46,57] end= [49,200] duration= [3,154]]
+	}
+	RSA {
+		[Token 8:Idle start= [0,0] end= [6,17] duration= [6,17]]
+		[Token 14:Scien start= [6,17] end= [17,28] duration= [11,22]]
+		[Token 87:Idle start= [17,28] end= [22,33] duration= [5,16]]
+		[Token 15:Scien start= [22,33] end= [33,44] duration= [11,22]]
+		[Token 65:Idle start= [33,44] end= [38,49] duration= [5,16]]
+		[Token 16:Scien start= [38,49] end= [49,60] duration= [11,22]]
+		[Token 53:Idle start= [49,60] end= [60,69] duration= [5,20]]
+		[Token 20:_Comm start= [60,69] end= [65,74] duration= [5,14]]
+		[Token 58:Idle start= [65,74] end= [70,79] duration= [5,14]]
+		[Token 25:_Comm start= [70,79] end= [75,84] duration= [5,14]]
+		[Token 63:Idle start= [75,84] end= [80,89] duration= [5,14]]
+		[Token 30:_Comm start= [80,89] end= [85,94] duration= [5,14]]
+	}
+}
+
+observations {
+}
+relations {
+	 DURING {14:Scien, 18:Planet}
+	 CONTAINS {14:Scien, 19:Process}
+	 BEFORE {14:Scien, 20:_Comm}
+	 CONTAINS {14:Scien, 21:Process}
+	 CONTAINS {14:Scien, 17:Process}
+	 DURING {16:Scien, 23:Planet}
+	 CONTAINS {16:Scien, 24:Process}
+	 BEFORE {16:Scien, 25:_Comm}
+	 CONTAINS {16:Scien, 26:Process}
+	 CONTAINS {16:Scien, 22:Process}
+	 DURING {15:Scien, 28:Planet}
+	 CONTAINS {15:Scien, 29:Process}
+	 BEFORE {15:Scien, 30:_Comm}
+	 CONTAINS {15:Scien, 31:Process}
+	 CONTAINS {15:Scien, 27:Process}
+	 DURING {30:_Comm, 4:Visible}
+	 DURING {30:_Comm, 33:Earth}
+	 DURING {25:_Comm, 4:Visible}
+	 DURING {25:_Comm, 35:Earth}
+	 DURING {20:_Comm, 4:Visible}
+	 DURING {20:_Comm, 37:Earth}
+	 DURING {19:Process, 38:Inst1}
+	 DURING {27:Process, 39:Inst3}
+	 DURING {17:Process, 40:Inst3}
+	 DURING {22:Process, 41:Inst3}
+	 DURING {26:Process, 42:Inst2}
+	 DURING {23:Planet, 0:PERI}
+	 DURING {24:Process, 44:Inst1}
+	 DURING {29:Process, 45:Inst1}
+	 DURING {21:Process, 46:Inst2}
+	 DURING {31:Process, 47:Inst2}
+	 DURING {33:Earth, 1:INT}
+	 DURING {18:Planet, 0:PERI}
+	 DURING {35:Earth, 1:INT}
+	 DURING {28:Planet, 0:PERI}
+	 DURING {37:Earth, 1:INT}
+	 BEFORE {8:Idle, 14:Scien}
+	 BEFORE {8:Idle, 15:Scien}
+	 BEFORE {14:Scien, 15:Scien}
+	 BEFORE {20:_Comm, 25:_Comm}
+	 BEFORE {8:Idle, 16:Scien}
+	 BEFORE {14:Scien, 16:Scien}
+	 BEFORE {15:Scien, 16:Scien}
+	 BEFORE {20:_Comm, 30:_Comm}
+	 BEFORE {25:_Comm, 30:_Comm}
+	 BEFORE {12:Off, 17:Process}
+	 BEFORE {9:Earth, 23:Planet}
+	 BEFORE {11:Off, 21:Process}
+	 BEFORE {10:Off, 19:Process}
+	 BEFORE {3:NotVisible, 7:NotVisible}
+	 BEFORE {9:Earth, 28:Planet}
+	 BEFORE {37:Earth, 35:Earth}
+	 BEFORE {9:Earth, 18:Planet}
+	 BEFORE {3:NotVisible, 5:NotVisible}
+	 BEFORE {18:Planet, 28:Planet}
+	 BEFORE {18:Planet, 23:Planet}
+	 BEFORE {4:Visible, 7:NotVisible}
+	 BEFORE {3:NotVisible, 6:Visible}
+	 BEFORE {28:Planet, 23:Planet}
+	 BEFORE {37:Earth, 33:Earth}
+	 BEFORE {5:NotVisible, 6:Visible}
+	 BEFORE {3:NotVisible, 4:Visible}
+	 BEFORE {35:Earth, 33:Earth}
+	 BEFORE {4:Visible, 5:NotVisible}
+	 BEFORE {6:Visible, 7:NotVisible}
+	 BEFORE {13:None, 41:Inst3}
+	 BEFORE {13:None, 42:Inst2}
+	 BEFORE {13:None, 44:Inst1}
+	 BEFORE {13:None, 39:Inst3}
+	 BEFORE {46:Inst2, 39:Inst3}
+	 BEFORE {13:None, 45:Inst1}
+	 BEFORE {45:Inst1, 47:Inst2}
+	 BEFORE {41:Inst3, 42:Inst2}
+	 BEFORE {13:None, 38:Inst1}
+	 BEFORE {38:Inst1, 44:Inst1}
+	 BEFORE {38:Inst1, 41:Inst3}
+	 BEFORE {39:Inst3, 44:Inst1}
+	 BEFORE {13:None, 40:Inst3}
+	 BEFORE {38:Inst1, 40:Inst3}
+	 BEFORE {40:Inst3, 39:Inst3}
+	 BEFORE {46:Inst2, 45:Inst1}
+	 BEFORE {40:Inst3, 41:Inst3}
+	 BEFORE {45:Inst1, 41:Inst3}
+	 BEFORE {47:Inst2, 41:Inst3}
+	 BEFORE {13:None, 46:Inst2}
+	 BEFORE {38:Inst1, 46:Inst2}
+	 BEFORE {40:Inst3, 46:Inst2}
+	 BEFORE {39:Inst3, 45:Inst1}
+	 BEFORE {45:Inst1, 44:Inst1}
+	 BEFORE {47:Inst2, 44:Inst1}
+	 BEFORE {41:Inst3, 44:Inst1}
+	 BEFORE {42:Inst2, 44:Inst1}
+	 MEETS {16:Scien, 53:Idle}
+	 MEETS {53:Idle, 20:_Comm}
+	 MEETS {17:Process, 54:TurnOff}
+	 MEETS {54:TurnOff, 55:Off}
+	 MEETS {55:Off, 56:WarmUp}
+	 MEETS {56:WarmUp, 27:Process}
+	 MEETS {10:Off, 57:WarmUp}
+	 MEETS {57:WarmUp, 19:Process}
+	 MEETS {20:_Comm, 58:Idle}
+	 MEETS {58:Idle, 25:_Comm}
+	 MEETS {27:Process, 59:TurnOff}
+	 MEETS {59:TurnOff, 60:Off}
+	 MEETS {60:Off, 61:WarmUp}
+	 MEETS {61:WarmUp, 22:Process}
+	 MEETS {46:Inst2, 62:None}
+	 MEETS {62:None, 39:Inst3}
+	 MEETS {25:_Comm, 63:Idle}
+	 MEETS {63:Idle, 30:_Comm}
+	 MEETS {42:Inst2, 64:None}
+	 MEETS {64:None, 44:Inst1}
+	 MEETS {15:Scien, 65:Idle}
+	 MEETS {65:Idle, 16:Scien}
+	 MEETS {12:Off, 66:WarmUp}
+	 MEETS {66:WarmUp, 17:Process}
+	 MEETS {6:Visible, 7:NotVisible}
+	 MEETS {23:Planet, 67:Slew}
+	 MEETS {67:Slew, 37:Earth}
+	 MEETS {21:Process, 68:TurnOff}
+	 MEETS {68:TurnOff, 69:Off}
+	 MEETS {69:Off, 70:WarmUp}
+	 MEETS {70:WarmUp, 31:Process}
+	 MEETS {38:Inst1, 71:None}
+	 MEETS {71:None, 40:Inst3}
+	 MEETS {35:Earth, 72:Slew}
+	 MEETS {72:Slew, 33:Earth}
+	 MEETS {5:NotVisible, 6:Visible}
+	 MEETS {37:Earth, 73:Slew}
+	 MEETS {73:Slew, 35:Earth}
+	 MEETS {31:Process, 74:TurnOff}
+	 MEETS {74:TurnOff, 75:Off}
+	 MEETS {75:Off, 76:WarmUp}
+	 MEETS {76:WarmUp, 26:Process}
+	 MEETS {0:PERI, 1:INT}
+	 MEETS {29:Process, 77:TurnOff}
+	 MEETS {77:TurnOff, 78:Off}
+	 MEETS {78:Off, 79:WarmUp}
+	 MEETS {79:WarmUp, 24:Process}
+	 MEETS {8:Idle, 14:Scien}
+	 MEETS {28:Planet, 80:Slew}
+	 MEETS {80:Slew, 23:Planet}
+	 MEETS {3:NotVisible, 4:Visible}
+	 MEETS {18:Planet, 81:Slew}
+	 MEETS {81:Slew, 28:Planet}
+	 MEETS {4:Visible, 5:NotVisible}
+	 MEETS {19:Process, 82:TurnOff}
+	 MEETS {82:TurnOff, 83:Off}
+	 MEETS {83:Off, 84:WarmUp}
+	 MEETS {84:WarmUp, 29:Process}
+	 MEETS {45:Inst1, 85:None}
+	 MEETS {85:None, 47:Inst2}
+	 MEETS {41:Inst3, 86:None}
+	 MEETS {86:None, 42:Inst2}
+	 MEETS {14:Scien, 87:Idle}
+	 MEETS {87:Idle, 15:Scien}
+	 MEETS {47:Inst2, 88:None}
+	 MEETS {88:None, 41:Inst3}
+	 MEETS {11:Off, 89:WarmUp}
+	 MEETS {89:WarmUp, 21:Process}
+	 MEETS {9:Earth, 90:Slew}
+	 MEETS {90:Slew, 18:Planet}
+	 MEETS {1:INT, 2:APO}
+	 MEETS {40:Inst3, 91:None}
+	 MEETS {91:None, 46:Inst2}
+	 MEETS {39:Inst3, 92:None}
+	 MEETS {92:None, 45:Inst1}
+	 MEETS {13:None, 38:Inst1}
+}

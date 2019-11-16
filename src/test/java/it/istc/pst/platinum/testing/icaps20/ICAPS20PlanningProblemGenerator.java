@@ -270,7 +270,8 @@ public class ICAPS20PlanningProblemGenerator
 												"\t\tg5 <goal> RSA.operations.Scien() AT [0, 200] [0, 200] [1, 200];\n\n";
 									}
 								}
-								else if (horizon == 300) {
+								else if (horizon == 300) 
+								{
 									// write facts
 									pdl += "\t\tf11 <fact> Orbit.orbit.PERI() AT [0, 0] [90, 90] [90, 90];\n"
 											+ "\t\tf12 <fact> Orbit.orbit.INT() AT [90, 90] [210, 210] [120, 120];\n"

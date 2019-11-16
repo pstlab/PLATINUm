@@ -1,0 +1,125 @@
+horizon = 200
+plan {
+	timelines {
+		PointingMode {
+			token 0  { Earth [1,52] [1, 52] }
+			token 1  { Slew [6,57] [5, 5] }
+			token 2  { Planet [55,60] [3, 54] }
+			token 3  { Slew [60,65] [5, 5] }
+			token 4  { Earth [65,140] [5, 80] }
+		}
+		GroundStation {
+			token 5  { NotVisible [60,65] [60, 65] }
+			token 6  { Visible [130,135] [65, 75] }
+			token 7  { NotVisible [131,200] [1, 70] }
+		}
+		Orbit {
+			token 8  { PERI [60,60] [60, 60] }
+			token 9  { INT [140,140] [80, 80] }
+			token 10  { APO [200,200] [60, 60] }
+		}
+		Instrument {
+			token 11  { Off [3,54] [3, 54] }
+			token 12  { WarmUp [6,57] [3, 3] }
+			token 13  { Process [9,60] [3, 8] }
+		}
+		RSA {
+			token 14  { Idle [6,57] [6, 57] }
+			token 15  { Scien [9,60] [3, 54] }
+			token 16  { Idle [60,130] [5, 121] }
+			token 17 uncontrollable { _Comm [65,135] [5, 35] }
+		}
+	}
+	relations {
+		RSA 15 before [0,200] RSA 17
+		RSA 15 contains [0,200]  [0,200] Instrument 13
+		RSA 15 during [0,200]  [0,200] PointingMode 2
+		RSA 17 during [0,200]  [0,200] GroundStation 6
+		RSA 17 during [0,200]  [0,200] PointingMode 4
+		PointingMode 2 during [0,200]  [0,200] Orbit 8
+		PointingMode 4 during [0,200]  [0,200] Orbit 9
+		RSA 14 before [0,200] RSA 15
+		GroundStation 5 before [0,200] GroundStation 7
+		GroundStation 5 before [0,200] GroundStation 6
+		Instrument 11 before [0,200] Instrument 13
+		GroundStation 6 before [0,200] GroundStation 7
+		PointingMode 0 before [0,200] PointingMode 2
+		Orbit 8 meets Orbit 9
+		Instrument 11 meets Instrument 12
+		Instrument 12 meets Instrument 13
+		Orbit 9 meets Orbit 10
+		GroundStation 6 meets GroundStation 7
+		GroundStation 5 meets GroundStation 6
+		PointingMode 0 meets PointingMode 1
+		PointingMode 1 meets PointingMode 2
+		RSA 14 meets RSA 15
+		PointingMode 2 meets PointingMode 3
+		PointingMode 3 meets PointingMode 4
+		RSA 15 meets RSA 16
+		RSA 16 meets RSA 17
+	}
+}
+
+
+Plan (H= 200, makespan= 200.0 controllability= PSEUDO_CONTROLLABILITY #timelines= 5, #observations= 0, #relations= 26)
+timelines {
+	PointingMode {
+		[Token 7:Earth start= [0,0] end= [1,52] duration= [1,52]]
+		[Token 18:Slew start= [1,52] end= [6,57] duration= [5,5]]
+		[Token 12:Planet start= [6,57] end= [55,60] duration= [3,54]]
+		[Token 19:Slew start= [55,60] end= [60,65] duration= [5,5]]
+		[Token 14:Earth start= [60,65] end= [65,140] duration= [5,80]]
+	}
+	GroundStation {
+		[Token 3:NotVisible start= [0,0] end= [60,65] duration= [60,65]]
+		[Token 4:Visible start= [60,65] end= [130,135] duration= [65,75]]
+		[Token 5:NotVisible start= [130,135] end= [131,200] duration= [1,70]]
+	}
+	Orbit {
+		[Token 0:PERI start= [0,0] end= [60,60] duration= [60,60]]
+		[Token 1:INT start= [60,60] end= [140,140] duration= [80,80]]
+		[Token 2:APO start= [140,140] end= [200,200] duration= [60,60]]
+	}
+	Instrument {
+		[Token 8:Off start= [0,0] end= [3,54] duration= [3,54]]
+		[Token 17:WarmUp start= [3,54] end= [6,57] duration= [3,3]]
+		[Token 11:Process start= [6,57] end= [9,60] duration= [3,8]]
+	}
+	RSA {
+		[Token 6:Idle start= [0,0] end= [6,57] duration= [6,57]]
+		[Token 9:Scien start= [6,57] end= [9,60] duration= [3,54]]
+		[Token 20:Idle start= [9,60] end= [60,130] duration= [5,121]]
+		[Token 10:_Comm start= [60,130] end= [65,135] duration= [5,35]]
+	}
+}
+
+observations {
+}
+relations {
+	 BEFORE {9:Scien, 10:_Comm}
+	 CONTAINS {9:Scien, 11:Process}
+	 DURING {9:Scien, 12:Planet}
+	 DURING {10:_Comm, 4:Visible}
+	 DURING {10:_Comm, 14:Earth}
+	 DURING {12:Planet, 0:PERI}
+	 DURING {14:Earth, 1:INT}
+	 BEFORE {6:Idle, 9:Scien}
+	 BEFORE {3:NotVisible, 5:NotVisible}
+	 BEFORE {3:NotVisible, 4:Visible}
+	 BEFORE {8:Off, 11:Process}
+	 BEFORE {4:Visible, 5:NotVisible}
+	 BEFORE {7:Earth, 12:Planet}
+	 MEETS {0:PERI, 1:INT}
+	 MEETS {8:Off, 17:WarmUp}
+	 MEETS {17:WarmUp, 11:Process}
+	 MEETS {1:INT, 2:APO}
+	 MEETS {4:Visible, 5:NotVisible}
+	 MEETS {3:NotVisible, 4:Visible}
+	 MEETS {7:Earth, 18:Slew}
+	 MEETS {18:Slew, 12:Planet}
+	 MEETS {6:Idle, 9:Scien}
+	 MEETS {12:Planet, 19:Slew}
+	 MEETS {19:Slew, 14:Earth}
+	 MEETS {9:Scien, 20:Idle}
+	 MEETS {20:Idle, 10:_Comm}
+}

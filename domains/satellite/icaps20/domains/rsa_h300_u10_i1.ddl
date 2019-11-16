@@ -29,18 +29,18 @@ DOMAIN RSA_H300_U10_I1
 
 	COMP_TYPE SingletonStateVariable RSAOrbit(APO(), INT(), PERI())
 	{
-		VALUE APO() [60, 60]
+		VALUE APO() [90, 90]
 		MEETS {
 			INT();
 		}
 		
-		VALUE INT() [80, 80]
+		VALUE INT() [120, 120]
 		MEETS {
 			APO();
 			PERI();		
 		}
 		
-		VALUE PERI() [60, 60]
+		VALUE PERI() [90, 90]
 		MEETS {
 			INT();
 		}

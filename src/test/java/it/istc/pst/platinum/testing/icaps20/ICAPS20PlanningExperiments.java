@@ -128,7 +128,6 @@ public class ICAPS20PlanningExperiments
 									
 									// get plan solving time
 									time = plan.getSolvingTime();
-									planner.display();
 									
 									// print solving information
 									System.out.println("... problem \"" + problemName + "\" solved after " + time + " msecs\nSolution plan:\n" + plan + "\n"
