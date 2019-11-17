@@ -42,30 +42,30 @@ public class ICAPS20DCActingExperiments
 	
 	// planning horizons
 	protected static int[] HORIZON = {		
-//		100,
+		100,
 		200,
-//		300,
+		300,
 	};
 	
 	// amount of uncertainty
 	protected static int[] UNCERTAINTY = {
 		10,
-//		20,
-//		30
+		20,
+		30
 	};
 	
 	// available communication windows
 	protected static int[] WINDOWS = {
 		1,
-//		2,
-//		3,
+		2,
+		3,
 	};
 	
 	// available instruments
 	protected static int[] INSTRUMENTS = {
 		1,
-//		2,
-//		3,
+		2,
+		3,
 	};
 	
 	
