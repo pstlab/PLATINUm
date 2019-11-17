@@ -15,7 +15,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.INFO
 )
 @MonitorConfiguration(
 		monitor = ConditionCheckingMonitor.class

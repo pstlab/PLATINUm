@@ -1,6 +1,6 @@
 <platform>
 
-	<agent id="a01" label="PointingMode" type="acting" uncertainty="10">
+	<agent id="a01" label="PointingMode" type="acting" uncertainty="20">
 
 		<command type="pc">
 			<name>comm</name>
@@ -8,6 +8,5 @@
 		</command>
 		
 	</agent>
-	
 
 </platform>

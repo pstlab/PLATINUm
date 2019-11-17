@@ -1,73 +1,45 @@
-horizon = 300
+horizon = 200
 plan {
 	timelines {
 		PointingMode {
-			token 0  { Earth [1,257] [1, 257] }
-			token 1  { Slewing [4,260] [3, 3] }
-			token 2  { Science [7,263] [3, 3] }
-			token 3  { Slewing [10,266] [3, 3] }
-			token 4  { Science [13,269] [3, 3] }
-			token 5  { Slewing [16,272] [3, 3] }
-			token 6  { Science [19,275] [3, 3] }
-			token 7  { Slewing [22,278] [3, 3] }
-			token 8  { Science [25,281] [3, 3] }
-			token 9  { Slewing [28,284] [3, 3] }
-			token 10  { Science [31,287] [3, 3] }
-			token 11  { Slewing [34,290] [3, 3] }
-			token 12  { Earth [35,291] [1, 257] }
-			token 13 uncontrollable { _Comm [36,292] [1, 33] }
-			token 14  { Earth [37,293] [1, 257] }
-			token 15 uncontrollable { _Comm [38,294] [1, 33] }
-			token 16  { Earth [39,295] [1, 257] }
-			token 17 uncontrollable { _Comm [40,296] [1, 33] }
-			token 18  { Earth [41,297] [1, 257] }
-			token 19 uncontrollable { _Comm [42,298] [1, 33] }
-			token 20  { Earth [43,299] [1, 257] }
-			token 21 uncontrollable { _Comm [44,300] [1, 33] }
+			token 0  { Earth [1,52] [1, 52] }
+			token 1  { Slew [6,57] [5, 5] }
+			token 2  { Planet [55,60] [3, 54] }
+			token 3  { Slew [60,65] [5, 5] }
+			token 4  { Earth [65,140] [5, 80] }
 		}
-		Window {
-			token 22 uncontrollable { _Visible [250,300] [250, 280] }
+		GroundStation {
+			token 5  { NotVisible [60,60] [60, 60] }
+			token 6  { Visible [140,140] [80, 80] }
+			token 7  { NotVisible [200,200] [60, 60] }
+		}
+		Orbit {
+			token 8  { PERI [60,60] [60, 60] }
+			token 9  { INT [140,140] [80, 80] }
+			token 10  { APO [200,200] [60, 60] }
+		}
+		Instrument {
+			token 11  { Off [3,54] [3, 54] }
+			token 12  { WarmUp [6,57] [3, 3] }
+			token 13  { Process [9,60] [3, 8] }
+		}
+		RSA {
+			token 14  { Idle [6,57] [6, 57] }
+			token 15  { Scien [9,60] [3, 54] }
+			token 16  { Idle [60,135] [5, 126] }
+			token 17 uncontrollable { _Comm [65,140] [5, 15] }
 		}
 	}
 	relations {
-		PointingMode 2 before [0,300] PointingMode 13
-		PointingMode 6 before [0,300] PointingMode 15
-		PointingMode 4 before [0,300] PointingMode 17
-		PointingMode 10 before [0,300] PointingMode 19
-		PointingMode 8 before [0,300] PointingMode 21
-		PointingMode 15 during [0,300]  [0,300] Window 22
-		PointingMode 17 during [0,300]  [0,300] Window 22
-		PointingMode 19 during [0,300]  [0,300] Window 22
-		PointingMode 21 during [0,300]  [0,300] Window 22
-		PointingMode 13 during [0,300]  [0,300] Window 22
-		PointingMode 0 before [0,300] PointingMode 2
-		PointingMode 0 before [0,300] PointingMode 4
-		PointingMode 2 before [0,300] PointingMode 4
-		PointingMode 4 before [0,300] PointingMode 13
-		PointingMode 0 before [0,300] PointingMode 6
-		PointingMode 2 before [0,300] PointingMode 6
-		PointingMode 4 before [0,300] PointingMode 6
-		PointingMode 0 before [0,300] PointingMode 8
-		PointingMode 6 before [0,300] PointingMode 13
-		PointingMode 2 before [0,300] PointingMode 8
-		PointingMode 13 before [0,300] PointingMode 15
-		PointingMode 4 before [0,300] PointingMode 8
-		PointingMode 6 before [0,300] PointingMode 8
-		PointingMode 8 before [0,300] PointingMode 13
-		PointingMode 0 before [0,300] PointingMode 10
-		PointingMode 6 before [0,300] PointingMode 17
-		PointingMode 13 before [0,300] PointingMode 21
-		PointingMode 2 before [0,300] PointingMode 10
-		PointingMode 8 before [0,300] PointingMode 17
-		PointingMode 15 before [0,300] PointingMode 21
-		PointingMode 4 before [0,300] PointingMode 10
-		PointingMode 13 before [0,300] PointingMode 17
-		PointingMode 6 before [0,300] PointingMode 10
-		PointingMode 15 before [0,300] PointingMode 17
-		PointingMode 8 before [0,300] PointingMode 10
-		PointingMode 17 before [0,300] PointingMode 19
-		PointingMode 10 before [0,300] PointingMode 13
-		PointingMode 17 before [0,300] PointingMode 21
-		PointingMode 19 before [0,300] PointingMode 21
+		RSA 15 contains [0,200]  [0,200] Instrument 13
+		RSA 15 during [0,200]  [0,200] PointingMode 2
+		RSA 17 during [0,200]  [0,200] GroundStation 6
+		RSA 17 during [0,200]  [0,200] PointingMode 4
+		PointingMode 2 during [0,200]  [0,200] Orbit 8
+		PointingMode 4 during [0,200]  [0,200] Orbit 9
+		RSA 14 before [0,200] RSA 15
+		PointingMode 0 before [0,200] PointingMode 2
+		Instrument 11 before [0,200] Instrument 13
+		RSA 15 before [0,200] RSA 17
 	}
 }

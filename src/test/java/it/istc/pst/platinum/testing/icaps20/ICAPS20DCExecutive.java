@@ -1,7 +1,7 @@
 package it.istc.pst.platinum.testing.icaps20;
 
-import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.dc.DCDispatcher;
+import it.istc.pst.platinum.executive.dc.DCExecutive;
 import it.istc.pst.platinum.executive.dc.DCMonitor;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.executive.DispatcherConfiguration;
@@ -23,7 +23,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 @DispatcherConfiguration(
 		dispatcher = DCDispatcher.class
 )
-public class ICAPS20DCExecutive extends Executive 
+public class ICAPS20DCExecutive extends DCExecutive 
 {
 	/**
 	 * 

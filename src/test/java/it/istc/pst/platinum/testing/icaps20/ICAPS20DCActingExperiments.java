@@ -42,30 +42,30 @@ public class ICAPS20DCActingExperiments
 	
 	// planning horizons
 	protected static int[] HORIZON = {		
-		100,
+//		100,
 		200,
-		300,
+//		300,
 	};
 	
 	// amount of uncertainty
 	protected static int[] UNCERTAINTY = {
 		10,
-		20,
-		30
+//		20,
+//		30
 	};
 	
 	// available communication windows
 	protected static int[] WINDOWS = {
 		1,
-		2,
-		3,
+//		2,
+//		3,
 	};
 	
 	// available instruments
 	protected static int[] INSTRUMENTS = {
 		1,
-		2,
-		3,
+//		2,
+//		3,
 	};
 	
 	
@@ -78,6 +78,7 @@ public class ICAPS20DCActingExperiments
 		5,
 	};
 		
+	
 	/**
 	 * 
 	 * @param horizon
@@ -120,142 +121,890 @@ public class ICAPS20DCActingExperiments
 					new long[] {70, 70}, 
 					new long[] {100, 100}, 
 					new long[] {30, 30}));
-		}
-		
-		
-		// add ground station related facts
-		if (window == 1) {
-			// add fact 
+			
+			
+			// check window 
+			if (window == 1)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {35, 40}, 
+						new long[] {35, 40}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {35, 40}, 
+						new long[] {60, 65}, 
+						new long[] {20, 30}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {60, 65}, 
+						new long[] {100, 100}, 
+						new long[] {35, 40}));
+			}
+			else if (window == 2)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {35, 40}, 
+						new long[] {35, 40}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {35, 40}, 
+						new long[] {50, 55}, 
+						new long[] {10, 20}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {50, 55}, 
+						new long[] {50, 55}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {50, 55}, 
+						new long[] {65, 75}, 
+						new long[] {10, 25}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {65, 75}, 
+						new long[] {100, 100}, 
+						new long[] {25, 35}));
+			}
+			else if (window == 3)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {30, 35}, 
+						new long[] {30, 35}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {30, 35}, 
+						new long[] {40, 45}, 
+						new long[] {10, 15}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {40, 45}, 
+						new long[] {40, 45}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {40, 45}, 
+						new long[] {50, 55}, 
+						new long[] {10, 15}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {50, 55}, 
+						new long[] {50, 55}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {50, 55}, 
+						new long[] {60, 75}, 
+						new long[] {10, 15}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {60, 75}, 
+						new long[] {100, 100}, 
+						new long[] {25, 40}));
+			}
+			
+			// add fact
 			description.addFactDescription(new TokenDescription(
-					"GroundStation", 
-					"NotVisible", 
+					"RSA", 
+					"Idle", 
 					new String[] {}, 
 					new long[] {0, 0}, 
-					new long[] {20, 20}, 
-					new long[] {20, 20}));
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
 			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"PointingMode", 
+					"Earth", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 100}, 
+					new long[] {1, 100}));
+			
+			// check instrument
+			if (instrument == 1) 
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+			}
+			else if (instrument == 2)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument1", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument2", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"InstLock", 
+						"None", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+			}
+			else if (instrument == 3)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument1", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument2", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument3", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"InstLock", 
+						"None", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 100}, 
+						new long[] {1, 100}));
+			}
+
+		}
+		else if (horizon == 200)
+		{
 			// add fact 
 			description.addFactDescription(new TokenDescription(
-					"GroundStation", 
-					"Visible", 
+					"Orbit", 
+					"PERI", 
 					new String[] {}, 
-					new long[] {20, 20}, 
-					new long[] {80, 80}, 
+					new long[] {0, 0}, 
+					new long[] {60, 60}, 
 					new long[] {60, 60}));
 			
 			// add fact 
 			description.addFactDescription(new TokenDescription(
-					"GroundStation", 
-					"NotVisible", 
+					"Orbit", 
+					"INT", 
 					new String[] {}, 
-					new long[] {80, 80}, 
-					new long[] {100, 100}, 
-					new long[] {20, 20}));
-		}
-		
-		
-		// add pointing fact
-		description.addFactDescription(new TokenDescription(
-				"PointingMode", 
-				"Earth", 
-				new String[] {}, 
-				new long[] {0, 0}, 
-				new long[] {0, 100}, 
-				new long[] {1, 100}));
-		
-		
-		// add instrument related facts
-		if (instrument == 1) 
-		{
-			// add fact
+					new long[] {60, 60}, 
+					new long[] {140, 140}, 
+					new long[] {80, 80}));
+			
+			// add fact 
 			description.addFactDescription(new TokenDescription(
-					"Instrument", 
-					"Off", 
+					"Orbit", 
+					"APO", 
 					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
-		}
-		else if (instrument == 2)
-		{
-			// add fact
-			description.addFactDescription(new TokenDescription(
-					"Instrument1", 
-					"Off", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
+					new long[] {140, 140}, 
+					new long[] {200, 200}, 
+					new long[] {60, 60}));
+			
+			
+			// check window 
+			if (window == 1)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {60, 60}, 
+						new long[] {60, 60}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {60, 60}, 
+						new long[] {140, 140}, 
+						new long[] {80, 80}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {140, 140}, 
+						new long[] {200, 200}, 
+						new long[] {60, 60}));
+			}
+			else if (window == 2)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {60, 65}, 
+						new long[] {60, 65}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {60, 65}, 
+						new long[] {90, 95}, 
+						new long[] {25, 35}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {90, 95}, 
+						new long[] {90, 95}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {90, 95}, 
+						new long[] {130, 140}, 
+						new long[] {35, 50}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {130, 140}, 
+						new long[] {200, 200}, 
+						new long[] {60, 70}));
+			}
+			else if (window == 3)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {60, 65}, 
+						new long[] {60, 65}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {60, 65}, 
+						new long[] {85, 90}, 
+						new long[] {15, 30}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {85, 90}, 
+						new long[] {85, 90}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {85, 90}, 
+						new long[] {110, 115}, 
+						new long[] {20, 30}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {110, 115}, 
+						new long[] {110, 115}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {110, 115}, 
+						new long[] {130, 140}, 
+						new long[] {15, 30}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {130, 140}, 
+						new long[] {200, 200}, 
+						new long[] {60, 70}));
+			}
 			
 			// add fact
 			description.addFactDescription(new TokenDescription(
-					"Instrument2", 
-					"Off", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
-			
-			// add fact
-			description.addFactDescription(new TokenDescription(
-					"InstLock", 
-					"None", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
-		}
-		else if (instrument == 3)
-		{
-			// add fact
-			description.addFactDescription(new TokenDescription(
-					"Instrument1", 
-					"Off", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
-			
-			// add fact
-			description.addFactDescription(new TokenDescription(
-					"Instrument2", 
-					"Off", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
-			
-			// add fact
-			description.addFactDescription(new TokenDescription(
-					"Instrument3", 
-					"Off", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
-			
-			// add fact
-			description.addFactDescription(new TokenDescription(
-					"InstLock", 
-					"None", 
-					new String[] {}, 
-					new long[] {0, 0}, 
-					new long[] {0, 100}, 
-					new long[] {1, 100}));
-		}
-
-		
-		// add goals
-		for (int i = 0; i < goal; i++) {
-			// add goal 
-			description.addGoalDescription(new TokenDescription(
 					"RSA", 
+					"Idle", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 200}, 
+					new long[] {1, 200}));
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"PointingMode", 
+					"Earth", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 200}, 
+					new long[] {1, 200}));
+			
+			// check instrument
+			if (instrument == 1) 
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+			}
+			else if (instrument == 2)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument1", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument2", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"InstLock", 
+						"None", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+			}
+			else if (instrument == 3)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument1", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument2", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument3", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"InstLock", 
+						"None", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+			}
+		}
+		else if (horizon == 300)
+		{
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"Orbit", 
+					"PERI", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {90, 90}, 
+					new long[] {90, 90}));
+			
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"Orbit", 
+					"INT", 
+					new String[] {}, 
+					new long[] {90, 90}, 
+					new long[] {210, 210}, 
+					new long[] {120, 120}));
+			
+			// add fact 
+			description.addFactDescription(new TokenDescription(
+					"Orbit", 
+					"APO", 
+					new String[] {}, 
+					new long[] {210, 210}, 
+					new long[] {300, 300}, 
+					new long[] {90, 90}));
+			
+			
+			// check window 
+			if (window == 1)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {90, 95}, 
+						new long[] {90, 95}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {90, 95}, 
+						new long[] {205, 215}, 
+						new long[] {110, 125}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {205, 215}, 
+						new long[] {300, 300}, 
+						new long[] {85, 95}));
+			}
+			else if (window == 2)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {90, 95}, 
+						new long[] {90, 95}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {90, 95}, 
+						new long[] {130, 145}, 
+						new long[] {35, 55}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {130, 145}, 
+						new long[] {130, 145}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {130, 145}, 
+						new long[] {200, 205}, 
+						new long[] {55, 75}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {200, 205}, 
+						new long[] {300, 300}, 
+						new long[] {95, 100}));
+			}
+			else if (window == 3)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {90, 95}, 
+						new long[] {90, 95}));
+				
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {90, 95}, 
+						new long[] {130, 135}, 
+						new long[] {35, 45}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {130, 135}, 
+						new long[] {130, 135}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {130, 135}, 
+						new long[] {155, 160}, 
+						new long[] {20, 30}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {155, 160}, 
+						new long[] {155, 160}, 
+						new long[] {1, 5}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"Visible", 
+						new String[] {}, 
+						new long[] {155, 160}, 
+						new long[] {200, 210}, 
+						new long[] {40, 55}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"GroundStation", 
+						"NotVisible", 
+						new String[] {}, 
+						new long[] {200, 210}, 
+						new long[] {300, 300}, 
+						new long[] {90, 100}));
+			}
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"RSA", 
+					"Idle", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 300}, 
+					new long[] {1, 300}));
+			
+			// add fact
+			description.addFactDescription(new TokenDescription(
+					"PointingMode", 
+					"Earth", 
+					new String[] {}, 
+					new long[] {0, 0}, 
+					new long[] {0, 300}, 
+					new long[] {1, 300}));
+			
+			// check instrument
+			if (instrument == 1) 
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 200}, 
+						new long[] {1, 200}));
+			}
+			else if (instrument == 2)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument1", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 300}, 
+						new long[] {1, 300}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument2", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 300}, 
+						new long[] {1, 300}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"InstLock", 
+						"None", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 300}, 
+						new long[] {1, 300}));
+			}
+			else if (instrument == 3)
+			{
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument1", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 300}, 
+						new long[] {1, 300}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument2", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 300}, 
+						new long[] {1, 300}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"Instrument3", 
+						"Off", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 300}, 
+						new long[] {1, 300}));
+				
+				// add fact
+				description.addFactDescription(new TokenDescription(
+						"InstLock", 
+						"None", 
+						new String[] {}, 
+						new long[] {0, 0}, 
+						new long[] {0, 300}, 
+						new long[] {1, 300}));
+			}
+		}
+		
+		
+		// check goals 
+		if (goal == 1) {
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+		}
+		else if (instrument == 2) {
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+		}
+		else if (instrument == 3) {
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+		}
+		else if (instrument == 4) {
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+		}
+		else if (instrument == 5) {
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
+					"Scien"));
+			
+			// add goal
+			description.addGoalDescription(new TokenDescription(
+					"RSA",
 					"Scien"));
 		}
 		
 		// get task description
 		return description;
 	}	
+	
+	
 	/**
 	 * 
 	 * @param args

@@ -27,7 +27,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 	strategy = MakespanOptimizationSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
-	level = FrameworkLoggingLevel.OFF
+	level = FrameworkLoggingLevel.INFO
 )
 public class ICAPS20Planner extends Planner 
 {

@@ -1,1 +1,1 @@
-control: A<> (pointingmode.finish && window.finish)
+control: A<> (pointingmode.finish && groundstation.finish && orbit.finish && instrument.finish && rsa.finish)
