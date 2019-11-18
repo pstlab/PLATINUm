@@ -41,10 +41,10 @@ public class ICAPS20ActingExperiments
 	protected static final int TIMEOUT = 60000;
 	
 	// planning horizons
-	protected static int[] HORIZON = {		
+	protected static int[] HORIZON = {
 		100,
 		200,
-		300,
+		300
 	};
 	
 	// amount of uncertainty

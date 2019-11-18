@@ -33,7 +33,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 //		strategy = HRCBalancingSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.DEBUG
+		level = FrameworkLoggingLevel.OFF
 )
 public class Planner extends DeliberativeObject 
 {
