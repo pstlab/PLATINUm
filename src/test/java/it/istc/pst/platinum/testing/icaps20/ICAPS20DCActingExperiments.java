@@ -40,44 +40,45 @@ public class ICAPS20DCActingExperiments
 	// planning timeout
 	protected static final int TIMEOUT = 60000;
 	
-	// planning horizons
-	protected static int[] HORIZON = {		
-		100,
-		200,
-		300,
-	};
 	
-	// amount of uncertainty
-	protected static int[] UNCERTAINTY = {
-		10,
-		20,
-		30
-	};
+//	// planning horizons
+//	protected static int[] HORIZON = {		
+//		100,
+//		200,
+//		300,
+//	};
+//	
+//	// amount of uncertainty
+//	protected static int[] UNCERTAINTY = {
+//		10,
+//		20,
+//		30
+//	};
+//	
+//	// available communication windows
+//	protected static int[] WINDOWS = {
+//		1,
+//		2,
+//		3,
+//	};
+//	
+//	// available instruments
+//	protected static int[] INSTRUMENTS = {
+//		1,
+//		2,
+//		3,
+//	};
+//	
+//	
+//	// number of scientific operations
+//	protected static int[] GOALS = {
+//		1,
+//		2,
+//		3,
+//		4,
+//		5,
+//	};
 	
-	// available communication windows
-	protected static int[] WINDOWS = {
-		1,
-		2,
-		3,
-	};
-	
-	// available instruments
-	protected static int[] INSTRUMENTS = {
-		1,
-		2,
-		3,
-	};
-	
-	
-	// number of scientific operations
-	protected static int[] GOALS = {
-		1,
-		2,
-		3,
-		4,
-		5,
-	};
-		
 	
 	/**
 	 * 
@@ -1013,6 +1014,14 @@ public class ICAPS20DCActingExperiments
 	 */
 	public static void main(String[] args)
 	{
+		// extract parameters from input
+		int horizon = Integer.parseInt(args[0]);
+		int uncertainty = Integer.parseInt(args[1]);
+		int window = Integer.parseInt(args[2]);
+		int instrument = Integer.parseInt(args[3]);
+		int g = Integer.parseInt(args[4]);
+
+		
 		try
 		{
 			// create data file
@@ -1036,16 +1045,16 @@ public class ICAPS20DCActingExperiments
 			}
 			
 			// run experiments
-			for (int horizon : HORIZON)
-			{
-				for (int uncertainty : UNCERTAINTY) 
-				{
-					for (int window : WINDOWS) 
-					{
-						for (int instrument : INSTRUMENTS) 
-						{
-							for (int g : GOALS)
-							{
+//			for (int horizon : HORIZON)
+//			{
+//				for (int uncertainty : UNCERTAINTY) 
+//				{
+//					for (int window : WINDOWS) 
+//					{
+//						for (int instrument : INSTRUMENTS) 
+//						{
+//							for (int g : GOALS)
+//							{
 								// prepare domain name
 								String domainName = "rsa_h" + horizon + "_u" + uncertainty + "_w" + window + "_i" + instrument;
 								// prepare problem name
@@ -1216,11 +1225,11 @@ public class ICAPS20DCActingExperiments
 								
 								// force cache clear calling garbage collector
 								System.gc();
-							}
-						}
-					}
-				}
-			}
+//							}
+//						}
+//					}
+//				}
+//			}
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
