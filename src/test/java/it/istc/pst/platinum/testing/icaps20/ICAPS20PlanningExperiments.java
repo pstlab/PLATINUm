@@ -99,7 +99,7 @@ public class ICAPS20PlanningExperiments
 							for (int goal : GOALS)
 							{
 								// prepare domain name
-								String domainName = "rsa_h" + horizon + "_u" + uncertainty + "_i" + instrument;
+								String domainName = "rsa_h" + horizon + "_u" + uncertainty + "_w" + window +"_i" + instrument;
 								// prepare problem name
 								String problemName = "rsa_h" + horizon + "_u" + uncertainty + "_i" + instrument + "_w" + window + "_g" + goal;
 								// prepare DDL file path

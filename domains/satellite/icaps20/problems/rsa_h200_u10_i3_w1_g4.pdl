@@ -1,11 +1,11 @@
-PROBLEM RSA_H200_W1_G4 (DOMAIN RSA_H200_U10_I3) {
+PROBLEM RSA_H200_W1_G4 (DOMAIN RSA_H200_U10_W1_I3) {
 
 		f11 <fact> Orbit.orbit.PERI() AT [0, 0] [60, 60] [60, 60];
 		f12 <fact> Orbit.orbit.INT() AT [60, 60] [140, 140] [80, 80];
 		f13 <fact> Orbit.orbit.APO() AT [140, 140] [200, 200] [60, 60];
 
 		f21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [60, 65] [60, 65];
-		f22 <fact> GroundStation.visibility.Visible() AT [60, 65] [130, 135] [70, 75];
+		f22 <fact> GroundStation.visibility._Visible() AT [60, 65] [130, 135] [70, 75];
 		f23 <fact> GroundStation.visibility.NotVisible() AT [130, 135] [200, 200] [65, 70];
 
 		f31 <fact> RSA.operations.Idle() AT [0, 0] [0, 200] [1, 200];
