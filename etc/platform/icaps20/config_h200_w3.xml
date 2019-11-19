@@ -9,11 +9,11 @@
 		
 	</agent>
 	
-	<agent id="a02" label="GroundStation" type="acting" uncertainty="5">
+	<agent id="a02" label="GroundStation" type="acting" uncertainty="0">
 
 		<command type="pc">
 			<name>visible</name>
-			<duration>24</duration>
+			<duration>28</duration>
 		</command>
 		
 	</agent>

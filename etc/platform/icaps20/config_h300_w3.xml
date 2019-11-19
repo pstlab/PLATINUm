@@ -10,7 +10,7 @@
 	</agent>
 	
 	
-	<agent id="a02" label="GroundStation" type="acting" uncertainty="1">
+	<agent id="a02" label="GroundStation" type="acting" uncertainty="0">
 
 		<command type="pc">
 			<name>visible</name>
