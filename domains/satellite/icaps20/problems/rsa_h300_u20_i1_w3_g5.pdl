@@ -1,16 +1,16 @@
-PROBLEM RSA_H300_W3_G5 (DOMAIN RSA_H300_U20_I1) {
+PROBLEM RSA_H300_W3_G5 (DOMAIN RSA_H300_U20_W3_I1) {
 
 		f11 <fact> Orbit.orbit.PERI() AT [0, 0] [90, 90] [90, 90];
 		f12 <fact> Orbit.orbit.INT() AT [90, 90] [210, 210] [120, 120];
 		f13 <fact> Orbit.orbit.APO() AT [210, 210] [300, 300] [90, 90];
 
 		f21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [90, 95] [90, 95];
-		f22 <fact> GroundStation.visibility.Visible() AT [90, 95] [130, 135] [35, 45];
+		f22 <fact> GroundStation.visibility._Visible() AT [90, 95] [130, 135] [35, 45];
 		f23 <fact> GroundStation.visibility.NotVisible() AT [130, 135] [130, 135] [1, 5];
-		f24 <fact> GroundStation.visibility.Visible() AT [130, 135] [155, 160] [20, 30];
-		f25 <fact> GroundStation.visibility.NotVisible() AT [155, 160] [155, 160] [1, 5];
-		f26 <fact> GroundStation.visibility.Visible() AT [155, 160] [200, 210] [40, 55];
-		f27 <fact> GroundStation.visibility.NotVisible() AT [200, 210] [300, 300] [90, 100];
+		f24 <fact> GroundStation.visibility._Visible() AT [130, 135] [160, 170] [35, 40];
+		f25 <fact> GroundStation.visibility.NotVisible() AT [150, 170] [160, 170] [1, 5];
+		f26 <fact> GroundStation.visibility._Visible() AT [160, 170] [195, 210] [35, 40];
+		f27 <fact> GroundStation.visibility.NotVisible() AT [195, 210] [300, 300] [90, 105];
 
 		f31 <fact> RSA.operations.Idle() AT [0, 0] [0, 300] [1, 300];
 

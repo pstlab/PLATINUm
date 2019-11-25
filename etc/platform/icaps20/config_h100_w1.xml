@@ -1,0 +1,22 @@
+<platform>
+
+	<agent id="a01" label="PointingMode" type="acting" uncertainty="10">
+
+		<command type="pc">
+			<name>comm</name>
+			<duration>4</duration>
+		</command>
+		
+	</agent>
+	
+	<agent id="a02" label="GroundStation" type="acting" uncertainty="0">
+
+		<command type="pc">
+			<name>visible</name>
+			<duration>28</duration>
+		</command>
+		
+	</agent>
+	
+
+</platform>

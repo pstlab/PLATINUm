@@ -121,6 +121,60 @@ public class DCMonitor extends Monitor<DCExecutive>
 				}
 			}
 		}
+		
+		// manage controllable tokens of the plan
+		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.IN_EXECUTION))
+		{
+			// check node controllability 
+			if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE))
+			{
+				// check end conditions
+				if (this.executive.canEnd(node))
+				{
+					// check node schedule
+					this.executive.checkSchedule(node);
+					// check expected schedule
+					if (tau >= node.getEnd()[0] && tau <= node.getEnd()[1]) 
+					{
+						// compute (controllable) execution duration
+						long duration = Math.max(1, tau - node.getStart()[0]);
+						try
+						{
+							// schedule token duration
+							this.executive.scheduleTokenDuration(node, duration);
+							// token scheduled
+							logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
+									+ "\t- duration: " + duration + "\n"
+									+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+						}
+						catch (TemporalConstraintPropagationException ex) {
+							// the node can be considered as executed
+							this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+							// create execution failure message
+							ExecutionFailureCause cause = new DurationOverflow(tick, node, duration);
+							// throw execution exception
+							throw new ObservationException(
+									"The planned duration does not comply with the current plan:\n"
+									+ "\t- duration: " + duration + "\n"
+									+ "\t- node: " + node + "\n", 
+									cause);
+						}
+					}
+					else 
+					{
+						// wait - not ready for dispatching
+						logger.debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End conditions satisifed but node schedule not ready for ending\n"
+								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					}
+				}
+				else 
+				{
+					// print a message in debug mode
+					logger.debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End execution conditions not satisfied yet\n"
+							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+				}
+			}
+		}
 	}
 	
 	/**

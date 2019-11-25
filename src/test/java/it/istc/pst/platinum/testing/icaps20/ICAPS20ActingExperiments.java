@@ -75,7 +75,7 @@ public class ICAPS20ActingExperiments
 		2,
 		3,
 		4,
-		5,
+		5
 	};
 		
 	/**
@@ -138,7 +138,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {35, 40}, 
 						new long[] {60, 65}, 
@@ -168,7 +168,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {35, 40}, 
 						new long[] {50, 55}, 
@@ -186,7 +186,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {50, 55}, 
 						new long[] {65, 75}, 
@@ -216,7 +216,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {30, 35}, 
 						new long[] {40, 45}, 
@@ -234,7 +234,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {40, 45}, 
 						new long[] {50, 55}, 
@@ -252,7 +252,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {50, 55}, 
 						new long[] {60, 75}, 
@@ -413,7 +413,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {60, 60}, 
 						new long[] {140, 140}, 
@@ -443,7 +443,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {60, 65}, 
 						new long[] {90, 95}, 
@@ -461,7 +461,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {90, 95}, 
 						new long[] {130, 140}, 
@@ -491,7 +491,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {60, 65}, 
 						new long[] {85, 90}, 
@@ -509,7 +509,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {85, 90}, 
 						new long[] {110, 115}, 
@@ -527,7 +527,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {110, 115}, 
 						new long[] {130, 140}, 
@@ -687,7 +687,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {90, 95}, 
 						new long[] {205, 215}, 
@@ -717,7 +717,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {90, 95}, 
 						new long[] {130, 145}, 
@@ -735,7 +735,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {130, 145}, 
 						new long[] {200, 205}, 
@@ -765,7 +765,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {90, 95}, 
 						new long[] {130, 135}, 
@@ -783,7 +783,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {130, 135}, 
 						new long[] {155, 160}, 
@@ -801,7 +801,7 @@ public class ICAPS20ActingExperiments
 				// add fact
 				description.addFactDescription(new TokenDescription(
 						"GroundStation", 
-						"Visible", 
+						"_Visible", 
 						new String[] {}, 
 						new long[] {155, 160}, 
 						new long[] {200, 210}, 
@@ -1045,7 +1045,7 @@ public class ICAPS20ActingExperiments
 							for (int g : GOALS)
 							{
 								// prepare domain name
-								String domainName = "rsa_h" + horizon + "_u" + uncertainty + "_i" + instrument;
+								String domainName = "rsa_h" + horizon + "_u" + uncertainty + "_w" + window + "_i" + instrument;
 								// prepare problem name
 								String problemName = "rsa_h" + horizon + "_u" + uncertainty + "_i" + instrument + "_w" + window + "_g" + g;
 								// prepare DDL file path
@@ -1093,7 +1093,7 @@ public class ICAPS20ActingExperiments
 											// configuration loader
 											simulator = PlatformProxyBuilder.build(
 													PLATFORM_SIMULATOR_CLASS,
-													PLATFORM_SIMULATOR_CONFIG_FOLDER + "/config_h" + horizon + "_u" + uncertainty + ".xml");
+													PLATFORM_SIMULATOR_CONFIG_FOLDER + "/config_h" + horizon + "_w" + window + ".xml");
 											
 											// start simulator
 											simulator.start();

@@ -76,7 +76,7 @@ public class ICAPS20PlanningProblemGenerator
 								String problemName = "rsa_h" + horizon + "_u" + uncertainty + "_i" + instrument + "_w" + window + "_g" + goal;
 								
 								// prepare domain specification file
-								String pdl = "PROBLEM RSA_H" + horizon + "_W" + window + "_G" + goal +" (DOMAIN RSA_H" + horizon +"_U" + uncertainty +"_I" + instrument + ") {\n\n";
+								String pdl = "PROBLEM RSA_H" + horizon + "_W" + window + "_G" + goal +" (DOMAIN RSA_H" + horizon +"_U" + uncertainty +"_W" + window +"_I" + instrument + ") {\n\n";
 								
 								// set orbit facts
 								if (horizon == 100) 
@@ -90,25 +90,25 @@ public class ICAPS20PlanningProblemGenerator
 									if (window == 1) {
 										// writ facts
 										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [35, 40] [35, 40];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [35, 40] [60, 65] [20, 30];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [35, 40] [60, 65] [20, 30];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [60, 65] [100, 100] [35, 40];\n\n";
 									}
 									else if (window == 2) {
 										// write facts
 										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [35, 40] [35, 40];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [35, 40] [50, 55] [10, 20];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [35, 40] [50, 55] [10, 20];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [50, 55] [50, 55] [1, 5];\n" + 
-												"\t\tf24 <fact> GroundStation.visibility.Visible() AT [50, 55] [65, 75] [10, 25];\n" + 
+												"\t\tf24 <fact> GroundStation.visibility._Visible() AT [50, 55] [60, 75] [10, 20];\n" + 
 												"\t\tf25 <fact> GroundStation.visibility.NotVisible() AT [65, 75] [100, 100] [25, 35];\n\n";
 									}
 									else if (window == 3) {
 										// write facts
 										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [30, 35] [30, 35];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [30, 35] [40, 45] [10, 15];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [30, 35] [40, 45] [10, 15];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [40, 45] [40, 45] [1, 5];\n" + 
-												"\t\tf24 <fact> GroundStation.visibility.Visible() AT [40, 45] [50, 55] [10, 15];\n" + 
+												"\t\tf24 <fact> GroundStation.visibility._Visible() AT [40, 45] [50, 55] [10, 15];\n" + 
 												"\t\tf25 <fact> GroundStation.visibility.NotVisible() AT [50, 55] [50, 55] [1, 5];\n" + 
-												"\t\tf26 <fact> GroundStation.visibility.Visible() AT [50, 55] [60, 75] [10, 15];\n" + 
+												"\t\tf26 <fact> GroundStation.visibility._Visible() AT [50, 55] [60, 75] [10, 15];\n" + 
 												"\t\tf27 <fact> GroundStation.visibility.NotVisible() AT [60, 75] [100, 100] [25, 40];\n\n";
 									}
 									
@@ -186,25 +186,25 @@ public class ICAPS20PlanningProblemGenerator
 									if (window == 1) {
 										// writ facts
 										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [60, 65] [60, 65];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [60, 65] [130, 135] [70, 75];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [60, 65] [130, 135] [70, 75];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [130, 135] [200, 200] [65, 70];\n\n";
 									}
 									else if (window == 2) {
 										// write facts
-										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [60, 65] [60, 65];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [60, 65] [90, 95] [25, 35];\n" + 
+										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [40, 58] [40, 58];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [40, 58] [90, 95] [35, 50];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [90, 95] [90, 95] [1, 5];\n" + 
-												"\t\tf24 <fact> GroundStation.visibility.Visible() AT [90, 95] [130, 140] [35, 50];\n" + 
+												"\t\tf24 <fact> GroundStation.visibility._Visible() AT [90, 95] [130, 140] [35, 50];\n" + 
 												"\t\tf25 <fact> GroundStation.visibility.NotVisible() AT [130, 140] [200, 200] [60, 70];\n\n";
 									}
 									else if (window == 3) {
 										// write facts
 										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [60, 65] [60, 65];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [60, 65] [85, 90] [15, 30];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [60, 65] [85, 90] [15, 30];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [85, 90] [85, 90] [1, 5];\n" + 
-												"\t\tf24 <fact> GroundStation.visibility.Visible() AT [85, 90] [110, 115] [20, 30];\n" + 
+												"\t\tf24 <fact> GroundStation.visibility._Visible() AT [85, 90] [110, 115] [15, 30];\n" + 
 												"\t\tf25 <fact> GroundStation.visibility.NotVisible() AT [110, 115] [110, 115] [1, 5];\n" + 
-												"\t\tf26 <fact> GroundStation.visibility.Visible() AT [110, 115] [130, 140] [15, 30];\n" + 
+												"\t\tf26 <fact> GroundStation.visibility._Visible() AT [110, 115] [130, 140] [15, 30];\n" + 
 												"\t\tf27 <fact> GroundStation.visibility.NotVisible() AT [130, 140] [200, 200] [60, 70];\n\n";
 									}
 									
@@ -282,26 +282,26 @@ public class ICAPS20PlanningProblemGenerator
 									if (window == 1) {
 										// writ facts
 										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [90, 95] [90, 95];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [90, 95] [205, 215] [110, 125];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [90, 95] [205, 215] [110, 125];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [205, 215] [300, 300] [85, 95];\n\n";
 									}
 									else if (window == 2) {
 										// write facts
-										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [90, 95] [90, 95];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [90, 95] [130, 145] [35, 55];\n" + 
+										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [55, 75] [55, 75];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [55, 75] [130, 145] [55, 75];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [130, 145] [130, 145] [1, 5];\n" + 
-												"\t\tf24 <fact> GroundStation.visibility.Visible() AT [130, 145] [200, 205] [55, 75];\n" + 
+												"\t\tf24 <fact> GroundStation.visibility._Visible() AT [130, 145] [200, 205] [55, 75];\n" + 
 												"\t\tf25 <fact> GroundStation.visibility.NotVisible() AT [200, 205] [300, 300] [95, 100];\n\n";
 									}
 									else if (window == 3) {
 										// write facts
 										pdl += "\t\tf21 <fact> GroundStation.visibility.NotVisible() AT [0, 0] [90, 95] [90, 95];\n" + 
-												"\t\tf22 <fact> GroundStation.visibility.Visible() AT [90, 95] [130, 135] [35, 45];\n" + 
+												"\t\tf22 <fact> GroundStation.visibility._Visible() AT [90, 95] [130, 135] [35, 45];\n" + 
 												"\t\tf23 <fact> GroundStation.visibility.NotVisible() AT [130, 135] [130, 135] [1, 5];\n" + 
-												"\t\tf24 <fact> GroundStation.visibility.Visible() AT [130, 135] [155, 160] [20, 30];\n" + 
-												"\t\tf25 <fact> GroundStation.visibility.NotVisible() AT [155, 160] [155, 160] [1, 5];\n" + 
-												"\t\tf26 <fact> GroundStation.visibility.Visible() AT [155, 160] [200, 210] [40, 55];\n" + 
-												"\t\tf27 <fact> GroundStation.visibility.NotVisible() AT [200, 210] [300, 300] [90, 100];\n\n";
+												"\t\tf24 <fact> GroundStation.visibility._Visible() AT [130, 135] [160, 170] [35, 40];\n" + 
+												"\t\tf25 <fact> GroundStation.visibility.NotVisible() AT [150, 170] [160, 170] [1, 5];\n" + 
+												"\t\tf26 <fact> GroundStation.visibility._Visible() AT [160, 170] [195, 210] [35, 40];\n" + 
+												"\t\tf27 <fact> GroundStation.visibility.NotVisible() AT [195, 210] [300, 300] [90, 105];\n\n";
 									}
 									
 									
