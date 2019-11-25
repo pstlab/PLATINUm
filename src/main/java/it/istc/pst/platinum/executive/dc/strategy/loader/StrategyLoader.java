@@ -41,6 +41,8 @@ public class StrategyLoader {
 	private String pathPlanXta;
 	private Strategy strategy;
 	private Boolean isValid;
+	private long tigaTime;
+	private long managementStrategyTime;
 	//int test = 1;
 
 	//------------------------CONSTRUCTORS---------------------------
@@ -70,15 +72,15 @@ public class StrategyLoader {
 		/* File file = new File(pathPlan + "_" + test + ".txt");
         FileWriter w = new FileWriter(pathPlan + "_" + test + ".txt");
 		this.writer = new PrintWriter(w); */
-		long time = System.currentTimeMillis();
+		this.tigaTime = System.currentTimeMillis();
 		ProcessBuilder builder = new ProcessBuilder("bash", "-c", "plan2tiga" + " " + pathPlan +
 				" && " + "verifytga" + " -w0 " + pathPlan + ".xta");
 
 		builder.redirectErrorStream(true);
 		Process process = builder.start();
 		this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-		time = System.currentTimeMillis() - time;
-		System.out.println("\n" + "Plan2Tiga  + VerifyTga = " + time + "ms\n");
+		this.tigaTime = System.currentTimeMillis() - this.tigaTime;
+		System.out.println("\n" + "Plan2Tiga  + VerifyTga = " + this.tigaTime + "ms\n");
 		//writer.println("\n" + "Plan2Tiga  + VerifyTga = " + time + "ms\n");
 		//this.strategy.setWriter(writer);
 	}
@@ -93,7 +95,7 @@ public class StrategyLoader {
 	//creates strategy reading lines, validating if a strategy is found and finding states (box 1)
 	public void readStrategy() throws IOException, Exception {
 		System.out.println("\nReading Strategy..... :\n");
-		long time = System.currentTimeMillis();
+		this.managementStrategyTime = System.currentTimeMillis();
 		try {
 			String line = reader.readLine(); 
 
@@ -132,8 +134,8 @@ public class StrategyLoader {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		time = System.currentTimeMillis() - time;
-		System.out.println("\n" + "Reading Strategy Time: " + time + "ms\n");
+		this.managementStrategyTime = System.currentTimeMillis() - this.managementStrategyTime;
+		System.out.println("\n" + "Reading Strategy Time: " + this.managementStrategyTime + "ms\n");
 		//System.out.println("\n\n" + this.strategy + "\n\n");
 	}
 
@@ -250,4 +252,13 @@ public class StrategyLoader {
 	public Strategy getStrategy() {
 		return this.strategy;
 	}
+
+	public long getTigaTime() {
+		return tigaTime;
+	}
+	
+	public long getManagementStrategyTime() {
+		return managementStrategyTime;
+	}
+	
 }

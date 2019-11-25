@@ -109,7 +109,7 @@ public class ExecutiveProcess implements Runnable
 		}
 		
 		// run the executive starting at a given tick
-		boolean complete = exec.execute(goal.getExecutionTick());
+		boolean complete = exec.execute(goal.getExecutionTick(),goal); //EDIT POINTER
 		
 		
 		// stop simulator if any

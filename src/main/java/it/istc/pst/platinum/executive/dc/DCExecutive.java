@@ -1,5 +1,6 @@
 package it.istc.pst.platinum.executive.dc;
 
+import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.dc.strategy.Strategy;
 import it.istc.pst.platinum.executive.dc.strategy.loader.StrategyLoader;
@@ -37,7 +38,7 @@ public class DCExecutive extends Executive
 	 * 
 	 */
 	@Override
-	protected void doPrepareExecution() 
+	protected void doPrepareExecution(Goal goal) 
 	{
 		try
 		{
@@ -47,6 +48,9 @@ public class DCExecutive extends Executive
 			StrategyLoader loader = new StrategyLoader(path, this.pdb.getHorizon());
 			// read computed strategy
 			loader.readStrategy();
+			//EDIT: retrieve time
+			goal.setUppaalTime(loader.getTigaTime());
+			goal.setManagementStrategyTime(loader.getManagementStrategyTime());
 			
 			// get strategy
 			this.checker = loader.getStrategy();

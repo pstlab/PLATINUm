@@ -1030,7 +1030,10 @@ public class ICAPS20DCActingExperiments
 						+ "Execution Time (secs);"
 						+ "Exogenous Events;"
 						+ "Contingency Handling Time (secs);"
-						+ "Goal Status");
+						+ "Goal Status;"
+						+ "UPPAAL + P2T Time (msecs);"
+						+ "Strategy Management Time (msecs)"
+						);
 			}
 			
 			// run experiments
@@ -1142,6 +1145,8 @@ public class ICAPS20DCActingExperiments
 																+ "execution error;"
 																+ "execution error;"
 																+ "execution error;"
+																+ "execution error;"
+																+ "execution error;"
 																+ "execution error");
 													}
 												}
@@ -1169,7 +1174,10 @@ public class ICAPS20DCActingExperiments
 																	+ (goal.getTotalExecutionTime() / 1000) + ";"
 																	+ goal.getContingencyHandlingAttempts() + ";"
 																	+ (goal.getTotalContingencyHandlingTime() / 1000) + ";"
-																	+ goal.getStatus());
+																	+ goal.getStatus() + ";"
+																	+ goal.getUppaalTime() + ";"
+																	+ goal.getManagementStrategyTime()
+																	);
 														}
 													}
 												}

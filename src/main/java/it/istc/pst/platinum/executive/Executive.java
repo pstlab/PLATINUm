@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.platform.PlatformObserver;
 import it.istc.pst.platinum.control.platform.PlatformProxy;
 import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
@@ -386,7 +387,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	public final boolean execute() 
 			throws InterruptedException {
 		// call executive starting at tick 0
-		return this.execute(0);
+		return this.execute(0,null);
 	}
 	
 	/**
@@ -395,7 +396,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final boolean execute(long startTick) 
+	public final boolean execute(long startTick, Goal goal) //EDIT POINTER
 			throws InterruptedException
 	{
 		// check status
@@ -412,7 +413,9 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		}
 		
 		// perform setting operations before execution
-		this.doPrepareExecution();
+		if(goal.equals(null))
+			this.doPrepareExecution();
+		else this.doPrepareExecution(goal);
 		
 		// initialize dispatching index
 		this.dispatchedIndex = new ConcurrentHashMap<>();
@@ -598,6 +601,13 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * Perform some setting operation just before starting execution
 	 */
 	protected void doPrepareExecution() 
+	{
+		/*
+		 * TODO : set some parametric procedure
+		 */
+	}
+	
+	protected void doPrepareExecution(Goal goal) //EDIT POINTER
 	{
 		/*
 		 * TODO : set some parametric procedure

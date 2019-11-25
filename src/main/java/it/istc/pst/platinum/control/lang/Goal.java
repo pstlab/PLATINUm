@@ -38,6 +38,9 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	
 	private boolean repaired;
 	private long executionTick;
+	//EDIT POINTER
+	private long uppaalTime;
+	private long managementStrategyTime;
 	
 	
 	/**
@@ -59,6 +62,9 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 		this.failureCause = null;
 		this.repaired = false;
 		this.executionTick = 0;
+		//EDIT POINTER
+		this.uppaalTime = -1;
+		this.managementStrategyTime = -1;
 	}
 	
 	/**
@@ -292,6 +298,23 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 		this.status = status;
 	}
 	
+	//EDIT POINTER
+	
+	public long getUppaalTime() {
+		return uppaalTime;
+	}
+
+	public void setUppaalTime(long uppaalTime) {
+		this.uppaalTime = uppaalTime;
+	}
+
+	public long getManagementStrategyTime() {
+		return managementStrategyTime;
+	}
+
+	public void setManagementStrategyTime(long managementStrategyTime) {
+		this.managementStrategyTime = managementStrategyTime;
+	}
 
 	/**
 	 * 
