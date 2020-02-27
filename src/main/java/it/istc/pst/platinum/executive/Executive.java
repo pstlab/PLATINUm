@@ -44,7 +44,7 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.INFO
 )
 @MonitorConfiguration(
 		monitor = ConditionCheckingMonitor.class
@@ -413,9 +413,9 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		}
 		
 		// perform setting operations before execution
-		if(goal.equals(null))
-			this.doPrepareExecution();
-		else this.doPrepareExecution(goal);
+//		if(goal.equals(null))
+//			this.doPrepareExecution();
+//		else this.doPrepareExecution(goal);
 		
 		// initialize dispatching index
 		this.dispatchedIndex = new ConcurrentHashMap<>();

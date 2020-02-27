@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewpoint:DAnalysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description" uid="_BDJ78Ej7EeqkCOYZ1HTlrg" selectedViews="_BL4aIEj7EeqkCOYZ1HTlrg" version="14.1.0.201810161215">
+  <semanticResources>platform:/plugin/it.cnr.istc.keen/model/generated/Ddl.ecore</semanticResources>
+  <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
+  <semanticResources>virtual:/resource/PLATINUm/domains/fourbythree/alfa/complete/alfa.ddl</semanticResources>
+  <ownedViews xmi:type="viewpoint:DView" uid="_BL4aIEj7EeqkCOYZ1HTlrg">
+    <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/it.cnr.istc.keen.modeling.design/description/Ddl.odesign#//@ownedViewpoints[name='ddl']"/>
+  </ownedViews>
+</viewpoint:DAnalysis>
