@@ -194,9 +194,14 @@ public class PlanProtocolDescriptor
 		
 		// print relations
 		plan += "\trelations {\n";
-		for (RelationProtocolDescriptor rel : this.relations) {
-			// avoid meets on tokens of the same timeline
-			plan += "\t\t" + rel.export() + "\n";
+		for (RelationProtocolDescriptor rel : this.relations) 
+		{
+			// consider relations between state variables only
+			if (rel.getFrom() != null && rel.getTo() != null) 
+			{
+				// avoid meets on tokens of the same timeline
+				plan += "\t\t" + rel.export() + "\n";
+			}
 		}
 		plan += "\t}\n";
 		

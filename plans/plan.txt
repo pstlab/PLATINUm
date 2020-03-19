@@ -1,140 +1,111 @@
-horizon = 150
+horizon = 100
 plan {
 	timelines {
-		Movement {
-			token 0  { At [4,38] [4, 38] }
-			token 1 uncontrollable { _Move [8,42] [4, 30] }
-			token 2  { At [15,54] [7, 46] }
-			token 3 uncontrollable { _Move [19,58] [4, 30] }
-			token 4  { At [31,65] [7, 46] }
-			token 5 uncontrollable { _Move [35,69] [4, 30] }
-			token 6  { At [42,101] [7, 66] }
-			token 7 uncontrollable { _Move [46,105] [4, 30] }
-			token 8  { At [78,139] [7, 93] }
-			token 9 uncontrollable { _Move [82,143] [4, 30] }
-			token 10  { At [116,150] [7, 68] }
+		Stimulation {
+			token 0  { DoCognitiveStimulation-ex2 [8,8] [3, 3] }
+			token 1  { DoCognitiveStimulation-ex9 [12,12] [3, 3] }
+			token 2  { DoCognitiveStimulation-ex8 [16,16] [3, 3] }
+			token 3  { DoCognitiveStimulation-ex5 [20,20] [3, 3] }
+			token 4  { DoCognitiveStimulation-ex2 [28,32] [3, 7] }
+			token 5  { DoCognitiveStimulation-ex4 [32,36] [3, 7] }
+			token 6  { DoCognitiveStimulation-ex1 [36,40] [3, 7] }
+			token 7  { DoCognitiveStimulation-ex3 [48,80] [3, 7] }
 		}
-		Human {
-			token 11  { Idle [7,43] [7, 43] }
-			token 12 uncontrollable { _Trigger [12,46] [3, 5] }
-			token 13  { Idle [25,59] [13, 47] }
-			token 14 uncontrollable { _Trigger [28,62] [3, 5] }
-			token 15  { Idle [34,70] [6, 42] }
-			token 16 uncontrollable { _Trigger [39,73] [3, 5] }
-			token 17  { Idle [72,106] [33, 67] }
-			token 18 uncontrollable { _Trigger [75,109] [3, 5] }
-			token 19  { Idle [110,144] [35, 69] }
-			token 20 uncontrollable { _Trigger [113,147] [3, 5] }
+		Patient {
+			token 8 uncontrollable { _None [5,5] [5, 5] }
+			token 9 uncontrollable { _Available-no-high-regular-large [20,20] [15, 15] }
+			token 10 uncontrollable { _None [25,25] [5, 5] }
+			token 11 uncontrollable { _Available-no-high-regular-large [40,40] [15, 15] }
+			token 12 uncontrollable { _None [45,45] [5, 5] }
+			token 13 uncontrollable { _Available-yes-high-slow-large [80,80] [35, 35] }
+			token 14 uncontrollable { _None [81,100] [1, 20] }
 		}
-		PhotoAction {
-			token 21  { Idle [8,42] [8, 42] }
-			token 22 uncontrollable { _Photo [12,46] [4, 7] }
-			token 23  { Filter [15,53] [3, 7] }
-			token 24  { Idle [21,58] [4, 43] }
-			token 25 uncontrollable { _Photo [28,62] [4, 7] }
-			token 26  { Filter [31,65] [3, 7] }
-			token 27  { Idle [35,69] [4, 38] }
-			token 28 uncontrollable { _Photo [39,73] [4, 7] }
-			token 29  { Filter [42,80] [3, 7] }
-			token 30  { Idle [68,105] [22, 63] }
-			token 31 uncontrollable { _Photo [75,109] [4, 7] }
-			token 32  { Filter [78,116] [3, 7] }
-			token 33  { Idle [106,143] [24, 65] }
-			token 34 uncontrollable { _Photo [113,147] [4, 7] }
-			token 35  { Filter [116,150] [3, 7] }
+		Robot {
+			token 15  { Idle [5,5] [5, 5] }
+			token 16 uncontrollable { _DoStimulationAction-ex2-no-high-regular-large [8,8] [3, 3] }
+			token 17  { Idle [9,9] [1, 1] }
+			token 18 uncontrollable { _DoStimulationAction-ex9-no-high-regular-large [12,12] [3, 3] }
+			token 19  { Idle [13,13] [1, 1] }
+			token 20 uncontrollable { _DoStimulationAction-ex8-no-high-regular-large [16,16] [3, 3] }
+			token 21  { Idle [17,17] [1, 1] }
+			token 22 uncontrollable { _DoStimulationAction-ex5-no-high-regular-large [20,20] [3, 3] }
+			token 23  { Idle [25,29] [5, 9] }
+			token 24 uncontrollable { _DoStimulationAction-ex2-no-high-regular-large [28,32] [3, 7] }
+			token 25  { Idle [29,33] [1, 5] }
+			token 26 uncontrollable { _DoStimulationAction-ex4-no-high-regular-large [32,36] [3, 7] }
+			token 27  { Idle [33,37] [1, 5] }
+			token 28 uncontrollable { _DoStimulationAction-ex1-no-high-regular-large [36,40] [3, 7] }
+			token 29  { Idle [45,77] [5, 41] }
+			token 30 uncontrollable { _DoStimulationAction-ex3-yes-high-slow-large [48,80] [3, 7] }
 		}
 	}
 	relations {
-		PhotoAction 31 meets PhotoAction 32
-		PhotoAction 27 meets PhotoAction 28
-		PhotoAction 28 meets PhotoAction 29
-		PhotoAction 29 meets PhotoAction 30
-		Human 18 meets Human 19
-		Human 19 meets Human 20
-		PhotoAction 26 meets PhotoAction 27
-		PhotoAction 24 meets PhotoAction 25
-		PhotoAction 25 meets PhotoAction 26
-		PhotoAction 23 meets PhotoAction 24
-		Human 12 before [13,150] Human 14
-		Human 16 before [33,150] Human 18
-		Human 18 before [35,150] Human 20
-		Human 12 meets PhotoAction 23
-		Human 14 meets PhotoAction 26
-		Human 16 meets PhotoAction 29
-		Human 20 meets PhotoAction 35
-		Human 18 meets PhotoAction 32
-		PhotoAction 23 during [0,150]  [0,150] Movement 2
-		PhotoAction 26 during [0,150]  [0,150] Movement 4
-		PhotoAction 29 during [0,150]  [0,150] Movement 6
-		PhotoAction 35 during [0,150]  [0,150] Movement 10
-		PhotoAction 32 during [0,150]  [0,150] Movement 8
-		Human 11 before [0,150] Human 12
-		Human 11 before [0,150] Human 16
-		Human 12 before [0,150] Human 16
-		Human 14 before [0,150] Human 16
-		Movement 0 before [0,150] Movement 10
-		Movement 0 before [0,150] Movement 8
-		Movement 2 before [0,150] Movement 10
-		Movement 0 before [0,150] Movement 6
-		Movement 2 before [0,150] Movement 8
-		Movement 4 before [0,150] Movement 10
-		Movement 0 before [0,150] Movement 4
-		Movement 4 before [0,150] Movement 6
-		Movement 6 before [0,150] Movement 10
-		Movement 0 before [0,150] Movement 2
-		Movement 2 before [0,150] Movement 4
-		Movement 4 before [0,150] Movement 8
-		Movement 6 before [0,150] Movement 8
-		Movement 8 before [0,150] Movement 10
-		PhotoAction 21 before [0,150] PhotoAction 23
-		Human 11 meets Human 12
-		Human 14 meets Human 15
-		Human 15 meets Human 16
-		Movement 8 meets Movement 9
-		Movement 9 meets Movement 10
-		Movement 9 during [0,150]  [0,150] PhotoAction 33
-		PhotoAction 21 before [0,150] PhotoAction 33
-		PhotoAction 23 before [0,150] PhotoAction 33
-		PhotoAction 26 before [0,150] PhotoAction 33
-		PhotoAction 29 before [0,150] PhotoAction 33
-		PhotoAction 32 before [0,150] PhotoAction 33
-		PhotoAction 33 before [0,150] PhotoAction 35
-		Human 12 meets Human 13
-		Human 13 meets Human 14
-		PhotoAction 21 meets PhotoAction 22
-		PhotoAction 22 meets PhotoAction 23
-		Movement 0 meets Movement 1
-		Movement 1 meets Movement 2
-		Movement 1 during [0,150]  [0,150] PhotoAction 21
-		Movement 6 meets Movement 7
-		Movement 7 meets Movement 8
-		Movement 7 during [0,150]  [0,150] PhotoAction 30
-		PhotoAction 21 before [0,150] PhotoAction 30
-		PhotoAction 22 before [0,150] PhotoAction 30
-		PhotoAction 23 before [0,150] PhotoAction 30
-		PhotoAction 26 before [0,150] PhotoAction 30
-		PhotoAction 29 before [0,150] PhotoAction 30
-		PhotoAction 30 before [0,150] PhotoAction 32
-		Movement 4 meets Movement 5
-		Movement 5 meets Movement 6
-		Movement 5 during [0,150]  [0,150] PhotoAction 27
-		PhotoAction 21 before [0,150] PhotoAction 27
-		PhotoAction 22 before [0,150] PhotoAction 27
-		PhotoAction 23 before [0,150] PhotoAction 27
-		PhotoAction 26 before [0,150] PhotoAction 27
-		PhotoAction 27 before [0,150] PhotoAction 29
-		Movement 2 meets Movement 3
-		Movement 3 meets Movement 4
-		Movement 3 during [0,150]  [0,150] PhotoAction 24
-		PhotoAction 21 before [0,150] PhotoAction 24
-		PhotoAction 22 before [0,150] PhotoAction 24
-		PhotoAction 23 before [0,150] PhotoAction 24
-		PhotoAction 24 before [0,150] PhotoAction 26
-		PhotoAction 32 meets PhotoAction 33
-		Human 16 meets Human 17
-		Human 17 meets Human 18
-		PhotoAction 33 meets PhotoAction 34
-		PhotoAction 34 meets PhotoAction 35
-		PhotoAction 30 meets PhotoAction 31
+		Patient 8 before [0,100] Patient 14
+		Patient 9 before [0,100] Patient 13
+		Patient 10 before [0,100] Patient 12
+		Patient 8 before [0,100] Patient 11
+		Patient 11 before [0,100] Patient 14
+		Patient 9 before [0,100] Patient 10
+		Patient 12 before [0,100] Patient 13
+		Patient 8 before [0,100] Patient 9
+		Patient 10 before [0,100] Patient 11
+		Patient 11 before [0,100] Patient 12
+		Patient 13 before [0,100] Patient 14
+		Patient 9 meets Patient 10
+		Patient 10 meets Patient 11
+		Patient 12 meets Patient 13
+		Patient 8 meets Patient 9
+		Patient 11 meets Patient 12
+		Patient 13 meets Patient 14
+		Robot 16 during [0,100]  [0,100] Patient 9
+		Stimulation 0 equals Robot 16
+		Robot 15 before [0,100] Robot 16
+		Robot 15 meets Robot 16
+		Robot 18 during [0,100]  [0,100] Patient 9
+		Stimulation 1 equals Robot 18
+		Robot 15 before [0,100] Robot 18
+		Robot 16 before [0,100] Robot 18
+		Robot 16 meets Robot 17
+		Robot 17 meets Robot 18
+		Robot 20 during [0,100]  [0,100] Patient 9
+		Stimulation 2 equals Robot 20
+		Robot 15 before [0,100] Robot 20
+		Robot 16 before [0,100] Robot 20
+		Robot 17 before [0,100] Robot 20
+		Robot 18 before [0,100] Robot 20
+		Robot 18 meets Robot 19
+		Robot 19 meets Robot 20
+		Robot 22 during [0,100]  [0,100] Patient 9
+		Stimulation 3 equals Robot 22
+		Robot 15 before [0,100] Robot 22
+		Robot 16 before [0,100] Robot 22
+		Robot 17 before [0,100] Robot 22
+		Robot 18 before [0,100] Robot 22
+		Robot 19 before [0,100] Robot 22
+		Robot 20 before [0,100] Robot 22
+		Robot 20 meets Robot 21
+		Robot 21 meets Robot 22
+		Robot 24 during [0,100]  [0,100] Patient 11
+		Stimulation 4 equals Robot 24
+		Robot 22 meets Robot 23
+		Robot 23 meets Robot 24
+		Robot 26 during [0,100]  [0,100] Patient 11
+		Stimulation 5 equals Robot 26
+		Robot 23 before [0,100] Robot 26
+		Robot 24 before [0,100] Robot 26
+		Robot 24 meets Robot 25
+		Robot 25 meets Robot 26
+		Robot 28 during [0,100]  [0,100] Patient 11
+		Stimulation 6 equals Robot 28
+		Robot 23 before [0,100] Robot 28
+		Robot 24 before [0,100] Robot 28
+		Robot 25 before [0,100] Robot 28
+		Robot 26 before [0,100] Robot 28
+		Robot 26 meets Robot 27
+		Robot 27 meets Robot 28
+		Robot 30 during [0,100]  [0,100] Patient 13
+		Stimulation 7 equals Robot 30
+		Robot 28 meets Robot 29
+		Robot 29 meets Robot 30
 	}
 }
