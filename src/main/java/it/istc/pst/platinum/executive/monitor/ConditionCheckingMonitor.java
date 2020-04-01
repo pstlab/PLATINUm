@@ -5,7 +5,6 @@ import java.util.List;
 import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
-import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.lang.ex.ObservationException;
@@ -54,25 +53,9 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 				{
 					// compute node duration of the token in execution 
 					long duration = Math.max(1, tau - node.getStart()[0]);
-					try
-					{
-						// do propagate observed duration
-						this.executive.scheduleTokenDuration(node, duration);
-						logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
-								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-					}
-					catch (TemporalConstraintPropagationException ex) {
-						// set token as in failure
-						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
-						// create execution failure message
-						ExecutionFailureCause cause = new DurationOverflow(tick, node, duration);
-						// throw execution exception
-						throw new ObservationException(
-								"The observed duration does not comply with the expected one:\n"
-								+ "\t- duration: " + duration + "\n"
-								+ "\t- node: " + node + "\n", 
-								cause);
-					}
+					this.executive.updateNode(node,  ExecutionNodeStatus.EXECUTED);
+					logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
+							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
 				
@@ -122,31 +105,18 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 					// check node schedule
 					this.executive.checkSchedule(node);
 					// check expected schedule
-					if (tau >= node.getEnd()[0] && tau <= node.getEnd()[1]) 
+					if (tau >= node.getEnd()[0]) // && tau <= node.getEnd()[1]) 
 					{
 						// compute (controllable) execution duration
 						long duration = Math.max(1, tau - node.getStart()[0]);
-						try
-						{
-							// schedule token duration
-							this.executive.scheduleTokenDuration(node, duration);
-							// token scheduled
-							logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
-									+ "\t- duration: " + duration + "\n"
-									+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-						}
-						catch (TemporalConstraintPropagationException ex) {
-							// the node can be considered as executed
-							this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
-							// create execution failure message
-							ExecutionFailureCause cause = new DurationOverflow(tick, node, duration);
-							// throw execution exception
-							throw new ObservationException(
-									"The planned duration does not comply with the current plan:\n"
-									+ "\t- duration: " + duration + "\n"
-									+ "\t- node: " + node + "\n", 
-									cause);
-						}
+						// send stop signal to the platform
+						this.executive.sendStopCommandSignalToPlatform(node);
+						// set node as executed
+						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						// token scheduled
+						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
+								+ "\t- duration: " + duration + "\n"
+								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					else 
 					{

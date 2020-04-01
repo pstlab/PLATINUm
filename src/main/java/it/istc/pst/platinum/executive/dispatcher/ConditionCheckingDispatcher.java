@@ -43,7 +43,7 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 				// check the actual bounds of the token
 				this.executive.checkSchedule(node);
 				// schedule node if possible 
-				if (tau >= node.getStart()[0]) // && tau <= node.getStart()[1])
+				if (tau >= node.getStart()[0])
 				{
 					try
 					{

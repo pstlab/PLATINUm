@@ -120,12 +120,12 @@ public class GanttComponentView extends JFrame implements ComponentView, Compara
 	 	{
 	 		// create a task series if necessary
 	 		if (!index.containsKey(dec.getComponent())) {
-	 			// initialize component data
+	 			// set component data
 	 			index.put(dec.getComponent(), new HashMap<ComponentValue, List<Token>>());
 	 		}
 	 		
 	 		if (!index.get(dec.getComponent()).containsKey(dec.getValue())) {
-	 			// initialize value data
+	 			// set value data
 	 			index.get(dec.getComponent()).put(dec.getValue(), new ArrayList<Token>());
 	 		}
 	 		
@@ -148,6 +148,7 @@ public class GanttComponentView extends JFrame implements ComponentView, Compara
  				Task task = new Task(v.getComponent().getName() + "." + v.getLabel(),
  						new Date(tokens.get(0).getInterval().getStartTime().getLowerBound()),
  						new Date(tokens.get(tokens.size()-1).getInterval().getEndTime().getLowerBound()));
+ 				
  				// create sub-tasks if necessary
  				for (Token t : tokens) {
  					// create sub task

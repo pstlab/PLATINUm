@@ -285,13 +285,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			case PARTIALLY_CONTROLLABLE : 
 			case CONTROLLABLE : 
 			{
-				// check if virtual node
-//				if (!node.isVirtual()) {
-					// actually schedule the start time of the token
-					this.pdb.scheduleStartTime(node, start);
-					
-//				}
-				
+				// actually schedule the start time of the token
+				this.pdb.scheduleStartTime(node, start);
 				// update node status
 				this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 			}
