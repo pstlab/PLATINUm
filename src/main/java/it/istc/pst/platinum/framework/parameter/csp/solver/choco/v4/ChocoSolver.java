@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
@@ -163,7 +162,13 @@ public class ChocoSolver extends ParameterSolver
 				}
 				
 				// set allowed values
-				int[] values = ArrayUtils.toPrimitive(vals.toArray(new Integer[vals.size()]));
+				int[] values = new int[vals.size()];
+				Integer[] l = vals.toArray(new Integer[vals.size()]);
+				for (int i= 0; i < values.length; i++) {
+					// set value
+					values[i] = l[i];
+				}
+				
 				// set values
 				ep.setValues(values);
 				

@@ -27,9 +27,9 @@ plan {
 		}
 	}
 	relations {
-		Robot 7 meets Robot 8
-		Robot 8 meets Robot 9
 		Robot 6 meets Robot 7
+		Robot 15 meets Robot 16
+		Robot 16 meets Robot 17
 		Patient 1 before [0,100] Patient 5
 		Patient 2 before [0,100] Patient 4
 		Patient 1 before [0,100] Patient 3
@@ -38,10 +38,10 @@ plan {
 		Patient 2 before [0,100] Patient 3
 		Patient 3 before [0,100] Patient 4
 		Patient 4 before [0,100] Patient 5
-		Patient 3 meets Patient 4
-		Patient 4 meets Patient 5
 		Patient 1 meets Patient 2
 		Patient 2 meets Patient 3
+		Patient 4 meets Patient 5
+		Patient 3 meets Patient 4
 		Stimulation 0 contains [0,100]  [0,100] Robot 7
 		Stimulation 0 contains [0,100]  [0,100] Robot 9
 		Stimulation 0 contains [0,100]  [0,100] Robot 11
@@ -51,8 +51,8 @@ plan {
 		Robot 9 during [0,100]  [0,100] Patient 2
 		Robot 7 during [0,100]  [0,100] Patient 2
 		Robot 11 during [0,100]  [0,100] Patient 2
-		Robot 17 during [0,100]  [0,100] Patient 2
 		Robot 15 during [0,100]  [0,100] Patient 2
+		Robot 17 during [0,100]  [0,100] Patient 2
 		Robot 13 during [0,100]  [0,100] Patient 2
 		Robot 6 before [0,100] Robot 7
 		Robot 6 before [0,100] Robot 9
@@ -75,13 +75,13 @@ plan {
 		Robot 11 before [0,100] Robot 17
 		Robot 13 before [0,100] Robot 17
 		Robot 15 before [0,100] Robot 17
-		Robot 15 meets Robot 16
-		Robot 16 meets Robot 17
 		Robot 13 meets Robot 14
 		Robot 14 meets Robot 15
 		Robot 11 meets Robot 12
 		Robot 12 meets Robot 13
 		Robot 9 meets Robot 10
 		Robot 10 meets Robot 11
+		Robot 7 meets Robot 8
+		Robot 8 meets Robot 9
 	}
 }
