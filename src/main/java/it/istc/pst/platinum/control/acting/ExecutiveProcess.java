@@ -7,7 +7,7 @@ import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.GoalStatus;
 import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.PlatformProxy;
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.ExecutiveBuilder;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;

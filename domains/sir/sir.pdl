@@ -5,32 +5,13 @@ PROBLEM SIR (DOMAIN SIR)
 
 	// patient availability external 
 	f00 <fact> Patient.windows._None() AT [0, 0] [5, 5] [5, 5];
-	f01 <fact> Patient.windows._Available(?e01, ?s01, ?r01, ?t01) AT [5, 5] [20, 20] [15, 15];
-	f02 <fact> Patient.windows._None() AT [20, 20] [25, 25] [5, 5];
-	f03 <fact> Patient.windows._Available(?e03, ?s03, ?r03, ?t03) AT [25, 25] [40, 40] [15, 15];
-	f04 <fact> Patient.windows._None() AT [40, 40] [45, 45] [5, 5];
-	f05 <fact> Patient.windows._Available(?e05, ?s05, ?r05, ?t05) AT [45, 45] [80, 80] [35, 35];
-	f06 <fact> Patient.windows._None() AT [80, 80] [100, 100] [20, 20];
+	f01 <fact> Patient.windows._Available(?e01, ?s01, ?r01, ?t01) AT [5, 5] [45, 45] [40, 40];
+	f02 <fact> Patient.windows._None() AT [45, 45] [50, 50] [5, 5];
+	f03 <fact> Patient.windows._Available(?e02, ?s02, ?r02, ?t02) AT [50, 50] [80, 80] [30, 30];
+	f04 <fact> Patient.windows._None() AT [80, 80] [100, 100] [20, 20];
 	
 	// goals
-	g0 <goal> Stimulation.process.DoCognitiveStimulation(?s0) AT [0, +INF] [0, +INF] [0, +INF];
-	g1 <goal> Stimulation.process.DoCognitiveStimulation(?s1) AT [0, +INF] [0, +INF] [0, +INF];
-	g2 <goal> Stimulation.process.DoCognitiveStimulation(?s2) AT [0, +INF] [0, +INF] [0, +INF];
-	g3 <goal> Stimulation.process.DoCognitiveStimulation(?s3) AT [0, +INF] [0, +INF] [0, +INF];
-	g4 <goal> Stimulation.process.DoCognitiveStimulation(?s4) AT [0, +INF] [0, +INF] [0, +INF];
-	g5 <goal> Stimulation.process.DoCognitiveStimulation(?s5) AT [0, +INF] [0, +INF] [0, +INF];
-	g6 <goal> Stimulation.process.DoCognitiveStimulation(?s6) AT [0, +INF] [0, +INF] [0, +INF];
-	g7 <goal> Stimulation.process.DoCognitiveStimulation(?s7) AT [0, +INF] [0, +INF] [0, +INF];
-	
-	// goal parameters
-	?s0 = ex1;
-	?s1 = ex3;
-	?s2 = ex4;
-	?s3 = ex2;
-	?s4 = ex5;
-	?s5 = ex8;
-	?s6 = ex9;
-	?s7 = ex2;
+	g0 <goal> Stimulation.process.DoCognitiveStimulation() AT [0, +INF] [0, +INF] [0, +INF];
 	
 	// window parameters
 	?e01 = no;
@@ -39,14 +20,8 @@ PROBLEM SIR (DOMAIN SIR)
 	?t01 = large;
 	
 	// window parameters
-	?e03 = no;
-	?s03 = high;
-	?r03 = regular;
-	?t03 = large;
-	
-	// window parameters
-	?e05 = yes;
-	?s05 = high;
-	?r05 = slow;
-	?t05 = large;
+	?e02 = no;
+	?s02 = high;
+	?r02 = regular;
+	?t02 = large;
 }

@@ -17,7 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 
 /**
  * 

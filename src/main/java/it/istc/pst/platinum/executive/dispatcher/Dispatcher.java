@@ -1,6 +1,6 @@
 package it.istc.pst.platinum.executive.dispatcher;
 
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
 import it.istc.pst.platinum.framework.microkernel.ExecutiveObject;

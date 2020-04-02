@@ -18,7 +18,7 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 	private NodePredicate predicate;
 	private ControllabilityType controllability;
 	private TemporalInterval interval;
-	private boolean virtual;								// a flag denoting whether the temporal information of a tokne must be actually propagated or not 
+//	private boolean virtual;								// a flag denoting whether the temporal information of a tokne must be actually propagated or not 
 	
 	private final Object lock = new Object();
 	private ExecutionNodeStatus status;						// execution node state
@@ -44,10 +44,10 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 		this.interval = interval;
 		this.predicate = predicate;
 		// set virtual flag
-		this.virtual = virtual;
+//		this.virtual = virtual;
 		// set initial execution status
 		this.startExecutionState = status;
-		// initialize next and previous
+		// set next and previous
 		this.next = null;
 		this.prev = null;
 	}
@@ -92,13 +92,13 @@ public class ExecutionNode implements Comparable<ExecutionNode>
 		return startExecutionState;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isVirtual() {
-		return virtual;
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public boolean isVirtual() {
+//		return virtual;
+//	}
 	
 	/**
 	 * 

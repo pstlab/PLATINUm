@@ -8,10 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.istc.pst.platinum.control.lang.Goal;
+import it.istc.pst.platinum.control.platform.PlatformCommand;
 import it.istc.pst.platinum.control.platform.PlatformObserver;
 import it.istc.pst.platinum.control.platform.PlatformProxy;
-import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.dispatcher.ConditionCheckingDispatcher;
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
@@ -91,9 +91,9 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		this.lock = new Object();
 		// set status
 		this.status = ExecutionStatus.INACTIVE;
-		// initialize clock manager
+		// set clock manager
 		this.clock = new AtomicClockManager(this);
-		// initialize the PROXY and the observer
+		// set the PROXY and the observer
 		this.platformProxy = null;
 		// set failure flag
 		this.failure = new AtomicBoolean(false);
@@ -323,14 +323,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	public void scheduleTokenDuration(ExecutionNode node, long duration) 
 			throws TemporalConstraintPropagationException, PlatformException
 	{
-		// check if not virtual
-//		if (!node.isVirtual()) {
-			
-			// propagate scheduled duration time
-			this.pdb.scheduleDuration(node, duration);
-			
-//		}
-		
+		// propagate scheduled duration time
+		this.pdb.scheduleDuration(node, duration);
 		// the node can be considered as executed
 		this.updateNode(node, ExecutionNodeStatus.EXECUTED);
 		// if controllable send a stop command
@@ -341,7 +335,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	}
 	
 	/**
-	 * This method allows to initialize an executive system on a generated plan.
+	 * This method allows to set an executive system on a generated plan.
 	 * 
 	 * It builds the plan data-based related to the generated plan and initializes
 	 * the clock, the dispatcher and the monitor processes.
@@ -485,7 +479,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				// handle current tick
 				this.currentTick = tick;
 				logger.debug("{Executive} -> Handle tick: " + tick + "\n");
-				// synchronization step
+				// synch step
 				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 				this.monitor.handleTick(tick);
 				// dispatching step
@@ -502,7 +496,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				// handle current tick
 				this.currentTick = tick;
 				logger.debug("{Executive} -> Handle tick: " + tick + "\n");
-				// synchronization step only in "failure" mode
+				// synch step only in "failure" mode
 				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 				// handle observations
 				this.monitor.handleExecutionFailure(tick, this.cause);
@@ -511,24 +505,20 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				complete = true;
 				// get nodes in starting state
 				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING)) {
-					if (!node.isVirtual()) {
-						// the executive cannot complete 
-						complete = false;
-						// waiting for a feedback of the node 
-						logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
-								+ "\t- node: " + node + "\n");
-					}
+					// the executive cannot complete 
+					complete = false;
+					// waiting for a feedback of the node 
+					logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
+							+ "\t- node: " + node + "\n");
 				}
 				
 				// get nodes in execution 
 				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
-					if (!node.isVirtual()) {
-						// the executive cannot complete 
-						complete = false;
-						// waiting for a feedback of the node 
-						logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
-								+ "\t- node: " + node + "\n");
-					}
+					// the executive cannot complete 
+					complete = false;
+					// waiting for a feedback of the node 
+					logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
+							+ "\t- node: " + node + "\n");
 				}
 			}
 			
@@ -617,7 +607,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	public void sendStopCommandSignalToPlatform(ExecutionNode node) 
 			throws PlatformException
 	{
-		if (!node.isVirtual()) {
+		// check platform and command
+		if (this.platformProxy != null && this.platformProxy.isPlatformCommand(node)) {
 			// also send stop command execution request
 			this.platformProxy.stopNode(node);
 		}
@@ -632,7 +623,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			throws PlatformException
 	{
 		// check if a platform PROXY exists
-		if (this.platformProxy != null) 
+		if (this.platformProxy != null && this.platformProxy.isPlatformCommand(node)) 
 		{
 			// check controllability type 
 			if (node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE) || 
@@ -645,13 +636,10 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			}
 			else
 			{
-				// check if controllable token is virtual
-				if (!node.isVirtual()) {
-					// require execution start
-					PlatformCommand cmd = this.platformProxy.startNode(node);
-					// add entry to the index
-					this.dispatchedIndex.put(cmd, node);
-				}
+				// require execution start
+				PlatformCommand cmd = this.platformProxy.startNode(node);
+				// add entry to the index
+				this.dispatchedIndex.put(cmd, node);
 			}
 		}
 		else {

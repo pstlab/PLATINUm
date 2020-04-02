@@ -2,7 +2,7 @@ package it.istc.pst.platinum.executive.dc;
 
 import java.util.List;
 
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;

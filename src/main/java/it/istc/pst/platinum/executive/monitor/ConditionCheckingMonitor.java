@@ -2,7 +2,7 @@ package it.istc.pst.platinum.executive.monitor;
 
 import java.util.List;
 
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;

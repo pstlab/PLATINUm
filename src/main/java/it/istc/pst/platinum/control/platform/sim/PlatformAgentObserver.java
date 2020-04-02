@@ -1,6 +1,6 @@
 package it.istc.pst.platinum.control.platform.sim;
 
-import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
+import it.istc.pst.platinum.control.platform.PlatformCommand;
 
 /**
  * 

@@ -2,7 +2,7 @@ package it.istc.pst.platinum.executive.dc;
 
 import java.util.List;
 
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.dc.strategy.State;
 import it.istc.pst.platinum.executive.dc.strategy.result.Action;
 import it.istc.pst.platinum.executive.dc.strategy.result.Transition;

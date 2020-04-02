@@ -48,7 +48,9 @@ public class Planner extends DeliberativeObject
 	/**
 	 * 
 	 */
-	protected Planner() {}
+	protected Planner() {
+		super();
+	}
 	
 	/**
 	 * Display the current plan

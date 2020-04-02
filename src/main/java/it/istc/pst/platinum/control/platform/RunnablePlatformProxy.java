@@ -1,6 +1,6 @@
 package it.istc.pst.platinum.control.platform;
 
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.control.platform.lang;
+package it.istc.pst.platinum.control.platform;
 
 /**
  * 
@@ -9,18 +9,34 @@ public class PlatformCommand implements Comparable<PlatformCommand>
 {
 	private String id;									// platform command ID
 	private long time;									// command issue time
-	private PlatformCommandDescription description;		// command description
+//	private PlatformCommandDescription description;		// command description
+	private String cmdName;								// command name
 	private String[] paramValues;						// command parameter values
 	private Object data;								// additional general data
+	private long execTime;								// command execution time
+	
+//	/**
+//	 * 
+//	 * @param id
+//	 * @param desc
+//	 * @param params
+//	 */
+//	protected PlatformCommand(String id, PlatformCommandDescription desc, String[] params) {
+//		this.id = id;
+//		this.description = desc;
+//		this.time = System.currentTimeMillis();
+//	}
 	
 	/**
 	 * 
 	 * @param id
-	 * @param desc
+	 * @param name
+	 * @param params
 	 */
-	public PlatformCommand(String id, PlatformCommandDescription desc, String[] params) {
-		this.id = id;
-		this.description = desc;
+	public PlatformCommand(String id, String name, String[] params) {
+		this.id = id; 
+		this.cmdName = name;
+		this.paramValues = params;
 		this.time = System.currentTimeMillis();
 	}
 	
@@ -37,9 +53,24 @@ public class PlatformCommand implements Comparable<PlatformCommand>
 	 * @return
 	 */
 	public String getName() {
-		return this.description.getName();
+		return this.cmdName;
 	}
 
+	/**
+	 * 
+	 * @param execTime
+	 */
+	public void setExecTime(long execTime) {
+		this.execTime = execTime;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getExecTime() {
+		return execTime;
+	}
 
 	/**
 	 * 
@@ -53,8 +84,8 @@ public class PlatformCommand implements Comparable<PlatformCommand>
 	 * 
 	 * @return
 	 */
-	public float getExecutionTime() {
-		return this.description.getExecutionTime();	
+	public float getIssueTime() {
+		return this.time;	
 	}
 
 	/**
@@ -113,6 +144,6 @@ public class PlatformCommand implements Comparable<PlatformCommand>
 	 */
 	@Override
 	public String toString() {
-		return "[PlatformCommand id: " + this.id + ", desc: " + this.description + "]";
+		return "[PlatformCommand id: " + this.id + ", name: " + this.cmdName + ", params: " + this.paramValues + "]";
 	}
 }

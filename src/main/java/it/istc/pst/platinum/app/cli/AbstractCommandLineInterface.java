@@ -3,7 +3,7 @@ package it.istc.pst.platinum.app.cli;
 import it.istc.pst.platinum.app.cli.ex.CommandLineInterfaceException;
 import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
 import it.istc.pst.platinum.control.platform.RunnablePlatformProxy;
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.PlannerBuilder;
 import it.istc.pst.platinum.executive.Executive;
@@ -126,7 +126,7 @@ public abstract class AbstractCommandLineInterface
 			throw new CommandLineInterfaceException("No planning domain set!");
 		}
 		
-		// initialize the planner
+		// set the planner
 		this.planner = PlannerBuilder.createAndSet(Planner.class, this.pdb);
 		// run the planner on the desired goal
 		this.currentSolution = this.planner.plan();
@@ -146,7 +146,7 @@ public abstract class AbstractCommandLineInterface
 		
 		try
 		{
-			// check if proxy has been set
+			// check if set has been set
 			if (this.proxy != null) {
 				// start simulator
 				this.proxy.start();
@@ -154,7 +154,7 @@ public abstract class AbstractCommandLineInterface
 			
 			// create the executive 
 			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
-			// initialize the executive
+			// set the executive
 			exec.initialize(this.currentSolution.export());
 			
 			// bind the executive to the platform

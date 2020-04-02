@@ -11,7 +11,7 @@ import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.GoalStatus;
 import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.PlatformProxy;
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
@@ -63,17 +63,17 @@ public class GoalOrientedActingAgent
 	 */
 	public GoalOrientedActingAgent() 
 	{
-		// initialize lock and status
+		// set lock and status
 		this.lock = new Object(); 
 		this.status = ActingAgentStatus.OFFLINE;
-		// initialize goal buffer
+		// set goal buffer
 		this.queue = new HashMap<>();
-		// initialize goal queue
+		// set goal queue
 		for (GoalStatus s : GoalStatus.values()) {
 			this.queue.put(s, new LinkedList<>());
 		}
 		
-		// initialize internal plan database representation
+		// set internal plan database representation
 		this.pdb = null;
 
 		// set default planner class
@@ -91,17 +91,17 @@ public class GoalOrientedActingAgent
 	 */
 	public GoalOrientedActingAgent(Class<? extends Planner> pClass, Class<? extends Executive> eClass)
 	{
-		// initialize lock and status
+		// set lock and status
 		this.lock = new Object(); 
 		this.status = ActingAgentStatus.OFFLINE;
-		// initialize goal buffer
+		// set goal buffer
 		this.queue = new HashMap<>();
-		// initialize goal queue
+		// set goal queue
 		for (GoalStatus s : GoalStatus.values()) {
 			this.queue.put(s, new LinkedList<>());
 		}
 		
-		// initialize internal plan database representation
+		// set internal plan database representation
 		this.pdb = null;
 
 		// set default planner class
@@ -117,9 +117,9 @@ public class GoalOrientedActingAgent
 	 */
 	private void setupProcesses() 
 	{
-		// initialize the list of processes
+		// set the list of processes
 		this.processes = new ArrayList<>();
-		// initialize goal listener thread
+		// set goal listener thread
 		this.processes.add(new Thread(new Runnable() {
 
 			/**
@@ -146,19 +146,19 @@ public class GoalOrientedActingAgent
 		}));
 		
 		
-		// initialize goal deliberative
+		// set goal deliberative
 		this.deliberative = new DeliberativeProcess(this.pClass, this);
 		this.processes.add(new Thread(this.deliberative));
 	
-		// initialize goal executive
+		// set goal executive
 		this.executive = new ExecutiveProcess(this.eClass, this);
 		this.processes.add(new Thread(this.executive));
 	
-		// initialize goal failure handler
+		// set goal failure handler
 		this.contingencyHandler = new ContingencyHandlerProcess(this);
 		this.processes.add(new Thread(this.contingencyHandler));
 		
-		// initialize proxy reference
+		// set reference
 		this.proxy = null;	
 	}
 	

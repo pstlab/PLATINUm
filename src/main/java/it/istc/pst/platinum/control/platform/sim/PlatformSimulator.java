@@ -6,11 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.istc.pst.platinum.control.platform.PlatformObserver;
+import it.istc.pst.platinum.control.platform.PlatformCommand;
+import it.istc.pst.platinum.control.platform.PlatformCommandDescription;
 import it.istc.pst.platinum.control.platform.RunnablePlatformProxy;
-import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
-import it.istc.pst.platinum.control.platform.lang.PlatformCommandDescription;
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 
 /**
@@ -30,7 +29,7 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 	 */
 	protected PlatformSimulator() {
 		super();
-		// initialize data structures
+		// set data structures
 		this.index = new HashMap<>();
 		this.agents = new ArrayList<>();
 		this.trace = new HashMap<>();
@@ -43,7 +42,7 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 	public void initialize() 
 			throws PlatformException 
 	{
-		// initialize the platform on the default configuration file
+		// set the platform on the default configuration file
 		this.initialize(DEFAULT_CFG_FILE_PATH);
 	}
 	
@@ -95,39 +94,27 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 	
 	/**
 	 * 
-	 * @param cmd
 	 */
 	@Override
-	public void notifySuccess(PlatformCommand cmd) {
-		// check platform observers
-		synchronized (this.observers) {
-			for (PlatformObserver obs : this.observers) {
-				// notify success
-				obs.success(cmd);
-			}
-			
-			
-			// send signals before releasing monitor
-			this.observers.notifyAll();
-		}
+	public void notifyFailure(PlatformCommand cmd) {
+		this.failure(cmd);
 	}
 	
 	/**
 	 * 
-	 * @param cmd
 	 */
 	@Override
-	public void notifyFailure(PlatformCommand cmd) {
-		// check platform observers
-		synchronized (this.observers) {
-			for (PlatformObserver obs : this.observers) {
-				// notify failure
-				obs.failure(cmd);
-			}
-			
-			// send signals before releasing monitor
-			this.observers.notifyAll();
-		}
+	public void notifySuccess(PlatformCommand cmd) {
+		this.success(cmd);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public boolean isPlatformCommand(ExecutionNode node) {
+		// check name flags
+		return node.getGroundSignature().startsWith("_") || node.getGroundSignature().startsWith("r");
 	}
 	
 	/**
@@ -156,7 +143,7 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 		}
 		
 		// create command with parameters
-		PlatformCommand cmd = agent.create(desc, params);
+		PlatformCommand cmd = this.create(name, params);
 		try 
 		{
 			// ask the agent to execute the node
@@ -202,7 +189,7 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 		
 		
 		// create command with parameters 
-		cmd = agent.create(desc, params);
+		cmd = this.create(name, params);
 		try 
 		{
 			// ask the agent to start the execution of the node
@@ -248,6 +235,7 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 	 * @param node
 	 * @return
 	 */
+	@Override
 	protected String extractCommandName(ExecutionNode node) { 
 		// extract command name from node to execute
 		String[] splits = node.getGroundSignature().split("-");
@@ -270,6 +258,7 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 	 * @param node
 	 * @return
 	 */
+	@Override
 	protected String[] extractCommandParameters(ExecutionNode node) {
 		// extract command parameter from node to execute
 		String[] splits = node.getGroundSignature().split("-");

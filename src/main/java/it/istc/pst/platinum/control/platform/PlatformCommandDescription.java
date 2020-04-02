@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.control.platform.lang;
+package it.istc.pst.platinum.control.platform;
 
 /**
  * 

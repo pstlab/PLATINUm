@@ -1,7 +1,5 @@
 package it.istc.pst.platinum.control.platform;
 
-import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
-
 /**
  * 
  * @author anacleto

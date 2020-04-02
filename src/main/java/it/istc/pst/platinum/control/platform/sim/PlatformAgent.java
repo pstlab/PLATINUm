@@ -5,10 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 
-import it.istc.pst.platinum.control.platform.lang.PlatformCommand;
-import it.istc.pst.platinum.control.platform.lang.PlatformCommandDescription;
+import it.istc.pst.platinum.control.platform.PlatformCommand;
+import it.istc.pst.platinum.control.platform.PlatformCommandDescription;
 
 
 /**
@@ -18,17 +17,16 @@ import it.istc.pst.platinum.control.platform.lang.PlatformCommandDescription;
  */
 public class PlatformAgent 
 {
-	private static final AtomicLong CmdIdCounter = new AtomicLong(0);
 	private String id;													// agent id
 	private String label;												// agent label
 	private final Object lock = new Object();							// agent status lock
-	private PlatformAgentStatus status;								// agent status
+	private PlatformAgentStatus status;									// agent status
 	
 	// agent configuration information 
 	private long uncertainty;											// uncertainty about the execution of a command
 	private Map<String, PlatformCommandDescription> commands;			// descriptions of commands the agent can perform 
 	
-	private List<PlatformAgentObserver> observers;					// list of agent observers
+	private List<PlatformAgentObserver> observers;						// list of agent observers
 	private PlatformCommand cmd;										// command currently in execution
 	private Thread handler;												// asynchronous command execution handler
 	
@@ -50,7 +48,7 @@ public class PlatformAgent
 		this.commands = new HashMap<>();
 		// set command
 		this.cmd = null;
-		// initialize observers
+		// set observers
 		this.observers = new ArrayList<>();
 		// set initial status
 		this.status = PlatformAgentStatus.OFFLINE;
@@ -88,7 +86,7 @@ public class PlatformAgent
 							System.out.println("[" + PlatformAgent.this.label + "] Start command execution:\n\t- " + cmd + "\n");
 							
 							// get command expected duration
-							float execTime = cmd.getExecutionTime();
+							float execTime = cmd.getExecTime();
 							// check agent uncertainty and set minimum execution time (avoid execution times lower than 0)
 							int min = Math.round(Math.max(1, execTime - PlatformAgent.this.uncertainty));
 							// check agent uncertainty and set maximum execution time
@@ -190,19 +188,6 @@ public class PlatformAgent
 		return cmd;
 	}
 	
-	
-	/**
-	 * 
-	 * @param desc
-	 * @return
-	 */
-	protected PlatformCommand create(PlatformCommandDescription desc, String[] params) 
-	{
-		// set command index
-		String cmdId = desc.getName() + "-" + CmdIdCounter.getAndIncrement() + "@" + this.id;
-		// return a platform command
-		return new PlatformCommand(cmdId, desc, params);
-	}
 	
 	/**
 	 * 

@@ -11,7 +11,7 @@ import it.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.istc.pst.platinum.control.lang.Goal;
 import it.istc.pst.platinum.control.lang.TokenDescription;
 import it.istc.pst.platinum.control.platform.PlatformProxyBuilder;
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.control.platform.sim.PlatformSimulator;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 

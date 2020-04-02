@@ -2,7 +2,7 @@ package it.istc.pst.platinum.control.platform;
 
 import java.lang.reflect.Constructor;
 
-import it.istc.pst.platinum.control.platform.lang.ex.PlatformException;
+import it.istc.pst.platinum.control.platform.ex.PlatformException;
 
 /**
  * 

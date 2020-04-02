@@ -125,7 +125,7 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			
 			// check files
 			if (ddl.exists() && !ddl.isDirectory() && pdl.exists() && !pdl.isDirectory()) {
-				// initialize on default HRC platform proxy using default configuration file
+				// set on default HRC platform proxy using default configuration file
 				this.init(
 						ddl.getAbsolutePath(), 
 						pdl.getAbsolutePath(), 
@@ -202,7 +202,7 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 		{
 			try 
 			{
-				// initialize and run the planner if possible
+				// set and run the planner if possible
 				this.plan();
 			} 
 			catch (NoSolutionFoundException ex) {
@@ -223,7 +223,7 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			String cfgFilePath = splits[1].trim();
 			try
 			{
-				// initialize and run the executive if possible
+				// set and run the executive if possible
 				this.execute(cfgFilePath);
 			}
 			catch (CommandLineInterfaceException ex) {
