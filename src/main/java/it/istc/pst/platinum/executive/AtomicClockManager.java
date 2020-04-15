@@ -31,7 +31,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 		this.tickStart = 0;
 		// set executive
 		this.executive = exec;
-		// initialize clock thread and tick
+		// set clock thread and tick
 		this.tick = null;
 		this.process = null;
 	}
@@ -111,7 +111,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 	{
 		// set clock start time
 		this.clockSart = System.currentTimeMillis();
-		// initialize tick
+		// set tick
 		this.tick = new AtomicLong(this.tickStart);
 		// set execution complete flag
 		boolean complete = false;

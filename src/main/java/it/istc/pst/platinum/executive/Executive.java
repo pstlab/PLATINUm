@@ -78,7 +78,9 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	private AtomicBoolean failure;												// execution failure flag
 	private ExecutionFailureCause cause;										// execution failure cause
 	
-	private PlatformProxy platformProxy;										// platform PROXY to send commands to 
+	private PlatformProxy platformProxy;										// platform PROXY to send commands to
+	
+	private List<PlanExecutionObserver> planObservers;							// external plan execution observers
 	
 	/**
 	 * 
@@ -103,6 +105,26 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			// create executive window
 			this.window = new ExecutiveWindow("Executive Window");
 		}
+		
+		this.planObservers = new ArrayList<>();
+	}
+	
+	/**
+	 * 
+	 * @param o
+	 */
+	public synchronized void subscribe(PlanExecutionObserver o) {
+		// add observer
+		this.planObservers.add(o);
+	}
+	
+	/**
+	 * 
+	 * @param o
+	 */
+	public synchronized void remove(PlanExecutionObserver o) {
+		// remove observer
+		this.planObservers.remove(o);
 	}
 	
 	/**
@@ -357,10 +379,10 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		}
 		
 		
-		// initialize plan data-base
+		// set plan data-base
 		this.pdb.setup(plan);
 		
-		// initialization complete
+		// set complete
 		synchronized (this.lock) {
 			// update status and send a signal
 			this.status = ExecutionStatus.READY;
@@ -406,7 +428,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 //			this.doPrepareExecution();
 //		else this.doPrepareExecution(goal);
 		
-		// initialize dispatching index
+		// set dispatching index
 		this.dispatchedIndex = new ConcurrentHashMap<>();
 		// start clock
 		this.clock.start(startTick);
@@ -553,12 +575,20 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 					+ "\t- message: " + ex.getMessage() + "\n");
 		}
 		catch (InterruptedException ex) {
-			// execution error
-			logger.error(ex.getMessage());
 			// set execution failure 
 			this.failure.set(true);
 			// complete execution in this case
 			complete = true;
+			// execution error
+			logger.error(ex.getMessage());
+		}
+		finally 
+		{
+			// notify plan execution observers
+			for (PlanExecutionObserver o : this.planObservers) {
+				// send notification
+				o.onTick(tick, this.failure.get(), this.getNodes());
+			}
 		}
 
 		// get boolean flag
@@ -576,7 +606,9 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		// check property
 		if (this.getProperty(DISPLAY_PLAN_PROPERTY).equals("1")) {
 			// set the data-set to show
-			this.window.setDataSet(this.pdb.getHorizon(), this.getNodes());
+			this.window.setDataSet(
+					this.pdb.getHorizon(), 
+					this.getNodes());
 			// display current execution state
 			this.window.display(tau);
 		}

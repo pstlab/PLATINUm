@@ -98,7 +98,7 @@ public class ExecutiveBuilder
 		// get dispatcher configuration
 		DispatcherConfiguration dAnnot = FrameworkReflectionUtils.doFindnAnnotation(eClass, DispatcherConfiguration.class);
 		// create dispatcher
-		Dispatcher dispatcher = ExecutiveBuilder.doCreateDispatcher(dAnnot.dispatcher());
+		Dispatcher<?> dispatcher = ExecutiveBuilder.doCreateDispatcher(dAnnot.dispatcher());
 		try
 		{
 			// inject executive reference
@@ -131,7 +131,7 @@ public class ExecutiveBuilder
 		// get monitor configuration
 		MonitorConfiguration mAnnot = FrameworkReflectionUtils.doFindnAnnotation(eClass, MonitorConfiguration.class);
 		// create monitor
-		Monitor monitor = ExecutiveBuilder.doCreateMonitor(mAnnot.monitor());
+		Monitor<?> monitor = ExecutiveBuilder.doCreateMonitor(mAnnot.monitor());
 		try
 		{
 			// inject executive reference
@@ -230,7 +230,7 @@ public class ExecutiveBuilder
 	 * @param dClass
 	 * @return
 	 */
-	private static synchronized <T extends Dispatcher> T doCreateDispatcher(Class<T> dClass) {
+	private static synchronized <T extends Dispatcher<?>> T doCreateDispatcher(Class<T> dClass) {
 		// instance
 		T dispatcher = null;
 		try
@@ -255,7 +255,7 @@ public class ExecutiveBuilder
 	 * @param dClass
 	 * @return
 	 */
-	private static synchronized <T extends Monitor> T doCreateMonitor(Class<T> mClass) {
+	private static synchronized <T extends Monitor<?>> T doCreateMonitor(Class<T> mClass) {
 		// instance
 		T monitor = null;
 		try
