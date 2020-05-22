@@ -26,34 +26,15 @@ import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.BindP
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.EqualParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.NotEqualParameterRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.parameter.ParameterRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.AfterRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.BeforeRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.ContainsRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.DuringRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EndEndRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.EndsDuringRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartStartRelation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.StartsDuringRelation;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.istc.pst.platinum.framework.microkernel.resolver.Resolver;
 import it.istc.pst.platinum.framework.microkernel.resolver.ResolverType;
-import it.istc.pst.platinum.framework.microkernel.resolver.ex.NotFeasibleUnificationException;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.istc.pst.platinum.framework.microkernel.resolver.plan.GoalJustification.JustificationType;
-import it.istc.pst.platinum.framework.time.TemporalInterval;
+import it.istc.pst.platinum.framework.parameter.ex.ParameterConstraintPropagationException;
+import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraint;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraint;
-import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.lang.allen.AfterIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.ContainsIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.DuringIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.EndsDuringIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.EqualsIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.MeetsIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.MetByIntervalConstraint;
-import it.istc.pst.platinum.framework.time.lang.allen.StartsDuringIntervalConstraint;
-import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 
 /**
  * 
@@ -265,26 +246,23 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		// search active decisions compatible for unification
 		for (Decision unif : this.component.getActiveDecisions()) 
 		{
-			// check decisions' values
-			if (unif.getValue().equals(goal.getDecision().getValue())) 
+			// check predicate and temporal unification
+			if (this.isPredicateUnificationFeasible(goal.getDecision(), unif) && 
+					this.isTemporalUnificationFeasible(goal.getDecision(), unif))
 			{
-				try
-				{
-					// check unification feasibility
-					this.checkUnificationTemporalFeasibility(goal.getDecision(), unif);
-					// if everything goes right we've found a possible unification
-					GoalUnification unification = new GoalUnification(goal, unif);
-					// add solution
-					goal.addSolution(unification);
-					debug("Feasible unification found:\n"
-							+ "- planning goal: " + goal + "\n"
-							+ "- unification decision: " + unification + "\n");
-				}
-				catch (NotFeasibleUnificationException ex) {
-					debug("No feasible goal unification found:\n"
-							+ "- planning goal: " + goal + "\n"
-							+ "- message: \"" + ex.getMessage() + "\"\n");
-				}
+				// possible unification found
+				GoalUnification unification = new GoalUnification(goal, unif);
+				// add unification solution
+				goal.addSolution(unification);
+				info("Feasible unification found:\n"
+						+ "- planning goal: " + goal + "\n"
+						+ "- unification decision: " + unification + "\n");
+			}
+			else {
+				// unification not feasible
+				info("No feasible unification:\n"
+						+ "- planning goal: " + goal + "\n"
+						+ "- decision : \"" + unif + "\"\n");
 			}
 		}
 	}
@@ -293,327 +271,359 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * 
 	 * @param goal
 	 * @param decision
-	 * @throws NotFeasibleUnificationException
+	 * @return
 	 */
-	private void checkUnificationTemporalFeasibility(Decision goal,  Decision decision) 
-			throws NotFeasibleUnificationException
+	private boolean isPredicateUnificationFeasible(Decision goal, Decision decision) 
 	{
+		// feasibility flag
+		boolean feasible = true;
+		// first check if the decisions refer to the same values
+		if (!decision.getValue().equals(goal.getValue())) {
+			// not feasible unification
+			feasible = false;
+			debug("Not feasible predicate unification:\n"
+					+ "- planning goal: " + goal + "\n"
+					+ "- unification decision: " + decision + "\n"); 
+		}
+		else 
+		{
+			// list of committed parameter constraints
+			List<ParameterConstraint> committed = new ArrayList<>();
+			// list of translated parameter relations - reference
+			List<ParameterRelation> translatedReferenceGoalRelations = new ArrayList<>();
+			// list of translated parameter relations - target
+			List<ParameterRelation> translatedTargetGoalRelations = new ArrayList<>();
+			try
+			{
+				// get goal component
+				DomainComponent goalComp = goal.getComponent();
+				// get all (pending) relation concerning the goal decision
+				Set<Relation> pending = goalComp.getRelations(goal);
+				// check relations
+				for (Relation rel : pending)
+				{
+					// check parameter constraint type
+					if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT))
+					{
+						// check relation type
+						switch (rel.getType())
+						{
+							// bind parameter
+							case BIND_PARAMETER: 
+							{
+								// the goal can be only the reference of the relation
+								ParameterRelation pRel = (ParameterRelation) rel;
+								// get relation reference parameter label
+								String refParamLabel = pRel.getReferenceParameterLabel();
+								// get label index
+								int refParameterIndex = pRel.getReference().getParameterIndexByLabel(refParamLabel);
+								// get unification decision parameter label
+								String label = decision.getParameterLabelByIndex(refParameterIndex);
+
+								// update reference decision 
+								pRel.setReference(decision);
+								// update reference label of the relation 
+								pRel.setReferenceParameterLabel(label);
+								// add relation to the list of translated ones
+								translatedReferenceGoalRelations.add(pRel);
+
+								// create parameter constraint
+								ParameterConstraint cons = pRel.create();
+								// propagate constraint
+								this.pdb.propagate(cons);
+								// add constraint to committed list
+								committed.add(cons);
+							}
+							break;
+							
+							case EQUAL_PARAMETER : 
+							{
+								// get parameter relation
+								EqualParameterRelation eqRel = (EqualParameterRelation) rel;
+								// check if the goal is the reference or the parameter constraint 
+								if (eqRel.getReference().equals(goal))
+								{
+									// get relation reference parameter label
+									String refParamLabel = eqRel.getReferenceParameterLabel();
+									// get label index
+									int refParameterIndex = eqRel.getReference().getParameterIndexByLabel(refParamLabel);
+									// get unification decision parameter label
+									String label = decision.getParameterLabelByIndex(refParameterIndex);
+
+									// update reference decision 
+									eqRel.setReference(decision);
+									// update reference label of the relation 
+									eqRel.setReferenceParameterLabel(label);
+									// add relation to the list of translated ones
+									translatedReferenceGoalRelations.add(eqRel);
+
+									
+									// check if both decisions are active after translation in order to check constraint feasibility
+									if (eqRel.getReference().getComponent().isActive(eqRel.getReference()) && 
+											eqRel.getTarget().getComponent().isActive(eqRel.getTarget()))
+									{
+										// create parameter constraint
+										ParameterConstraint cons = eqRel.create();
+										// propagate constraint
+										this.pdb.propagate(cons);
+										// add constraint to committed list
+										committed.add(cons);
+									}
+								}
+								else // the goal is the target of the relation 
+								{
+									// get relation reference parameter label
+									String refParamLabel = eqRel.getTargetParameterLabel();
+									// get label index
+									int refParameterIndex = eqRel.getTarget().getParameterIndexByLabel(refParamLabel);
+									// get unification decision parameter label
+									String label = decision.getParameterLabelByIndex(refParameterIndex);
+
+									// update reference decision 
+									eqRel.setTarget(decision);
+									// update reference label of the relation 
+									eqRel.setTargetParameterLabel(label);
+									// add relation to the list of translated ones
+									translatedTargetGoalRelations.add(eqRel);
+
+									if (eqRel.getReference().getComponent().isActive(eqRel.getReference()) && 
+											eqRel.getTarget().getComponent().isActive(eqRel.getTarget()))
+									{
+										// create parameter constraint
+										ParameterConstraint cons = eqRel.create();
+										// propagate constraint
+										this.pdb.propagate(cons);
+										// add constraint to committed list
+										committed.add(cons);
+									}
+								}
+							}
+							break;
+							
+							case NOT_EQUAL_PARAMETER : 
+							{
+								// get parameter relation
+								NotEqualParameterRelation neqRel = (NotEqualParameterRelation) rel;
+								// check if the goal is the reference or the parameter constraint 
+								if (neqRel.getReference().equals(goal))
+								{
+									// get relation reference parameter label
+									String refParamLabel = neqRel.getReferenceParameterLabel();
+									// get label index
+									int refParameterIndex = neqRel.getReference().getParameterIndexByLabel(refParamLabel);
+									// get unification decision parameter label
+									String label = decision.getParameterLabelByIndex(refParameterIndex);
+
+									// update reference decision 
+									neqRel.setReference(decision);
+									// update reference label of the relation 
+									neqRel.setReferenceParameterLabel(label);
+									// add relation to the list of translated ones
+									translatedReferenceGoalRelations.add(neqRel);
+
+									if (neqRel.getReference().getComponent().isActive(neqRel.getReference()) && 
+											neqRel.getTarget().getComponent().isActive(neqRel.getTarget()))
+									{
+										// create parameter constraint
+										ParameterConstraint cons = neqRel.create();
+										// propagate constraint
+										this.pdb.propagate(cons);
+										// add constraint to committed list
+										committed.add(cons);
+									}
+								}
+								else // the goal is the target of the relation 
+								{
+									// get relation reference parameter label
+									String refParamLabel = neqRel.getTargetParameterLabel();
+									// get label index
+									int refParameterIndex = neqRel.getTarget().getParameterIndexByLabel(refParamLabel);
+									// get unification decision parameter label
+									String label = decision.getParameterLabelByIndex(refParameterIndex);
+
+									// update reference decision 
+									neqRel.setTarget(decision);
+									// update reference label of the relation 
+									neqRel.setTargetParameterLabel(label);
+									// add relation to the list of translated ones
+									translatedTargetGoalRelations.add(neqRel);
+
+									if (neqRel.getReference().getComponent().isActive(neqRel.getReference()) && 
+											neqRel.getTarget().getComponent().isActive(neqRel.getTarget()))
+									{
+										// create parameter constraint
+										ParameterConstraint cons = neqRel.create();
+										// propagate constraint
+										this.pdb.propagate(cons);
+										// add constraint to committed list
+										committed.add(cons);
+									}
+								}
+							}
+							break;
+							
+							
+							default:
+								// unknown parameter relation
+								throw new RuntimeException("Unknown Parameter relation type : " + rel.getType() + "\n");
+						}
+					}
+				}
+				
+				// check consistency of the plan
+				this.pdb.verify();
+			}
+			catch (ConsistencyCheckException | ParameterConstraintPropagationException ex) {
+				// not feasible 
+				feasible = false;
+				// not feasible unification
+				debug("Not feasible predicate unification:\n"
+						+ "- planning goal: " + goal + "\n"
+						+ "- unification decision: " + decision + "\n");
+			}
+			finally 
+			{
+				// retract all committed parameter constraints
+				for (ParameterConstraint constraint : committed) {
+					// delete parameter constraint
+					this.pdb.retract(constraint);
+				}
+				
+				// translated back parameter relations
+				for (ParameterRelation rel : translatedReferenceGoalRelations)
+				{
+					// get relation reference parameter label
+					String refParamLabel = rel.getReferenceParameterLabel();
+					// get label index
+					int pIndex = rel.getReference().getParameterIndexByLabel(refParamLabel);
+					// get goal decision parameter label
+					String label = goal.getParameterLabelByIndex(pIndex);
+					
+					// update relation
+					rel.setReference(goal);
+					rel.setReferenceParameterLabel(label);
+					// clear relation constraint
+					rel.clear();
+				}
+				
+				
+				// translated back parameter relations
+				for (ParameterRelation rel : translatedTargetGoalRelations)
+				{
+					// check relation
+					switch (rel.getType())
+					{
+						case EQUAL_PARAMETER : 
+						{
+							// get equal relation
+							EqualParameterRelation eqRel = (EqualParameterRelation) rel;
+							// get relation reference parameter label
+							String tarParamLabel = eqRel.getTargetParameterLabel();
+							// get label index
+							int pIndex = eqRel.getTarget().getParameterIndexByLabel(tarParamLabel);
+							// get goal decision parameter label
+							String label = goal.getParameterLabelByIndex(pIndex);
+							
+							// update relation
+							eqRel.setTarget(goal);
+							eqRel.setTargetParameterLabel(label);
+							// clear relation constraint
+							eqRel.clear();
+						}
+						break;
+							
+						case NOT_EQUAL_PARAMETER : 
+						{
+							// get equal relation
+							NotEqualParameterRelation neqRel = (NotEqualParameterRelation) rel;
+							// get relation reference parameter label
+							String tarParamLabel = neqRel.getTargetParameterLabel();
+							// get label index
+							int pIndex = neqRel.getTarget().getParameterIndexByLabel(tarParamLabel);
+							// get goal decision parameter label
+							String label = goal.getParameterLabelByIndex(pIndex);
+							
+							// update relation
+							neqRel.setTarget(goal);
+							neqRel.setTargetParameterLabel(label);
+							// clear relation constraint
+							neqRel.clear();
+						}
+						break;
+							
+						default:
+							// unknown parameter relation
+							throw new RuntimeException("Unknown Parameter relation type : " + rel.getType() + "\n"); 
+							
+					}
+				}
+			}
+		}
+		
+		// get feasibility flag
+		return feasible;
+	}
+	
+	/**
+	 * 
+	 * @param goal
+	 * @param decision
+	 * @return
+	 */
+	private boolean isTemporalUnificationFeasible(Decision goal,  Decision decision) 
+	{
+		// feasibility flag
+		boolean feasible = true;
+		
 		// list of propagated temporal constraints
 		List<TemporalConstraint> committed = new ArrayList<>();
+		// list of translated parameter relations - reference
+		List<TemporalRelation> translatedReferenceGoalRelations = new ArrayList<>();
+		// list of translated parameter relations - target
+		List<TemporalRelation> translatedTargetGoalRelations = new ArrayList<>();
 		try 
 		{
 			// get goal component
 			DomainComponent goalComp = goal.getComponent();
 			// get all (pending) relations concerning the goal
 			Set<Relation> pending = goalComp.getRelations(goal);
-			// get unification decision temporal interval
-			TemporalInterval i = decision.getToken().getInterval();
-			
 			// translate goal-related relations and propagate them to check the temporal feasibility of the unification
 			for (Relation relation : pending)
 			{
-				// get reference component
-				DomainComponent refComp = relation.getReference().getComponent();
-				// get target component
-				DomainComponent tarComp = relation.getTarget().getComponent();
-				// check temporal relations concerning the goal
-				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT) && 
-						(refComp.isActive(relation.getReference()) || 
-								tarComp.isActive(relation.getTarget()))) 
+				// check relation category
+				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT))
 				{
-					// check relation type
-					switch (relation.getType()) 
+					// get temporal relation
+					TemporalRelation tRel = (TemporalRelation) relation;
+					// check the reference of the relation
+					if (tRel.getReference().equals(goal)) 
 					{
-						case AFTER: 
-						{
-							AfterRelation after = (AfterRelation) relation;
-							// create temporal constraint
-							AfterIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.AFTER);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setLowerBound(after.getLowerBound());
-							constraint.setUpperBound(after.getUpperBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case BEFORE: 
-						{
-							BeforeRelation before = (BeforeRelation) relation;
-							// create temporal constraint
-							BeforeIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setLowerBound(before.getLowerBound());
-							constraint.setUpperBound(before.getUpperBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case CONTAINS: 
-						{
-							ContainsRelation contains = (ContainsRelation) relation;
-							// create temporal constraint
-							ContainsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.CONTAINS);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setStartTimeBound(contains.getStartTimeBound());
-							constraint.setEndTimeBound(contains.getEndTimeBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case DURING: 
-						{
-							DuringRelation during = (DuringRelation) relation;
-							// create temporal constraint
-							DuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.DURING);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setStartTimeBound(during.getStartTimeBound());
-							constraint.setEndTimeBound(during.getEndTimeBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case ENDS_DURING: 
-						{
-							EndsDuringRelation endsduring = (EndsDuringRelation) relation;
-							// create temporal constraint
-							EndsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.ENDS_DURING);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setFirstBound(endsduring.getFirstBound());
-							constraint.setSecondBound(endsduring.getSecondBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case EQUALS: 
-						{
-							// create temporal constraint
-							EqualsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.EQUALS);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case MEETS: 
-						{
-							// create temporal constraint
-							MeetsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case MET_BY: 
-						{
-							// create temporal constraint
-							MetByIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MET_BY);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case STARTS_DURING: 
-						{
-							StartsDuringRelation startsduring = (StartsDuringRelation) relation;
-							// create temporal constraint
-							StartsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.STARTS_DURING);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i);
-								constraint.setTarget(relation.getTarget().getToken().getInterval());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval());
-								constraint.setTarget(i);
-							}
-							
-							// set bounds
-							constraint.setFirstBound(startsduring.getFirstBound());
-							constraint.setSecondBound(startsduring.getSecondBound());
-							// propagate temporal constraint
-							this.tdb.propagate(constraint);
-							// add to committed 
-							committed.add(constraint);
-						}
-						break;
-						
-						case START_START : 
-						{
-							// get relation
-							StartStartRelation ss = (StartStartRelation) relation;
-							// create temporal constraint
-							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i.getStartTime());
-								constraint.setTarget(relation.getTarget().getToken().getInterval().getStartTime());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval().getStartTime());
-								constraint.setTarget(i.getStartTime());
-							}
-							
-							// set bounds
-							constraint.setDistanceLowerBound(ss.getLowerBound());
-							constraint.setDistanceUpperBound(ss.getUpperBound());
-							// propagate
-							this.tdb.propagate(constraint);
-							// add to committed
-							committed.add(constraint);
-						}
-						break;
-						
-						case END_END : 
-						{
-							// get relation
-							EndEndRelation ee = (EndEndRelation) relation;
-							// create temporal constraint
-							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
-							// check reference
-							if (relation.getReference().equals(goal)) {
-								constraint.setReference(i.getEndTime());
-								constraint.setTarget(relation.getTarget().getToken().getInterval().getEndTime());
-							}
-							
-							// check target
-							if (relation.getTarget().equals(goal)) {
-								constraint.setReference(relation.getReference().getToken().getInterval().getEndTime());
-								constraint.setTarget(i.getEndTime());
-							}
-							
-							// set bounds
-							constraint.setDistanceLowerBound(ee.getLowerBound());
-							constraint.setDistanceUpperBound(ee.getUpperBound());
-							// propagate
-							this.tdb.propagate(constraint);
-							// add to committed
-							committed.add(constraint);
-						}
-						break;
-						
-						default: {
-							throw new RuntimeException("Unknownw relation type: " + relation.getType() + "\n");
-						}
+						// update the reference with unification decision
+						tRel.setReference(decision);
+						// add relation to translated ones
+						translatedReferenceGoalRelations.add(tRel);
+					}
+					
+					// check target
+					if (tRel.getTarget().equals(goal)) 
+					{
+						// update the relation target with unification decision
+						tRel.setTarget(decision);
+						// add relation to translated ones
+						translatedTargetGoalRelations.add(tRel);
+					}
+					
+					
+					// check if relation decisions are both active
+					if (tRel.getReference().getComponent().isActive(tRel.getReference()) &&
+							tRel.getTarget().getComponent().isActive(tRel.getTarget()))
+					{
+						// create constraint
+						TemporalConstraint constraint = tRel.create();
+						// propagate temporal constraint
+						this.tdb.propagate(constraint);
+						// add to committed 
+						committed.add(constraint);
 					}
 				}
 			}
@@ -622,8 +632,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			this.tdb.verify();
 		} 
 		catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+			// not feasible unification 
+			feasible = false;
 			// not feasible unification
-			throw new NotFeasibleUnificationException("Not feasible unification found:\n"
+			debug("Not feasible temporal unification:\n"
 					+ "- planning goal: " + goal + "\n"
 					+ "- unification decision: " + decision + "\n");
 		}
@@ -634,7 +646,369 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				// delete temporal constraint
 				this.tdb.retract(constraint);
 			}
+			
+			// translated back temporal relations
+			for (TemporalRelation rel : translatedReferenceGoalRelations)
+			{
+				// update relation
+				rel.setReference(goal);
+				// clear relation constraint
+				rel.clear();
+			}
+			
+			// translated back temporal relations
+			for (TemporalRelation rel : translatedTargetGoalRelations)
+			{
+				// update relation
+				rel.setTarget(goal);
+				// clear relation constraint
+				rel.clear();
+			}
 		}
+		
+		// get feasibility flag
+		return feasible;
+		
+		
+//		// list of propagated temporal constraints
+//		List<TemporalConstraint> committed = new ArrayList<>();
+//		try 
+//		{
+//			// get goal component
+//			DomainComponent goalComp = goal.getComponent();
+//			// get all (pending) relations concerning the goal
+//			Set<Relation> pending = goalComp.getRelations(goal);
+//			// get unification decision temporal interval
+//			TemporalInterval i = decision.getToken().getInterval();
+//			
+//			// translate goal-related relations and propagate them to check the temporal feasibility of the unification
+//			for (Relation relation : pending)
+//			{
+//				// get reference component
+//				DomainComponent refComp = relation.getReference().getComponent();
+//				// get target component
+//				DomainComponent tarComp = relation.getTarget().getComponent();
+//				// check temporal relations concerning the goal
+//				if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT) && 
+//						(refComp.isActive(relation.getReference()) || 
+//								tarComp.isActive(relation.getTarget()))) 
+//				{
+//					// check relation type
+//					switch (relation.getType()) 
+//					{
+//						case AFTER: 
+//						{
+//							AfterRelation after = (AfterRelation) relation;
+//							// create temporal constraint
+//							AfterIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.AFTER);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setLowerBound(after.getLowerBound());
+//							constraint.setUpperBound(after.getUpperBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case BEFORE: 
+//						{
+//							BeforeRelation before = (BeforeRelation) relation;
+//							// create temporal constraint
+//							BeforeIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.BEFORE);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setLowerBound(before.getLowerBound());
+//							constraint.setUpperBound(before.getUpperBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case CONTAINS: 
+//						{
+//							ContainsRelation contains = (ContainsRelation) relation;
+//							// create temporal constraint
+//							ContainsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.CONTAINS);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setStartTimeBound(contains.getStartTimeBound());
+//							constraint.setEndTimeBound(contains.getEndTimeBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case DURING: 
+//						{
+//							DuringRelation during = (DuringRelation) relation;
+//							// create temporal constraint
+//							DuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.DURING);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setStartTimeBound(during.getStartTimeBound());
+//							constraint.setEndTimeBound(during.getEndTimeBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case ENDS_DURING: 
+//						{
+//							EndsDuringRelation endsduring = (EndsDuringRelation) relation;
+//							// create temporal constraint
+//							EndsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.ENDS_DURING);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setFirstBound(endsduring.getFirstBound());
+//							constraint.setSecondBound(endsduring.getSecondBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case EQUALS: 
+//						{
+//							// create temporal constraint
+//							EqualsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.EQUALS);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case MEETS: 
+//						{
+//							// create temporal constraint
+//							MeetsIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MEETS);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case MET_BY: 
+//						{
+//							// create temporal constraint
+//							MetByIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.MET_BY);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case STARTS_DURING: 
+//						{
+//							StartsDuringRelation startsduring = (StartsDuringRelation) relation;
+//							// create temporal constraint
+//							StartsDuringIntervalConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.STARTS_DURING);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i);
+//								constraint.setTarget(relation.getTarget().getToken().getInterval());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval());
+//								constraint.setTarget(i);
+//							}
+//							
+//							// set bounds
+//							constraint.setFirstBound(startsduring.getFirstBound());
+//							constraint.setSecondBound(startsduring.getSecondBound());
+//							// propagate temporal constraint
+//							this.tdb.propagate(constraint);
+//							// add to committed 
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case START_START : 
+//						{
+//							// get relation
+//							StartStartRelation ss = (StartStartRelation) relation;
+//							// create temporal constraint
+//							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i.getStartTime());
+//								constraint.setTarget(relation.getTarget().getToken().getInterval().getStartTime());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval().getStartTime());
+//								constraint.setTarget(i.getStartTime());
+//							}
+//							
+//							// set bounds
+//							constraint.setDistanceLowerBound(ss.getLowerBound());
+//							constraint.setDistanceUpperBound(ss.getUpperBound());
+//							// propagate
+//							this.tdb.propagate(constraint);
+//							// add to committed
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						case END_END : 
+//						{
+//							// get relation
+//							EndEndRelation ee = (EndEndRelation) relation;
+//							// create temporal constraint
+//							TimePointDistanceConstraint constraint = this.tdb.createTemporalConstraint(TemporalConstraintType.TIME_POINT_DISTANCE);
+//							// check reference
+//							if (relation.getReference().equals(goal)) {
+//								constraint.setReference(i.getEndTime());
+//								constraint.setTarget(relation.getTarget().getToken().getInterval().getEndTime());
+//							}
+//							
+//							// check target
+//							if (relation.getTarget().equals(goal)) {
+//								constraint.setReference(relation.getReference().getToken().getInterval().getEndTime());
+//								constraint.setTarget(i.getEndTime());
+//							}
+//							
+//							// set bounds
+//							constraint.setDistanceLowerBound(ee.getLowerBound());
+//							constraint.setDistanceUpperBound(ee.getUpperBound());
+//							// propagate
+//							this.tdb.propagate(constraint);
+//							// add to committed
+//							committed.add(constraint);
+//						}
+//						break;
+//						
+//						default: {
+//							throw new RuntimeException("Unknownw relation type: " + relation.getType() + "\n");
+//						}
+//					}
+//				}
+//			}
+//			
+//			// check temporal consistency of the plan
+//			this.tdb.verify();
+//		} 
+//		catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+//			// not feasible unification
+//			throw new NotFeasibleUnificationException("Not feasible unification found:\n"
+//					+ "- planning goal: " + goal + "\n"
+//					+ "- unification decision: " + decision + "\n");
+//		}
+//		finally 
+//		{
+//			// retract all committed temporal constraints
+//			for (TemporalConstraint constraint : committed) {
+//				// delete temporal constraint
+//				this.tdb.retract(constraint);
+//			}
+//		}
+		
+		
 	}
 	
 	/**
