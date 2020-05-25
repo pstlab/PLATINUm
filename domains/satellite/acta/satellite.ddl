@@ -1,6 +1,6 @@
 DOMAIN ACTA_SATELLITE
 {
-	TEMPORAL_MODULE temporal_module = [0, 500], 100;
+	TEMPORAL_MODULE temporal_module = [0, 100], 100;
 	
 	COMP_TYPE SingletonStateVariable PointingModeType (
 		Earth(), Slewing(), Science(), _Comm(), _Maintenance()
