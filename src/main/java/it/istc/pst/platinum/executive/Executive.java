@@ -579,6 +579,16 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			// complete execution in this case
 			complete = true;
 		}
+		finally 
+		{
+			// get the list of nodes in execution 
+			List<ExecutionNode> nodes = new ArrayList<>(this.getNodes(ExecutionNodeStatus.IN_EXECUTION));
+			// notify external plan observers
+			for (PlanExecutionObserver o : this.planObservers) { 
+				// notify plan execution status
+				o.onTick(currentTick, this.failure.get(), nodes);
+			}
+		}
 
 		// get boolean flag
 		return complete;
