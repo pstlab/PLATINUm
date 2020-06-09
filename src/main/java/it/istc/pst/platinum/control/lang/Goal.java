@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.protocol.lang.PlanProtocolDescriptor;

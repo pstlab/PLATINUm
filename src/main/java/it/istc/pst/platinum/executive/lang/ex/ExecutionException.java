@@ -1,5 +1,7 @@
 package it.istc.pst.platinum.executive.lang.ex;
 
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
+
 /**
  * 
  * @author anacleto

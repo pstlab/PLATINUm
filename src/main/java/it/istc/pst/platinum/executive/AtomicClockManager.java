@@ -132,7 +132,7 @@ public final class AtomicClockManager extends ExecutiveObject implements Runnabl
 			} 
 			catch (InterruptedException ex) {
 				// complete execution
-				logger.error("Execution Interrupted\n" + ex.getMessage());
+				error("Execution Interrupted\n" + ex.getMessage());
 				complete = true;
 			}
 		}

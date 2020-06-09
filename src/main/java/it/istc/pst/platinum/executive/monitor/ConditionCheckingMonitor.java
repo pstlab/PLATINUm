@@ -6,9 +6,12 @@ import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
-import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.ex.NodeExecutionErrorException;
 import it.istc.pst.platinum.executive.lang.ex.ObservationException;
-import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
+import it.istc.pst.platinum.executive.lang.failure.DurationOverflow;
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.failure.PlatformError;
+import it.istc.pst.platinum.executive.lang.failure.StartOverflow;
 import it.istc.pst.platinum.executive.pdb.ControllabilityType;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
@@ -53,9 +56,27 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 				{
 					// compute node duration of the token in execution 
 					long duration = Math.max(1, tau - node.getStart()[0]);
-					this.executive.updateNode(node,  ExecutionNodeStatus.EXECUTED);
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
-							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					try
+					{
+						// schedule token duration
+						this.executive.scheduleTokenDuration(node, duration);
+						// update node state
+						this.executive.updateNode(node,  ExecutionNodeStatus.EXECUTED);
+						info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
+								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+					}
+					catch (TemporalConstraintPropagationException ex) {
+						// consider the node as executed
+						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						// create failure cause
+						ExecutionFailureCause cause = new DurationOverflow(tick, node, duration);
+						// throw execution exception
+						throw new ObservationException(
+								"The observed duration of the token does not comply with the expected one:\n"
+								+ "\t- duration: " + duration + "\n"
+								+ "\t- node: " + node + "\n", 
+								cause);
+					}
 				}
 				break;
 				
@@ -65,7 +86,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 					{
 						// schedule the start of uncontrollable token
 						this.executive.scheduleUncontrollableTokenStart(node, tau);
-						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
+						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
@@ -85,10 +106,14 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 				
 				case TOKEN_EXECUTION_FAILURE : {
 					
-					/*
-					 * TODO : Manage execution failure from the functional level
-					 */
-					throw new RuntimeException("TODO: Manage token execution error");
+					// update node status
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+					// execution failure
+					ExecutionFailureCause cause = new PlatformError(tick, node); 
+					// throw execution exception
+					throw new NodeExecutionErrorException(
+							"Node execution error:\n\t- node: " + node + "\n", 
+							cause);
 				}
 			}
 		}
@@ -105,7 +130,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 					// check node schedule
 					this.executive.checkSchedule(node);
 					// check expected schedule
-					if (tau >= node.getEnd()[0]) // && tau <= node.getEnd()[1]) 
+					if (tau >= node.getEnd()[0]) 
 					{
 						// compute (controllable) execution duration
 						long duration = Math.max(1, tau - node.getStart()[0]);
@@ -113,22 +138,23 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 						this.executive.sendStopCommandSignalToPlatform(node);
 						// set node as executed
 						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						
 						// token scheduled
-						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
+						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
 								+ "\t- duration: " + duration + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					else 
 					{
 						// wait - not ready for dispatching
-						logger.debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End conditions satisifed but node schedule not ready for ending\n"
+						debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End conditions satisifed but node schedule not ready for ending\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 				}
 				else 
 				{
 					// print a message in debug mode
-					logger.debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End execution conditions not satisfied yet\n"
+					debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End execution conditions not satisfied yet\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 			}
@@ -166,31 +192,26 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 					// add repair information
 					cause.addRepairInfo(node, duration);
 					// info message
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
+					info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
 				
 				case UNCONTROLLABLE_TOKEN_START : 
 				{
-					/*
-					 * TODO : GESTIRE ANCHE QUESTE INFORMAZIONI NEL PLAN REPAIR ?
-					 * 
-					 */
-					
 					// update node status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
+					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
 				
-				case TOKEN_EXECUTION_FAILURE : {
-					
-					/*
-					 * TODO : Manage execution failure from the functional level
-					 */
-					throw new RuntimeException("TODO: Manage token execution error");
+				case TOKEN_EXECUTION_FAILURE : 
+				{
+					// the node can be considered as executed
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed execution failure at time " + tau + "\n"
+							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 			}
 		}
@@ -201,26 +222,14 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 			// check node controllability 
 			if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE))
 			{
-				// check end conditions
-				if (this.executive.canEnd(node))
-				{
-					// check expected schedule
-					if (tau >= node.getEnd()[0] && tau <= node.getEnd()[1]) 
-					{
-						// compute (controllable) execution duration
-						long duration = Math.max(1, tau - node.getStart()[0]);
-						// the node can be considered as executed
-						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
-						// simply send stop command
-						this.executive.sendStopCommandSignalToPlatform(node);
-						// add repair information
-						cause.addRepairInfo(node, duration);
-						// info message
-						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
-								+ "\t- duration: " + duration + "\n"
-								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-					}
-				}
+				// stop controllable tokens in execution
+				// the node can be considered as executed
+				this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+				// simply send stop command
+				this.executive.sendStopCommandSignalToPlatform(node);
+				// info message
+				debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Stopping execution of controllable token\n"
+						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 			}
 		}
 	}

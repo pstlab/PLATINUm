@@ -58,15 +58,16 @@ public class ContingencyHandlerProcess implements Runnable
 	
 	/**
 	 * 
+	 * @param pClass
 	 * @param pdb
 	 * @return
 	 * @throws NoSolutionFoundException
 	 */
-	protected SolutionPlan doHandle(PlanDataBase pdb) 
+	protected SolutionPlan doHandle(Class<? extends Planner> pClass, PlanDataBase pdb) 
 			throws NoSolutionFoundException 
 	{
 		// setup planner on the current status of the plan database
-		Planner planner = PlannerBuilder.createAndSet(pdb);
+		Planner planner = PlannerBuilder.createAndSet(pClass, pdb);
 		// start planning 
 		SolutionPlan plan = planner.plan();
 		// get plan found

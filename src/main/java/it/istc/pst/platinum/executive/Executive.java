@@ -17,8 +17,7 @@ import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedbackType;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
-import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
-import it.istc.pst.platinum.executive.lang.ex.PlatformError;
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.monitor.ConditionCheckingMonitor;
 import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.executive.pdb.ControllabilityType;
@@ -44,7 +43,7 @@ import it.istc.pst.platinum.framework.utils.view.executive.ExecutiveWindow;
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.INFO
+		level = FrameworkLoggingLevel.WARNING
 )
 @MonitorConfiguration(
 		monitor = ConditionCheckingMonitor.class
@@ -439,7 +438,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		// check execution failure or not 
 		if (this.failure.get()) {
 			// execution failure
-			logger.error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
+			error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
 					+ "\t- cause: " + this.cause.getType() + "\n");
 			
 			// update executive status
@@ -453,7 +452,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		else 
 		{
 			// successful execution 
-			logger.info("Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");
+			info("Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");
 			
 			// update executive status
 			synchronized (this.lock) {
@@ -500,12 +499,12 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			if (!this.failure.get()) {
 				// handle current tick
 				this.currentTick = tick;
-				logger.debug("{Executive} -> Handle tick: " + tick + "\n");
+				debug("{Executive} -> Handle tick: " + tick + "\n");
 				// synch step
-				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
+				debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 				this.monitor.handleTick(tick);
 				// dispatching step
-				logger.debug("{Executive} {tick: " + tick + "} -> Dispatching step\n");
+				debug("{Executive} {tick: " + tick + "} -> Dispatching step\n");
 				this.dispatcher.handleTick(tick);
 				
 				// check if execution is complete
@@ -517,9 +516,9 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			{
 				// handle current tick
 				this.currentTick = tick;
-				logger.debug("{Executive} -> Handle tick: " + tick + "\n");
-				// synch step only in "failure" mode
-				logger.debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
+				warning("{Executive} -> [FAILURE] Handle tick: " + tick + "\n");
+				// sync step only in "failure" mode
+				warning("{Executive} {tick: " + tick + "} -> [FAILURE] Synchronization step\n");
 				// handle observations
 				this.monitor.handleExecutionFailure(tick, this.cause);
 				
@@ -530,7 +529,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 					// the executive cannot complete 
 					complete = false;
 					// waiting for a feedback of the node 
-					logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
+					warning("{Executive} {tick: " + tick + "} -> [FAILURE] Terminating execution... waiting for feedback about dispatched starting command request :\n"
 							+ "\t- node: " + node + "\n");
 				}
 				
@@ -539,7 +538,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 					// the executive cannot complete 
 					complete = false;
 					// waiting for a feedback of the node 
-					logger.info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
+					info("{Executive} {tick: " + tick + "} -> Terminating execution... waiting for feedback:\n"
 							+ "\t- node: " + node + "\n");
 				}
 			}
@@ -558,7 +557,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			// set execution failure cause
 			this.cause = ex.getFailureCause();
 			// error message
-			logger.error("{Executive} {tick: " + tick + "} -> Error while executing plan:\n"
+			error("{Executive} {tick: " + tick + "} -> Error while executing plan:\n"
 					+ "\t- message: " + ex.getMessage() + "\n\n"
 					+ "Wait for execution feedbacks of pending controllable and partially-controllable tokens if any... \n\n");
 		}
@@ -568,27 +567,17 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			this.failure.set(true);
 			// complete execution in this case
 			complete = true;
-			// set cause
-			this.cause = new PlatformError();
 			// error message
-			logger.error("{Executive} {tick: " + tick + "} -> Platform error:\n"
+			error("{Executive} {tick: " + tick + "} -> Platform error:\n"
 					+ "\t- message: " + ex.getMessage() + "\n");
 		}
 		catch (InterruptedException ex) {
+			// execution error
+			error(ex.getMessage());
 			// set execution failure 
 			this.failure.set(true);
 			// complete execution in this case
 			complete = true;
-			// execution error
-			logger.error(ex.getMessage());
-		}
-		finally 
-		{
-			// notify plan execution observers
-			for (PlanExecutionObserver o : this.planObservers) {
-				// send notification
-				o.onTick(tick, this.failure.get(), this.getNodes());
-			}
 		}
 
 		// get boolean flag
@@ -655,23 +644,29 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 			throws PlatformException
 	{
 		// check if a platform PROXY exists
-		if (this.platformProxy != null && this.platformProxy.isPlatformCommand(node)) 
+		if (this.platformProxy != null) 
 		{
 			// check controllability type 
 			if (node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE) || 
 					node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE))
 			{
-				// send command and take operation ID
-				PlatformCommand cmd = this.platformProxy.executeNode(node);
-				// add entry to the index
-				this.dispatchedIndex.put(cmd, node);
+				// check if command to execute on platform
+				if (this.platformProxy.isPlatformCommand(node)) {
+					// send command and take operation ID
+					PlatformCommand cmd = this.platformProxy.executeNode(node);
+					// add entry to the index
+					this.dispatchedIndex.put(cmd, node);
+				}
 			}
 			else
 			{
-				// require execution start
-				PlatformCommand cmd = this.platformProxy.startNode(node);
-				// add entry to the index
-				this.dispatchedIndex.put(cmd, node);
+				// check if command to execute on platform
+				if (this.platformProxy.isPlatformCommand(node)) {
+					// require execution start
+					PlatformCommand cmd = this.platformProxy.startNode(node);
+					// add entry to the index
+					this.dispatchedIndex.put(cmd, node);
+				}
 			}
 		}
 		else {
@@ -702,7 +697,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				// forward the feedback to the monitor
 				this.monitor.addExecutionFeedback(feedback);
 				// got start execution feedback from a completely uncontrollable token
-				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
+				info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 			}
 			else if (node.getStatus().equals(ExecutionNodeStatus.IN_EXECUTION))
@@ -719,7 +714,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 				// remove operation ID from index
 				this.dispatchedIndex.remove(cmd);
 				// got end execution feedback from either a partially-controllable or uncontrollable token
-				logger.info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
+				info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 			}
 			else 
@@ -731,7 +726,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		else 
 		{
 			// no operation ID found 
-			logger.warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
+			warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
 		}
 	}
 	
@@ -742,7 +737,29 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	@Override
 	public void failure(PlatformCommand cmd) 
 	{
-		// TODO Auto-generated method stub
-		throw new RuntimeException("TODO : Handle failure signals from platform");
+		// check command  
+		if (this.dispatchedIndex.containsKey(cmd))
+		{
+			// get execution node
+			ExecutionNode node = this.dispatchedIndex.get(cmd);
+			// create execution feedback
+			ExecutionFeedback feedback = new ExecutionFeedback(
+					this.currentTick,
+					node, 
+					ExecutionFeedbackType.TOKEN_EXECUTION_FAILURE);
+				
+			// forward feedback to the monitor
+			this.monitor.addExecutionFeedback(feedback);
+			// remove operation ID from index
+			this.dispatchedIndex.remove(cmd);
+			// got end execution feedback from either a partially-controllable or uncontrollable token
+			info("{Executive} {tick: " + this.currentTick + "} -> Got \"failure\" feedback about the execution of token:\n"
+					+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+		}
+		else 
+		{
+			// no operation ID found 
+			warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
+		}
 	}
 }

@@ -1,32 +1,20 @@
 package it.istc.pst.platinum.executive.dc.strategy.loader;
 
 import java.io.BufferedReader;
-import java.io.File;
-
-// manca connessione a file o a output di tiga
-//manca retrieve dello stato
-
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.istc.pst.platinum.executive.dc.strategy.clock.ClockSet;
 import it.istc.pst.platinum.executive.dc.strategy.State;
 import it.istc.pst.platinum.executive.dc.strategy.StateSet;
 import it.istc.pst.platinum.executive.dc.strategy.StateStrategy;
 import it.istc.pst.platinum.executive.dc.strategy.Strategy;
-import it.istc.pst.platinum.executive.dc.strategy.result.Action;
-import it.istc.pst.platinum.executive.dc.strategy.result.Transition;
+import it.istc.pst.platinum.executive.dc.strategy.clock.ClockSet;
 import it.istc.pst.platinum.executive.dc.strategy.result.Wait;
 
 public class StrategyLoader {

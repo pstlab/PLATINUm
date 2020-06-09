@@ -1,4 +1,6 @@
-package it.istc.pst.platinum.executive.lang.ex;
+package it.istc.pst.platinum.executive.lang.failure;
+
+import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 
 /**
  * 
@@ -10,7 +12,7 @@ public class PlatformError extends ExecutionFailureCause
 	/**
 	 * 
 	 */
-	public PlatformError() {
+	public PlatformError(long tick, ExecutionNode node) {
 		super(ExecutionFailureCauseType.PLATFORM_ERROR);
 	}
 	

@@ -216,7 +216,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 								// set type
 								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 								// set value
-								paramValues[index] = new Long(param.getBounds()[0]).toString();
+								paramValues[index] = Long.toString(param.getBounds()[0]);
 							}
 							else 
 							{
@@ -326,7 +326,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 								// set type
 								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 								// set value
-								paramValues[index] = new Long(param.getBounds()[0]).toString();
+								paramValues[index] = Long.toString(param.getBounds()[0]);
 							}
 							else 
 							{
@@ -434,7 +434,7 @@ public class ExecutivePlanDataBase extends ExecutiveObject
 			}
 			
 			// print log message
-			logger.debug(msg);
+			debug(msg);
 		}
 		catch (TemporalIntervalCreationException ex) {
 			throw new RuntimeException(ex.getMessage());

@@ -4,11 +4,11 @@ import java.util.List;
 
 import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.lang.ExecutionFeedback;
-import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
-import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.lang.ex.ObservationException;
-import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
+import it.istc.pst.platinum.executive.lang.failure.DurationOverflow;
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.failure.StartOverflow;
 import it.istc.pst.platinum.executive.monitor.Monitor;
 import it.istc.pst.platinum.executive.pdb.ControllabilityType;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
@@ -44,7 +44,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 		// manage uncontrollable tokens of the plan according to the feedbacks
 		for (ExecutionFeedback feedback : feedbacks)
 		{
-			logger.debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Execution feedback:\n"
+			debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Execution feedback:\n"
 					+ "\t- type: " + feedback.getType() + "\n"
 					+ "\t- node: " + feedback.getNode() + "\n");	
 			// get node 
@@ -59,7 +59,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 //					ExecutionNode next = node.getNext();
 					// compute node duration of the token in execution 
 					long duration = Math.max(1, tau - node.getStart()[0]);
-					logger.info("[DCMonitor] [tick: " + tick + "] [tau: " +  tau + "] -> Observed token execution with duration " + duration + " \n"
+					info("[DCMonitor] [tick: " + tick + "] [tau: " +  tau + "] -> Observed token execution with duration " + duration + " \n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					
 					try 
@@ -70,7 +70,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 						this.executive.scheduleTokenDuration(node, duration);
 						// check schedule
 						this.executive.checkSchedule(node);
-						logger.info("[DCMonitor] [tick: " + tick + "] [tau: " +  tau + "] -> Observed token execution with duration " + duration + " \n"
+						info("[DCMonitor] [tick: " + tick + "] [tau: " +  tau + "] -> Observed token execution with duration " + duration + " \n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
@@ -94,7 +94,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 					{
 						// schedule the start of uncontrollable token
 						this.executive.scheduleUncontrollableTokenStart(node, tau);
-						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
+						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
@@ -143,7 +143,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 							// schedule token duration
 							this.executive.scheduleTokenDuration(node, duration);
 							// token scheduled
-							logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
+							info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
 									+ "\t- duration: " + duration + "\n"
 									+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 						}
@@ -163,14 +163,14 @@ public class DCMonitor extends Monitor<DCExecutive>
 					else 
 					{
 						// wait - not ready for dispatching
-						logger.debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End conditions satisifed but node schedule not ready for ending\n"
+						debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End conditions satisifed but node schedule not ready for ending\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 				}
 				else 
 				{
 					// print a message in debug mode
-					logger.debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End execution conditions not satisfied yet\n"
+					debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End execution conditions not satisfied yet\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 			}
@@ -208,7 +208,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 					// add repair information
 					cause.addRepairInfo(node, duration);
 					// info message
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
+					info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
@@ -222,7 +222,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 					
 					// update node status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
-					logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
+					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
@@ -258,7 +258,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 						// add repair information
 						cause.addRepairInfo(node, duration);
 						// info message
-						logger.info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
+						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
 								+ "\t- duration: " + duration + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}

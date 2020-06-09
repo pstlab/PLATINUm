@@ -1,4 +1,4 @@
-package it.istc.pst.platinum.executive.lang.ex;
+package it.istc.pst.platinum.executive.lang;
 
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 
@@ -17,7 +17,7 @@ public class PlanRepairInformation
 	 * @param node
 	 * @param duration
 	 */
-	protected PlanRepairInformation(ExecutionNode node, long duration) {
+	public PlanRepairInformation(ExecutionNode node, long duration) {
 		this.node = node;
 		this.duration = duration;
 	}

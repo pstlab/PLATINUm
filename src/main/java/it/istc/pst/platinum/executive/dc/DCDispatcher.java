@@ -9,9 +9,9 @@ import it.istc.pst.platinum.executive.dc.strategy.result.Transition;
 import it.istc.pst.platinum.executive.dc.strategy.result.Wait;
 import it.istc.pst.platinum.executive.dispatcher.Dispatcher;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
-import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.lang.ex.ObservationException;
-import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.failure.StartOverflow;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
@@ -53,7 +53,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 		}
 		
 		// print query 
-		logger.debug("[DCDispatcher] [tick: " + tick + "] DC checker query:\n"
+		debug("[DCDispatcher] [tick: " + tick + "] DC checker query:\n"
 				+ "\t- time= " + status.getTime() + "\n"
 				+ "\t- status= " + status.getStatus() + "\n");
 		
@@ -64,7 +64,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				true);
 		
 		// print the list of actions received
-		logger.debug("[DCDispatcher] [tick: " + tick + "] DC checker query result:\n"
+		debug("[DCDispatcher] [tick: " + tick + "] DC checker query result:\n"
 				+ "\t- result= " + result + "\n");
 			
 		// check actions
@@ -76,7 +76,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				 * wait
 				 */
 				
-				logger.debug("[DCDispatcher] [tick: " + tick +"] action: Wait");
+				debug("[DCDispatcher] [tick: " + tick +"] action: Wait");
 				
 			}
 			else if (a instanceof Transition) 
@@ -91,7 +91,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				// name of the timeline
 				String tlName = s.getTimeline();
 				// transition action
-				logger.debug("[DCDispatcher] [tick: " + tick + "] Transition action:\n"
+				debug("[DCDispatcher] [tick: " + tick + "] Transition action:\n"
 						+ "- Source state of transition\n\t- timelineName= " + t.getTransitionFrom().getTimeline() + "\n\t- tokenName= " + t.getTransitionFrom().getToken() + "\n"
 						+ "- Target state of transition\n\t- timelineName= " + tlName + "\n\t- tokenName= " + tokenName);
 
@@ -109,7 +109,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 					{
 						// node found
 						node = n;
-						logger.debug("[DCDispatcher] [tick: " + tick + "] Transition node found:\n"
+						debug("[DCDispatcher] [tick: " + tick + "] Transition node found:\n"
 								+ "- target state of transition\n\t- timelineName= " + tlName + "\n\t- tokeNmae= " + tokenName + "\n"
 								+ "- Execution node:\n\t- node= " + node + "\n");
 						break;
@@ -132,7 +132,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 							this.executive.updateNode(prev, ExecutionNodeStatus.EXECUTED);
 						}
 						// start node execution
-						logger.info("[DCDispatcher] [tick: " + tick + "] [tau: " + tau + "] -> Start executing node at time: " + tau + "\n"
+						info("[DCDispatcher] [tick: " + tick + "] [tau: " + tau + "] -> Start executing node at time: " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
@@ -150,7 +150,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				}
 				else 
 				{
-					logger.error("[DCDispatcher] [tick: " + tick + "] Transition token not found:\n- timelineName= " + tlName + "\n- tokenName= " + tokenName + "\n");
+					error("[DCDispatcher] [tick: " + tick + "] Transition token not found:\n- timelineName= " + tlName + "\n- tokenName= " + tokenName + "\n");
 				}
 				
 			}
@@ -178,7 +178,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				if (next.getStatus().equals(ExecutionNodeStatus.WAITING))
 				{
 					// dispatch start time
-					logger.debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
+					debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
 							+ "\t- start-tau: " + tau + "\n"
 							+ "\t- node: " + next.getGroundSignature() + " (" + next + ")\n");
 					
@@ -189,7 +189,7 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 						// check schedule
 						this.executive.checkSchedule(next);
 						// dispatch start time
-						logger.debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
+						debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
 								+ "\t- start-tau: " + tau + "\n"
 								+ "\t- node: " + next.getGroundSignature() + " (" + next + ")\n");
 					}

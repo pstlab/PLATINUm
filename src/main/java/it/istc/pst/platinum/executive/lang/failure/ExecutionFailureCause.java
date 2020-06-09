@@ -1,8 +1,9 @@
-package it.istc.pst.platinum.executive.lang.ex;
+package it.istc.pst.platinum.executive.lang.failure;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import it.istc.pst.platinum.executive.lang.PlanRepairInformation;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 
 /**

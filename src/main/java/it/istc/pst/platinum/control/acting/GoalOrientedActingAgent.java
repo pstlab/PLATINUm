@@ -14,9 +14,7 @@ import it.istc.pst.platinum.control.platform.PlatformProxy;
 import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.executive.Executive;
-import it.istc.pst.platinum.executive.lang.ex.DurationOverflow;
-import it.istc.pst.platinum.executive.lang.ex.PlanRepairInformation;
-import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.domain.PlanDataBaseBuilder;
@@ -28,9 +26,6 @@ import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationExc
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.RelationType;
-import it.istc.pst.platinum.framework.microkernel.lang.relations.temporal.MeetsRelation;
 
 /**
  * 
@@ -758,185 +753,121 @@ public class GoalOrientedActingAgent
  		}
 		
 		
-		// list of activated facts
-		List<Decision> facts = new ArrayList<>();
-		// list of activated relations
-		List<Relation> relations = new ArrayList<>();
-		// list of planning goals
-		List<Decision> goals = new ArrayList<>();
-		
 		// repairing result
 		boolean success = true;
 		// start contingency handling time
 		long now = System.currentTimeMillis();
 		try
 		{
-			// initialize plan database on the given planning domain
-			this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
-			System.out.println("\n\nREPAIRING PROBLEM SPECIFICATION:\n");
+			// repair plan data
+			System.out.println("\n\nPLAN REPAIR\n");
 			
-			// setup the initial fact leveraging goal execution trace
-			for (DomainComponent component : this.pdb.getComponents()) 
+			// list of kept decisions 
+			List<Decision> kept = new ArrayList<>();
+			// clear domain components
+			for (DomainComponent comp : this.pdb.getComponents())
 			{
-				// get component execution trace
-				for (ExecutionNode node : goal.getExecutionTraceByComponentName(component.getName())) 
-				{	
-					// get value
-					ComponentValue value = component.getValueByName(node.getSignature());
-					// create fact 
-					Decision fact = component.create(
-							value, 
-							node.getParameters(), 
-							node.getStart(), 
-							node.getEnd(), 
-							node.getDuration(), 
-							node.getStatus());
-					
-					// activate fact
-					component.activate(fact);
-					// activated fact
-					System.out.println(">>>>> FACT : " + node.getStatus() + " : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
-							+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
-									+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
-									+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
-					// add fact
-					facts.add(fact);
-				}
-			}
-			
-			// check also failure cause and add the related node as fact
-			switch (goal.getFailureCause().getType()) 
-			{
-				// start overflow contingency
-				case START_OVERFLOW : {
-					// get cause
-					StartOverflow cause = (StartOverflow) goal.getFailureCause();
-					// get observed start
-					long start = cause.getObservedStartTime();
-					// get node 
-					ExecutionNode node = cause.getInterruptionNode();
-					// get component
-					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
-					// get value
-					// get value
-					ComponentValue value = comp.getValueByName(node.getSignature());
-					// create fact 
-					Decision fact = comp.create(
-							value, 
-							node.getParameters(), 
-							new long[] {start, start}, 
-							node.getEnd(), 
-							node.getDuration(), 
-							ExecutionNodeStatus.EXECUTED);
-					
-					// activate fact
-					comp.activate(fact);
-					// activated fact
-					System.out.println(">>>>> OBSERVED-FACT : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
-							+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
-									+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
-									+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
-					// add fact
-					facts.add(fact);
-				}
-				break;
-			
-				// duration overflow contingency
-				case DURATION_OVERFLOW : {
-					// get cause
-					DurationOverflow cause = (DurationOverflow) goal.getFailureCause();
-					// get observed duration
-					long duration = cause.getObservedDuration();
-					// get node 
-					ExecutionNode node = cause.getInterruptionNode();
-					// get component
-					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
-					// get value
-					// get value
-					ComponentValue value = comp.getValueByName(node.getSignature());
-					// create fact 
-					Decision fact = comp.create(
-							value, 
-							node.getParameters(), 
-							node.getStart(), 
-							node.getEnd(), 
-							new long[] {duration, duration}, 
-							ExecutionNodeStatus.EXECUTED);
-					
-					// activate fact
-					comp.activate(fact);
-					// activated fact
-					System.out.println(">>>>> OBSERVED-FACT : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
-							+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
-									+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
-									+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
-					// add fact
-					facts.add(fact);
-				}
-				break;
+				// clear component 
+				System.out.println("CLEAR COMPONENT : " + comp.getName() + "\n");
 				
-				default: {
-					
-					// unknown failure type
-					System.err.println("Unknown goal execution failure type : " + goal.getFailureCause().getType() + "\n");
-				}
-				break;
-			}
-			
-			// check other plan repair information 
-			for (PlanRepairInformation info : goal.getFailureCause().getRepairInfo()) 
-			{
-				// get node 
-				ExecutionNode node = info.getNode();
-				// get component
-				DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
-				// get value
-				// get value
-				ComponentValue value = comp.getValueByName(node.getSignature());
-				// create fact 
-				Decision fact = comp.create(
-						value, 
-						node.getParameters(),
-						node.getStart(),
-						node.getEnd(), 
-						new long[] {info.getDuration(), info.getDuration()}, 
-						ExecutionNodeStatus.EXECUTED);
-				
-				// activate fact
-				comp.activate(fact);
-				// activated fact
-				System.out.println(">>>>> REPAIR-INFO-FACT : [" + fact.getId() +"]:" + fact.getComponent().getName() + "." + fact.getValue().getLabel() + " "
-						+ "AT [" + fact.getStart()[0]  + ", " + fact.getStart()[1] + "] "
-								+ "[" + fact.getEnd()[1] + ", " + fact.getEnd()[1] + "] "
-								+ "[" + fact.getDuration()[0] + ", " + fact.getDuration()[1] + "]");
-				// add fact
-				facts.add(fact);
-			}
-			
-			
-			
-			// add meets relations to enforce the timeline semantics
-			for (DomainComponent component : this.pdb.getComponents()) 
-			{
-				// enforce timeline semantics through meets relations
-				List<Decision> list = component.getActiveDecisions();
-				for (int index = 0; index < list.size() -1; index++) 
+				// remove all pending decisions
+				System.out.println("\nREMOVE ALL PENDING DECISIONS\n");
+				// list of pending decisions
+				List<Decision> pendings = comp.getPendingDecisions();
+				for (Decision pending : pendings) 
 				{
-					// create meet relations between adjacent tokens
-					Decision reference = list.get(index);
-					Decision target = list.get(index + 1);
-					// create meets relation
-					MeetsRelation rel = component.create(RelationType.MEETS, reference, target);
-					// activate relation
-					component.activate(rel);
-					// add relation to the list of activated relations
-					relations.add(rel);
+					// completely remove decision and related relations
+					System.out.println("\nCLEAR DECISION " + pending + " AND RELATED RELATIONS");
+					comp.deactivate(pending);
+					comp.free(pending);
+				}
+				
+				// get execution trace 
+				List<ExecutionNode> trace = goal.getExecutionTraceByComponentName(comp.getName());
+				// remove active decisions that have not been executed
+				System.out.println("\nREMOVE ALL ACTIVE DECISIONS THAT HAVE NOT BEEN EXECUTED\n");
+				// list of active decisions
+				List<Decision> actives = comp.getActiveDecisions();
+				for (Decision active : actives)
+				{
+					// check if the token has been executed
+					System.out.println("\nACTIVE DECISION " + active + "\n");
+					boolean executed = false;
+					for (ExecutionNode node : trace) {
+						// check if the temporal interval has been executed
+						if (node.getInterval().equals(active.getToken().getInterval())){
+							executed = true;
+							break;
+						}
+					}
 					
-					System.out.println(">>>> RELATION: [" + reference.getId() + "]:" + reference.getComponent().getName() + "." + reference.getValue().getLabel() + " "
-							+ "" + rel.getType() + " "
-							+ " [" + target.getId() + "]: " + target.getComponent().getName() + "." + target.getValue().getLabel());
+					// check flag
+					if (executed) {
+						// keep the decision as active
+						System.out.println("\nKEEP DECISION AS ACTIVE SINCE ALREADY EXECUTED");
+						kept.add(active);
+					}
+					else {
+						// clear and remove decision and related relations
+						System.out.println("\nREMOVE DECISION AND RELATED RELATIONS SINCE NOT EXECUTED");
+						comp.deactivate(active);
+						comp.free(active);
+					}
 				}
 			}
+			
+			
+			// check execution failure cause
+			ExecutionFailureCause cause = goal.getFailureCause();
+			// check type
+			switch (cause.getType())
+			{
+				case DURATION_OVERFLOW : {
+					// keep the decision as active and consider it as executed
+					System.out.println("\nHANDLE DURATION OVERFLOW FAILURE\n");
+					ExecutionNode node = cause.getInterruptionNode();
+					// find the related decision
+					for (DomainComponent comp : this.pdb.getComponents()) {
+						// get active decisions
+						List<Decision> actives = comp.getActiveDecisions();
+						for (Decision active : actives) {
+							// check temporal intervals
+							if (node.getInterval().equals(active.getToken().getInterval())) {
+								// keep the decision as active 
+								System.out.println("\nKEEP DECISION " + active + "\n");
+								kept.add(active);
+							}
+						}
+					}
+				}
+				break;
+				
+				case PLATFORM_ERROR :
+				case START_OVERFLOW : {
+					// remove decisions they are going to be re-planned
+					System.out.println("\nHANDLE START OVERFLOW FAILURE / PLATFORM ERRROR FAILURE\n");
+					ExecutionNode node = cause.getInterruptionNode();
+					// find the related decision
+					for (DomainComponent comp : this.pdb.getComponents()) {
+						// get active decisions
+						List<Decision> actives = comp.getActiveDecisions();
+						for (Decision active : actives) {
+							// check temporal intervals
+							if (node.getInterval().equals(active.getToken().getInterval())) {
+								// keep the decision as active 
+								System.out.println("\nREMOVE DECISION " + active + "\n");
+								comp.deactivate(active);
+								comp.free(active);
+							}
+						}
+					}
+				}
+				break;
+				
+				default:
+					throw new RuntimeException("Unknown Execution Failure Cause : " + cause.getType());
+			}
+			
 			
 			
 			// get task description
@@ -981,6 +912,10 @@ public class GoalOrientedActingAgent
 					labels = new String[] {};
 				}
 				
+				/*
+				 * TODO : check parameter relations
+				 */
+				
 				// create goal decision
 				Decision decision = component.create(
 						value, 
@@ -991,11 +926,15 @@ public class GoalOrientedActingAgent
 						ExecutionNodeStatus.IN_EXECUTION);
 				
 				// add decision to goal list
-				goals.add(decision);
+				System.out.println("REPAIR GOAL : [" + decision.getId() +"]:" + decision.getComponent().getName() + "." + decision.getValue().getLabel() + " "
+						+ "AT [" + decision.getStart()[0]  + ", " + decision.getStart()[1] + "] "
+						+ "[" + decision.getEnd()[0] + ", " + decision.getEnd()[1] + "] "
+						+ "[" + decision.getDuration()[0] + ", " + decision.getDuration()[1] + "]");
 			}
 			
+			
 			// deliberate on the current status of the plan database
-			SolutionPlan plan = this.contingencyHandler.doHandle(this.pdb);
+			SolutionPlan plan = this.contingencyHandler.doHandle(this.pClass, this.pdb);
 			// set repaired plan
 			goal.setPlan(plan);
 			// set goal as repaired
@@ -1013,24 +952,25 @@ public class GoalOrientedActingAgent
 			System.err.println("Error while trying to repair the plan\n"
 					+ "\t- message: " + ex.getMessage() + "\n");
 			
-			// remove and deactivate facts
-			for (Decision f : facts) {
-				f.getComponent().deactivate(f);
-				f.getComponent().free(f);
-			}
-			
-			// remove and deactivate goals
-			for (Decision g : goals) {
-				g.getComponent().deactivate(g);
-				g.getComponent().free(g);
-			}
-			
-			
-			// remove all relations (only local expected)
-			for (Relation rel : relations) {
-				DomainComponent comp = rel.getReference().getComponent();
-				comp.deactivate(rel);
-				comp.delete(rel);
+			// completely clear all the plan database
+			for (DomainComponent comp : this.pdb.getComponents()) {
+				// remove all pending decisions
+				List<Decision> pendings = comp.getPendingDecisions();
+				for (Decision pending : pendings) {
+					comp.deactivate(pending);
+					comp.free(pending);
+					
+				}
+				
+				// remove all active decisions
+				List<Decision> actives = comp.getActiveDecisions();
+				for (Decision active : actives) {
+					comp.deactivate(active);
+					comp.free(active);
+				}
+				
+				// finally completely clear component
+				comp.clear();
 			}
 		}
 		finally 

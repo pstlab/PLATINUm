@@ -3,9 +3,9 @@ package it.istc.pst.platinum.executive.dispatcher;
 import it.istc.pst.platinum.control.platform.ex.PlatformException;
 import it.istc.pst.platinum.executive.Executive;
 import it.istc.pst.platinum.executive.lang.ex.ExecutionException;
-import it.istc.pst.platinum.executive.lang.ex.ExecutionFailureCause;
 import it.istc.pst.platinum.executive.lang.ex.ObservationException;
-import it.istc.pst.platinum.executive.lang.ex.StartOverflow;
+import it.istc.pst.platinum.executive.lang.failure.ExecutionFailureCause;
+import it.istc.pst.platinum.executive.lang.failure.StartOverflow;
 import it.istc.pst.platinum.executive.pdb.ExecutionNode;
 import it.istc.pst.platinum.executive.pdb.ExecutionNodeStatus;
 import it.istc.pst.platinum.framework.time.ex.TemporalConstraintPropagationException;
@@ -50,7 +50,7 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 						// schedule token start time
 						this.executive.scheduleTokenStart(node, tau);
 						// start node execution
-						logger.info("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start executing node at time: " + tau + "\n"
+						info("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start executing node at time: " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
@@ -69,14 +69,14 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive>
 				else  
 				{
 					// wait - not ready for dispatching
-					logger.debug("{Dispatcher} {tick: " + tick + " } {tau: " + tau + "} -> Start conditions satisifed but node schedule not ready for dispatching\n"
+					debug("{Dispatcher} {tick: " + tick + " } {tau: " + tau + "} -> Start conditions satisifed but node schedule not ready for dispatching\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 			}
 			else {
 				
 				// dispatching conditions not satisfied
-				logger.debug("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start conditions not satisfied\n"
+				debug("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start conditions not satisfied\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 			}
 		}
