@@ -1,46 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>platinum</groupId>
+  
+  <groupId>it.cnr.istc.pst</groupId>
   <artifactId>platinum</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <properties>
-  	<maven.test.skip>true</maven.test.skip>
-  </properties>
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
-        <configuration>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+  <packaging>jar</packaging>
+  
+  <name>KOaLa-R</name>
+  <description>Knowledge-based cOntinuous Loop Reasoner</description>
+  
   <dependencies>
   	<dependency>
   		<groupId>org.choco-solver</groupId>
@@ -52,20 +20,28 @@
   		<artifactId>antlr</artifactId>
   		<version>3.5.2</version>
   	</dependency>
+  	
   	<dependency>
-  		<groupId>it.cnr.istc.pst</groupId>
-  		<artifactId>epsl-lang</artifactId>
-  		<version>0.0.1</version>
-  	</dependency>
+      <groupId>it.cnr.istc.pst</groupId>
+      <artifactId>epsl-lang</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+  	
   	<dependency>
   		<groupId>org.jfree</groupId>
   		<artifactId>jfreechart</artifactId>
   		<version>1.0.19</version>
   	</dependency>
-<!--   	<dependency> -->
-<!-- 	    <groupId>org.jfree</groupId> -->
-<!-- 	    <artifactId>jfreechart</artifactId> -->
-<!-- 	    <version>1.5.0</version> -->
-<!-- 	</dependency> -->
+
   </dependencies>
+  
+  <distributionManagement>
+  	<repository>
+  		<id>github</id>
+  		<name>GitHub PSTLab Apache Maven Package</name>
+  		<url>https://maven.pkg.github.com/pstlab/platinum</url>
+  	</repository>
+  
+  </distributionManagement>
+  
 </project>

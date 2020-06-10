@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>epsl2</groupId>
-  <artifactId>epsl2</artifactId>
+  <groupId>it.cnr.istc.pst</groupId>
+  <artifactId>platinum</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <build>
     <resources>
@@ -33,26 +33,17 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <artifactSet>
-            <excludes>
-              <exclude>it.cnr.istc:moveitconnector:test</exclude>
-              <exclude>it.uniroma3.epsl2.testing</exclude>
-            </excludes>
-          </artifactSet>
-        </configuration>
+        <configuration />
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <version>3.0.1</version>
-      <type>pom</type>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub PSTLab Apache Maven Package</name>
+      <url>https://maven.pkg.github.com/pstlab/platinum</url>
+    </repository>
+  </distributionManagement>
   <properties>
     <maven.test.skip>true</maven.test.skip>
   </properties>
