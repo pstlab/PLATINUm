@@ -45,7 +45,6 @@
   	<dependency>
   		<groupId>org.choco-solver</groupId>
   		<artifactId>choco-solver</artifactId>
-<!--   		<version>3.3.3-j7</version> -->
 		<version>4.0.2</version>
   	</dependency>
   	<dependency>
@@ -54,9 +53,19 @@
   		<version>3.5.2</version>
   	</dependency>
   	<dependency>
+  		<groupId>it.cnr.istc.pst</groupId>
+  		<artifactId>epsl-lang</artifactId>
+  		<version>0.0.1</version>
+  	</dependency>
+  	<dependency>
   		<groupId>org.jfree</groupId>
   		<artifactId>jfreechart</artifactId>
   		<version>1.0.19</version>
   	</dependency>
+<!--   	<dependency> -->
+<!-- 	    <groupId>org.jfree</groupId> -->
+<!-- 	    <artifactId>jfreechart</artifactId> -->
+<!-- 	    <version>1.5.0</version> -->
+<!-- 	</dependency> -->
   </dependencies>
 </project>

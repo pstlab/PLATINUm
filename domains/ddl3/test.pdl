@@ -1,4 +1,4 @@
-PROBLEM Problem (DOMAIN DDLv3Test) {
+PROBLEM PDL3 (DOMAIN DDL3) {
 
 	f0 <fact> Window.channel.Available() AT [0, 0] [100, 100] [100, 100];
 	f1 <fact> BaseController.position.At(?initialLocation) AT [0, 0] [1, +INF] [1, +INF];

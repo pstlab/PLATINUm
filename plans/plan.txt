@@ -1,47 +1,87 @@
 horizon = 100
 plan {
 	timelines {
-		PointingMode {
-			token 0  { Earth [1,39] [1, 39] }
-			token 1  { Slewing [4,42] [3, 3] }
-			token 2  { Science [9,47] [5, 5] }
-			token 3  { Slewing [12,50] [3, 3] }
-			token 4  { Science [17,55] [5, 5] }
-			token 5  { Slewing [20,58] [3, 3] }
-			token 6  { Earth [21,59] [1, 39] }
-			token 7 uncontrollable { _Comm [31,69] [10, 25] }
-			token 8  { Earth [32,70] [1, 39] }
-			token 9 uncontrollable { _Comm [42,80] [10, 25] }
+		Stimulation {
+			token 0  { DoCognitiveStimulation [40,100] [35, 100] }
 		}
-		Window {
-			token 10 uncontrollable { _NotVisible [10,10] [10, 10] }
-			token 11 uncontrollable { _Visible [80,80] [70, 70] }
-			token 12 uncontrollable { _NotVisible [81,100] [1, 20] }
+		Patient {
+			token 1 uncontrollable { _None [5,5] [5, 5] }
+			token 2 uncontrollable { _Available-no-high-regular-large [45,45] [40, 40] }
+			token 3 uncontrollable { _None [50,50] [5, 5] }
+			token 4 uncontrollable { _Available-no-high-regular-large [80,80] [30, 30] }
+			token 5 uncontrollable { _None [81,100] [1, 20] }
+		}
+		Robot {
+			token 6  { Idle [5,10] [5, 10] }
+			token 7 uncontrollable { _DoStimulationAction-ex2-no-high-regular-large [10,15] [5, 8] }
+			token 8  { Idle [11,16] [1, 6] }
+			token 9 uncontrollable { _DoStimulationAction-ex4-no-high-regular-large [16,21] [5, 8] }
+			token 10  { Idle [17,22] [1, 6] }
+			token 11 uncontrollable { _DoStimulationAction-ex6-no-high-regular-large [22,27] [5, 8] }
+			token 12  { Idle [23,28] [1, 6] }
+			token 13 uncontrollable { _DoStimulationAction-ex1-no-high-regular-large [28,33] [5, 8] }
+			token 14  { Idle [29,34] [1, 6] }
+			token 15 uncontrollable { _DoStimulationAction-ex3-no-high-regular-large [34,39] [5, 8] }
+			token 16  { Idle [35,40] [1, 6] }
+			token 17 uncontrollable { _DoStimulationAction-ex8-no-high-regular-large [40,45] [5, 8] }
 		}
 	}
 	relations {
-		Window 10 before [0,100] Window 12
-		Window 10 before [0,100] Window 11
-		Window 11 before [0,100] Window 12
-		Window 10 meets Window 11
-		Window 11 meets Window 12
-		PointingMode 4 before [0,100] PointingMode 7
-		PointingMode 7 during [0,100]  [0,100] Window 11
-		PointingMode 2 before [0,100] PointingMode 9
-		PointingMode 9 during [0,100]  [0,100] Window 11
-		PointingMode 0 before [0,100] PointingMode 9
-		PointingMode 0 before [0,100] PointingMode 2
-		PointingMode 4 before [0,100] PointingMode 9
-		PointingMode 7 before [0,100] PointingMode 9
-		PointingMode 4 meets PointingMode 5
-		PointingMode 5 meets PointingMode 6
-		PointingMode 6 meets PointingMode 7
-		PointingMode 7 meets PointingMode 8
-		PointingMode 8 meets PointingMode 9
-		PointingMode 2 meets PointingMode 3
-		PointingMode 3 meets PointingMode 4
-		PointingMode 0 meets PointingMode 1
-		PointingMode 1 meets PointingMode 2
-		PointingMode 2 before [0,100] PointingMode 4
+		Robot 7 meets Robot 8
+		Robot 8 meets Robot 9
+		Robot 6 meets Robot 7
+		Patient 1 before [0,100] Patient 5
+		Patient 2 before [0,100] Patient 4
+		Patient 1 before [0,100] Patient 3
+		Patient 3 before [0,100] Patient 5
+		Patient 1 before [0,100] Patient 2
+		Patient 2 before [0,100] Patient 3
+		Patient 3 before [0,100] Patient 4
+		Patient 4 before [0,100] Patient 5
+		Patient 1 meets Patient 2
+		Patient 2 meets Patient 3
+		Patient 3 meets Patient 4
+		Patient 4 meets Patient 5
+		Stimulation 0 contains [0,100]  [0,100] Robot 7
+		Stimulation 0 contains [0,100]  [0,100] Robot 9
+		Stimulation 0 contains [0,100]  [0,100] Robot 11
+		Stimulation 0 contains [0,100]  [0,100] Robot 13
+		Stimulation 0 contains [0,100]  [0,100] Robot 15
+		Stimulation 0 contains [0,100]  [0,100] Robot 17
+		Robot 9 during [0,100]  [0,100] Patient 2
+		Robot 13 during [0,100]  [0,100] Patient 2
+		Robot 7 during [0,100]  [0,100] Patient 2
+		Robot 15 during [0,100]  [0,100] Patient 2
+		Robot 17 during [0,100]  [0,100] Patient 2
+		Robot 11 during [0,100]  [0,100] Patient 2
+		Robot 6 before [0,100] Robot 7
+		Robot 6 before [0,100] Robot 9
+		Robot 7 before [0,100] Robot 9
+		Robot 6 before [0,100] Robot 11
+		Robot 7 before [0,100] Robot 11
+		Robot 9 before [0,100] Robot 11
+		Robot 6 before [0,100] Robot 13
+		Robot 7 before [0,100] Robot 13
+		Robot 9 before [0,100] Robot 13
+		Robot 6 before [0,100] Robot 15
+		Robot 7 before [0,100] Robot 15
+		Robot 9 before [0,100] Robot 15
+		Robot 11 before [0,100] Robot 13
+		Robot 6 before [0,100] Robot 17
+		Robot 7 before [0,100] Robot 17
+		Robot 11 before [0,100] Robot 15
+		Robot 9 before [0,100] Robot 17
+		Robot 13 before [0,100] Robot 15
+		Robot 11 before [0,100] Robot 17
+		Robot 13 before [0,100] Robot 17
+		Robot 15 before [0,100] Robot 17
+		Robot 15 meets Robot 16
+		Robot 16 meets Robot 17
+		Robot 13 meets Robot 14
+		Robot 14 meets Robot 15
+		Robot 11 meets Robot 12
+		Robot 12 meets Robot 13
+		Robot 9 meets Robot 10
+		Robot 10 meets Robot 11
 	}
 }
