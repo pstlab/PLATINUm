@@ -6,8 +6,16 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   
-  <name>KOaLa-R</name>
-  <description>Knowledge-based cOntinuous Loop Reasoner</description>
+  <name>PLATINUm</name>
+  <description>Planning and Acting with TImeliNes under Uncertainty</description>
+  
+  <properties>
+    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.release>8</maven.compiler.release>
+    <skipTests>true</skipTests>
+  </properties>
+
   
   <dependencies>
   	<dependency>
@@ -20,12 +28,18 @@
   		<artifactId>antlr</artifactId>
   		<version>3.5.2</version>
   	</dependency>
+  	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.13</version>
+	    <scope>test</scope>
+	</dependency>
   	
   	<dependency>
-      <groupId>it.cnr.istc.pst</groupId>
-      <artifactId>epsl-lang</artifactId>
-      <version>0.0.1</version>
-    </dependency>
+	  <groupId>epsl</groupId>
+	  <artifactId>epsl-lang</artifactId>
+	  <version>0.0.1</version>
+	</dependency>
   	
   	<dependency>
   		<groupId>org.jfree</groupId>
@@ -37,9 +51,9 @@
   
   <distributionManagement>
   	<repository>
-  		<id>github</id>
+  		<id>PLATINUm</id>
   		<name>GitHub PSTLab Apache Maven Package</name>
-  		<url>https://maven.pkg.github.com/pstlab/platinum</url>
+  		<url>https://maven.pkg.github.com/pstlab/PLATINUm</url>
   	</repository>
   
   </distributionManagement>
