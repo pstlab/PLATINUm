@@ -420,22 +420,29 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				// check if A < B 
 				boolean ab = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
 						
-						
-				// compute distance between B and A 
-				distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
-				distance.setReference(b);
-				distance.setTarget(a);
-				// process query
-				this.process(distance);
-				// get distance bounds
-				dmin = distance.getDistanceLowerBound();
-				dmax = distance.getDistanceUpperBound();
-				// check if B < A
-				boolean ba = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
-				
-				
-				// set overlapping result
-				overlap.setCanOverlap(!ab && !ba);
+				// double check if not A -> B
+				if (!ab)
+				{
+					// compute distance between B and A 
+					distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
+					distance.setReference(b);
+					distance.setTarget(a);
+					// process query
+					this.process(distance);
+					// get distance bounds
+					dmin = distance.getDistanceLowerBound();
+					dmax = distance.getDistanceUpperBound();
+					// check if B < A
+					boolean ba = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
+					
+					// set overlapping result
+					overlap.setCanOverlap(!ba);
+				}
+				else {
+					// set overlapping flag
+					overlap.setCanOverlap(!ab);
+				}
+
 				// print logging message
 				debug("[" + this.getClass().getName() + "] Processing query INTERVAL_OVERLAP:\n"
 						+ "- Temporal Interval (A): " + a + "\n"

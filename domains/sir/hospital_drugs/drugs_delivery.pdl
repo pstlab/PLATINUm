@@ -1,0 +1,23 @@
+PROBLEM DRU_DELIVERY_PROBLEM (DOMAIN DRUG_DELIVERY)
+{	
+	f0 <fact> MissionTimeline.mission_timeline.Idle() AT [0,0] [1, +INF] [1, +INF];
+	f1 <fact> RobotMoveToRoom.robot_move_to_room.At(?r0) AT [0,0] [1, +INF] [1, +INF];
+	f2 <fact> RobotDeliveryToPatient.robot_delivery.Idle() AT [0, 0] [1, +INF] [1, +INF];
+	
+	g1 <goal> MissionTimeline.mission_timeline.Deliver(?r1, ?p1) AT [0, +INF] [1,+INF] [1,+INF];
+	g2 <goal> MissionTimeline.mission_timeline.Deliver(?r2, ?p2) AT [0, +INF] [1,+INF] [1,+INF];
+	g3 <goal> MissionTimeline.mission_timeline.Deliver(?r3, ?p3) AT [0, +INF] [1,+INF] [1,+INF];
+	
+	?r0 = Magazine;
+	
+	
+	?r1 = Room0;
+	?p1 = Patient0;
+	
+	?r2 = Room1;
+	?p2 = Patient1;
+	
+	
+	?r3 = Room1;
+	?p3 = Patient2;
+}

@@ -18,6 +18,7 @@ public class GapCompletion extends FlawSolution
 	private Decision left;
 	private Decision right;
 	private List<ComponentValue> path;
+	private boolean onlyComplex;
 	
 	/**
 	 * 
@@ -30,6 +31,22 @@ public class GapCompletion extends FlawSolution
 		this.left = gap.getLeftDecision();
 		this.right = gap.getRightDecision();
 		this.path = new ArrayList<>(path);
+		this.onlyComplex = false;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setOnlyComplex() {
+		this.onlyComplex = true;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isOnlyComplex() {
+		return onlyComplex;
 	}
 	
 	/**

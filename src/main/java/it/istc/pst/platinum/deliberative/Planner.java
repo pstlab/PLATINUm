@@ -1,6 +1,6 @@
 package it.istc.pst.platinum.deliberative;
 
-import it.istc.pst.platinum.deliberative.heuristic.HierarchicalFlawSelectionHeuristic;
+import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStrategy;
@@ -26,8 +26,8 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		timeout = 180000												// set solving timeout to 60 seconds
 )
 @FlawSelectionHeuristicsConfiguration(
-		heuristics = HierarchicalFlawSelectionHeuristic.class
-//		heuristics = PipelineFlawSelectionHeuristic.class
+//		heuristics = HierarchicalFlawSelectionHeuristic.class
+		heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
 //		strategy = DepthFirstSearchStrategy.class
