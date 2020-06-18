@@ -24,7 +24,6 @@ DOMAIN DRUG_DELIVERY
 		}
 	}
 		
-		
 	COMP_TYPE SingletonStateVariable RobotMoveToRoomSV (
 		GoingTo(room), At(room)
 	)

@@ -7,6 +7,8 @@ PROBLEM DRU_DELIVERY_PROBLEM (DOMAIN DRUG_DELIVERY)
 	g1 <goal> MissionTimeline.mission_timeline.Deliver(?r1, ?p1) AT [0, +INF] [1,+INF] [1,+INF];
 	g2 <goal> MissionTimeline.mission_timeline.Deliver(?r2, ?p2) AT [0, +INF] [1,+INF] [1,+INF];
 	g3 <goal> MissionTimeline.mission_timeline.Deliver(?r3, ?p3) AT [0, +INF] [1,+INF] [1,+INF];
+	g4 <goal> MissionTimeline.mission_timeline.Deliver(?r4, ?p4) AT [0, +INF] [1,+INF] [1,+INF];
+	
 	
 	?r0 = Magazine;
 	
@@ -20,4 +22,7 @@ PROBLEM DRU_DELIVERY_PROBLEM (DOMAIN DRUG_DELIVERY)
 	
 	?r3 = Room1;
 	?p3 = Patient2;
+	
+	?r4 = Room2; 
+	?p4 = Patient1;
 }
