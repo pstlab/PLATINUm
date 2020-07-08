@@ -9,7 +9,8 @@ PROBLEM DRU_DELIVERY_PROBLEM (DOMAIN DRUG_DELIVERY)
 	g3 <goal> MissionTimeline.mission_timeline.Deliver(?r3, ?p3) AT [0, +INF] [1,+INF] [1,+INF];
 	g4 <goal> MissionTimeline.mission_timeline.Deliver(?r4, ?p4) AT [0, +INF] [1,+INF] [1,+INF];
 	
-	
+
+
 	?r0 = Magazine;
 	
 	

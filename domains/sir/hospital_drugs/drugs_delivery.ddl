@@ -96,7 +96,7 @@ DOMAIN DRUG_DELIVERY
 	{
 		VALUE MoveTo(?r, ?p)
 		{
-			cd0 <?> RobotMoveToRoom.robot_move_to_room.At(?r0);
+			cd0 RobotMoveToRoom.robot_move_to_room.At(?r0);
 			
 			DURING [0, +INF] [0, +INF] cd0;
 			
