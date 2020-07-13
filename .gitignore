@@ -1,6 +1,6 @@
 /bin/**
 .DS_Store
-/.classpath
+.classpath
 /.DS_Store
 /target/
 .project

@@ -15,6 +15,15 @@
     <maven.compiler.release>8</maven.compiler.release>
     <skipTests>true</skipTests>
   </properties>
+  
+  	<repositories>
+  		<repository>
+			<id>github</id>
+      			<name>GitHub PSTLab PLATINUm Apache Maven Packages</name>
+       			<url>https://maven.pkg.github.com/pstlab/PLATINUm</url>
+		</repository>
+	</repositories>
+  
 
   
   <dependencies>
@@ -51,7 +60,7 @@
   
   <distributionManagement>
   	<repository>
-  		<id>PLATINUm</id>
+  		<id>github</id>
   		<name>GitHub PSTLab Apache Maven Package</name>
   		<url>https://maven.pkg.github.com/pstlab/PLATINUm</url>
   	</repository>
