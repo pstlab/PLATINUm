@@ -539,7 +539,7 @@ public abstract class DomainComponent extends FrameworkObject
 			throws DecisionPropagationException 
 	{
 		// check decision component
-		if (dec.getComponent().equals(dec)) {
+		if (!dec.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to add a not local decision to a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
@@ -604,7 +604,7 @@ public abstract class DomainComponent extends FrameworkObject
 	public void deactivate(Decision dec) 
 	{
 		// check decision component
-		if (dec.getComponent().equals(dec)) {
+		if (!dec.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to delete a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
@@ -653,7 +653,7 @@ public abstract class DomainComponent extends FrameworkObject
 	public void free(Decision dec) 
 	{
 		// check decision component
-		if (dec.getComponent().equals(dec)) {
+		if (!dec.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to delete a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		

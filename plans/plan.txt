@@ -1,79 +1,39 @@
-horizon = 480
+horizon = 100
 plan {
 	timelines {
-		MissionTimeline {
-			token 0  { Idle [1,480] [1, 480] }
-			token 1  { Deliver-Room0-Patient0 [4,471] [1, 469] }
-			token 2  { Deliver-Room2-Patient1 [7,474] [1, 469] }
-			token 3  { Deliver-Room1-Patient1 [13,480] [1, 472] }
-			token 4  { Deliver-Room1-Patient2 [10,480] [1, 472] }
+		PointingMode {
+			token 0  { Earth [1,50] [1, 50] }
+			token 1  { Slewing [4,53] [3, 3] }
+			token 2  { Science [9,58] [5, 5] }
+			token 3  { Slewing [12,61] [3, 3] }
+			token 4  { Science [17,66] [5, 5] }
+			token 5  { Slewing [20,69] [3, 3] }
+			token 6  { Earth [21,70] [1, 50] }
+			token 7 uncontrollable { _Comm [31,80] [10, 25] }
 		}
-		RobotDeliveryToPatient {
-			token 5  { Idle [2,469] [2, 469] }
-			token 6  { MoveTo-Room0-Patient0 [3,470] [1, 2] }
-			token 7  { Stop-Room0-Patient0 [4,471] [1, 3] }
-			token 8  { Idle [5,472] [1, 468] }
-			token 9  { MoveTo-Room2-Patient1 [6,473] [1, 2] }
-			token 10  { Stop-Room2-Patient1 [7,474] [1, 3] }
-			token 11  { Idle [8,475] [1, 468] }
-			token 12  { MoveTo-Room1-Patient2 [9,476] [1, 2] }
-			token 13  { Stop-Room1-Patient2 [10,477] [1, 3] }
-			token 14  { Idle [11,478] [1, 468] }
-			token 15  { MoveTo-Room1-Patient1 [12,479] [1, 2] }
-			token 16  { Stop-Room1-Patient1 [13,480] [1, 3] }
-		}
-		RobotMoveToRoom {
-			token 17  { At-Magazine [1,468] [1, 468] }
-			token 18  { GoingTo-Room0 [2,469] [1, 30] }
-			token 19  { At-Room0 [4,471] [2, 469] }
-			token 20  { GoingTo-Room2 [5,472] [1, 30] }
-			token 21  { At-Room2 [7,474] [2, 469] }
-			token 22  { GoingTo-Room1 [8,475] [1, 30] }
-			token 23  { At-Room1 [13,480] [5, 472] }
+		Window {
+			token 8 uncontrollable { _NotVisible [10,10] [10, 10] }
+			token 9 uncontrollable { _Visible [80,80] [70, 70] }
+			token 10 uncontrollable { _NotVisible [81,100] [1, 20] }
 		}
 	}
 	relations {
-		MissionTimeline 3 contains [0,480]  [0,480] RobotDeliveryToPatient 16
-		MissionTimeline 3 during [0,480]  [0,480] RobotMoveToRoom 23
-		MissionTimeline 4 contains [0,480]  [0,480] RobotDeliveryToPatient 13
-		MissionTimeline 4 during [0,480]  [0,480] RobotMoveToRoom 23
-		MissionTimeline 2 contains [0,480]  [0,480] RobotDeliveryToPatient 10
-		MissionTimeline 2 during [0,480]  [0,480] RobotMoveToRoom 21
-		MissionTimeline 1 contains [0,480]  [0,480] RobotDeliveryToPatient 7
-		MissionTimeline 1 during [0,480]  [0,480] RobotMoveToRoom 19
-		RobotDeliveryToPatient 5 before [0,480] RobotDeliveryToPatient 16
-		RobotDeliveryToPatient 5 before [0,480] RobotDeliveryToPatient 13
-		RobotDeliveryToPatient 13 before [0,480] RobotDeliveryToPatient 16
-		RobotDeliveryToPatient 5 before [0,480] RobotDeliveryToPatient 10
-		RobotDeliveryToPatient 10 before [0,480] RobotDeliveryToPatient 13
-		RobotDeliveryToPatient 5 before [0,480] RobotDeliveryToPatient 7
-		RobotDeliveryToPatient 7 before [0,480] RobotDeliveryToPatient 10
-		RobotMoveToRoom 17 before [0,480] RobotMoveToRoom 23
-		RobotMoveToRoom 17 before [0,480] RobotMoveToRoom 21
-		RobotMoveToRoom 19 before [0,480] RobotMoveToRoom 23
-		RobotMoveToRoom 17 before [0,480] RobotMoveToRoom 19
-		RobotMoveToRoom 19 before [0,480] RobotMoveToRoom 21
-		RobotMoveToRoom 21 before [0,480] RobotMoveToRoom 23
-		RobotDeliveryToPatient 5 meets RobotDeliveryToPatient 6
-		RobotDeliveryToPatient 6 meets RobotDeliveryToPatient 7
-		RobotDeliveryToPatient 6 during [0,480]  [0,480] RobotMoveToRoom 19
-		RobotDeliveryToPatient 13 meets RobotDeliveryToPatient 14
-		RobotDeliveryToPatient 14 meets RobotDeliveryToPatient 15
-		RobotDeliveryToPatient 15 meets RobotDeliveryToPatient 16
-		RobotDeliveryToPatient 15 during [0,480]  [0,480] RobotMoveToRoom 23
-		RobotMoveToRoom 21 meets RobotMoveToRoom 22
-		RobotMoveToRoom 22 meets RobotMoveToRoom 23
-		RobotDeliveryToPatient 10 meets RobotDeliveryToPatient 11
-		RobotDeliveryToPatient 11 meets RobotDeliveryToPatient 12
-		RobotDeliveryToPatient 12 meets RobotDeliveryToPatient 13
-		RobotDeliveryToPatient 12 during [0,480]  [0,480] RobotMoveToRoom 23
-		RobotMoveToRoom 19 meets RobotMoveToRoom 20
-		RobotMoveToRoom 20 meets RobotMoveToRoom 21
-		RobotMoveToRoom 17 meets RobotMoveToRoom 18
-		RobotMoveToRoom 18 meets RobotMoveToRoom 19
-		RobotDeliveryToPatient 7 meets RobotDeliveryToPatient 8
-		RobotDeliveryToPatient 8 meets RobotDeliveryToPatient 9
-		RobotDeliveryToPatient 9 meets RobotDeliveryToPatient 10
-		RobotDeliveryToPatient 9 during [0,480]  [0,480] RobotMoveToRoom 21
+		PointingMode 2 before [0,100] PointingMode 7
+		PointingMode 4 before [0,100] PointingMode 7
+		PointingMode 7 during [0,100]  [0,100] Window 9
+		PointingMode 0 before [0,100] PointingMode 2
+		Window 8 before [0,100] Window 10
+		Window 8 before [0,100] Window 9
+		Window 9 before [0,100] Window 10
+		PointingMode 4 meets PointingMode 5
+		PointingMode 5 meets PointingMode 6
+		PointingMode 6 meets PointingMode 7
+		Window 8 meets Window 9
+		PointingMode 2 meets PointingMode 3
+		PointingMode 3 meets PointingMode 4
+		PointingMode 0 meets PointingMode 1
+		PointingMode 1 meets PointingMode 2
+		Window 9 meets Window 10
+		PointingMode 2 before [0,100] PointingMode 4
 	}
 }
