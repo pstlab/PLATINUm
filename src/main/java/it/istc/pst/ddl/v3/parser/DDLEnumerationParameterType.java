@@ -9,8 +9,8 @@ import org.antlr.runtime.Token;
  *
  * @author Riccardo De Benedictis
  */
-public class DDLEnumerationParameterType extends DDLParameterType {
-
+public class DDLEnumerationParameterType extends DDLParameterType 
+{
     private final List<String> enums = new ArrayList<String>();
 
     public DDLEnumerationParameterType(Token payload) {
