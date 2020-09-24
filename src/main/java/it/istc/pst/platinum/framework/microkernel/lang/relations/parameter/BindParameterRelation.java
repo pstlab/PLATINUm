@@ -81,7 +81,6 @@ public class BindParameterRelation extends ParameterRelation
 	 */
 	@Override
 	public String toString() {
-		return "[Relation type= " + this.getType() +" reference= " + this.reference.getId() + ":" + this.reference.getValue().getLabel() +" "
-				+ "referenceParameter= " + this.referenceParameterLabel + " value= " +  this.value + "]";
+		return "{ \"type\": \"" + this.getType() + "\", \"id\": " + this.reference.getId() + ", \"parameter\": \"" + this.referenceParameterLabel +"\", \"value\": \"" + this.value+ "\" }";
 	}
 }

@@ -1,9 +1,10 @@
 package it.istc.pst.platinum.deliberative;
 
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
-import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
-import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
+import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
+import it.istc.pst.platinum.deliberative.solver.Solver;
+import it.istc.pst.platinum.deliberative.strategy.GreedyDepthSearchStrategy;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.DeliberativeObject;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
@@ -13,6 +14,7 @@ import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.Se
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.deliberative.PlannerSolverPlaceholder;
 import it.istc.pst.platinum.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.PlanControllabilityType;
 import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 
@@ -29,10 +31,10 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-		strategy = DepthFirstSearchStrategy.class
+		strategy = GreedyDepthSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.INFO
 )
 public class Planner extends DeliberativeObject 
 {
@@ -40,13 +42,16 @@ public class Planner extends DeliberativeObject
 	protected PlanDataBase pdb;
 	
 	@PlannerSolverPlaceholder
-	protected PlannerSolver solver;
+	protected Solver solver;
+	
+	protected SearchSpaceNode currentSolution;			// current solution found
 	
 	/**
 	 * 
 	 */
 	protected Planner() {
 		super();
+		this.currentSolution = null;
 	}
 	
 	/**
@@ -66,9 +71,21 @@ public class Planner extends DeliberativeObject
 	 * @throws NoSolutionFoundException
 	 */
 	public SolutionPlan plan() 
-			throws NoSolutionFoundException {
-		// solve the problem and get the plan
-		SolutionPlan plan = this.solver.solve();
+			throws NoSolutionFoundException 
+	{
+		// get time 
+		long start = System.currentTimeMillis();
+		// find a solution to the planning problem
+		this.currentSolution = this.solver.solve();
+		
+		// extract solution plan
+		SolutionPlan plan = this.pdb.getSolutionPlan();
+		plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABILITY);
+		
+		// check solving time 
+		long time = System.currentTimeMillis() - start;
+		plan.setSolvingTime(time);
+		// get the solution plan
 		return plan;
 	}
 	

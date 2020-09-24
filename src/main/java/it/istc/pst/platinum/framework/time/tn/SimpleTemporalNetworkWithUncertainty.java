@@ -1,6 +1,11 @@
 package it.istc.pst.platinum.framework.time.tn;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +39,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	public SimpleTemporalNetworkWithUncertainty(long origin, long horizon) 
 	{
 		super(origin, horizon);
+		
 		// initialize data structures
 		this.points = new HashMap<>();
 		this.constraints = new HashMap<>();
@@ -108,18 +114,30 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	@Override
 	public List<TimePointDistanceConstraint> getConstraints(TimePoint tp) 
 	{
-		// list of constraints
-		List<TimePointDistanceConstraint> list = new ArrayList<>();
+		// check constraints between time points
+		Map<TimePoint, Map<TimePoint, TimePointDistanceConstraint>> cons = new HashMap<>();
+		cons.put(tp, new HashMap<>());
+		
+		// check requirement constraints
 		if (this.requirements.containsKey(tp)) {
 			// get all requirement constraints
-			list.addAll(this.requirements.get(tp).values());
+			for (TimePointDistanceConstraint rc : this.requirements.get(tp).values()) {
+				// add entry
+				cons.get(tp).put(rc.getTarget(), rc);
+			}
 		}
+		
+		// check contingent constraints
 		if (this.contingents.containsKey(tp)) {
 			// get all contingent constraints
-			list.addAll(this.contingents.get(tp).values());
+			for (TimePointDistanceConstraint cc : this.contingents.get(tp).values()) {
+				// add entry
+				cons.get(tp).put(cc.getTarget(), cc);
+			}
 		}
-		// get the list
-		return list; 
+		
+		// get the list extracted constraints
+		return new ArrayList<>(cons.get(tp).values()); 
 	}
 
 	/**
@@ -239,13 +257,16 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		this.constraints.put(tp, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
 		this.constraints.get(tp).put(this.tpHorizion, new ArrayList<TimePointDistanceConstraint>());
 		this.constraints.get(tp).get(this.tpHorizion).add(t1);
+		
+		// export temporal network graph
+		this.exportTemporalNetworkGraph();
 	}
 
 	/**
 	 * 
 	 */
 	@Override
-	protected void doRemoveTimePoint(TimePoint tp) 
+	protected List<TimePointDistanceConstraint> doRemoveTimePoint(TimePoint tp) 
 			throws TimePointNotFoundException 
 	{
 		// check if time point exists
@@ -253,11 +274,60 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			throw new TimePointNotFoundException("Time Point id= " + tp.getId() +" not found");
 		}
 		
-		// remove time point
+		
+		// list of removed constraints
+		List<TimePointDistanceConstraint> removed = new ArrayList<>();
+		
+		// remove time point related relations (outgoing)
+		Collection<TimePoint> pList = new ArrayList<>(this.constraints.get(tp).keySet()); 
+		for (TimePoint p : pList) {
+			// get constraint
+			List<TimePointDistanceConstraint> cList = new ArrayList<>(this.constraints.get(tp).get(p)); 
+			for (TimePointDistanceConstraint c : cList) {
+				try {
+					// remove constraint
+					this.doRemoveDistanceConstraint(c);
+					// add constraint to the list of removed ones
+					removed.add(c);
+				}
+				catch (DistanceConstraintNotFoundException ex) {
+					error(ex.getMessage());
+				}
+			}
+		}
+		
+		// remove time point relations (incoming)
+		for (TimePoint p : this.constraints.keySet()) {
+			// check node
+			if (!p.equals(tp)) 
+			{
+				// check if contains data
+				if (this.constraints.get(p).containsKey(tp)) 
+				{ 
+					// get constraints to remove
+					List<TimePointDistanceConstraint> cList = new ArrayList<>(this.constraints.get(p).get(tp));
+					for (TimePointDistanceConstraint c : cList) {
+						try {
+							// remove constraint
+							this.doRemoveDistanceConstraint(c);
+							// add constraitn to the list of removed ones
+							removed.add(c);
+						}
+						catch (DistanceConstraintNotFoundException ex) {
+							error(ex.getMessage());
+						}
+					}
+				}
+			}
+		}
+		
+		// now remove the timepoint and clera related data structures
 		this.points.remove(tp.getId());
 		// remove all outgoing edges concerning the time point
 		this.requirements.remove(tp);
 		this.contingents.remove(tp);
+		
+		
 		// remove all incoming edges concerning the time point
 		for (TimePoint point : this.requirements.keySet()) {
 			if (this.requirements.get(point).containsKey(tp)) {
@@ -272,15 +342,23 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			}
 		}
 		
-		// remove all constraints concerning the time point
+		// get the list of 
+		// remove all general constraints concerning the time point
 		this.constraints.remove(tp);
+		// check "incoming" constraints
 		for (TimePoint point : this.constraints.keySet()) {
 			// check if a constraint exists
 			if (this.constraints.get(point).containsKey(tp)) {
-				// remove
+				// remove entry
 				this.constraints.get(point).remove(tp);
 			}
 		}
+		
+		// export temporal network graph
+		this.exportTemporalNetworkGraph();
+		
+		// get the list
+		return removed;
 	}
 
 	/**
@@ -290,15 +368,20 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * constraint either by adding a contingent or a requirement constraint. 
 	 */
 	@Override
-	protected void doAddConstraint(TimePointDistanceConstraint c) 
+	protected boolean doAddConstraint(TimePointDistanceConstraint c) 
 			throws InconsistentDistanceConstraintException 
 	{
+		// change flag
+		boolean change = false;
 		// get time point involved
 		TimePoint reference = c.getReference();
 		TimePoint target = c.getTarget();
 		
 		// check if related time points exits
-		if (!this.points.containsKey(reference.getId()) || !this.points.containsKey(target.getId())) {
+		if (!this.points.containsKey(reference.getId()) || 
+				!this.points.containsKey(target.getId())) 
+		{
+			// unknown time points
 			throw new InconsistentDistanceConstraintException("Unknown time points [from= " + reference + ", to= " + target + "]");
 		}
 		
@@ -306,7 +389,9 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		if (c.isControllable())
 		{
 			// check if a contingent link exists between time points
-			if (this.contingents.containsKey(reference) && this.contingents.get(reference).containsKey(target)) {
+			if (this.contingents.containsKey(reference) && 
+					this.contingents.get(reference).containsKey(target)) 
+			{
 				// a contingent link exists
 				throw new NotCompatibleConstraintsFoundException("Impossible to add the requirement constraint, a contingent constraint already exists between tp= " + c.getReference() + " and tp= " + c.getTarget());
 			}
@@ -324,6 +409,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			
 			// add constraint
 			this.constraints.get(reference).get(target).add(c);
+			
 			// setup requirements
 			if (!this.requirements.containsKey(reference)) {
 				// setup data structure
@@ -340,58 +426,97 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 				long ub = Math.min(current.getDistanceUpperBound(), c.getDistanceUpperBound());
 				// check if an intersection exists
 				if (lb > ub) {
+					// remove added constraint as it leads to inconsistency
+					this.constraints.get(reference).get(target).remove(c);
+					// clear data structure
+					if (this.constraints.get(reference).get(target).isEmpty()) {
+						this.constraints.get(reference).remove(target);
+					}
+					
+					// clear data structure
+					if (this.constraints.get(reference).isEmpty()) {
+						this.constraints.remove(reference);
+					}
+					
 					// error - the STP(U) does not handle disjunction among intervals
 					throw new IntervalDisjunctionException("Error while adding constraint. Disjunciton of intervals is not allowed\n- old= " + current + "\n- rel= " + c);
 				}
 				
-				// check if a change actually occurs and update the network's edge if needed
-				if (lb > current.getDistanceLowerBound() || ub < current.getDistanceUpperBound()) 
-				{
-					// create "intersecting" constraint to add
+				
+				// check if a change actually occurs and update the network's edge 
+				if (lb > current.getDistanceLowerBound() || 
+						ub < current.getDistanceUpperBound()) {
+					
+					// create distance intersection constraint 
 					TimePointDistanceConstraint intersection = this.createDistanceConstraint(
 							reference, 
 							target, 
-							new long[] {lb, ub}, 
+							new long[] {
+								lb,				// interesection lower bound 
+								ub				// intersection upper bound
+							}, 
 							true); 
 					
-					// add constraint among requirements
+					// replace the distance constraint between the two time points
 					this.requirements.get(reference).put(target, intersection);
+					// set flag
+					change = true;
 				}
 			}
-			else {
-				// directly set constraint
+			else 
+			{
+				// only one requirement constraints between the two time points
 				this.requirements.get(reference).put(target, c);
+				// set flag
+				change = true;
 			}
 		}
 		else // contingent link to add
 		{
 			// check if requirement constraint exists
-			if (this.requirements.containsKey(reference) && this.requirements.get(reference).containsKey(target)) {
+			if (this.requirements.containsKey(reference) && 
+					this.requirements.get(reference).containsKey(target)) {
 				// constraint already exists
 				throw new NotCompatibleConstraintsFoundException("Impossible to add the contingent constraint, some requirement constraints already exist between time points tp= " + c.getReference() + ", and tp= " + c.getTarget());
 			}
 			
-			// add constraint
+			// set structures
 			if (!this.constraints.containsKey(reference)) {
-				// setup data structure
+				// add entries
 				this.constraints.put(reference, new HashMap<TimePoint, List<TimePointDistanceConstraint>>());
 			}
-		
+			
 			if (!this.constraints.get(reference).containsKey(target)) {
-				// setup data structure
+				// setup data structures
 				this.constraints.get(reference).put(target, new ArrayList<TimePointDistanceConstraint>());
 			}
 			
 			// add constraint
 			this.constraints.get(reference).get(target).add(c);
-			// activate contingent link
+			
+			
+			
+			// check contingent links
 			if (!this.contingents.containsKey(reference)) {
 				this.contingents.put(reference, new HashMap<TimePoint, TimePointDistanceConstraint>());
 			}
 			
-			// set contingent link
+			// add contingent distance constraint
 			this.contingents.get(reference).put(target, c);
+			
+			// set flag
+			change = true;
 		}
+		
+		
+		// export updated temporal network
+		if (change) {
+			// export temporal network graph
+			this.exportTemporalNetworkGraph();
+		}
+		
+		// get flag
+		return change;
 	}
 
 	/**
@@ -404,6 +529,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 		// get time points involved
 		TimePoint reference = c.getReference();
 		TimePoint target = c.getTarget();
+		
 		// check if constraint exists
 		if (this.constraints.containsKey(reference) && 
 				this.constraints.get(reference).containsKey(target) && 
@@ -414,11 +540,21 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			// check if the constraint to remove is controllable or not
 			if (c.isControllable()) 
 			{
-				// check remaining constraints
-				if (!this.constraints.get(reference).get(target).isEmpty()) {
+				// check constraints
+				if (!this.constraints.containsKey(reference) || 
+						!this.constraints.get(reference).containsKey(target) || 
+						this.constraints.get(reference).get(target).isEmpty()) {
+
+					// remove requirement constraint
+					this.requirements.get(reference).remove(target);
+				}
+				else 
+				{
 					// compute the current intersection constraint
 					long lb = Long.MIN_VALUE + 1;
 					long ub = Long.MAX_VALUE - 1;
+					
+					// compute intersection among remaining distance constraints
 					for (TimePointDistanceConstraint cons : this.constraints.get(reference).get(target)) {
 						lb = Math.max(cons.getDistanceLowerBound(), lb);
 						ub = Math.min(cons.getDistanceUpperBound(), ub);
@@ -426,39 +562,104 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 					
 					// check if a change actually occurs
 					TimePointDistanceConstraint current = this.requirements.get(reference).get(target);
-					if (lb != current.getDistanceLowerBound() || ub != current.getDistanceUpperBound()) 
+					// check if distance bounds have changed
+					if (lb != current.getDistanceLowerBound() || 
+							ub != current.getDistanceUpperBound()) 
 					{
-						// create intersection
+						// replace the requirement constraint with the computed intersection bounds
 						TimePointDistanceConstraint intersection = this.
 								createDistanceConstraint(
 										reference, 
 										target, 
-										new long[] {lb, ub}, 
+										new long[] {
+											lb,				// intersection lower bound 
+											ub				// interesection upper bound
+										}, 
 										true);
 						
-						// set intersection constraint
+						// actually replace intersection constraint
 						this.requirements.get(reference).put(target, intersection);
 					}
 				}
-				else {
-					// remove constraint
-					this.requirements.get(reference).remove(target);
-				}
 			}
-			else {
+			else 
+			{
 				// check if the current contingent constraint is to be removed
-				if (this.contingents.get(reference).get(target).equals(c)) {
+				if (this.contingents.get(reference).get(target).equals(c)) 
+				{
 					// remove constraint
 					this.contingents.get(reference).remove(target);
-					// set new constraint if any
-					List<TimePointDistanceConstraint> list = this.constraints.get(reference).get(target);
-					// check list of remaining constraints
-					if (!list.isEmpty()) {
-						// set last added contingent constraint
-						this.contingents.get(reference).put(target, list.get(list.size() - 1));
+					// check general constraints
+					if (this.constraints.containsKey(reference) && 
+							this.constraints.get(reference).containsKey(target))
+					{
+						// set new constraint if any
+						List<TimePointDistanceConstraint> list = this.constraints.get(reference).get(target);
+						// only one contingent link is expected between two time points
+						for (TimePointDistanceConstraint cont : list) {
+							// check type
+							if (!cont.isControllable()) {
+								// set the constraint as the currently active contingent constraint
+								this.contingents.get(reference).put(target, cont);
+								break;
+							}
+						}
 					}
 				}
 			}
 		}
+		
+		
+		// export temporal network graph
+		this.exportTemporalNetworkGraph();
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void exportTemporalNetworkGraph() 
+	{
+		// check size 
+		if (this.getTimePoints().size() < 50) 
+		{
+			// export a partila view of temporal network
+			String str = "digraph stnu {\n";
+			str += "\trankdir=LR;\n";
+			str += "\tnode [with=.2, height=.2, fontsize=5, shape=circle, style=filled, fillcolor=white];"; 
+			
+			// print edges
+			for (TimePoint source : this.constraints.keySet()) {
+				// get outgoing requirement constraints
+				for (TimePointDistanceConstraint requirement : this.requirements.get(source).values()) {
+					// add edge
+					str += "\t" + source.getId() + " -> " + requirement.getTarget().getId() + " [fontsize=8, arrowsize= .5, label = \"[" + requirement.getDistanceLowerBound() + "," + requirement.getDistanceUpperBound() + "]\"];\n";
+				}
+				
+				// check contingent constraints
+				if (this.contingents.containsKey(source)) {
+					// get outgoing contingent constraints
+					for (TimePointDistanceConstraint requirement : this.contingents.get(source).values()) {
+						// add edge
+						str += "\t" + source.getId() + " -> " + requirement.getTarget().getId() + " [fontsize=8, arrowsize= .5, style= dotted, label = \"[" + requirement.getDistanceLowerBound() + "," + requirement.getDistanceUpperBound() + "]\"];\n";
+					}
+				}
+			}
+			
+			// close 
+			str += "\n}\n\n";
+			
+			try 
+			{
+				File pdlFile = new File("stnu.dot");
+				try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pdlFile), "UTF-8"))) {
+					// write file
+					writer.write(str);
+				}
+			}
+			catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}
+		}			
 	}
 }

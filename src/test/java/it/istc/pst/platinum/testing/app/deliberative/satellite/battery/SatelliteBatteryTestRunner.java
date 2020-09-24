@@ -122,7 +122,7 @@ public class SatelliteBatteryTestRunner extends SatelliteBatteryTest
 											
 											// get solution data 
 											double time = plan.getSolvingTime();
-											double makespan = plan.getMakespan();
+											double makespan = plan.getMakespan()[0];
 											
 											// create resulting plan file
 											File planFile = new File(PLAN_FOLDER + "/" + DOMAIN_VERSIONS[v] + "_plan"

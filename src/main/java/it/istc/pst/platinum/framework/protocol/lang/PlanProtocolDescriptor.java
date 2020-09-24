@@ -12,6 +12,7 @@ import it.istc.pst.platinum.framework.protocol.lang.relation.RelationProtocolDes
  */
 public class PlanProtocolDescriptor 
 {
+	private String name;		
 	private long origin;
 	private long horizon;
 	private List<TimelineProtocolDescriptor> timelines;
@@ -20,15 +21,25 @@ public class PlanProtocolDescriptor
 	
 	/**
 	 * 
+	 * @param name
 	 * @param origin
 	 * @param horizon
 	 */
-	public PlanProtocolDescriptor(long origin, long horizon) {
+	public PlanProtocolDescriptor(String name, long origin, long horizon) {
+		this.name = name;
 		this.origin = origin;
 		this.horizon = horizon;
 		this.timelines = new ArrayList<>();
 		this.relations = new ArrayList<>();
 		this.observations = new ArrayList<>();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getName() {
+		return name;
 	}
 	
 	/**
@@ -194,14 +205,9 @@ public class PlanProtocolDescriptor
 		
 		// print relations
 		plan += "\trelations {\n";
-		for (RelationProtocolDescriptor rel : this.relations) 
-		{
-			// consider relations between state variables only
-			if (rel.getFrom() != null && rel.getTo() != null) 
-			{
-				// avoid meets on tokens of the same timeline
-				plan += "\t\t" + rel.export() + "\n";
-			}
+		for (RelationProtocolDescriptor rel : this.relations) {
+			// avoid meets on tokens of the same timeline
+			plan += "\t\t" + rel.export() + "\n";
 		}
 		plan += "\t}\n";
 		

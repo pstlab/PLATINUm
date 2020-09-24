@@ -79,8 +79,10 @@ public class NotEqualParameterRelation extends ParameterRelation
 	 */
 	@Override
 	public String toString() {
-		return "[Relation type= " + this.getType() +" reference= " + this.reference.getId() + ":" + this.reference.getValue().getLabel() +" "
-				+ "referenceParameter= " + this.referenceParameterLabel + " target= " +  this.target.getId() + ":" + this.target.getValue().getLabel() + " "
-						+ "targetParameter= " + this.targetParameterLabel + "]";
+		return "{ \"type\": \"" + this.getType() +"\", "
+				+ "\"refId\": " + this.reference.getId() + ", "
+				+ "\"refParameter: \"" + this.referenceParameterLabel + "\", "
+				+ "\"targetId\": " +  this.target.getId() +  ", "
+				+ "\"targetParameter\": \"" + this.targetParameterLabel + "\" }";
 	}
 }

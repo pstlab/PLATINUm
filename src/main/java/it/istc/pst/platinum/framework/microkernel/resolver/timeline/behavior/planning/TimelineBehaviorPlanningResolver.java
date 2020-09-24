@@ -8,7 +8,6 @@ import java.util.Set;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.DomainComponent;
-import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.TransitionNotFoundException;
@@ -29,6 +28,7 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
 import it.istc.pst.platinum.framework.parameter.lang.constraints.ParameterConstraintType;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalDistanceQuery;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
+import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -37,12 +37,18 @@ import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
  */
 public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariable> 
 {
+	private double cost;
+	
 	/**
 	 * 
 	 */
 	protected TimelineBehaviorPlanningResolver() {
 		super(ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER.getLabel(), 
 				ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER.getFlawTypes());
+		
+		// get deliberative property file
+		FilePropertyReader properties = new FilePropertyReader(FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		this.cost = Double.parseDouble(properties.getProperty("completion-cost"));
 	}
 	
 	/**
@@ -52,7 +58,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	protected void doApply(FlawSolution solution) 
 			throws FlawSolutionApplicationException 
 	{
-		// get the flaw solution to consider
+		// get the flaw solution to apply
 		GapCompletion completion = (GapCompletion) solution;
 		// check solution path
 		if (completion.getPath().isEmpty()) 
@@ -63,7 +69,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				Decision reference = completion.getLeftDecision();
 				Decision target = completion.getRightDecision();
 				
-				// create constraint
+				// create meets constraint to enforce the desired transition
 				MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 				// add created relation
 				solution.addCreatedRelation(meets);
@@ -71,6 +77,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				this.component.activate(meets);
 				// add activated relation to solution
 				solution.addActivatedRelation(meets);
+				
 				
 				// create parameter relations
 				Set<Relation> pRels = this.createParameterRelations(reference, target);
@@ -110,7 +117,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			transition.add(completion.getLeftDecision());
 			try
 			{
-				// create intermediate decisions
+				// create intermediate decisions associated to the transition to be enforced 
 				for (ComponentValue value : completion.getPath()) 
 				{
 					// create parameters' labels
@@ -127,20 +134,13 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					transition.add(dec);
 					// add pending decision
 					solution.addCreatedDecision(dec);
-					
-					// check if "simple" value
-					if (!value.isComplex()) {
-						// directly activate decision
-						Set<Relation> rels = this.component.activate(dec);
-						// add to activated decisions and relations
-						solution.addActivatedDecision(dec);
-						solution.addActivatedRelations(rels);
-					}
 				}
+				
+				
 				// add the gap-right decision
 				transition.add(completion.getRightDecision());
 				
-				// prepare relations
+				// create relations needed to enforce the transition
 				for (int index = 0; index < transition.size() - 1; index++) 
 				{
 					// get adjacent decisions
@@ -151,31 +151,17 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 					// add created relation
 					solution.addCreatedRelation(meets);
-					// check if the relation can be activated
-					if (meets.canBeActivated()) {
-						// activate temporal relation
-						this.component.activate(meets);
-						// add activated relation
-						solution.addActivatedRelation(meets);
-					}
-					
+
 					// create parameter relations
 					Set<Relation> pRels = this.createParameterRelations(reference, target);
 					for (Relation prel : pRels) {
 						// add relation to solution
 						solution.addCreatedRelation(prel);
-						// check if relation can be activated
-						if (prel.canBeActivated()) {
-							// activate parameter relation
-							this.component.activate(prel);
-							// add activated relation
-							solution.addActivatedRelation(prel);
-						}
+						// check i
 					}
 				}
 			}
-			catch (DecisionPropagationException | RelationPropagationException | TransitionNotFoundException ex) 
-			{
+			catch (TransitionNotFoundException ex) {
 				// deactivate activated relations
 				for (Relation rel : solution.getActivatedRelations()) {
 					// get reference component
@@ -191,7 +177,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				} 
 				
 				// deactivate activated decisions
-				for (Decision dec : solution.getActivatedDecisisons()) {
+				for (Decision dec : solution.getActivatedDecisions()) {
 					// get component
 					DomainComponent dComp = dec.getComponent();
 					dComp.deactivate(dec);
@@ -221,6 +207,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 		List<Flaw> flaws = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
 		List<Decision> list = this.component.getActiveDecisions();
+		
 		// check gaps between adjacent decisions
 		for (int index = 0; index < list.size() - 1; index++) 
 		{
@@ -229,82 +216,64 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			Decision right = list.get(index + 1);
 			
 			// check if scheduled
-			IntervalOverlapQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_OVERLAP);
+			IntervalOverlapQuery query = this.tdb.createTemporalQuery(
+					TemporalQueryType.INTERVAL_OVERLAP);
+			// set time points
 			query.setReference(left.getToken().getInterval());
 			query.setTarget(right.getToken().getInterval());
+			
 			// process query
 			this.tdb.process(query);
-			// check if resolver precondition is violated 
-			if (query.canOverlap()) 
+			// check if they intervals can overlap
+			if (query.canOverlap())
 			{
 				// precondition not satisfied
-				warning("[Warning] Timeline behavior planning failure:\n"
+				debug("No timeline behavior flaw can be detected as tokens are not scheduled:\n"
 						+ "- component: " + this.component + "\n"
-						+ "- [reason] Behaviors cannot be plant because potentially overlapping tokens have been found:\n"
+						+ "- [reason] Behaviors cannot be plant due to potentially overlapping tokens:\n"
 						+ "\t- reference: " + left + "\n"
 						+ "\t- target: " + right + "\n");
-				// clear data structures and stop finding flaws
+				
+				// clear data structures and stop inspecting this component for this type of flaws
 				flaws = new ArrayList<>();
 				break;
 			}
-
-			// compute distance between tokens 
-			IntervalDistanceQuery distance = this.tdb.
-					createTemporalQuery(TemporalQueryType.INTERVAL_DISTANCE);
-			// set intervals
-			distance.setReference(left.getToken().getInterval());
-			distance.setTarget(right.getToken().getInterval());
-			// process query
-			this.tdb.process(distance);
-			
-			// check if the tokens are directly connected 
-//			if (distance.getDistanceLowerBound() == 0 && distance.getDistanceUpperBound() == 0) 
-//			{
-//				// there is not actually a gap between the two tokens but semantics must be verified for plan execution 
-//				boolean connected = false;
-//				Iterator<Relation> it = this.component.getActiveRelations(left, right).iterator();
-//				while (it.hasNext() && !connected) {
-//					// next relation
-//					Relation rel = it.next();
-//					// check type
-//					connected = rel.getType().equals(RelationType.MEETS);
-//				}
-//				
-//				// check if decisions are linked
-//				if (!connected) {
-//					// force transition by adding a MEETS constraint between the two tokens
-//					Gap gap = new Gap(FLAW_COUNTER.getAndIncrement(), this.component, left, right);
-//					// add "simple gap"
-//					flaws.add(gap);
-//					debug("Not a gap has been actually found but transition semantics must be satisfied for execution through a MEETS constraint:\n"
-//							+ "- componetn: " + this.component + "\n"
-//							+ "- reference: " + left + "\n"
-//							+ "- target: " + right + "\n");
-//					
-//				}
-//			}
-//			else //if(dmin >= 0 && dmax > 0)
-				
-			if (distance.getDistanceLowerBound() > 0 || distance.getDistanceUpperBound() > 0)
+			else 
 			{
-				// we've got a gap between the two tokens
-				Gap gap = new Gap(FLAW_COUNTER.getAndIncrement(), this.component, left, right, new long[] {
-						distance.getDistanceLowerBound(), 
-						distance.getDistanceUpperBound()}
-				);
+				// check if scheduled
+				IntervalDistanceQuery distance = this.tdb.createTemporalQuery(
+						TemporalQueryType.INTERVAL_DISTANCE);
+				// set time points
+				distance.setReference(left.getToken().getInterval());
+				distance.setTarget(right.getToken().getInterval());
+				// process query
+				this.tdb.process(distance);
 				
-				
-				// add gap
-				flaws.add(gap);
-				debug("Gap found on component: "
-						+ "- component: " + this.component + "\n"
-						+ "- reference: " + left + "\n"
-						+ "- target: " + right + "\n"
-						+ "- distance: [" + distance.getDistanceLowerBound() + ", " + distance.getDistanceUpperBound() + "]\n");
+				// check the distance between the two decisions 
+				if (distance.getDistanceLowerBound() >= 0 && distance.getDistanceUpperBound() > 0) 
+				{
+					// a gap has been found on the timeline 
+					Gap gap = new Gap(FLAW_COUNTER.getAndIncrement(),
+							this.component, 
+							left, 
+							right, 
+							new long[] {
+									distance.getDistanceLowerBound(), 
+									distance.getDistanceUpperBound()});
+					
+					// add gap
+					flaws.add(gap);
+					debug("Gap found on component: "
+							+ "- component: " + this.component + "\n"
+							+ "- reference: " + left + "\n"
+							+ "- target: " + right + "\n"
+							+ "- distance: [" + distance.getDistanceLowerBound() + ", " + distance.getDistanceUpperBound() + "]\n");
+				}
 			}
 		}
 		
-		// get detected gaps
+		
+		// get flaws
 		return flaws;
 	}
 	
@@ -330,56 +299,54 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				
 				// check found solutions
 				if (paths.isEmpty()) {
-					// not gap completion found
-					debug("Not gap completion found:\n"
+					// not gap completion found between the two tokens
+					throw new UnsolvableFlawException("Not gap completion found:\n"
 							+ "- gap: " + gap + "\n");
 				}
 				else 
 				{
-					// get the shortest behavior path
-					ValuePath path = paths.get(0);
-					// get steps
-					List<ComponentValue> steps = path.getSteps();
-					// remove the source and destination values from the path
-					steps.remove(0);
-					steps.remove(steps.size() - 1);
-					
-					
-					// compute path duration bounds
-					long minDuration = 0;
-					long maxDuration = 0;
-					for (ComponentValue step : steps) 
+					// compute a solution for each possible value path
+					for (ValuePath path : paths) 
 					{
-						minDuration += step.getDurationLowerBound();
-						maxDuration += step.getDurationUpperBound();
-					}
-					
-					// check the feasibility of the path with respect to the available time 
-					if (minDuration <= gap.getDmax())
-					{
-						// gap solution
-						GapCompletion solution = new GapCompletion(gap, steps);
-						// add a decision to the agenda for each step 
+						// get steps
+						List<ComponentValue> steps = path.getSteps();
+						// remove the source and destination values from the path
+						steps.remove(0);
+						steps.remove(steps.size() - 1);
+						
+						
+						// compute path duration bounds
+						long tranMinDuration = 0;
+						long tranMaxDuration = 0;
+						// compute transition duration
 						for (ComponentValue step : steps) {
-							solution.addGoalToAgenda(step);
+							// increment min and maximum duration of the transition
+							tranMinDuration += step.getDurationLowerBound();
+							tranMaxDuration += step.getDurationUpperBound();
 						}
 						
-						// add solution to the flaw
-						gap.addSolution(solution);
-						// print gap information
-						debug("Gap found on component " + this.component.getName() + ":\n"
-								+ "- gap distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
-								+ "- left-side decision: " + gap.getLeftDecision() + "\n"
-								+ "- right-side decision: " + gap.getRightDecision() + "\n"
-								+ "- solution path: " + path + "\n");
-					}
-					else 
-					{
-						// not feasible solution
-						debug("Unfeasible solution due to path duration:\n"
-								+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
-								+ "- path: " + path + "\n"
-								+ "- path duration: [dmin= " + minDuration + ", " + maxDuration + "]");
+						// check the feasibility of the path with respect to the available time 
+							if (tranMinDuration >= gap.getDmin() && 
+									tranMinDuration <= gap.getDmax())
+						{
+							// gap solution
+							GapCompletion solution = new GapCompletion(gap, steps, this.cost);
+							// add solution to the flaw
+							gap.addSolution(solution);
+							// print gap information
+							debug("Gap found on component " + this.component.getName() + ":\n"
+									+ "- gap distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
+									+ "- left-side decision: " + gap.getLeftDecision() + "\n"
+									+ "- right-side decision: " + gap.getRightDecision() + "\n"
+									+ "- solution path: " + path + "\n");
+						}
+						else {
+							// discard this path as not temporally feasible
+							debug("Unfeasible transition path for timelime behavior completion:\n"
+									+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
+									+ "- path: " + path + "\n"
+									+ "- path duration: [dmin= " + tranMinDuration + ", " + tranMaxDuration + "]");
+						}
 					}
 				}
 			}
@@ -389,9 +356,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			case SEMANTIC_CONNECTION : 
 			{
 				// direct connection between decisions
-				GapCompletion solution = new GapCompletion(gap, new ArrayList<ComponentValue>());
-				// add only a relation to the current partial plan
-				solution.addRelationToPartialPlan(RelationType.MEETS, gap.getLeftDecision(), gap.getRightDecision());
+				GapCompletion solution = new GapCompletion(gap, new ArrayList<ComponentValue>(), this.cost);
 				// add gap solution
 				gap.addSolution(solution);
 			}
@@ -399,8 +364,9 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 		}
 		
 		// check if solvable
-		if (!flaw.isSolvable()) {
-			throw new UnsolvableFlawException("Unsolvable gap found on component " + this.component.getName() + ":\n" + flaw);
+		if (!gap.isSolvable()) {
+			throw new UnsolvableFlawException("Unsolvable gap found on component " + this.component.getName() + ":"
+					+ "\n- gap: " + flaw + "\n");
 		}
 	}
 	

@@ -1,0 +1,13 @@
+digraph decomposition_graph {
+	rankdir=TB;
+	node [fontsize=11, style=filled, fillcolor=azure, shape = box]
+	AND_0 [fontsize=6, shape= oval, style=filled, fillcolor= palegreen];
+	MissionTimeline_Deliver -> AND_0;
+	AND_0 -> RobotDeliveryToPatient_Stop [label= "1"];
+	AND_0 -> RobotMoveToRoom_At [label= "1"];
+	AND_1 [fontsize=6, shape= oval, style=filled, fillcolor= palegreen];
+	RobotDeliveryToPatient_MoveTo -> AND_1;
+	AND_1 -> RobotMoveToRoom_At [label= "1"];
+
+}
+

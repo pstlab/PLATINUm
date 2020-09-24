@@ -2,12 +2,18 @@ package it.istc.pst.platinum.deliberative.solver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.DomainComponent;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.Agenda;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.PartialPlan;
+import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
+import it.istc.pst.platinum.framework.microkernel.lang.plan.Plan;
 
 /**
  * 
@@ -16,12 +22,20 @@ import it.istc.pst.platinum.framework.microkernel.lang.plan.PartialPlan;
  */
 public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 {
-	private static AtomicInteger ID_COUNTER = new AtomicInteger(0);
-	private int id;
-	private List<Operator> operators;	// node generation trace
-	private Agenda agenda;				// plan agenda
-	private PartialPlan pPlan;			// partial plan associated to the node
-	private double cost; 				// partial plan cost
+private static final AtomicInteger ID_COUNTER = new AtomicInteger(0);
+	
+	private int id;												// node unique ID
+	private List<Operator> operators;							// node generation trace
+	
+	private Map<DomainComponent, List<DecisionVariable>> plan;	// partial plan
+ 	private Map<DomainComponent, List<Flaw>> agenda; 			// flaws associated to the resulting partial plan
+ 	
+ 	private double[] makespan;									// average makespan of timelines
+ 	private double[] duration;									// average duration of timelines
+	private double cost; 										// node generation cost
+	private double heuristic;									// node heuristic estimation (e.g., planning distance)
+	
+	private Object domainSpecificMetric;						// node domain specific metric
 	
 	/**
 	 * Create a root node
@@ -31,14 +45,27 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	protected SearchSpaceNode() {
 		// set node's id
 		this.id = ID_COUNTER.getAndIncrement();
-		// initialize operators
+		// set operators
 		this.operators = new ArrayList<>();
-		// initialize the agenda
-		this.agenda = new Agenda();
-		// initialize the partial plan
-		this.pPlan = new PartialPlan();
-		// initialize partial plan cost
+		// set default heuristic estimation
+		this.heuristic = 0;
+		// set plan generation cost 
 		this.cost = 0.0;
+		// set agenda
+		this.agenda = new HashMap<>();
+		
+		this.makespan = new double[] {
+				Double.MAX_VALUE - 1,
+				Double.MAX_VALUE - 1
+		};
+		
+		this.duration = new double[] {
+				Double.MAX_VALUE - 1,
+				Double.MAX_VALUE - 1
+		};
+		
+		// set additional metric
+		this.domainSpecificMetric = null;
 	}
 	
 	/**
@@ -53,60 +80,28 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		this.operators = new ArrayList<>(parent.getOperators());
 		// add generator
 		this.operators.add(op);
-		// setup node agenda
-		this.agenda = op.getFlawSolution().getAgenda();
-		// setup partial plan and cost
-		this.pPlan = op.getFlawSolution().getPartialPlan();
+		
+		// set default heuristic estimation
+		this.heuristic = 0;
+		// update plan generation cost
+		this.cost = parent.getCost() + op.getCost();
+		// set agenda
+		this.agenda = new HashMap<>();
+		
+		this.makespan = new double[] {
+				Double.MAX_VALUE - 1,
+				Double.MAX_VALUE - 1
+		};
+		
+		this.duration = new double[] {
+				Double.MAX_VALUE - 1,
+				Double.MAX_VALUE - 1
+		};
+		
+		// set additional metric
+		this.domainSpecificMetric = null;
 		
 	}
-	
-//	/**
-//	 * 
-//	 * @param parent
-//	 * @param op
-//	 */
-//	private void setupNodeAgenda(SearchSpaceNode parent, Operator op) {
-//		// set child node agenda taking into account the parent node agenda
-//		Set<Decision> goals = new HashSet<>(parent.getAgenda().getGoals());
-//		// remove solved goals from the agenda
-//		for (Decision decision : op.getFlawSolution().getActivatedDecisisons()) {
-//			goals.remove(decision.getValue());
-//		}
-//		
-//		// add created pending decisions (subgoals)
-//		for (Decision g : op.getFlawSolution().getCreatedDecisions()) {
-//			goals.add(g);
-//		}
-//
-//		// add resulting pending decisions to the agenda 
-//		for (Decision g : goals) {
-//			this.agenda.add(g);
-//		}
-//	}
-	
-//	/**
-//	 * 
-//	 */
-//	private void setupPartialPlanAndCost()
-//	{
-//		// add partial plan decisions and relations
-//		for (Operator o : this.operators) 
-//		{
-//			// add activated decisions
-//			for (Decision dec : o.getFlawSolution().getActivatedDecisisons()) {
-//				this.pPlan.addDecision(dec);
-//			}
-//			
-//			// add activated relations
-//			for (Relation rel : o.getFlawSolution().getActivatedRelations()) {
-//				this.pPlan.addRelation(rel);
-//			}
-//			
-//			// update partial plan cost
-//			this.cost += o.getCost();
-//		}
-//	}
-
 	
 	/**
 	 * 
@@ -114,6 +109,89 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	/**
+	 * 
+	 * @param metric
+	 */
+	public void setDomainSpecificMetric(Object metric) {
+		this.domainSpecificMetric = metric;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Object getDomainSpecificMetric() {
+		return domainSpecificMetric;
+	}
+	
+	/**
+	 * 
+	 * @param flaw
+	 * @return
+	 */
+	public void addCheckedFlaw(Flaw flaw) {
+		if (!this.agenda.containsKey(flaw.getComponent())) {
+			this.agenda.put(flaw.getComponent(), new ArrayList<>());
+		}
+		
+		// add the flaw
+		this.agenda.get(flaw.getComponent()).add(flaw);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Set<Flaw> getAgenda() {
+		Set<Flaw> list = new HashSet<>();
+		for (DomainComponent comp : this.agenda.keySet()) {
+			list.addAll(this.agenda.get(comp));
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Set<Flaw> getFlaws(FlawType type) {
+		Set<Flaw> list = new HashSet<>();
+		for (DomainComponent comp : this.agenda.keySet()) {
+			for (Flaw flaw : this.agenda.get(comp)) {
+				// check flaw type
+				if (flaw.getType().equals(type)) {
+					// add the flaw
+					list.add(flaw);
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getNumberOfFlaws() {
+		int number = 0;
+		for (List<Flaw> list : this.agenda.values()) {
+			number += list.size();
+		}
+		return number;
+	}
+	
+	/**
+	 * 
+	 * @param comp
+	 * @return
+	 */
+	public Set<Flaw> getFlaws(DomainComponent comp) {
+		return new HashSet<>(this.agenda.get(comp));
 	}
 	
 	/**
@@ -128,17 +206,52 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 * 
 	 * @return
 	 */
-	public Agenda getAgenda() {
-		return this.agenda; 
+	public double getHeuristic() {
+		return heuristic;
+	}
+	
+	/**
+	 * 
+	 * @param heuristic
+	 */
+	public void setHeuristic(double heuristic) {
+		this.heuristic = heuristic;
+	
+	}
+	
+	/**
+	 * 
+	 * @param partialPlan
+	 */
+	public void setPartialPlan(Plan partialPlan) 
+	{
+		// set the partial plan 
+		this.plan = new HashMap<>();
+		// check decisions
+		for (Decision dec : partialPlan.getDecisions()) {
+			if (!this.plan.containsKey(dec.getComponent())) {
+				// add entry 
+				this.plan.put(dec.getComponent(), new ArrayList<>());
+			}
+			
+			// add decision variable
+			this.plan.get(dec.getComponent()).add(new DecisionVariable(dec));
+		}
+		
+		
+		// set the makespan
+		this.makespan = partialPlan.getMakespan();
+		// set duration
+		this.duration = partialPlan.getBehaviorDuration();
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public PartialPlan getPartialPlan() {
-		// initialize the partial plan 
-		return this.pPlan;
+	public Map<DomainComponent, List<DecisionVariable>> getPartialPlan() {
+		// set the partial plan 
+		return new HashMap<>(this.plan);
 	}
 	
 	/**
@@ -148,6 +261,22 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	public double getCost() {
 		// get the generation cost of the associated partial plan
 		return this.cost;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double[] getMakespan() {
+		return this.makespan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double[] getBehaviorDuration() {
+		return this.duration;
 	}
 	
 	/**
@@ -296,7 +425,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	@Override
 	public int compareTo(SearchSpaceNode o) {
 		// compare nodes by their ID
-		return this.id <= o.id ? -1 : 1;
+		return this.cost < o.cost ? -1 : this.cost > o.cost ? 1 : 0;
 	}
 	
 	/**
@@ -304,6 +433,14 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 */
 	@Override
 	public String toString() {
-		return "[SearchSpaceNode id= " + this.id + ", depth= " + this.getDepth() + ", cost= " + this.getCost() + "]";
+		return "{ "
+				+ "id: " + this.id + ", "
+				+ "depth: " + this.getDepth() + ", "
+				+ "cost: " + this.getCost() + ", "
+				+ "heuristic: " + this.heuristic + ", "
+				+ "makespan: [" + this.makespan[0] + ", " + this.makespan[1] + "], "
+				+ "duration: [" + this.duration[0] +", " + this.duration[1] + "], "
+				+ (this.domainSpecificMetric != null ? "additional-metric: " + this.domainSpecificMetric.toString() + ", " : "")
+				+ " }";
 	}
 }

@@ -17,9 +17,10 @@ public abstract class GoalJustification extends FlawSolution
 	 * 
 	 * @param goal
 	 * @param type
+	 * @param cost
 	 */
-	protected GoalJustification(Goal goal, JustificationType type) {
-		super(goal);
+	protected GoalJustification(Goal goal, JustificationType type, double cost) {
+		super(goal, cost);
 		this.type = type;
 		this.decision = goal.getDecision();
 	}

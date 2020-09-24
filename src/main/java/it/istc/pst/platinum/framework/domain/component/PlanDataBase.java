@@ -138,6 +138,32 @@ public interface PlanDataBase
 	public ParameterDomain getParameterDomainByName(String name);
 	
 	/**
+	 * Query the plan database to retrieve flaws concerning the internal 
+	 * components. Note that no solutions to the detected flaws are 
+	 * computed when calling this method.
+	 * 
+	 * @return
+	 */
+	public List<Flaw> checkFlaws();
+	
+	/**
+	 * Query the plan database to retrieve flaws concerning the internal 
+	 * components. Only flaws of the specified types are considered 
+	 * 
+	 * Note that no solutions to the detected flaws are 
+	 * computed when calling this method.
+	 * 
+	 * @return
+	 */
+	public List<Flaw> checkFlaws(FlawType[] types);
+	
+	/**
+	 * 
+	 * Query the the plan database to retrieve flaws concerning internal 
+	 * components. Flaws of all known types are considered in the computation 
+	 * of the response.
+	 * 
+	 * For each detected flaw a set of possible solutions is computed.
 	 * 
 	 * @return
 	 * @throws UnsolvableFlawException
@@ -146,6 +172,12 @@ public interface PlanDataBase
 			throws UnsolvableFlawException;
 	
 	/**
+	 * 
+	 * Query the the plan database to retrieve flaws concerning internal 
+	 * components. Only flaws of the specified type are considered in 
+	 * computation of query response.
+	 * 
+	 * For each detected flaw a set of possible solutions is computed.
 	 * 
 	 * @param type
 	 * @return
@@ -179,7 +211,13 @@ public interface PlanDataBase
 	 * 
 	 * @return
 	 */
-	public double computeMakespan();
+	public double[] getMakespan();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double[] getBehaviorDuration();
 	
 	/**
 	 * 

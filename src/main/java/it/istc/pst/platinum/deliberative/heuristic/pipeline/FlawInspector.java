@@ -57,10 +57,17 @@ public abstract class FlawInspector extends DeliberativeObject
 			throws UnsolvableFlawException;
 	
 	/**
+	 * Check flaws without computing possible solutions
+	 * 
+	 * @return
+	 */
+	public abstract Set<Flaw> check();
+	
+	/**
 	 * 
 	 */
 	@Override
 	public String toString() {
-		return "[FlawFilter label= " +  this.label + "]";
+		return "{ \"label\": \"" +  this.label + "\" }";
 	}
 }

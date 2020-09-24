@@ -126,9 +126,12 @@ public final class Token implements Comparable<Token>
 	 */
 	@Override
 	public String toString() {
-		return "[Token " + this.id + ":" + this.predicate.getGroundSignature() + " "
-				+ "start= [" + this.interval.getStartTime().getLowerBound() + "," + this.interval.getStartTime().getUpperBound() + "] "
-				+ "end= [" + this.interval.getEndTime().getLowerBound() + "," + this.interval.getEndTime().getUpperBound() + "] "
-				+ "duration= [" + this.interval.getDurationLowerBound() + "," + this.interval.getDurationUpperBound() + "]]";
+		return "{ "
+				+ "\"id\": " + this.id + ", "
+				+ "\"signature\": \"" + this.predicate.getGroundSignature() + "\", "
+				+ "\"start\": [" + this.interval.getStartTime().getLowerBound() + ", " + this.interval.getStartTime().getUpperBound() + "], "
+				+ "\"end\": [" + this.interval.getEndTime().getLowerBound() +", " + this.interval.getEndTime().getUpperBound() + "], "
+				+ "\"duration\": [" + this.interval.getDurationLowerBound() +  ", " + this.interval.getDurationUpperBound() + "] "
+				+ "} ";
 	}
 }

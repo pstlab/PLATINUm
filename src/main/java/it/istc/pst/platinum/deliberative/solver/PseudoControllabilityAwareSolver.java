@@ -5,14 +5,11 @@ import java.util.List;
 
 import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
 import it.istc.pst.platinum.framework.domain.component.PlanElementStatus;
-import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.istc.pst.platinum.framework.microkernel.lang.ex.PlanRefinementException;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.PlanControllabilityType;
-import it.istc.pst.platinum.framework.microkernel.lang.plan.SolutionPlan;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 /**
@@ -20,41 +17,27 @@ import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawExce
  * @author anacleto
  *
  */
-public class PseudoControllabilityAwareSolver extends PlannerSolver 
+public class PseudoControllabilityAwareSolver extends Solver 
 {
 	/**
 	 * 
 	 * @param timeout
 	 */
 	protected PseudoControllabilityAwareSolver(long timeout) {
-		super("Solver:PseudoControllabilityAware", timeout);
-	}
-	
-	/**
-	 * 
-	 */
-	@PostConstruct
-	protected void init() {
-		// create the root node
-		SearchSpaceNode root = this.createSearchSpaceNode();
-		// enqueue the root node
-		this.fringe.enqueue(root);
+		super("PseudoControllabilityAwareSolver", timeout);
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public SolutionPlan solve() 
+	public SearchSpaceNode solve() 
 			throws NoSolutionFoundException 
 	{
 		// set solving start time
 		long start = System.currentTimeMillis();
-		// initialize solving step counter
+		// set solving step counter
 		this.stepCounter = 0;
-
-		// initialize the solution plan
-		SolutionPlan plan = null;
 		// last extracted node
 		SearchSpaceNode last = null, node = null;
 		// search condition
@@ -64,6 +47,7 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 		{
 			try 
 			{
+				
 				// update step counter
 				this.stepCounter++;
 				// get time passed from the start 
@@ -81,11 +65,24 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 					throw new NoSolutionFoundException("Timeout: no solution found after " + this.time + " msecs and " + this.stepCounter + " solving steps");
 				}
 				
+				
 				// extract a node from the fringe
 				node = this.fringe.dequeue();
-				info("Solving step: " + this.stepCounter +"\n"
-						+ "- Extracted node: " + node + "\n"
-						+ "- Applied operator: " + node.getGenerator() + "\n");
+
+				// info message
+				String info = "Extracted node [step = " + this.stepCounter + "]:\n"
+						+ "node: " + node + "\n";
+				// check operators 
+				if (last != null) {
+					info += "Operators:\n";
+					// print last node operations
+					for (Operator op : node.getOperators()) {
+						info += "op: " + op + "\n";
+					}
+				}
+				// info log 
+				info(info);
+				
 				
 				// propagate extracted node
 				this.contextSwitch(last, node);
@@ -94,17 +91,21 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 				// check consistency of the resulting partial plan
 				this.pdb.verify();
 				
+				// context switch done
+				info("Context switch successfully done [step = " + this.stepCounter + "]:\n"
+						+ "Plan: " + last.getPartialPlan() + "\n");
+				
 				// print information concerning current partial plan	
-				info("Partial plan after propagation of operator: "  + node.getGenerator() + "\n"
-							+ "- plan:\n"
-							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
-							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n\n"
-							+ "- pending plan (agenda):\n"
-							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
-							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n"
-							+ "- silent plan:\n"
-							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.SILENT).getDecisions() + "\n"
-							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.SILENT).getRelations() + "\n\n");
+				debug("Detailed plan after propagation: "  + node.getGenerator() + "\n"
+							+ "\tplan:\n"
+							+ "\t\tdecisions= " + this.pdb.getPlan().getDecisions() + "\n"
+							+ "\t\trelations= " + this.pdb.getPlan().getRelations() + "\n\n"
+							+ "\tpending plan (agenda):\n"
+							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
+							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n"
+							+ "\tsilent plan:\n"
+							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.SILENT).getDecisions() + "\n"
+							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.SILENT).getRelations() + "\n\n");
 				
  				// choose the best flaws to solve
 				List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
@@ -112,31 +113,34 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 				for (Flaw flaw : flaws)
 				{
 					// expand the search space with the available solutions of the flaw
-					for (SearchSpaceNode child : this.expand(last, flaw)) {
+					for (SearchSpaceNode child : this.expand(node, flaw)) {
 						// add the node to the fringe
 						this.fringe.enqueue(child);
 						// expand the search space
-						info("Search tree expansion:\n- node: " + child + "\n"
-								+ "- generator: " + child.getGenerator() + "\n");
+						info("Search tree expansion:\n"
+								+ "node: " + child + "\n"
+								+ "generator: " + child.getGenerator() + "\n");
 					}
 				}
 			}
 			catch (PlanRefinementException ex) {
-				// error while refining the current plan
-				warning("Error while refining the current plan\n"
-						+ "- operator: " + node.getGenerator() + "\n"
-						+ "- message: " + ex.getMessage() + "\n");
+				// refinement error
+				warning("Refinement error [step = " + this.stepCounter + "]:\n"
+						+ "message: " + ex.getMessage() + "\n"
+						+ "Plan:\n" + last.getPartialPlan() + "\n");
 			}
-			catch (UnsolvableFlawException | ConsistencyCheckException  ex) {
-				// not feasible partial plan
-				warning("Not feasible partial plan found\n"
-						+ "- oeprator: " + node.getGenerator() + "\n"
-						+ "- plan:\n"
-							+ "---- decisions= " + this.pdb.getPlan().getDecisions() + "\n"
-							+ "---- relations= " + this.pdb.getPlan().getRelations() + "\n"
-						+ "- agenda:\n"
-							+ "---- decisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
-							+ "---- relations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n");
+			catch (UnsolvableFlawException ex) {
+				// refinement error
+				warning("Unsolvable flaw found  [step = " + this.stepCounter + "]:\n"
+						+ "message: " + ex.getMessage() + "\n"
+						+ "Plan:\n" + last.getPartialPlan() + "\n");
+			}
+			catch (ConsistencyCheckException ex) 
+			{
+				// context switch failure
+				warning("Context switch failure [step = " + this.stepCounter + "]:\n"
+						+ "message: " + ex.getMessage() + "\n"
+						+ "Plan:\n" + last.getPartialPlan() + "\n");
 			}
 			catch (NoFlawFoundException ex)
 			{
@@ -144,10 +148,6 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 				search = false;
 				// set solving time
 				this.time = System.currentTimeMillis() - start;
-				// set plan
-				plan = this.pdb.getSolutionPlan();
-				plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABILITY);
-				plan.setSolvingTime(this.time);
 				// pseudo-controllable solution found
 				info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			}
@@ -162,10 +162,21 @@ public class PseudoControllabilityAwareSolver extends PlannerSolver
 				// throw exception
 				throw new NoSolutionFoundException("No pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			}
+			// close connection
+			finally 
+			{
+				// check if stop
+				if (!search) 
+				{
+					// clear search strategy
+					this.fringe.clear();
+				}
+			}
 			
 		} // end while
 		
-		// get solution plan
-		return plan;
+		
+		// get last expanded node
+		return last;
 	}
 }	

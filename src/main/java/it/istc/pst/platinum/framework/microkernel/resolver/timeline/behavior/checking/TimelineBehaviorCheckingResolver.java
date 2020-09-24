@@ -7,7 +7,9 @@ import java.util.List;
 
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
+import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariable;
 import it.istc.pst.platinum.framework.domain.component.sv.StateVariableValue;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
@@ -120,7 +122,8 @@ public class TimelineBehaviorCheckingResolver extends Resolver<StateVariable> im
 	 * 
 	 */
 	@Override
-	protected void doRestore(FlawSolution solution) throws Exception {
+	protected void doRestore(FlawSolution solution) 
+			throws RelationPropagationException, DecisionPropagationException {
 		// nothing to do
 	}
 	

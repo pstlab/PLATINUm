@@ -2,7 +2,6 @@ package it.istc.pst.platinum.framework.microkernel.resolver.plan;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.domain.component.pdb.SynchronizationRule;
-import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -15,34 +14,23 @@ public class GoalExpansion extends GoalJustification
 	
 	/**
 	 * 
-	 * @param decision
+	 * @param goal
 	 * @param rule
+	 * @param cost
 	 */
-	protected GoalExpansion(Goal goal, SynchronizationRule rule) {
-		super(goal, JustificationType.EXPANSION);
+	protected GoalExpansion(Goal goal, SynchronizationRule rule, double cost) {
+		super(goal, JustificationType.EXPANSION, cost);
 		this.rule = rule;
 	}
 	
 	/**
 	 * 
-	 * @param decision
+	 * @param goal
+	 * @param cost
 	 */
-	protected GoalExpansion(Goal goal) {
-		super(goal, JustificationType.EXPANSION);
+	protected GoalExpansion(Goal goal, double cost) {
+		super(goal, JustificationType.EXPANSION, cost);
 		this.rule = null;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public double getCost() {
-		// get property file 
-		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
-		// read property
-		String cost = property.getProperty("expansion-cost");
-		// parse and get double value
-		return Double.parseDouble(cost);
 	}
 	
 	/**
@@ -74,6 +62,10 @@ public class GoalExpansion extends GoalJustification
 	 */
 	@Override
 	public String toString() {
-		return "[GoalExpansion decision= " + this.decision + " synchronization-rule= " + this.rule + "]";
+		// JSON style object description 
+		return "{ "
+				+ "\"type\": \"EXPANSION\", "
+				+ "\"goal\": " +  this.decision + ", "
+				+ "\"rule\": " + this.rule +" }";
 	}
 }

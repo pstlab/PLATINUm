@@ -204,6 +204,7 @@ public abstract class Relation
 	 */
 	@Override
 	public String toString() {
-		return "[Relation " + this.reference + " " + this.type + " " + this.target +" active= " + (this.constraint != null) + "]";
+		// JSON style object description
+		return "{ \"id\": " + this.id +", \"type\": \"" + this.type + "\", \"refId\": " + this.reference.getId() + ", \"tarId\": " + this.target.getId() + " }";
 	}
 }

@@ -43,7 +43,7 @@ public enum ResolverType
 	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(ReservoirResourceSchedulingResolver.class.getName(),
 			"Reservoir Resource Scheduler",
 			new FlawType[] {
-				FlawType.RESOURCE_PLANNING,
+					FlawType.RESOURCE_PRODUCTION_PLANNING,
 				FlawType.RESOURCE_PRODUCTION_UPDATE
 			}),
 

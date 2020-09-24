@@ -6,7 +6,6 @@ import java.util.List;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -26,8 +25,8 @@ public class ProductionPlanning extends FlawSolution implements ResourceOverCons
 	 * @param bp
 	 * @param ap
 	 */
-	protected ProductionPlanning(Peak flaw, double amount, Collection<Decision> bp, Collection<Decision> ap) {
-		super(flaw);
+	protected ProductionPlanning(Peak flaw, double amount, Collection<Decision> bp, Collection<Decision> ap, double cost) {
+		super(flaw, cost);
 		this.amount = amount;
 		this.beforeProduction = new ArrayList<>(bp);
 		this.afterProduction = new ArrayList<>(ap);
@@ -69,20 +68,8 @@ public class ProductionPlanning extends FlawSolution implements ResourceOverCons
 	 * 
 	 */
 	@Override
-	public double getCost() {
-		// get property file 
-		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
-		// read property
-		String cost = property.getProperty("expansion-cost");
-		// parse and get double value
-		return Double.parseDouble(cost);
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
 	public String toString() { 
-		return "[ProductionPlanning amount= " + this.amount + " ]";
+		return "{ \"type\": \"PRODUCTION_PLANNING\", "
+				+ "\"amount\": " + this.amount + " }";
 	}
 }

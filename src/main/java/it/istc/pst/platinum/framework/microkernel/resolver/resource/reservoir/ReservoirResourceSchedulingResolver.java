@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
+import it.istc.pst.platinum.framework.domain.component.ex.DecisionPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.istc.pst.platinum.framework.domain.component.ex.RelationPropagationException;
 import it.istc.pst.platinum.framework.domain.component.ex.ResourceProfileComputationException;
@@ -36,6 +37,7 @@ import it.istc.pst.platinum.framework.time.ex.TemporalIntervalCreationException;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
+import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -44,12 +46,22 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  */
 public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResource> 
 {
+	private double schedulingCost;
+	private double planningCost;
+	private double unificationCost;
+	
 	/**
 	 * 
 	 */
 	protected ReservoirResourceSchedulingResolver() {
 		super(ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getLabel(),
 				ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
+		
+		// get deliberative property file
+		FilePropertyReader properties = new FilePropertyReader(FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		this.schedulingCost = Double.parseDouble(properties.getProperty("scheduling-cost"));
+		this.planningCost = Double.parseDouble(properties.getProperty("expansion-cost"));
+		this.unificationCost = Double.parseDouble(properties.getProperty("unification-cost"));
 	}
 	
 	/**
@@ -104,7 +116,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		switch (flaw.getType()) 
 		{
 			// resource peak
-			case RESOURCE_PLANNING : 
+			case RESOURCE_PRODUCTION_PLANNING : 
 			{
 				// get peak
 				Peak peak = (Peak) flaw;
@@ -219,7 +231,11 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				// get the new amount of resource to produce
 				double amount = pf.getProducedAmount() + pf.getDelta();
 				// create solution
-				ProductionUpdate update = new ProductionUpdate(pf, amount);
+				ProductionUpdate update = new ProductionUpdate(
+						pf, 
+						amount, 
+						this.unificationCost);
+				
 				// compute the resulting makespan of the temporal network
 //				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
 //				// process query
@@ -374,7 +390,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 //				double makespan = query.getMakespan();
 				
 				// create resource planning solution
-				ProductionPlanning pp = new ProductionPlanning(mcs.getPeak(), head.getAmount(), beforeProduction, afterProduction);
+				ProductionPlanning pp = new ProductionPlanning(
+						mcs.getPeak(), 
+						head.getAmount(), 
+						beforeProduction, 
+						afterProduction, 
+						this.planningCost);
+				
+				
 				// set resulting make-span
 //				pp.setMakespan(makespan);
 				// add solution to the peak
@@ -495,7 +518,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 								checkpoint.getProduction().getAmount(),
 								amount,
 								precedences, 
-								preserved);
+								preserved,
+								this.schedulingCost);
 						
 						// set resulting make-span
 //						scheduling.setMakespan(makespan);
@@ -594,7 +618,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 								checkpoint.getProduction().getAmount(),
 								amount,
 								precedences, 
-								preserved);
+								preserved,
+								this.schedulingCost);
 						
 						// set resulting make-span
 //						scheduling.setMakespan(makespan);
@@ -625,7 +650,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	@Override
 	protected void doRestore(FlawSolution flawSolution) 
-			throws Exception 
+			throws RelationPropagationException, DecisionPropagationException
 	{
 		// perform "default" operations
 		super.doRestore(flawSolution);
@@ -663,7 +688,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			}
 			break;
 		
-			case RESOURCE_PLANNING : 
+			case RESOURCE_PRODUCTION_PLANNING : 
 			{
 				// get general solution
 				ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
@@ -692,7 +717,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 								this.component.activate(bind);
 							}
 							catch (RelationPropagationException ex) {
-								throw new Exception("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
+								throw new RelationPropagationException("Error while retracting consumption scheduling solution\n:- mesasge= " + ex.getMessage());
 							}
 						}
 					}
@@ -748,7 +773,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			}
 			break;
 		
-			case RESOURCE_PLANNING : 
+			case RESOURCE_PRODUCTION_PLANNING : 
 			{
 				// get general solution
 				ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) flawSolution;
@@ -953,7 +978,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			}
 			break;
 		
-			case RESOURCE_PLANNING : 
+			case RESOURCE_PRODUCTION_PLANNING : 
 			{
 				// get general solution
 				ResourceOverConsumptionSolution overconsumption = (ResourceOverConsumptionSolution) solution;
@@ -1240,6 +1265,7 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	public int compareTo(MinimalCriticalSet o) {
 		return this.consumptions.size() > o.consumptions.size() ? -1 : this.consumptions.size() < o.consumptions.size() ? 1 : 0;
 	}
+
 
 }
 

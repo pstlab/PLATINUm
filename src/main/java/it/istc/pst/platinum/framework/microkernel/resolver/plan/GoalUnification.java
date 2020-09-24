@@ -6,7 +6,6 @@ import java.util.Set;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.relations.Relation;
-import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -15,47 +14,55 @@ import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
  */
 public class GoalUnification extends GoalJustification 
 {
-	private Decision unification;		// merging decision
-	private Set<Relation> toTranslate;	// list of translated relations
+	private Decision unification;								// merging decision
+	private Set<Relation> translatedReferenceGoalRelations;		
+	private Set<Relation> translatedTargetGoalRelations;
+	
+//	private Set<Relation> toTranslate;		// list of translated relations
 	
 	/**
 	 * 
 	 * @param goal
 	 * @param dec
 	 */
-	protected GoalUnification(Goal goal, Decision dec) {
-		super(goal, JustificationType.UNIFICATION);
+	protected GoalUnification(Goal goal, Decision dec, double cost) {
+		super(goal, JustificationType.UNIFICATION, cost);
 		this.unification = dec;
-		this.toTranslate = new HashSet<>();
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public double getCost() {
-		// get property file 
-		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
-		// read property
-		String cost = property.getProperty("unification-cost");
-		// parse and get double value
-		return Double.parseDouble(cost);
-	}
-	
-	/**
-	 * 
-	 * @param translated
-	 */
-	public void setTranslatedRelations(Collection<Relation> translated) {
-		this.toTranslate = new HashSet<>(translated);
+//		this.toTranslate = new HashSet<>();
+		this.translatedReferenceGoalRelations = new HashSet<>();
+		this.translatedTargetGoalRelations = new HashSet<>();
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Set<Relation> getToTranslate() {
-		return toTranslate;
+	public Set<Relation> getTranslatedReferenceGoalRelations() {
+		return new HashSet<>(translatedReferenceGoalRelations);
+	}
+	
+	/**
+	 * 
+	 * @param rel
+	 */
+	public void setTranslatedReferenceGoalRelation(Collection<Relation> rels) {
+		this.translatedReferenceGoalRelations = new HashSet<>(rels);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Set<Relation> getTranslatedTargetGoalRelations() {
+		return new HashSet<>(translatedTargetGoalRelations);
+	}
+	
+	/**
+	 * 
+	 * @param rel
+	 */
+	public void setTranslatedTargetGoalRealtion(Collection<Relation> rels) {
+		this.translatedTargetGoalRelations = new HashSet<>(rels);
 	}
 	
 	/**
@@ -80,6 +87,10 @@ public class GoalUnification extends GoalJustification
 	 */
 	@Override
 	public String toString() {
-		return "[GoalUnification decision= " + this.decision + " unificaiton= " + this.unification + "]";
+		// JSON style object description
+		return "{ "
+				+ "\"type\": \"UNIFICATION\", "
+				+ "\"goal\": " + this.decision + ", "
+				+ "\"decision\": " + this.unification + " }";
 	}
 }

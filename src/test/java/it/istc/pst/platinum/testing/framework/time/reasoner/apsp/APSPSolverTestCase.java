@@ -11,8 +11,8 @@ import it.istc.pst.platinum.framework.microkernel.query.TemporalQueryType;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintFactory;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.solver.apsp.APSPTemporalSolver;
-import it.istc.pst.platinum.framework.time.tn.SimpleTemporalNetwork;
 import it.istc.pst.platinum.framework.time.tn.SimpleTemporalNetworkWithUncertainty;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetwork;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 import it.istc.pst.platinum.framework.time.tn.ex.InconsistentDistanceConstraintException;
@@ -177,7 +177,7 @@ public class APSPSolverTestCase
 		{
 			System.out.println("[Test]: example1() --------------------");
 			// create temporal network
-			SimpleTemporalNetwork itn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
+			TemporalNetwork itn = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
 			// create APSP solver
 			APSPTemporalSolver solver = new APSPTemporalSolver(itn);
 
@@ -232,7 +232,7 @@ public class APSPSolverTestCase
 		{
 			System.out.println("[Test]: example2() --------------------");
 			// create example temporal network
-			SimpleTemporalNetwork exTn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
+			TemporalNetwork exTn = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
 			
 			// create time points
 			List<TimePoint> tps = exTn.addTimePoints(2);
@@ -302,7 +302,7 @@ public class APSPSolverTestCase
 		{
 			System.out.println("[Test]: example2Incremental() --------------------");
 			// create example temporal network
-			SimpleTemporalNetwork exTn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
+			TemporalNetwork exTn = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
 			// create APSP solver
 			APSPTemporalSolver solver = new APSPTemporalSolver(exTn);
 			// create time points

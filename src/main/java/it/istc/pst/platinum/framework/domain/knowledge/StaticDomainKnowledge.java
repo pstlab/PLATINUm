@@ -23,10 +23,10 @@ import it.istc.pst.platinum.framework.microkernel.ConstraintCategory;
 public class StaticDomainKnowledge extends DomainKnowledge  
 {
 	// additional knowledge
-	private Map<DomainComponent, Set<DomainComponent>> dg;		// dependency graph (as incident graph on components)
-	private Map<ComponentValue, Set<ComponentValue>> tree;		// decomposition tree
+	private Map<DomainComponent, Set<DomainComponent>> dg;			// dependency graph (as incident graph on components)
+	private Map<ComponentValue, List<List<ComponentValue>>> graph;	// decomposition tree as AND/OR graph
 	
-	private List<DomainComponent>[] hierarchy;					// domain hierarchy
+	private List<DomainComponent>[] hierarchy;						// domain hierarchy
 	
 	/**
 	 * 
@@ -35,7 +35,7 @@ public class StaticDomainKnowledge extends DomainKnowledge
 		super();
 		// initialize additional data
 		this.dg = null;
-		this.tree = null;
+		this.graph = null;
 		this.hierarchy = null;
 	}
 
@@ -45,22 +45,25 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	@Override
 	public void printDecompositionTree() {
 		// check decomposition tree
-		if (this.tree == null) {
+		if (this.graph == null) {
 			// compute decomposition tree
-			this.computeDecompositionTree();
+			this.computeDecompositionGraph();
 		}
 		
 		// print decomposition tree
 		String str = "Decomposition tree:\n-----------------------------------\n";
-		for (ComponentValue val : this.tree.keySet()) {
+		for (ComponentValue val : this.graph.keySet()) {
 			str += "- " + val.getLabel() + ":\n";
-			for (ComponentValue tar : this.tree.get(val)) {
-				str += "\t- " + tar.getLabel() + "\n";
+			for (List<ComponentValue> conjunctions : this.graph.get(val)) {
+				str += "\t- Decomposition : \n";
+				for (ComponentValue tar : conjunctions) {
+					str += "\t\t- " + tar.getLabel() + "\n";
+				}
 			}
 		}
 		str += "-----------------------------------";
 		// print resulting decomposition tree
-		info(str);
+		System.out.println(str);
 	}
 	
 	/**
@@ -121,15 +124,15 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	 * 
 	 */
 	@Override
-	public Map<ComponentValue, Set<ComponentValue>> getDecompositionTree() {
+	public Map<ComponentValue, List<List<ComponentValue>>> getDecompositionGraph() {
 		// check if a decomposition tree has been computed
-		if (this.tree == null) {
+		if (this.graph == null) {
 			// analyze domain synchronization to build a decomposition tree of the domain
-			this.computeDecompositionTree();
+			this.computeDecompositionGraph();
 		}
 		
 		// get the decomposition tree
-		return new HashMap<ComponentValue, Set<ComponentValue>>(this.tree);
+		return new HashMap<ComponentValue, List<List<ComponentValue>>>(this.graph);
 	}
 	
 	/**
@@ -161,7 +164,7 @@ public class StaticDomainKnowledge extends DomainKnowledge
 				if (ruleConstraint.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) 
 				{
 					// get related token variables
-					TokenVariable source = ruleConstraint.getSource();
+					TokenVariable source = ruleConstraint.getReference();
 					TokenVariable target = ruleConstraint.getTarget();
 					// check related values' components
 					DomainComponent master = source.getValue().getComponent();
@@ -248,34 +251,38 @@ public class StaticDomainKnowledge extends DomainKnowledge
 	 * Analyze synchronization rule constraints to generate and extract the 
 	 * decomposition tree of the domain
 	 */
-	private void computeDecompositionTree()
+	private void computeDecompositionGraph()
 	{
-		// initialize the decomposition tree
-		this.tree = new HashMap<>();
-		// initialize the decomposition tree
-		for (DomainComponent component : this.pdb.getComponents()) {
-			// check component values
-			for (ComponentValue value : component.getValues()) {
-				// add entry to the tree
-				this.tree.put(value, new HashSet<>());
-			}
-		}
-		
+		// set the decomposition tree
+		this.graph = new HashMap<>();
 		// get synchronization domains
 		for (SynchronizationRule rule : this.pdb.getSynchronizationRules()) 
 		{
 			// get trigger value 
 			ComponentValue reference = rule.getTriggerer().getValue();
+			// check if value exists in the graph
+			if (!this.graph.containsKey(reference)) {
+				// add entry to the graph and prepare a list of disjunctions
+				this.graph.put(reference, new ArrayList<>());
+			}
+			
+			// create a set of conjunctive values 
+			List<ComponentValue> conjunctions = new ArrayList<>();
 			// check synchronization target
 			for (SynchronizationConstraint constraint : rule.getConstraints())
 			{
 				// get target value
-				ComponentValue target = constraint.getTarget().getValue();
+				ComponentValue cRef = constraint.getReference().getValue();
+				// get target value
+				ComponentValue cTar = constraint.getTarget().getValue();
 				// avoid reflexive references
-				if (!reference.equals(target)) {
-					this.tree.get(reference).add(target);
+				if (cRef.equals(reference) && !cTar.equals(reference)) {
+					conjunctions.add(cTar);
 				}
 			}
+			
+			// add conjunctions to the graph
+			this.graph.get(reference).add(conjunctions);
 		}
 	}
 	

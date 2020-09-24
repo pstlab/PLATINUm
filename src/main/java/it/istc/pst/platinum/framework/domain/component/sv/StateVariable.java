@@ -35,48 +35,6 @@ public abstract class StateVariable extends DomainComponent
 		this.transitions = new HashMap<>();
 	}
 	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public void checkPseudoControllability() 
-//			throws PseudoControllabilityCheckException 
-//	{
-//		// issues
-//		List<Decision> issues = new ArrayList<>();
-//		for (Decision dec : this.getActiveDecisions()) 
-//		{
-//			// check if token is controllable
-//			if (!dec.isControllable()) 
-//			{
-//				// check actual duration
-//				IntervalPseudoControllabilityQuery query = this.tdb.
-//						createTemporalQuery(TemporalQueryType.INTERVAL_PSEUDO_CONTROLLABILITY);
-//				
-//				// set related temporal interval
-//				query.setInterval(dec.getToken().getInterval());
-//				// process
-//				this.tdb.process(query);
-//				// check
-//				if (!query.isPseudoControllable()) {
-//					// add issue
-//					issues.add(dec);
-//				}
-//			}
-//		}
-//		
-//		// check issues
-//		if (!issues.isEmpty()) {
-//			// prepare exception
-//			PseudoControllabilityCheckException ex = new PseudoControllabilityCheckException("Controllability issues found on component " + this.name);
-//			for (Decision issue : issues) {
-//				ex.addIssue(issue);
-//			}
-//			// throw exception
-//			throw ex;
-//		}
-//	}
-	
 	/**
 	 * 
 	 * @param label
@@ -315,42 +273,6 @@ public abstract class StateVariable extends DomainComponent
 	 */
 	@Override
 	public String toString() {
-		return "[StateVariable name= " + this.name + " label= " + this.type.getLabel()+ "]";
+		return "{ \"name\": \"" + this.name + "\", \"label\": \"" + this.type.getLabel()+ "\" }";
 	}
-	
-//	/**
-//	 * 
-//	 * @param steps
-//	 * @param current
-//	 * @param target
-//	 * @param result
-//	 */
-//	private void computePaths(List<ComponentValue> steps, ComponentValue current, ComponentValue target, List<ValuePath> result) 
-//	{
-//		// base step
-//		if (current.equals(target)) {
-//			// add target
-//			steps.add(current);
-//			// add path to the result
-//			result.add(new ValuePath(steps));
-//			// remove last added element
-//			steps.remove(steps.size() -1);
-//		}
-//		else	// recursive step
-//		{
-//			//add current value to the path
-//			steps.add(current);
-//			// recursive calls
-//			for (ComponentValue successor : this.getDirectSuccessors(current)) {
-//				// check cycle
-//				if (!steps.contains(successor)) {
-//					// recursive call
-//					this.computePaths(steps, successor, target, result);
-//				}
-//			}
-//			// remove last added element
-//			steps.remove(steps.size() - 1);
-//		}
-//	}
-	
 }

@@ -120,6 +120,7 @@ public class Timeline implements Comparator<Token>
 	 */
 	@Override
 	public String toString() {
-		return "[Timeline component= " + this.sv + " tokens= " + this.getTokens() + "]";
+		// JSON style object description
+		return "{ \"component\": " + this.sv + ", \"tokens\": " + this.getTokens() + " }";
 	}
 }

@@ -15,7 +15,7 @@ import it.istc.pst.platinum.framework.time.tn.lang.event.ex.NotificationPropagat
  */
 public abstract class TemporalSolver<T extends Query> extends FrameworkObject implements TemporalNetworkObserver, QueryManager<T> 
 {
-	protected TemporalNetwork tn;
+protected TemporalNetwork tn;
 	
 	/**
 	 * 

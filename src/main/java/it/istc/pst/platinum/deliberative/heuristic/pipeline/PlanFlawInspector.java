@@ -9,21 +9,22 @@ import it.istc.pst.platinum.framework.microkernel.annotation.lifecycle.PostConst
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawType;
 import it.istc.pst.platinum.framework.microkernel.resolver.ex.UnsolvableFlawException;
+import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
  * @author anacleto
  *
  */
-class PlanningFlawInspector extends FlawInspector 
+class PlanFlawInspector extends FlawInspector 
 {
 	private FlawType[] preferences;
 
 	/**
 	 * 
 	 */
-	protected PlanningFlawInspector() {
-		super("FlawInspector:FlawTypeInspector");
+	protected PlanFlawInspector() {
+		super("PlanFlawInspector");
 	}
 	
 	/**
@@ -31,13 +32,16 @@ class PlanningFlawInspector extends FlawInspector
 	 */
 	@PostConstruct
 	protected void init() {
-		// load preferences
-		this.preferences = new FlawType[] {
-				FlawType.PLAN_REFINEMENT,
-				FlawType.RESOURCE_PLANNING,
-				FlawType.RESOURCE_OVERFLOW,
-				FlawType.TIMELINE_OVERFLOW
-		};
+		// get deliberative property file
+		FilePropertyReader properties = new FilePropertyReader(FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		// get preference property
+		String[] prefs = properties.getProperty("preferences").trim().split(",");
+		// set prefernces
+		this.preferences = new FlawType[prefs.length];
+		for (int i = 0; i < prefs.length; i++) {
+			// set preference
+			this.preferences[i] = FlawType.getFlawTypeFromLabel(prefs[i]);
+		}
 	}
 	
 	/**
@@ -55,6 +59,27 @@ class PlanningFlawInspector extends FlawInspector
 			FlawType type = this.preferences[index];
 			// detect flaws
 			set = new HashSet<>(this.pdb.detectFlaws(type));
+		}
+		
+		// get flaws
+		return set;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Set<Flaw> check() {
+		// filtered set
+		Set<Flaw> set = new HashSet<>();
+		// look for flaws of a given type
+		for (int index = 0; index < this.preferences.length && set.isEmpty(); index++) {
+			// get type of flaw
+			FlawType type = this.preferences[index];
+			// detect flaws
+			set = new HashSet<>(this.pdb.checkFlaws(new FlawType[] {
+					type
+					}));
 		}
 		
 		// get flaws

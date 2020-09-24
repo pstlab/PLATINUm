@@ -112,7 +112,7 @@ public class AIJFbTPlannerExperimentManager extends AIJFbT
 									// update solving time 
 									time +=  plan.getSolvingTime();
 									// update average cycle time
-									makespan += plan.getMakespan();
+									makespan += plan.getMakespan()[0];
 									// print solving information
 									System.out.println("... problem solved after " + time + " msecs\nSolution plan:\n" + plan + "\n"
 											+ "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");

@@ -30,7 +30,7 @@ public abstract class SynchronizationConstraint
 	 * 
 	 * @return
 	 */
-	public TokenVariable getSource() {
+	public TokenVariable getReference() {
 		return source;
 	}
 	

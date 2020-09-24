@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.Flaw;
@@ -22,7 +23,7 @@ class DegreeFlawInspector extends FlawInspector implements Comparator<Flaw>
 	 * 
 	 */
 	protected DegreeFlawInspector() {
-		super("FlawInspector:DegreeFlawInspector");
+		super("DegreeFlawInspector");
 	}
 	
 	/**
@@ -33,7 +34,7 @@ class DegreeFlawInspector extends FlawInspector implements Comparator<Flaw>
 			throws UnsolvableFlawException 
 	{
 		// set of filtered list
-		Set<Flaw> flaws = new HashSet<>();
+		Set<Flaw> set = new HashSet<>();
 		// filtered set
 		List<Flaw> list = new ArrayList<>(this.pdb.detectFlaws());
 		// check list 
@@ -41,29 +42,41 @@ class DegreeFlawInspector extends FlawInspector implements Comparator<Flaw>
 		{
 			// sort flaws according to their degree (i.e. number of available solutions
 			Collections.sort(list, this);
+			
+			// get "equivalent" flaws
+			List<Flaw> eq = new ArrayList<>();
 			// get the first element of the list
 			Flaw flaw = list.remove(0);
-			flaws.add(flaw);
-			// check remaining flaws
-			boolean stop = false;
-			for (int index = 0; index < list.size() && !stop; index++) 
-			{
-				// get flaw
-				Flaw current = list.get(index);
-				// compare available solutions
-				if (flaw.getSolutions().size() == current.getSolutions().size()) {
-					// add flaw to the set
-					flaws.add(current);
-				}
-				else {
-					// stop, the rest of flaws have an higher number of solutions available
-					stop = true;
+			// add flaw to equivalent
+			eq.add(flaw);
+			
+			// check other flaws with the same number of solutions
+			for (Flaw other : list) {
+				// check size
+				if (other.getSolutions().size() == flaw.getSolutions().size()) {
+					// add to equivalent list
+					eq.add(other);
 				}
 			}
+			
+			// randomly select a flaw from the equivalent list
+			Random rand = new Random(System.currentTimeMillis());
+			int index = rand.nextInt(eq.size());
+			// add flaw to the result set
+			set.add(eq.get(index));
 		}
 				
 		// get flaws
-		return flaws;
+		return set;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Set<Flaw> check() {
+		// set of filtered list
+		return new HashSet<>(this.pdb.checkFlaws());
 	}
 	
 	/**
@@ -73,8 +86,7 @@ class DegreeFlawInspector extends FlawInspector implements Comparator<Flaw>
 	public int compare(Flaw o1, Flaw o2) {
 		// compare the number of available solutions
 		return o1.getSolutions().size() < o2.getSolutions().size() ? -1 : 
-			o1.getSolutions().size() > o2.getSolutions().size() ? 1 : 
-			0;
+			o1.getSolutions().size() > o2.getSolutions().size() ? 1 : 0;
 	}
 	
 	/**
@@ -92,25 +104,28 @@ class DegreeFlawInspector extends FlawInspector implements Comparator<Flaw>
 		{
 			// sort flaws according to their degree (i.e. number of available solutions
 			Collections.sort(list, this);
+			
+			// get "equivalent" flaws
+			List<Flaw> eq = new ArrayList<>();
 			// get the first element of the list
 			Flaw flaw = list.remove(0);
-			set.add(flaw);
-			// check remaining flaws
-			boolean stop = false;
-			for (int index = 0; index < list.size() && !stop; index++) 
-			{
-				// get flaw
-				Flaw current = list.get(index);
-				// compare available solutions
-				if (flaw.getSolutions().size() == current.getSolutions().size()) {
-					// add flaw to the set
-					set.add(current);
-				}
-				else {
-					// stop, the rest of flaws have an higher number of solutions available
-					stop = true;
+			// add flaw to equivalent
+			eq.add(flaw);
+			
+			// check other flaws with the same number of solutions
+			for (Flaw other : list) {
+				// check size
+				if (other.getSolutions().size() == flaw.getSolutions().size()) {
+					// add to equivalent list
+					eq.add(other);
 				}
 			}
+			
+			// randomly select a flaw from the equivalent list
+			Random rand = new Random(System.currentTimeMillis());
+			int index = rand.nextInt(eq.size());
+			// add flaw to the result set
+			set.add(eq.get(index));
 		}
 		
 		// get filtered set

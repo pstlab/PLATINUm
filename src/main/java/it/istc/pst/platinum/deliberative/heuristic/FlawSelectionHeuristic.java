@@ -51,7 +51,24 @@ public abstract class FlawSelectionHeuristic extends DeliberativeObject
 	 * @throws NoFlawFoundException
 	 */
 	public abstract Set<Flaw> choose() 
-			throws UnsolvableFlawException, NoFlawFoundException; 
+			throws UnsolvableFlawException, NoFlawFoundException;
+	
+	/**
+	 * Check existing flaws without computing possible solutions
+	 * 
+	 * @return
+	 */
+	public abstract Set<Flaw> check();
+	
+	/**
+	 * Filter a set of already computed flaws according to a certain criterion
+	 * 
+	 * @param flaws
+	 * @return
+	 * @throws NoFlawFoundException
+	 */
+	public abstract Set<Flaw> filter(Set<Flaw> flaws) 
+			throws NoFlawFoundException;
 	
 	
 	/**
@@ -59,7 +76,7 @@ public abstract class FlawSelectionHeuristic extends DeliberativeObject
 	 */
 	@Override
 	public String toString() {
-		return "[FlawSelectionHeuristic label= " + this.label + "]";
+		return "{ \"label\": \"" + this.label + "\" }";
 	}
 	
 	/**

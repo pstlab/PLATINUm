@@ -290,8 +290,12 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		}
 		
 		// compute the resulting plan makespan
-		double mk = this.computeMakespan();
+		double[] mk = this.getMakespan();
 		plan.setMakespan(mk);
+		
+		// compute the average behavior duration
+		double[] d = this.getBehaviorDuration();
+		plan.setBehaviorDuration(d);
 		
 		// computer parameter solutions
 		ComputeSolutionParameterQuery query = this.pdb.
@@ -303,13 +307,92 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	}
 	
 	/**
+	 * Compute the duration of a plan as the minimum and maximal average duration of the activities
+	 * of its components 
+	 */
+	@Override
+	public synchronized double[] getMakespan() 
+	{
+		// set the initial minimal and maximal values
+		double[] makespan = new double[] {
+				0,
+				0
+			};
+		
+		
+		// get the list of primitive components
+		Set<DomainComponent> primset = new HashSet<>();
+		// compute "local" makespan for each component
+		for (DomainComponent comp : this.components.values()) 
+		{
+			// check type 
+			if (comp.getType().equals(DomainComponentType.SV_PRIMITIVE)) 
+			{
+				// get local makespan
+				double[] local = comp.getMakespan();
+				// update "global" minimum makespan
+				makespan[0] += local[0];
+				// update "global" maximum makespan
+				makespan[1] += local[1];
+				// add component to primset
+				primset.add(comp);
+			}
+		}
+		
+		// compute average values
+		makespan[0] = makespan[0] / primset.size();
+		makespan[1] = makespan[1] / primset.size();
+		// get the makespan
+		return makespan;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public synchronized double[] getBehaviorDuration() 
+	{
+		// set the initial minimal and maximal values
+		double[] duration = new double[] {
+				0,
+				0
+			};
+		
+		
+		// get the list of primitive components
+		Set<DomainComponent> primset = new HashSet<>();
+		// compute "local" makespan for each component
+		for (DomainComponent comp : this.components.values()) 
+		{
+			// check type 
+			if (comp.getType().equals(DomainComponentType.SV_PRIMITIVE)) 
+			{
+				// get local makespan
+				double[] local = comp.getBehaviorDuration();
+				// update "global" minimum makespan
+				duration[0] += local[0];
+				// update "global" maximum makespan
+				duration[1] += local[1];
+				// add component to primset
+				primset.add(comp);
+			}
+		}
+		
+		// compute average values
+		duration[0] = duration[0] / primset.size();
+		duration[1] = duration[1] / primset.size();
+		// get the duration
+		return duration;
+	}
+	
+	/**
 	 * 
 	 * @return
 	 */
 	@Override
-	public Plan getPlan() 
+	public synchronized Plan getPlan() 
 	{
-		// initialize the agenda
+		// initialize the plan
 		Plan plan = new Plan();
 		// get decisions
 		for (Decision goal : this.getActiveDecisions()) {
@@ -321,6 +404,11 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 			plan.add(rel);
 		}
 		
+		// set the makespan
+		plan.setMakespan(this.getMakespan());
+		// set the average duration
+		plan.setBehaviorDuration(this.getBehaviorDuration());
+		
 		// get the plan
 		return plan;
 	}
@@ -329,7 +417,8 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Plan getPlan(PlanElementStatus status) { 
+	public synchronized Plan getPlan(PlanElementStatus status) 
+	{ 
 		// prepare the plan
 		Plan plan = new Plan();
 		// check desired level
@@ -368,6 +457,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 			}
 			break;
 		}
+		
 		return plan;
 	}
 	
@@ -375,7 +465,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public List<DomainComponent> getComponents() {
+	public synchronized List<DomainComponent> getComponents() {
 		return new ArrayList<>(this.components.values());
 	}
 	
@@ -383,7 +473,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public DomainComponent getComponentByName(String name) {
+	public synchronized DomainComponent getComponentByName(String name) {
 		if (!this.components.containsKey(name)) {
 			throw new RuntimeException("Component with name " + name + " does not exist");
 		}
@@ -403,7 +493,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @throws ConsistencyCheckException
 	 */
 	@Override
-	public void verify() 
+	public synchronized void verify() 
 			throws ConsistencyCheckException 
 	{
 		// check temporal consistency of the network
@@ -416,7 +506,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * The method returns the list of all available domain values
 	 */
 	@Override
-	public List<ComponentValue> getValues() {
+	public synchronized List<ComponentValue> getValues() {
 		List<ComponentValue> values = new ArrayList<>();
 		for (DomainComponent component : this.components.values()) {
 			values.addAll(component.getValues());
@@ -429,7 +519,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public ComponentValue getValueByName(String name) {
+	public synchronized ComponentValue getValueByName(String name) {
 		ComponentValue value = null;
 		for (DomainComponent comp : this.components.values()) {
 			for (ComponentValue v : comp.getValues()) {
@@ -459,7 +549,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @param type
 	 */
 	@Override
-	public <T extends ParameterDomain> T createParameterDomain(String name, ParameterDomainType type) {
+	public synchronized <T extends ParameterDomain> T createParameterDomain(String name, ParameterDomainType type) {
 		// create parameter domain
 		T pd = this.pdb.createParameterDomain(name, type);
 		// add parameter domain
@@ -472,7 +562,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @return
 	 */
 	@Override
-	public List<ParameterDomain> getParameterDoamins() {
+	public synchronized List<ParameterDomain> getParameterDoamins() {
 		return new ArrayList<>(this.parameterDomains.values());
 	}
 	
@@ -482,7 +572,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @return
 	 */
 	@Override
-	public ParameterDomain getParameterDomainByName(String name) {
+	public synchronized ParameterDomain getParameterDomainByName(String name) {
 		return this.parameterDomains.get(name);
 	}
 	
@@ -492,7 +582,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @return
 	 */
 	@Override
-	public <T extends DomainComponent> T createDomainComponent(String name, DomainComponentType type) 
+	public synchronized <T extends DomainComponent> T createDomainComponent(String name, DomainComponentType type) 
 	{
 		// check if a component already exist
 		if (this.components.containsKey(name)) {
@@ -510,7 +600,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @param component
 	 */
 	@Override
-	public void addDomainComponent(DomainComponent component) {
+	public synchronized void addDomainComponent(DomainComponent component) {
 		// add component
 		this.components.put(component.getName(), component);
 	}
@@ -520,7 +610,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @return
 	 */
 	@Override
-	public List<Decision> getActiveDecisions() {
+	public synchronized List<Decision> getActiveDecisions() {
 		// list of active decisions with schedule information
 		List<Decision> list = new ArrayList<>();
 		// get schedule information from components
@@ -536,7 +626,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @return
 	 */
 	@Override
-	public List<Decision> getPendingDecisions() {
+	public synchronized List<Decision> getPendingDecisions() {
 		// list of pending decisions
 		List<Decision> list = new ArrayList<>();
 		for (DomainComponent comp : this.components.values()) {
@@ -550,7 +640,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Set<Relation> getPendingRelations(Decision dec) 
+	public synchronized Set<Relation> getPendingRelations(Decision dec) 
 	{
 		// get decision component 
 		DomainComponent comp = dec.getComponent();
@@ -561,7 +651,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override 
-	public void restore(Decision dec) {
+	public synchronized void restore(Decision dec) {
 		// dispatch request to the related component
 		dec.getComponent().restore(dec);
 	}
@@ -570,7 +660,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public void restore(Relation rel) {
+	public synchronized void restore(Relation rel) {
 		// get reference component
 		DomainComponent comp = rel.getReference().getComponent();
 		comp.restore(rel);
@@ -580,7 +670,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue value, String[] labels) {
+	public synchronized Decision create(ComponentValue value, String[] labels) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
@@ -593,7 +683,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue value, String[] labels, long[] duration) {
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] duration) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
@@ -606,7 +696,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
@@ -619,7 +709,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
 		// get the component the value belongs to
 		DomainComponent comp = value.getComponent();
 		// create decision
@@ -632,7 +722,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Set<Relation> activate(Decision dec) 
+	public synchronized Set<Relation> activate(Decision dec) 
 			throws DecisionPropagationException 
 	{
 		// get the component the decision belongs to
@@ -647,7 +737,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Set<Relation> getRelations(Decision dec) 
+	public synchronized Set<Relation> getRelations(Decision dec) 
 	{
 		// list of relations concerning the decision
 		Set<Relation> set = new HashSet<>();
@@ -662,7 +752,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * Get the set of both active and pending local and global relations on components
 	 */
 	@Override
-	public Set<Relation> getRelations() {
+	public synchronized Set<Relation> getRelations() {
 		// list of relations
 		Set<Relation> set = new HashSet<>();
 		for (DomainComponent comp : this.components.values()) {
@@ -687,7 +777,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @return
 	 */
 	@Override
-	public Set<Relation> getActiveRelations()
+	public synchronized Set<Relation> getActiveRelations()
 	{
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
@@ -714,7 +804,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 * @return
 	 */
-	public Set<Relation> getPendingRelations()
+	public synchronized Set<Relation> getPendingRelations()
 	{
 		// set of relations
 		Set<Relation> set = new HashSet<>();
@@ -738,7 +828,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Set<Relation> getActiveRelations(Decision dec) 
+	public synchronized Set<Relation> getActiveRelations(Decision dec) 
 	{
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
@@ -753,7 +843,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public Set<Relation> getToActivateRelations(Decision dec) 
+	public synchronized Set<Relation> getToActivateRelations(Decision dec) 
 	{
 		// list of relations
 		Set<Relation> set = new HashSet<>();
@@ -770,7 +860,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @throws Exception
 	 */
 	@Override
-	public void free(Decision dec) 
+	public synchronized void free(Decision dec) 
 	{
 		// get decision component
 		DomainComponent comp = dec.getComponent();
@@ -781,7 +871,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public void deactivate(Decision dec) {
+	public synchronized void deactivate(Decision dec) {
 		// get decision component
 		DomainComponent comp = dec.getComponent();
 		comp.deactivate(dec);;
@@ -792,7 +882,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @param relation
 	 */
 	@Override
-	public void delete(Relation relation) 
+	public synchronized void delete(Relation relation) 
 	{
 		// get reference component
 		DomainComponent refComp = relation.getReference().getComponent();
@@ -803,7 +893,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * Only for debugging
 	 */
 	@Override
-	public List<Decision> getSilentDecisions() {
+	public synchronized List<Decision> getSilentDecisions() {
 		List<Decision> list = new ArrayList<>();
 		for (DomainComponent component : this.components.values()) {
 			list.addAll(component.getSilentDecisions());
@@ -815,7 +905,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * Only for debugging
 	 */
 	@Override
-	public Set<Relation> getSilentRelations() {
+	public synchronized Set<Relation> getSilentRelations() {
 		// set of relations
 		Set<Relation> set = new HashSet<>();
 		for (DomainComponent component : this.components.values()) {
@@ -838,7 +928,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public boolean isActive(Decision dec) {
+	public synchronized boolean isActive(Decision dec) {
 		return dec.getComponent().isActive(dec);
 	}
 	
@@ -846,7 +936,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public boolean isPending(Decision dec) {
+	public synchronized boolean isPending(Decision dec) {
 		// forward to component
 		return dec.getComponent().isPending(dec);
 	}
@@ -855,7 +945,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public boolean isSilent(Decision dec) {
+	public synchronized boolean isSilent(Decision dec) {
 		// forward to component
 		return dec.getComponent().isSilent(dec);
 	}
@@ -864,7 +954,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public void activate(Relation rel) 
+	public synchronized void activate(Relation rel) 
 			throws RelationPropagationException 
 	{
 		// get reference component
@@ -876,7 +966,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public void deactivate(Relation rel) 
+	public synchronized void deactivate(Relation rel) 
 	{
 		// get reference component
 		DomainComponent refComp = rel.getReference().getComponent();
@@ -885,34 +975,53 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	
 	/**
 	 * 
+	 */
+	@Override
+	public synchronized List<Flaw> checkFlaws() {
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		// simply query the components
+		for (DomainComponent comp : this.components.values()) {
+			// query each COMPOSITE component for flaws
+			List<Flaw> flaws = comp.checkFlaws();
+			list.addAll(flaws);
+		}
+		// get the list of detected flaws in the domain
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public synchronized List<Flaw> checkFlaws(FlawType[] types) {
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		// simply query the components
+		for (DomainComponent comp : this.components.values()) {
+			// query each COMPOSITE component for flaws
+			List<Flaw> flaws = comp.checkFlaws(types);
+			list.addAll(flaws);
+		}
+		// get the list of detected flaws in the domain
+		return list;
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	@Override
-	public List<Flaw> detectFlaws() 
+	public synchronized List<Flaw> detectFlaws() 
 			throws UnsolvableFlawException 
 	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// simply query the components
-		for (DomainComponent comp : this.components.values()) 
-		{
+		for (DomainComponent comp : this.components.values()) {
 			// query each COMPOSITE component for flaws
 			List<Flaw> flaws = comp.detectFlaws();
-			// check flaws
-			for (Flaw flaw : flaws) 
-			{
-				// check flaw solutions
-				for (FlawSolution solution : flaw.getSolutions())
-				{
-					// set the associated partial plan
-					this.setCurrentPartialPlan(solution);
-					// set the associated agenda 
-					this.setCurrentAgenda(solution);
-				}
-				
-				// add the flaw to the list
-				list.add(flaw);
-			}
+			list.addAll(flaws);
 		}
 		// get the list of detected flaws in the domain
 		return list;
@@ -925,7 +1034,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @throws UnsolvableFlawException
 	 */
 	@Override
-	public List<Flaw> detectFlaws(FlawType type) 
+	public synchronized List<Flaw> detectFlaws(FlawType type) 
 			throws UnsolvableFlawException
 	{
 		// list of flaws to solve
@@ -934,79 +1043,18 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		for (DomainComponent comp : this.components.values()) {
 			// get the list of flaws
 			List<Flaw> flaws = comp.detectFlaws(type);
-			// check flaws
-			for (Flaw flaw : flaws)
-			{
-				// check flaw solutions
-				for (FlawSolution solution : flaw.getSolutions())
-				{
-					// set the associated partial plan 
-					this.setCurrentPartialPlan(solution);
-					// set the associated agenda
-					this.setCurrentAgenda(solution);
-				}
-				
-				// add the flaw to the list
-				list.add(flaw);
-			}
+			list.addAll(flaws);
 		}
 		
 		// get the list of detected flaws
 		return list;
 	}
 	
-	
-	/**
-	 * 
-	 * @param solution
-	 */
-	private void setCurrentPartialPlan(FlawSolution solution) 
-	{
-		// get domain components
-		for (DomainComponent comp : this.components.values()) 
-		{
-			// check active decisions
-			for (Decision dec : comp.getActiveDecisions()) {
-				// add decision to the partial plan
-				solution.addDecisionToPartialPlan(dec);
-			}
-			
-			// get local active relations
-			for (Relation rel : comp.getActiveRelations()) {
-				// add relation to the partial plan
-				solution.addRelationToPartialPlan(rel);
-			}
-		}
-		
-		// add also global (active) relations to the partial plan
-		for (Relation rel : this.getGlobalActiveRelations()) {
-			// add relation to the partial plan
-			solution.addRelationToPartialPlan(rel);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param solution
-	 */
-	private void setCurrentAgenda(FlawSolution solution) 
-	{
-		// get domain components
-		for (DomainComponent comp : this.components.values())
-		{
-			// get pending decisions
-			for (Decision goal : comp.getPendingDecisions()) {
-				// add goal decision to the agenda
-				solution.addGoalToAgenda(goal.getValue());
-			}
-		}
-	}
-	
 	/**
 	 * 
 	 */
 	@Override
-	public void rollback(FlawSolution solution) 
+	public synchronized void rollback(FlawSolution solution) 
 	{ 
 		// get component
 		DomainComponent comp = solution.getFlaw().getComponent();
@@ -1014,14 +1062,16 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	}
 	
 	/**
-	 * Solve a flaw by applying the selected solution
+	 * Solve a flaw by applying the selected solution. 
+	 * 
+	 * Commit the effect of a flaw solution to the underlying component
 	 * 
 	 * @param flaw
 	 * @param sol
 	 * @throws Exception
 	 */
 	@Override
-	public void commit(FlawSolution solution) 
+	public synchronized void commit(FlawSolution solution) 
 			throws FlawSolutionApplicationException 
 	{
 		// get component
@@ -1035,7 +1085,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * @throws Exception
 	 */
 	@Override
-	public void restore(FlawSolution solution) 
+	public synchronized void restore(FlawSolution solution) 
 			throws Exception
 	{
 		// get component
@@ -1047,7 +1097,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public void propagate(Operator operator) 
+	public synchronized void propagate(Operator operator) 
 			throws OperatorPropagationException 
 	{
 		// get related flaw solution
@@ -1057,14 +1107,13 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		{
 			try
 			{
-				// commit solution 
-				this.commit(solution);
 				// set applied
 				operator.setApplied();
+				// commit solution 
+				this.commit(solution);
 			}
 			catch (FlawSolutionApplicationException ex) {
-				// error while applying flaw solution
-				warning(ex.getMessage());
+				// throw exception
 				throw new OperatorPropagationException("Error while propagating operator:\n- " + operator + "\n");
 			}
 		}
@@ -1077,7 +1126,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 			} 
 			catch (Exception ex) { 
 				// error while resetting operator
-				throw new OperatorPropagationException("Error while resetting operator status:\n- " + operator + "\n");
+				throw new OperatorPropagationException("Error while restoring operator status:\n- " + operator + "\n");
 			}
 		}
 	}
@@ -1086,7 +1135,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public void retract(Operator operator) 
+	public synchronized void retract(Operator operator) 
 	{
 		// get flaw solution
 		FlawSolution solution = operator.getFlawSolution();
@@ -1113,7 +1162,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 */
 	@Override
 	public String toString() {
-		return "[PlanDataBase components= " + this.components.values() +"]\n";
+		return "{ \"components\": " + this.components.values() +" }";
 	}
 	
 	/**

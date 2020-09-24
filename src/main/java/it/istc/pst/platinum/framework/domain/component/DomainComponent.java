@@ -94,23 +94,14 @@ public abstract class DomainComponent extends FrameworkObject
 		this.type = type;
 		this.name = name;
 		
-		// initialize decisions of the (local) plan
+		// set decisions of the (local) plan
 		this.decisions = new HashMap<>();
 		for (PlanElementStatus status : PlanElementStatus.values()) {
 			this.decisions.put(status, new HashSet<>());
 		}
 		
-		// initialize relations of the (local) plan
+		// set relations of the (local) plan
 		this.localRelations = new HashSet<>();
-//		// initialize global relations
-//		if (globalRelations == null) {
-//			globalRelations = new HashSet<>();
-//		}
-//		// initialize rules 
-//		if (rules == null) {
-//			rules = new HashMap<>();
-//		}
-		
 		// set up the list of resolvers
 		this.resolvers = new ArrayList<>();
 		this.flawType2resolver = new HashMap<>();
@@ -176,16 +167,23 @@ public abstract class DomainComponent extends FrameworkObject
 	/**
 	 * 
 	 */
-	public void clear() 
+	public synchronized void clear() 
 	{
 		// delete all active relations
 		for (Relation relation : this.getActiveRelations()) {
+			// deactivate relation
 			this.deactivate(relation);
+			// delete relation data
+			this.delete(relation);
 		}
 		
 		// delete all active decisions
 		for (Decision decision : this.getActiveDecisions()) {
+			// deactivate decision
 			this.deactivate(decision);
+			// free decision
+			this.free(decision);
+			// TODO: eventually, add a method to completely remove decision data from the data structure 
 		}
 		
 		// clear component data structures
@@ -193,25 +191,58 @@ public abstract class DomainComponent extends FrameworkObject
 		this.localRelations.clear();
 	}
 	
+	
+	
 	/**
-	 * Compute the makespan of the component
+	 * Compute the makespan of a component as minimal and maximal duration of its activities
 	 *  
 	 * @return
 	 */
-	public double computeMakespan() 
+	public synchronized double[] getMakespan() 
 	{
-		// initialize the makespan to the temporal origin
-		double mk = this.getOrigin();
+		// set makespan initial values
+		double[] makespan = new double[] {
+			0,
+			0
+		};
+		
 		// get active decisions
 		List<Decision> list = this.getActiveDecisions();
 		// check scheduled end-times 
 		for (Decision a : list) {
-			// compare makespan with the end-time lower bound
-			mk = Math.max(mk, a.getEnd()[0]);
+			// increment minimal makespan
+			makespan[0] = Math.max(makespan[0], a.getEnd()[0]);
+			// increment maximal makespan
+			makespan[1] = Math.max(makespan[1], a.getEnd()[1]);
 		}
 		
 		// get computed makespan
-		return mk;
+		return makespan;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public synchronized double[] getBehaviorDuration() {
+		// set duration initial values
+		double[] duration = new double[] {
+			0,
+			0
+		};
+		
+		// get active decisions
+		List<Decision> list = this.getActiveDecisions();
+		// check scheduled end-times 
+		for (Decision a : list) {
+			// increment minimal duration
+			duration[0] += a.getDuration()[0];
+			// increment maximal duration
+			duration[1] += a.getDuration()[1];
+		}
+		
+		// get computed makespan
+		return duration;
 	}
 	
 	/**
@@ -220,30 +251,21 @@ public abstract class DomainComponent extends FrameworkObject
 	public void display() {
 		this.view.display();
 	}
-	
-//	/**
-//	 * Check pseudo-controllability of the component and 
-//	 * return the list of "squeezed" uncontrollable tokens 
-//	 * if any
-//	 * 
-//	 * @throws ConsistencyCheckException
-//	 */
-//	public abstract void verify() 
-//			throws ConsistencyCheckException;
-	
 	/**
 	 * 
 	 * @return
 	 */
-	public final synchronized List<SynchronizationRule> getSynchronizationRules() {
+	public final List<SynchronizationRule> getSynchronizationRules() {
 		// get all rules
 		List<SynchronizationRule> list = new ArrayList<>();
-		for (DomainComponent comp : rules.keySet()) {
-			// check if a synchronization has been defined on the component
-			if (rules.containsKey(comp)) {
-				for (ComponentValue v : rules.get(comp).keySet()) {
-					// add rules
-					list.addAll(rules.get(comp).get(v));
+		synchronized (rules) {
+			for (DomainComponent comp : rules.keySet()) {
+				// check if a rule has been defined on the component
+				if (rules.containsKey(comp)) {
+					for (ComponentValue v : rules.get(comp).keySet()) {
+						// add rules
+						list.addAll(rules.get(comp).get(v));
+					}
 				}
 			}
 		}
@@ -255,14 +277,17 @@ public abstract class DomainComponent extends FrameworkObject
 	/**
 	 * 
 	 */
-	public final synchronized  List<SynchronizationRule> getSynchronizationRules(ComponentValue value) 
+	public final  List<SynchronizationRule> getSynchronizationRules(ComponentValue value) 
 	{
 		// list of rules
 		List<SynchronizationRule> list = new ArrayList<>();
-		// check domain specification
-		if (rules.containsKey(value.getComponent()) && rules.get(value.getComponent()).containsKey(value)) {
-			list.addAll(rules.get(value.getComponent()).get(value));
+		synchronized (rules) {
+			// check domain specification
+			if (rules.containsKey(value.getComponent()) && rules.get(value.getComponent()).containsKey(value)) {
+				list.addAll(rules.get(value.getComponent()).get(value));
+			}
 		}
+		
 		// get rules
 		return list;
 	}
@@ -270,16 +295,19 @@ public abstract class DomainComponent extends FrameworkObject
 	/**
 	 * 
 	 */
-	public final synchronized List<SynchronizationRule> getSynchronizationRules(DomainComponent component) 
+	public final List<SynchronizationRule> getSynchronizationRules(DomainComponent component) 
 	{
 		// list of rules
 		List<SynchronizationRule> list = new ArrayList<>();
-		// check domain specification
-		if (rules.containsKey(component)) {
-			for (ComponentValue value : rules.get(component).keySet()) {
-				list.addAll(rules.get(component).get(value));
+		synchronized (rules) {
+			// check domain specification
+			if (rules.containsKey(component)) {
+				for (ComponentValue value : rules.get(component).keySet()) {
+					list.addAll(rules.get(component).get(value));
+				}
 			}
 		}
+		
 		// get rules
 		return list;
 	}
@@ -289,7 +317,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public final Set<Relation> getGlobalActiveRelations() {
+	public static final Set<Relation> getGlobalActiveRelations() {
 		// set of active global relations
 		Set<Relation> set = new HashSet<>();
 		synchronized (globalRelations) {
@@ -307,7 +335,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * Get the set of global relations
 	 * @return
 	 */
-	public final Set<Relation> getGlobalRelations() {
+	public static final Set<Relation> getGlobalRelations() {
 		// set of active global relations
 		Set<Relation> set = new HashSet<>();
 		synchronized (globalRelations) {
@@ -323,7 +351,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * Get the set of pending global relations
 	 * @return
 	 */
-	public final Set<Relation> getGlobalPendingRelations() {
+	public static final Set<Relation> getGlobalPendingRelations() {
 		// set of active global relations
 		Set<Relation> set = new HashSet<>();
 		synchronized (globalRelations) {
@@ -341,7 +369,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public List<Decision> getActiveDecisions() 
+	public synchronized List<Decision> getActiveDecisions() 
 	{
 		// list of active decisions with schedule information
 		List<Decision> list = new ArrayList<>();
@@ -368,7 +396,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public List<Decision> getPendingDecisions() {
+	public synchronized List<Decision> getPendingDecisions() {
 		return new ArrayList<>(this.decisions.get(PlanElementStatus.PENDING));
 	}
 	
@@ -377,22 +405,32 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param dec
 	 */
-	public void restore(Decision dec) {
+	public synchronized void restore(Decision dec) 
+	{
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to restore a not local decision on component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
+		// if active something goes wrong
+		if (this.isActive(dec)) {
+			// unexpected behavior
+			throw new RuntimeException("Trying to restore an active decision:\n- decision: " + dec + "\n");
+		}
+		
+		// check if pending
+		if (this.isPending(dec)) {
+			// warning information
+			warning("Trying to restore an already pending decision:\n- decision: " + dec + "\n");
+			throw new RuntimeException("Trying to restore an already pending decision:\n- decision: " + dec + "\n");
+		}
+		
 		// check if silent decision
-		if (this.decisions.get(PlanElementStatus.SILENT).contains(dec)) {
+		if (this.isSilent(dec)) {
 			// remove from silent set
 			this.decisions.get(PlanElementStatus.SILENT).remove(dec);
 			// add to pending set
 			this.decisions.get(PlanElementStatus.PENDING).add(dec);
-		}
-		else {
-			// debug information
-			warning("The decision you want to restore is not \"silent\":\n- decision: " + dec + "\n");
 		}
 	}
 	
@@ -400,7 +438,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param rel
 	 */
-	public void restore(Relation rel) 
+	public synchronized void restore(Relation rel) 
 	{
 		// get reference component
 		DomainComponent refComp = rel.getReference().getComponent();
@@ -411,15 +449,52 @@ public abstract class DomainComponent extends FrameworkObject
 			throw new RuntimeException("Trying to restore a relation \"unknown\" to component:\n- component: " + this.name + "\n- relation: " + rel + "\n");
 		}
 		
-		// check if local relation
-		if (rel.isLocal()) {
-			// add-back local relation
-			this.localRelations.add(rel);
+		// restore local relation
+		if (rel.isLocal()) 
+		{
+			// check if still present in the data structure
+			if (this.localRelations.contains(rel)) 
+			{
+				// check also if active - FIXME: check if this case occurs
+				if (rel.getConstraint() != null) {
+					// warning trying to restore an active relation
+					warning("Trying to restore an active relation!");
+					// deactivate relation
+					this.deactivate(rel);
+				}
+				else {
+					// warning trying to restore an existing relation
+					warning("Traying to restore an already existing relation");
+				}
+			}
+			else {
+				// add "back" local relation
+				this.localRelations.add(rel);
+			}
 		}
-		else {
-			// add-back global relation
+		else 
+		{
+			// restore global relation
 			synchronized (globalRelations) {
-				globalRelations.add(rel);
+				// check if still present in the data structure
+				if (globalRelations.contains(rel)) 
+				{
+					// check also if active - FIXME: check if this case occurs
+					if (rel.getConstraint() != null) {
+						// warning trying to restore an active relation
+						warning("Trying to restore an active relation!");
+						// deactive relation
+						this.deactivate(rel);
+					}
+					else {
+						// warning trying to restore an existing relation
+						warning("Traying to restore an already existing relation");
+					}
+				}
+				else {
+					// add "back" global relation
+					globalRelations.add(rel);
+				}
 			}
 		}
 	}
@@ -430,7 +505,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param value
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels) 
+	public synchronized Decision create(ComponentValue value, String[] labels) 
 	{
 		// create decision
 		return this.create(
@@ -448,7 +523,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels, long[] duration) {
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] duration) {
 		// create decision
 		return this.create(
 				value,
@@ -466,7 +541,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] end, long[] duration) {
 		// create decision
 		return this.create(
 				value,
@@ -485,18 +560,18 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
 	{
 		// check if value is known to the component
 		if (!value.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to add a decision with a value unknown to the component:\n- component: " + this.name + "\n- value: " + value + "\n");
 		}
 		
-		// initialize decision
+		// set decision
 		Decision dec = new Decision(DecisionIdCounter.getAndIncrement(), value, labels, start, end, duration);
 		// add decision the the agenda
 		this.decisions.get(PlanElementStatus.PENDING).add(dec);
-		// get initialized decision
+		// get decision
 		return dec;
 	}
 	
@@ -509,18 +584,18 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus status) 
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus status) 
 	{
 		// check if value is known to the component
 		if (!value.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to add a decision with a value unknown to the component:\n- component: " + this.name + "\n- value: " + value + "\n");
 		}
 		
-		// initialize decision
+		// set decision
 		Decision dec = new Decision(DecisionIdCounter.getAndIncrement(), value, labels, start, end, duration, status);
 		// add decision the the agenda
 		this.decisions.get(PlanElementStatus.PENDING).add(dec);
-		// get initialized decision
+		// get set decision
 		return dec;
 	}
 	
@@ -535,7 +610,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @throws DecisionPropagationException
 	 * 
 	 */
-	public Set<Relation> activate(Decision dec) 
+	public synchronized Set<Relation> activate(Decision dec) 
 			throws DecisionPropagationException 
 	{
 		// check decision component
@@ -544,9 +619,33 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		
 		// list of relations to activate
-		Set<Relation> local = new HashSet<>();
+		Set<Relation> rels = new HashSet<>();
+		
+		// check if already active
+		if (this.isActive(dec)) {
+			// warning information
+			warning("Trying to activate an already active decision:\n- decision: " + dec + "\n");
+			throw new RuntimeException("Trying to activate an already active decision:\n- decision: " + dec + "\n");
+		}
+		
+//		// check if decision is silent
+//		if (this.isSilent(dec)) {
+//			// error 
+//			throw new RuntimeException("Trying to activate a silent decision:\n- decision: " + dec + "\n");
+//		}
+		
+		// flag in case of rollback
+		boolean free = false;
+		// check if decision is silent
+		if (this.isSilent(dec)) {
+			// restore decision 
+			this.restore(dec);
+			// set free flag
+			free = true;
+		}
+		
 		// check if decision is pending
-		if (this.decisions.get(PlanElementStatus.PENDING).contains(dec)) 
+		if (this.isPending(dec)) 
 		{
 			// token to create
 			Token token = null;
@@ -569,18 +668,29 @@ public abstract class DomainComponent extends FrameworkObject
 				// add decision to the plan
 				this.decisions.get(PlanElementStatus.ACTIVE).add(dec);
 			
-				// get relations to activate
-				local.addAll(this.getToActivateRelations(dec));
+							
+				
+				// get local and global relations to activate
+				rels.addAll(this.getToActivateRelations(dec));
 				// propagate relations
-				this.activate(local);
+				this.activate(rels);
 			}
 			catch (RelationPropagationException ex) 
 			{
+				// deactiavte decision ACTIVE -> PENDING
+				this.deactivate(dec);
+				
 				// roll-back decision's created token
-				this.tdb.deleteTemporalInterval(token.getInterval());
-				// the decision is still pending and the related token is removed
-				dec.clear();
-				// note the decision is still pending
+//				this.tdb.deleteTemporalInterval(token.getInterval());
+//				// the decision is still pending and the related token is removed
+//				dec.clear();
+				
+				// delete the decision if necesasry
+				if (free) {
+					// PENDING -> FREE
+					this.free(dec);
+				}
+				
 				// forward exception
 				throw new DecisionPropagationException(ex.getMessage());
 			}
@@ -588,24 +698,33 @@ public abstract class DomainComponent extends FrameworkObject
 				throw new DecisionPropagationException(ex.getMessage());
 			}
 		}
-		else {
-			// debug information
-			warning("Trying to activate a non pending decision:\n- decision: " + dec + "\n");
-		}
 		
 		// get list of "local" activated relations
-		return local;
+		return rels;
 	}
 
 	/**
 	 * 
 	 * @param dec
 	 */
-	public void deactivate(Decision dec) 
+	public synchronized void deactivate(Decision dec) 
 	{
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to delete a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+		}
+		
+		// check if already pending
+		if (this.isSilent(dec)) {
+			// warning information
+			throw new RuntimeException("Trying to deactivate a silent decision:\n- decision: " + dec + "\n");	
+		}
+		
+		// check if already pending
+		if (this.isPending(dec)) {
+			// warning information
+			warning("Trying to deactivate an already pending decision:\n- decision: " + dec + "\n");
+			throw new RuntimeException("Trying to deactivate an already pending decision:\n- decision: " + dec + "\n");	
 		}
 		
 		// check if active
@@ -640,33 +759,45 @@ public abstract class DomainComponent extends FrameworkObject
 			// clear decision
 			dec.clear();
 		}
-		else {
-			// debug information
-			debug("The decision you want to deactivate is not active:\n- decision: " + dec + "\n");
-		}
 	}
 	
 	/**
 	 * 
 	 * @param dec
 	 */
-	public void free(Decision dec) 
+	public synchronized void free(Decision dec) 
 	{
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to delete a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Trying to free a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
-		// check if active
-		if (!this.isActive(dec)) {
+		// check if already silent
+		if (this.isSilent(dec)) {
+			// warning information
+			warning("Trying to delete an already silent decision:\n- decision: " + dec + "\n");
+			throw new RuntimeException("Trying to delete an already silent decision:\n- decision: " + dec + "\n");
+		}
+		
+		
+//		// check if active
+//		if (this.isActive(dec)) {
+//			// check as this could be a potential bug in the backtracking procedure when "restoring" plan states 
+//			throw new RuntimeException("Trying to free an active decision:\n- decision: " + dec + "\n");
+//		}
+		
+		// check if active ACTIVE -> PENDING
+		if (this.isActive(dec)) {
+			// deactivate decision and associated active relations
+			this.deactivate(dec);
+		}
+		
+		// complete transition PENDING -> SILENT
+		if (this.isPending(dec)) {
 			// delete pending decision
 			this.decisions.get(PlanElementStatus.PENDING).remove(dec);
 			// add to silent decisions
 			this.decisions.get(PlanElementStatus.SILENT).add(dec);
-		}
-		else {
-			// debug information 
-			debug("The decision you want to delete is not \"pending\":\n- decision: " + dec +"\n");
 		}
 	}
 	
@@ -678,7 +809,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Relation> T create(RelationType type, Decision reference, Decision target) 
+	public synchronized <T extends Relation> T create(RelationType type, Decision reference, Decision target) 
 	{
 		// get reference component
 		DomainComponent refComp = reference.getComponent();
@@ -727,7 +858,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public Set<Relation> getActiveRelations(Decision dec)
+	public synchronized Set<Relation> getActiveRelations(Decision dec)
 	{
 		// check if local relation
 		if (!dec.getComponent().equals(this)) {
@@ -739,7 +870,10 @@ public abstract class DomainComponent extends FrameworkObject
 		// check local relations
 		for (Relation rel : this.localRelations) {
 			// check related decisions and relation status
-			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isActive()) {
+			if ((rel.getReference().equals(dec) || 
+					rel.getTarget().equals(dec)) 
+					&& rel.isActive()) 
+			{
 				// add relation
 				set.add(rel);
 			}
@@ -749,7 +883,10 @@ public abstract class DomainComponent extends FrameworkObject
 		synchronized (globalRelations) {
 			for (Relation rel : globalRelations) {
 				// check related decision and relation status
-				if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isActive()) {
+				if ((rel.getReference().equals(dec) || 
+						rel.getTarget().equals(dec)) && 
+						rel.isActive()) 
+				{
 					// add relation
 					set.add(rel);
 				}
@@ -767,7 +904,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param target
 	 * @return
 	 */
-	public Set<Relation> getActiveRelations(Decision reference, Decision target)
+	public synchronized Set<Relation> getActiveRelations(Decision reference, Decision target)
 	{
 		// check if local relation
 		if (!reference.getComponent().equals(this) && !target.getComponent().equals(this)) {
@@ -779,7 +916,10 @@ public abstract class DomainComponent extends FrameworkObject
 		// check local relations
 		for (Relation rel : this.localRelations) {
 			// check decisions and relation status
-			if (rel.getReference().equals(reference) && rel.getTarget().equals(target) && rel.isActive()) {
+			if (rel.getReference().equals(reference) && 
+					rel.getTarget().equals(target) && 
+					rel.isActive()) {
+				
 				// add relation
 				set.add(rel);
 			}
@@ -789,7 +929,10 @@ public abstract class DomainComponent extends FrameworkObject
 		synchronized (globalRelations) {
 			for (Relation rel : globalRelations) {
 				// check decisions and relation status
-				if (rel.getReference().equals(reference) && rel.getTarget().equals(target) && rel.isActive()) {
+				if (rel.getReference().equals(reference) && 
+						rel.getTarget().equals(target) && 
+						rel.isActive()) {
+					
 					// add relation
 					set.add(rel);
 				}
@@ -806,7 +949,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public Set<Relation> getActiveRelations()
+	public synchronized Set<Relation> getActiveRelations()
 	{
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
@@ -828,7 +971,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public Set<Relation> getPendingRelations()
+	public synchronized Set<Relation> getPendingRelations()
 	{
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
@@ -850,7 +993,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public Set<Relation> getRelations() {
+	public synchronized Set<Relation> getRelations() {
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
 		// check local relations
@@ -869,7 +1012,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public Set<Relation> getToActivateRelations(Decision dec) 
+	public synchronized Set<Relation> getToActivateRelations(Decision dec) 
 	{
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
@@ -881,7 +1024,10 @@ public abstract class DomainComponent extends FrameworkObject
 		// check pending local relations
 		for (Relation rel : this.localRelations) {
 			// check decisions and relation status
-			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.canBeActivated()) {
+			if ((rel.getReference().equals(dec) || 
+					rel.getTarget().equals(dec)) && 
+					rel.canBeActivated()) 
+			{
 				// add pending local relation
 				set.add(rel);
 			}
@@ -891,7 +1037,10 @@ public abstract class DomainComponent extends FrameworkObject
 		synchronized (globalRelations) {
 			for (Relation rel : globalRelations) {
 				// check reference and target decisions
-				if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.canBeActivated()) {
+				if ((rel.getReference().equals(dec) || 
+						rel.getTarget().equals(dec)) && 
+						rel.canBeActivated()) 
+				{
 					// add pending global relation
 					set.add(rel);
 				}
@@ -907,7 +1056,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public Set<Relation> getPendingRelations(Decision dec) 
+	public synchronized Set<Relation> getPendingRelations(Decision dec) 
 	{
 		// check if local decision
 		if (!dec.getComponent().equals(this)) {
@@ -920,7 +1069,9 @@ public abstract class DomainComponent extends FrameworkObject
 		for (Relation rel : this.localRelations) 
 		{
 			// check decisions and relation status
-			if ((rel.getReference().equals(dec) || rel.getTarget().equals(dec)) && rel.isPending()) {
+			if ((rel.getReference().equals(dec) || 
+					rel.getTarget().equals(dec)) && 
+					rel.isPending()) {
 				// add pending relation
 				set.add(rel);
 			}
@@ -947,7 +1098,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public Set<Relation> getRelations(Decision dec)
+	public synchronized Set<Relation> getRelations(Decision dec)
 	{
 		// check if local decision
 		if (!dec.getComponent().equals(this)) {
@@ -958,7 +1109,8 @@ public abstract class DomainComponent extends FrameworkObject
 		Set<Relation> set = new HashSet<>();
 		for (Relation rel : this.localRelations) {
 			// check decisions and relation status
-			if (dec.equals(rel.getReference()) || dec.equals(rel.getTarget())) {
+			if (dec.equals(rel.getReference()) || 
+					dec.equals(rel.getTarget())) {
 				// add relation
 				set.add(rel);
 			}
@@ -968,7 +1120,8 @@ public abstract class DomainComponent extends FrameworkObject
 		synchronized (globalRelations) {
 			// get also global relation
 			for (Relation rel : globalRelations) {
-				if (dec.equals(rel.getReference()) || dec.equals(rel.getTarget())) {
+				if (dec.equals(rel.getReference()) || 
+						dec.equals(rel.getTarget())) {
 					// add relation
 					set.add(rel);
 				}
@@ -984,7 +1137,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public boolean isActive(Decision dec) {
+	public synchronized boolean isActive(Decision dec) {
 		return this.decisions.get(PlanElementStatus.ACTIVE).contains(dec);
 	}
 	
@@ -993,7 +1146,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public boolean isPending(Decision dec) {
+	public synchronized boolean isPending(Decision dec) {
 		return this.decisions.get(PlanElementStatus.PENDING).contains(dec);
 	}
 	
@@ -1002,7 +1155,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public boolean isSilent(Decision dec) {
+	public synchronized boolean isSilent(Decision dec) {
 		return this.decisions.get(PlanElementStatus.SILENT).contains(dec);
 	}
 	
@@ -1010,7 +1163,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param relation
 	 */
-	public void delete(Relation relation) 
+	public synchronized void delete(Relation relation) 
 	{
 		// check reference and target components
 		DomainComponent refComp = relation.getReference().getComponent();
@@ -1020,26 +1173,20 @@ public abstract class DomainComponent extends FrameworkObject
 			throw new RuntimeException("Trying to free an \"external\" relation for component:\n- component: " + this.name + "\n- relation: " + relation + "\n");
 		}
 		
-		// check if relation is active
-		if (!relation.isActive()) 
-		{
-			// check if local relation
-			if (this.localRelations.contains(relation)) {
-				// remove relation from component 
-				this.localRelations.remove(relation);
-			}
-			
-			// check global relation
-			synchronized (globalRelations) {
-				if (globalRelations.contains(relation)) {
-					// remove from global relations
-					globalRelations.remove(relation);
-				}
-			}
+		// deactivate relation if necessary
+		this.deactivate(relation);
+		// check if local relation
+		if (this.localRelations.contains(relation)) {
+			// remove relation from component 
+			this.localRelations.remove(relation);
 		}
-		else {
-			// debugging information
-			warning("The relation you want to delete is active:\n- relation: " + relation + "\n");
+		
+		// check global relation
+		synchronized (globalRelations) {
+			if (globalRelations.contains(relation)) {
+				// remove from global relations
+				globalRelations.remove(relation);
+			}
 		}
 	}
 	
@@ -1048,7 +1195,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public List<Decision> getSilentDecisions() {
+	public synchronized List<Decision> getSilentDecisions() {
 		return new ArrayList<>(this.decisions.get(PlanElementStatus.SILENT));
 	}
 	
@@ -1059,7 +1206,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public Set<Relation> getSilentRelations() {
+	public synchronized Set<Relation> getSilentRelations() {
 		// relations
 		Set<Relation> set = new HashSet<>();
 		// check local relations
@@ -1085,7 +1232,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 * @throws RelationPropagationException
 	 */
-	public void activate(Relation rel) 
+	public synchronized void activate(Relation rel) 
 			throws RelationPropagationException 
 	{
 		// check reference and target components
@@ -1147,7 +1294,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param relations
 	 */
-	public void activate(Set<Relation> relations) 
+	public synchronized void activate(Set<Relation> relations) 
 			throws RelationPropagationException 
 	{
 		// list of committed relations
@@ -1156,18 +1303,19 @@ public abstract class DomainComponent extends FrameworkObject
 		{
 			// propagate relations
 			for (Relation rel : relations) {
-				// propagate relation
-				this.activate(rel);
 				// add to committed
 				committed.add(rel);
+				// propagate relation
+				this.activate(rel);
 			}
 		} 
 		catch (RelationPropagationException ex) {
 			// error while propagating relations
-			for (Relation toRetract : committed) {
+			for (Relation rel : committed) {
 				// delete relation
-				this.deactivate(toRetract);
+				this.deactivate(rel);
 			}
+			
 			// forward exception
 			throw new RelationPropagationException(ex.getMessage());
 		}
@@ -1179,7 +1327,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param rel
 	 */
-	public void deactivate(Relation rel) 
+	public synchronized void deactivate(Relation rel) 
 	{
 		// check reference and target components
 		DomainComponent refComp = rel.getReference().getComponent();
@@ -1189,8 +1337,8 @@ public abstract class DomainComponent extends FrameworkObject
 			throw new RuntimeException("Trying to delete an \"external\" relation for component:\n- component: " + this.name + "\n- relation: " + rel+ "\n");
 		}
 		
-		// check if relation must be deactivated
-		if (rel.isActive())
+		// check underlying constraint
+		if (rel.getConstraint() != null)
 		{
 			// check relation type
 			switch (rel.getCategory()) 
@@ -1202,7 +1350,8 @@ public abstract class DomainComponent extends FrameworkObject
 					TemporalRelation trel = (TemporalRelation) rel;
 					// retract the related constraint
 					this.tdb.retract(trel.getConstraint());
-					trel.clear();
+					// clear relation
+					rel.clear();
 				}
 				break;
 				
@@ -1213,7 +1362,8 @@ public abstract class DomainComponent extends FrameworkObject
 					ParameterRelation prel = (ParameterRelation) rel;
 					// retract the related constraint
 					this.pdb.retract(prel.getConstraint());
-					prel.clear();
+					// clear relation
+					rel.clear();
 				}
 				break;
 			}
@@ -1236,9 +1386,50 @@ public abstract class DomainComponent extends FrameworkObject
 	/**
 	 * 
 	 * @return
+	 */
+	public synchronized List<Flaw> checkFlaws() 
+	{
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		// call resolvers to check flaws 
+		for (Resolver<?> resv : this.resolvers) {
+			// add detected flaws
+			list.addAll(resv.checkFlaws());
+		}
+
+		// get the list of detected flaws
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @param types
+	 * @return
+	 */
+	public synchronized List<Flaw> checkFlaws(FlawType[] types)
+	{
+		// list of flaws to solve
+		List<Flaw> list = new ArrayList<>();
+		for (FlawType fType : types) {
+			// check if exists
+			if (this.flawType2resolver.containsKey(fType)) {
+				// get resolver associated to the specified types
+				Resolver<?> resv = this.flawType2resolver.get(fType);
+				// add detected flaws
+				list.addAll(resv.checkFlaws());
+			}
+		}
+
+		// get the list of detected flaws
+		return list;
+	}
+	
+	/**
+	 * 
+	 * @return
 	 * @throws UnsolvableFlawException
 	 */
-	public List<Flaw> detectFlaws() 
+	public synchronized List<Flaw> detectFlaws() 
 			throws UnsolvableFlawException 
 	{
 		// list of flaws to solve
@@ -1259,7 +1450,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 * @throws UnsolvableFlawException
 	 */
-	public List<Flaw> detectFlaws(FlawType type) 
+	public synchronized List<Flaw> detectFlaws(FlawType type) 
 			throws UnsolvableFlawException
 	{
 		// list of flaws to solve
@@ -1284,7 +1475,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param sol
 	 * @throws FlawSolutionApplicationException
 	 */
-	public void commit(FlawSolution solution) 
+	public synchronized void commit(FlawSolution solution) 
 			throws FlawSolutionApplicationException {
 		// dispatch the flaw to the correct resolver
 		this.flawType2resolver.get(solution.getFlaw().getType()).apply(solution);
@@ -1295,7 +1486,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param solution
 	 * @throws Exception
 	 */
-	public void restore(FlawSolution solution) 
+	public synchronized void restore(FlawSolution solution) 
 			throws Exception {
 		// dispatch the flaw to the correct resolver
 		this.flawType2resolver.get(solution.getFlaw().getType()).restore(solution);
@@ -1305,7 +1496,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param solution
 	 */
-	public void rollback(FlawSolution solution) {
+	public synchronized void rollback(FlawSolution solution) {
 		// dispatch to the correct resolver
 		this.flawType2resolver.get(solution.getFlaw().getType()).retract(solution);
 	}
@@ -1346,7 +1537,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 */
 	@Override
 	public String toString() {
-		return "[DomainComponent label= " + this.name + "]";
+		return "{ \"name\": \"" + this.name + "\" }";
 	}
 	
 	/**
@@ -1362,7 +1553,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @throws TemporalIntervalCreationException
 	 * @throws ParameterCreationException
 	 */
-	public Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus state) 
+	public synchronized Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus state) 
 			throws TemporalIntervalCreationException, ParameterCreationException
 	{
 		// create a temporal interval

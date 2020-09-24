@@ -27,6 +27,7 @@ import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
 import it.istc.pst.platinum.framework.time.lang.allen.BeforeIntervalConstraint;
 import it.istc.pst.platinum.framework.time.lang.query.IntervalOverlapQuery;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
+import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -35,12 +36,18 @@ import it.istc.pst.platinum.framework.time.tn.TimePoint;
  */
 public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResource> 
 { 
+	private double cost;
+	
 	/**
 	 * 
 	 */
 	protected DiscreteResourceSchedulingResolver() {
 		super(ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getLabel(), 
 				ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
+	
+		// get deliberative property file
+		FilePropertyReader properties = new FilePropertyReader(FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		this.cost = Double.parseDouble(properties.getProperty("scheduling-cost"));
 	}
 	
 	/**
@@ -161,7 +168,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			// get current event
 			RequirementResourceEvent reference = events.get(index);
 			// initialize an MCS
-			MinimalCriticalSet mcs = new MinimalCriticalSet(cs);
+			MinimalCriticalSet mcs = new MinimalCriticalSet(cs, this.cost);
 			// add the current event to the MCS
 			mcs.addEvent(reference);
 			
@@ -176,7 +183,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 				if (amount > this.component.getMaxCapacity()) 
 				{
 					// copy current MCS
-					MinimalCriticalSet copy = new MinimalCriticalSet(mcs);
+					MinimalCriticalSet copy = new MinimalCriticalSet(mcs, this.cost);
 					// add sample to the MCS
 					mcs.addEvent(other);
 					// add to the list of MCSs
@@ -278,8 +285,6 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					
 					// create and add solution to the MCS
 					PrecedenceConstraint pc = mcs.addSolution(reference, target, preserved);
-					// add relation to the resulting partial plan 
-					pc.addRelationToPartialPlan(RelationType.BEFORE, reference, target);
 					// print some debugging information
 					debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
@@ -324,8 +329,6 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					
 					// create and add solution to the MCS
 					PrecedenceConstraint pc = mcs.addSolution(target, reference, preserved);
-					// add relation to the resulting partial plan 
-					pc.addRelationToPartialPlan(RelationType.BEFORE, target, reference);
 					// print some debugging information
 					debug("Feasible solution of MCS found:\n"
 							+ "- mcs: " + mcs + "\n"
@@ -465,25 +468,29 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	protected CriticalSet cs;									// the set of overlapping activities
 	private Set<RequirementResourceEvent> events;				// activities composing the MCS
 	private List<PrecedenceConstraint> solutions;				// a MCS can be solved by posting a simple precedence constraint
+	private double cost;
 	
 	/**
 	 * 
 	 * @param cs
+	 * @param cost
 	 */
-	protected MinimalCriticalSet(CriticalSet cs) {
+	protected MinimalCriticalSet(CriticalSet cs, double cost) {
 		this.cs = cs;
 		this.events = new HashSet<>();
 		this.solutions = new ArrayList<>();
+		this.cost = cost;
 	}
 	
 	/**
 	 * 
 	 * @param mcs
 	 */
-	protected MinimalCriticalSet(MinimalCriticalSet mcs) {
+	protected MinimalCriticalSet(MinimalCriticalSet mcs, double cost) {
 		this.cs = mcs.cs;
 		this.events = new HashSet<>(mcs.events);
 		this.solutions = new ArrayList<>(mcs.solutions);
+		this.cost = cost;
 	}
 	
 	/**
@@ -574,7 +581,7 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	protected PrecedenceConstraint addSolution(Decision reference, Decision target, double preserved) 
 	{
 		// create a precedence constraint
-		PrecedenceConstraint pc = new PrecedenceConstraint(this.cs, reference, target);
+		PrecedenceConstraint pc = new PrecedenceConstraint(this.cs, reference, target, this.cost);
 		// set the value of resulting preserved space
 		pc.setPreservedSpace(preserved);
 		// add solution to the original flaw
@@ -598,6 +605,6 @@ class MinimalCriticalSet implements Comparable<MinimalCriticalSet>
 	 */
 	@Override
 	public String toString() {
-		return "[MinimalCriticalSet requirement: " + this.getTotalAmount() + ", events: " + this.events + "]";
+		return "{ \"requirement\": " + this.getTotalAmount() + ", \"events\": " + this.events + " }";
 	}
 }

@@ -101,8 +101,9 @@ public class DistanceGraph
 	public void delete(TimePoint point) {
 		// remove from points
 		this.nodes.remove(point.getId());
+		// remove outcoming edges
 		this.edges.remove(point);
-		// remove related constraints
+		// remove incoming edges
 		for (TimePoint i : this.nodes.values()) {
 			// remove edges that involve the node just deleted
 			this.edges.get(i).remove(point);
@@ -139,5 +140,4 @@ public class DistanceGraph
 		// return distance
 		return distance;
 	}
-	
 }

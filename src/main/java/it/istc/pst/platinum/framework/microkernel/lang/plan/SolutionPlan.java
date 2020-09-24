@@ -38,7 +38,8 @@ public class SolutionPlan
 	private Set<Timeline> observations;
 	private List<Relation> relations;
 	private PlanControllabilityType controllability;
-	private double makespan;
+	private double[] makespan;
+	private double[] duration;
 	
 	/**
 	 * 
@@ -53,7 +54,15 @@ public class SolutionPlan
 		this.observations = new HashSet<>();
 		this.relations = new ArrayList<>();
 		this.controllability = PlanControllabilityType.UNKNOWN;
-		this.makespan = horizon;
+		this.makespan = new double[] {
+				Double.MAX_VALUE - 1, 
+				Double.MAX_VALUE - 1
+		};
+		
+		this.duration = new double[] {
+				Double.MAX_VALUE -1, 
+				Double.MAX_VALUE -1 
+		};
 	}
 	
 	/**
@@ -76,15 +85,31 @@ public class SolutionPlan
 	 * 
 	 * @param makespan
 	 */
-	public void setMakespan(double makespan) {
+	public void setMakespan(double[] makespan) {
 		this.makespan = makespan;
+	}
+	
+	/**
+	 * 
+	 * @param duration
+	 */
+	public void setBehaviorDuration(double[] duration) {
+		this.duration = duration;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public double getMakespan() {
+	public double[] getBehaviorDuration() {
+		return this.duration;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double[] getMakespan() {
 		return makespan;
 	}
 	
@@ -232,7 +257,7 @@ public class SolutionPlan
 		ProtocolLanguageFactory factory = new ProtocolLanguageFactory(this.horizion);
 		
 		// create plan descriptor
-		PlanProtocolDescriptor plan = factory.createPlanDescriptor(0, this.horizion);
+		PlanProtocolDescriptor plan = factory.createPlanDescriptor(this.name, 0, this.horizion);
 		// create an index
 		Map<Token, TokenProtocolDescriptor> index = new HashMap<>();
 		// create timeline descriptors
@@ -499,41 +524,52 @@ public class SolutionPlan
 	public String toString() 
 	{
 		// initialize solution plan description
-		String description = "Plan (H= " + this.horizion + ", makespan= " + this.makespan +" controllability= " + this.controllability + " #timelines= " + this.timelines.size() + ", #observations= " + this.observations.size() + ", #relations= " + this.relations.size() + ")\n";
+		String description = "{\n"
+				+ "\t\"horizon\": " + this.horizion + ",\n"
+				+ "\t\"makespan\": [" + this.makespan[0] +", " + this.makespan[1] + "],\n"
+				+ "\t\"controllability\": \"" + this.controllability.toString().toLowerCase() + "\",\n";
+		
 		// print timelines 
-		description += "timelines {\n";
+		description += "\t\"timelines\": [\n";
 		for (Timeline tl : this.timelines) 
 		{
-			description += "\t" + tl.getComponent().getName() + " {\n";
+			description += "\t\t{\n"
+					+ "\t\t\t\"name\": \"" + tl.getComponent().getName() + "\",\n"
+					+ "\t\t\t\"tokens\": [\n";
 			// get tokens
 			for (Token token : tl.getTokens()) {
-				description += "\t\t" + token + "\n";
+				description += "\t\t\t\t" + token + ",\n";
 			}
-			description += "\t}\n";
+			description += "\t\t\t]\n"
+					+ "\t\t},\n";
  		}
 		// end decisions
-		description	+= "}\n\n";
+		description	+= "\t],\n\n";
 		
 		// print observations
-		description += "observations {\n";
+		description += "\tobservations: [\n";
 		for (Timeline tl : this.observations) {
-			description += "\t\tobservation." + tl.getComponent().getName() + " {\n";
+			description += "\t\t{\n"
+					+ "\t\t\tname: \"" + tl.getComponent().getName() + "\",\n"
+					+ "\t\t\ttokens: [\n";
 			// get tokens 
 			for (Token token : tl.getTokens()) {
-				description += "\t\t\t" + token + "\n";
+				description += "\t\t\t\t" + token + ",\n";
 			}
-			description += "\t\t}\n";
+			description += "\t\t\t]\n"
+					+ "\t\t},\n";
 		}
-		description += "}\n";
+		description += "\t],\n\n";
 		
 		// print relations
-		description += "relations {\n";
+		description += "\trelations: [\n";
 		for (Relation rel : this.relations) {
-			description += "\t " + rel.getType() +  " {"
-					+ "" + rel.getReference().getToken().getId() + ":" + rel.getReference().getToken().getPredicate().getGroundSignature()+", "
-					+ "" + rel.getTarget().getToken().getId() + ":" + rel.getTarget().getToken().getPredicate().getGroundSignature() +"}\n";
+			description += "\t\t" + rel +  ",\n";
 		}
-		description += "}\n";
+		description += "\t]\n\n";
+		
+		// close plan description
+		description += "}\n\n";
 		// get description
 		return description;
 	}

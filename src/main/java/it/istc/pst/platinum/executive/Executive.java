@@ -65,7 +65,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	
 	private static final String TIME_UNIT_PROPERTY = "time_unit_to_second";		// property specifying the amount of seconds a time unit corresponds to
 	private static final String DISPLAY_PLAN_PROPERTY = "display_plan";			// property specifying the display plan flag
-	private FilePropertyReader config;											// configuration property file
+	private FilePropertyReader properties;										// configuration property file
 	
 	private ExecutionStatus status;												// executive's operating status
 	private final Object lock;													// executive's status lock
@@ -84,10 +84,11 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	/**
 	 * 
 	 */
-	protected Executive() {
+	protected Executive() 
+	{
 		super();
 		// get executive file properties
-		this.config = FilePropertyReader.getExecutivePropertyFile();
+		this.properties = new FilePropertyReader(FilePropertyReader.DEFAULT_EXECUTIVE_PROPERTY);
 		// set clock and initial status
 		this.lock = new Object();
 		// set status
@@ -131,7 +132,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 */
 	@Override
 	public String getProperty(String property) {
-		return this.config.getProperty(property);
+		return this.properties.getProperty(property);
 	}
 
 	/**
@@ -139,10 +140,16 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @param proxy
 	 */
 	public void link(PlatformProxy proxy) {
-		// bind the executive
-		this.platformProxy = proxy;
-		// register to the PROXY
-		this.platformProxy.register(this);
+		// check if already set
+		if (this.platformProxy == null) {
+			// bind the executive
+			this.platformProxy = proxy;
+			// register to the PROXY
+			this.platformProxy.register(this);
+		}
+		else {
+			warning("Platform proxy already set. Do unlink before setting another platform proxy");
+		}
 	}
 	
 	/***
@@ -203,7 +210,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 		// covert tick to seconds from the execution start
 		double seconds = this.clock.convertClockTickToSeconds(tick);
 		// get property to convert seconds to time units
-		double converter = Double.parseDouble(this.config.getProperty(TIME_UNIT_PROPERTY));
+		double converter = Double.parseDouble(this.properties.getProperty(TIME_UNIT_PROPERTY));
 		// convert seconds to time units
 		return Math.round(seconds / converter);
 	}
@@ -223,7 +230,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @throws InterruptedException
 	 */
 	public long getTau() 
-			throws InterruptedException {
+			throws InterruptedException 
+	{
 		// current tick
 		long tick = this.clock.getCurrentTick();
 		// cover to tau
@@ -236,7 +244,8 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @throws InterruptedException
 	 */
 	public long getTick() 
-			throws InterruptedException {
+			throws InterruptedException 
+	{
 		// return current tick
 		return this.clock.getCurrentTick();
 	}
@@ -255,12 +264,19 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	 * @return
 	 */
 	public List<ExecutionNode> getNodes() {
+		// list of nodes
 		List<ExecutionNode> list = new ArrayList<>();
-		list.addAll(this.getNodes(ExecutionNodeStatus.WAITING));
-		list.addAll(this.getNodes(ExecutionNodeStatus.STARTING));
-		list.addAll(this.getNodes(ExecutionNodeStatus.IN_EXECUTION));
-		list.addAll(this.getNodes(ExecutionNodeStatus.EXECUTED));
+		for (ExecutionNodeStatus status : ExecutionNodeStatus.values()) {
+			// skip failed nodes
+			if (!status.equals(ExecutionNodeStatus.FAILURE)) {
+				// add all nodes with current status
+				list.addAll(this.getNodes(status));
+			}
+		}
+		
+		// sort node list
 		Collections.sort(list);
+		// get sorted list
 		return list;
 	}
 	
@@ -397,7 +413,7 @@ public class Executive extends ExecutiveObject implements ExecutionManager, Plat
 	public final boolean execute() 
 			throws InterruptedException {
 		// call executive starting at tick 0
-		return this.execute(0,null);
+		return this.execute(0, null);
 	}
 	
 	/**

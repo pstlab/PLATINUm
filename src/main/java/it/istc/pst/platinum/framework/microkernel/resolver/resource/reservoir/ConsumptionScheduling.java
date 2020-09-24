@@ -5,7 +5,6 @@ import java.util.Map;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -29,8 +28,8 @@ public class ConsumptionScheduling extends FlawSolution implements ResourceOverC
 	 * @param constraints
 	 * @param preserved
 	 */
-	protected ConsumptionScheduling(Peak flaw, Decision production, double old, double amount, Map<Decision, Decision> constraints, double preserved) {
-		super(flaw);
+	protected ConsumptionScheduling(Peak flaw, Decision production, double old, double amount, Map<Decision, Decision> constraints, double preserved, double cost) {
+		super(flaw, cost);
 		this.constraints = new HashMap<>(constraints);
 		this.preserved = preserved;
 		this.production = production;
@@ -81,19 +80,6 @@ public class ConsumptionScheduling extends FlawSolution implements ResourceOverC
 	
 	/**
 	 * 
-	 */
-	@Override
-	public double getCost() {
-		// get property file 
-		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
-		// read property
-		String cost = property.getProperty("scheduling-cost");
-		// parse and get double value
-		return Double.parseDouble(cost);
-	}
-	
-	/**
-	 * 
 	 * @return
 	 */
 	public Map<Decision, Decision> getPrecedenceConstraints() {
@@ -105,6 +91,8 @@ public class ConsumptionScheduling extends FlawSolution implements ResourceOverC
 	 */
 	@Override
 	public String toString() {
-		return "[ConsumptionScheduling preserved: " + this.preserved + " constraints: " + this.constraints + "]\n";
+		return "{ \"type\": \"CONSMPTION_SCHEDULING\","
+			+ "\"preserved\": " + this.preserved + ", "
+			+ "\"constraints\": " + this.constraints + " }";
 	}
 }

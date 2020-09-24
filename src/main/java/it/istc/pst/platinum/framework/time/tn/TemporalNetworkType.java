@@ -5,13 +5,8 @@ package it.istc.pst.platinum.framework.time.tn;
  * @author anacleto
  *
  */
-public enum TemporalNetworkType {
-
-	/**
-	 * 
-	 */
-	STN(SimpleTemporalNetwork.class.getName()),
-	
+public enum TemporalNetworkType 
+{
 	/**
 	 * 
 	 */

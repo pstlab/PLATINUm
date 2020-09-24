@@ -6,7 +6,6 @@ import java.util.List;
 import it.istc.pst.platinum.framework.domain.component.ComponentValue;
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -18,48 +17,17 @@ public class GapCompletion extends FlawSolution
 	private Decision left;
 	private Decision right;
 	private List<ComponentValue> path;
-	private boolean onlyComplex;
 	
 	/**
 	 * 
-	 * @param left
-	 * @param right
+	 * @param gap
 	 * @param path
 	 */
-	protected GapCompletion(Gap gap, List<ComponentValue> path) {
-		super(gap);
+	protected GapCompletion(Gap gap, List<ComponentValue> path, double cost) {
+		super(gap, cost);
 		this.left = gap.getLeftDecision();
 		this.right = gap.getRightDecision();
 		this.path = new ArrayList<>(path);
-		this.onlyComplex = false;
-	}
-	
-	/**
-	 * 
-	 */
-	public void setOnlyComplex() {
-		this.onlyComplex = true;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isOnlyComplex() {
-		return onlyComplex;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public double getCost() {
-		// get property file 
-		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
-		// read property
-		String cost = property.getProperty("completion-cost");
-		// parse and get double value
-		return Double.parseDouble(cost);
 	}
 	
 	/**
@@ -103,6 +71,10 @@ public class GapCompletion extends FlawSolution
 	 */
 	@Override
 	public String toString() {
-		return "[GapCompletion path= " + this.path + "]";
+		// JSON style object description 
+		return "{ \"type\": \"GAP_COMPLETION\", "
+				+ "\"left\": " + this.left + ", "
+				+ "\"right\": " + this.right + ", "
+				+ "\"path\": " + this.path.toString() + " }";
 	}
 }

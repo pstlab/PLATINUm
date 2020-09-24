@@ -1,9 +1,6 @@
 package it.istc.pst.platinum.deliberative.strategy;
 
-import java.util.Stack;
-
 import it.istc.pst.platinum.deliberative.solver.SearchSpaceNode;
-import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
 
 /**
  * 
@@ -12,37 +9,11 @@ import it.istc.pst.platinum.deliberative.strategy.ex.EmptyFringeException;
  */
 public class DepthFirstSearchStrategy extends SearchStrategy 
 {
-	private Stack<SearchSpaceNode> fringe;
-	
 	/**
 	 * 
 	 */
 	protected DepthFirstSearchStrategy() {
-		super("SearchStrategy:DepthFirst");
-		this.fringe = new Stack<>();
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public int getFringeSize() {
-		return this.fringe.size();
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public SearchSpaceNode dequeue() 
-			throws EmptyFringeException {
-		// check the fringe
-		if (this.fringe.isEmpty()) {
-			throw new EmptyFringeException("No more nodes in the fringe");
-		}
-		
-		// get the head of the stack
-		return this.fringe.pop();
+		super("DepthFirstSearchStrategy");
 	}
 	
 	/**
@@ -50,7 +21,16 @@ public class DepthFirstSearchStrategy extends SearchStrategy
 	 */
 	@Override
 	public void enqueue(SearchSpaceNode node) {
-		// add the node at the head of the stack
-		this.fringe.push(node);
+		// add the node to the priority queue
+		this.fringe.offer(node);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public int compare(SearchSpaceNode o1, SearchSpaceNode o2) {
+		// compare node depth
+		return o1.getDepth() > o2.getDepth() ? -1 : o1.getDepth() < o2.getDepth() ? 1 : 0;
 	}
 }

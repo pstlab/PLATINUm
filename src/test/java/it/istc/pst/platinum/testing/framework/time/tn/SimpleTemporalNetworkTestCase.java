@@ -6,7 +6,8 @@ import org.junit.Test;
 
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintFactory;
 import it.istc.pst.platinum.framework.time.lang.TemporalConstraintType;
-import it.istc.pst.platinum.framework.time.tn.SimpleTemporalNetwork;
+import it.istc.pst.platinum.framework.time.tn.SimpleTemporalNetworkWithUncertainty;
+import it.istc.pst.platinum.framework.time.tn.TemporalNetwork;
 import it.istc.pst.platinum.framework.time.tn.TimePoint;
 import it.istc.pst.platinum.framework.time.tn.TimePointDistanceConstraint;
 import it.istc.pst.platinum.framework.time.tn.ex.InconsistentDistanceConstraintException;
@@ -21,7 +22,7 @@ public class SimpleTemporalNetworkTestCase
 {
 	private static final int ORIGIN = 0;
 	private static final int HORIZON = 500;
-	private SimpleTemporalNetwork stn;
+	private TemporalNetwork stn;
 	private TemporalConstraintFactory cf;
 	
 	/**
@@ -32,7 +33,7 @@ public class SimpleTemporalNetworkTestCase
 		System.out.println("**********************************************************************************");
 		System.out.println("************************* Simple Temporal Network Test Case **********************");
 		System.out.println("**********************************************************************************");
-		this.stn = new SimpleTemporalNetwork(ORIGIN, HORIZON);
+		this.stn = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
 		this.cf = new TemporalConstraintFactory();
 	}
 	

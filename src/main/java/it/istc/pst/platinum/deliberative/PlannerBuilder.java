@@ -3,7 +3,7 @@ package it.istc.pst.platinum.deliberative;
 import java.lang.reflect.Constructor;
 
 import it.istc.pst.platinum.deliberative.heuristic.FlawSelectionHeuristic;
-import it.istc.pst.platinum.deliberative.solver.PlannerSolver;
+import it.istc.pst.platinum.deliberative.solver.Solver;
 import it.istc.pst.platinum.deliberative.strategy.SearchStrategy;
 import it.istc.pst.platinum.framework.domain.component.PlanDataBase;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
@@ -113,7 +113,7 @@ public class PlannerBuilder
 		// get planner solver configuration
 		PlannerSolverConfiguration psAnnot = FrameworkReflectionUtils.doFindnAnnotation(pClass, PlannerSolverConfiguration.class);
 		// create planning solver 
-		PlannerSolver solver = PlannerBuilder.doCreatePlannerSolver(psAnnot.solver().getName(), psAnnot.timeout());
+		Solver solver = PlannerBuilder.doCreatePlannerSolver(psAnnot.solver().getName(), psAnnot.timeout());
 		
 		try
 		{
@@ -252,7 +252,7 @@ public class PlannerBuilder
 	 * @param timeout
 	 * @return
 	 */
-	private synchronized static <T extends PlannerSolver> T doCreatePlannerSolver(String cName, long timeout)
+	private synchronized static <T extends Solver> T doCreatePlannerSolver(String cName, long timeout)
 	{
 		// create instance
 		T solver = null;

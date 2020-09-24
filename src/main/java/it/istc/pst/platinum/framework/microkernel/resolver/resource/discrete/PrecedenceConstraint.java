@@ -2,7 +2,6 @@ package it.istc.pst.platinum.framework.microkernel.resolver.resource.discrete;
 
 import it.istc.pst.platinum.framework.domain.component.Decision;
 import it.istc.pst.platinum.framework.microkernel.lang.flaw.FlawSolution;
-import it.istc.pst.platinum.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -22,8 +21,8 @@ public class PrecedenceConstraint extends FlawSolution
 	 * @param target
 	 * @param preserved
 	 */
-	protected PrecedenceConstraint(CriticalSet cs, Decision reference, Decision target) {
-		super(cs);
+	protected PrecedenceConstraint(CriticalSet cs, Decision reference, Decision target, double cost) {
+		super(cs, cost);
 		this.reference = reference;
 		this.target = target;
 	}
@@ -64,21 +63,10 @@ public class PrecedenceConstraint extends FlawSolution
 	 * 
 	 */
 	@Override
-	public double getCost() {
-		// get property file 
-		FilePropertyReader property = FilePropertyReader.getDeliberativePropertyFile();
-		// read property
-		String cost = property.getProperty("scheduling-cost");
-		// parse and get double value
-		return Double.parseDouble(cost);
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
 	public String toString() {
-		return "[PrecedenceConstraint reference= " + this.reference +", target= " + this.target + ", preserved= " + this.preserved + "]";
+		return "{ \"type\": \"PRECEDENCE_CONSTRAINT\", "
+				+ "\"reference\": " + this.reference +", "
+				+ "\"target\": " + this.target + ", "
+				+ "\"preserved:\": " + this.preserved + " }";
 	}
-	
 }

@@ -17,6 +17,12 @@ public interface FlawManager
 	/**
 	 * 
 	 * @return
+	 */
+	public List<Flaw> checkFlaws();
+	
+	/**
+	 * 
+	 * @return
 	 * @throws UnsolvableFlawException
 	 */
 	public List<Flaw> findFlaws() 

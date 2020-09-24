@@ -5,8 +5,8 @@ import it.istc.pst.platinum.deliberative.heuristic.RandomFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.istc.pst.platinum.deliberative.strategy.DepthFirstSearchStrategy;
-import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStrategy;
-import it.istc.pst.platinum.deliberative.strategy.hrc.HRCBalancingSearchStrategy;
+import it.istc.pst.platinum.deliberative.strategy.MakespanGreedyDepthSearchStrategy;
+import it.istc.pst.platinum.deliberative.strategy.hrc.WorkloadBalancingSearchStrategy;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PlannerSolverConfiguration;
@@ -111,7 +111,7 @@ public abstract class AIJFbT
 	heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-	strategy = HRCBalancingSearchStrategy.class
+	strategy = WorkloadBalancingSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
 	level = FrameworkLoggingLevel.OFF
@@ -134,7 +134,7 @@ class AIJFbTPlannerA extends Planner {
 	heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-	strategy = MakespanOptimizationSearchStrategy.class
+	strategy = MakespanGreedyDepthSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
 	level = FrameworkLoggingLevel.OFF

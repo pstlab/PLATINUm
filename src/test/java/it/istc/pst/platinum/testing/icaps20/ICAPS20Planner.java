@@ -3,7 +3,7 @@ package it.istc.pst.platinum.testing.icaps20;
 import it.istc.pst.platinum.deliberative.Planner;
 import it.istc.pst.platinum.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 import it.istc.pst.platinum.deliberative.solver.PseudoControllabilityAwareSolver;
-import it.istc.pst.platinum.deliberative.strategy.MakespanOptimizationSearchStrategy;
+import it.istc.pst.platinum.deliberative.strategy.MakespanGreedyDepthSearchStrategy;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
 import it.istc.pst.platinum.framework.microkernel.annotation.cfg.deliberative.PlannerSolverConfiguration;
@@ -24,7 +24,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 	heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-	strategy = MakespanOptimizationSearchStrategy.class
+	strategy = MakespanGreedyDepthSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
 	level = FrameworkLoggingLevel.OFF

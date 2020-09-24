@@ -111,23 +111,13 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	public long getHorizon() {
 		return this.tn.getHorizon();
 	}
-	
-//	/**
-//	 * Get the equivalent Minimal Network
-//	 * 
-//	 * @return
-//	 */
-//	public String getTemporalNetworkDescription() {
-//		return "[TemporalFacade\n- network:\n" + this.tn.toString() + "\n\n- solver:\n" + this.solver.toString() + "\n\n]\n";
-//	}
-	
 	/**
 	 * Create a flexible time point
 	 * 
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public TimePoint createTimePoint() 
+	public synchronized TimePoint createTimePoint() 
 			throws TimePointCreationException 
 	{
 		// time point to create
@@ -149,7 +139,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public  TimePoint createTimePoint(long at) 
+	public synchronized TimePoint createTimePoint(long at) 
 			throws TimePointCreationException {
 		// time point to create
 		TimePoint point = null;
@@ -170,7 +160,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public  TimePoint createTimePoint(long[] bounds) 
+	public synchronized TimePoint createTimePoint(long[] bounds) 
 			throws TimePointCreationException {
 		// time point to create
 		TimePoint point = null;
@@ -190,7 +180,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public  TemporalInterval createTemporalInterval(boolean controllable) 
+	public synchronized TemporalInterval createTemporalInterval(boolean controllable) 
 			throws TemporalIntervalCreationException {
 		// create temporal interval
 		return this.createTemporalInterval(new long[] {this.getOrigin(), this.getHorizon()}, 
@@ -206,7 +196,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public  TemporalInterval createTemporalInterval(long[] duration, boolean controllable) 
+	public synchronized TemporalInterval createTemporalInterval(long[] duration, boolean controllable) 
 			throws TemporalIntervalCreationException 
 	{
 		// create temporal interval
@@ -224,7 +214,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public  TemporalInterval createTemporalInterval(long[] end, long[] duration, boolean controllable) 
+	public synchronized TemporalInterval createTemporalInterval(long[] end, long[] duration, boolean controllable) 
 			throws TemporalIntervalCreationException 
 	{
 		// create temporal interval
@@ -242,7 +232,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TemporalIntervalCreationException
 	 */
-	public  TemporalInterval createTemporalInterval(long[] start, long[] end, long[] duration, boolean controllable) 
+	public synchronized TemporalInterval createTemporalInterval(long[] start, long[] end, long[] duration, boolean controllable) 
 			throws TemporalIntervalCreationException 
 	{
 		// interval's start time
@@ -251,6 +241,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 			// create flexible start time
 			s = this.tn.addTimePoint(start[0], start[1]);
 		} catch (InconsistentDistanceConstraintException | InconsistentTpValueException ex) {
+			// throw exception
 			throw new InconsistentIntervalStartTimeException(ex.getMessage());
 		}
 		
@@ -259,8 +250,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		try 
 		{
 			// create flexible end time
-			e = this.tn.addTimePoint();//end[0], end[1]);
-		} catch (InconsistentDistanceConstraintException ex) {
+			e = this.tn.addTimePoint(end[0], end[1]);
+		} catch (InconsistentDistanceConstraintException | InconsistentTpValueException ex) {
 			// delete start time
 			this.tn.removeTimePoint(s);
 			throw new InconsistentIntervaEndTimeException(ex.getMessage());
@@ -275,7 +266,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 			d.setReference(s);
 			d.setTarget(e);
 			d.setDistanceLowerBound(Math.max(1,duration[0]));
-			d.setDistanceUpperBound(duration[1]);
+			d.setDistanceUpperBound(Math.min(duration[1], this.getHorizon()));
 			d.setControllable(controllable);
 			
 			// propagate distance constraint
@@ -285,6 +276,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 			// remove start and end time points
 			this.tn.removeTimePoint(s);
 			this.tn.removeTimePoint(e);
+			// throw exception
 			throw new InconsistentIntervalDurationException(ex.getMessage());
 		}
 		
@@ -298,9 +290,13 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	
 	/**
 	 * 
+	 * Remove a temporal interval from the temporal data-based. 
+	 * 
+	 * The method removes the time points of the interval and all related time point distance constraints from the underlying temporal network
+	 * 
 	 * @param i
 	 */
-	public  void deleteTemporalInterval(TemporalInterval i) {
+	public synchronized void deleteTemporalInterval(TemporalInterval i) {
 		// list of time points to remove
 		List<TimePoint> list = new ArrayList<>();
 		// get start time
@@ -319,7 +315,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * 
 	 * 
 	 */
-	public void verify() 
+	public synchronized void verify() 
 			throws ConsistencyCheckException 
 	{
 		// check temporal network consistency
@@ -338,7 +334,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @param type
 	 * @return
 	 */
-	public  <T extends TemporalQuery> T createTemporalQuery(TemporalQueryType type) {
+	public synchronized <T extends TemporalQuery> T createTemporalQuery(TemporalQueryType type) {
 		// query instance
 		T query = this.qf.create(type);
 		// get created instance
@@ -350,7 +346,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @param type
 	 * @return
 	 */
-	public  <T extends TemporalConstraint> T createTemporalConstraint(TemporalConstraintType type) {
+	public synchronized <T extends TemporalConstraint> T createTemporalConstraint(TemporalConstraintType type) {
 		// create constraint
 		T cons = this.cf.create(type);
 		// get created constraint
@@ -361,23 +357,11 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * 
 	 */
 	@Override
-	public  void process(TemporalQuery query) 
+	public synchronized void process(TemporalQuery query) 
 	{
 		// check query type
 		switch (query.getType()) 
 		{
-//			// compute the makespan of the temporal network
-//			case COMPUTE_MAKESPAN : 
-//			{
-//				// get query
-//				ComputeMakespanQuery mkQuery = (ComputeMakespanQuery) query;
-//				// get subset of intervals if any
-//				double mk = this.computeMakespan(mkQuery.getSubset());
-//				// set the value
-//				mkQuery.setMakespan(mk);
-//			}
-//			break;
-		
 			// check distance between intervals
 			case INTERVAL_DISTANCE : 
 			{
@@ -420,29 +404,22 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				// check if A < B 
 				boolean ab = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
 						
-				// double check if not A -> B
-				if (!ab)
-				{
-					// compute distance between B and A 
-					distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
-					distance.setReference(b);
-					distance.setTarget(a);
-					// process query
-					this.process(distance);
-					// get distance bounds
-					dmin = distance.getDistanceLowerBound();
-					dmax = distance.getDistanceUpperBound();
-					// check if B < A
-					boolean ba = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
-					
-					// set overlapping result
-					overlap.setCanOverlap(!ba);
-				}
-				else {
-					// set overlapping flag
-					overlap.setCanOverlap(!ab);
-				}
-
+						
+				// compute distance between B and A 
+				distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
+				distance.setReference(b);
+				distance.setTarget(a);
+				// process query
+				this.process(distance);
+				// get distance bounds
+				dmin = distance.getDistanceLowerBound();
+				dmax = distance.getDistanceUpperBound();
+				// check if B < A
+				boolean ba = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
+				
+				
+				// set overlapping result
+				overlap.setCanOverlap(!ab && !ba);
 				// print logging message
 				debug("[" + this.getClass().getName() + "] Processing query INTERVAL_OVERLAP:\n"
 						+ "- Temporal Interval (A): " + a + "\n"
@@ -528,7 +505,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @param constraint
 	 * @throws Exception
 	 */
-	public void propagate(TemporalConstraint constraint) 
+	public synchronized void propagate(TemporalConstraint constraint) 
 			throws TemporalConstraintPropagationException 
 	{
 		try 
@@ -684,6 +661,10 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 					this.tn.addDistanceConstraint(cons);
 				}
 				break;
+				
+				default : { 
+					throw new RuntimeException("Unknown temporal constraint!");
+				}
 			}
 		}
 		catch (InconsistentDistanceConstraintException ex) {
@@ -696,11 +677,12 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @param constraint
 	 * @throws Exception
 	 */
-	public  void retract(TemporalConstraint constraint) {
+	public synchronized void retract(TemporalConstraint constraint) {
 		// retract propagated constraints
 		TimePointDistanceConstraint[] toRetract = constraint.getPropagatedConstraints();
 		// verify whether some constraints have been propagated
 		if (toRetract != null) {
+			// remove propagated distance constraints
 			this.tn.removeDistanceConstraint(Arrays.asList(toRetract));
 			// clear data structure
 			constraint.clear();

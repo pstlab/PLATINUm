@@ -43,8 +43,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 		this.distance = null;
 		// attribute for testing purposes
 		this.propagationCounter = 0;
-		// create the distance graph
-		this.dg = new DistanceGraph();
+		
 		// initialize
 		this.init();
 	}
@@ -56,8 +55,11 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 	{
 		// set propagate flag
 		this.toPropagate = true;
+		
+		// create the distance graph
+		this.dg = new DistanceGraph();
 		// set temporal horizon
-		this.dg.setInfity(this.tn.getHorizon() + 1);
+		this.dg.setInfity(this.tn.getHorizon());
 		// add all points to the distance graph
 		for (TimePoint point : this.tn.getTimePoints()) {
 			// add node to the distance graph
@@ -101,9 +103,12 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 		while (it.hasNext() && consistent) {
 			// next time point
 			TimePoint tp = it.next();
+			// check cyclic distance
+			long d = this.distance.get(tp).get(tp);
 			// check condition
-			consistent = this.distance.get(tp).get(tp) == 0;
+			consistent = (d == 0);
 		}
+		
 		// get consistency check result
 		return consistent;
 	}
@@ -123,8 +128,10 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 			// temporal network initialized
 			case INITIALIZATION: 
 			{
+				// create the distance graph
+				this.dg = new DistanceGraph();
 				// set temporal horizon
-				this.dg.setInfity(this.tn.getHorizon() + 1);
+				this.dg.setInfity(this.tn.getHorizon());
 				// add all points to the distance graph
 				for (TimePoint point : this.tn.getTimePoints()) {
 					// add node to the distance graph
@@ -161,7 +168,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 					// get edges' weights
 					long max = constraint.getDistanceUpperBound();
 					long min = -constraint.getDistanceLowerBound();
-					// add edge to the distance graph
+					// add edge to the distance graph (replace the edges in case already present)
 					this.dg.add(constraint.getReference(), constraint.getTarget(), max);
 					this.dg.add(constraint.getTarget(), constraint.getReference(), min);
 				}
@@ -221,9 +228,6 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 					this.dg.add(constraint.getReference(), constraint.getTarget(), max);
 					this.dg.add(constraint.getTarget(), constraint.getReference(), min);
 				}
-				
-				// it is not necessary to update information yet
-				this.toPropagate = false;
 			}
 			break;
 			
@@ -382,7 +386,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 					this.distance.get(i).put(j, 0l);
 				}
 				else {
-					this.distance.get(i).put(j, this.tn.getHorizon() + 1);
+					this.distance.get(i).put(j, this.tn.getHorizon());
 				}
 			}
 		}
@@ -398,7 +402,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 			}
 		}
 		
-		// compute minimum distances
+		
+		// compute minimum distances - k intermediate node
 		for (TimePoint k : this.dg.getPoints()) 
 		{
 			// compute shortest paths using intermediate points

@@ -21,7 +21,7 @@ public class HierarchyFlawInspector extends FlawInspector
 	 * 
 	 */
 	protected HierarchyFlawInspector() {
-		super("FlawInspector:HiearchyFlawInspector");
+		super("HierarchyFlawInspector");
 	}
 	
 	/**
@@ -44,6 +44,32 @@ public class HierarchyFlawInspector extends FlawInspector
 			for (DomainComponent component : hierarchy[index]) {
 				// detect flaws
 				set.addAll(component.detectFlaws());
+			}
+		}
+		
+		// get flaws
+		return set;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Set<Flaw> check() 
+	{
+		// filtered set
+		Set<Flaw> set = new HashSet<>();
+		// get knowledge
+		DomainKnowledge knowledge = this.pdb.getDomainKnowledge();
+		// get the hierarchy
+		List<DomainComponent>[] hierarchy = knowledge.getDomainHierarchy();
+		// detect flaws according to the computed hierarchy of the domain
+		for (int index = 0; index < hierarchy.length && set.isEmpty(); index++)
+		{
+			// extract flaws of equivalent components
+			for (DomainComponent component : hierarchy[index]) {
+				// detect flaws
+				set.addAll(component.checkFlaws());
 			}
 		}
 		

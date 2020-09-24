@@ -113,11 +113,13 @@ public class ProtocolLanguageFactory
 	
 	/**
 	 * 
+	 * @param name
+	 * @param origin
 	 * @param horizon
 	 * @return
 	 */
-	public PlanProtocolDescriptor createPlanDescriptor(long origin, long horizon) {
-		return new PlanProtocolDescriptor(origin, horizon);
+	public PlanProtocolDescriptor createPlanDescriptor(String name, long origin, long horizon) {
+		return new PlanProtocolDescriptor(name, origin, horizon);
 	}
 	
 	/**

@@ -86,7 +86,16 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	 * 
 	 */
 	@Override
-	public List<Flaw> findFlaws() 
+	public synchronized List<Flaw> checkFlaws() {
+		// get detected flaws
+		return new ArrayList<>(this.doFindFlaws());
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public synchronized List<Flaw> findFlaws() 
 			throws UnsolvableFlawException
 	{
 		// list of flaws on the related component
@@ -108,7 +117,7 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	 * 
 	 */
 	@Override
-	public final void apply(FlawSolution solution) 
+	public final synchronized void apply(FlawSolution solution) 
 			throws FlawSolutionApplicationException 
 	{
 		// check flaw type
@@ -124,7 +133,7 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	 * 
 	 */
 	@Override
-	public final void restore(FlawSolution solution) 
+	public final synchronized void restore(FlawSolution solution) 
 			throws Exception 
 	{
 		// check flaw type
@@ -140,7 +149,7 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	 * 
 	 */
 	@Override
-	public final void retract(FlawSolution solution) 
+	public final synchronized void retract(FlawSolution solution) 
 	{
 		// check flaw type
 		if (!Arrays.asList(this.flawTypes).contains(solution.getFlaw().getType())) {
@@ -158,8 +167,7 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	protected void doRetract(FlawSolution solution) 
 	{
 		// get the list of activated relations
-		List<Relation> rActivated = solution.getActivatedRelations();
-		for (Relation relation : rActivated) {
+		for (Relation relation : solution.getActivatedRelations()) {
 			// get reference component
 			DomainComponent refComp = relation.getReference().getComponent();
 			// deactivate relation
@@ -167,8 +175,7 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 		}
 		
 		// get the list of created relations
-		List<Relation> rCreated = solution.getCreatedRelations();
-		for (Relation relation : rCreated) {
+		for (Relation relation : solution.getCreatedRelations()) {
 			// get reference component
 			DomainComponent refComp = relation.getReference().getComponent();
 			// remove relation from the data structure
@@ -176,8 +183,7 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 		}
 		
 		// get the list of activated decisions
-		List<Decision> dActivated = solution.getActivatedDecisisons();
-		for (Decision decision : dActivated) {
+		for (Decision decision : solution.getActivatedDecisions()) {
 			// get decision component
 			DomainComponent dComp = decision.getComponent();
 			// deactivate decision
@@ -185,8 +191,7 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 		}
 		
 		// get the list of created decisions
-		List<Decision> dCreated = solution.getCreatedDecisions();
-		for (Decision decision : dCreated) {
+		for (Decision decision : solution.getCreatedDecisions()) {
 			// get decision component
 			DomainComponent dComp = decision.getComponent();
 			// delete decision from pending "list" 
@@ -267,50 +272,64 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	/**
 	 * 
 	 * @param solution
-	 * @throws Exception
+	 * @throws RelationPropagationException
+	 * @throws DecisionPropagationException
 	 */
 	protected void doRestore(FlawSolution solution) 
-			throws Exception
+			throws RelationPropagationException, DecisionPropagationException 
 	{
-		// get the list of created decisions
-		List<Decision> dCreated = solution.getCreatedDecisions();
-		for (Decision decision : dCreated) {
-			// get decision component
-			DomainComponent dComp = decision.getComponent();
-			dComp.restore(decision);
-		}
-		
-		// get the list of created relations
-		List<Relation> rCreated = solution.getCreatedRelations();
-		for (Relation relation : rCreated) {
-			// get reference component
-			DomainComponent refComp = relation.getReference().getComponent();
-			// restore relation
-			refComp.restore(relation);
-		}
-		
-		
-		// list of committed decisions
+		// list of actually activated decisions
 		Set<Decision> dCommitted = new HashSet<>();
-		// get the list of activated decisions
-		List<Decision> dActivated = solution.getActivatedDecisisons();
-		List<Relation> avoid = new ArrayList<>();
+		// list of actually activated relations
+		Set<Relation> rCommitted = new HashSet<>();
+		
 		try
 		{
-			
-			for (Decision decision : dActivated) {
+			// get the list of created decisions
+			for (Decision decision : solution.getCreatedDecisions()) {
 				// get decision component
 				DomainComponent dComp = decision.getComponent();
-				// activate decision and get the set of related relations that have been activated
-				Set<Relation> relations = dComp.activate(decision);
-				avoid.addAll(relations);
+				// restore decision SILENT -> PENDING
+				dComp.restore(decision);
+			}
+			
+			
+			// check activated decisions
+			for (Decision decision : solution.getActivatedDecisions()) {
+				// get decision component
+				DomainComponent dComp = decision.getComponent();
+				
+				// add to committed list
+				dCommitted.add(decision);
+				// activate decision PENDING -> ACTIVE
+				dComp.activate(decision);
+			}
+			
+			// get the list of created relations
+			for (Relation relation : solution.getCreatedRelations()) {
+				// get reference component
+				DomainComponent refComp = relation.getReference().getComponent();
+				// restore relation
+				refComp.restore(relation);
+			}
+
+			// check activated relations
+			for (Relation relation : solution.getActivatedRelations()) {
+				// add relation to committed list
+				rCommitted.add(relation);
+				// get reference component
+				DomainComponent refComp = relation.getReference().getComponent();
+				// activate relation
+				refComp.activate(relation);
 			}
 		}
-		catch (DecisionPropagationException ex) {
-			// deactivate all "avoid" relations
-			for (Relation rel : avoid) {
+		catch (DecisionPropagationException ex) 
+		{
+			// deactivate committed relations
+			for (Relation rel : rCommitted) {
 				// get reference component
 				DomainComponent refComp = rel.getReference().getComponent();
+				// deactivate relation
 				refComp.deactivate(rel);
 			}
 			
@@ -318,41 +337,66 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 			for (Decision dec : dCommitted) {
 				// get decision component
 				DomainComponent decComp = dec.getComponent();
+				// deactivate decision
 				decComp.deactivate(dec);
+			}
+			
+			// remove created relations
+			for (Relation rel : solution.getCreatedRelations()) {
+				// get decision component
+				DomainComponent refComp = rel.getReference().getComponent();
+				// delete relation
+				refComp.delete(rel);
+			}
+			
+			// remove created decision
+			for (Decision dec : solution.getCreatedDecisions()) {
+				// get component
+				DomainComponent comp = dec.getComponent();
+				// free decision PENDING -> SILENT
+				comp.free(dec);
 			}
 			
 			// throw exception
 			throw new DecisionPropagationException(ex.getMessage());
 		}
-		
- 		// list of committed relations
-		Set<Relation> rCommitted = new HashSet<>();
-		// get the list of activated relations
-		List<Relation> rActivated = solution.getActivatedRelations();
-		try
+		catch (RelationPropagationException ex) 
 		{
-			// remove the "avoid" list
-			rActivated.removeAll(avoid);
-			for (Relation relation : rActivated) {
-				// get reference component
-				DomainComponent refComp = relation.getReference().getComponent();
-				refComp.activate(relation);
-				// add to committed relations
-				rCommitted.add(relation);
-			}
-		}
-		catch (RelationPropagationException ex) {
 			// deactivate committed relations
-			for (Relation relation : rCommitted) {
+			for (Relation rel : rCommitted) {
 				// get reference component
-				DomainComponent refComp = relation.getReference().getComponent();
-				refComp.deactivate(relation);
+				DomainComponent refComp = rel.getReference().getComponent();
+				// deactivate relation
+				refComp.deactivate(rel);
+			}
+			
+			// deactivate committed decisions
+			for (Decision dec : dCommitted) {
+				// get decision component
+				DomainComponent decComp = dec.getComponent();
+				// deactivate decision
+				decComp.deactivate(dec);
+			}
+			
+			// remove created relations
+			for (Relation rel : solution.getCreatedRelations()) {
+				// get decision component
+				DomainComponent refComp = rel.getReference().getComponent();
+				// delete relation
+				refComp.delete(rel);
+			}
+			
+			// remove created decision
+			for (Decision dec : solution.getCreatedDecisions()) {
+				// get component
+				DomainComponent comp = dec.getComponent();
+				// free decision PENDING -> SILENT
+				comp.free(dec);
 			}
 			
 			// throw exception
 			throw new RelationPropagationException(ex.getMessage());
-		}
-		
+		}		
 	}
 	
 	/**
