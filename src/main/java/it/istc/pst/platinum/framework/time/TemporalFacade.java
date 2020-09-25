@@ -402,7 +402,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				long dmin = distance.getDistanceLowerBound();
 				long dmax = distance.getDistanceUpperBound();
 				// check if A < B 
-				boolean ab = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
+				boolean ab = (dmin <= dmax && dmin >= 0);
 						
 						
 				// compute distance between B and A 
@@ -415,7 +415,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				dmin = distance.getDistanceLowerBound();
 				dmax = distance.getDistanceUpperBound();
 				// check if B < A
-				boolean ba = (dmin >= 0 && dmax >= 0 && dmin <= dmax);
+				boolean ba = (dmin <= dmax && dmin >= 0);
 				
 				
 				// set overlapping result

@@ -77,7 +77,10 @@ DOMAIN GOAC {
 		}
 	}
 
-	COMP_TYPE SingletonStateVariable MissionTimelineType (Idle() , TakingPicture(file_id, coordinate, coordinate, angle, angle) , Communicating(file_id)  , At(coordinate, coordinate) )
+	COMP_TYPE SingletonStateVariable MissionTimelineType (Idle() , 
+		TakingPicture(file_id, coordinate, coordinate, angle, angle) , 
+		Communicating(file_id)  , At(coordinate, coordinate)
+	)
 	{
 		VALUE Idle() [1, +INF] 
 		MEETS 
@@ -120,8 +123,8 @@ DOMAIN GOAC {
 			cd1 Camera.camera.TakingPicture(?file_id2, ?x2, ?y2, ?pan2, ?tilt2);
 			cd5 Communication.communication.Communicating(?file_id3);
 		
-			//CONTAINS [0,+INF] [0,+INF] cd1;
-			//CONTAINS [0,+INF] [0,0] cd5;
+			CONTAINS [0,+INF] [0,+INF] cd1;
+			CONTAINS [0,+INF] [0,0] cd5;
 			cd1 BEFORE [0, +INF] cd5;
 		
 			?x1 = ?x2;
