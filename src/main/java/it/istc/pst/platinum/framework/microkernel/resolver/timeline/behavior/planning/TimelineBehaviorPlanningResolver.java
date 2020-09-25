@@ -326,8 +326,8 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						}
 						
 						// check the feasibility of the path with respect to the available time 
-							if (tranMinDuration >= gap.getDmin() && 
-									tranMinDuration <= gap.getDmax())
+						if (tranMinDuration <= gap.getDmax() && 
+								tranMaxDuration >= gap.getDmin())
 						{
 							// gap solution
 							GapCompletion solution = new GapCompletion(gap, steps, this.cost);
