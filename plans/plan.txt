@@ -23,14 +23,15 @@ plan {
 		PointingMode 7 during [0,100]  [0,100] Window 9
 		PointingMode 2 before [0,100] PointingMode 7
 		PointingMode 0 before [0,100] PointingMode 2
-		PointingMode 2 meets PointingMode 3
-		PointingMode 3 meets PointingMode 4
+		PointingMode 0 meets PointingMode 1
+		PointingMode 1 meets PointingMode 2
 		PointingMode 4 meets PointingMode 5
 		PointingMode 5 meets PointingMode 6
 		PointingMode 6 meets PointingMode 7
+		PointingMode 2 before [0,100] PointingMode 6
 		PointingMode 4 before [0,100] PointingMode 6
-		PointingMode 0 meets PointingMode 1
-		PointingMode 1 meets PointingMode 2
+		PointingMode 2 meets PointingMode 3
+		PointingMode 3 meets PointingMode 4
 		PointingMode 2 before [0,100] PointingMode 4
 	}
 }

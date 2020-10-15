@@ -1,6 +1,6 @@
 digraph dependency_graph {
 	rankdir=TB;
 	node [fontsize=11, style=filled, fillcolor=azure, shape = box]
-	PointingMode -> Window
+	ALFA -> Human	FourByThree -> ALFA	Human -> Robot	ALFA -> Robot
 }
 
