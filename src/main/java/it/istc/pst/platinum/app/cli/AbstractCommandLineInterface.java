@@ -46,21 +46,20 @@ public abstract class AbstractCommandLineInterface
 		this.pdb = null;
 		this.proxy = null;
 	}
-	
+
 	/**
 	 * 
 	 * @param ddl
 	 * @param pdl
-	 * @throws CommandLineInterfaceInitializationException
+	 * @param pClass
+	 * @param cfgFile
+	 * @throws CommandLineInterfaceException
 	 */
-	protected void init(String ddl, String pdl, Class<? extends RunnablePlatformProxy> pClass) 
+	protected void init(String ddl, String pdl) 
 			throws CommandLineInterfaceException 
 	{
 		try 
 		{
-			// create proxy
-			this.proxy = PlatformProxyBuilder.build(pClass);
-			
 			// clear plan database
 			this.pdb = null;
 			// initialize the plan database
@@ -69,7 +68,7 @@ public abstract class AbstractCommandLineInterface
 			this.planner = null;
 			this.currentSolution = null;
 		}
-		catch (SynchronizationCycleException | ProblemInitializationException | PlatformException ex) {
+		catch (SynchronizationCycleException | ProblemInitializationException ex) {
 			// command line interface initialization exception
 			throw new CommandLineInterfaceException(ex.getMessage());
 		}
@@ -78,6 +77,7 @@ public abstract class AbstractCommandLineInterface
 			System.gc();
 		}
 	}
+	
 	
 	/**
 	 * 
@@ -127,16 +127,18 @@ public abstract class AbstractCommandLineInterface
 		}
 		
 		// set the planner
-		this.planner = PlannerBuilder.createAndSet(Planner.class, this.pdb);
+		this.planner = PlannerBuilder.createAndSet(CommandLineInterfacePlanner.class, this.pdb);
 		// run the planner on the desired goal
 		this.currentSolution = this.planner.plan();
 	}
 	
 	/**
 	 * 
+	 * @param pClass
+	 * @param pConfigFile
 	 * @throws CommandLineInterfaceException
 	 */
-	protected void execute(String path) 
+	protected void execute(Class<? extends RunnablePlatformProxy> pClass, String pConfigFile) 
 			throws CommandLineInterfaceException
 	{
 		// check if a solution exists
@@ -146,38 +148,39 @@ public abstract class AbstractCommandLineInterface
 		
 		try
 		{
-			// check if set has been set
-			if (this.proxy != null) {
-				// start simulator
-				this.proxy.start();
+			// create platform proxy
+			this.proxy = PlatformProxyBuilder.build(pClass, pConfigFile);
+			// start proxy 
+			this.proxy.start();
+			
+			
+			try
+			{
+				// create the executive 
+				Executive exec = ExecutiveBuilder.createAndSet(
+						CommandLineInterfaceExecutive.class, 
+						0, 
+						this.currentSolution.getHorizon());
+				
+				// set the executive
+				exec.initialize(this.currentSolution.export());
+				// bind the executive to the platform
+				exec.link(this.proxy);
+				// run the executive
+				exec.execute();
+			}
+			catch (Exception ex) {
+				throw new CommandLineInterfaceException("Executive error:\n\t- message: " + ex.getMessage() + "\n") ;
+			}
+			finally {
+				// stop platform proxy
+				this.proxy.stop();
 			}
 			
-			// create the executive 
-			Executive exec = ExecutiveBuilder.createAndSet(Executive.class, 0, this.currentSolution.getHorizon());
-			// set the executive
-			exec.initialize(this.currentSolution.export());
 			
-			// bind the executive to the platform
-			exec.link(this.proxy);
-			// run the executive
-			exec.execute();
 		}
 		catch (Exception ex) {
-			throw new CommandLineInterfaceException(ex.getMessage());
-		}
-		finally 
-		{
-			try 
-			{
-				// check simulator to stop
-				if (this.proxy != null) {
-					// stop simulator
-					this.proxy.stop();
-				}
-			}
-			catch (PlatformException ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+			throw new CommandLineInterfaceException("Error while configuring the platform proxy\n\t- message: " + ex.getMessage() + "\n");
 		}
 	}
 	

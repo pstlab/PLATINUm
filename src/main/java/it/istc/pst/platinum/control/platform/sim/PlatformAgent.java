@@ -24,6 +24,9 @@ public class PlatformAgent
 	
 	// agent configuration information 
 	private long uncertainty;											// uncertainty about the execution of a command
+	
+	
+	
 	private Map<String, PlatformCommandDescription> commands;			// descriptions of commands the agent can perform 
 	
 	private List<PlatformAgentObserver> observers;						// list of agent observers
@@ -85,10 +88,13 @@ public class PlatformAgent
 							// asynchronously execute command
 							System.out.println("[" + PlatformAgent.this.label + "] Start command execution:\n\t- " + cmd + "\n");
 							
-							// get command expected duration
-							float execTime = cmd.getExecTime();
+							// get platform description
+							PlatformCommandDescription desc = commands.get(cmd.getName());
+							
+							// get expected duration
+							float execTime = desc.getExecutionTime(); 		//cmd.getExecTime();
 							// check agent uncertainty and set minimum execution time (avoid execution times lower than 0)
-							int min = Math.round(Math.max(1, execTime - PlatformAgent.this.uncertainty));
+							int min = Math.round(Math.max(1, execTime - uncertainty));
 							// check agent uncertainty and set maximum execution time
 							int max = Math.round(execTime + uncertainty);
 							
@@ -104,6 +110,8 @@ public class PlatformAgent
 						catch (Exception ex) {
 							// command execution failure
 							success = false;
+							// print failure message
+							System.out.println("[" + PlatformAgent.this.label + "] execution failure:\n\t- message: " + ex.getMessage() + "\n");
 						}
 						finally 
 						{

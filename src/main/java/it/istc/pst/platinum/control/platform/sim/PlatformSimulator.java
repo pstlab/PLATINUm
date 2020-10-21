@@ -19,7 +19,6 @@ import it.istc.pst.platinum.executive.pdb.ExecutionNode;
  */
 public class PlatformSimulator extends RunnablePlatformProxy implements PlatformAgentObserver 
 {
-	private static final String DEFAULT_CFG_FILE_PATH = "etc/platform/hrc/config.xml";	// default configuration file
 	private Map<String, PlatformAgent> index;											// index agents by commands they can execute
 	private List<PlatformAgent> agents;													// list of registered agents
 	protected Map<ExecutionNode, PlatformCommand> trace;								// cache of executed commands
@@ -33,17 +32,6 @@ public class PlatformSimulator extends RunnablePlatformProxy implements Platform
 		this.index = new HashMap<>();
 		this.agents = new ArrayList<>();
 		this.trace = new HashMap<>();
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public void initialize() 
-			throws PlatformException 
-	{
-		// set the platform on the default configuration file
-		this.initialize(DEFAULT_CFG_FILE_PATH);
 	}
 	
 	/**

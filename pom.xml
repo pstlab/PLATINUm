@@ -9,6 +9,12 @@
   <name>PLATINUm</name>
   <description>Planning and Acting with TImeliNes under Uncertainty</description>
   
+  <organization>
+		<name>National Research Council of Italy</name>
+	</organization>
+	
+	
+  
   <properties>
     <maven.compiler.target>8</maven.compiler.target>
     <maven.compiler.source>8</maven.compiler.source>

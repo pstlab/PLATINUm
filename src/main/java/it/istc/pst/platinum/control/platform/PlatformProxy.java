@@ -28,13 +28,6 @@ public abstract class PlatformProxy
 	
 	/**
 	 * 
-	 * @throws PlatformException
-	 */
-	public abstract void initialize() 
-			throws PlatformException;
-	
-	/**
-	 * 
 	 * @param cfgFile
 	 * @throws PlatformException
 	 */
@@ -92,7 +85,8 @@ public abstract class PlatformProxy
 	 * 
 	 * @param cmd
 	 */
-	public void success(PlatformCommand cmd) {
+	public void success(PlatformCommand cmd) 
+	{
 		// check platform observers
 		synchronized (this.observers) {
 			for (PlatformObserver obs : this.observers) {

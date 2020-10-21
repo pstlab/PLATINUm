@@ -17,7 +17,7 @@
 	
 	<agent id="a02" label="Window" type="acting" uncertainty="0">
 
-		<command type="pc">s
+		<command type="pc">
 			<name>visible</name>
 			<duration>80</duration>
 		</command>

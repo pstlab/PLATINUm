@@ -24,8 +24,6 @@ import it.istc.pst.platinum.framework.protocol.query.get.GetSingleFlexibleTimeli
  */
 public class CommandLineInterfaceProcess extends AbstractCommandLineInterface implements Runnable
 {
-	private static final String HRC_PLATFORM_PROXY_CONFIG_FILE_PATH = "etc/platform/hrc/cfg.xml";
-	private static final Class<PlatformSimulator> HRC_PLATFORM_PROXY_CLASS = PlatformSimulator.class;
 	private static final String CLI_PROMPT = "epsl-agent$ ";		// KEEN-compliant CLI prompt - do not change
 	private static final long HORIZON = Long.MAX_VALUE - 1;			// default horizon
 	
@@ -124,13 +122,12 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			File pdl = new File(splits[2]);
 			
 			// check files
-			if (ddl.exists() && !ddl.isDirectory() && pdl.exists() && !pdl.isDirectory()) {
+			if (ddl.exists() && !ddl.isDirectory() && pdl.exists() && !pdl.isDirectory()) 
+			{
 				// set on default HRC platform proxy using default configuration file
 				this.init(
 						ddl.getAbsolutePath(), 
-						pdl.getAbsolutePath(), 
-						HRC_PLATFORM_PROXY_CLASS, 
-						HRC_PLATFORM_PROXY_CONFIG_FILE_PATH);
+						pdl.getAbsolutePath());
 			}
 			else {
 				// files not found
@@ -143,31 +140,10 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 		{
 			if (this.planner != null && this.currentSolution != null) 
 			{
-				try 
-				{
-					// prepare thread
-					Thread t = new Thread(new Runnable() { 
-	
-							/**
-							 * 
-							 */
-							@Override
-							public void run() {
-								// print current plan
-								System.out.println(currentSolution);
-								// display the current plan
-								planner.display();
-							}
-					});
-					
-					// start and wait execution
-					t.start();
-					t.join();
-				}
-				catch (Exception ex) {
-					// do not interrupt execution
-					System.out.println(ex.getMessage());
-				}
+				// print current plan
+				System.out.println(this.currentSolution);
+				// display the current plan
+				this.planner.display();
 			}
 			else {
 				System.out.println("!No planner has been initialized yet!");
@@ -219,12 +195,16 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 				throw new CommandLineInterfaceException("Bad command usage -> " + CommandLineCommand.EXEC.getHelp());
 			}
 			
+			
+			
 			// get platform configuration file
 			String cfgFilePath = splits[1].trim();
 			try
 			{
-				// set and run the executive if possible
-				this.execute(cfgFilePath);
+				// set a platform and run the executive
+				this.execute(
+						PlatformSimulator.class,
+						cfgFilePath);
 			}
 			catch (CommandLineInterfaceException ex) {
 				System.err.println(ex.getMessage());
@@ -246,8 +226,6 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 			// check command's parameter and create query
 			if (splits[1].equals("all")) 
 			{
-				// plan database projection
-//				GetFlexibleTimelinesProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.GET_FLEXIBLE_TIMELINES);
 				// check temporal behaviors
 				for (Timeline cTl : this.currentSolution.getTimelines()) 
 				{
@@ -304,8 +282,6 @@ public class CommandLineInterfaceProcess extends AbstractCommandLineInterface im
 				throw new CommandLineInterfaceException("Bad command usage -> No planning domain set");
 			}
 			
-			// show domain components
-//			ShowComponentProtocolQuery query = this.queryFactory.createQuery(ProtocolQueryType.SHOW_COMPONENTS);
 			// check component name if any
 			if (splits.length > 1 && splits[1] != null)
 			{

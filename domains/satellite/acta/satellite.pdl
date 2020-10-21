@@ -2,13 +2,11 @@ PROBLEM ACTA_SATELLITE_Problem (DOMAIN ACTA_SATELLITE)
 {
 	f0 <fact> PointingMode.pm.Earth() AT [0, 0] [1, +INF] [1, +INF];
 	
-	win0 <fact> Window.channel._NotVisible() AT [0, 0] [10, 10] [10, 10];
-	win1 <fact> Window.channel._Visible() AT [10, 10] [80, 80] [70, 70];
-	win2 <fact> Window.channel._NotVisible() AT [80, 80] [100, 100] [20, 20];
+	win1 <fact> Window.channel._Visible() AT [5, 15] [80, 90] [75, 85];
 
 	g0 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 	g1 <goal> PointingMode.pm.Science() AT [0, +INF] [0, +INF] [0, +INF];
 	
 	g0 BEFORE [0, +INF] g1;
-
+	
 }
