@@ -35,11 +35,11 @@ digraph stnu {
 	15 -> 1 [fontsize=8, arrowsize= .5, label = "[20,79]"];
 	15 -> 16 [fontsize=8, arrowsize= .5, label = "[0,0]"];
 	16 -> 1 [fontsize=8, arrowsize= .5, label = "[20,79]"];
-	16 -> 17 [fontsize=8, arrowsize= .5, label = "[22,22]"];
+	16 -> 17 [fontsize=8, arrowsize= .5, label = "[20,20]"];
 	17 -> 1 [fontsize=8, arrowsize= .5, label = "[10,69]"];
 	17 -> 19 [fontsize=8, arrowsize= .5, label = "[0,100]"];
 	18 -> 1 [fontsize=8, arrowsize= .5, label = "[85,95]"];
-	18 -> 19 [fontsize=8, arrowsize= .5, label = "[65,85]"];
+	18 -> 19 [fontsize=8, arrowsize= .5, label = "[79,79]"];
 	18 -> 16 [fontsize=8, arrowsize= .5, label = "[0,100]"];
 	19 -> 1 [fontsize=8, arrowsize= .5, label = "[10,20]"];
 	0 -> 1 [fontsize=8, arrowsize= .5, label = "[100,100]"];

@@ -28,7 +28,7 @@ import it.istc.pst.platinum.framework.utils.log.FrameworkLoggingLevel;
 		strategy = GreedyDepthSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.INFO
 )
 public class CommandLineInterfacePlanner extends Planner {
 	
