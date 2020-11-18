@@ -142,6 +142,71 @@ public abstract class SearchStrategy extends DeliberativeObject implements Compa
 	}
 	
 	/**
+	 * Compute the (pessimistic) makespan projection by analyzing the extraced decomposition graph starting 
+	 * from a given value of the domain
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private Map<DomainComponent, Long> computeMakespanProjection(ComponentValue value)
+	{
+		// set data structure
+		Map<DomainComponent, Long> makespan = new HashMap<>();
+		// check if leaf
+		if (!this.pgraph.containsKey(value) || 
+				this.pgraph.get(value).isEmpty()) 
+		{
+			// set value expected minimum duration
+			makespan.put(value.getComponent(), value.getDurationLowerBound());
+		}
+		else 
+		{
+			// check possible decompositions
+			for (List<ComponentValue> decomposition : this.pgraph.get(value))
+			{
+				// set decomposition makespan 
+				Map<DomainComponent, Long> dMakespan = new HashMap<>();
+				// check subgoals
+				for (ComponentValue subgoal : decomposition) 
+				{
+					// recursive call to compute (pessimistic) makespan estimation
+					Map<DomainComponent, Long> sgMakespan = this.computeMakespanProjection(subgoal);
+					// increment decompostion makespan
+					for (DomainComponent c : sgMakespan.keySet()) {
+						// check decompostion makespan 
+						if (!dMakespan.containsKey(c)) {
+							// add entry 
+							dMakespan.put(c, sgMakespan.get(c));
+						}
+						else {
+							// increment component's makespan 
+							dMakespan.put(c, 
+									dMakespan.get(c) + sgMakespan.get(c));
+						}
+					}
+				}
+				
+				// update resulting makespan by taking into account the maximum value
+				for (DomainComponent c : dMakespan.keySet()) {
+					// check makespan
+					if (!makespan.containsKey(c)) {
+						// add entry
+						makespan.put(c, dMakespan.get(c));
+					}
+					else {
+						// set the max
+						makespan.put(c, 
+								Math.max(makespan.get(c), dMakespan.get(c)));
+					}
+				}
+			}
+		}
+		
+		// get the makespan 
+		return makespan;
+	}
+	
+	/**
 	 * 
 	 * @return
 	 */
@@ -209,7 +274,14 @@ public abstract class SearchStrategy extends DeliberativeObject implements Compa
 	}
 	
 	/**
-	 * Planning heuristics inspired by hmax
+	 * This method computes a pessimistic evaluation concerning the (planning) distance of 
+	 * a given node from a solution plan. 
+	 * 
+	 * Namely the method computes the expected cost the planner should "pay" to refine 
+	 * the given node and obtain a valid solution. The cost takes into account both planning 
+	 * and scheduling decisions. Also the cost considers possible "gaps" on timelines and 
+	 * tries to estimates the planning effort needed to complete the behaviors of 
+	 * related timelines.
 	 * 
 	 * @param node
 	 * @return
@@ -247,6 +319,49 @@ public abstract class SearchStrategy extends DeliberativeObject implements Compa
 		
 		// get value
 		return hValue;
+	}
+	
+	/**
+	 * 
+	 * This method provides a pessimistic evaluation of the makespan of domain components. 
+	 * 
+	 * Namely, the method considesrs planning subgoals of a given partial plan and computes 
+	 * a pessimistic projection of the makespan of domain components
+	 * 
+	 * @param node
+	 * @return
+	 */
+	protected Map<DomainComponent, Long> computeMakespanHeuristics(SearchSpaceNode node)
+	{
+		// initialize makespan projects
+		Map<DomainComponent, Long> projections = new HashMap<>();
+		for (DomainComponent c : this.pdb.getComponents()) {
+			// set initial projection
+			projections.put(c, 0l);
+		}
+		
+		// check node flaws and compute heuristic estimation
+		for (Flaw flaw : node.getAgenda()) 
+		{
+			// check planning goals
+			
+			if (flaw.getType().equals(FlawType.PLAN_REFINEMENT)) {
+				// get planning goal
+				Goal goal = (Goal) flaw;
+				// compute goal (pessimistic) projection
+				Map<DomainComponent, Long> gProjection = this.computeMakespanProjection(goal.getDecision().getValue());
+				
+				// update plan projections
+				for (DomainComponent c : gProjection.keySet()) {
+					// increment project
+					projections.put(c, projections.get(c) + gProjection.get(c));
+				}
+				
+			}
+		}
+		
+		// get projections
+		return projections;
 	}
 	
 	/**
