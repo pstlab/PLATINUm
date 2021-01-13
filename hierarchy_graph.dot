@@ -1,6 +1,0 @@
-digraph hierarhcy_graph {
-	rankdir=TB;
-	node [fontsize=11, style=filled, fillcolor=azure, shape = box]
-	PointingMode -> Window
-}
-

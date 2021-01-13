@@ -1,126 +1,0 @@
-[1;34mGuessed query file: [0;0mobservation.q
-Options for the verification:
-  Generating no trace
-  Search order is breadth first (UPPAAL), automatic (TIGA)
-  Using conservative space optimisation
-  Seed is 1428567680
-  State space representation uses minimal constraint systems
-  Using Covariance Matrixes for learning SMC-Strategies
-  Learning-settings:
-	maxRuns		:5000
-	maxGood		:50000
-	maxBest		:500
-	evalRuns	:1000
-  Using Local Heap filtering for learning
-[2K
-Verifying property 1 at line 1
- -- [1;34mThroughput: 8849 states/sec[0;0m, Size: 15 states, Load: 5 states[KPreparing: 0%[KPreparing: 1%[KPreparing: 2%[KPreparing: 3%[KPreparing: 4%[KPreparing: 5%[KPreparing: 6%[KPreparing: 7%[KPreparing: 8%[KPreparing: 9%[KPreparing: 10%[KPreparing: 11%[KPreparing: 12%[KPreparing: 13%[KPreparing: 14%[KPreparing: 15%[KPreparing: 16%[KPreparing: 17%[KPreparing: 18%[KPreparing: 19%[KPreparing: 20%[KPreparing: 21%[KPreparing: 22%[KPreparing: 23%[KPreparing: 24%[KPreparing: 25%[KPreparing: 26%[KPreparing: 27%[KPreparing: 28%[KPreparing: 29%[KPreparing: 30%[KPreparing: 31%[KPreparing: 32%[KPreparing: 33%[KPreparing: 34%[KPreparing: 35%[KPreparing: 36%[KPreparing: 37%[KPreparing: 38%[KPreparing: 39%[KPreparing: 40%[KPreparing: 41%[KPreparing: 42%[KPreparing: 43%[KPreparing: 44%[KPreparing: 45%[KPreparing: 46%[KPreparing: 47%[KPreparing: 48%[KPreparing: 49%[KPreparing: 50%[KPreparing: 51%[KPreparing: 52%[KPreparing: 53%[KPreparing: 54%[KPreparing: 55%[KPreparing: 56%[KPreparing: 57%[KPreparing: 58%[KPreparing: 59%[KPreparing: 60%[KPreparing: 61%[KPreparing: 62%[KPreparing: 63%[KPreparing: 64%[KPreparing: 65%[KPreparing: 66%[KPreparing: 67%[KPreparing: 68%[KPreparing: 69%[KPreparing: 70%[KPreparing: 71%[KPreparing: 72%[KPreparing: 73%[KPreparing: 74%[KPreparing: 75%[KPreparing: 76%[KPreparing: 77%[KPreparing: 78%[KPreparing: 79%[KPreparing: 80%[KPreparing: 81%[KPreparing: 82%[KPreparing: 83%[KPreparing: 84%[KPreparing: 85%[KPreparing: 86%[KPreparing: 87%[KPreparing: 88%[KPreparing: 89%[KPreparing: 90%[KPreparing: 91%[KPreparing: 92%[KPreparing: 93%[KPreparing: 94%[KPreparing: 95%[KPreparing: 96%[KPreparing: 97%[KPreparing: 98%[KPreparing: 99%[K[2K -- Property is satisfied.
-$v_gameInfoPlayInitial state:
-( seconda.start prima.start pm.start ) 
-(plan_clock==R1_clock && R1_clock==seconda.seconda_clock && seconda.seconda_clock==prima.prima_clock && prima.prima_clock==pm.pm_clock && pm.pm_clock==0)
-
-Strategy to win:
-
-State: ( seconda.start prima.start pm.pm9 ) 
-When you are in (plan_clock==100 && plan_clock==R1_clock && R1_clock==100), take transition pm.pm9->pm.finish { plan_clock >= 100 && pm_clock >= 0, tau, 1 }
-While you are in	(10<=plan_clock && plan_clock<100 && plan_clock==R1_clock), wait.
-
-State: ( seconda.start prima.start pm.start ) 
-When you are in (plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==0), take transition pm.start->pm.pm1 { plan_clock == 0, tau, 1 }
-
-State: ( seconda.start prima.start pm.pm1 ) 
-While you are in	(plan_clock<10 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-When you are in (10<=plan_clock && 10<=pm.pm_clock && plan_clock<=20 && plan_clock==R1_clock && pm.pm_clock<=20), take transition pm.pm1->pm.pm9 { plan_clock >= 10 && pm_clock >= 10, tau, pm_clock := 0 }
-[2K
-Verifying property 2 at line 2
-Preparing: 0%[KPreparing: 1%[KPreparing: 2%[KPreparing: 3%[KPreparing: 4%[KPreparing: 5%[KPreparing: 6%[KPreparing: 7%[KPreparing: 8%[KPreparing: 9%[KPreparing: 10%[KPreparing: 11%[KPreparing: 12%[KPreparing: 13%[KPreparing: 14%[KPreparing: 15%[KPreparing: 16%[KPreparing: 17%[KPreparing: 18%[KPreparing: 19%[KPreparing: 20%[KPreparing: 21%[KPreparing: 22%[KPreparing: 23%[KPreparing: 24%[KPreparing: 25%[KPreparing: 26%[KPreparing: 27%[KPreparing: 28%[KPreparing: 29%[KPreparing: 30%[KPreparing: 31%[KPreparing: 32%[KPreparing: 33%[KPreparing: 34%[KPreparing: 35%[KPreparing: 36%[KPreparing: 37%[KPreparing: 38%[KPreparing: 39%[KPreparing: 40%[KPreparing: 41%[KPreparing: 42%[KPreparing: 43%[KPreparing: 44%[KPreparing: 45%[KPreparing: 46%[KPreparing: 47%[KPreparing: 48%[KPreparing: 49%[KPreparing: 50%[KPreparing: 51%[KPreparing: 52%[KPreparing: 53%[KPreparing: 54%[KPreparing: 55%[KPreparing: 56%[KPreparing: 57%[KPreparing: 58%[KPreparing: 59%[KPreparing: 60%[KPreparing: 61%[KPreparing: 62%[KPreparing: 63%[KPreparing: 64%[KPreparing: 65%[KPreparing: 66%[KPreparing: 67%[KPreparing: 68%[KPreparing: 69%[KPreparing: 70%[KPreparing: 71%[KPreparing: 72%[KPreparing: 73%[KPreparing: 74%[KPreparing: 75%[KPreparing: 76%[KPreparing: 77%[KPreparing: 78%[KPreparing: 79%[KPreparing: 80%[KPreparing: 81%[KPreparing: 82%[KPreparing: 83%[KPreparing: 84%[KPreparing: 85%[KPreparing: 86%[KPreparing: 87%[KPreparing: 88%[KPreparing: 89%[KPreparing: 90%[KPreparing: 91%[KPreparing: 92%[KPreparing: 93%[KPreparing: 94%[KPreparing: 95%[KPreparing: 96%[KPreparing: 97%[KPreparing: 98%[KPreparing: 99%[K[2K -- Property is satisfied.
-$v_gameInfoPlayInitial state:
-( seconda.start prima.start pm.start ) 
-(plan_clock==R1_clock && R1_clock==seconda.seconda_clock && seconda.seconda_clock==prima.prima_clock && prima.prima_clock==pm.pm_clock && pm.pm_clock==0)
-
-Strategy to win:
-
-State: ( seconda.start prima.start pm.start ) 
-When you are in (plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==0), take transition prima.start->prima.prima1 { plan_clock == 0, tau, 1 }
-
-State: ( seconda.start prima.prima1 pm.start ) 
-While you are in	(plan_clock<=80 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-
-State: ( seconda.start prima.prima2 pm.start ) 
-While you are in	(200<=R1_clock && 20<pm.pm_clock && plan_clock<100 && plan_clock-R1_clock<=-120 && R1_clock-plan_clock<=150), wait.
-When you are in (plan_clock==100 && 200<R1_clock && 20<pm.pm_clock), take transition prima.prima2->prima.finish { plan_clock >= 100, tau, 1 }
-[2K
-Verifying property 3 at line 3
- -- [1;34mThroughput: 2588 states/sec[0;0m, Size: 17 states, Load: 5 states[KPreparing: 0%[KPreparing: 1%[KPreparing: 2%[KPreparing: 3%[KPreparing: 4%[KPreparing: 5%[KPreparing: 6%[KPreparing: 7%[KPreparing: 8%[KPreparing: 9%[KPreparing: 10%[KPreparing: 11%[KPreparing: 12%[KPreparing: 13%[KPreparing: 14%[KPreparing: 15%[KPreparing: 16%[KPreparing: 17%[KPreparing: 18%[KPreparing: 19%[KPreparing: 20%[KPreparing: 21%[KPreparing: 22%[KPreparing: 23%[KPreparing: 24%[KPreparing: 25%[KPreparing: 26%[KPreparing: 27%[KPreparing: 28%[KPreparing: 29%[KPreparing: 30%[KPreparing: 31%[KPreparing: 32%[KPreparing: 33%[KPreparing: 34%[KPreparing: 35%[KPreparing: 36%[KPreparing: 37%[KPreparing: 38%[KPreparing: 39%[KPreparing: 40%[KPreparing: 41%[KPreparing: 42%[KPreparing: 43%[KPreparing: 44%[KPreparing: 45%[KPreparing: 46%[KPreparing: 47%[KPreparing: 48%[KPreparing: 49%[KPreparing: 50%[KPreparing: 51%[KPreparing: 52%[KPreparing: 53%[KPreparing: 54%[KPreparing: 55%[KPreparing: 56%[KPreparing: 57%[KPreparing: 58%[KPreparing: 59%[KPreparing: 60%[KPreparing: 61%[KPreparing: 62%[KPreparing: 63%[KPreparing: 64%[KPreparing: 65%[KPreparing: 66%[KPreparing: 67%[KPreparing: 68%[KPreparing: 69%[KPreparing: 70%[KPreparing: 71%[KPreparing: 72%[KPreparing: 73%[KPreparing: 74%[KPreparing: 75%[KPreparing: 76%[KPreparing: 77%[KPreparing: 78%[KPreparing: 79%[KPreparing: 80%[KPreparing: 81%[KPreparing: 82%[KPreparing: 83%[KPreparing: 84%[KPreparing: 85%[KPreparing: 86%[KPreparing: 87%[KPreparing: 88%[KPreparing: 89%[KPreparing: 90%[KPreparing: 91%[KPreparing: 92%[KPreparing: 93%[KPreparing: 94%[KPreparing: 95%[KPreparing: 96%[KPreparing: 97%[KPreparing: 98%[KPreparing: 99%[K[2K -- Property is NOT satisfied.
-$v_gameInfoCounterPlayInitial state:
-( seconda.start prima.start pm.start ) 
-(plan_clock==R1_clock && R1_clock==seconda.seconda_clock && seconda.seconda_clock==prima.prima_clock && prima.prima_clock==pm.pm_clock && pm.pm_clock==0)
-
-Counter strategy to prevent from winning:
-
-State: ( seconda.start prima.start pm.pm9 ) 
-While you are in	(10<=plan_clock && plan_clock<=100 && plan_clock==R1_clock), wait.
-
-State: ( seconda.start prima.start pm.start ) 
-While you are in	(plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-
-State: ( seconda.seconda1 prima.prima1 pm.pm9 ) 
-While you are in	(10<=plan_clock && plan_clock<50 && plan_clock==R1_clock), wait.
-When you are in (50<=plan_clock && plan_clock<80 && plan_clock==R1_clock), take transition prima.prima1->prima.prima2 { plan_clock >= 50 && prima_clock >= 0, tau, prima_clock := 0, R1_clock := H }
-
-State: ( seconda.seconda1 prima.prima1 pm.start ) 
-While you are in	(plan_clock<50 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-When you are in (50<=plan_clock && plan_clock<80 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), take transition prima.prima1->prima.prima2 { plan_clock >= 50 && prima_clock >= 0, tau, prima_clock := 0, R1_clock := H }
-
-State: ( seconda.start prima.prima1 pm.pm1 ) 
-While you are in	(plan_clock<=20 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-
-State: ( seconda.start prima.prima2 pm.finish ) 
-While you are in	(plan_clock==100 && 200<R1_clock), wait.
-
-State: ( seconda.seconda1 prima.start pm.start ) 
-While you are in	(plan_clock<=80 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-
-State: ( seconda.start prima.prima1 pm.start ) 
-While you are in	(plan_clock<50 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-When you are in (50<=plan_clock && plan_clock<=80 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), take transition prima.prima1->prima.prima2 { plan_clock >= 50 && prima_clock >= 0, tau, prima_clock := 0, R1_clock := H }
-
-State: ( seconda.start prima.start pm.pm1 ) 
-While you are in	(plan_clock<=20 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-
-State: ( seconda.start prima.prima2 pm.pm9 ) 
-While you are in	(200<=R1_clock && plan_clock<=100 && plan_clock-R1_clock<=-120 && R1_clock-plan_clock<=150), wait.
-
-State: ( seconda.seconda1 prima.start pm.pm9 ) 
-While you are in	(10<=plan_clock && plan_clock<=80 && plan_clock==R1_clock), wait.
-
-State: ( seconda.start prima.finish pm.pm9 ) 
-While you are in	(plan_clock==100 && 200<R1_clock), wait.
-
-State: ( seconda.start prima.prima2 pm.start ) 
-While you are in	(200<=R1_clock && 20<pm.pm_clock && plan_clock<=100 && plan_clock-R1_clock<=-120 && R1_clock-plan_clock<=150), wait.
-
-State: ( seconda.seconda1 prima.start pm.pm1 ) 
-While you are in	(plan_clock<=20 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-
-State: ( seconda.seconda1 prima.prima2 pm.start ) 
-While you are in	(200<=R1_clock && 20<pm.pm_clock && plan_clock<=80 && plan_clock-R1_clock<-120 && R1_clock-plan_clock<=150), wait.
-
-State: ( seconda.start prima.finish pm.start ) 
-While you are in	(100<=plan_clock && 200<R1_clock && plan_clock-pm.pm_clock<80), wait.
-
-State: ( seconda.seconda1 prima.prima2 pm.pm9 ) 
-While you are in	(200<=R1_clock && plan_clock<=80 && plan_clock-R1_clock<-120 && R1_clock-plan_clock<=150), wait.
-
-State: ( seconda.start prima.prima1 pm.pm9 ) 
-While you are in	(10<=plan_clock && plan_clock<50 && plan_clock==R1_clock), wait.
-When you are in (50<=plan_clock && plan_clock<=80 && plan_clock==R1_clock), take transition prima.prima1->prima.prima2 { plan_clock >= 50 && prima_clock >= 0, tau, prima_clock := 0, R1_clock := H }
-
-State: ( seconda.start prima.start pm.finish ) 
-While you are in	(100<=plan_clock && plan_clock==R1_clock), wait.
-
-State: ( seconda.seconda1 prima.prima1 pm.pm1 ) 
-While you are in	(plan_clock<=20 && plan_clock==R1_clock && R1_clock==pm.pm_clock && pm.pm_clock==plan_clock), wait.
-
-State: ( seconda.start prima.finish pm.finish ) 
-While you are in	(100<=plan_clock && plan_clock-R1_clock<-100), wait.

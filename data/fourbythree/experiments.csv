@@ -1,2 +1,0 @@
-process-size-effort;planning-time (msecs);process-duration-lb;process-duration-ub;#totalTasks;#assignableTasks;#robot-tasks;#human-tasks;horizon;robot-idle-time (%);human-idle-time (%)
-small-30;2506;1;26;6;4;1;5;70;92.0;45.0
