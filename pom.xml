@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>it.cnr.istc.pst</groupId>
-  <artifactId>PLATINUm</artifactId>
+  <artifactId>platinum</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
   
