@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import it.cnr.istc.pst.platinum.ai.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.Solver;
 
 /**
@@ -20,7 +21,7 @@ import it.cnr.istc.pst.platinum.ai.deliberative.solver.Solver;
 public @interface PlannerSolverConfiguration {
 
 	// reference to solver algorithm
-	Class<? extends Solver> solver();
+	Class<? extends Solver> solver() default PseudoControllabilityAwareSolver.class;
 	
 	// set a timeout for the solver (in milliseconds)
 	long timeout() default -1;

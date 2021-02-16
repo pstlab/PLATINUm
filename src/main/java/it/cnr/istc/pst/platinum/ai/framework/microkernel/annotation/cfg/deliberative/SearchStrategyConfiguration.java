@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import it.cnr.istc.pst.platinum.ai.deliberative.strategy.DepthFirstSearchStrategy;
 import it.cnr.istc.pst.platinum.ai.deliberative.strategy.SearchStrategy;
 
 /**
@@ -20,5 +21,5 @@ import it.cnr.istc.pst.platinum.ai.deliberative.strategy.SearchStrategy;
 public @interface SearchStrategyConfiguration {
 	
 	// search strategy
-	Class<? extends SearchStrategy> strategy();
+	Class<? extends SearchStrategy> strategy() default DepthFirstSearchStrategy.class;
 }
