@@ -130,7 +130,7 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 			// get db 
 			MongoDatabase db = client.getDatabase(mongodb);
 			// get collection
-			this.collection = db.getCollection("search_data");
+			this.collection = db.getCollection("planner_search");
 			// remove all data from the collection
 			this.collection.drop();
 		}
@@ -138,7 +138,7 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 	
 	
 	/** 
-	 * Compute the (pessimistic) planning cost of a domain value by analyzing the extraced decomposition graph 
+	 * Compute the (pessimistic) planning cost of a domain value by analyzing the extracted decomposition graph 
 	 * 
 	 * @param value
 	 * @return
