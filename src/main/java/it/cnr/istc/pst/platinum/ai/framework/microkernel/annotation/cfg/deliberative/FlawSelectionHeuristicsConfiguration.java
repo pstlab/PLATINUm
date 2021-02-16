@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.FlawSelectionHeuristic;
-import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.HierarchicalFlawSelectionHeuristic;
+import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
 
 /**
  * 
@@ -21,5 +21,5 @@ import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.HierarchicalFlawSelect
 public @interface FlawSelectionHeuristicsConfiguration {
 
 	// flaw selection heuristics type
-	Class<? extends FlawSelectionHeuristic> heuristics() default HierarchicalFlawSelectionHeuristic.class;
+	Class<? extends FlawSelectionHeuristic> heuristics() default PipelineFlawSelectionHeuristic.class;
 }
