@@ -40,7 +40,10 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	private long executionTick;
 	//EDIT POINTER
 	private long uppaalTime;
+	private boolean existsStrategy;
 	private long managementStrategyTime;
+	private boolean isOutOfBounds;
+	private boolean isStrategyFinished;
 	
 	
 	/**
@@ -64,7 +67,10 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 		this.executionTick = 0;
 		//EDIT POINTER
 		this.uppaalTime = -1;
+		this.existsStrategy = false;
 		this.managementStrategyTime = -1;
+		this.isOutOfBounds = false;
+		this.isStrategyFinished = false;
 	}
 	
 	/**
@@ -101,6 +107,22 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 		return executionTick;
 	}
 	
+	public boolean isOutOfBounds() {
+		return isOutOfBounds;
+	}
+
+	public void setOutOfBounds(boolean isOutOfBounds) {
+		this.isOutOfBounds = isOutOfBounds;
+	}
+
+	public boolean isStrategyFinished() {
+		return isStrategyFinished;
+	}
+
+	public void setStrategyFinished(boolean isStrategyFinished) {
+		this.isStrategyFinished = isStrategyFinished;
+	}
+
 	/**
 	 * 
 	 * @param executionTick
@@ -315,6 +337,14 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	public void setManagementStrategyTime(long managementStrategyTime) {
 		this.managementStrategyTime = managementStrategyTime;
 	}
+	
+	public boolean isExistsStrategy() {
+		return existsStrategy;
+	}
+
+	public void setExistsStrategy(boolean existsStrategy) {
+		this.existsStrategy = existsStrategy;
+	}
 
 	/**
 	 * 
@@ -372,4 +402,5 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	public String toString() {
 		return "[Goal id: " + this.id +", status: " + this.status + "]";
 	}
+
 }

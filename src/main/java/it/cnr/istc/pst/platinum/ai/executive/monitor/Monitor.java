@@ -1,6 +1,7 @@
 package it.cnr.istc.pst.platinum.ai.executive.monitor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
@@ -71,6 +72,30 @@ public abstract class Monitor<T extends Executive> extends FrameworkObject
 		
 		// get result
 		return hasObservations;
+	}
+	
+	/**
+	*
+	* @return
+	*/
+	protected List<ExecutionFeedback> getObservations()
+	{
+		//list of observations
+		List<ExecutionFeedback> list = new ArrayList<>();
+		//protect access to the list of observations
+		synchronized (this.observations) {
+			//list of received observations
+			list = new ArrayList<>(this.observations);
+			//sort observations
+			Collections.sort(list);
+			//clear observations queue
+			this.observations.clear();
+			//notify
+			this.observations.notifyAll();
+		}
+		
+		//get received observations
+		return list;
 	}
 	
 	/**
