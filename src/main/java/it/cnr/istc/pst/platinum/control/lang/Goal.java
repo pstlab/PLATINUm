@@ -184,7 +184,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	 */
 	public void addPlanningAttempt(long time) {
 		// add planning time
-		this.planningAttempts.add(new Long(time));
+		this.planningAttempts.add(time);
 	}
 	
 	/**
@@ -219,7 +219,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	 */
 	public void addExecutionAttempt(long time) {
 		// add execution time 
-		this.executionAttempts.add(new Long(time));
+		this.executionAttempts.add(time);
 	}
 	
 	/**
@@ -252,7 +252,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	 */
 	public void addContingencyHandlingAttempt(long time) {
 		// add contingency time
-		this.contingencyAttempts.add(new Long(time));
+		this.contingencyAttempts.add(time);
 	}
 	
 	/**

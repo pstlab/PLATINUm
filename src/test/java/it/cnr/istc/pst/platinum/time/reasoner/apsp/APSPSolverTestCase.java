@@ -440,7 +440,7 @@ public class APSPSolverTestCase
 			Assert.assertTrue(this.tp3.getUpperBound() == 30);
 			
 			// check number of propagations
-			Assert.assertTrue(solver.getPropagationCounter() == 3);
+			Assert.assertTrue(solver.getPropagationCounter() == 5);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());

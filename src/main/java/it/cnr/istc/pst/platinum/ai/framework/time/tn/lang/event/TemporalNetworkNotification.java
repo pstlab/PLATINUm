@@ -37,21 +37,35 @@ public abstract class TemporalNetworkNotification
 	public TemporalNetworkNotificationTypes getType() {
 		return type;
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	public int hashCode() {
-		return new Integer(this.id).hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		TemporalNetworkNotification other = (TemporalNetworkNotification) obj;
-		return this.id == other.id;
+		if (id != other.id)
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
 	}
 }

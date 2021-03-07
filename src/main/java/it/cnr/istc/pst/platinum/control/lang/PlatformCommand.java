@@ -1,7 +1,6 @@
 package it.cnr.istc.pst.platinum.control.lang;
 
 import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNode;
-import it.cnr.istc.pst.platinum.control.platform.PlatformProxy;
 
 /**
  * 
@@ -22,16 +21,19 @@ public class PlatformCommand implements Comparable<PlatformCommand>
 	/**
 	 * 
 	 * @param id
+	 * @param desc
+	 * @param paramValues
 	 * @param node
 	 * @param commandType
 	 */
-	public PlatformCommand(long id, ExecutionNode node, int commandType) {
+	public PlatformCommand(long id, PlatformCommandDescription desc, String[] paramValues,  ExecutionNode node, int commandType) 
+	{
 		this.id = id; 
 		this.node = node;
 		// get command name from node
-		this.name = PlatformProxy.extractCommandName(this.node);
+		this.name = desc.getName();	// PlatformProxy.extractCommandName(this.node);
 		// get command parameters
-		this.paramValues = PlatformProxy.extractCommandParameters(node);
+		this.paramValues = paramValues;	// PlatformProxy.extractCommandParameters(node);
 		this.time = System.currentTimeMillis();
 		// set command type
 		this.commandType = commandType;
@@ -41,26 +43,19 @@ public class PlatformCommand implements Comparable<PlatformCommand>
 	 * 
 	 * @param id
 	 * @param name
-	 * @param params
+	 * @param paramValues
+	 * @param node
+	 * @param commandType
 	 */
-	public PlatformCommand(long id, String name, String[] params, int commandType) {
+	public PlatformCommand(long id, String name, String[] paramValues, ExecutionNode node, int commandType) {
 		this.node = null;
 		this.id = id;
 		this.name = name;
-		this.paramValues = params;
+		this.paramValues = paramValues;
+		this.node = node;
 		this.commandType = commandType;
 	}
 	
-	/**
-	 * 
-	 * @param id
-	 * @param desc
-	 * @param params
-	 * @param commandType
-	 */
-	public PlatformCommand(long id, PlatformCommandDescription desc, String[] params, int commandType) {
-		this(id, desc.getName(), params, commandType);
-	}
 	
 	/**
 	 * 

@@ -23,5 +23,5 @@ public @interface MonitorConfiguration {
 	 * 
 	 * @return
 	 */
-	Class <? extends Monitor> monitor();
+	Class <? extends Monitor<?>> monitor();
 }

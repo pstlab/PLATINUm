@@ -100,17 +100,44 @@ public class TimelineProtocolDescriptor
 	 */
 	@Override
 	public int hashCode() {
-		return new Integer(this.id).hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((component == null) ? 0 : component.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof TimelineProtocolDescriptor) && (((TimelineProtocolDescriptor) obj).id == this.id);
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TimelineProtocolDescriptor other = (TimelineProtocolDescriptor) obj;
+		if (component == null) {
+			if (other.component != null)
+				return false;
+		} else if (!component.equals(other.component))
+			return false;
+		if (id != other.id)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
-	
+
+	/**
+	 * 
+	 */
 	@Override
 	public String toString() {
 		return "<timeline" + this.id + "> " + this.name + " " + (this.external ? "<external> " : " ");

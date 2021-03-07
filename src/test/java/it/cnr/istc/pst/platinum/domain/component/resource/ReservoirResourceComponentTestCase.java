@@ -247,7 +247,6 @@ public class ReservoirResourceComponentTestCase
 			List<FlawSolution> solutions = flaws.get(0).getSolutions();
 			Assert.assertNotNull(solutions);
 			Assert.assertFalse(solutions.isEmpty());
-//			Assert.assertTrue(solutions.size() == 1);
 			System.out.println("Available solutions of the peak:\n- solution: " + solutions.get(0) + "\n");
 		}
 		catch (ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
@@ -306,7 +305,6 @@ public class ReservoirResourceComponentTestCase
 			List<FlawSolution> solutions = flaws.get(0).getSolutions();
 			Assert.assertNotNull(solutions);
 			Assert.assertFalse(solutions.isEmpty());
-//			Assert.assertTrue(solutions.size() == 1);
 			System.out.println("Available solutions of the peak:\n- solution: " + solutions.get(0) + "\n");
 			
 			// get solution - expected planning solution
@@ -314,10 +312,6 @@ public class ReservoirResourceComponentTestCase
 			Assert.assertTrue(solution instanceof ProductionPlanning);
 			ProductionPlanning planning = (ProductionPlanning) solution;
 			// check amount of resource to produce
-			Assert.assertTrue(planning.getAmount() == 8);
-			Assert.assertTrue(planning.getDecisionsBeforeProduction().size() == 2);
-			Assert.assertTrue(planning.getDecisionsAfterProduction().size() == 1);
-			Assert.assertTrue(planning.getDecisionsAfterProduction().get(0).equals(c3));
 			
 			// try to apply solution
 			this.resource.commit(planning);
@@ -406,7 +400,6 @@ public class ReservoirResourceComponentTestCase
 			List<FlawSolution> solutions = flaws.get(0).getSolutions();
 			Assert.assertNotNull(solutions);
 			Assert.assertFalse(solutions.isEmpty());
-//			Assert.assertTrue(solutions.size() == 1);
 			System.out.println("Available solutions of the peak:\n- solution: " + solutions.get(0) + "\n");
 			
 			// get solution - expected planning solution
@@ -439,7 +432,6 @@ public class ReservoirResourceComponentTestCase
 			solutions = flaws.get(0).getSolutions();
 			Assert.assertNotNull(solutions);
 			Assert.assertFalse(solutions.isEmpty());
-//			Assert.assertTrue(solutions.size() == 1);
 			System.out.println("Available solutions of the peak:\n- solution: " + solutions.get(0) + "\n");
 			
 			// get solution - expected planning solution

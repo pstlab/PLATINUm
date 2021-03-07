@@ -26,8 +26,6 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.Relation
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.planning.Gap;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.planning.GapCompletion;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.scheduling.OverlappingSet;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.scheduling.PrecedenceConstraint;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.ParameterFacade;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.ParameterFacadeBuilder;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.csp.solver.ParameterSolverType;
@@ -336,15 +334,9 @@ public class StateVariableComponentTestCase
 			for (Flaw f : flaws) {
 				// get flaws 
 				Assert.assertNotNull(f);
-				// check type
-				if (f instanceof OverlappingSet) {
-					// get flaw solution
-					Assert.assertNotNull(f.getSolutions());
-					Assert.assertTrue(!f.getSolutions().isEmpty());
-					PrecedenceConstraint s1 = (PrecedenceConstraint) f.getSolutions().get(0);
-					Assert.assertNotNull(s1);
-				}
-				
+				Assert.assertNotNull(f.getSolutions());
+				Assert.assertTrue(!f.getSolutions().isEmpty());
+				Assert.assertNotNull(f.getSolutions().get(0));
 			}
 
 			// print state variable information
@@ -392,14 +384,13 @@ public class StateVariableComponentTestCase
 			List<Flaw> flaws = this.psv.detectFlaws();
 			Assert.assertNotNull(flaws);
 			Assert.assertTrue(!flaws.isEmpty());
-			// get peak
-			OverlappingSet peak = (OverlappingSet) flaws.get(0);
+			
 			// check solutions
-			Assert.assertNotNull(peak.getSolutions());
-			Assert.assertTrue(!peak.getSolutions().isEmpty());
+			Assert.assertNotNull(flaws.get(0).getSolutions());
+			Assert.assertTrue(!flaws.get(0).getSolutions().isEmpty());
 			
 			// get a solution
-			FlawSolution solution = peak.getSolutions().get(0);
+			FlawSolution solution = flaws.get(0).getSolutions().get(0);
 			Assert.assertNotNull(solution);
 			System.out.println("Selected Peak solution to apply");
 			System.out.println(solution);
@@ -470,13 +461,11 @@ public class StateVariableComponentTestCase
 				Flaw flaw = flaws.get(0);
 				Assert.assertTrue(!flaws.isEmpty());
 				
-				// get peak
-				OverlappingSet peak = (OverlappingSet) flaw;
 				// check solutions
-				Assert.assertNotNull(peak.getSolutions());
+				Assert.assertNotNull(flaw.getSolutions());
 				
 				// get a solution
-				FlawSolution solution = peak.getSolutions().get(0);
+				FlawSolution solution = flaw.getSolutions().get(0);
 				Assert.assertNotNull(solution);
 				System.out.println("Selected Peak solution to apply");
 				System.out.println(solution);
@@ -593,7 +582,7 @@ public class StateVariableComponentTestCase
 			System.out.println("Committed solution:\n- " + sol + "\n");
 			
 			// check pending decisions
-			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
+			Assert.assertFalse(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions");
 			System.out.println(this.psv.getPendingDecisions());
 			
@@ -693,14 +682,12 @@ public class StateVariableComponentTestCase
 			
 			// check component
 			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 4);
 			System.out.println("Active Decisions:\n" + this.psv.getActiveDecisions());
-			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
+			Assert.assertFalse(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions:\n" + this.psv.getPendingDecisions());
-			Assert.assertFalse(this.psv.getActiveRelations().isEmpty());
-			Assert.assertTrue(this.psv.getActiveRelations().size() == 3);
+			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
 			System.out.println("Active relations:\n" + this.psv.getActiveRelations());
-			Assert.assertTrue(this.psv.getPendingRelations().isEmpty());
+			Assert.assertFalse(this.psv.getPendingRelations().isEmpty());
 			System.out.println("Pending relations:\n" + this.psv.getPendingRelations());
 			
 			System.out.println();
@@ -714,7 +701,6 @@ public class StateVariableComponentTestCase
 			// check component
 			Assert.assertNotNull(this.psv.getActiveDecisions());
 			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
 			System.out.println("Active Decisions:\n" + this.psv.getActiveDecisions());
 			Assert.assertNotNull(this.psv.getPendingDecisions());
 			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
@@ -768,14 +754,12 @@ public class StateVariableComponentTestCase
 			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
 			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
 			
-			// get peak
-			OverlappingSet peak = (OverlappingSet) flaws.get(0);
 			// check solutions
-			Assert.assertNotNull(peak.getSolutions());
-			Assert.assertTrue(!peak.getSolutions().isEmpty());
+			Assert.assertNotNull(flaws.get(0).getSolutions());
+			Assert.assertTrue(!flaws.get(0).getSolutions().isEmpty());
 			
 			// get a solution
-			FlawSolution solution = peak.getSolutions().get(0);
+			FlawSolution solution = flaws.get(0).getSolutions().get(0);
 			Assert.assertNotNull(solution);
 			System.out.println(solution);
 			

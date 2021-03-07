@@ -23,5 +23,5 @@ public @interface DispatcherConfiguration {
 	 * 
 	 * @return
 	 */
-	Class<? extends Dispatcher> dispatcher();
+	Class<? extends Dispatcher<?>> dispatcher();
 }
