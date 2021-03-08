@@ -28,6 +28,7 @@ import it.cnr.istc.pst.platinum.control.lang.TokenDescription;
 import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
 import it.cnr.istc.pst.platinum.control.platform.PlatformProxy;
 import it.cnr.istc.pst.platinum.control.platform.PlatformProxyBuilder;
+import it.cnr.istc.pst.platinum.control.platform.RunnablePlatformProxy;
 
 /**
  * 
@@ -436,9 +437,10 @@ public class GoalOrientedActingAgent
 	/**
 	 * 
 	 * @throws InterruptedException
+	 * @throws PlatformException
 	 */
 	public void start() 
-			throws InterruptedException
+			throws InterruptedException, PlatformException
 	{
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.OFFLINE)) {
@@ -450,6 +452,12 @@ public class GoalOrientedActingAgent
 			this.status = ActingAgentStatus.STARTING;
 			// send signal
 			this.lock.notifyAll();
+		}
+		
+		// start PROXY if necessary
+		if (this.proxy instanceof RunnablePlatformProxy) {
+			// start runnable PROXY
+			((RunnablePlatformProxy) this.proxy).start();
 		}
 		
 		
@@ -492,6 +500,14 @@ public class GoalOrientedActingAgent
 			p.interrupt();
 			p.join();
 		}
+		
+		
+		// stop platform PROXY
+		if (this.proxy instanceof RunnablePlatformProxy) {
+			// stop platform PROXY
+			((RunnablePlatformProxy) this.proxy).stop();
+		}
+
 		
 		synchronized (this.lock) {
 			// change status
