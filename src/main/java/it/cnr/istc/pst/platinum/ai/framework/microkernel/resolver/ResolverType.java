@@ -3,7 +3,6 @@ package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.plan.PlanRefinementResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.discrete.DiscreteResourceSchedulingResolver;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.reservoir.ReservoirResourceHandlingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.reservoir.ReservoirResourceSchedulingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.checking.ObservationBehaviorCheckingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.checking.TimelineBehaviorCheckingResolver;
@@ -60,19 +59,6 @@ public enum ResolverType
 					FlawType.RESERVOIR_PLANNING,
 					FlawType.RESERVOIR_PROFILE_UPDATE
 			}),
-
-	/**
-	 * 
-	 */
-	RESERVOIR_RESOURCE_HANDLING_RESOLVER(
-			ReservoirResourceHandlingResolver.class.getName(),
-			"Reservoir Resource Handling",
-			new FlawType[] {
-					FlawType.RESERVOIR_OVERFLOW,
-					FlawType.RESERVOIR_PLANNING,
-					FlawType.RESERVOIR_PROFILE_UPDATE
-			}),
-	
 	
 	/**
 	 * This resolver complies with the semantics of timelines as a 

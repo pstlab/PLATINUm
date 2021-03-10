@@ -27,7 +27,7 @@ public enum FlawType
 	/**
 	 * A set of temporally overlapping activities that require an amount of resource exceeding the maximum capacity
 	 */
-	DISCRETE_OVERFLOW(FlawCategoryType.SCHEDULING, "discrete-overflow"), //"resource-peak"),
+	DISCRETE_OVERFLOW(FlawCategoryType.SCHEDULING, "discrete-overflow"),
 	
 	/**
 	 * 
@@ -44,20 +44,6 @@ public enum FlawType
 	 * 
 	 */
 	RESERVOIR_PROFILE_UPDATE(FlawCategoryType.PLANNING, "reservoir-profile-update"),
-	
-	/**
-	 * A set of activities exceeding resource availability (i.e. a peak). Reservoir resources can solve such a peak into two 
-	 * ways. The "critical" activities can be ordered in such a way to satisfy resource availability (scheduling). However, 
-	 * resource productions can be necessary in some situations. In such cases, the "critical" activities can be executed 
-	 * by introducing properly scheduled resource production operations (planning).  
-	 */
-//	RESERVOIR_HANDLING(FlawCategoryType.PLANNING_SCHEDULING, "reservoir-handling"), 		//"resource-production-planning"),
-	
-//	/**
-//	 * A production activity not producing a sufficient amount of production or producing
-//	 * too much resource with respect to the maximum capacity.
-//	 */
-//	RESOURCE_PRODUCTION_UPDATE(FlawCategoryType.PLANNING_SCHEDULING, "resource-production-update"),
 	
 	/**
 	 * Issue concerning the temporal behavior of a component. It represents 

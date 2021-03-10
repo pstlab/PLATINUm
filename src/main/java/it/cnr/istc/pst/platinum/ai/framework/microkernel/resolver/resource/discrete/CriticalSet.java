@@ -17,10 +17,6 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawType;
  */
 public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 {
-//	private double minCapacity;									// minimum level of resource capacity
-//	private double maxCapacity;									// maximum level of resource capacity
-//	private Set<RequirementResourceProfileSample> samples;		// profile samples composing the critical set
-	
 	private Set<RequirementResourceEvent> events;				// requirement events of a critical set
 	
 	/**
@@ -31,10 +27,6 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	protected CriticalSet(int id, DiscreteResource resource) {
 		super(id, resource, FlawType.DISCRETE_OVERFLOW);
 		this.events = new HashSet<>();
-		
-//		this.samples = new HashSet<>();
-//		this.minCapacity = resource.getMinCapacity();
-//		this.maxCapacity = resource.getMaxCapacity();
 	}
 	
 	/**
@@ -66,106 +58,6 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 		return amount;
 	}
 	
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public double getMaxCapacity() {
-//		return maxCapacity;
-//	}
-//	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public double getMinCapacity() {
-//		return minCapacity;
-//	}
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public long getTotalRequirement() {
-//		// initialize the total amount of resource required
-//		long total = 0;
-//		for (RequirementResourceProfileSample sample : this.samples) {
-//			// update the total
-//			total += sample.getAmount();
-//		}
-//		
-//		// get computed amount
-//		return total;
-//	}
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public List<RequirementResourceProfileSample> getSamples() {
-//		// get the list of samples 
-//		return new ArrayList<>(this.samples);
-//	}
-//	
-//	/**
-//	 * 
-//	 * @param sample
-//	 */
-//	public void addSample(RequirementResourceProfileSample sample) {
-//		this.samples.add(sample);
-//	}
-	
-//	/**
-//	 * 
-//	 * @param sample
-//	 * @return
-//	 */
-//	public boolean isOverlapping(RequirementResourceProfileSample sample) {
-//		// get start time and end time of the current set
-//		long start = this.getStartTime();
-//		long end = this.getEndTime();
-//		
-//		// check the start time and the end time of the sample
-//		start = Math.max(start, sample.getStart());
-//		end = Math.min(end, sample.getEnd());
-//		
-//		// check overlapping condition;
-//		return start < end;
-//	}
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public long getStartTime() {
-//		// initialize the start time 
-//		long start = Long.MIN_VALUE + 1;
-//		for (RequirementResourceProfileSample sample : this.samples) {
-//			// check maximum start time
-//			start = Math.max(start, sample.getStart());
-//		}
-//		
-//		// get computed start time of the critical set
-//		return start;
-//	}
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public long getEndTime() {
-//		// initialize the end time
-//		long end = Long.MAX_VALUE - 1;
-//		for (RequirementResourceProfileSample sample : this.samples) {
-//			// check minimum end time
-//			end = Math.min(end, sample.getEnd());
-//		}
-//		
-//		// get computed end time of the critical set
-//		return end;
-//	}
-
 	/**
 	 * 
 	 */
@@ -204,7 +96,6 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	public int compareTo(CriticalSet o) {
 		// compare the amount of required resource
 		return this.getAmountOfRequirement() > o.getAmountOfRequirement()? -1 : this.getAmountOfRequirement() < o.getAmountOfRequirement() ? 1 : 0;
-//		return this.getTotalRequirement() >= o.getTotalRequirement() ? -1 : 1;
 	}
 
 	/**
