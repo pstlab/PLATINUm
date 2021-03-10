@@ -256,20 +256,15 @@ public class SolutionPlan
 			}
 			break;
 			
-			case RESOURCE_DISCRETE : case RESOURCE_RESERVOIR : 
-			{
-				/*
-				 * FIXME: How to manage resources? 
-				 * 
-				 * Such components should be represented through different data structures...
-				 */
-			}
-			break;
-			
 			case PLAN_DATABASE : {
 				// ignore this type of components
 			}
 			break;
+			
+			
+			default : {
+				throw new RuntimeException("Unknown component type " + component.getType() + "\n");
+			}
 		}
 	}
 	

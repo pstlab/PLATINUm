@@ -2,7 +2,6 @@ package it.cnr.istc.pst.platinum.ai.framework.domain.component;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.pdb.PlanDataBaseComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.discrete.DiscreteResource;
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.reservoir.ReservoirResource;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.ExternalStateVariable;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.FunctionalStateVariable;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.PrimitiveStateVariable;
@@ -34,10 +33,6 @@ public enum DomainComponentType
 	 */
 	SV_EXTERNAL(ExternalStateVariable.class.getName(), "External State Variable component"),
 	
-	/**
-	 * Reservoir Resource type
-	 */
-	RESOURCE_RESERVOIR(ReservoirResource.class.getName(), "Reservoir Resource component"),
 	
 	/**
 	 * Discrete Resource type
