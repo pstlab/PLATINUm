@@ -15,7 +15,6 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.DecisionPropaga
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.RelationPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.ResourceProfileComputationException;
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.ResourceEvent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.reservoir.ConsumptionResourceEvent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.reservoir.ProductionResourceEvent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.reservoir.ReservoirResource;
@@ -42,26 +41,30 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
 
 /**
  * 
- * @author alessandro
+ * @author anacleto
  *
  */
-public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResource> 
+public class ReservoirResourceHandlingResolver extends Resolver<ReservoirResource> 
 {
 	private double schedulingCost;
+	private double planningCost;
+	private double unificationCost;
 	
 	
 	/**
 	 * 
 	 */
-	protected ReservoirResourceSchedulingResolver() {
-		super(ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getLabel(),
-				ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
+	protected ReservoirResourceHandlingResolver() {
+		super(ResolverType.RESERVOIR_RESOURCE_HANDLING_RESOLVER.getLabel(),
+				ResolverType.RESERVOIR_RESOURCE_HANDLING_RESOLVER.getFlawTypes());
 		
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
 		
 		this.schedulingCost = Double.parseDouble(properties.getProperty("scheduling-cost"));
+		this.planningCost = Double.parseDouble(properties.getProperty("expansion-cost"));
+		this.unificationCost = Double.parseDouble(properties.getProperty("unification-cost"));
 	}
 	
 	/**
@@ -82,6 +85,15 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			 * any and generate production checkpoints
 			 */
 			flaws = this.doComputeProfilePeaks(prp);
+			
+//			// check if any flaw has been found
+//			if (flaws.isEmpty()) 
+//			{
+//				// check optimistic resource profile
+//				ReservoirResourceProfile orp = this.component.computeOptimisticResourceProfile();
+//				// analyze the optimistic profile and find peaks if any and generate production checkpoints
+//				flaws = this.doComputeProfilePeaks(orp);
+//			}
 		}
 		catch (ResourceProfileComputationException ex) {
 			// profile computation error
@@ -103,37 +115,10 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		switch (flaw.getType()) 
 		{
 			// resource peak
-			case RESERVOIR_OVERFLOW : 
+			case RESOURCE_PRODUCTION_PLANNING : 
 			{
 				// get peak
-				ReservoirOverflow overflow = (ReservoirOverflow) flaw;
-				// solvable condition
-				boolean solvable = true;
-				// check the size of the critical set
-				if (overflow.getCriticalSet().size() > 1) 
-				{
-					// set hypotheses
-					solvable = false;
-					// first check solvable condition
-					for (int i = 0; i < overflow.getCriticalSet().size() - 1 && !solvable; i++) 
-					{
-						// get two consecutive events
-						ResourceEvent<?> e1 = overflow.getCriticalSet().get(i);
-						ResourceEvent<?> e2 = overflow.getCriticalSet().get(i + 1);
-						// check solvable condition
-						solvable = e1.getAmount() < 0 && e2.getAmount() > 0 || 
-								e1.getAmount() > 0 && e2.getAmount() < 0;
-					}
-				}
-				else {
-					// unexpected situation
-					warning("Found a critical set with an event only:\n"
-							+ "- overflow= " + overflow + "\n");
-				}
-				
-				
-				
-				
+				Peak peak = (Peak) flaw;
 				// sample the peak
 				List<MinimalCriticalSet> MCSs = this.doSamplePeak(peak);
 				// try to solve the peak through scheduling if possible
@@ -237,8 +222,33 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			}
 			break;
 			
+			// resource production update
+			case RESOURCE_PRODUCTION_UPDATE : 
+			{
+				// get production flaw
+				ProductionFlaw pf = (ProductionFlaw) flaw;
+				// get the new amount of resource to produce
+				double amount = pf.getProducedAmount() + pf.getDelta();
+				// create solution
+				ProductionUpdate update = new ProductionUpdate(
+						pf, 
+						amount, 
+						this.unificationCost);
+				
+				// compute the resulting makespan of the temporal network
+//				ComputeMakespanQuery query = this.tdb.createTemporalQuery(TemporalQueryType.COMPUTE_MAKESPAN);
+//				// process query
+//				this.tdb.process(query);
+//				// get computed makespan
+//				double makespan = query.getMakespan();
+//				update.setMakespan(makespan);
+				// add flaw solution
+				pf.addSolution(update);
+			}
+			break;
+			
 			default : {
-				throw new RuntimeException("Resolver [" + this.getClass().getSimpleName() + "] cannot handle flaws of type: " + flaw.getType() + "\n");
+				throw new RuntimeException("Reservoir resource resovler cannot handle flaws of type: " + flaw.getType() + "\n");
 			}
 		}
 		
@@ -1015,12 +1025,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		List<Flaw> flaws = new ArrayList<>();
 		// get profile samples
 		List<ResourceUsageProfileSample> samples = profile.getSamples();
-		// long start peak level
-		long startPeakLevel = 0;
+		// initialize peak information 
+		long startLevel = Long.MIN_VALUE + 1;
+		// list of production checkpoints
+		List<ProductionCheckpoint> checkpoints = new ArrayList<>();
 		// reset the current level of resource
 		long currentLevel = this.component.getInitialLevel();
 		// set of consumptions that may generate a peak
-		List<ResourceEvent<?>> criticalSet = new ArrayList<>();
+		List<ConsumptionResourceEvent> criticalSet = new ArrayList<>();
 		// peak mode flag
 		boolean peakMode = false;
 		// analyze the resource profile until a peak is found
@@ -1028,67 +1040,100 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		{
 			// current sample
 			ResourceUsageProfileSample sample = samples.get(index);
-			// get resource event
-			ResourceEvent<?> event = sample.getEvent();
-			
-			// check peak mode
-			if (!peakMode)
+			// check consumption event
+			if (sample.getAmount() < 0) 
 			{
+				// get consumption
+				ConsumptionResourceEvent consumption = (ConsumptionResourceEvent) sample.getEvent();
+				// add event to the critical set
+				criticalSet.add(consumption);
 				
-				// update the start peak level
-				startPeakLevel = currentLevel;
-				
-				// update the current level of the resource
-				currentLevel += event.getAmount();					// positive amount in case of production, negative in case of consumption
-				// check resource peak condition
-				peakMode = currentLevel < this.component.getMinCapacity() || currentLevel > this.component.getMaxCapacity();
-				
-				// check if a peak is starting 
-				if (peakMode) {
-					// first event of the peak
-					criticalSet.add(event);
+				// check if start level must be set
+				if (startLevel == Long.MIN_VALUE + 1) {
+					// set level before the first consumption of the peak
+					startLevel = currentLevel;
 				}
+				
+				// update the current level of resource
+				currentLevel += sample.getAmount();
+				// check resource over consumption
+				peakMode = currentLevel < this.component.getMinCapacity();
 			}
-			else		// peak mode  
+			else // production event  if (sample.getAmount() > 0)
 			{
-				// add the current event to the critical set
-				criticalSet.add(event);
-				
-				// get current level of the resource
-				currentLevel += event.getAmount();				// positive amount in case of production, negative in case of consumption
-				// check peak condition
-				peakMode = currentLevel < this.component.getMinCapacity() || currentLevel > this.component.getMaxCapacity();
-				
-				
-				// check if exit from peak condition
-				if (!peakMode) 
+				// check peak mode
+				if (peakMode)			// ignore production and close the peak
 				{
-					// create reservoir overflow flaw
-					ReservoirOverflow overflow = new ReservoirOverflow(
-							FLAW_COUNTER.getAndIncrement(), 
-							this.component, 
-							criticalSet, 
-							startPeakLevel);
+					// compute the delta value of the peak
+					double delta = this.component.getMinCapacity() - currentLevel;
+					// create a peak
+					Peak peak = new Peak(FLAW_COUNTER.getAndIncrement(), this.component, criticalSet, delta, startLevel, checkpoints); //checkpointMap.values());
 					
-					// add flaw and stop searching 
-					flaws.add(overflow);
+					// clear peak data
+					startLevel = Long.MIN_VALUE + 1;
+					// add the peak
+					flaws.add(peak);
+				}
+				else // not peak mode check production checkpoints or production updates
+				{
+					// update the current level of resource
+					currentLevel += sample.getAmount();
+					// check resource over consumption
+					peakMode = currentLevel < this.component.getMinCapacity();
+					// clear peak data
+					startLevel = Long.MIN_VALUE + 1;
+					
+					// check current level resulting after production
+					if (currentLevel > this.component.getMaxCapacity())
+					{
+						// compute delta
+						double delta = this.component.getMaxCapacity() - currentLevel;
+						// if delta > 0 we have got a production leak
+						if (delta > 0) {
+							// create production leak flaw
+							ProductionLeak flaw = new ProductionLeak(FLAW_COUNTER.getAndIncrement(), this.component, (ProductionResourceEvent) sample.getEvent(), delta);
+							// add to flaws
+							flaws.add(flaw);
+						}
+						
+						// if delta < 0 we have got a production overflow
+						if (delta < 0) {
+							// create production overflow
+							ProductionOverflow flaw = new ProductionOverflow(FLAW_COUNTER.getAndIncrement(), this.component, (ProductionResourceEvent) sample.getEvent(), delta);
+							// add to flaws
+							flaws.add(flaw);
+						}
+					}
+					else 	// not peak and valid produced level, add production checkpoint 
+					{
+						// clear the list of peak consumptions
+						criticalSet.clear();
+						
+						// create a production checkpoint
+						ProductionCheckpoint point = new ProductionCheckpoint(
+								(ProductionResourceEvent) sample.getEvent(),									// set production event
+								sample.getSchedule(),															// set production schedule on profile
+								currentLevel - sample.getAmount(),												// set resource level before production
+								currentLevel,				 													// set resource level after production
+								currentLevel,																	// set potential consumption before production
+								this.component.getMaxCapacity() - (currentLevel - sample.getAmount()));			// set potential production of the resource
+						
+						// add to the set
+						checkpoints.add(point);
+					}
 				}
 			}
 		}
 		
-		
-		// check if a peak must be closed - "final peak"
-		if (peakMode && flaws.isEmpty())	 
+		// check if a peak must be closed
+		if (flaws.isEmpty() && peakMode)	// "final peak" 
 		{
-			// create reservoir overflow flaw
-			ReservoirOverflow overflow = new ReservoirOverflow(
-					FLAW_COUNTER.getAndIncrement(), 
-					this.component, 
-					criticalSet, 
-					startPeakLevel);
-			
-			// add flaw
-			flaws.add(overflow);
+			// compute the delta value of the peak
+			long delta = this.component.getMinCapacity() - currentLevel;
+			// create a peak
+			Peak peak = new Peak(FLAW_COUNTER.getAndIncrement(), this.component, criticalSet, delta, startLevel, checkpoints); //checkpointMap.values());
+			// add the peak
+			flaws.add(peak);
 		}
 		
 		// get found peaks - only one element expected

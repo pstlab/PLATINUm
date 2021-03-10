@@ -42,7 +42,9 @@ public class ReservoirResource extends Resource
 			// planning resolver
 			ResolverType.PLAN_REFINEMENT,
 			// reservoir resource scheduler
-			ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER
+			ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER,
+			// reservoir resource planning
+			ResolverType.RESERVOIR_RESOURCE_PLANNING_RESOLVER
 	})
 	protected ReservoirResource(String name) {
 		super(name, DomainComponentType.RESOURCE_RESERVOIR);

@@ -7,7 +7,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePoint;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class ConsumptionResourceEvent extends ResourceEvent<TimePoint>

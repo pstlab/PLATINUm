@@ -75,7 +75,7 @@ public class ExecutiveProcess implements Runnable
 	 * @throws PlatformException
 	 * @throws Exception
 	 */
-	protected void doExecute(Goal goal) 
+	protected void doRun(Goal goal) 
 			throws InterruptedException, ExecutionException, PlatformException, Exception  
 	{
 		// get solution plan 

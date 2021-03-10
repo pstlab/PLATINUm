@@ -3,6 +3,7 @@ package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.plan.PlanRefinementResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.discrete.DiscreteResourceSchedulingResolver;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.reservoir.ReservoirResourceHandlingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.reservoir.ReservoirResourceSchedulingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.checking.ObservationBehaviorCheckingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.checking.TimelineBehaviorCheckingResolver;
@@ -20,7 +21,8 @@ public enum ResolverType
 	 * Special type of resolver responsible for managing 
 	 * synchronization rules and plan refinement
 	 */
-	PLAN_REFINEMENT(PlanRefinementResolver.class.getName(), 
+	PLAN_REFINEMENT(
+			PlanRefinementResolver.class.getName(), 
 			"Plan Refinement", 
 			new FlawType[] {
 					FlawType.PLAN_REFINEMENT
@@ -31,28 +33,54 @@ public enum ResolverType
 	 * resolver analyzes optimistic and pessimistic profiles of a resource
 	 * and posts precedence constraints to solve peaks. 
 	 */
-	DISCRETE_RESOURCE_SCHEDULING_RESOLVER(DiscreteResourceSchedulingResolver.class.getName(),
+	DISCRETE_RESOURCE_SCHEDULING_RESOLVER(
+			DiscreteResourceSchedulingResolver.class.getName(),
 			"Discrete Resource Scheduler",
 			new FlawType[] {
-				FlawType.RESOURCE_OVERFLOW
+				FlawType.DISCRETE_OVERFLOW
 			}),
 	
 	/**
 	 * 
 	 */
-	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(ReservoirResourceSchedulingResolver.class.getName(),
+	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(
+			ReservoirResourceSchedulingResolver.class.getName(),
 			"Reservoir Resource Scheduler",
 			new FlawType[] {
-				FlawType.RESOURCE_PRODUCTION_PLANNING,
-				FlawType.RESOURCE_PRODUCTION_UPDATE
+					FlawType.RESERVOIR_OVERFLOW
+			}),
+	
+	/**
+	 * 
+	 */
+	RESERVOIR_RESOURCE_PLANNING_RESOLVER(
+			null,
+			"Reservoir Resource Planner",
+			new FlawType[] {
+					FlawType.RESERVOIR_PLANNING,
+					FlawType.RESERVOIR_PROFILE_UPDATE
 			}),
 
+	/**
+	 * 
+	 */
+	RESERVOIR_RESOURCE_HANDLING_RESOLVER(
+			ReservoirResourceHandlingResolver.class.getName(),
+			"Reservoir Resource Handling",
+			new FlawType[] {
+					FlawType.RESERVOIR_OVERFLOW,
+					FlawType.RESERVOIR_PLANNING,
+					FlawType.RESERVOIR_PROFILE_UPDATE
+			}),
+	
+	
 	/**
 	 * This resolver complies with the semantics of timelines as a 
 	 * continuous sequence of not overlapping tokens. Specifically, 
 	 * the resolver is responsible for managing token overlaps.
 	 */
-	TIMELINE_SCHEDULING_RESOLVER(TimelineSchedulingResolver.class.getName(),
+	TIMELINE_SCHEDULING_RESOLVER(
+			TimelineSchedulingResolver.class.getName(),
 			"State Variable Scheduler",
 			new FlawType[] {
 				FlawType.TIMELINE_OVERFLOW
@@ -64,7 +92,8 @@ public enum ResolverType
 	 * resolver is responsible for managing gaps on a timeline and 
 	 * complete its (temporal) behavior.
 	 */
-	TIMELINE_BEHAVIOR_PLANNING_RESOLVER(TimelineBehaviorPlanningResolver.class.getName(),
+	TIMELINE_BEHAVIOR_PLANNING_RESOLVER(
+			TimelineBehaviorPlanningResolver.class.getName(),
 			"Timeline Gap Manager",
 			new FlawType[] {
 					FlawType.TIMELINE_BEHAVIOR_PLANNING
@@ -75,7 +104,8 @@ public enum ResolverType
 	 * variable. Namely, the resolver verifies if the obtained behavior is consistent 
 	 * with the state variable specification.
 	 */
-	TIMELINE_BEHAVIOR_CHECKING_RESOLVER(TimelineBehaviorCheckingResolver.class.getName(),
+	TIMELINE_BEHAVIOR_CHECKING_RESOLVER(
+			TimelineBehaviorCheckingResolver.class.getName(),
 			"State Variable Behavior Checker",
 			new FlawType[] {
 				FlawType.TIMELINE_BEHAVIOR_CHECKING
@@ -87,7 +117,8 @@ public enum ResolverType
 	 * variables of the domain (given as input of the problem specification) is complete 
 	 * and valid with respect to the domain specification.
 	 */
-	OBSERVATION_CHECKING_RESOLVER(ObservationBehaviorCheckingResolver.class.getName(),
+	OBSERVATION_CHECKING_RESOLVER(
+			ObservationBehaviorCheckingResolver.class.getName(),
 			"Observation Checker",
 			new FlawType[] {
 				FlawType.TIMELINE_BEHAVIOR_CHECKING

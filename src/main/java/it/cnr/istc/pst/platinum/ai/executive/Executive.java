@@ -421,6 +421,17 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			this.status = ExecutionStatus.EXECUTING;
 			this.lock.notifyAll();
 		}
+
+		
+		// check goal 
+		if (goal == null) {
+			// prepare execution
+			this.doPrepareExecution();
+		}
+		else {
+			// prepare execution
+			this.doPrepareExecution(goal);
+		}
 		
 		// set dispatching index
 		this.dispatchedIndex = new ConcurrentHashMap<>();
@@ -429,9 +440,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		// wait execution completes
 		this.clock.join();
 		
-		
 		// check execution failure or not 
-		if (this.failure.get()) {
+		if (this.failure.get()) 
+		{
 			// execution failure
 			error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
 					+ "\t- cause: " + this.cause.getType() + "\n");
@@ -494,7 +505,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		try 
 		{
 			// check failure flag
-			if (!this.failure.get()) {
+			if (!this.failure.get()) 
+			{
 				// handle current tick
 				this.currentTick = tick;
 				debug("{Executive} -> Handle tick: " + tick + "\n");
@@ -602,22 +614,19 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	/**
 	 * Perform some setting operation just before starting execution
 	 */
-	protected void doPrepareExecution() 
-	{
-		/*
-		 * TODO : set some parametric procedure
-		 */
+	protected void doPrepareExecution() {
+		// prepare execution
+		info("[Executive] Preparing execution...");
 	}
 	
 	/**
+	 * Perform some setting operation just before starting execution
 	 * 
 	 * @param goal
 	 */
-	protected void doPrepareExecution(Goal goal) //EDIT POINTER
-	{
-		/*
-		 * TODO : set some parametric procedure
-		 */
+	protected void doPrepareExecution(Goal goal) {
+		// prepare execution
+		info("[Executive] Preparing execution of:\n- goal= " + goal + "\n");
 	}
 	
 	/**

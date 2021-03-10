@@ -828,7 +828,7 @@ public class GoalOrientedActingAgent
 		try 
 		{
 			// execute the plan
-			this.executive.doExecute(goal);
+			this.executive.doRun(goal);
 		}
 		catch (Exception ex) {
 			// execution failure

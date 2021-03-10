@@ -29,7 +29,7 @@ public class CriticalSet extends Flaw implements Comparable<CriticalSet>
 	 * @param resource
 	 */
 	protected CriticalSet(int id, DiscreteResource resource) {
-		super(id, resource, FlawType.RESOURCE_OVERFLOW);
+		super(id, resource, FlawType.DISCRETE_OVERFLOW);
 		this.events = new HashSet<>();
 		
 //		this.samples = new HashSet<>();
