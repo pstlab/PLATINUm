@@ -67,7 +67,7 @@ public class DeliberativeProcess implements Runnable
 	 * @param pdb
 	 * @throws NoSolutionFoundException
 	 */
-	protected SolutionPlan doPlan(PlanDataBase pdb) 
+	protected SolutionPlan doHandle(PlanDataBase pdb) 
 			throws NoSolutionFoundException 
 	{
 		// setup planner on the current status of the plan database

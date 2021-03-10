@@ -733,7 +733,7 @@ public class GoalOrientedActingAgent
 			try
 			{
 				// deliberate on the current status of the plan database
-				SolutionPlan plan = this.deliberative.doPlan(this.pdb);
+				SolutionPlan plan = this.deliberative.doHandle(this.pdb);
 				// set generated plan
 				goal.setPlan(plan);
 			}
@@ -828,7 +828,7 @@ public class GoalOrientedActingAgent
 		try 
 		{
 			// execute the plan
-			this.executive.doRun(goal);
+			this.executive.doHandle(goal);
 		}
 		catch (Exception ex) {
 			// execution failure
@@ -1062,7 +1062,11 @@ public class GoalOrientedActingAgent
 			
 			
 			// deliberate on the current status of the plan database
-			SolutionPlan plan = this.contingencyHandler.doHandle(this.pClass, this.pdb);
+			SolutionPlan plan = this.contingencyHandler.doHandle(
+					this.pClass, 
+					this.pdb);
+			
+			
 			// set repaired plan
 			goal.setPlan(plan);
 			// set goal as repaired
