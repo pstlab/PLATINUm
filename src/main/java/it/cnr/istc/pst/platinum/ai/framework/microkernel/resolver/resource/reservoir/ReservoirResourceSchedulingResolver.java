@@ -7,7 +7,6 @@ import java.util.List;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.DecisionPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.RelationPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.ResourceProfileComputationException;

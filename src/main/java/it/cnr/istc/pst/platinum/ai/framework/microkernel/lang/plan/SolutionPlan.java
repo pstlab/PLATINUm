@@ -10,6 +10,8 @@ import java.util.Set;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponentType;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Token;
+import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.Resource;
+import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.ResourceEvent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.StateVariable;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.ConstraintCategory;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.Relation;
@@ -39,6 +41,7 @@ public class SolutionPlan
 	private Set<Timeline> observations;
 	private List<Relation> relations;
 	private PlanControllabilityType controllability;
+	private Set<Profile> profiles;
 	
 	/**
 	 * 
@@ -52,6 +55,7 @@ public class SolutionPlan
 		this.timelines = new HashSet<>();
 		this.observations = new HashSet<>();
 		this.relations = new ArrayList<>();
+		this.profiles = new HashSet<>();
 		this.controllability = PlanControllabilityType.UNKNOWN;
 	}
 	
@@ -256,6 +260,17 @@ public class SolutionPlan
 			}
 			break;
 			
+			case RESOURCE_DISCRETE : 
+			case RESOURCE_RESERVOIR : {
+				// get component as a resource
+				Resource res = (Resource) component;
+				// get profile
+				Profile profile = new Profile(res);
+				// add profile
+				this.profiles.add(profile);
+			}
+			break;
+			
 			case PLAN_DATABASE : {
 				// ignore this type of components
 			}
@@ -389,27 +404,7 @@ public class SolutionPlan
 				// update index
 				index.put(token, tokenDescriptor);
 			}
-			
-//			// add an undefined gap for the last token if necessary
-//			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
-//			// check schedule
-//			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
-//				// create "empty" token description
-//				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
-//						new long[] {
-//								last.getInterval().getEndTime().getLowerBound(),
-//								last.getInterval().getEndTime().getUpperBound()
-//						}, 
-//						new long [] {
-//								this.horizion,
-//								this.horizion
-//						}, 
-//						new long [] {
-//								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
-//								(this.horizion - last.getInterval().getEndTime().getLowerBound())
-//						});
-//			}
-			
+
 			// add timeline to plan
 			plan.addTimeline(timelineDescriptor);
 		}
@@ -486,26 +481,6 @@ public class SolutionPlan
 				index.put(token, tokenDescriptor);
 			}
 			
-//			// add an undefined gap for the last token if necessary
-//			Token last = tl.getTokens().get(tl.getTokens().size() - 1);
-//			// check schedule
-//			if (last.getInterval().getEndTime().getLowerBound() < this.horizion) {
-//				// create "empty" token description
-//				factory.createUndefinedTokenDescriptor(timelineDescriptor, 
-//						new long[] {
-//								last.getInterval().getEndTime().getLowerBound(),
-//								last.getInterval().getEndTime().getUpperBound()
-//						}, 
-//						new long [] {
-//								this.horizion,
-//								this.horizion
-//						}, 
-//						new long [] {
-//								(this.horizion - last.getInterval().getEndTime().getUpperBound()),
-//								(this.horizion - last.getInterval().getEndTime().getLowerBound())
-//						});
-//			}
-			
 			// add timeline to plan
 			plan.addTimeline(timelineDescriptor);
 		}
@@ -516,18 +491,23 @@ public class SolutionPlan
 			// export temporal relations only
 			if (relation.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT))
 			{
-				// get temporal relation
-				TemporalRelation trel = (TemporalRelation) relation;
-				// create relation description 
-				RelationProtocolDescriptor relDescriptor = factory.createRelationDescriptor(
-						relation.getType().name().toUpperCase(), 
-						index.get(relation.getReference().getToken()), 
-						index.get(relation.getTarget().getToken()));
-				
-				// set bounds
-				relDescriptor.setBounds(trel.getBounds());
-				// add relation descriptor to plan
-				plan.addRelation(relDescriptor);
+				// consider only relations between values of state variables
+				if (relation.getReference().getComponent() instanceof StateVariable && 
+						relation.getTarget().getComponent() instanceof StateVariable)
+				{
+					// get temporal relation
+					TemporalRelation trel = (TemporalRelation) relation;
+					// create relation description 
+					RelationProtocolDescriptor relDescriptor = factory.createRelationDescriptor(
+							relation.getType().name().toUpperCase(), 
+							index.get(relation.getReference().getToken()), 
+							index.get(relation.getTarget().getToken()));
+					
+					// set bounds
+					relDescriptor.setBounds(trel.getBounds());
+					// add relation descriptor to plan
+					plan.addRelation(relDescriptor);
+				}
 			}
 		}
 		
@@ -580,7 +560,7 @@ public class SolutionPlan
 				+ "\t\"controllability\": \"" + this.controllability.toString().toLowerCase() + "\",\n"
 				+ "\t\"makespan\": [" + mk[0] + ", " + mk[1] + "],\n";
 		
-		// print timelines 
+		// start description of timelines 
 		description += "\t\"timelines\": [\n";
 		for (Timeline tl : this.timelines) 
 		{
@@ -594,10 +574,36 @@ public class SolutionPlan
 			description += "\t\t\t]\n"
 					+ "\t\t},\n";
  		}
-		// end decisions
+		
+		// end description of timelines
 		description	+= "\t],\n\n";
 		
-		// print observations
+		// print profiles
+		description += "\t\"profiles\": [\n";
+		for (Profile pro : this.profiles)
+		{
+			// open description
+			description += "\t\t{\n"
+					+ "\t\t\t\"name\": \"" + pro.getName() + "\",\n"
+					+ "\t\t\t\"initial-level\": " + pro.getInitCapacity() + ",\n"
+					+ "\t\t\t\"min\": " + pro.getMinCapacity() + ",\n"
+					+ "\t\t\t\"max\": " + pro.getMaxCapacity() + ",\n"
+					+ "\t\t\t\"events\": [\n";
+			
+			// get events
+			for (ResourceEvent<?> event : pro.getResourceEvents()) {
+				description += "\t\t\t\t[\"update\": " + event.getAmount() + "  " + event.getEvent() + "],\n";
+			}
+			
+			// close description
+			description += "\t\t\t]\n"
+					+ "\t\t},\n";
+		}
+		
+		// description of profiles
+		description += "\t],\n\n";
+		
+		// start description of observations
 		description += "\tobservations: [\n";
 		for (Timeline tl : this.observations) {
 			description += "\t\t{\n"
@@ -610,13 +616,17 @@ public class SolutionPlan
 			description += "\t\t\t]\n"
 					+ "\t\t},\n";
 		}
+		
+		// end description of observations
 		description += "\t],\n\n";
 		
-		// print relations
+		// start description of relations
 		description += "\trelations: [\n";
 		for (Relation rel : this.relations) {
 			description += "\t\t" + rel +  ",\n";
 		}
+		
+		// end description of relations
 		description += "\t]\n\n";
 		
 		// close plan description

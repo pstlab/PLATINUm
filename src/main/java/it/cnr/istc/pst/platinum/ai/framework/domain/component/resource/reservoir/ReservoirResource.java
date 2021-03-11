@@ -8,6 +8,7 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponentType;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.ResourceProfileComputationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.Resource;
+import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.ResourceEvent;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
@@ -44,7 +45,7 @@ public class ReservoirResource extends Resource
 			// reservoir resource scheduler
 			ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER,
 			// reservoir resource planning
-			ResolverType.RESERVOIR_RESOURCE_PLANNING_RESOLVER
+//			ResolverType.RESERVOIR_RESOURCE_PLANNING_RESOLVER
 	})
 	protected ReservoirResource(String name) {
 		super(name, DomainComponentType.RESOURCE_RESERVOIR);
@@ -168,6 +169,23 @@ public class ReservoirResource extends Resource
 		// sort events
 		Collections.sort(list);
 		// get production events
+		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<ResourceEvent<?>> getEvents() {
+		// list of events
+		List<ResourceEvent<?>> list = new ArrayList<>();
+		// add consumptions
+		list.addAll(this.getConsumptions());
+		// add productions
+		list.addAll(this.getProductions());
+		// sort events
+		Collections.sort(list);
+		// get the list
 		return list;
 	}
 

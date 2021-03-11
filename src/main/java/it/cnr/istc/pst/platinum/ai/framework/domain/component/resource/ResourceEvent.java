@@ -52,11 +52,29 @@ public abstract class ResourceEvent<T extends TemporalData> implements Comparabl
 	}
 	
 	/**
+	 * Return a negative or positive amount of resource requested according to the 
+	 * type of the event. 
+	 * 
+	 * - Events of type CONSUMPTION reduce the total amount of resource available 
+	 * 
+	 * - Events of type PRODUCTION increase the total amount of resource available
+	 * 
+	 * - Events of type REQUIREMENT represent a known interval of time "reserving" a 
+	 * certain amount of the total resource that is represented as a positive value 
 	 * 
 	 * @return
 	 */
-	public double getAmount() {
-		return amount;
+	public double getAmount() 
+	{
+		// check type
+		if (this.type.equals(ResourceEventType.CONSUMPTION)) {
+			// get negative value
+			return this.amount * -1;
+		}
+		else {
+			// get positive value
+			return amount;
+		}
 	}
 	
 	/**

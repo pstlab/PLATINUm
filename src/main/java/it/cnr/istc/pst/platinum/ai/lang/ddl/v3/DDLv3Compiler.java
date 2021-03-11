@@ -45,9 +45,11 @@ import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLConsumableResourceCompo
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLConsumableResourceComponentType;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLDomain;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLEnumerationParameterConstraint;
+import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLEnumerationParameterConstraint.DDLEnumerationParameterConstraintType;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLEnumerationParameterType;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLInstantiatedComponentDecision;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLNumericParameterConstraint;
+import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLNumericParameterConstraint.DDLNumericParameterConstraintType;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLNumericParameterType;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLParameterConstraint;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLParameterType;
@@ -66,8 +68,6 @@ import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLTimeline;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLTimelineSynchronization;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.ddl3Lexer;
 import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.ddl3Parser;
-import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLEnumerationParameterConstraint.DDLEnumerationParameterConstraintType;
-import it.cnr.istc.pst.platinum.ai.lang.ddl.v3.parser.DDLNumericParameterConstraint.DDLNumericParameterConstraintType;
 
 /**
  * 
@@ -678,25 +678,27 @@ public class DDLv3Compiler extends DomainCompiler
 		{
 			// get component type
 			DDLComponentType ctype = this.ddl_domain.getComponentTypes().get(ddlComponent.getComponentType());
-			// check state variable type
+			// check component type
 			if (ctype instanceof DDLSingletonStateVariableComponentType) 
 			{
 				// add state variable
 				this.addStateVariable(pdb, ddlComponent);
 			}
-			
-			// check discrete resource type
-			if (ctype instanceof DDLRenewableResourceComponentType)
+			else if (ctype instanceof DDLRenewableResourceComponentType)
 			{
 				// add discrete resource
 				this.addDiscreteResource(pdb, ddlComponent);
 			}
-			
-			// check reservoir resource type
-			if (ctype instanceof DDLConsumableResourceComponentType)
+			else if (ctype instanceof DDLConsumableResourceComponentType)
 			{
 				// add reservoir resource
 				this.addReservoirResource(pdb, ddlComponent);
+			}
+			else {
+				// unknown 
+				throw new RuntimeException("Unknown/Unrecognized component type\n"
+						+ "- Parsed component " + ddlComponent.getName() + " (" + ddlComponent.getType() + ")\n"
+						+ "- " + ctype + "\n");
 			}
 		}
 	}
@@ -2594,12 +2596,13 @@ public class DDLv3Compiler extends DomainCompiler
 		// get minimum capacity
 		int min = consumable.getMinCapacity();
 		int max = consumable.getCapacity();
+		int init = consumable.getInitCapacity();
 		// create reservoir resource
 		ReservoirResource resource = pdb.createDomainComponent(name, DomainComponentType.RESOURCE_RESERVOIR);
 		// set capacity bounds
 		resource.setMinCapacity(min);
 		resource.setMaxCapacity(max);
-		resource.setInitialCapacity(max);
+		resource.setInitialCapacity(init);
 		// add component
 		pdb.addDomainComponent(resource);
 	}
