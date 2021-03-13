@@ -15,7 +15,8 @@ import java.util.Set;
 
 import org.bson.Document;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -116,19 +117,29 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
 		
 		// get mongodb
-		String mongodb = properties.getProperty("mongodb").trim();
+		String mongodb = properties.getProperty("mongodb");
 		// check if exists
 		if (mongodb != null && !mongodb.equals("")) 
 		{
 			// create a collection to the DB
 			if (client == null) {
-				// set connection
-				client = new MongoClient();
+				// check db host
+				String dbHost = properties.getProperty("mongodb_host");
+				// check if exists
+				if (dbHost == null || dbHost.trim().equalsIgnoreCase("localhost")) {
+					// set connection
+					client = MongoClients.create();
+				}
+				else {
+					
+					// create client
+					client = MongoClients.create(dbHost);
+				}
 			}
 			
 			
-			// get db 
-			MongoDatabase db = client.getDatabase(mongodb);
+			// get DB 
+			MongoDatabase db = client.getDatabase(mongodb.trim());
 			// get collection
 			this.collection = db.getCollection("planner_search");
 			// remove all data from the collection
@@ -246,15 +257,6 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 		if (!this.pgraph.containsKey(value) || 
 				this.pgraph.get(value).isEmpty()) 
 		{
-//			// get average duration
-//			double avg = (value.getDurationLowerBound() + value.getDurationUpperBound()) / 2.0;
-//			// set value expected average duration
-//			makespan.put(value.getComponent(), 
-//					new Double[] {
-//							avg,
-//							avg
-//					});
-			
 			// set value expected minimum duration
 			makespan.put(value.getComponent(), new Double[] {
 					(double) value.getDurationLowerBound(),
