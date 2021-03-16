@@ -37,7 +37,7 @@ public class StrategyLoader {
 	//------------------------CONSTRUCTORS---------------------------
 
 	public StrategyLoader(long horizon) {
-		System.out.println("\nStarting Strategy Loader ... : \n");
+		System.out.println("Starting Strategy Loader ... :");
 		this.strategy = new ListStrategy(horizon); //MODIFIABLE
 		this.existsStrategy = false;
 		
@@ -69,7 +69,7 @@ public class StrategyLoader {
 		Process process = builder.start();
 		this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		this.tigaTime = System.currentTimeMillis() - this.tigaTime;
-		System.out.println("\n" + "Plan2Tiga  + VerifyTga = " + this.tigaTime + "ms\n");
+		System.out.println("Plan2Tiga  + VerifyTga = " + this.tigaTime + "ms");
 		//writer.println("\n" + "Plan2Tiga  + VerifyTga = " + time + "ms\n");
 		//this.strategy.setWriter(writer);
 	}
@@ -83,13 +83,13 @@ public class StrategyLoader {
 	//-------------------------------METHODS-------------------------
 	//creates strategy reading lines, validating if a strategy is found and finding states (box 1)
 	public void readStrategy() throws IOException, Exception {
-		System.out.println("\nReading Strategy..... :\n");
+		System.out.println("Reading Strategy..... :");
 		this.managementStrategyTime = System.currentTimeMillis();
 		try {
 			String line = reader.readLine(); 
 
 			while (line != null) { //reading input 
-				System.out.println(line + "\n");
+				//System.out.println(line + "\n");
 				//get local clocks
 				if(line.contains(MARKER_PRECONDITIONS)) { //getInitialState(reader.readLine()); getLocalClocks(reader.readLine()); 
 					getInitialState(reader.readLine()); 
@@ -116,9 +116,12 @@ public class StrategyLoader {
 				throw new Exception("Il file non contiene una strategia\n");
 			}
 			else {
+				System.out.println("Reading uncontrollable planning variables...");
 				this.reader = new BufferedReader(new FileReader(this.pathPlanXta));
 				this.strategy.setuPostConditions(extractUPostConditions());	
+				System.out.println("Building strategy...");
 				this.strategy.buildStrategyStructure();
+				System.out.println("Strategy ready!\n");
 			}
 
 		} catch (IOException e) { //closing error
@@ -136,39 +139,47 @@ public class StrategyLoader {
 		boolean uncontrollable;
 		Set<String> uncontrollables = new HashSet<>();
 		String line = this.reader.readLine();
+		//System.out.println(line);
 		String tl;
 		while(line!=null) {
 			if(line.contains("process")) {
-				tl = line.replace("process","").substring(0,line.indexOf("(")-1).trim();
+				//System.out.println("process:" + line);
+				tl = line.replace("process","");
+				tl = tl.substring(0,tl.indexOf("(")).trim();
 				uncontrollable = true;
 				line = this.reader.readLine();
 				
-				while(!line.contains("process")) {
+				while(line!=null && !line.contains("process")) {
+					//System.out.println(line);
 					
 					if(line.contains(" -> ")) { uncontrollable = false;} //check for all uncontrollable transitions -> uncontrollable token
 					if(line.contains("-u->")) {
-						Map<String,String> pC = new HashMap<>();
+						Map<String,String> postCond = new HashMap<>();
 						String from = line.substring(0,line.indexOf("-")).trim();
 						String to = line.substring(line.indexOf(">")+1,line.indexOf("{")).trim();
 						line = this.reader.readLine();
+						while(!line.contains("assign")) {line = this.reader.readLine();}
 						while(line.contains(":=")) {
-						
+							//System.out.println(line);
 							String clock = "none";
 							String[] split = line.split(":=");
 							String[] containClock  = split[0].split("\\s");
 							for(String s : containClock) { if(s.contains("_clock")) clock = s.replace("_clock", "").trim();}
-							if(split[1].contains("0")) pC.put(clock,"0");
-							else if (split[1].contains("H")) pC.put(clock, "H");
+							if(split[1].contains("0")) postCond.put(clock,"0");
+							else if (split[1].contains("H")) postCond.put(clock, "H");
 					
 							line = this.reader.readLine();
 						}
-						result.put(new Transition(tl,from,to), pC);
+						result.put(new Transition(tl,from,to), postCond);	
+						//System.out.println(result);
+						//System.out.println(tl + uncontrollable);
 					}
-					
+					if(line!=null) {line = this.reader.readLine();}
 				}
 				if(uncontrollable) { uncontrollables.add(tl);}
+				//System.out.println(uncontrollables);
 			}
-			else line = this.reader.readLine();
+			else if(line!=null) {line = this.reader.readLine();}
 		}	
 		//System.out.println(">>>>>>>>>>>>>>> POST CONDITIONS ON UNCONTROLLABLES" + "\n" + result + "<<<<<<<<<<<<\n");
 		this.strategy.setuStates(uncontrollables);

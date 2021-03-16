@@ -133,20 +133,28 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	public String export() throws IOException 
 	{
 		// prepare file 
+		//System.out.println("Prepare file plans/exported/plan.txt... ");
 		File output = new File("plans/exported/plan.txt");
+		boolean exists = output.createNewFile();
+		//System.out.println(exists+"\n");
 		// export current plan (if any) to a known file
 		if (this.plan != null) 
 		{
 			// get plan encoding
 			String encoding = this.plan.export();
 			// write to a file
+			System.out.println("Writing file:\n");
 			try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
 				// get data
+				//System.out.println(encoding +"\n");
 				writer.write(encoding);
+				//System.out.println("Done!");
+				writer.close();
 			}
 		}
 		
 		// get absolute file 
+		//System.out.println(output.getAbsolutePath());
 		return output.getAbsolutePath();
 	}
 	

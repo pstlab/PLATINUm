@@ -111,7 +111,7 @@ public class ListStrategy implements Strategy{
 			time = System.currentTimeMillis() - time;
 			this.strikeTimer = this.strikeTimer + 1;
 			if(this.strikeTimer > ListStrategy.MAX_STRIKE) {
-				System.out.println("PluPostConditionsan out of bounds, strike max reached\n");
+				System.out.println("PostConditionsan out of bounds, strike max reached\n");
 			}
 			//System.out.println("\n"+ "Answer single strategy steps: " + time + "ms\n");
 		}
