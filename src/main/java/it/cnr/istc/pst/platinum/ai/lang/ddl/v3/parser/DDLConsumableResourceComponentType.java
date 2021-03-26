@@ -10,6 +10,7 @@ public class DDLConsumableResourceComponentType extends DDLComponentType {
 
     private int capacity;
     private int minCapacity;
+    private int initCapacity;
 
     public DDLConsumableResourceComponentType(Token payload) {
 	super(payload);
@@ -20,6 +21,7 @@ public class DDLConsumableResourceComponentType extends DDLComponentType {
     	name = getText();
     	minCapacity = Integer.parseInt(getChild(0).getText());
     	capacity = Integer.parseInt(getChild(1).getText());
+    	initCapacity = Integer.parseInt(getChild(2).getText());
     }
 
     public int getCapacity() {
@@ -28,5 +30,9 @@ public class DDLConsumableResourceComponentType extends DDLComponentType {
 
     public int getMinCapacity() {
 	return minCapacity;
+    }
+    
+    public int getInitCapacity() {
+    	return initCapacity;
     }
 }

@@ -126,7 +126,7 @@ renewable_resource_component_type
 
 // Consumable resource
 consumable_resource_component_type
-	:	'COMP_TYPE' 'ConsumableResource' ID '(' positive_number ',' positive_number ')' ->^(ID<DDLConsumableResourceComponentType> positive_number positive_number);
+	:	'COMP_TYPE' 'ConsumableResource' ID '(' positive_number ',' positive_number ',' positive_number ')' ->^(ID<DDLConsumableResourceComponentType> positive_number positive_number positive_number);
 
 // Components
 component

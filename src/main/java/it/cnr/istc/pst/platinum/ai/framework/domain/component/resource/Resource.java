@@ -1,5 +1,7 @@
 package it.cnr.istc.pst.platinum.ai.framework.domain.component.resource;
 
+import java.util.List;
+
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponentType;
@@ -76,15 +78,6 @@ public abstract class Resource extends DomainComponent
 		this.initial = initial;
 	}
 	
-//	/**
-//	 * 
-//	 */
-//	@Override
-//	public void checkPseudoControllability() 
-//			throws PseudoControllabilityCheckException {
-//		// nothing to do
-//	}
-
 	/**
 	 * 
 	 * @param activity
@@ -103,4 +96,10 @@ public abstract class Resource extends DomainComponent
 		// get computed parameter
 		return param.getLowerBound();
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract List<ResourceEvent<?>> getEvents();
 }

@@ -9,6 +9,7 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponentTyp
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanElementStatus;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.ResourceProfileComputationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.Resource;
+import it.cnr.istc.pst.platinum.ai.framework.domain.component.resource.ResourceEvent;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.framework.DomainComponentConfiguration;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.lifecycle.PostConstruct;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
@@ -102,6 +103,15 @@ public class DiscreteResource extends Resource
 		Collections.sort(list);
 		// get list
 		return list;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<ResourceEvent<?>> getEvents() {
+		// get requirements
+		return new ArrayList<>(this.getRequirements());
 	}
 	
 	/**

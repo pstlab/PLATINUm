@@ -1434,12 +1434,32 @@ public abstract class DomainComponent extends FrameworkObject
 	{
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
+		// flag about existence of unsolvable flaws
+		boolean unsolvable = false;
 		// call resolvers to detect flaws and possible solutions
-		for (Resolver<?> resv : this.resolvers) {
-			// add detected flaws
-			list.addAll(resv.findFlaws());
+		for (Resolver<?> resv : this.resolvers) 
+		{
+			try 
+			{
+				// add detected flaws
+				list.addAll(resv.findFlaws());
+			}
+			catch (UnsolvableFlawException ex) {
+				// set unsolvable flag
+				unsolvable = true;
+				// warning 
+				warning("Component [" + this.name + "] detects flaws with not solutions:\n"
+						+ "- message= " + ex.getMessage() + "\n");
+			}
 		}
 
+		// check flaws exist and are all unsolvable
+		if (list.isEmpty() && unsolvable) {
+			// throw exception if no solvable flaw was found by resolvers
+			throw new UnsolvableFlawException("Component [" + this.name + "] detects unsolvable flaws only!");
+		}
+		
+		
 		// get the list of detected flaws
 		return list;
 	}

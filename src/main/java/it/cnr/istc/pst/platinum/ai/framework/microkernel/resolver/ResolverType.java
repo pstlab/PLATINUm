@@ -3,6 +3,7 @@ package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.plan.PlanRefinementResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.discrete.DiscreteResourceSchedulingResolver;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.reservoir.ReservoirResourceSchedulingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.checking.ObservationBehaviorCheckingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.checking.TimelineBehaviorCheckingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.planning.TimelineBehaviorPlanningResolver;
@@ -38,6 +39,15 @@ public enum ResolverType
 				FlawType.DISCRETE_OVERFLOW
 			}),
 	
+	/**
+	 * 
+	 */
+	RESERVOIR_RESOURCE_SCHEDULING_RESOLVER(
+			ReservoirResourceSchedulingResolver.class.getName(),
+			"Reservoir Resource Scheduler",
+			new FlawType[] {
+					FlawType.RESERVOIR_OVERFLOW
+			}),
 	
 	/**
 	 * 

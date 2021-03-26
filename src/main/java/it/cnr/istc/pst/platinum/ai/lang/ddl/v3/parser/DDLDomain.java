@@ -27,47 +27,51 @@ public class DDLDomain extends CommonTree {
         super(payload);
     }
 
-    public void parse() {
+    /**
+     * 
+     */
+    public void parse() 
+    {
         name = getText();
-        for (int i = 0; i < getChildCount(); i++) {
+        for (int i = 0; i < getChildCount(); i++) 
+        {
             Tree child = getChild(i);
             if (child instanceof DDLTemporalModule) {
                 temporalModule = (DDLTemporalModule) getChild(0);
                 temporalModule.parse();
-                continue;
             }
-            if (child instanceof DDLParameterType) {
+            else if (child instanceof DDLParameterType) {
                 DDLParameterType par_type = ((DDLParameterType) child);
                 par_type.parse();
                 if (parTypes.containsKey(par_type.getName())) {
                     throw new RuntimeException("Duplicate parameter type name in domain definition");
                 }
                 parTypes.put(par_type.getName(), par_type);
-                continue;
             }
-            if (child instanceof DDLComponentType) {
+            else if (child instanceof DDLComponentType) {
                 DDLComponentType comp_type = ((DDLComponentType) child);
                 comp_type.parse();
                 if (parTypes.containsKey(comp_type.getName())) {
                     throw new RuntimeException("Duplicate component type name in domain definition");
                 }
                 compTypes.put(comp_type.getName(), comp_type);
-                continue;
             }
-            if (child instanceof DDLComponent) {
+            else if (child instanceof DDLComponent) {
                 DDLComponent comp = ((DDLComponent) child);
                 comp.parse();
                 if (parTypes.containsKey(comp.getName())) {
                     throw new RuntimeException("Duplicate component name in domain definition");
                 }
                 components.put(comp.getName(), comp);
-                continue;
             }
-            if (child instanceof DDLTimelineSynchronization) {
+            else if (child instanceof DDLTimelineSynchronization) {
                 DDLTimelineSynchronization syncs = ((DDLTimelineSynchronization) child);
                 syncs.parse();
                 timelineSynchronizations.add(syncs);
-                continue;
+            }
+            else {
+            	// unknown 
+            	throw new RuntimeException("Parsed an unknown element " + child + "\n");
             }
         }
     }
