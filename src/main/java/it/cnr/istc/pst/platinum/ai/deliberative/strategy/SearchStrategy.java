@@ -122,19 +122,12 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 		if (mongodb != null && !mongodb.equals("")) 
 		{
 			// create a collection to the DB
-			if (client == null) {
-				// check db host
+			if (client == null) 
+			{
+				// check DB host
 				String dbHost = properties.getProperty("mongodb_host");
-				// check if exists
-				if (dbHost == null || dbHost.trim().equalsIgnoreCase("localhost")) {
-					// set connection
-					client = MongoClients.create();
-				}
-				else {
-					
-					// create client
-					client = MongoClients.create(dbHost);
-				}
+				// create client
+				client = MongoClients.create(dbHost);
 			}
 			
 			
