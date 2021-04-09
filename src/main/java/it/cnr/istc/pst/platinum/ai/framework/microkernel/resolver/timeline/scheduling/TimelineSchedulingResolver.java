@@ -27,6 +27,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  */
 public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 {
+	private boolean load;
 	private double schedulingCost;
 	
 	/**
@@ -35,11 +36,21 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	protected TimelineSchedulingResolver() {
 		super(ResolverType.TIMELINE_SCHEDULING_RESOLVER.getLabel(), 
 				ResolverType.TIMELINE_SCHEDULING_RESOLVER.getFlawTypes());
-		
+		// set load flag
+		this.load = false;
+	}
+	
+	/**
+	 * 
+	 */
+	private void load() {
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		// get weight
 		this.schedulingCost = Double.parseDouble(properties.getProperty("scheduling-cost"));
+		// set flag
+		this.load = true;
 	}
 	
 	/**
@@ -165,6 +176,11 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	protected void doComputeFlawSolutions(Flaw flaw) 
 		throws UnsolvableFlawException 
 	{
+		// check flag
+		if (!this.load) {
+			this.load();
+		}
+		
 		// get detected conflict
 		BinaryDecisionConflict conflict = (BinaryDecisionConflict) flaw;
 

@@ -36,6 +36,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  */
 public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResource> 
 { 
+	private boolean load;
 	private double cost;
 	
 	/**
@@ -45,11 +46,21 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		super(ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getLabel(), 
 				ResolverType.DISCRETE_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
 		
-		
+		// set load flag
+		this.load = false;
+	}
+	
+	/**
+	 * 
+	 */
+	private void load( ) {
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		// read weight
 		this.cost = Double.parseDouble(properties.getProperty("scheduling-cost"));
+		// set load flag
+		this.load = true;
 	}
 	
 	/**
@@ -157,6 +168,11 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	 */
 	private List<MinimalCriticalSet> sampleMCSs(CriticalSet cs)
 	{
+		// load parameter if necessary
+		if (!this.load) {
+			this.load();
+		}
+		
 		// list of MCSs that can be extracted from the critical set
 		List<MinimalCriticalSet> mcss = new ArrayList<>();
 		// get the events composing the critical set 

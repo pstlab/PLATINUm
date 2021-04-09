@@ -36,6 +36,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  */
 public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResource> 
 {
+	boolean load;
 	private double schedulingCost;
 	
 	/**
@@ -44,12 +45,21 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	protected ReservoirResourceSchedulingResolver() {
 		super(ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getLabel(),
 				ResolverType.RESERVOIR_RESOURCE_SCHEDULING_RESOLVER.getFlawTypes());
-		
+		// set load flag
+		this.load = false;
+	}
+	
+	/**
+	 * 
+	 */
+	private void load() {
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
-		
+		// get weight
 		this.schedulingCost = Double.parseDouble(properties.getProperty("scheduling-cost"));
+		// set flag
+		this.load = true;
 	}
 	
 	/**
@@ -244,6 +254,11 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	private void doFindFeasibleSchedule(List<ResourceEvent<?>> schedule, List<ResourceEvent<?>> cs, ReservoirOverflow overflow) 
 	{
+		// check load
+		if (!this.load) {
+			this.load();
+		}
+		
 		// check if a schedule is ready
 		if (cs.isEmpty()) 
 		{

@@ -37,6 +37,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  */
 public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariable> 
 {
+	private boolean load;
 	private double cost;
 	
 	/**
@@ -45,11 +46,21 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	protected TimelineBehaviorPlanningResolver() {
 		super(ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER.getLabel(), 
 				ResolverType.TIMELINE_BEHAVIOR_PLANNING_RESOLVER.getFlawTypes());
-		
+		// set load flag
+		this.load = false;
+	}
+	
+	/**
+	 * 
+	 */
+	private void load() {
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		// get weight
 		this.cost = Double.parseDouble(properties.getProperty("completion-cost"));
+		// set flag
+		this.load = true;
 	}
 	
 	/**
@@ -285,6 +296,11 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	protected void doComputeFlawSolutions(Flaw flaw) 
 			throws UnsolvableFlawException 
 	{
+		// load flat
+		if (!this.load) {
+			this.load();
+		}
+		
 		// get the gap
 		Gap gap = (Gap) flaw;
 		// check gap type

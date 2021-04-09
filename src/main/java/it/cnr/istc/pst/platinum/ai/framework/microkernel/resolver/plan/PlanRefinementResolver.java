@@ -40,6 +40,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  */
 public class PlanRefinementResolver extends Resolver<DomainComponent>
 {	
+	private boolean load;
 	private double expansionCost;
 	private double unificationCost;
 	
@@ -49,12 +50,23 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	protected PlanRefinementResolver() {
 		super(ResolverType.PLAN_REFINEMENT.getLabel(), 
 				ResolverType.PLAN_REFINEMENT.getFlawTypes());
-		 
+		
+		// flag to load parameters when it is necessary
+		this.load = false;
+	}
+	
+	/**
+	 * 
+	 */
+	private void load() {
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		// read weights
 		this.expansionCost = Double.parseDouble(properties.getProperty("expansion-cost"));
 		this.unificationCost = Double.parseDouble(properties.getProperty("unification-cost"));
+		// set load flag
+		this.load = true;
 	}
 	
 	/**
@@ -469,6 +481,11 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 */
 	private void doComputeUnificationSolutions(Goal goal) 
 	{
+		// check load parameters
+		if (!this.load) {
+			this.load();
+		}
+				
 		// get goal component
 		DomainComponent gComp = goal.getComponent();
 		// search active decisions that can be unified with the goal
@@ -861,6 +878,11 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 */
 	private void doComputeExpansionSolutions(Goal goal) 
 	{
+		// check load parameters
+		if (!this.load) {
+			this.load();
+		}
+		
 		// check rules
 		List<SynchronizationRule> rules = this.component.getSynchronizationRules(goal.getDecision().getValue());
 		if (rules.isEmpty()) 

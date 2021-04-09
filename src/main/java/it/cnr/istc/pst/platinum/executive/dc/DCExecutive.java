@@ -57,7 +57,6 @@ public class DCExecutive extends Executive
 			goal.setOutOfBounds(loader.getStrategy().isOutOfBounds());
 			goal.setStrategyFinished(loader.getStrategy().isStrategyFinished());
 			
-			
 			// get strategy
 			this.checker = loader.getStrategy();
 //		}
