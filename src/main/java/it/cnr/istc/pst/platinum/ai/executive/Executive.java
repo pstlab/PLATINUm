@@ -613,8 +613,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 
 	/**
 	 * Perform some setting operation just before starting execution
+	 * 
+	 * @throws Exception
 	 */
-	protected void doPrepareExecution() {
+	protected void doPrepareExecution() 
+			throws Exception {
 		// prepare execution
 		info("[Executive] Preparing execution...");
 	}
@@ -623,8 +626,10 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * Perform some setting operation just before starting execution
 	 * 
 	 * @param goal
+	 * @throws Exception
 	 */
-	protected void doPrepareExecution(Goal goal) {
+	protected void doPrepareExecution(Goal goal) 
+			throws Exception {
 		// prepare execution
 		info("[Executive] Preparing execution of:\n- goal= " + goal + "\n");
 	}

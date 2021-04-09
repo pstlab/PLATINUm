@@ -39,9 +39,10 @@ public class DCExecutive extends Executive
 	 */
 	@Override
 	protected void doPrepareExecution(Goal goal) 
+			throws Exception
 	{
-		try
-		{
+//		try
+//		{
 			// export plan to a file according to the expected encoding
 			String path = this.pdb.export();
 			// load strategy manager
@@ -59,10 +60,10 @@ public class DCExecutive extends Executive
 			
 			// get strategy
 			this.checker = loader.getStrategy();
-		}
-		catch (Exception ex) {
-			System.err.println(ex.getMessage());
-		}
+//		}
+//		catch (Exception ex) {
+//			System.err.println(ex.getMessage());
+//		}
 		
 	}
 }
