@@ -177,10 +177,9 @@ public class PseudoControllabilityAwareSolver extends Solver
 			finally 
 			{
 				// check if stop
-				if (!search) 
-				{
-					// clear search strategy
-					this.fringe.clear();
+				if (!search)  {
+					// clear data structures
+					this.clear();
 				}
 			}
 			
@@ -189,5 +188,16 @@ public class PseudoControllabilityAwareSolver extends Solver
 		
 		// get last expanded node
 		return last;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void clear() {
+		// clear heuristics
+		this.heuristic.clear();
+		// clear the fringe
+		this.fringe.clear();
 	}
 }	

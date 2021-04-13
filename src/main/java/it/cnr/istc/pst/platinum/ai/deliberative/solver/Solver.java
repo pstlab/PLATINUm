@@ -78,6 +78,11 @@ public abstract class Solver extends FrameworkObject
 	 */
 	public abstract SearchSpaceNode solve() 
 			throws NoSolutionFoundException;
+
+	/**
+	 * 
+	 */
+	public abstract void clear();
 	
 	/**
 	 * 

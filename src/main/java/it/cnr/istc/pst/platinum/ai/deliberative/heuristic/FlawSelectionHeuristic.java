@@ -137,6 +137,13 @@ public abstract class FlawSelectionHeuristic extends FrameworkObject
 		// get created filter
 		return filter;
 	}
+
+	/**
+	 * 
+	 */
+	public void clear() {
+		// nothing to do
+	}
 }
 
 

@@ -1,6 +1,0 @@
-digraph stnu {
-	rankdir=LR;
-	node [with=.2, height=.2, fontsize=5, shape=circle, style=filled, fillcolor=white];	0 -> 1 [fontsize=8, arrowsize= .5, label = "[100,100]"];
-
-}
-

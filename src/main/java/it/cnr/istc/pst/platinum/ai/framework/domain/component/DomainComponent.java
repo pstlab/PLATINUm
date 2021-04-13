@@ -1137,7 +1137,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 */
 	public synchronized boolean isActive(Decision dec) {
-		return this.decisions.get(PlanElementStatus.ACTIVE).contains(dec);
+		return this.decisions.get(PlanElementStatus.ACTIVE) != null && 
+				decisions.get(PlanElementStatus.ACTIVE).contains(dec);
 	}
 	
 	/**
@@ -1146,7 +1147,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 */
 	public synchronized boolean isPending(Decision dec) {
-		return this.decisions.get(PlanElementStatus.PENDING).contains(dec);
+		return this.decisions.get(PlanElementStatus.PENDING) != null &&
+				this.decisions.get(PlanElementStatus.PENDING).contains(dec);
 	}
 	
 	/**
@@ -1155,7 +1157,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 */
 	public synchronized boolean isSilent(Decision dec) {
-		return this.decisions.get(PlanElementStatus.SILENT).contains(dec);
+		return this.decisions.get(PlanElementStatus.SILENT) != null &&
+				this.decisions.get(PlanElementStatus.SILENT).contains(dec);
 	}
 	
 	/**

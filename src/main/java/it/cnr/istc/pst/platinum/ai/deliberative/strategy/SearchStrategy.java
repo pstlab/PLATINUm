@@ -395,6 +395,7 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 		if (client != null) {
 			client.close();
 			client = null;
+			this.collection = null;
 		}
 	}
 	

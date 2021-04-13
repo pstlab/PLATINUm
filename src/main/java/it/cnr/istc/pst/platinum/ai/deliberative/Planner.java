@@ -119,4 +119,14 @@ public class Planner extends FrameworkObject
 		// get a description of the plan data base
 		return this.pdb.toString();
 	}
+
+	/**
+	 * 
+	 */
+	public void clear() {
+		// clear solver
+		this.solver.clear();
+		// clear current solution
+		this.currentSolution = null;
+	}
 }
