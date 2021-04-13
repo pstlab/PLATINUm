@@ -20,6 +20,7 @@ public class TreeNodeState {
 	}
 	
 	private void findChildStates(Set<StateSet> stateList, Set<String> uStates) {
+		if(this.parentState.getStateSet().toString().contains("rsa=rsa14")) System.out.println("RSA14 REST: " + this.parentState +stateList);
 		//action transitions in parent node
 		Set<Transition> transitions = this.parentState.getTransitionStates();
 		//set to keep found next states
@@ -53,7 +54,7 @@ public class TreeNodeState {
 		}
 		if (childStates.isEmpty() && !rest.isEmpty()) {
 			//can happen, it's not an error
-			System.out.println("Some states are not reachable in this branch: " + rest );
+			//System.out.println("Some states are not reachable in this branch: " + rest );
 		}
 	}
 	

@@ -91,6 +91,7 @@ public class StateSet {
 	}
 	
 	public boolean isStateSetStatus(Map<String,String> stateStatus) {
+		//System.out.println("ISSTATESETSTATUS: " + this.stateSet + " equals " + stateStatus + " : " + this.stateSet.equals(stateStatus));
 		return this.stateSet.equals(stateStatus);
 	}
 	
@@ -105,7 +106,7 @@ public class StateSet {
 		for( StateStrategy ss : stateStrategies) {
 			if(ss.getClockRelations().evaluate(status)) return ss;
 		}
-		throw new Exception();
+		throw new Exception("No statestrategy found\n");
 	}
 	
 	
