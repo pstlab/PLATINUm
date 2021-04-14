@@ -363,6 +363,13 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						// gap solution
 						GapCompletion solution = new GapCompletion(gap, steps, this.cost);
 						
+						// list of created and activated decisions
+						List<Decision> dCreated = new ArrayList<>();
+						List<Decision> dActivated = new ArrayList<>();
+						// list of created and activated relations
+						List<Relation> rCreated = new ArrayList<>();
+						List<Relation> rActivated = new ArrayList<>();
+						
 						try 
 						{
 							// check solution feasibility
@@ -375,23 +382,23 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 								// create meets constraint to enforce the desired transition
 								MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 								// add created relation
-								solution.addCreatedRelation(meets);
+								rCreated.add(meets);
 								// propagate relation and activate it if possible
 								if (this.component.activate(meets)) {
 									// add activated relation to solution
-									solution.addActivatedRelation(meets);
+									rActivated.add(meets);
 								}
 								
 								// create parameter relations
 								Set<Relation> pRels = this.createParameterRelations(reference, target);
 								// add created relation
-								solution.addCreatedRelation(meets);
+								rCreated.add(meets);
 								// propagate relation
 								for (Relation pRel : pRels) {
 									// activate relation if possible
 									if (this.component.activate(pRel)) {
 										// add activated relation to solution
-										solution.addActivatedRelation(pRel);
+										rActivated.add(pRel);
 									}
 								}
 							}
@@ -419,7 +426,7 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 									// add created decision to transition
 									transition.add(dec);
 									// add pending decision
-									solution.addCreatedDecision(dec);
+									dCreated.add(dec);
 
 									// activate the decision if possible
 									if (!value.isComplex()) {
@@ -427,9 +434,9 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 										// activated decision
 										Set<Relation> list = this.component.activate(dec);
 										// add activated decisions
-										solution.addActivatedDecision(dec);
+										dActivated.add(dec);
 										// add activated relations
-										solution.addActivatedRelations(list);
+										rActivated.addAll(list);
 									}
 								}
 									
@@ -446,11 +453,11 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 									// create pending relation
 									MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 									// add created relation
-									solution.addCreatedRelation(meets);
+									rCreated.add(meets);
 									// activate relation if possible
 									if (this.component.activate(meets)) {
 										// add to activated relations
-										solution.addActivatedRelation(meets);
+										rActivated.add(meets);
 									}
 									
 									// create parameter relations
@@ -458,11 +465,11 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 									// check relations
 									for (Relation prel : pRels) {
 										// add relation to solution
-										solution.addCreatedRelation(prel);
+										rCreated.add(prel);
 										// activate relation if possible
 										if (this.component.activate(prel)) {
 											// add to activated relations
-											solution.addActivatedRelation(prel);
+											rCreated.add(prel);
 										}
 									}
 								}
@@ -491,23 +498,26 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						finally {
 							
 							// deactivate relations
-							for (Relation rel : solution.getActivatedRelations()) {
+							for (Relation rel : rActivated) {
 								this.component.deactivate(rel);
 							}
 							
 							// delete relation
-							for (Relation rel : solution.getCreatedRelations()) {
+							for (Relation rel : rCreated) {
 								this.component.delete(rel);
 							}
 							
 							// deactivate decision
-							for (Decision dec : solution.getActivatedDecisions()) {
+							for (Decision dec : dActivated) {
 								this.component.deactivate(dec);
 							}
 							
-							// free decision
-							for (Decision dec : solution.getCreatedDecisions()) {
+							// free and then delete decision
+							for (Decision dec : dCreated) {
+								// free decision
 								this.component.free(dec);
+								// completely remove decision reference
+								this.component.delete(dec);
 							}
 						}
 					}	

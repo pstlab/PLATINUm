@@ -458,13 +458,9 @@ public abstract class DomainComponent extends FrameworkObject
 				// check also if active - FIXME: check if this case occurs
 				if (rel.getConstraint() != null) {
 					// warning trying to restore an active relation
-					warning("Trying to restore an active relation!");
+					warning("Trying to restore an ACTIVE relation!");
 					// deactivate relation
 					this.deactivate(rel);
-				}
-				else {
-					// warning trying to restore an existing relation
-					warning("Traying to restore an already existing relation");
 				}
 			}
 			else {
@@ -482,13 +478,9 @@ public abstract class DomainComponent extends FrameworkObject
 					// check also if active - FIXME: check if this case occurs
 					if (rel.getConstraint() != null) {
 						// warning trying to restore an active relation
-						warning("Trying to restore an active relation!");
-						// deactive relation
+						warning("Trying to restore an ACTIVE relation!");
+						// deactivate relation
 						this.deactivate(rel);
-					}
-					else {
-						// warning trying to restore an existing relation
-						warning("Traying to restore an already existing relation");
 					}
 				}
 				else {
@@ -623,7 +615,7 @@ public abstract class DomainComponent extends FrameworkObject
 		// check if already active
 		if (this.isActive(dec)) {
 			// warning information
-			warning("Trying to activate an already active decision:\n- decision: " + dec + "\n");
+			warning("Trying to activate an already ACTIVE decision:\n- decision: " + dec + "\n");
 		}
 		else
 		{
@@ -715,28 +707,33 @@ public abstract class DomainComponent extends FrameworkObject
 	{
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to delete a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Trying to delete a not local decision from a component:\n"
+					+ "- Component: " + this.name + "\n"
+					+ "- Decision: " + dec + "\n");
 		}
 		
 		// check if already pending
 		if (this.isSilent(dec)) {
 			// warning information
-			throw new RuntimeException("Trying to deactivate a silent decision:\n- decision: " + dec + "\n");	
+			throw new RuntimeException("Trying to deactivate a SILEN decision:\n"
+					+ "- Decision: " + dec + "\n");	
 		}
 		
 		// check if already pending
 		if (this.isPending(dec)) {
 			// warning information
-			warning("Trying to deactivate an already pending decision:\n- decision: " + dec + "\n");
+			warning("Trying to deactivate an already PENDING decision:\n"
+					+ "- Decision: " + dec + "\n");
 		}
 		
 		// set of deactivated relations
 		Set<Relation> rDeactivated = new HashSet<>(); 
 		// check if active
-		if (this.isActive(dec)) 
-		{
+		if (this.isActive(dec)) {
+			
 			// get active relations to retract
 			for (Relation rel :  this.getActiveRelations(dec)) {
+				
 				// deactivate relations
 				this.deactivate(rel);
 				// add 
@@ -746,10 +743,10 @@ public abstract class DomainComponent extends FrameworkObject
 			// delete related token
 			Token token = dec.getToken();
 			// delete parameters of token predicate
-			for (Parameter<?> param : token.getPredicate().getParameters()) 
-			{
-				try 
-				{
+			for (Parameter<?> param : token.getPredicate().getParameters()) {
+				
+				try {
+					
 					// delete parameter variable
 					this.pdb.deleteParameter(param);
 				}
