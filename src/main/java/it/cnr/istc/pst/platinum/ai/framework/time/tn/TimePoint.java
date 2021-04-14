@@ -129,7 +129,8 @@ public class TimePoint extends TemporalData
 	public int compareTo(TemporalData o) {
 		// get time point 
 		TimePoint p = (TimePoint) o;
-		return this.lb < p.lb ? -1 : this.lb > p.lb ? 1 : 0;
+		return this.lb < p.lb ? -1 : this.lb == p.lb && this.ub < p.ub ? -1 : 
+			this.lb == p.lb && this.ub == p.ub ? 0 : 1;
 	}
 	
 	/**

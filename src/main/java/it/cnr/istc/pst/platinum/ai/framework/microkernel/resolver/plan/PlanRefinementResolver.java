@@ -75,6 +75,11 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	@Override
 	protected List<Flaw> doFindFlaws() 
 	{
+		// check load parameters
+		if (!this.load) {
+			this.load();
+		}
+
 		// list of goals
 		List<Flaw> flaws = new ArrayList<>();
 		// check pending decisions
@@ -188,20 +193,19 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			throws RelationPropagationException
 	{
 		// restore relation translation
-		for (Relation rel : solution.getTranslatedReferenceGoalRelations())
-		{
+		for (Relation rel : solution.getTranslatedReferenceGoalRelations()) {
+			
 			// check relation category
-			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) 
-			{
+			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) {
 				// replace reference
 				rel.setReference(solution.getUnificationDecision());
 			}
 			
-			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT))
-			{
+			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
+				
 				// check relation type
-				switch (rel.getType())
-				{
+				switch (rel.getType()) {
+				
 					// bind parameter
 					case BIND_PARAMETER: 
 					{
@@ -268,20 +272,19 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		
 		
 		// restore relation translation
-		for (Relation rel : solution.getTranslatedTargetGoalRelations())
-		{
+		for (Relation rel : solution.getTranslatedTargetGoalRelations()) {
+			
 			// check relation category
-			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) 
-			{
+			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) {
 				// replace reference
 				rel.setTarget(solution.getUnificationDecision());
 			}
 			
-			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT))
-			{
+			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
+				
 				// check relation type
-				switch (rel.getType())
-				{
+				switch (rel.getType()) {
+				
 					case EQUAL_PARAMETER : 
 					{
 						// get parameter relation
@@ -341,15 +344,17 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			for (Relation rel : solution.getActivatedRelations()) 
 			{
 				// check if can be activated
-				if (rel.canBeActivated()) {
-					// activate relation
-					rel.getReference().getComponent().activate(rel);
+				if (rel.getReference().getComponent().activate(rel)) {
 					// add relation to the committed list
 					committed.add(rel);
 				}
 			}
+			
+			// check consistency
+			this.tdb.verify();
+			this.pdb.verify();
 		}
-		catch (RelationPropagationException ex) 
+		catch (RelationPropagationException | ConsistencyCheckException ex) 
 		{
 			// get goal component
 			DomainComponent gComp = solution.getGoalDecision().getComponent();
@@ -481,11 +486,6 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 */
 	private void doComputeUnificationSolutions(Goal goal) 
 	{
-		// check load parameters
-		if (!this.load) {
-			this.load();
-		}
-				
 		// get goal component
 		DomainComponent gComp = goal.getComponent();
 		// search active decisions that can be unified with the goal
@@ -670,9 +670,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				// activate translated relations
 				for (Relation rel : translatedReferenceGoalRelations) {
 					// check if can be activated
-					if (rel.canBeActivated()) {
-						// activate relation
-						rel.getReference().getComponent().activate(rel);
+					if (rel.getReference().getComponent().activate(rel)) {
 						// add relation to the committed list
 						committed.add(rel);
 					}
@@ -681,9 +679,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				// activate translated relations
 				for (Relation rel : translatedTargetGoalRelations) {
 					// check if can be activated
-					if (rel.canBeActivated()) {
-						// activate relation
-						rel.getReference().getComponent().activate(rel);
+					if (rel.getReference().getComponent().activate(rel)) {
 						// add relation to the committed list
 						committed.add(rel);
 					}
@@ -824,10 +820,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		{
 			// check translated relation and activate them if possible
 			for (Relation tRel : translated) {
-				// check if can be activated
-				if (tRel.canBeActivated()) {
-					// activate relation
-					tRel.getReference().getComponent().activate(tRel);
+				// activate relation
+				if (tRel.getReference().getComponent().activate(tRel)) {
 					// add relation to committed list
 					committed.add(tRel);
 				}
@@ -878,38 +872,59 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 */
 	private void doComputeExpansionSolutions(Goal goal) 
 	{
-		// check load parameters
-		if (!this.load) {
-			this.load();
-		}
+		// get component
+		DomainComponent gComp = goal.getComponent();
+		// set of activated relations
+		List<Relation> rels = new ArrayList<>();
+		try 
+		{
+			// activate the goal and get activated relations
+			rels.addAll(gComp.activate(goal.getDecision()));
+			// check temporal and parameter consistency
+			this.tdb.verify();
+			this.pdb.verify();
 		
-		// check rules
-		List<SynchronizationRule> rules = this.component.getSynchronizationRules(goal.getDecision().getValue());
-		if (rules.isEmpty()) 
-		{
-			// the goal can be justified without applying rules
-			GoalExpansion expansion = new GoalExpansion(goal, this.expansionCost);
-
-			// add solution
-			goal.addSolution(expansion);
-			// print debug message
-			debug("Simple goal found no synchronization is triggered after expansion:\n"
-					+ "- planning goal: " + goal.getDecision() + "\n");
-		}
-		else 
-		{
-			// can do expansion
-			for (SynchronizationRule rule : rules) 
+			// check rules
+			List<SynchronizationRule> rules = this.component.getSynchronizationRules(goal.getDecision().getValue());
+			if (rules.isEmpty()) 
 			{
-				// expansion solution
-				GoalExpansion expansion = new GoalExpansion(goal, rule, this.expansionCost);
+				// the goal can be justified without applying rules
+				GoalExpansion expansion = new GoalExpansion(goal, this.expansionCost);
 				// add solution
 				goal.addSolution(expansion);
 				// print debug message
-				debug("Complex goal found:\n"
-						+ "- planning goal: " + goal.getDecision() + "\n"
-						+ "- synchronization rule: " + rule + "\n");
+				debug("Simple goal found no synchronization is triggered after expansion:\n"
+						+ "- planning goal: " + goal.getDecision() + "\n");
 			}
+			else 
+			{
+				// can do expansion
+				for (SynchronizationRule rule : rules) 
+				{
+					// expansion solution
+					GoalExpansion expansion = new GoalExpansion(goal, rule, this.expansionCost);
+					// add solution
+					goal.addSolution(expansion);
+					// print debug message
+					debug("Complex goal found:\n"
+							+ "- planning goal: " + goal.getDecision() + "\n"
+							+ "- synchronization rule: " + rule + "\n");
+				}
+			}
+		}
+		catch (DecisionPropagationException | ConsistencyCheckException ex) {
+			// not feasible goal expansion
+			warning(ex.getMessage());
+		}
+		finally {
+			
+			// deactivate relations if any
+			for (Relation rel : rels) {
+				gComp.deactivate(rel);
+			}
+			
+			// deactivate goal decision
+			gComp.deactivate(goal.getDecision());
 		}
 	}
 	
@@ -1085,9 +1100,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			for (Relation rel : translatedReferenceGoalRelations) 
 			{
 				// check if can be activated
-				if (rel.canBeActivated()) {
-					// activate relation
-					rel.getReference().getComponent().activate(rel);
+				if (rel.getReference().getComponent().activate(rel)) {
 					
 					// add activated relations
 					unification.addActivatedRelation(rel);
@@ -1100,9 +1113,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			for (Relation rel : translatedTargetGoalRelations) 
 			{
 				// check if can be activated
-				if (rel.canBeActivated()) {
-					// activate relation
-					rel.getReference().getComponent().activate(rel);
+				if (rel.getReference().getComponent().activate(rel)) {
 					
 					// add activated relations
 					unification.addActivatedRelation(rel);
@@ -1114,8 +1125,12 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			// set translated relations
 			unification.setTranslatedReferenceGoalRelation(translatedReferenceGoalRelations);
 			unification.setTranslatedTargetGoalRealtion(translatedTargetGoalRelations);
+			
+			// check consistency
+			this.tdb.verify();
+			this.pdb.verify();
 		}
-		catch (RelationPropagationException ex) 
+		catch (RelationPropagationException | ConsistencyCheckException ex) 
 		{
 			// restore goal: SILENT -> PENDING
 			goalComp.restore(goal);
@@ -1207,8 +1222,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 				}
 				
 				// check temporal relation
-				if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT))
-				{
+				if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) {
 					// update relation
 					rel.setTarget(goal);
 				}
@@ -1428,8 +1442,12 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			expansion.addActivatedDecision(goal);
 			// add to activated relations
 			expansion.addActivatedRelations(list);
+			
+			// check consistency 
+			this.tdb.verify();
+			this.pdb.verify();
 		}
-		catch (DecisionPropagationException ex) 
+		catch (DecisionPropagationException | ConsistencyCheckException ex) 
 		{
 			// deactivate activated relations
 			for (Relation rel : expansion.getActivatedRelations()) {
@@ -1515,16 +1533,15 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			}
 		}
 		
-		
 		// translated back parameter relations
-		for (Relation rel : unification.getTranslatedTargetGoalRelations())
-		{
+		for (Relation rel : unification.getTranslatedTargetGoalRelations()) {
+			
 			// check relation category 
-			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT))
-			{
+			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
+				
 				// check relation
-				switch (rel.getType())
-				{
+				switch (rel.getType()) {
+				
 					case EQUAL_PARAMETER : 
 					{
 						// get equal relation
@@ -1567,8 +1584,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			}
 			
 			// check temporal relation
-			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT))
-			{
+			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) {
+				
 				// update relation
 				rel.setTarget(goal);
 			}

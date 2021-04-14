@@ -68,6 +68,11 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	@Override
 	protected List<Flaw> doFindFlaws() 
 	{
+		// check load
+		if (!this.load) {
+			this.load();
+		}
+		
 		// list of flaws
 		List<Flaw> flaws = new ArrayList<>();
 		try
@@ -115,8 +120,9 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				
 				// check if solvable
 				if (solvable) {
+					
 					// find a feasible solution if any
-					this.findFeasibleSchedule(overflow);
+					this.doFindFeasibleSchedule(overflow);
 				}
 			}
 			break;
@@ -200,7 +206,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				// set constraint data
 				before.setReference(i1);
 				before.setTarget(i2);
-				before.setLowerBound(1);							// TODO : check constraint about the minimum distance
+				before.setLowerBound(0);
 				before.setUpperBound(this.tdb.getHorizon());
 				
 				// propagate constraint
@@ -237,7 +243,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * 
 	 * @param overflow
 	 */
-	protected void findFeasibleSchedule(ReservoirOverflow overflow) {
+	protected void doFindFeasibleSchedule(ReservoirOverflow overflow) {
 		// get the critical set
 		List<ResourceEvent<?>> cs = overflow.getCriticalSet();
 		// shuffle the list to increase the variability of considered schedules
@@ -254,11 +260,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	private void doFindFeasibleSchedule(List<ResourceEvent<?>> schedule, List<ResourceEvent<?>> cs, ReservoirOverflow overflow) 
 	{
-		// check load
-		if (!this.load) {
-			this.load();
-		}
-		
 		// check if a schedule is ready
 		if (cs.isEmpty()) 
 		{
@@ -333,7 +334,7 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						
 						// set relation bounds
 						before.setBound(new long[] {
-								1, 
+								0, 
 								this.tdb.getHorizon()});
 						
 						// add created relation
@@ -347,8 +348,12 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						// add activated relations to solution
 						solution.addActivatedRelation(before);
 					}
+					
+					
+					// check temporal feasibility
+					this.tdb.verify();
 				}
-				catch (RelationPropagationException ex) 
+				catch (RelationPropagationException | ConsistencyCheckException ex) 
 				{
 					// failure while applying solution
 					debug("Error while applying flaw solution:\n"
@@ -432,9 +437,9 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				
 				// check if a peak is starting 
 				if (peakMode) {
+					
 					// first event of the peak
 					criticalSet.add(event);
-					
 					// update minimum and maximum level of resource within the critical set
 					minCriticalSetLevel = Math.min(minCriticalSetLevel, currentLevel);
 					maxCriticalSetLevel = Math.max(maxCriticalSetLevel, currentLevel);
@@ -517,7 +522,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				
 				// add flaw and stop searching 
 				flaws.add(overflow);
-				
 			}
 			
 			// check over consumption

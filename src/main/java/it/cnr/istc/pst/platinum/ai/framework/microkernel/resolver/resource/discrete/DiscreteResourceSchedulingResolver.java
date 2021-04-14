@@ -69,6 +69,11 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	@Override
 	protected List<Flaw> doFindFlaws()
 	{
+		// load parameter if necessary
+		if (!this.load) {
+			this.load();
+		}
+		
 		// list of critical sets found
 		List<Flaw> CSs = new ArrayList<>();
 		// list of requirement events
@@ -122,7 +127,6 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		return CSs;
 	}
 	
-	
 	/**
 	 * 
 	 * @param set
@@ -168,11 +172,6 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	 */
 	private List<MinimalCriticalSet> sampleMCSs(CriticalSet cs)
 	{
-		// load parameter if necessary
-		if (!this.load) {
-			this.load();
-		}
-		
 		// list of MCSs that can be extracted from the critical set
 		List<MinimalCriticalSet> mcss = new ArrayList<>();
 		// get the events composing the critical set 
@@ -452,8 +451,11 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			this.component.activate(before);
 			// add activated relations to solution
 			solution.addActivatedRelation(before);
+			
+			// check (temporal) consistency
+			this.tdb.verify();
 		}
-		catch (RelationPropagationException ex) 
+		catch (RelationPropagationException | ConsistencyCheckException ex) 
 		{
 			// deactivate created relation
 			for (Relation rel : solution.getActivatedRelations()) {

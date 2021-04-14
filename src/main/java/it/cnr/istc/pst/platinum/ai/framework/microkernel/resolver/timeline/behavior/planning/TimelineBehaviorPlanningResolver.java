@@ -8,12 +8,14 @@ import java.util.Set;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ComponentValue;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
+import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.DecisionPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.RelationPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.TransitionNotFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.StateVariable;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.Transition;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.ValuePath;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.Flaw;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawSolution;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.Relation;
@@ -86,21 +88,29 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 				// add created relation
 				solution.addCreatedRelation(meets);
 				// propagate relation
-				this.component.activate(meets);
-				// add activated relation to solution
-				solution.addActivatedRelation(meets);
-				
+				if (this.component.activate(meets)) {
+					// add activated relation to solution
+					solution.addActivatedRelation(meets);
+				}
 				
 				// create parameter relations
 				Set<Relation> pRels = this.createParameterRelations(reference, target);
 				// add created relation
 				solution.addCreatedRelations(pRels);
 				// propagate relation
-				this.component.activate(pRels);
-				// add activated relation to solution
-				solution.addActivatedRelations(pRels);
+				for (Relation pRel : pRels) {
+					// activate relation if possible
+					if (this.component.activate(pRel)) {
+						// add activated relation to solution
+						solution.addActivatedRelation(pRel);
+					}
+				}
+				
+				// check feasibility
+				this.tdb.verify();
+				this.pdb.verify();
 			}
-			catch (TransitionNotFoundException | RelationPropagationException ex) 
+			catch (TransitionNotFoundException | RelationPropagationException | ConsistencyCheckException ex) 
 			{
 				// deactivate activated relations
 				for (Relation rel : solution.getActivatedRelations()) {
@@ -127,14 +137,15 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			List<Decision> transition = new ArrayList<>();
 			// add the gap-left decision
 			transition.add(completion.getLeftDecision());
-			try
-			{
-				// create intermediate decisions associated to the transition to be enforced 
+			try {
+				
+				// intermediate values and related relations can be activated since no synchronization is entailed
 				for (ComponentValue value : completion.getPath()) 
 				{
 					// create parameters' labels
 					String[] labels = new String[value.getNumberOfParameterPlaceHolders()];
 					for (int index = 0; index < labels.length; index++) {
+						// set parameter label
 						labels[index] = "label-" + index;
 					}
 					
@@ -146,8 +157,18 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					transition.add(dec);
 					// add pending decision
 					solution.addCreatedDecision(dec);
+
+					// activate the decision if possible
+					if (!value.isComplex()) {
+						
+						// activated decision
+						Set<Relation> list = this.component.activate(dec);
+						// add activated decisions
+						solution.addActivatedDecision(dec);
+						// add activated relations
+						solution.addActivatedRelations(list);
+					}
 				}
-				
 				
 				// add the gap-right decision
 				transition.add(completion.getRightDecision());
@@ -163,47 +184,56 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
 					// add created relation
 					solution.addCreatedRelation(meets);
-
+					// activate relation if possible
+					if (this.component.activate(meets)) {
+						// add to activated relations
+						solution.addActivatedRelation(meets);
+					}
+						
 					// create parameter relations
 					Set<Relation> pRels = this.createParameterRelations(reference, target);
+					// check relations
 					for (Relation prel : pRels) {
 						// add relation to solution
 						solution.addCreatedRelation(prel);
-						// check i
+						// activate relation if possible
+						if (this.component.activate(prel)) {
+							// add to activated relations
+							solution.addActivatedRelation(prel);
+						}
 					}
 				}
+				
+				// check consistency
+				this.tdb.verify();
+				this.pdb.verify();
 			}
-			catch (TransitionNotFoundException ex) {
-				// deactivate activated relations
+			catch (Exception ex) {
+			
+				// deactivate relations
 				for (Relation rel : solution.getActivatedRelations()) {
-					// get reference component
-					DomainComponent refComp = rel.getReference().getComponent();
-					refComp.deactivate(rel);
+					this.component.deactivate(rel);
 				}
 				
 				// delete created relations
 				for (Relation rel : solution.getCreatedRelations()) {
-					// get reference component
-					DomainComponent refComp = rel.getReference().getComponent();
-					refComp.delete(rel);
-				} 
-				
-				// deactivate activated decisions
-				for (Decision dec : solution.getActivatedDecisions()) {
-					// get component
-					DomainComponent dComp = dec.getComponent();
-					dComp.deactivate(dec);
+					this.component.delete(rel);
 				}
 				
-				// delete created decisions 
+				// deactivate decisions
+				for (Decision dec : solution.getActivatedDecisions()) {
+					this.component.deactivate(dec);
+				}
+				
+				// free created decisions
 				for (Decision dec : solution.getCreatedDecisions()) {
-					// get component
-					DomainComponent dComp = dec.getComponent();
-					dComp.free(dec);
-				} 
+					this.component.free(dec);
+				}
 				
 				// throw exception
-				throw new FlawSolutionApplicationException(ex.getMessage());
+				throw new FlawSolutionApplicationException("Error while applying flaw solution:\n"
+						+ "- behavior-completion: " + completion + "\n"
+						+ "- message: " + ex.getMessage() + "\n");
 			}
 		}
 	}
@@ -215,6 +245,11 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	@Override
 	protected List<Flaw> doFindFlaws() 
 	{
+		// load flat
+		if (!this.load) {
+			this.load();
+		}
+				
 		// list of gaps
 		List<Flaw> flaws = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
@@ -296,11 +331,6 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	protected void doComputeFlawSolutions(Flaw flaw) 
 			throws UnsolvableFlawException 
 	{
-		// load flat
-		if (!this.load) {
-			this.load();
-		}
-		
 		// get the gap
 		Gap gap = (Gap) flaw;
 		// check gap type
@@ -330,25 +360,119 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						// remove the source and destination values from the path
 						steps.remove(0);
 						steps.remove(steps.size() - 1);
+						// gap solution
+						GapCompletion solution = new GapCompletion(gap, steps, this.cost);
 						
-						
-						// compute path duration bounds
-						long tranMinDuration = 0;
-						long tranMaxDuration = 0;
-						// compute transition duration
-						for (ComponentValue step : steps) {
-							// increment min and maximum duration of the transition
-							tranMinDuration += step.getDurationLowerBound();
-							tranMaxDuration += step.getDurationUpperBound();
-						}
-						
-						// check the feasibility of the path with respect to the available time 
-						if (tranMinDuration <= gap.getDmax() && 
-								tranMaxDuration >= gap.getDmin())
+						try 
 						{
-							// gap solution
-							GapCompletion solution = new GapCompletion(gap, steps, this.cost);
-							// add solution to the flaw
+							// check solution feasibility
+							if (solution.getPath().isEmpty()) 
+							{
+								// direct token transition between active decisions
+								Decision reference = solution.getLeftDecision();
+								Decision target = solution.getRightDecision();
+								
+								// create meets constraint to enforce the desired transition
+								MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
+								// add created relation
+								solution.addCreatedRelation(meets);
+								// propagate relation and activate it if possible
+								if (this.component.activate(meets)) {
+									// add activated relation to solution
+									solution.addActivatedRelation(meets);
+								}
+								
+								// create parameter relations
+								Set<Relation> pRels = this.createParameterRelations(reference, target);
+								// add created relation
+								solution.addCreatedRelation(meets);
+								// propagate relation
+								for (Relation pRel : pRels) {
+									// activate relation if possible
+									if (this.component.activate(pRel)) {
+										// add activated relation to solution
+										solution.addActivatedRelation(pRel);
+									}
+								}
+							}
+							else 
+							{
+								// create the list of the decisions
+								List<Decision> transition = new ArrayList<>();
+								// add the gap-left decision
+								transition.add(solution.getLeftDecision());
+									
+								// intermediate values and related relations can be activated since no synchronization is entailed
+								for (ComponentValue value : solution.getPath()) 
+								{
+									// create parameters' labels
+									String[] labels = new String[value.getNumberOfParameterPlaceHolders()];
+									for (int index = 0; index < labels.length; index++) {
+										// set parameter label
+										labels[index] = "label-" + index;
+									}
+									
+									// create pending decision
+									Decision dec = this.component.create(value, labels);
+									// these decisions can be set as mandatory expansion
+									dec.setMandatoryExpansion();
+									// add created decision to transition
+									transition.add(dec);
+									// add pending decision
+									solution.addCreatedDecision(dec);
+
+									// activate the decision if possible
+									if (!value.isComplex()) {
+										
+										// activated decision
+										Set<Relation> list = this.component.activate(dec);
+										// add activated decisions
+										solution.addActivatedDecision(dec);
+										// add activated relations
+										solution.addActivatedRelations(list);
+									}
+								}
+									
+								// add the gap-right decision
+								transition.add(solution.getRightDecision());
+								
+								// create relations needed to enforce the transition
+								for (int index = 0; index < transition.size() - 1; index++) 
+								{
+									// get adjacent decisions
+									Decision reference = transition.get(index);
+									Decision target = transition.get(index + 1);
+									
+									// create pending relation
+									MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
+									// add created relation
+									solution.addCreatedRelation(meets);
+									// activate relation if possible
+									if (this.component.activate(meets)) {
+										// add to activated relations
+										solution.addActivatedRelation(meets);
+									}
+									
+									// create parameter relations
+									Set<Relation> pRels = this.createParameterRelations(reference, target);
+									// check relations
+									for (Relation prel : pRels) {
+										// add relation to solution
+										solution.addCreatedRelation(prel);
+										// activate relation if possible
+										if (this.component.activate(prel)) {
+											// add to activated relations
+											solution.addActivatedRelation(prel);
+										}
+									}
+								}
+							}
+
+							// check feasibility
+							this.tdb.verify();
+							this.pdb.verify();
+							
+							// add solution to the flaw since everything is feasible
 							gap.addSolution(solution);
 							// print gap information
 							debug("Gap found on component " + this.component.getName() + ":\n"
@@ -357,21 +481,43 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 									+ "- right-side decision: " + gap.getRightDecision() + "\n"
 									+ "- solution path: " + path + "\n");
 						}
-						else {
+						catch (RelationPropagationException | TransitionNotFoundException | DecisionPropagationException |  ConsistencyCheckException ex) {
 							// discard this path as not temporally feasible
-							debug("Unfeasible transition path for timelime behavior completion:\n"
+							warning("Unfeasible transition path for timelime behavior completion:\n"
 									+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
-									+ "- path: " + path + "\n"
-									+ "- path duration: [dmin= " + tranMinDuration + ", " + tranMaxDuration + "]");
+									+ "- path: " + path + "\n");
+//										+ "- path duration: [dmin= " + tranMinDuration + ", " + tranMaxDuration + "]");
 						}
-					}
+						finally {
+							
+							// deactivate relations
+							for (Relation rel : solution.getActivatedRelations()) {
+								this.component.deactivate(rel);
+							}
+							
+							// delete relation
+							for (Relation rel : solution.getCreatedRelations()) {
+								this.component.delete(rel);
+							}
+							
+							// deactivate decision
+							for (Decision dec : solution.getActivatedDecisions()) {
+								this.component.deactivate(dec);
+							}
+							
+							// free decision
+							for (Decision dec : solution.getCreatedDecisions()) {
+								this.component.free(dec);
+							}
+						}
+					}	
 				}
 			}
 			break;
 		
 			// semantic connection missing
-			case SEMANTIC_CONNECTION : 
-			{
+			case SEMANTIC_CONNECTION : {
+				
 				// direct connection between decisions
 				GapCompletion solution = new GapCompletion(gap, new ArrayList<ComponentValue>(), this.cost);
 				// add gap solution

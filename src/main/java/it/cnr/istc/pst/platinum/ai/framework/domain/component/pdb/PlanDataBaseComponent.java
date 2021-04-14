@@ -853,10 +853,10 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public synchronized void deactivate(Decision dec) {
+	public synchronized Set<Relation> deactivate(Decision dec) {
 		// get decision component
 		DomainComponent comp = dec.getComponent();
-		comp.deactivate(dec);;
+		return new HashSet<>(comp.deactivate(dec));
 	}
 	
 	/**
@@ -936,12 +936,12 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public synchronized void activate(Relation rel) 
-			throws RelationPropagationException 
-	{
+	public synchronized boolean activate(Relation rel) 
+			throws RelationPropagationException  {
+		
 		// get reference component
 		DomainComponent refComp = rel.getReference().getComponent();
-		refComp.activate(rel);
+		return refComp.activate(rel);
 	}
 	
 	/**
@@ -1082,33 +1082,34 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	public synchronized void propagate(Operator operator) 
 			throws OperatorPropagationException 
 	{
-		// get related flaw solution
-		FlawSolution solution = operator.getFlawSolution();
 		// check if operator has been applied already
-		if (!operator.isApplied())
-		{
-			try
-			{
+		if (!operator.isApplied()) {
+			
+			try {
+				
+				// commit solution 
+				this.commit(operator.getFlawSolution());
 				// set applied
 				operator.setApplied();
-				// commit solution 
-				this.commit(solution);
 			}
 			catch (FlawSolutionApplicationException ex) {
 				// throw exception
-				throw new OperatorPropagationException("Error while propagating operator:\n- " + operator + "\n");
+				throw new OperatorPropagationException("Error while propagating operator:\n"
+						+ "- Operator: " + operator + "\n");
 			}
 		}
-		else
-		{
-			try
-			{
+		else {
+			
+			try {
+				
 				// simply restore flaw solution by leveraging "SILENT" plan
-				this.restore(solution);
+				this.restore(operator.getFlawSolution());
 			} 
-			catch (Exception ex) { 
+			catch (Exception ex) {
+				
 				// error while resetting operator
-				throw new OperatorPropagationException("Error while restoring operator status:\n- " + operator + "\n");
+				throw new OperatorPropagationException("Error while restoring operator status:\n"
+						+ "- Operator: " + operator + "\n");
 			}
 		}
 	}
@@ -1233,9 +1234,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 							TemporalRelation rel = this.create(constraint.getType(), reference, target);
 							rel.setBounds(tc.getBounds());
 							// check if relation can be activated
-							if (rel.canBeActivated()) {
-								// add relation 
-								this.activate(rel);
+							if (this.activate(rel)) {
 								committedRelations.add(rel);
 							}
 						}
@@ -1290,9 +1289,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 							}
 							
 							// check if relation can be activated
-							if (rel.canBeActivated()) {
-								// add relation
-								this.activate(rel);
+							if (this.activate(rel)) {
 								committedRelations.add(rel);
 							}
 						}

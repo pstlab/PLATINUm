@@ -9,7 +9,6 @@ import it.cnr.istc.pst.platinum.ai.deliberative.strategy.ex.EmptyFringeException
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanElementStatus;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.deliberative.SearchStrategyConfiguration;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.NoFlawFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.PlanRefinementException;
@@ -54,6 +53,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 		SearchSpaceNode last = null, node = null;
 		// search condition
 		boolean search = true;
+		// solution flag
+		boolean solution = false;
 		// search a solution
 		while (search) 
 		{
@@ -83,13 +84,18 @@ public class PseudoControllabilityAwareSolver extends Solver
 
 				// info message
 				String info = "Extracted node [step = " + this.stepCounter + "]:\n"
-						+ "node: " + node + "\n";
+						+ "- Node: " + node + "\n";
 				// check operators 
 				if (last != null) {
-					info += "Operators:\n";
+					
+					// add operator info
+					info += "- Operators (chronological order):\n";
 					// print last node operations
-					for (Operator op : node.getOperators()) {
-						info += "op: " + op + "\n";
+					for (int i = 0; i < node.getOperators().size(); i++) {
+						// get operator
+						Operator op = node.getOperators().get(i);
+						// print operator information
+						info += "- Op[" + i + "]: " + op + "\n";
 					}
 				}
 				// info log 
@@ -97,13 +103,15 @@ public class PseudoControllabilityAwareSolver extends Solver
 				
 				// propagate extracted node
 				this.contextSwitch(last, node);
+				
 				// updated last propagated node
 				last = node;
+				
 				// check consistency of the resulting partial plan
-				this.pdb.verify();
+//				this.pdb.verify();
 				
 				// context switch done
-				info("Context switch successfully done [step = " + this.stepCounter + "]:\n"
+				info("[Context Switch] successfully done [step = " + this.stepCounter + "]:\n"
 						+ "Plan: " + last.getPartialPlan() + "\n");
 				
 				// print information concerning current partial plan	
@@ -121,10 +129,11 @@ public class PseudoControllabilityAwareSolver extends Solver
  				// choose the best flaws to solve
 				List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
 				// create a branch for each "equivalent" flaw to solve next
-				for (Flaw flaw : flaws)
-				{
+				for (Flaw flaw : flaws) {
+					
 					// expand the search space with the available solutions of the flaw
 					for (SearchSpaceNode child : this.expand(node, flaw)) {
+						
 						// add the node to the fringe
 						this.fringe.enqueue(child);
 						// expand the search space
@@ -135,28 +144,37 @@ public class PseudoControllabilityAwareSolver extends Solver
 				}
 			}
 			catch (PlanRefinementException ex) {
+				
 				// refinement error
-				warning("Refinement error [step = " + this.stepCounter + "]:\n"
-						+ "message: " + ex.getMessage() + "\n"
-						+ "Plan:\n" + last.getPartialPlan() + "\n");
+				warning("Refinement error [step = " + this.stepCounter + "]:"
+						+ "- Solver step: [ContextSwitch]\n"
+						+ "- Message: " + ex.getMessage() + "\n"
+						+ "- Discarded node: " + node + "\n"
+						+ "- Current node: " + last + "\n"
+						+ "- Plan:\n" + last.getPartialPlan() + "\n");
 			}
 			catch (UnsolvableFlawException ex) {
+				
 				// refinement error
 				warning("Unsolvable flaw found  [step = " + this.stepCounter + "]:\n"
-						+ "message: " + ex.getMessage() + "\n"
-						+ "Plan:\n" + last.getPartialPlan() + "\n");
+						+ "- Solver step: [ChooseFlaws]\n"
+						+ "- Message: " + ex.getMessage() + "\n"
+						+ "- Backtrack from node: " + last + "\n"
+						+ "- Plan:\n" + last.getPartialPlan() + "\n");
 			}
-			catch (ConsistencyCheckException ex) 
-			{
-				// context switch failure
-				warning("Context switch failure [step = " + this.stepCounter + "]:\n"
-						+ "message: " + ex.getMessage() + "\n"
-						+ "Plan:\n" + last.getPartialPlan() + "\n");
-			}
-			catch (NoFlawFoundException ex)
-			{
+//			catch (ConsistencyCheckException ex) 
+//			{
+//				// context switch failure
+//				warning("Context switch failure [step = " + this.stepCounter + "]:\n"
+//						+ "message: " + ex.getMessage() + "\n"
+//						+ "Plan:\n" + last.getPartialPlan() + "\n");
+//			}
+			catch (NoFlawFoundException ex) {
+				
 				// solution found stop search
 				search = false;
+				// set solution flag
+				solution = true;
 				// set solving time
 				this.time = System.currentTimeMillis() - start;
 				// pseudo-controllable solution found
@@ -168,18 +186,27 @@ public class PseudoControllabilityAwareSolver extends Solver
 				search = false;
 				// set solving time
 				this.time = System.currentTimeMillis() - start;
-				// backtrack from the last propagated node
-				this.backtrack(last);
 				// throw exception
 				throw new NoSolutionFoundException("No pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			}
 			// close connection
 			finally 
 			{
-				// check if stop
-				if (!search)  {
-					// clear data structures
+				// check if stopping search with a solution
+				if (!search && solution) {
+					
+					// clear search data structures
 					this.clear();
+				}
+				
+				// check if stopping search without a solution
+				if (!search && !solution)  {
+					
+					// backtrack from the last propagated node
+					this.backtrack(last);
+					// clear search data structures
+					this.clear();
+					
 				}
 			}
 			

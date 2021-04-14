@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.Constraint;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.DecisionPropagationException;
@@ -17,16 +16,14 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.FrameworkObject;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.framework.DomainComponentPlaceholder;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.framework.ParameterFacadePlaceholder;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.framework.TemporalFacadePlaceholder;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConstraintPropagationException;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.Flaw;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawSolution;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.Relation;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.ParameterFacade;
-import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.constraints.ParameterConstraint;
 import it.cnr.istc.pst.platinum.ai.framework.time.TemporalFacade;
-import it.cnr.istc.pst.platinum.ai.framework.time.lang.TemporalConstraint;
 
 /**
  * 
@@ -199,67 +196,66 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 		}
 	}
 	
-	/**
-	 * 
-	 * @param constraint
-	 * @throws ConstraintPropagationException
-	 */
-	protected void doPropagetConstraint(Constraint constraint) 
-			throws ConstraintPropagationException 
-	{
-		// check constraint category
-		switch (constraint.getCategory()) 
-		{
-			// temporal constraint
-			case  TEMPORAL_CONSTRAINT : {
-				// cast constraint
-				TemporalConstraint cons = (TemporalConstraint) constraint;
-				// propagate temporal constraint
-				this.tdb.propagate(cons);
-			}
-			break;
-			
-			// parameter constraint
-			case PARAMETER_CONSTRAINT : {
-				// cast constraint
-				ParameterConstraint  cons = (ParameterConstraint) constraint;
-				// propagate parameter constraint
-				this.pdb.propagate(cons);
-			}
-			break;
-		}
-	}
+//	/**
+//	 * 
+//	 * @param constraint
+//	 * @throws ConstraintPropagationException
+//	 */
+//	protected void doPropagetConstraint(Constraint constraint) 
+//			throws ConstraintPropagationException 
+//	{
+//		// check constraint category
+//		switch (constraint.getCategory()) 
+//		{
+//			// temporal constraint
+//			case  TEMPORAL_CONSTRAINT : {
+//				// cast constraint
+//				TemporalConstraint cons = (TemporalConstraint) constraint;
+//				// propagate temporal constraint
+//				this.tdb.propagate(cons);
+//			}
+//			break;
+//			
+//			// parameter constraint
+//			case PARAMETER_CONSTRAINT : {
+//				// cast constraint
+//				ParameterConstraint  cons = (ParameterConstraint) constraint;
+//				// propagate parameter constraint
+//				this.pdb.propagate(cons);
+//			}
+//			break;
+//		}
+//	}
 	
-	/**
-	 * 
-	 * @param constraint
-	 */
-	protected void doRetractConstraint(Constraint constraint) {
-		// check constraint category
-		switch (constraint.getCategory()) {
-		
-			// temporal constraint
-			case  TEMPORAL_CONSTRAINT : {
-				
-				// cast constraint
-				TemporalConstraint cons = (TemporalConstraint) constraint;
-				// retract temporal constraint
-				this.tdb.retract(cons);
-			}
-			break;
-			
-			// parameter constraint
-			case PARAMETER_CONSTRAINT : {
-				
-				// cast constraint
-				ParameterConstraint cons = (ParameterConstraint) constraint;
-				// retract parameter constraint
-				this.pdb.retract(cons);
-			}
-			break;
-		}
-	}
-	
+//	/**
+//	 * 
+//	 * @param constraint
+//	 */
+//	protected void doRetractConstraint(Constraint constraint) {
+//		// check constraint category
+//		switch (constraint.getCategory()) {
+//		
+//			// temporal constraint
+//			case  TEMPORAL_CONSTRAINT : {
+//				
+//				// cast constraint
+//				TemporalConstraint cons = (TemporalConstraint) constraint;
+//				// retract temporal constraint
+//				this.tdb.retract(cons);
+//			}
+//			break;
+//			
+//			// parameter constraint
+//			case PARAMETER_CONSTRAINT : {
+//				
+//				// cast constraint
+//				ParameterConstraint cons = (ParameterConstraint) constraint;
+//				// retract parameter constraint
+//				this.pdb.retract(cons);
+//			}
+//			break;
+//		}
+//	}
 	
 	/**
 	 * 
@@ -278,10 +274,14 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	protected void doRestore(FlawSolution solution) 
 			throws RelationPropagationException, DecisionPropagationException 
 	{
-		// list of actually activated decisions
-		Set<Decision> dCommitted = new HashSet<>();
-		// list of actually activated relations
-		Set<Relation> rCommitted = new HashSet<>();
+		// list of restored decisions
+		Set<Decision> dRestored = new HashSet<>();
+		// list of activated decisions
+		Set<Decision> dActivated = new HashSet<>();
+		// list of restored relations
+		Set<Relation> rRestored = new HashSet<>();
+		// list of activated relations
+		Set<Relation> rActivated = new HashSet<>();
 		
 		try
 		{
@@ -291,6 +291,8 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 				DomainComponent dComp = decision.getComponent();
 				// restore decision SILENT -> PENDING
 				dComp.restore(decision);
+				// add 
+				dRestored.add(decision);
 			}
 			
 			
@@ -298,11 +300,10 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 			for (Decision decision : solution.getActivatedDecisions()) {
 				// get decision component
 				DomainComponent dComp = decision.getComponent();
-				
-				// add to committed list
-				dCommitted.add(decision);
 				// activate decision PENDING -> ACTIVE
 				dComp.activate(decision);
+				// add
+				dActivated.add(decision);
 			}
 			
 			// get the list of created relations
@@ -311,92 +312,61 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 				DomainComponent refComp = relation.getReference().getComponent();
 				// restore relation
 				refComp.restore(relation);
+				// add
+				rRestored.add(relation);
 			}
 
 			// check activated relations
 			for (Relation relation : solution.getActivatedRelations()) {
-				// add relation to committed list
-				rCommitted.add(relation);
 				// get reference component
 				DomainComponent refComp = relation.getReference().getComponent();
 				// activate relation
 				refComp.activate(relation);
+				// add relation to committed list
+				rActivated.add(relation);
 			}
+			
+			// check consistency
+			this.tdb.verify();
+			this.pdb.verify();
 		}
-		catch (DecisionPropagationException ex) 
+		catch (DecisionPropagationException | ConsistencyCheckException ex) 
 		{
-			// deactivate committed relations
-			for (Relation rel : rCommitted) {
+			// deactivate activated relations
+			for (Relation rel : rActivated) {
 				// get reference component
 				DomainComponent refComp = rel.getReference().getComponent();
 				// deactivate relation
 				refComp.deactivate(rel);
 			}
 			
-			// deactivate committed decisions
-			for (Decision dec : dCommitted) {
+			// remove restored relations
+			for (Relation rel : rRestored) {
+				// get reference component
+				DomainComponent refComp = rel.getReference().getComponent();
+				// deactivate relation
+				refComp.delete(rel);
+			}
+			
+			// deactivate decisions
+			for (Decision dec : dActivated) {
 				// get decision component
 				DomainComponent decComp = dec.getComponent();
 				// deactivate decision
 				decComp.deactivate(dec);
 			}
 			
-			// remove created relations
-			for (Relation rel : solution.getCreatedRelations()) {
+			// remove restored decisions
+			for (Decision dec: dRestored) {
 				// get decision component
-				DomainComponent refComp = rel.getReference().getComponent();
-				// delete relation
-				refComp.delete(rel);
-			}
-			
-			// remove created decision
-			for (Decision dec : solution.getCreatedDecisions()) {
-				// get component
-				DomainComponent comp = dec.getComponent();
-				// free decision PENDING -> SILENT
-				comp.free(dec);
+				DomainComponent decComp = dec.getComponent();
+				// free decision
+				decComp.free(dec);
 			}
 			
 			// throw exception
 			throw new DecisionPropagationException(ex.getMessage());
 		}
-		catch (RelationPropagationException ex) 
-		{
-			// deactivate committed relations
-			for (Relation rel : rCommitted) {
-				// get reference component
-				DomainComponent refComp = rel.getReference().getComponent();
-				// deactivate relation
-				refComp.deactivate(rel);
-			}
-			
-			// deactivate committed decisions
-			for (Decision dec : dCommitted) {
-				// get decision component
-				DomainComponent decComp = dec.getComponent();
-				// deactivate decision
-				decComp.deactivate(dec);
-			}
-			
-			// remove created relations
-			for (Relation rel : solution.getCreatedRelations()) {
-				// get decision component
-				DomainComponent refComp = rel.getReference().getComponent();
-				// delete relation
-				refComp.delete(rel);
-			}
-			
-			// remove created decision
-			for (Decision dec : solution.getCreatedDecisions()) {
-				// get component
-				DomainComponent comp = dec.getComponent();
-				// free decision PENDING -> SILENT
-				comp.free(dec);
-			}
-			
-			// throw exception
-			throw new RelationPropagationException(ex.getMessage());
-		}		
 	}
 	
 	/**

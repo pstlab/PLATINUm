@@ -393,34 +393,72 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				TemporalInterval a = overlap.getReference();
 				TemporalInterval b = overlap.getTarget();
 				
-				// compute distance between A and B
-				IntervalDistanceQuery distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
-				distance.setReference(a);
-				distance.setTarget(b);
+				// check the distance between the time point of A and the start time point of B
+				TimePointDistanceQuery eAsB = this.qf.create(TemporalQueryType.TP_DISTANCE);
+				eAsB.setSource(a.getEndTime());
+				eAsB.setTarget(b.getStartTime());
 				// process query
-				this.process(distance);
-				// get distance bounds
-				long dmin = distance.getDistanceLowerBound();
-				long dmax = distance.getDistanceUpperBound();
-				// check if A < B 
-				boolean ab = (dmin <= dmax && dmin >= 0);
-						
-						
-				// compute distance between B and A 
-				distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
-				distance.setReference(b);
-				distance.setTarget(a);
-				// process query
-				this.process(distance);
-				// get distance bounds
-				dmin = distance.getDistanceLowerBound();
-				dmax = distance.getDistanceUpperBound();
-				// check if B < A
-				boolean ba = (dmin <= dmax && dmin >= 0);
+				this.process(eAsB);
+				// check computed bounds
+				long dmin = eAsB.getDistanceLowerBound();
+				long dmax = eAsB.getDistanceUpperBound();
+				// check if can overlap
+				boolean o1 = !((dmin <= 0 && dmax <= 0) || (dmin >= 0 && dmax >= 0));
 				
+				
+				// get intervals
+				a = overlap.getTarget();
+				b = overlap.getReference();
+				
+				// check the distance between the time point of A and the start time point of B
+				TimePointDistanceQuery eBsA = this.qf.create(TemporalQueryType.TP_DISTANCE);
+				eBsA.setSource(a.getEndTime());
+				eBsA.setTarget(b.getStartTime());
+				// process query
+				this.process(eBsA);
+				// check computed bounds
+				dmin = eBsA.getDistanceLowerBound();
+				dmax = eBsA.getDistanceUpperBound();
+				// check if can overlap
+				boolean o2 = !((dmin <= 0 && dmax <= 0) || (dmin >= 0 && dmax >= 0));
+				
+				
+				
+				// set result
+				overlap.setCanOverlap(o1 && o2);
+				
+				
+//				
+//				// compute distance between A and B
+//				IntervalDistanceQuery distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
+//				distance.setReference(a);
+//				distance.setTarget(b);
+//				// process query
+//				this.process(distance);
+//				// get distance bounds
+//				long dmin = distance.getDistanceLowerBound();
+//				long dmax = distance.getDistanceUpperBound();
+//				// check if A < B 
+//				boolean ab = (dmin <= dmax && dmin >= 0);
+//						
+//						
+//				// compute distance between B and A 
+//				distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
+//				distance.setReference(b);
+//				distance.setTarget(a);
+//				// process query
+//				this.process(distance);
+//				// get distance bounds
+//				dmin = distance.getDistanceLowerBound();
+//				dmax = distance.getDistanceUpperBound();
+//				// check if B < A
+//				boolean ba = (dmin <= dmax && dmin >= 0);
+//				
 				
 				// set overlapping result
-				overlap.setCanOverlap(!ab && !ba);
+//				overlap.setCanOverlap(!ab && !ba);
+				
+				
 				// print logging message
 				debug("[" + this.getClass().getName() + "] Processing query INTERVAL_OVERLAP:\n"
 						+ "- Temporal Interval (A): " + a + "\n"

@@ -1,8 +1,8 @@
 package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.scheduling;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.FlawSolutionApplicationException;
@@ -11,6 +11,7 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.StateVariable;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.Flaw;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawSolution;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.Relation;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.RelationType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.temporal.BeforeRelation;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.query.TemporalQueryType;
@@ -83,14 +84,19 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			solution.addActivatedRelation(before);
 			debug("Precedence constraint successfully created and activated:\n"
 					+ "- temporal constraint: " + before + "\n");
+			
+			// check feasibility
+			this.tdb.verify();
 		}
-		catch (RelationPropagationException ex) 
+		catch (RelationPropagationException | ConsistencyCheckException ex) 
 		{
 			// write error message
 			error("Error while applying flaw solution:\n"
 					+ "- solution: " + solution + "\n"
 					+ "- unfeasible precedence constraint: " + before + "\n");
 
+			// deactivate relation
+			this.component.deactivate(before);
 			// delete relation
 			this.component.delete(before);
 			// not feasible solution
@@ -105,10 +111,17 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	@Override
 	protected List<Flaw> doFindFlaws() 
 	{
+		// check flag
+		if (!this.load) {
+			this.load();
+		}
+		
 		// list of critical sets
 		List<Flaw> flaws = new ArrayList<>();
 		// list of active decisions
 		List<Decision> decisions = this.component.getActiveDecisions();
+		// sort decisions
+		Collections.sort(decisions);
 		// look for peaks
 		for (int index = 0; index < decisions.size() - 1; index++)
 		{
@@ -154,18 +167,22 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			}
 		}
 		
-		if (!flaws.isEmpty()) {
-			// randomly select a scheduling flaw from the component
-			List<Flaw> conflicts = new ArrayList<>();
-			Random rand = new Random(System.currentTimeMillis());
-			conflicts.add(flaws.get(rand.nextInt(flaws.size())));
-			// get conflicts
-			return conflicts;
-		}
-		else {
-			// return empty list of flaws
-			return flaws;
-		}
+//		if (!flaws.isEmpty()) {
+//			
+//			// randomly select a scheduling flaw from the component
+//			List<Flaw> conflicts = new ArrayList<>();
+//			Random rand = new Random(System.currentTimeMillis());
+//			conflicts.add(flaws.get(rand.nextInt(flaws.size())));
+//			// get conflicts
+//			return conflicts;
+//		}
+//		else {
+		
+		// return the list of flaws
+		return flaws;
+		
+		
+//		}
 	}
 	
 
@@ -176,33 +193,38 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 	protected void doComputeFlawSolutions(Flaw flaw) 
 		throws UnsolvableFlawException 
 	{
-		// check flag
-		if (!this.load) {
-			this.load();
-		}
-		
 		// get detected conflict
 		BinaryDecisionConflict conflict = (BinaryDecisionConflict) flaw;
 
 		// check possible precedence constraints
 		Decision reference = conflict.getDecisions()[0];
 		Decision target = conflict.getDecisions()[1];
-	
-		// create relation reference -> target
-		BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
-		// set bounds
-		before.setBound(new long[] {
-				0, 
-				this.component.getHorizon()});
+		// create possible solutions
+		DecisionPrecedenceConstraint pc1 = new DecisionPrecedenceConstraint(conflict, reference, target, this.schedulingCost);
+		DecisionPrecedenceConstraint pc2 = new DecisionPrecedenceConstraint(conflict, target, reference, this.schedulingCost);
+		
 		try
 		{
-			// check if relation is feasible
-			this.component.activate(before);
+			// create relation reference -> target
+			BeforeRelation before = this.component.create(RelationType.BEFORE, reference, target);
+			// set bounds
+			before.setBound(new long[] {
+					0, 
+					this.component.getHorizon()});
+			
+			// add create relation
+			pc1.addCreatedRelation(before);
+			
+			// activate relation
+			if (this.component.activate(before)) {
+				// add activated relations
+				pc1.addActivatedRelation(before);
+			}
+			
 			// check consistency
 			this.tdb.verify();
-			
 			// add solution and deactivate relation
-			conflict.addSolution(new DecisionPrecedenceConstraint(conflict, reference, target, this.schedulingCost));
+			conflict.addSolution(pc1);
 		}
 		catch (RelationPropagationException | ConsistencyCheckException ex) {
 			// discard relation
@@ -211,28 +233,41 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 					+ "\t- target: " + target + "\n");
 		}
 		finally {
+			
 			// deactivate relation
-			this.component.deactivate(before);
-			// discard relation
-			this.component.delete(before);
+			for (Relation rel : pc1.getActivatedRelations()) {
+				// deactivate relation
+				this.component.deactivate(rel);
+			}
+			
+			for (Relation rel : pc1.getCreatedRelations()) {
+				// delete relation
+				this.component.delete(rel);
+			}
 		}
 		
-		// create relation target -> reference
-		before = this.component.create(RelationType.BEFORE, target, reference);
-		// set bounds
-		before.setBound(new long[] {
-				0, 
-				this.component.getHorizon()});
+		
 		try
 		{
+			// create relation reference -> target
+			BeforeRelation before = this.component.create(RelationType.BEFORE, target, reference);
+			// set bounds
+			before.setBound(new long[] {
+					0, 
+					this.component.getHorizon()});
+			
+			// add created relation
+			pc2.addCreatedRelation(before);
 			// check if relation is feasible
-			this.component.activate(before);
+			if (this.component.activate(before)) {
+				// add activated relation
+				pc2.addActivatedRelation(before);
+			}
+			
 			// check consistency
 			this.tdb.verify();
-			
 			// add solution and deactivate relation
-			conflict.addSolution(new DecisionPrecedenceConstraint(conflict, target, reference, this.schedulingCost));
-			
+			conflict.addSolution(pc2);
 		}
 		catch (RelationPropagationException | ConsistencyCheckException ex) {
 			// discard relation
@@ -241,10 +276,17 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 					+ "\t- target: " + reference + "\n");
 		}
 		finally {
+			
 			// deactivate relation
-			this.component.deactivate(before);
-			// discard relation
-			this.component.delete(before);
+			for (Relation rel : pc2.getActivatedRelations()) {
+				// deactivate relation
+				this.component.deactivate(rel);
+			}
+			
+			for (Relation rel : pc2.getCreatedRelations()) {
+				// delete relation
+				this.component.delete(rel);
+			}
 		}
 		
 		
