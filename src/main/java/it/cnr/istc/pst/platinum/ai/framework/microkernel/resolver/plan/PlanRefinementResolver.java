@@ -62,6 +62,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		
 		// read weights
 		this.expansionCost = Double.parseDouble(properties.getProperty("expansion-cost"));
 		this.unificationCost = Double.parseDouble(properties.getProperty("unification-cost"));

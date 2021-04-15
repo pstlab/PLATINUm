@@ -1631,22 +1631,26 @@ public abstract class DomainComponent extends FrameworkObject
 		// create predicate
 		Predicate predicate = new Predicate(PREDICATE_COUNTER.getAndIncrement(), value);
 		
-		// get place holders
-		for (int index = 0; index < labels.length; index++) 
-		{
-			// get value's parameter place holder
-			ParameterPlaceHolder ph = value.getParameterPlaceHolderByIndex(index);
+		// check parameter labels
+		if (labels != null && labels.length > 0) {
 			
-			// create a parameter
-			Parameter<?> param = this.pdb.createParameter(labels[index], ph.getDomain());
-
-			// add parameter to predicate
-			
-			// add parameter
-			this.pdb.addParameter(param);
-			
-			// add parameter to the predicate at the specified position
-			predicate.setParameter(index, labels[index], param);
+			// get place holders
+			for (int index = 0; index < labels.length; index++) 
+			{
+				// get value's parameter place holder
+				ParameterPlaceHolder ph = value.getParameterPlaceHolderByIndex(index);
+				
+				// create a parameter
+				Parameter<?> param = this.pdb.createParameter(labels[index], ph.getDomain());
+	
+				// add parameter to predicate
+				
+				// add parameter
+				this.pdb.addParameter(param);
+				
+				// add parameter to the predicate at the specified position
+				predicate.setParameter(index, labels[index], param);
+			}
 		}
 		
 		// create token

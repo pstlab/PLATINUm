@@ -5,7 +5,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.log.FrameworkLogger;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class FrameworkObject 
@@ -16,6 +16,8 @@ public abstract class FrameworkObject
 	
 	@FrameworkLoggerPlaceholder
 	private static FrameworkLogger logger;
+	
+	protected String frameworkHome;
 
 	/**
 	 * 

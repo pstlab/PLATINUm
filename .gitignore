@@ -1,8 +1,8 @@
 /bin/**
 .DS_Store
 .classpath
-/.DS_Store
 /target/
 .project
 .aird
 /bin/
+*.dot
