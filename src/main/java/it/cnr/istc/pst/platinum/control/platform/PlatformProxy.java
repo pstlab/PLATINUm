@@ -208,7 +208,7 @@ public abstract class PlatformProxy
 	 * @param node
 	 * @return
 	 */
-	protected String extractCommandName(ExecutionNode node) 
+	public String extractCommandName(ExecutionNode node) 
 	{ 
 		// get signature
 		String name = node.getGroundSignature();
@@ -233,7 +233,7 @@ public abstract class PlatformProxy
 	 * @param node
 	 * @return
 	 */
-	protected String[] extractCommandParameters(ExecutionNode node) {
+	public String[] extractCommandParameters(ExecutionNode node) {
 		// extract command parameter from node to execute
 		String[] splits = node.getGroundSignature().split("-");
 		// get parameters
