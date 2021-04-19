@@ -39,11 +39,7 @@ import it.cnr.istc.pst.platinum.control.platform.RunnablePlatformProxy;
  *
  */
 public class GoalOrientedActingAgent implements PlatformObserver
-{
-	// set framework home
-//	protected static final String FRAMEWORK_HOME = System.getenv("PLATINUM_HOME") != null ?
-//			System.getenv("PLATINUM_HOME") + "/" : "";
-	
+{	
 	private final Object lock;								// lock state;
 	private ActingAgentStatus status;						// agent status
 
@@ -63,83 +59,6 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	
 	protected PlatformProxy proxy;
 	private FilePropertyReader properties;
-	
-//	/**
-//	 * 
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public GoalOrientedActingAgent() 
-//	{
-//		try
-//		{
-//			// set lock and status
-//			this.lock = new Object();
-//			// set status
-//			this.status = ActingAgentStatus.OFFLINE;
-//			// set goal buffer
-//			this.queue = new HashMap<>();
-//			// set goal queue
-//			for (GoalStatus s : GoalStatus.values()) {
-//				this.queue.put(s, new LinkedList<>());
-//			}
-//			
-//			// set internal plan database representation
-//			this.pdb = null;
-//			// set platform
-//			this.processes = null;
-//			
-//			// get default agent property file
-//			this.properties = new FilePropertyReader(
-//					FRAMEWORK_HOME + FilePropertyReader.DEFAULT_AGENT_PROPERTY);
-//			
-//			// get DDL file 
-//			String ddlFile = this.properties.getProperty("model");
-//			// check if null
-//			if (ddlFile == null || ddlFile.equals("")) {
-//				throw new RuntimeException("You need to specify an acting model of the agent in \"etc/agent.properties\"!");
-//			}
-//			
-//			// set the model
-//			this.ddl = ddlFile;
-//			
-//			// read the class name of the planner
-//			String plannerClassName = this.properties.getProperty("planner");
-//			// set planner class
-//			this.pClass = (Class<? extends Planner>) Class.forName(plannerClassName);
-//			// set display plan flag
-//			this.displayPlan = this.properties.getProperty("display_plan").equals("1") ? true : false;
-//
-//			// read the class name of the executive
-//			String executiveClassName = this.properties.getProperty("executive");
-//			// set executive class
-//			this.eClass = (Class<? extends Executive>) Class.forName(executiveClassName);
-//			
-//			// read the class of the platform 
-//			String platformClassName = this.properties.getProperty("platform");
-//			// check if a platform is necessary
-//			if (platformClassName != null && !platformClassName.equals("")) 
-//			{
-//				// get platform configuration file 
-//				String configFile = this.properties.getProperty("platform_config_file");
-//				// check platform configuration file 
-//				if (configFile == null || configFile.equals("")) {
-//					throw new RuntimeException("You need to specify a configuration file for the platform in \"etc/agent.properties\"!");
-//				}
-//				
-//				// create platform PROXY
-//				Class<? extends PlatformProxy> clazz = (Class<? extends PlatformProxy>) Class.forName(platformClassName);
-//				// create PROXY
-//				this.proxy = PlatformProxyBuilder.build(clazz, configFile);
-//			}
-//			
-//			// setup deliberative and executive processes
-//			this.setupProcesses();
-//		}
-//		catch (Exception ex) {
-//			throw new RuntimeException(ex.getMessage());
-//		}
-//	}
-//	
 	
 	/**
 	 * 
@@ -286,7 +205,9 @@ public class GoalOrientedActingAgent implements PlatformObserver
 		this.processes.add(new Thread(this.contingencyHandler));
 		
 		// finally register to platform events
-		this.proxy.register(this);
+		if (this.proxy != null) {
+			this.proxy.register(this);
+		}
 	}
 	
 	
