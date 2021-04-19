@@ -8,15 +8,17 @@ import java.util.List;
  * @author anacleto
  *
  */
-public class AgentTaskDescription 
+public class AgentTaskDescription extends PlatformMessage	
 {
 	private List<TokenDescription> goals;
 	private List<TokenDescription> facts;
 	
 	/**
 	 * 
+	 * @param id
 	 */
-	public AgentTaskDescription() {
+	public AgentTaskDescription(long id) {
+		super(id);
 		this.goals = new ArrayList<>();
 		this.facts = new ArrayList<>();
 	}

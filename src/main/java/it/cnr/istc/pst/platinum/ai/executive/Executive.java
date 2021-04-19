@@ -31,6 +31,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.ex.TemporalConstraintPropagati
 import it.cnr.istc.pst.platinum.ai.framework.utils.log.FrameworkLoggingLevel;
 import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader;
 import it.cnr.istc.pst.platinum.ai.framework.utils.view.executive.ExecutiveWindow;
+import it.cnr.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.cnr.istc.pst.platinum.control.lang.Goal;
 import it.cnr.istc.pst.platinum.control.lang.PlatformCommand;
 import it.cnr.istc.pst.platinum.control.lang.PlatformFeedback;
@@ -717,6 +718,14 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			}
 			
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void task(AgentTaskDescription task) {
+		// nothing to do
 	}
 	
 	/**

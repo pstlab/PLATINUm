@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNode;
+import it.cnr.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.cnr.istc.pst.platinum.control.lang.PlatformCommand;
 import it.cnr.istc.pst.platinum.control.lang.PlatformFeedback;
-import it.cnr.istc.pst.platinum.control.lang.PlatformMessage;
 import it.cnr.istc.pst.platinum.control.lang.PlatformObservation;
 import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
 
@@ -20,7 +20,7 @@ import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
  *
  */
 public abstract class PlatformProxy 
-{
+{	
 	protected static final AtomicInteger obsIdCounter = new AtomicInteger(0);
 	protected static final AtomicInteger cmdIdCounter = new AtomicInteger(0);
 	
@@ -184,21 +184,20 @@ public abstract class PlatformProxy
 			}
 		}
 	}
-	
+		
 	/**
 	 * 
 	 * @param msg
 	 */
-	public void notify(PlatformMessage msg)
-	{
-		// check message internal types
-		if (msg instanceof PlatformFeedback) {
-			// handle execution feedback
-			this.notify((PlatformFeedback) msg);
-		}
-		else {
-			// handle observation
-			this.notify((PlatformObservation<?>) msg);
+	public void notify(AgentTaskDescription msg) {
+		
+		// get platform observers
+		synchronized (observers) {
+			// notify observers
+			for (PlatformObserver observer : observers) {
+				// notify task to platform observers
+				observer.task(msg);
+			}
 		}
 	}
 	
