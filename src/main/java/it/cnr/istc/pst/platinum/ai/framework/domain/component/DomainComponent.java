@@ -183,7 +183,8 @@ public abstract class DomainComponent extends FrameworkObject
 			this.deactivate(decision);
 			// free decision
 			this.free(decision);
-			// TODO: eventually, add a method to completely remove decision data from the data structure 
+			// delete decision
+			this.delete(decision);
 		}
 		
 		// clear component data structures
@@ -421,7 +422,7 @@ public abstract class DomainComponent extends FrameworkObject
 		if (this.isPending(dec)) {
 			// warning information
 			warning("Trying to restore an already pending decision:\n- decision: " + dec + "\n");
-			throw new RuntimeException("Trying to restore an already pending decision:\n- decision: " + dec + "\n");
+//			throw new RuntimeException("Trying to restore an already pending decision:\n- decision: " + dec + "\n");
 		}
 		
 		// check if silent decision
@@ -457,13 +458,9 @@ public abstract class DomainComponent extends FrameworkObject
 				// check also if active - FIXME: check if this case occurs
 				if (rel.getConstraint() != null) {
 					// warning trying to restore an active relation
-					warning("Trying to restore an active relation!");
+					warning("Trying to restore an ACTIVE relation!");
 					// deactivate relation
 					this.deactivate(rel);
-				}
-				else {
-					// warning trying to restore an existing relation
-					warning("Traying to restore an already existing relation");
 				}
 			}
 			else {
@@ -481,13 +478,9 @@ public abstract class DomainComponent extends FrameworkObject
 					// check also if active - FIXME: check if this case occurs
 					if (rel.getConstraint() != null) {
 						// warning trying to restore an active relation
-						warning("Trying to restore an active relation!");
-						// deactive relation
+						warning("Trying to restore an ACTIVE relation!");
+						// deactivate relation
 						this.deactivate(rel);
-					}
-					else {
-						// warning trying to restore an existing relation
-						warning("Traying to restore an already existing relation");
 					}
 				}
 				else {
@@ -619,82 +612,86 @@ public abstract class DomainComponent extends FrameworkObject
 		
 		// list of relations to activate
 		Set<Relation> rels = new HashSet<>();
-		
 		// check if already active
 		if (this.isActive(dec)) {
 			// warning information
-			warning("Trying to activate an already active decision:\n- decision: " + dec + "\n");
-			throw new RuntimeException("Trying to activate an already active decision:\n- decision: " + dec + "\n");
+			warning("Trying to activate an already ACTIVE decision:\n- decision: " + dec + "\n");
 		}
-		
-//		// check if decision is silent
-//		if (this.isSilent(dec)) {
-//			// error 
-//			throw new RuntimeException("Trying to activate a silent decision:\n- decision: " + dec + "\n");
-//		}
-		
-		// flag in case of rollback
-		boolean free = false;
-		// check if decision is silent
-		if (this.isSilent(dec)) {
-			// restore decision 
-			this.restore(dec);
-			// set free flag
-			free = true;
-		}
-		
-		// check if decision is pending
-		if (this.isPending(dec)) 
+		else
 		{
-			// token to create
-			Token token = null;
-			try 
-			{
-				// create a token
-				token = this.createToken(
-						dec.getId(),
-						dec.getValue(),
-						dec.getParameterLabels(),
-						dec.getStart(), 
-						dec.getEnd(), 
-						dec.getNominalDuration(),
-						dec.getStartExecutionState());
-				
-				// set token to decision 
-				dec.setToken(token);
-				// remove decision from agenda
-				this.decisions.get(PlanElementStatus.PENDING).remove(dec);
-				// add decision to the plan
-				this.decisions.get(PlanElementStatus.ACTIVE).add(dec);
+			// flag in case of roll-back
+			boolean free = false;
+			// check if decision is silent
+			if (this.isSilent(dec)) {
+				// restore decision 
+				this.restore(dec);
+				// set free flag
+				free = true;
+			}
 			
-							
-				
-				// get local and global relations to activate
-				rels.addAll(this.getToActivateRelations(dec));
-				// propagate relations
-				this.activate(rels);
-			}
-			catch (RelationPropagationException ex) 
+			// check if decision is pending
+			if (this.isPending(dec)) 
 			{
-				// deactiavte decision ACTIVE -> PENDING
-				this.deactivate(dec);
+				// token to create
+				Token token = null;
+				try 
+				{
+					// create a token
+					token = this.createToken(
+							dec.getId(),
+							dec.getValue(),
+							dec.getParameterLabels(),
+							dec.getStart(), 
+							dec.getEnd(), 
+							dec.getNominalDuration(),
+							dec.getStartExecutionState());
+					
+					// set token to decision 
+					dec.setToken(token);
+					// remove decision from agenda
+					this.decisions.get(PlanElementStatus.PENDING).remove(dec);
+					// add decision to the plan
+					this.decisions.get(PlanElementStatus.ACTIVE).add(dec);
 				
-				// roll-back decision's created token
-//				this.tdb.deleteTemporalInterval(token.getInterval());
-//				// the decision is still pending and the related token is removed
-//				dec.clear();
-				
-				// delete the decision if necesasry
-				if (free) {
-					// PENDING -> FREE
-					this.free(dec);
+					// get local and global relations to activate
+					for (Relation rel : this.getToActivateRelations(dec)) {
+						// propagate relations
+						this.activate(rel);
+						// add relation to the list
+						rels.add(rel);
+					}
 				}
-				
-				// forward exception
-				throw new DecisionPropagationException(ex.getMessage());
-			}
-			catch (TemporalIntervalCreationException | ParameterCreationException ex) {
-				throw new DecisionPropagationException(ex.getMessage());
+				catch (RelationPropagationException ex) 
+				{
+					// deactivate relations
+					for (Relation rel : rels) {
+						this.deactivate(rel);
+					}
+					
+					// deactivate decision ACTIVE -> PENDING
+					this.deactivate(dec);
+					
+					// reset SILENT decision if necessary
+					if (free) {
+						// PENDING -> FREE
+						this.free(dec);
+					}
+					
+					// throw exception
+					throw new DecisionPropagationException(ex.getMessage());
+				}
+				catch (TemporalIntervalCreationException | ParameterCreationException ex) {
+					
+					// reset SILENT decision if necessary
+					if (free) {
+						
+						// PENDING -> FREE
+						this.free(dec);
+					}
+					
+					// throw exception
+					throw new DecisionPropagationException(ex.getMessage());
+				}
 			}
 		}
 		
@@ -706,41 +703,50 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param dec
 	 */
-	public synchronized void deactivate(Decision dec) 
+	public synchronized Set<Relation> deactivate(Decision dec) 
 	{
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to delete a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Trying to delete a not local decision from a component:\n"
+					+ "- Component: " + this.name + "\n"
+					+ "- Decision: " + dec + "\n");
 		}
 		
 		// check if already pending
 		if (this.isSilent(dec)) {
 			// warning information
-			throw new RuntimeException("Trying to deactivate a silent decision:\n- decision: " + dec + "\n");	
+			throw new RuntimeException("Trying to deactivate a SILEN decision:\n"
+					+ "- Decision: " + dec + "\n");	
 		}
 		
 		// check if already pending
 		if (this.isPending(dec)) {
 			// warning information
-			warning("Trying to deactivate an already pending decision:\n- decision: " + dec + "\n");
-//			throw new RuntimeException("Trying to deactivate an already pending decision:\n- decision: " + dec + "\n");	
+			warning("Trying to deactivate an already PENDING decision:\n"
+					+ "- Decision: " + dec + "\n");
 		}
 		
+		// set of deactivated relations
+		Set<Relation> rDeactivated = new HashSet<>(); 
 		// check if active
-		if (this.isActive(dec)) 
-		{
+		if (this.isActive(dec)) {
+			
 			// get active relations to retract
 			for (Relation rel :  this.getActiveRelations(dec)) {
+				
+				// deactivate relations
 				this.deactivate(rel);
+				// add 
+				rDeactivated.add(rel);
 			}
 			
 			// delete related token
 			Token token = dec.getToken();
 			// delete parameters of token predicate
-			for (Parameter<?> param : token.getPredicate().getParameters()) 
-			{
-				try 
-				{
+			for (Parameter<?> param : token.getPredicate().getParameters()) {
+				
+				try {
+					
 					// delete parameter variable
 					this.pdb.deleteParameter(param);
 				}
@@ -758,6 +764,9 @@ public abstract class DomainComponent extends FrameworkObject
 			// clear decision
 			dec.clear();
 		}
+		
+		// get deactivated relations
+		return rDeactivated;
 	}
 	
 	/**
@@ -771,19 +780,38 @@ public abstract class DomainComponent extends FrameworkObject
 			throw new RuntimeException("Trying to free a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
-		// check if already silent
+		// check if already SILENT
 		if (this.isSilent(dec)) {
 			// warning information
-			warning("Trying to delete an already silent decision:\n- decision: " + dec + "\n");
-			throw new RuntimeException("Trying to delete an already silent decision:\n- decision: " + dec + "\n");
+			warning("Trying to free an already SILENT decision:\n- decision: " + dec + "\n");
 		}
 		
+		// check if ACTIVE
+		if (this.isActive(dec)) {
+			// check as this could be a potential bug in the backtracking procedure when "restoring" plan states 
+			throw new RuntimeException("Trying to free an ACTIVE decision:\n- decision: " + dec + "\n");
+		}
 		
-//		// check if active
-//		if (this.isActive(dec)) {
-//			// check as this could be a potential bug in the backtracking procedure when "restoring" plan states 
-//			throw new RuntimeException("Trying to free an active decision:\n- decision: " + dec + "\n");
-//		}
+		// complete transition PENDING -> SILENT
+		if (this.isPending(dec)) {
+			// delete pending decision
+			this.decisions.get(PlanElementStatus.PENDING).remove(dec);
+			// add to silent decisions
+			this.decisions.get(PlanElementStatus.SILENT).add(dec);
+		}
+	}
+	
+	/**
+	 * Force delete of the decision from the component
+	 * 
+	 * @param dec
+	 */
+	public void delete(Decision dec)
+	{
+		// check decision component
+		if (!dec.getComponent().equals(this)) {
+			throw new RuntimeException("Trying to free a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+		}
 		
 		// check if active ACTIVE -> PENDING
 		if (this.isActive(dec)) {
@@ -797,6 +825,11 @@ public abstract class DomainComponent extends FrameworkObject
 			this.decisions.get(PlanElementStatus.PENDING).remove(dec);
 			// add to silent decisions
 			this.decisions.get(PlanElementStatus.SILENT).add(dec);
+		}
+		
+		if (this.isSilent(dec)) {
+			// remove decision from silent set
+			this.decisions.get(PlanElementStatus.SILENT).remove(dec);
 		}
 	}
 	
@@ -1234,7 +1267,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 * @throws RelationPropagationException
 	 */
-	public synchronized void activate(Relation rel) 
+	public synchronized boolean activate(Relation rel) 
 			throws RelationPropagationException 
 	{
 		// check reference and target components
@@ -1245,8 +1278,10 @@ public abstract class DomainComponent extends FrameworkObject
 			throw new RuntimeException("Trying to add an \"external\" relation for component:\n- component: " + this.name + "\n- relation: " + rel+ "\n");
 		}
 		
-		// check if relation can be activated - check no constraint is associated and if related decisions are active 
-		if (rel.canBeActivated()) 
+		// check if can be activated
+		boolean canBeActivated = rel.canBeActivated();
+		// check no constraint is associated and if related decisions are active 
+		if (canBeActivated) 
 		{
 			try
 			{
@@ -1287,8 +1322,11 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		else {
 			// debug information
-			warning("The decision you want to activate is already active or the related decision are not active yet:\n- " + rel + "\n");
+			debug("The decision you want to activate is already active or the related decision are not active yet:\n- " + rel + "\n");
 		}
+		
+		// get flag
+		return canBeActivated;
 	}
 	
 	/**
@@ -1305,16 +1343,18 @@ public abstract class DomainComponent extends FrameworkObject
 		{
 			// propagate relations
 			for (Relation rel : relations) {
-				// add to committed
-				committed.add(rel);
 				// propagate relation
-				this.activate(rel);
+				if (this.activate(rel)) {
+					// add to committed
+					committed.add(rel);
+				}
 			}
 		} 
 		catch (RelationPropagationException ex) {
+			
 			// error while propagating relations
 			for (Relation rel : committed) {
-				// delete relation
+				// deactivated committed relations
 				this.deactivate(rel);
 			}
 			
@@ -1462,7 +1502,6 @@ public abstract class DomainComponent extends FrameworkObject
 			throw new UnsolvableFlawException("Component [" + this.name + "] detects unsolvable flaws only!");
 		}
 		
-		
 		// get the list of detected flaws
 		return list;
 	}
@@ -1592,22 +1631,26 @@ public abstract class DomainComponent extends FrameworkObject
 		// create predicate
 		Predicate predicate = new Predicate(PREDICATE_COUNTER.getAndIncrement(), value);
 		
-		// get place holders
-		for (int index = 0; index < labels.length; index++) 
-		{
-			// get value's parameter place holder
-			ParameterPlaceHolder ph = value.getParameterPlaceHolderByIndex(index);
+		// check parameter labels
+		if (labels != null && labels.length > 0) {
 			
-			// create a parameter
-			Parameter<?> param = this.pdb.createParameter(labels[index], ph.getDomain());
-
-			// add parameter to predicate
-			
-			// add parameter
-			this.pdb.addParameter(param);
-			
-			// add parameter to the predicate at the specified position
-			predicate.setParameter(index, labels[index], param);
+			// get place holders
+			for (int index = 0; index < labels.length; index++) 
+			{
+				// get value's parameter place holder
+				ParameterPlaceHolder ph = value.getParameterPlaceHolderByIndex(index);
+				
+				// create a parameter
+				Parameter<?> param = this.pdb.createParameter(labels[index], ph.getDomain());
+	
+				// add parameter to predicate
+				
+				// add parameter
+				this.pdb.addParameter(param);
+				
+				// add parameter to the predicate at the specified position
+				predicate.setParameter(index, labels[index], param);
+			}
 		}
 		
 		// create token

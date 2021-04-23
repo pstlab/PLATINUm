@@ -12,7 +12,6 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.delib
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.deliberative.SearchStrategyPlaceholder;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.lifecycle.PostConstruct;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.OperatorPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.PlanRefinementException;
@@ -171,11 +170,13 @@ public abstract class Solver extends FrameworkObject
 			// get the list of operators of the nodes
 			List<Operator> lastNodeOperators = last.getOperators();
 			List<Operator> extractedNodeOperators = extracted.getOperators();
+			
 			// check min length between the two lists
 			int minLength = Math.min(lastNodeOperators.size(), extractedNodeOperators.size());
 			// check potentially common operators
 			boolean common = true;
 			for (int i = 0; i < minLength; i++) {
+				
 				// check common flag
 				if (common && !lastNodeOperators.get(i).equals(extractedNodeOperators.get(i))) {
 					common = false;
@@ -221,10 +222,25 @@ public abstract class Solver extends FrameworkObject
 				}
 			}
 			catch (OperatorPropagationException  ex) {
+				
 				// retract committed operators in reverse order
 				Collections.reverse(committed);
 				for (Operator operator : committed) {
+					// retract operator
 					this.pdb.retract(operator);
+				}
+				
+				// also restore retracted operators
+				Collections.reverse(toRetract);
+				for (Operator operator : toRetract) {
+					try {
+						// restore operator
+						this.pdb.propagate(operator);
+					}
+					catch (OperatorPropagationException exx) {
+						warning("[ContextSwitch] Error while restoring operators after failure:\n"
+								+ "- message: " + ex.getMessage() + "\n");
+					}
 				}
 
 				// throw exception
@@ -232,7 +248,7 @@ public abstract class Solver extends FrameworkObject
 			}
 		}
 		else {
-			// simply propagate node extracted node
+			// simply propagate extracted node
 			this.propagate(extracted);
 		}
 	}
@@ -252,17 +268,25 @@ public abstract class Solver extends FrameworkObject
 	{
 		// list of child nodes
 		List<SearchSpaceNode> list = new ArrayList<>();
+		// check if no expansion has done
+		if (flaw.getSolutions().isEmpty()) {
+			// this is for debug mainly, as this condition should never occur. Computed flaw solutions should be valid 
+			throw new UnsolvableFlawException("Search space expansion failure as no valid operator can be applied:\n"
+					+ "- current node: " + current + "\n"
+					+ "- flaw: " + flaw + "\n");
+		}
+				
 		// check flaw solutions
 		for (FlawSolution solution : flaw.getSolutions()) 
 		{
 			// create operator
 			Operator op = new Operator(solution);
-			try
-			{
-				// try to propagate operator
-				this.pdb.propagate(op);
-				// check plan database feasibility
-				this.pdb.verify();
+//			try
+//			{
+//				// try to propagate operator
+//				this.pdb.propagate(op);
+//				// check plan database feasibility
+//				this.pdb.verify();
 				
 				// get plan with updated temporal bounds and variable binding
 				Plan plan = this.pdb.getPlan();
@@ -278,32 +302,26 @@ public abstract class Solver extends FrameworkObject
 
 				// add child
 				list.add(child);
-			}
-			catch (OperatorPropagationException | ConsistencyCheckException ex) {
-				warning("Invalid operator found during search expansion phase:\n"
-						+ "- current node: " + current + "\n"
-						+ "- flaw: " + flaw + "\n"
-						+ "- failed operator: " + op + "\n");
-				
-				// debug
-				System.err.println("Invalid operator found during search expansion phase:\n"
-						+ "- current node: " + current + "\n"
-						+ "- flaw: " + flaw + "\n"
-						+ "- failed operator: " + op + "\n");
-			}
-			finally {
-				// retract operator
-				this.pdb.retract(op);
-			}
+//			}
+//			catch (OperatorPropagationException | ConsistencyCheckException ex) {
+//				warning("Invalid operator found during search expansion phase:\n"
+//						+ "- current node: " + current + "\n"
+//						+ "- flaw: " + flaw + "\n"
+//						+ "- failed operator: " + op + "\n");
+//				
+//				// debug
+//				System.err.println("Invalid operator found during search expansion phase:\n"
+//						+ "- current node: " + current + "\n"
+//						+ "- flaw: " + flaw + "\n"
+//						+ "- failed operator: " + op + "\n");
+//			}
+//			finally {
+//				// retract operator
+//				this.pdb.retract(op);
+//			}
 		}
 		
-		// check if no expansion has done
-		if (list.isEmpty()) {
-			// this is for debug mainly, as this condition should never occur. Computed flaw solutions should be valid 
-			throw new UnsolvableFlawException("Search space expansion failure as no valid operator can be applied:\n"
-					+ "- current node: " + current + "\n"
-					+ "- flaw: " + flaw + "\n");
-		}
+		
 		
 		// get children
 		return list;

@@ -118,7 +118,7 @@ public class TemporalInterval extends TemporalData
 		// get interval
 		TemporalInterval i = (TemporalInterval) o;
 		// compare start times
-		return this.start.compareTo(i.start);  
+		return this.start.compareTo(i.start) == 0 ? this.end.compareTo(i.end) : this.start.compareTo(i.start);  
 	}
 	
 	/**

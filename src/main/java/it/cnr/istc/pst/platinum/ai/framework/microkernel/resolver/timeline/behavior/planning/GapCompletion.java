@@ -17,6 +17,8 @@ public class GapCompletion extends FlawSolution
 	private Decision left;
 	private Decision right;
 	private List<ComponentValue> path;
+	private boolean complex;					// true if at least one of the values of the the path is complex
+	
 	
 	/**
 	 * 
@@ -29,6 +31,22 @@ public class GapCompletion extends FlawSolution
 		this.left = gap.getLeftDecision();
 		this.right = gap.getRightDecision();
 		this.path = new ArrayList<>(path);
+		// set complex flag
+		this.complex = false;
+		// check if complex
+		for (ComponentValue value : path) {
+			if (value.isComplex()) {
+				complex = true;
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isComplex() {
+		return complex;
 	}
 	
 	/**
