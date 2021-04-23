@@ -18,6 +18,7 @@ public class TreeStrategy implements Strategy {
 	private long horizon;
 	private long time;
 	private int strikeTimer;
+	private int strikeMaxReached;
 	private TreeNodeState rootState;
 	private Map<String,Long> timelineClocks;
 	private Map<String,String> initialState; //substituted with root of tree, maintained for compatibility with older version
@@ -40,6 +41,7 @@ public class TreeStrategy implements Strategy {
 		this.time = 0;
 		this.out = new HashMap<>();
 		this.strikeTimer = 0;
+		this.strikeMaxReached = 0 ;
 	}
 
 	//---------------------------------- METHODS --------------------
@@ -235,14 +237,10 @@ public class TreeStrategy implements Strategy {
 	}
 
 	@Override
-	public boolean isStrategyFinished() {
-		for( String tl : this.rootState.getParentState().getStateSet().keySet()) {
-			if(!this.rootState.getParentState().getStateSet().get(tl).equals("finish")){
-				return false;
-			}
-		}
-		return true;
+	public int getStrikeMaxReached() {
+		return this.strikeMaxReached;
 	}
+	
 
 	@Override
 	public void getStrategyAsStrings(String ss, List<String> statesLine) {

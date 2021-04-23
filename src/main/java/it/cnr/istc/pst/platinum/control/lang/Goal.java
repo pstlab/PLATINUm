@@ -43,7 +43,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	private boolean existsStrategy;
 	private long managementStrategyTime;
 	private boolean isOutOfBounds;
-	private boolean isStrategyFinished;
+	private int maxOutOfBounds;
 	
 	
 	/**
@@ -70,7 +70,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 		this.existsStrategy = false;
 		this.managementStrategyTime = -1;
 		this.isOutOfBounds = false;
-		this.isStrategyFinished = false;
+		this.maxOutOfBounds = -1;
 	}
 	
 	/**
@@ -115,12 +115,12 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 		this.isOutOfBounds = isOutOfBounds;
 	}
 
-	public boolean isStrategyFinished() {
-		return isStrategyFinished;
+	public int getMaxOutOfBounds() {
+		return maxOutOfBounds;
 	}
 
-	public void setStrategyFinished(boolean isStrategyFinished) {
-		this.isStrategyFinished = isStrategyFinished;
+	public void setMaxOutOfBounds(int maxOutOfBounds) {
+		this.maxOutOfBounds = maxOutOfBounds;
 	}
 
 	/**

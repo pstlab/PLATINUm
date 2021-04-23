@@ -39,7 +39,7 @@ public class StrategyLoader {
 
 	public StrategyLoader(long horizon) {
 		System.out.println("Starting Strategy Loader ... :");
-		this.strategy = new TreeStrategy(horizon); //MODIFIABLE
+		this.strategy = new ListStrategy(horizon); //MODIFIABLE
 		this.existsStrategy = false;
 		
 	}

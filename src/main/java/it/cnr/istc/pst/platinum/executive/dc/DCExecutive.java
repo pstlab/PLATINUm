@@ -55,7 +55,7 @@ public class DCExecutive extends Executive
 			goal.setExistsStrategy(loader.getExistsStrategy());
 			goal.setManagementStrategyTime(loader.getManagementStrategyTime());
 			goal.setOutOfBounds(loader.getStrategy().isOutOfBounds());
-			goal.setStrategyFinished(loader.getStrategy().isStrategyFinished());
+			goal.setMaxOutOfBounds(loader.getStrategy().getStrikeMaxReached());
 			
 			// get strategy
 			this.checker = loader.getStrategy();

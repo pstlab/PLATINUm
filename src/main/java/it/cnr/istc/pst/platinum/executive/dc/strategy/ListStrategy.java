@@ -24,6 +24,7 @@ public class ListStrategy implements Strategy{
 	private Set<String> uStates; 
 	private Map<Transition,Map<String,String>> uPostConditions;
 	private Map<Long,Integer> out;
+	private int strikeMaxReached;
 	//private PrintWriter writer;
 
 	// ------------------------------ CONSTRUCTORS ------------------
@@ -37,6 +38,7 @@ public class ListStrategy implements Strategy{
 		this.out = new HashMap<>();
 		this.uStates = new HashSet<>();
 		this.strikeTimer = 0;
+		this.strikeMaxReached = 0;
 	}
 
 	//---------------------------------- METHODS --------------------
@@ -110,6 +112,7 @@ public class ListStrategy implements Strategy{
 			System.out.println("Warning: no state or clock found -> return default action WAIT\n");
 			time = System.currentTimeMillis() - time;
 			this.strikeTimer = this.strikeTimer + 1;
+			if(this.strikeTimer > this.strikeMaxReached) { this.strikeMaxReached = this.strikeTimer; }
 			if(this.strikeTimer > ListStrategy.MAX_STRIKE) {
 				System.out.println("PostConditionsan out of bounds, strike max reached\n");
 			}
@@ -168,7 +171,7 @@ public class ListStrategy implements Strategy{
 	@Override
 	public void updateUncontrollable(Map<String, String> updatedState) {
 		// TODO Auto-generated method stub
-		System.out.println("Unimplemented method 'updateUncontrollable'\n");
+		System.out.println("WARNING: Unimplemented method 'updateUncontrollable'\n");
 		
 	}
 	
@@ -191,6 +194,11 @@ public class ListStrategy implements Strategy{
 		return this.timelineClocks;
 	}
 
+	@Override
+	public int getStrikeMaxReached() {
+		return this.strikeMaxReached;
+	}
+	
 	@Override
 	public void setTimelineClocks(Map<String,Long> tc) {
 		this.timelineClocks = tc;
@@ -232,15 +240,15 @@ public class ListStrategy implements Strategy{
 		return (this.strikeTimer > ListStrategy.MAX_STRIKE);
 	}
 
-	@Override
-	public boolean isStrategyFinished() {
-		for( String tl : this.expectedState.keySet()) {
-			if(!this.expectedState.get(tl).equals("finish")){
-				return false;
-			}
-		}
-		return true;
-	}
+//	@Override //OBSOLETE AND NOT WORKING
+//	public boolean isStrategyFinished() {
+//		for( String tl : this.expectedState.keySet()) {
+//			if(!this.expectedState.get(tl).equals("finish")){
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
 	
 	public Set<String> getuStates() {
 		return uStates;
@@ -250,8 +258,6 @@ public class ListStrategy implements Strategy{
 	public void setuStates(Set<String> uStates) {
 		this.uStates = uStates;
 	}
-
-
 
 	/*public void setWriter(PrintWriter writer) {
 		this.writer = writer;

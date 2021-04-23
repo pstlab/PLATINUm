@@ -19,5 +19,5 @@ public interface Strategy {
 	void getStrategyAsStrings(String ss, List<String> statesLine); //new updated version
 	void setuStates(Set<String> uStates);
 	boolean isOutOfBounds();
-	boolean isStrategyFinished();
+	int getStrikeMaxReached();
 }
