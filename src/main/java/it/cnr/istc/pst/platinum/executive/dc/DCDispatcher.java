@@ -18,8 +18,6 @@ import it.cnr.istc.pst.platinum.ai.framework.time.ex.TemporalConstraintPropagati
 
 /**
  * 
- * @author anacleto
- *
  */
 public class DCDispatcher extends Dispatcher<DCExecutive>
 {
@@ -37,15 +35,15 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 	 */
 	@Override
 	public void handleTick(long tick) 
-			throws ExecutionException, PlatformException
-	{
+			throws ExecutionException, PlatformException {
+		
 		// get tau 
 		long tau = this.executive.convertTickToTau(tick);
 		// current status
 		PlanExecutionStatus status = new PlanExecutionStatus(tau);
 		// add the status of the timelines
-		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.IN_EXECUTION)) 
-		{
+		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
+			
 			// check token id 
 			String tokenId = node.getTimeline().toLowerCase() + "" + node.getId();
 			// add timeline status
@@ -118,10 +116,10 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 				}
 				
 				// check if a node has been found
-				if (node != null)
-				{
-					try
-					{
+				if (node != null) {
+					
+					try {
+						
 						// schedule token start time
 						this.executive.scheduleTokenStart(node, tau);
 						// check schedule
@@ -129,14 +127,17 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 						// update the status of the previous node if any
 						ExecutionNode prev = node.getPrev();
 						if (prev != null) {
+							
 							// update status to executed
 							this.executive.updateNode(prev, ExecutionNodeStatus.EXECUTED);
 						}
+						
 						// start node execution
 						info("[DCDispatcher] [tick: " + tick + "] [tau: " + tau + "] -> Start executing node at time: " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
 					catch (TemporalConstraintPropagationException ex) {
+						
 						// set token as in execution to wait for feedbacks
 						this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 						// create execution cause
@@ -149,8 +150,8 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 								cause);
 					}
 				}
-				else 
-				{
+				else {
+					
 					error("[DCDispatcher] [tick: " + tick + "] Transition token not found:\n- timelineName= " + tlName + "\n- tokenName= " + tokenName + "\n");
 				}
 				
@@ -168,23 +169,23 @@ public class DCDispatcher extends Dispatcher<DCExecutive>
 		 */
 		
 		
-		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.EXECUTED)) 
-		{
+		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.EXECUTED)) {
+			
 			// get next node
 			ExecutionNode next = node.getNext();
 			// check if node has a next token
-			if (next != null)
-			{
+			if (next != null) {
+				
 				// check next node of the associated timeline
-				if (next.getStatus().equals(ExecutionNodeStatus.WAITING))
-				{
+				if (next.getStatus().equals(ExecutionNodeStatus.WAITING)) {
+					
 					// dispatch start time
 					debug("[DCMonitor] [tick: " + tick + "][{tau: " +  tau + "] -> Dispatching start time of the next token\n"
 							+ "\t- start-tau: " + tau + "\n"
 							+ "\t- node: " + next.getGroundSignature() + " (" + next + ")\n");
 					
-					try
-					{
+					try {
+						
 						// dispatch start time 
 						this.executive.scheduleTokenStart(next, tau);
 						// check schedule

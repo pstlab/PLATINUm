@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.FrameworkObject;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.DistanceConstraintNotFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.InconsistentDistanceConstraintException;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.InconsistentTpValueException;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.TemporalNetworkTransactionFailureException;
@@ -23,11 +22,10 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.DelTimePointTemp
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.TemporalNetworkNotificationFactory;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.TemporalNetworkNotificationTypes;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.TemporalNetworkObserver;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class TemporalNetwork extends FrameworkObject 
@@ -127,7 +125,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public final TimePoint getHorizionTimePoint() {
+	public final TimePoint getHorizonTimePoint() {
 		return this.tpHorizion;
 	}
 	
@@ -190,14 +188,14 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 * @param point
 	 * @return
 	 */
-	public abstract TimePointDistanceConstraint getConstraintFromOrigin(TimePoint point);
+	public abstract List<TimePointDistanceConstraint> getConstraintFromOrigin(TimePoint point);
 	
 	/**
 	 * 
 	 * @param tp
 	 * @return
 	 */
-	public abstract TimePointDistanceConstraint getConstraintToHorizon(TimePoint tp);
+	public abstract List<TimePointDistanceConstraint> getConstraintToHorizon(TimePoint tp);
 	
 	/**
 	 * Creates a new flexible TimePoint
@@ -209,45 +207,41 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	public final TimePoint addTimePoint() 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create a time point or use a previous created one
 		TimePoint tp = null;
 		// extract the first element
 		Iterator<TimePoint> it = this.recyclePoints.iterator();
 		// check among recycled time points first
 		if (it.hasNext()) {
+			
 			// extract next time point
 			tp = it.next();
 			// remove time point from the set
 			it.remove();
 		}
 		else {
+			
 			// actually create flexible time point
 			tp = new TimePoint(COUNTER.getAndIncrement(), this.origin, this.horizon);
 		}
 		
 		// add time point to the network
 		this.doAddTimePoint(tp);
-		
 		// create notification
 		AddTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory.
 				createNotification(TemporalNetworkNotificationTypes.ADD_TP);
+		// add time point
 		info.addTimePoint(tp);
 		
 		// check observers
-		synchronized (this.observers) 
-		{
+		synchronized (this.observers) {
+			
 			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) 
-			{
-				try 
-				{
-					// do notify 
-					obs.notify(info);
-				} catch (NotificationPropagationFailureException ex) {
-					error(ex.getMessage());
-				}
+			for (TemporalNetworkObserver obs : this.observers) {
+				// do notify 
+				obs.notify(info);
 			}
 		}
 
@@ -270,53 +264,47 @@ public abstract class TemporalNetwork extends FrameworkObject
 			throws TemporalNetworkTransactionFailureException 
 	{
 		// notify flag
-		boolean notify = false;
+		boolean notify = true;
 		// create notification
 		AddTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory.
 				createNotification(TemporalNetworkNotificationTypes.ADD_TP);
 		
-		try 
-		{
+		try {
+			
 			// create time points
 			for (int i= 0; i < n; i++) {
+			
 				// create a flexible time point
-				TimePoint tp = this.addTimePoint();	
+				TimePoint tp = this.addTimePoint();
+				// add time point to the notification
 				info.addTimePoint(tp);
-				notify = true;
 			}
 		}
-		catch (InconsistentDistanceConstraintException ex) 
-		{
+		catch (InconsistentDistanceConstraintException ex) {
+			
 			// remove created time points
 			for (TimePoint tp : info.getPoints()) {
-				try {
-					// remove created time point
-					this.doRemoveTimePoint(tp);
-				}
-				catch (TimePointNotFoundException exx) {
-					error(exx.getMessage());
-				}
+				
+				// remove created time point
+				this.doRemoveTimePoint(tp);
 			}
 			
+			// do not notify
+			notify = false;
 			// throw exception
 			throw new TemporalNetworkTransactionFailureException(ex.getMessage());
 		}
-		
-		// check if notification is necessary
-		if (notify) 
-		{
-			// check observers
-			synchronized (this.observers) 
-			{
-				// notify observers
-				for (TemporalNetworkObserver obs : this.observers) 
-				{
-					try 
-					{
+		finally {
+			
+			// check if notification is necessary
+			if (notify) {
+			
+				// check observers
+				synchronized (this.observers) {
+					// notify observers
+					for (TemporalNetworkObserver obs : this.observers) {
 						// do notify
 						obs.notify(info);
-					} catch (NotificationPropagationFailureException ex) {
-						error(ex.getMessage());
 					}
 				}
 			}
@@ -341,8 +329,8 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 * @throws InconsistentTpValueException
 	 */
 	public final TimePoint addTimePoint(long at) 
-			throws InconsistentTpValueException, InconsistentDistanceConstraintException
-	{
+			throws InconsistentTpValueException, InconsistentDistanceConstraintException {
+		
 		// check desired value
 		if (at < this.origin || at > this.horizon) {
 			// inconsistent value
@@ -354,8 +342,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 		// extract the first element
 		Iterator<TimePoint> it = this.recyclePoints.iterator();
 		// check recycled time points first
-		if (it.hasNext()) 
-		{
+		if (it.hasNext()) {
 			// extract next time point
 			tp = it.next();
 			// set bounds
@@ -365,6 +352,7 @@ public abstract class TemporalNetwork extends FrameworkObject
 			it.remove();
 		}
 		else {
+			
 			// create time point
 			tp = new TimePoint(COUNTER.getAndIncrement(), at, at);
 		}
@@ -376,20 +364,13 @@ public abstract class TemporalNetwork extends FrameworkObject
 		AddTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.ADD_TP);
 		info.addTimePoint(tp);
 		
+		
 		// check observers
-		synchronized (this.observers)
-		{
+		synchronized (this.observers) {
 			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) 
-			{
-				try 
-				{
-					// do notify
-					obs.notify(info);
-				}
-				catch (NotificationPropagationFailureException ex) {
-					error(ex.getMessage());
-				}
+			for (TemporalNetworkObserver obs : this.observers) {
+				// do notify
+				obs.notify(info);
 			}
 		}
 
@@ -435,25 +416,15 @@ public abstract class TemporalNetwork extends FrameworkObject
 		
 		// add time point to the network
 		this.doAddTimePoint(tp);
-
 		// create notification
 		AddTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.ADD_TP);
 		info.addTimePoint(tp);
 		
 		// check observers
-		synchronized (this.observers) 
-		{
+		synchronized (this.observers) {
 			// notify observers
-			for (TemporalNetworkObserver obs : this.observers) 
-			{
-				try 
-				{
-					// do notify
-					obs.notify(info);
-				}
-				catch (NotificationPropagationFailureException ex) {
-					error(ex.getMessage());
-				}
+			for (TemporalNetworkObserver obs : this.observers) {
+				obs.notify(info);
 			}
 		}
 
@@ -476,124 +447,60 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 */
 	public final void removeTimePoint(TimePoint tp) 
 	{
-		try 
-		{
-			// delete time point
-			this.doRemoveTimePoint(tp);
-			// add time point to recycle list
-			this.recyclePoints.add(tp);
+		// delete time point
+		this.doRemoveTimePoint(tp);
+		// add time point to recycle list
+		this.recyclePoints.add(tp);
+		
+		// create notification
+		DelTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory
+				.createNotification(TemporalNetworkNotificationTypes.DEL_TP);
+		info.addTimePoint(tp);
+		
+		// check observers
+		synchronized (this.observers) {
 			
-			// create notification
-			DelTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory
-					.createNotification(TemporalNetworkNotificationTypes.DEL_TP);
-			info.addTimePoint(tp);
-			
-			// check observers
-			synchronized (this.observers) 
-			{
-				// notify observers
-				for (TemporalNetworkObserver obs : this.observers) 
-				{
-					try 
-					{
-						// do notify
-						obs.notify(info);
-					}
-					catch (NotificationPropagationFailureException ex) {
-						error(ex.getMessage());
-					}
-				}
+			// notify observers
+			for (TemporalNetworkObserver obs : this.observers) {
+				// do notify
+				obs.notify(info);
 			}
-		} 
-		catch (TimePointNotFoundException ex) {
-			error(ex.getMessage());
 		}
 	}
 	
 	/**
 	 * 
-	 * Remove a list of timepoints from the temporal network 
+	 * Remove a list of time points from the temporal network 
 	 * 
 	 * @param tps
 	 */
-	public final synchronized void removeTimePoints(List<TimePoint> tps) 
-	{
-		// notify flag
-		boolean notify = true;
+	public final synchronized void removeTimePoints(List<TimePoint> tps) {
+		
 		// create notification
 		DelTimePointTemporalNetworkNotification info = TemporalNetworkNotificationFactory
 				.createNotification(TemporalNetworkNotificationTypes.DEL_TP);
 		
 		// map of time points the associated distance constraints that have been removed 
 		Map<TimePoint, List<TimePointDistanceConstraint>> committed = new HashMap<>();
-		try 
-		{
-			// check time points to remove
-			for (TimePoint tp : tps) 
-			{
-				// delete time point
-				List<TimePointDistanceConstraint> cRemoved = this.doRemoveTimePoint(tp);
-				// add time point to recycle list
-				this.recyclePoints.add(tp);
-				// add deleted time point to the notification
-				info.addTimePoint(tp);
-				// add entry to the map
-				committed.put(tp, cRemoved);
-			}
-		}
-		
-		catch (TimePointNotFoundException ex) 
-		{
-			// restore removed time points
-			for (TimePoint p : committed.keySet()) {
-				// remove time point from recycled ones
-				this.recyclePoints.remove(p);
-				try {
-					// restore time point into the underlying network
-					this.doAddTimePoint(p);
-				}
-				catch (InconsistentDistanceConstraintException exx) {
-					error(exx.getMessage());
-				}
-			}
+		// check time points to remove
+		for (TimePoint tp : tps) {
 			
-			// restore deleted distance constraints
-			for (TimePoint p : committed.keySet()) {
-				// restore deleted constraints
-				for (TimePointDistanceConstraint c : committed.get(p)) {
-					try {
-						this.doAddConstraint(c);
-					}
-					catch (InconsistentDistanceConstraintException exx) {
-						error(exx.getMessage());
-					}
-				}
-			}
-			
-			// error message
-			error(ex.getMessage());
-			// set notify flag
-			notify = false;
+			// delete time point
+			List<TimePointDistanceConstraint> cRemoved = this.doRemoveTimePoint(tp);
+			// add time point to recycle list
+			this.recyclePoints.add(tp);
+			// add deleted time point to the notification
+			info.addTimePoint(tp);
+			// add entry to the map
+			committed.put(tp, cRemoved);
 		}
-		
-		
-		// check if a notification should be sent
-		if (notify) 
-		{
-			// check observers 
-			synchronized (this.observers)
-			{
-				// notify observers
-				for (TemporalNetworkObserver obs : this.observers) 
-				{
-					try 
-					{
-						// do notify
-						obs.notify(info);
-					} catch (NotificationPropagationFailureException ex) {
-						error(ex.getMessage());
-					}
-				}
+			
+		// check observers 
+		synchronized (this.observers) {
+			// notify observers
+			for (TemporalNetworkObserver obs : this.observers) {
+				// do notify
+				obs.notify(info);
 			}
 		}
 	}
@@ -604,10 +511,16 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 * 
 	 * @param tp
 	 * @return
-	 * @throws TimePointNotFoundException
 	 */
-	protected abstract List<TimePointDistanceConstraint> doRemoveTimePoint(TimePoint tp) 
-			throws TimePointNotFoundException;
+	protected abstract List<TimePointDistanceConstraint> doRemoveTimePoint(TimePoint tp); 
+	
+	/**
+	 * 
+	 * @param originTimePoint
+	 * @param tp1
+	 * @return
+	 */
+	public abstract long[] getConstraintBounds(TimePoint originTimePoint, TimePoint tp1);
 	
 	/**
 	 * Creates a distance constraint between two time points with the 
@@ -621,8 +534,8 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 * @throws InconsistentTpDistanceRelation
 	 */
 	public final void addDistanceConstraint(TimePointDistanceConstraint constraint) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// check consistency of distance bound
 		if (constraint.getDistanceLowerBound() > constraint.getDistanceUpperBound())  {
 			// inconsistent value
@@ -632,11 +545,9 @@ public abstract class TemporalNetwork extends FrameworkObject
 					+ "is inconsistent or it is not compatible wih the domain [origin= " + this.origin + ", horizon= " + this.horizon + "]");
 		}
 		
-		// add constraint to the network
-		boolean changed = this.doAddConstraint(constraint);
-		// send notification if a change to the temporal information as be actually performed
-		if (changed) 
-		{
+		// add constraint to the network and check changes
+		if (this.doAddConstraint(constraint)) {
+			
 			// create notification
 			AddRelationTemporalNetworkNotification info = TemporalNetworkNotificationFactory
 					.createNotification(TemporalNetworkNotificationTypes.ADD_REL);
@@ -644,19 +555,11 @@ public abstract class TemporalNetwork extends FrameworkObject
 			info.addRelation(constraint);
 		
 			// check observers
-			synchronized (this.observers)
-			{
+			synchronized (this.observers) {
 				// notify observers
-				for (TemporalNetworkObserver obs : this.observers) 
-				{
-					try 
-					{
-						// do notify
-						obs.notify(info);
-					}
-					catch (NotificationPropagationFailureException ex) {
-						error(ex.getMessage());
-					}
+				for (TemporalNetworkObserver obs : this.observers) {
+					// do notify
+					obs.notify(info);
 				}
 			}
 		}
@@ -685,18 +588,20 @@ public abstract class TemporalNetwork extends FrameworkObject
 		
 		// list of committed distance constraints
 		List<TimePointDistanceConstraint> committed = new ArrayList<>();
-		try 
-		{
+		try {
+			
 			// propagate constraints
-			for (int i = 0; i < constraints.length; i++) 
-			{
+			for (int i = 0; i < constraints.length; i++) {
+				
 				// get constraint
 				TimePointDistanceConstraint constraint = constraints[i];
 				// add constraint to network
 				boolean changed = this.doAddConstraint(constraint);
 				// add committed constraint
 				committed.add(constraint);
+				// check if something changes 
 				if (changed) {
+					
 					// add constraint to notification
 					info.addRelation(constraint);
 					// set notify flag
@@ -704,39 +609,32 @@ public abstract class TemporalNetwork extends FrameworkObject
 				}
 			}
 		}
-		catch (InconsistentDistanceConstraintException ex ) 
-		{
+		catch (InconsistentDistanceConstraintException ex ) {
+			
 			// remove all committed constraints
 			for (TimePointDistanceConstraint tpd : committed) {
-				try {
-					// remove added constraint
-					this.doRemoveDistanceConstraint(tpd);
-				}
-				catch (DistanceConstraintNotFoundException exx) {
-					error(exx.getMessage());
-				}
+				// remove added constraint
+				this.doRemoveDistanceConstraint(tpd);
 			}
+			
+			// do not send notification
+			notify = false;
 			
 			// throw exception
 			throw new TemporalNetworkTransactionFailureException("Error while creating temporal constraints - Rollback Transaction");
 		}
-
+		finally {
 		
-		// check if transaction has been successfully done and a notification should be sent
-		if (notify) 
-		{
-			// check observers
-			synchronized (this.observers)
-			{
-				// notify observers
-				for (TemporalNetworkObserver obs : this.observers) 
-				{
-					try 
-					{
+			// check if transaction has been successfully done and a notification should be sent
+			if (notify) {
+				
+				// check observers
+				synchronized (this.observers) {
+					
+					// notify observers
+					for (TemporalNetworkObserver obs : this.observers) {
 						// do notify
 						obs.notify(info);
-					} catch (NotificationPropagationFailureException ex) {
-						error(ex.getMessage());
 					}
 				}
 			}
@@ -758,101 +656,59 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 */
 	public final void removeConstraint(TimePointDistanceConstraint rel)  
 	{
-		try 
-		{
-			// remove temporal relation and check if a notification should be sent
-			this.doRemoveDistanceConstraint(rel);
+		// remove temporal relation and check if a notification should be sent
+		if (this.doRemoveDistanceConstraint(rel)) {
+		
 			// create notification
 			DelRelationTemporalNetworkNotification info = TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.DEL_REL);
 			info.addRelation(rel);
 			
 			// check observers
-			synchronized (this.observers)
-			{
+			synchronized (this.observers) {
 				// notify observers
-				for (TemporalNetworkObserver obs : this.observers) 
-				{
-					try 
-					{
-						// do notify
-						obs.notify(info);
-					}
-					catch (NotificationPropagationFailureException ex) {
-						error(ex.getMessage());
-					}
+				for (TemporalNetworkObserver obs : this.observers) {
+					// do notify
+					obs.notify(info);
 				}
 			}
-		}
-		catch (DistanceConstraintNotFoundException ex) {
-			// error message
-			error(ex.getMessage());
 		}
 	}
 	
 	/**
 	 * Removes N distance constraints all at once
 	 *
-	 * @param rel
+	 * @param rels
 	 */
 	public final void removeDistanceConstraint(List<TimePointDistanceConstraint> rels) 
 	{
 		// notification flag
-		boolean notify = true;
+		boolean notify = false;
 		// create notification
-		DelRelationTemporalNetworkNotification info = TemporalNetworkNotificationFactory.createNotification(TemporalNetworkNotificationTypes.DEL_REL);
+		DelRelationTemporalNetworkNotification info = TemporalNetworkNotificationFactory
+				.createNotification(TemporalNetworkNotificationTypes.DEL_REL);
 		
-		// list of deleted constraints
-		List<TimePointDistanceConstraint> committed = new ArrayList<>();
 		// get constraints to delete
-		for (TimePointDistanceConstraint rel : rels) 
-		{
-			try 
-			{
-				// remove temporal relation
-				this.doRemoveDistanceConstraint(rel);
-				// add constraint to the list of committed ones
-				committed.add(rel);
-				// add constraint to notify
-				info.addRelation(rel);
-			}
-			catch (DistanceConstraintNotFoundException ex) {
-				
-				// restore constraints
-				for (TimePointDistanceConstraint cons : committed) {
-					try {
-						// add constraint
-						this.doAddConstraint(cons);
-					}
-					catch (InconsistentDistanceConstraintException exx) {
-						error(ex.getMessage());
-					}
-				}
-				
-				// error message
-				error(ex.getMessage());
+		for (TimePointDistanceConstraint rel : rels) {
+			// remove temporal relation
+			if (this.doRemoveDistanceConstraint(rel)) {
 				// set notification flag
-				notify = false;
-				throw new RuntimeException(ex.getMessage());
+				notify = true;
 			}
+			
+			// add constraint to notify
+			info.addRelation(rel);
 		}
 		
 		// check if a notification is necessary
-		if (notify)
-		{
+		if (notify) {
+			
 			// check observers
-			synchronized (this.observers)
-			{
+			synchronized (this.observers) {
+				
 				// notify observers
-				for (TemporalNetworkObserver obs : this.observers) 
-				{
-					try 
-					{
-						// do notify
-						obs.notify(info);
-					}
-					catch (NotificationPropagationFailureException ex) {
-						error(ex.getMessage());
-					}
+				for (TemporalNetworkObserver obs : this.observers) {
+					// do notify
+					obs.notify(info);
 				}
 			}
 		}
@@ -862,10 +718,9 @@ public abstract class TemporalNetwork extends FrameworkObject
 	 * Actually remove constraint from network
 	 * 
 	 * @param rel
-	 * @throws DistanceConstraintNotFoundException
+	 * @return
 	 */
-	protected abstract void doRemoveDistanceConstraint(TimePointDistanceConstraint rel) 
-			throws DistanceConstraintNotFoundException;
+	protected abstract boolean doRemoveDistanceConstraint(TimePointDistanceConstraint rel);
 	
 	/**
 	 * 
@@ -897,5 +752,10 @@ public abstract class TemporalNetwork extends FrameworkObject
 		// get constraint
 		return c;
 	}
+
+	/**
+	 * 
+	 */
+	public abstract void printDiagnosticData();
 	
 }

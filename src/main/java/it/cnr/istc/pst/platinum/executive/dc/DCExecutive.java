@@ -11,11 +11,9 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.log.FrameworkLoggingLevel;
 
 /**
  * 
- * @author anacleto
- *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.OFF
+		level = FrameworkLoggingLevel.INFO
 )
 @MonitorConfiguration(
 		monitor = DCMonitor.class
@@ -41,28 +39,21 @@ public class DCExecutive extends Executive
 	protected void doPrepareExecution(Goal goal) 
 			throws Exception
 	{
-//		try
-//		{
-			// export plan to a file according to the expected encoding
-			String path = this.pdb.export();
-			// load strategy manager
-			System.out.println("Starting strategy loader...\n");
-			StrategyLoader loader = new StrategyLoader(path, this.pdb.getHorizon());
-			// read computed strategy
-			loader.readStrategy();
-			//EDIT: retrieve time
-			goal.setUppaalTime(loader.getTigaTime());
-			goal.setExistsStrategy(loader.getExistsStrategy());
-			goal.setManagementStrategyTime(loader.getManagementStrategyTime());
-			goal.setOutOfBounds(loader.getStrategy().isOutOfBounds());
-			goal.setMaxOutOfBounds(loader.getStrategy().getStrikeMaxReached());
-			
-			// get strategy
-			this.checker = loader.getStrategy();
-//		}
-//		catch (Exception ex) {
-//			System.err.println(ex.getMessage());
-//		}
+		// export plan to a file according to the expected encoding
+		String path = this.pdb.export();
+		// load strategy manager
+		System.out.println("Starting strategy loader...\n");
+		StrategyLoader loader = new StrategyLoader(path, this.pdb.getHorizon());
+		// read computed strategy
+		loader.readStrategy();
+		//EDIT: retrieve time
+		goal.setUppaalTime(loader.getTigaTime());
+		goal.setExistsStrategy(loader.getExistsStrategy());
+		goal.setManagementStrategyTime(loader.getManagementStrategyTime());
+		goal.setOutOfBounds(loader.getStrategy().isOutOfBounds());
+		goal.setMaxOutOfBounds(loader.getStrategy().getStrikeMaxReached());
 		
+		// get strategy
+		this.checker = loader.getStrategy();
 	}
 }

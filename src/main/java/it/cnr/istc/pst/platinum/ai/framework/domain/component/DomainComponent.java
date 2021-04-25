@@ -47,7 +47,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.view.component.gantt.GanttCom
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class DomainComponent extends FrameworkObject
@@ -603,8 +603,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 */
 	public synchronized Set<Relation> activate(Decision dec) 
-			throws DecisionPropagationException 
-	{
+			throws DecisionPropagationException {
+		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to add a not local decision to a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
@@ -868,6 +868,7 @@ public abstract class DomainComponent extends FrameworkObject
 			if (rel.isLocal()) {
 				// add to local relations
 				this.localRelations.add(rel);
+				
 			} else {
 				// mutually access global relations
 				synchronized (globalRelations) {
@@ -1618,11 +1619,10 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @throws ParameterCreationException
 	 */
 	public synchronized Token createToken(int id, ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus state) 
-			throws TemporalIntervalCreationException, ParameterCreationException
-	{
+			throws TemporalIntervalCreationException, ParameterCreationException {
+		
 		// create a temporal interval
-		TemporalInterval interval = this.tdb.
-				createTemporalInterval(
+		TemporalInterval interval = this.tdb.createTemporalInterval(
 						start,
 						end, 
 						duration, 
@@ -1630,7 +1630,6 @@ public abstract class DomainComponent extends FrameworkObject
 		
 		// create predicate
 		Predicate predicate = new Predicate(PREDICATE_COUNTER.getAndIncrement(), value);
-		
 		// check parameter labels
 		if (labels != null && labels.length > 0) {
 			

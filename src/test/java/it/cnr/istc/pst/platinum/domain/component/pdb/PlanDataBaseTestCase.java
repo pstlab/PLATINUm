@@ -35,7 +35,7 @@ import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.ParameterDomainType;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class PlanDataBaseTestCase 
@@ -81,9 +81,9 @@ public class PlanDataBaseTestCase
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			StateVariableValue v11 = c1.addStateVariableValue("Val11", false);
-			StateVariableValue v12 = c1.addStateVariableValue("Val12", true);
-			StateVariableValue v13 = c1.addStateVariableValue("Val13", false);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11", new long[] {5, 11}, false);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12");
+			StateVariableValue v13 = c1.addStateVariableValue("Val13", new long[] {6, 12}, false);
 			// add parameter to value description
 			v13.addParameterPlaceHolder(xAxis);
 			
@@ -99,11 +99,11 @@ public class PlanDataBaseTestCase
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			// add values
-			StateVariableValue v21 = c2.addStateVariableValue("Val21", true);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21");
 			v21.addParameterPlaceHolder(xAxis);
 			
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", false);
-			StateVariableValue v23 = c2.addStateVariableValue("Val23", true);
+			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {1, 5}, false);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23");
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -114,9 +114,9 @@ public class PlanDataBaseTestCase
 			// create external state variables
 			ExternalStateVariable c3 = this.pdb.createDomainComponent("C3", DomainComponentType.SV_EXTERNAL);
 			// add values
-			StateVariableValue v31 = c3.addStateVariableValue("Val31", true);
-			StateVariableValue v32 = c3.addStateVariableValue("Val32", false);
-			StateVariableValue v33 = c3.addStateVariableValue("Val33", true);
+			StateVariableValue v31 = c3.addStateVariableValue("Val31");
+			StateVariableValue v32 = c3.addStateVariableValue("Val32", new long[] {5, 8}, false);
+			StateVariableValue v33 = c3.addStateVariableValue("Val33");
 			// add transitions
 			c3.addValueTransition(v31, v32);
 			c3.addValueTransition(v32, v33);
@@ -211,11 +211,11 @@ public class PlanDataBaseTestCase
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
-			StateVariableValue v11 = c1.addStateVariableValue("Val11", false);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11", new long[] {4, 8}, false);
 			Assert.assertNotNull(v11);
-			StateVariableValue v12 = c1.addStateVariableValue("Val12", true);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12");
 			Assert.assertNotNull(v12);
-			StateVariableValue v13 = c1.addStateVariableValue("Val13", false);
+			StateVariableValue v13 = c1.addStateVariableValue("Val13", new long[] {2, 8}, false);
 			Assert.assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
@@ -232,11 +232,11 @@ public class PlanDataBaseTestCase
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
-			StateVariableValue v21 = c2.addStateVariableValue("Val21", true);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21");
 			Assert.assertNotNull(v21);
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", false);
+			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {2, 7}, false);
 			Assert.assertNotNull(v22);
-			StateVariableValue v23 = c2.addStateVariableValue("Val23", true);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23");
 			Assert.assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
@@ -295,11 +295,11 @@ public class PlanDataBaseTestCase
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
-			StateVariableValue v11 = c1.addStateVariableValue("Val11", true);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11");
 			Assert.assertNotNull(v11);
-			StateVariableValue v12 = c1.addStateVariableValue("Val12", true);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12");
 			Assert.assertNotNull(v12);
-			StateVariableValue v13 = c1.addStateVariableValue("Val13", false);
+			StateVariableValue v13 = c1.addStateVariableValue("Val13", new long[] {4, 8}, false);
 			Assert.assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
@@ -314,11 +314,11 @@ public class PlanDataBaseTestCase
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
-			StateVariableValue v21 = c2.addStateVariableValue("Val21", false);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21", new long[] {2, 7}, false);
 			Assert.assertNotNull(v21);
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", true);
+			StateVariableValue v22 = c2.addStateVariableValue("Val22");
 			Assert.assertNotNull(v22);
-			StateVariableValue v23 = c2.addStateVariableValue("Val23", true);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23");
 			Assert.assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
@@ -440,11 +440,11 @@ public class PlanDataBaseTestCase
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
-			StateVariableValue v11 = c1.addStateVariableValue("Val11", true);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11");
 			Assert.assertNotNull(v11);
-			StateVariableValue v12 = c1.addStateVariableValue("Val12", true);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12");
 			Assert.assertNotNull(v12);
-			StateVariableValue v13 = c1.addStateVariableValue("Val13", true);
+			StateVariableValue v13 = c1.addStateVariableValue("Val13");
 			Assert.assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
@@ -454,23 +454,25 @@ public class PlanDataBaseTestCase
 			c1.addValueTransition(v13, v12);
 			// add component
 			this.pdb.addDomainComponent(c1);
+			System.out.println(c1);
 			
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
-			StateVariableValue v21 = c2.addStateVariableValue("Val21", true);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21");
 			Assert.assertNotNull(v21);
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", false);
+			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {1, 20}, false);
 			Assert.assertNotNull(v22);
-			StateVariableValue v23 = c2.addStateVariableValue("Val23", false);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23", new long[] {2, 8}, false);
 			Assert.assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
 			c2.addValueTransition(v23, v21);
 			// add component
-			this.pdb.addDomainComponent(c2);		
+			this.pdb.addDomainComponent(c2);	
+			System.out.println(c2);
 			
 			List<ComponentValue> values = ((PlanDataBaseComponent) this.pdb).getValues();
 			Assert.assertNotNull(values);
@@ -484,6 +486,7 @@ public class PlanDataBaseTestCase
 			// create synchronization
 			SynchronizationRule rule = this.pdb.createSynchronizationRule(v13, new String[] {});
 			Assert.assertNotNull(rule);
+			
 			// add constraint
 			TokenVariable cd0 = rule.addTokenVariable(v23, new String[] {});
 			Assert.assertNotNull(cd0);
@@ -495,14 +498,13 @@ public class PlanDataBaseTestCase
 						{0, this.pdb.getHorizon()}, 
 						{0, this.pdb.getHorizon()}
 					});
+			
 			Assert.assertNotNull(constraint);
-		
+			
 			// add rule
 			this.pdb.addSynchronizationRule(rule);
+			System.out.println(rule);
 		
-			// print PDB
-			System.out.println(this.pdb);
-			
 			// print pending decisions
 			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
 			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
@@ -559,11 +561,11 @@ public class PlanDataBaseTestCase
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c1);
 			// add values
-			StateVariableValue v11 = c1.addStateVariableValue("Val11", true);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11");
 			Assert.assertNotNull(v11);
-			StateVariableValue v12 = c1.addStateVariableValue("Val12", false);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12", new long[] {5, 10}, false);
 			Assert.assertNotNull(v12);
-			StateVariableValue v13 = c1.addStateVariableValue("Val13", true);
+			StateVariableValue v13 = c1.addStateVariableValue("Val13");
 			Assert.assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
@@ -578,11 +580,11 @@ public class PlanDataBaseTestCase
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
 			Assert.assertNotNull(c2);
 			// add values
-			StateVariableValue v21 = c2.addStateVariableValue("Val21", true);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21");
 			Assert.assertNotNull(v21);
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", true);
+			StateVariableValue v22 = c2.addStateVariableValue("Val22");
 			Assert.assertNotNull(v22);
-			StateVariableValue v23 = c2.addStateVariableValue("Val23", true);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23");
 			Assert.assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
@@ -680,9 +682,9 @@ public class PlanDataBaseTestCase
 			
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
-			StateVariableValue v11 = c1.addStateVariableValue("Val11", false);
-			StateVariableValue v12 = c1.addStateVariableValue("Val12", true);
-			StateVariableValue v13 = c1.addStateVariableValue("Val13", true);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11", new long[] {3, 7}, false);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12");
+			StateVariableValue v13 = c1.addStateVariableValue("Val13");
 			// add transitions
 			c1.addValueTransition(v11, v12);
 			c1.addValueTransition(v12, v11);
@@ -694,9 +696,9 @@ public class PlanDataBaseTestCase
 			
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
-			StateVariableValue v21 = c2.addStateVariableValue("Val21", true);
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", false);
-			StateVariableValue v23 = c2.addStateVariableValue("Val23", true);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21");
+			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {5, 10}, false);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23");
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -778,9 +780,9 @@ public class PlanDataBaseTestCase
 			
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
-			StateVariableValue v11 = c1.addStateVariableValue("Val11", false);
-			StateVariableValue v12 = c1.addStateVariableValue("Val12", true);
-			StateVariableValue v13 = c1.addStateVariableValue("Val13", true);
+			StateVariableValue v11 = c1.addStateVariableValue("Val11", new long[] {3, 8}, false);
+			StateVariableValue v12 = c1.addStateVariableValue("Val12");
+			StateVariableValue v13 = c1.addStateVariableValue("Val13");
 			// add transitions
 			c1.addValueTransition(v11, v12);
 			c1.addValueTransition(v12, v11);
@@ -792,9 +794,9 @@ public class PlanDataBaseTestCase
 			
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
-			StateVariableValue v21 = c2.addStateVariableValue("Val21", true);
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", false);
-			StateVariableValue v23 = c2.addStateVariableValue("Val23", true);
+			StateVariableValue v21 = c2.addStateVariableValue("Val21");
+			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {5, 11}, false);
+			StateVariableValue v23 = c2.addStateVariableValue("Val23");
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -904,8 +906,8 @@ public class PlanDataBaseTestCase
 			
 			// create state variable 
 			PrimitiveStateVariable robotAction = this.pdb.createDomainComponent("RobotAction", DomainComponentType.SV_PRIMITIVE);
-			StateVariableValue idle = robotAction.addStateVariableValue("Idle", true);
-			StateVariableValue go = robotAction.addStateVariableValue("Go", true);
+			StateVariableValue idle = robotAction.addStateVariableValue("Idle");
+			StateVariableValue go = robotAction.addStateVariableValue("Go");
 			go.addParameterPlaceHolder(positions);
 			
 			// add transitions
@@ -916,7 +918,7 @@ public class PlanDataBaseTestCase
 			
 			// create state variables
 			PrimitiveStateVariable robotPosition = this.pdb.createDomainComponent("RobotPosition", DomainComponentType.SV_PRIMITIVE);
-			StateVariableValue at = robotPosition.addStateVariableValue("At", true);
+			StateVariableValue at = robotPosition.addStateVariableValue("At");
 			at.addParameterPlaceHolder(positions);
 			
 			StateVariableValue moving = robotPosition.addStateVariableValue("Moving", new long[] {5, 11}, false);

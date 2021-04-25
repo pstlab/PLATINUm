@@ -9,7 +9,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePoint;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class DistanceGraph 
@@ -28,10 +28,18 @@ public class DistanceGraph
 	
 	/**
 	 * 
-	 * @param inf
+	 * @param horizon
 	 */
-	public void setInfity(long inf) {
-		this.infty = inf;
+	public void setInfity(long horizon) {
+		this.infty = horizon + 1;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getInfity() {
+		return this.infty;
 	}
 	
 	/**
@@ -56,12 +64,14 @@ public class DistanceGraph
 	 * @return
 	 */
 	public List<TimePoint> getAdjacents(TimePoint point) {
+		
 		// list of adjacent time points
 		List<TimePoint> list = new ArrayList<>();
 		if (this.edges.containsKey(point)) {
 			// add adjacent time points
 			list.addAll(this.edges.get(point).keySet());
 		}
+		
 		// get list
 		return list;
 	}
@@ -75,7 +85,6 @@ public class DistanceGraph
 		this.edges.put(point, new HashMap<TimePoint, Long>());
 	}
 	
-
 	/**
 	 * 
 	 * @param source
@@ -88,7 +97,7 @@ public class DistanceGraph
 			this.edges.put(source, new HashMap<TimePoint, Long>());
 		}
 		
-		// update weight
+		// update distance
 		this.edges.get(source).put(target, weight);
 	}
 	
@@ -101,7 +110,7 @@ public class DistanceGraph
 	public void delete(TimePoint point) {
 		// remove from points
 		this.nodes.remove(point.getId());
-		// remove outcoming edges
+		// remove outgoing edges
 		this.edges.remove(point);
 		// remove incoming edges
 		for (TimePoint i : this.nodes.values()) {
@@ -129,7 +138,8 @@ public class DistanceGraph
 	 * @param target
 	 * @return
 	 */
-	public long getEdgeWeight(TimePoint source, TimePoint target) {
+	public long getDistance(TimePoint source, TimePoint target) {
+		
 		// initialize to infinity
 		long distance = this.infty;
 		// check if an edge exists
@@ -139,6 +149,30 @@ public class DistanceGraph
 		}
 		// return distance
 		return distance;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		// print the distance graph
+		String string = "{\n";
+		
+		for (TimePoint reference : this.edges.keySet()) {
+			string += "\tpoint: " + reference.getId() + ",\n"
+					+ "\tedges: [\n";
+
+			for (TimePoint target : this.edges.get(reference).keySet()) {
+				string += "\t\t{ point: " + target.getId() +", distance: " + this.edges.get(reference).get(target) + "},\n";
+			}
+			
+			string += "\t]\n";
+			
+		}
+		
+		string += "}\n";
+		return string;
 	}
 	
 }

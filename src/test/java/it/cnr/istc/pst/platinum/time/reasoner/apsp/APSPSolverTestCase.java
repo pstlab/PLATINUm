@@ -11,6 +11,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.query.TemporalQueryType
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.TemporalConstraintFactory;
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.TemporalConstraintType;
 import it.cnr.istc.pst.platinum.ai.framework.time.solver.apsp.APSPTemporalSolver;
+import it.cnr.istc.pst.platinum.ai.framework.time.solver.apsp.DistanceGraph;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.SimpleTemporalNetworkWithUncertainty;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.TemporalNetwork;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePoint;
@@ -19,10 +20,9 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.InconsistentDistanceCons
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointDistanceQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointScheduleQuery;
 
-
 /**
  * 
- * @author alessandroumbrico
+ * @author alessandro
  *
  */
 public class APSPSolverTestCase 
@@ -120,52 +120,72 @@ public class APSPSolverTestCase
 	@Test
 	public void init() {
 		System.out.println("[Test]: init() --------------------");
-		// create APSP solver
-		APSPTemporalSolver solver = new APSPTemporalSolver(this.tn);
-		// check initialization
-		Assert.assertNotNull(solver);
-		// print initial matrix
-		Assert.assertTrue(solver.isConsistent());
-		System.out.println(solver);
 		
-		// get distance between origin and tp1
-		TimePointScheduleQuery oquery = this.qf.create(TemporalQueryType.TP_SCHEDULE);
-		// set point
-		oquery.setTimePoint(this.tp1);
-		// process query
-		solver.process(oquery);
-		// check bounds
-		Assert.assertTrue(this.tp1.getLowerBound() == 10);
-		Assert.assertTrue(this.tp1.getUpperBound() == 20);
-		
-		// get distance between tp3 tp4
-		TimePointDistanceQuery dquery = this.qf.create(TemporalQueryType.TP_DISTANCE);
-		// set points
-		dquery.setSource(this.tp3);
-		dquery.setTarget(this.tp4);
-		// process query
-		solver.process(dquery);
-		// check bounds
-		Assert.assertTrue(dquery.getDistanceLowerBound() == 40);
-		Assert.assertTrue(dquery.getDistanceUpperBound() == 50);
-		
-		// check distances between origin and tp2
-		oquery.setTimePoint(this.tp2);
-		// process query
-		solver.process(oquery);
-		// check bounds
-		Assert.assertTrue(this.tp2.getLowerBound() == 40);
-		Assert.assertTrue(this.tp2.getUpperBound() == 50);
-		
-		// check distance between origin and tp3
-		oquery.setTimePoint(this.tp3);
-		// process query
-		solver.process(oquery);
-		Assert.assertTrue(this.tp3.getLowerBound() == 20);
-		Assert.assertTrue(this.tp3.getUpperBound() == 30);
-		
-		// check number of propagations
-		Assert.assertTrue(solver.getPropagationCounter() == 1);
+		try {
+			
+			// create APSP solver
+			APSPTemporalSolver solver = new APSPTemporalSolver(this.tn);
+			// check initialization
+			Assert.assertNotNull(solver);
+			
+			
+			
+			
+			// print initial matrix
+			Assert.assertTrue(solver.isConsistent());
+			System.out.println(solver);
+			
+			// get the underlying distance graph
+			DistanceGraph graph = solver.getDistanceGraph();
+			Assert.assertNotNull(graph);
+			System.out.println(graph);
+			
+			// print also the network 
+			System.out.println(this.tn);
+			
+			// get distance between origin and tp1
+			TimePointScheduleQuery oquery = this.qf.create(TemporalQueryType.TP_SCHEDULE);
+			// set point
+			oquery.setTimePoint(this.tp1);
+			// process query
+			solver.process(oquery);
+			// check bounds
+			Assert.assertTrue(this.tp1.getLowerBound() == 10);
+			Assert.assertTrue(this.tp1.getUpperBound() == 20);
+			
+			// get distance between tp3 tp4
+			TimePointDistanceQuery dquery = this.qf.create(TemporalQueryType.TP_DISTANCE);
+			// set points
+			dquery.setSource(this.tp3);
+			dquery.setTarget(this.tp4);
+			// process query
+			solver.process(dquery);
+			// check bounds
+			Assert.assertTrue(dquery.getDistanceLowerBound() == 40);
+			Assert.assertTrue(dquery.getDistanceUpperBound() == 50);
+			
+			// check distances between origin and tp2
+			oquery.setTimePoint(this.tp2);
+			// process query
+			solver.process(oquery);
+			// check bounds
+			Assert.assertTrue(this.tp2.getLowerBound() == 40);
+			Assert.assertTrue(this.tp2.getUpperBound() == 50);
+			
+			// check distance between origin and tp3
+			oquery.setTimePoint(this.tp3);
+			// process query
+			solver.process(oquery);
+			Assert.assertTrue(this.tp3.getLowerBound() == 20);
+			Assert.assertTrue(this.tp3.getUpperBound() == 30);
+			
+			// check number of propagations
+			Assert.assertTrue(solver.getPropagationCounter() == 1);
+		}
+		catch (Exception ex) {
+			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
+		}
 	}
 	
 	/**
@@ -455,22 +475,10 @@ public class APSPSolverTestCase
 	@Test
 	public void updateTemporalNetworkEdges() {
 		try {
+			
 			System.out.println("[Test]: updateTemporalNetworkEdges() --------------------");
 			// create APSP solver
 			APSPTemporalSolver solver = new APSPTemporalSolver(this.tn);
-			// check consistency
-			Assert.assertTrue(solver.isConsistent());
-			
-			// create temporal relation
-			TimePointDistanceConstraint rel = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
-			rel.setReference(this.tn.getOriginTimePoint());
-			rel.setTarget(this.tp4);
-			rel.setDistanceLowerBound(61);
-			rel.setDistanceUpperBound(65);
-			rel.setControllable(true);
-
-			// add constraint
-			this.tn.addDistanceConstraint(rel);
 			// check consistency
 			Assert.assertTrue(solver.isConsistent());
 			// check distances
@@ -479,9 +487,32 @@ public class APSPSolverTestCase
 			query.setTimePoint(this.tp4);
 			// process query
 			solver.process(query);
+			Assert.assertTrue(this.tp4.getLowerBound() == 60);
+			Assert.assertTrue(this.tp4.getUpperBound() == 70);
+			// print network
+			System.out.println(solver);
+			
+			// create temporal relation
+			TimePointDistanceConstraint rel = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
+			rel.setReference(this.tn.getOriginTimePoint());
+			rel.setTarget(this.tp4);
+			rel.setDistanceLowerBound(65);
+			rel.setDistanceUpperBound(68);
+			rel.setControllable(true);
+
+			// add constraint
+			this.tn.addDistanceConstraint(rel);
+			// check consistency
+			Assert.assertTrue(solver.isConsistent());
+			// check distances
+			query = this.qf.create(TemporalQueryType.TP_SCHEDULE);
+			// set point
+			query.setTimePoint(this.tp4);
+			// process query
+			solver.process(query);
 			// check bounds
-			Assert.assertTrue(this.tp4.getLowerBound() == 61);
-			Assert.assertTrue(this.tp4.getUpperBound() == 65);
+			Assert.assertTrue(this.tp4.getLowerBound() == 65);
+			Assert.assertTrue(this.tp4.getUpperBound() == 68);
 			// print network
 			System.out.println(solver);
 			
@@ -498,13 +529,14 @@ public class APSPSolverTestCase
 			solver.process(query);
 			// check bounds
 			Assert.assertTrue(this.tp4.getLowerBound() == 60);
-			Assert.assertTrue(this.tp4.getUpperBound() == 100);
+			Assert.assertTrue(this.tp4.getUpperBound() == 70);
 			
 			// check number of propagations
 			Assert.assertTrue(solver.getPropagationCounter() == 3);
 		}
 		catch (InconsistentDistanceConstraintException ex) {
 			System.err.println(ex.getMessage());
+			Assert.assertTrue(false);
 		}
 	}
 }

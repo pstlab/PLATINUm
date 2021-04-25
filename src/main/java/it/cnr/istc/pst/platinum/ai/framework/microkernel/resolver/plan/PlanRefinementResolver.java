@@ -35,7 +35,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class PlanRefinementResolver extends Resolver<DomainComponent>

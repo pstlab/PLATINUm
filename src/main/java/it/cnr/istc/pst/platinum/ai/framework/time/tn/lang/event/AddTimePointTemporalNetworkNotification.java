@@ -8,7 +8,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePoint;
 
 /**
  * 
- * @author alessandroumbrico
+ * @author alessandro
  *
  */
 public class AddTimePointTemporalNetworkNotification extends TemporalNetworkNotification 

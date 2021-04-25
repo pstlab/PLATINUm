@@ -54,14 +54,16 @@ public abstract class StateVariable extends DomainComponent
 	}
 	
 	/**
+	 * State variable values without duration bounds are implicitly treated as controllable
 	 * 
 	 * @param label
-	 * @param controllable
 	 * @return
 	 */
-	public StateVariableValue addStateVariableValue(String label, boolean controllable) {
-		return this.addStateVariableValue(label, new long [] {1l, this.tdb.getHorizon()}, controllable);
+	public StateVariableValue addStateVariableValue(String label) {
+		return this.addStateVariableValue(label, new long [] {1l, this.tdb.getHorizon()}, true);
 	}
+	
+	
 
 	/**
 	 * 

@@ -1,5 +1,7 @@
 package it.cnr.istc.pst.platinum.time.tn;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +17,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.IntervalDisjunctionExcep
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class SimpleTemporalNetworkTestCase
@@ -66,10 +68,10 @@ public class SimpleTemporalNetworkTestCase
 			// check time points
 			Assert.assertTrue(this.stn.getTimePoints().size() == 3);
 			Assert.assertTrue(this.stn.getTimePoints().contains(tp1));
-			// check temporal relations
-			TimePointDistanceConstraint rel01 = stn.getConstraintFromOrigin(tp1);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == ORIGIN);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == HORIZON);
+//			// check temporal relations
+//			TimePointDistanceConstraint rel01 = stn.getConstraintFromOrigin(tp1);
+//			Assert.assertTrue(rel01.getDistanceLowerBound() == ORIGIN);
+//			Assert.assertTrue(rel01.getDistanceUpperBound() == HORIZON);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -154,11 +156,11 @@ public class SimpleTemporalNetworkTestCase
 			System.out.println(this.stn);
 			
 			// check temporal relation in STN
-			TimePointDistanceConstraint rel01 = this.stn.getConstraintFromOrigin(tp1);
-			Assert.assertTrue(rel01.getReference().equals(this.stn.getOriginTimePoint()));
-			Assert.assertTrue(rel01.getTarget().equals(tp1));
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+//			TimePointDistanceConstraint rel01 = this.stn.getConstraintFromOrigin(tp1);
+//			Assert.assertTrue(rel01.getReference().equals(this.stn.getOriginTimePoint()));
+//			Assert.assertTrue(rel01.getTarget().equals(tp1));
+//			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
+//			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -186,14 +188,14 @@ public class SimpleTemporalNetworkTestCase
 		catch (InconsistentDistanceConstraintException ex) {
 			Assert.assertTrue(false);
 		}
-		finally {
-			// check the status of the network
-			TimePointDistanceConstraint rel01 = this.stn.getConstraintFromOrigin(tp1);
-			Assert.assertTrue(rel01.getReference().equals(this.stn.getOriginTimePoint()));
-			Assert.assertTrue(rel01.getTarget().equals(tp1));
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
-		}
+//		finally {
+//			// check the status of the network
+//			TimePointDistanceConstraint rel01 = this.stn.getConstraintFromOrigin(tp1);
+//			Assert.assertTrue(rel01.getReference().equals(this.stn.getOriginTimePoint()));
+//			Assert.assertTrue(rel01.getTarget().equals(tp1));
+//			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
+//			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+//		}
 	}
 	
 	/**
@@ -237,24 +239,40 @@ public class SimpleTemporalNetworkTestCase
 			System.out.println(this.stn);
 
 			// check temporal relation in STN			
-			TimePointDistanceConstraint rel01 = stn.getConstraints(this.stn.getOriginTimePoint(), tp1).get(0);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+			List<TimePointDistanceConstraint> rel01 = stn.getConstraints(this.stn.getOriginTimePoint(), tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertFalse(rel01.isEmpty());
+			// check constraint bounds
+			long[] bounds = this.stn.getConstraintBounds(this.stn.getOriginTimePoint(), tp1);
+			// check bounds
+			Assert.assertTrue(bounds[0] == 80);
+			Assert.assertTrue(bounds[1] == 150);
 
 			
 			// delete temporal relation
 			this.stn.removeConstraint(rel1);
-			rel01 = this.stn.getConstraints(this.stn.getOriginTimePoint(), tp1).get(0);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
-			// print STN and TN
+			rel01 = this.stn.getConstraints(this.stn.getOriginTimePoint(), tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertFalse(rel01.isEmpty());
+			// check constraint bounds
+			bounds = this.stn.getConstraintBounds(this.stn.getOriginTimePoint(), tp1);
+			// check bounds
+			Assert.assertTrue(bounds[0] == 80);
+			Assert.assertTrue(bounds[1] == 150);
+			
+			// print the network
 			System.out.println(this.stn);
 			
 			// delete temporal relation
 			this.stn.removeConstraint(rel3);
-			rel01 = stn.getConstraints(this.stn.getOriginTimePoint(), tp1).get(0);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 11);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+			rel01 = stn.getConstraints(this.stn.getOriginTimePoint(), tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertFalse(rel01.isEmpty());
+			// check constraint bounds
+			bounds = this.stn.getConstraintBounds(this.stn.getOriginTimePoint(), tp1);
+			// check bounds
+			Assert.assertTrue(bounds[0] == 11);
+			Assert.assertTrue(bounds[1] == 150);
 			// print STN and TN
 			System.out.println(this.stn);
 			System.out.println(stn);

@@ -234,13 +234,15 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws TemporalIntervalCreationException
 	 */
 	public synchronized TemporalInterval createTemporalInterval(long[] start, long[] end, long[] duration, boolean controllable) 
-			throws TemporalIntervalCreationException 
-	{
+			throws TemporalIntervalCreationException {
+		
 		// interval's start time
 		TimePoint s = null;
 		try {
+			
 			// create flexible start time
 			s = this.tn.addTimePoint(start[0], start[1]);
+			
 		} catch (InconsistentDistanceConstraintException | InconsistentTpValueException ex) {
 			// throw exception
 			throw new InconsistentIntervalStartTimeException(ex.getMessage());
@@ -248,10 +250,11 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// interval's end time
 		TimePoint e = null;
-		try 
-		{
+		try {
+			
 			// create flexible end time
 			e = this.tn.addTimePoint(end[0], end[1]);
+			
 		} catch (InconsistentDistanceConstraintException | InconsistentTpValueException ex) {
 			// delete start time
 			this.tn.removeTimePoint(s);
@@ -260,20 +263,21 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// interval's duration
 		TimePointDistanceConstraint d = null;
-		try 
-		{
+		try {
+			
 			// create distance constraint
 			d = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 			d.setReference(s);
 			d.setTarget(e);
-			d.setDistanceLowerBound(Math.max(1,duration[0]));
+			d.setDistanceLowerBound(Math.max(1, duration[0]));
 			d.setDistanceUpperBound(Math.min(duration[1], this.getHorizon()));
 			d.setControllable(controllable);
 			
 			// propagate distance constraint
 			this.tn.addDistanceConstraint(d);
-		} 
-		catch (InconsistentDistanceConstraintException ex) {
+			
+		} catch (InconsistentDistanceConstraintException ex) {
+			
 			// remove start and end time points
 			this.tn.removeTimePoint(s);
 			this.tn.removeTimePoint(e);
@@ -422,43 +426,9 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				// check if can overlap
 				boolean o2 = !((dmin <= 0 && dmax <= 0) || (dmin >= 0 && dmax >= 0));
 				
-				
-				
+		
 				// set result
-				overlap.setCanOverlap(o1 && o2);
-				
-				
-//				
-//				// compute distance between A and B
-//				IntervalDistanceQuery distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
-//				distance.setReference(a);
-//				distance.setTarget(b);
-//				// process query
-//				this.process(distance);
-//				// get distance bounds
-//				long dmin = distance.getDistanceLowerBound();
-//				long dmax = distance.getDistanceUpperBound();
-//				// check if A < B 
-//				boolean ab = (dmin <= dmax && dmin >= 0);
-//						
-//						
-//				// compute distance between B and A 
-//				distance = this.qf.create(TemporalQueryType.INTERVAL_DISTANCE);
-//				distance.setReference(b);
-//				distance.setTarget(a);
-//				// process query
-//				this.process(distance);
-//				// get distance bounds
-//				dmin = distance.getDistanceLowerBound();
-//				dmax = distance.getDistanceUpperBound();
-//				// check if B < A
-//				boolean ba = (dmin <= dmax && dmin >= 0);
-//				
-				
-				// set overlapping result
-//				overlap.setCanOverlap(!ab && !ba);
-				
-				
+				overlap.setCanOverlap(o1 || o2);
 				// print logging message
 				debug("[" + this.getClass().getName() + "] Processing query INTERVAL_OVERLAP:\n"
 						+ "- Temporal Interval (A): " + a + "\n"
@@ -561,6 +531,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 					TimePointDistanceConstraint[] c = new TimePointDistanceConstraint[] { 
 						this.doPropagateBeforeConstraint(before)
 					};
+					
 					// set propagated constraint
 					before.setPropagatedConstraints(c);
 				}
@@ -1046,48 +1017,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		return c;
 	}
 	
-//	/**
-//	 * 
-//	 * @param subset
-//	 * @return
-//	 */
-//	private double computeMakespan(Set<TemporalInterval> subset)
-//	{
-//		// initialize the makespan
-//		double makespan = this.getOrigin();
-//		// get the list of intervals to take into account
-//		List<TemporalInterval> data = new ArrayList<>();
-//		// check if a subset has been specified
-//		if (!subset.isEmpty()) {
-//			// take into account only a subset of intervals
-//			data.addAll(subset);
-//		}
-//		else {
-//			// get only controllable intervals
-//			for (TemporalInterval i : this.intervals) {
-//				// check controllability property
-//				if (i.isControllable()) {
-//					data.add(i);
-//				}
-//			}
-//		}
-//		
-//		// compute the makespan by taking into account controllable intervals only
-//		for (TemporalInterval i : data) 
-//		{
-//			// check interval schedule
-//			IntervalScheduleQuery query = this.qf.create(TemporalQueryType.INTERVAL_SCHEDULE);
-//			query.setInterval(i);
-//			// process
-//			this.process(query);
-//			// update makespan
-//			makespan = Math.max(makespan, i.getEndTime().getLowerBound());
-//		}
-//		
-//		// get the computed value
-//		return makespan;
-//	}
-	
 	/**
 	 * This method checks if the STNU is pseudo-controllable. 
 	 * 
@@ -1098,38 +1027,61 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 *
 	 * @return
 	 */
-	private boolean isPseudoControllable()
-	{
+	private boolean isPseudoControllable() {
+		
 		// hypothesis
 		boolean pseudoControllable = true;
-		// check contingent constraints
-		for (TimePointDistanceConstraint c : this.tn.getConstraints()) 
-		{
-			// check controllability
-			if (!c.isControllable()) {
-				// get related time points
-				TimePoint source = c.getReference();
-				TimePoint target = c.getTarget();
+		// check time points
+		for (TimePoint reference : this.tn.getTimePoints()) {
+			for (TimePoint target : this.tn.getTimePoints()) {
+				// get constraints
+				for (TimePointDistanceConstraint constraint : this.tn.getConstraints(reference, target)) {
+					
+					// check contingent constraints
+					if (!constraint.isControllable()) {
+						
+						// create query
+						TimePointDistanceQuery query = this.qf.create(TemporalQueryType.TP_DISTANCE);
+						query.setSource(reference);
+						query.setTarget(target);
+						// process query
+						this.solver.process(query);
+						
+						// get actual bounds
+						long dmin = query.getDistanceLowerBound();
+						long dmax = query.getDistanceUpperBound();
+						
+						// check duration
+						pseudoControllable = !(dmin > constraint.getDistanceLowerBound() || dmax < constraint.getDistanceUpperBound());
+					}
+					
+					// check if pseudo-controllable
+					if (!pseudoControllable) {
+						break;
+					}
+				}
 				
-				// create query
-				TimePointDistanceQuery query = this.qf.create(TemporalQueryType.TP_DISTANCE);
-				query.setSource(source);
-				query.setTarget(target);
-				// process query
-				this.solver.process(query);
-
-				// get actual bounds
-				long dmin = query.getDistanceLowerBound();
-				long dmax = query.getDistanceUpperBound();
-				// check duration
-				if (dmin < c.getDistanceLowerBound() && dmax < c.getDistanceUpperBound()) {
-					// contingent link change
-					pseudoControllable = false;
+				// check if pseudo-controllable
+				if (!pseudoControllable) {
 					break;
 				}
 			}
+			
+			// check if pseudo-controllable
+			if (!pseudoControllable) {
+				break;
+			}
 		}
+		
 		// get result
 		return pseudoControllable;
+	}
+
+	/**
+	 * 
+	 */
+	public void printDiagnosticData() {
+		this.tn.printDiagnosticData();
+		this.solver.printDiagnosticData();
 	}
 }

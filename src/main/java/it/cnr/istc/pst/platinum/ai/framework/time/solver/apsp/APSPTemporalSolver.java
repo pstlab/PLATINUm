@@ -7,13 +7,7 @@ import java.util.Map;
 import it.cnr.istc.pst.platinum.ai.framework.time.solver.TemporalSolver;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.TemporalNetwork;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePoint;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePointDistanceConstraint;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.AddRelationTemporalNetworkNotification;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.AddTimePointTemporalNetworkNotification;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.DelRelationTemporalNetworkNotification;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.DelTimePointTemporalNetworkNotification;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.TemporalNetworkNotification;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointDistanceFromOriginQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointDistanceQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointDistanceToHorizonQuery;
@@ -22,7 +16,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointSchedul
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
@@ -38,24 +32,22 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 	 */
 	public APSPTemporalSolver(TemporalNetwork tn) {
 		super(tn);
+		
 		// initialize APSP data structure
-		this.toPropagate = false;
 		this.distance = null;
 		// attribute for testing purposes
 		this.propagationCounter = 0;
-		
 		// initialize
-		this.init();
+		this.dg();
+		// set flag
+		this.toPropagate = true;
 	}
 	
 	/**
 	 * 
 	 */
-	private void init() 
-	{
-		// set propagate flag
-		this.toPropagate = true;
-		
+	private void dg() {
+
 		// create the distance graph
 		this.dg = new DistanceGraph();
 		// set temporal horizon
@@ -66,20 +58,23 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 			this.dg.add(point);
 		}
 		
-		// add edges to the distance graph
-		for (TimePoint reference : this.tn.getTimePoints()) 
-		{
-			// get related constraints
-			for (TimePointDistanceConstraint constraint : this.tn.getConstraints(reference)) 
-			{
-				// get target
-				TimePoint target = constraint.getTarget();
-				// get bounds
-				long max = constraint.getDistanceUpperBound();
-				long min = -constraint.getDistanceLowerBound();
-				// add edges
-				this.dg.add(reference, target, max);
-				this.dg.add(target, reference, min);
+		// add edges between points 
+		for (TimePoint reference : this.tn.getTimePoints()) {
+			for (TimePoint target : this.tn.getTimePoints()) {
+				
+				// check if different
+				if (!reference.equals(target)) {
+					
+					// get constraint bounds
+					long[] bounds = this.tn.getConstraintBounds(reference, target);
+					// check if a bound exists
+					if (bounds != null) {
+						
+						// set distance graph's edges according to the computed bounds
+						this.dg.add(reference, target, bounds[1]);
+						this.dg.add(target, reference, -bounds[0]);
+					}
+				} 
 			}
 		}
 	}
@@ -101,6 +96,7 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 		boolean consistent = true;
 		Iterator<TimePoint> it = this.dg.getPoints().iterator();
 		while (it.hasNext() && consistent) {
+			
 			// next time point
 			TimePoint tp = it.next();
 			// check cyclic distance
@@ -118,136 +114,164 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 	 */
 	@Override
 	public void notify(TemporalNetworkNotification info)
-			throws NotificationPropagationFailureException 
 	{
-		// set update flag
-		this.toPropagate = true;
 		// check notification type
 		switch (info.getType()) 
 		{
 			// temporal network initialized
-			case INITIALIZATION: 
-			{
-				// create the distance graph
-				this.dg = new DistanceGraph();
-				// set temporal horizon
-				this.dg.setInfity(this.tn.getHorizon());
-				// add all points to the distance graph
-				for (TimePoint point : this.tn.getTimePoints()) {
-					// add node to the distance graph
-					this.dg.add(point);
-				}
-				
-				// add edges to the distance graph
-				for (TimePoint reference : this.tn.getTimePoints()) 
-				{
-					// get related constraints
-					for (TimePointDistanceConstraint constraint : this.tn.getConstraints(reference)) 
-					{
-						// get target
-						TimePoint target = constraint.getTarget();
-						// get bounds
-						long max = constraint.getDistanceUpperBound();
-						long min = -constraint.getDistanceLowerBound();
-						// add edges
-						this.dg.add(reference, target, max);
-						this.dg.add(target, reference, min);
-					}
-				}
-			}
-			break;
+//			case INITIALIZATION: {
+//		
+//				// initialize data structures
+//				this.dg();
+//				// set to propagate flag
+//				this.toPropagate = true;
+//			}
+//			break;
 		
 			// temporal constraint added
-			case ADD_REL: 
-			{
-				// handle request
-				AddRelationTemporalNetworkNotification notif = (AddRelationTemporalNetworkNotification) info;
-				// add relations
-				for (TimePointDistanceConstraint constraint : notif.getRels()) 
-				{
-					// get edges' weights
-					long max = constraint.getDistanceUpperBound();
-					long min = -constraint.getDistanceLowerBound();
-					// add edge to the distance graph (replace the edges in case already present)
-					this.dg.add(constraint.getReference(), constraint.getTarget(), max);
-					this.dg.add(constraint.getTarget(), constraint.getReference(), min);
-				}
-			}
-			break;
+//			case ADD_REL: {
+//
+//				// handle request
+//				AddRelationTemporalNetworkNotification notif = (AddRelationTemporalNetworkNotification) info;
+//				// check pairs of involved time points
+//				Map<TimePoint, Set<TimePoint>> p2p= new HashMap<>();
+//				// check added constraints
+//				for (TimePointDistanceConstraint constraint : notif.getRels()) {
+//					// check time points
+//					if (!p2p.containsKey(constraint.getReference())) {
+//						p2p.put(constraint.getReference(), new HashSet<>());
+//					}
+//					
+//					// add pair
+//					p2p.get(constraint.getReference()).add(constraint.getTarget());
+//				}
+//				
+//				
+//				// update the internal distance graph
+//				for (TimePoint reference : p2p.keySet()) {
+//					for (TimePoint target : p2p.get(reference)) {
+//						
+//						// get constraint bounds
+//						long[] bounds = this.tn.getConstraintBounds(reference, target);
+//						// check if bound exists
+//						if (bounds != null) {
+//							// add/replace the associated edge of the distance graph
+//							this.dg.add(reference, target, bounds[1]);
+//							this.dg.add(target, reference, -bounds[0]);
+//						}
+//					}
+//				}
+//				
+//				// set propagate flag
+//				this.toPropagate = true;
+//			}
+//			break;
 			
-			// temporal relation deleted 
-			case DEL_REL: 
-			{
-				// handle request
-				DelRelationTemporalNetworkNotification notif = (DelRelationTemporalNetworkNotification) info;
-				// delete relations
-				for (TimePointDistanceConstraint constraint : notif.getRels()) 
-				{
-					// delete constraints in the distance graph
-					this.dg.delete(constraint.getReference(), constraint.getTarget());
-					this.dg.delete(constraint.getTarget(), constraint.getReference());
-				}
-			}
-			break;
+			// temporal constraint deleted 
+//			case DEL_REL: {
+//				
+//				// handle request
+//				DelRelationTemporalNetworkNotification notif = (DelRelationTemporalNetworkNotification) info;
+//				// check pairs of involved time points
+//				Map<TimePoint, Set<TimePoint>> p2p= new HashMap<>();
+//				for (TimePointDistanceConstraint constraint : notif.getRels()) {
+//					// check time points
+//					if (!p2p.containsKey(constraint.getReference())) {
+//						p2p.put(constraint.getReference(), new HashSet<>());
+//					}
+//					
+//					// add pair
+//					p2p.get(constraint.getReference()).add(constraint.getTarget());
+//				}
+//				
+//				
+//				// update the internal distance graph
+//				for (TimePoint reference : p2p.keySet()) {
+//					for (TimePoint target : p2p.get(reference)) {
+//						
+//						// get constraint bounds
+//						long[] bounds = this.tn.getConstraintBounds(reference, target);
+//						// check if bound exists
+//						if (bounds != null) {
+//							// add/replace the associated edge of the distance graph
+//							this.dg.add(reference, target, bounds[1]);
+//							this.dg.add(target, reference, -bounds[0]);
+//						}
+//					}
+//				}
+//				
+//				// set propagate flag
+//				this.toPropagate = true;
+//			}
+//			break;
 			
 			// time point deleted
-			case DEL_TP: 
-			{
+			case INITIALIZATION :
+			case ADD_TP : 
+			case ADD_REL : 
+			case DEL_REL : 
+			case DEL_TP : {
+				
 				// handle request
-				DelTimePointTemporalNetworkNotification notif = (DelTimePointTemporalNetworkNotification) info;
+//				DelTimePointTemporalNetworkNotification notif = (DelTimePointTemporalNetworkNotification) info;
 				// delete time points
-				for (TimePoint point : notif.getPoints()) {
-					// delete node from the distance graph
-					this.dg.delete(point);
-				}
+//				for (TimePoint point : notif.getPoints()) {
+//					// delete node from the distance graph
+//					this.dg.delete(point);
+//				}
+//				
+				// recompute dependency graph distance bounds
+				this.dg();	
+				// set to propagate flag
+				this.toPropagate = true;
 			}
 			break;
 			
 			// time point added 
-			case ADD_TP: 
-			{
-				// handle request
-				AddTimePointTemporalNetworkNotification notif = (AddTimePointTemporalNetworkNotification) info;
-				// get added time points
-				for (TimePoint point : notif.getPoints()) 
-				{
-					// add the point to the distance graph
-					this.dg.add(point);
-					
-					// add edges w.r.t. the origin
-					TimePointDistanceConstraint constraint = this.tn.getConstraintFromOrigin(point);
-					long max = constraint.getDistanceUpperBound();
-					long min = -constraint.getDistanceLowerBound();
-					this.dg.add(constraint.getReference(), constraint.getTarget(), max);
-					this.dg.add(constraint.getTarget(), constraint.getReference(), min);
-					
-					// add edges w.r.t. the horizon
-					constraint = this.tn.getConstraintToHorizon(point);
-					max = constraint.getDistanceUpperBound();
-					min = -constraint.getDistanceLowerBound();
-					this.dg.add(constraint.getReference(), constraint.getTarget(), max);
-					this.dg.add(constraint.getTarget(), constraint.getReference(), min);
-				}
-				
-				// it is not necessary to update information yet
-//				this.toPropagate = false;
-			}
-			break;
+//			case ADD_TP: {
+//				
+//				// handle request
+//				AddTimePointTemporalNetworkNotification notif = (AddTimePointTemporalNetworkNotification) info;
+//				// get added time points
+//				for (TimePoint point : notif.getPoints()) {
+//					// add the point to the distance graph
+//					this.dg.add(point);
+//				}
+//				
+//				
+//				// it is not necessary to update information yet
+//				this.toPropagate = true;
+//			}
+//			break;
 			
 			// other	
 			default: {
-				throw new NotificationPropagationFailureException("[" + this.getClass().getName() + "]: Unknown notification received type= " + info.getType());
+				throw new RuntimeException("[" + this.getClass().getName() + "]: Unknown notification received type= " + info.getType());
 			}
 		}
 	}
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public DistanceGraph getDistanceGraph() {
+		// get the distance graph
+		return this.dg;
+	}
+	
+	/**
+	 * 
 	 */
 	@Override
-	public String toString() 
-	{
-		String matrix = "[Minimum Distance Matrix] - Computed by Floyd-Warshall Algorithm\n";
+	public String toString() {
+		// check if to propagate
+		if (this.toPropagate) {
+			this.compute();
+		}
+		
+		// print distance matrix 
+		String matrix = "Distance matrix (Computed by Floyd-Warshall Algorithm)\n";
 		if (this.toPropagate) {
 			// not update distance information
 			matrix += "Not Updated Distance Information";
@@ -259,6 +283,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 				matrix += "\n";
 			}
 		}
+		
+		// get description of the distance matrix
 		return matrix;
 	}
 	
@@ -276,14 +302,14 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 	 * 
 	 */
 	@Override
-	public void process(TimePointQuery query) 
-	{
+	public void process(TimePointQuery query) {
+		
 		// check query type 
-		switch (query.getType()) 
-		{
+		switch (query.getType()) {
+		
 			// handle time point bound query
-			case TP_SCHEDULE : 
-			{
+			case TP_SCHEDULE : {
+				
 				// get query
 				TimePointScheduleQuery tpBoundQuery = (TimePointScheduleQuery) query;
 				// get time point
@@ -297,8 +323,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 			break;
 			
 			// handle time point distance query
-			case TP_DISTANCE : 
-			{
+			case TP_DISTANCE : {
+				
 				// get query
 				TimePointDistanceQuery tpDistanceQuery = (TimePointDistanceQuery) query;
 				// get source point 
@@ -314,8 +340,8 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 			break;
 			
 			// handle time point distance from origin query
-			case TP_DISTANCE_FROM_ORIGIN : 
-			{
+			case TP_DISTANCE_FROM_ORIGIN : {
+				
 				// get query
 				TimePointDistanceFromOriginQuery tpDistanceQuery = (TimePointDistanceFromOriginQuery) query;
 				// get time point
@@ -328,20 +354,21 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 			break;
 			
 			// handle time point distance to horizon query
-			case TP_DISTANCE_TO_HORIZON : 
-			{
+			case TP_DISTANCE_TO_HORIZON : {
+				
 				// get query 
 				TimePointDistanceToHorizonQuery tpDistanceQuery = (TimePointDistanceToHorizonQuery) query;
 				// get time point
 				TimePoint tp = tpDistanceQuery.getTimePoint();
 				// get distance to horizon
-				long[] distance = this.getDistance(tp, this.tn.getHorizionTimePoint());
+				long[] distance = this.getDistance(tp, this.tn.getHorizonTimePoint());
 				// set information
 				tpDistanceQuery.setDistance(distance);
 			}
 			break;
 			
 			default : {
+				
 				// not a time point query
 				throw new RuntimeException("Impossible to process this type of temporal query " + query.getType());
 			}
@@ -356,68 +383,81 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 	 * @param tp2
 	 * @return
 	 */
-	protected long[] getDistance(TimePoint tp1, TimePoint tp2) 
-	{
+	protected long[] getDistance(TimePoint tp1, TimePoint tp2) {
+		
 		// compute minimal minimal network if needed
 		if (this.toPropagate) {
 			// clean distance matrix's data
 			this.compute();
 		}
 		
-		return new long[] {
-			-this.distance.get(tp2).get(tp1),		// lower bound
-			this.distance.get(tp1).get(tp2)			// upper bound
+		// default distance bounds - total uncertainty
+		long[] bounds = new long[] {
+				0, 
+				this.tn.getHorizon()
 		};
+		
+		// check if both time points exists
+		if (this.distance.containsKey(tp1) && this.distance.get(tp1).containsKey(tp2)) {
+			// set bounds
+			bounds = new long[] {
+					-this.distance.get(tp2).get(tp1),		// lower bound
+					this.distance.get(tp1).get(tp2)			// upper bound
+				};
+		}
+		
+		// get bounds
+		return bounds;
 	}
 	
 	/**
 	 * 
 	 */
-	private void compute() 
-	{
+	private void compute() {
+		
 		// check size of the distance graph
 		this.distance = new HashMap<TimePoint, Map<TimePoint, Long>>();
-		
-		// initialize distances to "infinity"
-		for (TimePoint i : this.dg.getPoints()) 
-		{
+		// initialize distances to infinity
+		for (TimePoint i : this.dg.getPoints()) {
+			
 			this.distance.put(i, new HashMap<TimePoint, Long>());
-			for (TimePoint j : this.dg.getPoints()) 
-			{
+			for (TimePoint j : this.dg.getPoints()) {
+				
 				// initialize
 				if (i.equals(j)) {
+					
 					this.distance.get(i).put(j, 0l);
-				}
-				else {
-					this.distance.get(i).put(j, this.tn.getHorizon());
+					
+				} else {
+					
+					this.distance.get(i).put(j, this.dg.getInfity());
 				}
 			}
 		}
 		
 		// initialize distances using the weights of the distance graph's edges
-		for (TimePoint point : this.dg.getPoints()) 
-		{
+		for (TimePoint point : this.dg.getPoints()) {
+			
 			// get adjacent points
-			for (TimePoint adj : this.dg.getAdjacents(point)) 
-			{
-				// set distance weight
-				this.distance.get(point).put(adj, this.dg.getEdgeWeight(point, adj));
+			for (TimePoint adj : this.dg.getAdjacents(point)) {
+				// get distance
+				long distance = this.dg.getDistance(point, adj);
+				// set distance
+				this.distance.get(point).put(adj, distance);
 			}
 		}
 		
-		
 		// compute minimum distances - k intermediate node
-		for (TimePoint k : this.dg.getPoints()) 
-		{
+		for (TimePoint k : this.dg.getPoints()) {
 			// compute shortest paths using intermediate points
-			for (TimePoint i : this.dg.getPoints()) 
-			{
-				for (TimePoint j : this.dg.getPoints()) 
-				{
+			for (TimePoint i : this.dg.getPoints()) {
+				for (TimePoint j : this.dg.getPoints()) {
+					
 					// compute the path from i to j through k
 					long path = this.distance.get(i).get(k) + this.distance.get(k).get(j);
 					// compare computed distance with the direct path
 					if (this.distance.get(i).get(j) > path) {
+						
 						// update distance
 						this.distance.get(i).put(j, path);
 					}
@@ -429,5 +469,21 @@ public final class APSPTemporalSolver extends TemporalSolver<TimePointQuery>
 		this.propagationCounter++;
 		// set propagation flag
 		this.toPropagate = false;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void printDiagnosticData() {
+		// compute if temporal data
+		if (this.toPropagate) {
+			this.compute();
+		}
+		
+		System.out.println("Distance Graph:\n"
+				+ "" + this.dg + "\n\n"
+				+ "Distance matrix:\n"
+				+ "" + this + "\n");
 	}
 }

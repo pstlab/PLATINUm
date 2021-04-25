@@ -16,7 +16,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.IntervalDisjunctionExcep
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
@@ -68,9 +68,11 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 			Assert.assertTrue(this.stnu.size() == 3);
 			Assert.assertTrue(this.stnu.getTimePoints().contains(tp1));
 			// check temporal relations
-			TimePointDistanceConstraint rel01 = stnu.getConstraintFromOrigin(tp1);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == ORIGIN);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == HORIZON);
+			List<TimePointDistanceConstraint> rel01 = stnu.getConstraintFromOrigin(tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertTrue(rel01.size() == 1);
+			Assert.assertTrue(rel01.get(0).getDistanceLowerBound() == ORIGIN);
+			Assert.assertTrue(rel01.get(0).getDistanceUpperBound() == HORIZON);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -156,11 +158,13 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 			System.out.println(this.stnu);
 			
 			// check temporal constraint in STNU - the actual constraint must be the most tightening constraint propagated
-			TimePointDistanceConstraint rel01 = this.stnu.getConstraintFromOrigin(tp1);
-			Assert.assertTrue(rel01.getReference().equals(this.stnu.getOriginTimePoint()));
-			Assert.assertTrue(rel01.getTarget().equals(tp1));
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+			List<TimePointDistanceConstraint> rel01 = this.stnu.getConstraintFromOrigin(tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertTrue(rel01.size() == 4);
+			// get distance bounds between time points
+			long[] bounds = this.stnu.getConstraintBounds(this.stnu.getOriginTimePoint(), tp1);
+			Assert.assertTrue(bounds[0] == 80);
+			Assert.assertTrue(bounds[1] == 150);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -189,12 +193,15 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 			Assert.assertTrue(false);
 		}
 		finally { 
+			
 			// check the status of the network
-			TimePointDistanceConstraint rel01 = this.stnu.getConstraintFromOrigin(tp1);
-			Assert.assertTrue(rel01.getReference().equals(this.stnu.getOriginTimePoint()));
-			Assert.assertTrue(rel01.getTarget().equals(tp1));
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+			List<TimePointDistanceConstraint> rel01 = this.stnu.getConstraintFromOrigin(tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertTrue(rel01.size() == 4);
+			// get distance bounds between time points
+			long[] bounds = this.stnu.getConstraintBounds(this.stnu.getOriginTimePoint(), tp1);
+			Assert.assertTrue(bounds[0] == 80);
+			Assert.assertTrue(bounds[1] == 150);
 		}
 	}
 	
@@ -205,6 +212,7 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 	public void deleteRequirementConstraint() {
 		System.out.println("[Test]: deleteRequirementConstraint() --------------------");
 		try {
+			
 			// add a time point to the "observed" network
 			TimePoint tp1 = this.stnu.addTimePoint();
 			// create constraint
@@ -240,24 +248,37 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 			System.out.println(this.stnu);
 
 			// check temporal relation in STN			
-			TimePointDistanceConstraint rel01 = this.stnu.getConstraints(this.stnu.getOriginTimePoint(), tp1).get(0);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+			List<TimePointDistanceConstraint> rel01 = this.stnu.getConstraints(this.stnu.getOriginTimePoint(), tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertFalse(rel01.isEmpty());
+			// check constraint bounds
+			long[] bounds = this.stnu.getConstraintBounds(this.stnu.getOriginTimePoint(), tp1);
+			// check bounds
+			Assert.assertTrue(bounds[0] == 80);
+			Assert.assertTrue(bounds[1] == 150);
 
 			
 			// delete temporal relation
 			this.stnu.removeConstraint(rel1);
-			rel01 = this.stnu.getConstraints(this.stnu.getOriginTimePoint(), tp1).get(0);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 80);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+			rel01 = this.stnu.getConstraints(this.stnu.getOriginTimePoint(), tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertFalse(rel01.isEmpty());
+			// check constraint bounds
+			bounds = this.stnu.getConstraintBounds(this.stnu.getOriginTimePoint(), tp1);
+			Assert.assertTrue(bounds[0] == 80);
+			Assert.assertTrue(bounds[1] == 150);
 			// print STN and TN
 			System.out.println(this.stnu);
 			
 			// delete temporal relation
 			this.stnu.removeConstraint(rel3);
-			rel01 = stnu.getConstraints(this.stnu.getOriginTimePoint(), tp1).get(0);
-			Assert.assertTrue(rel01.getDistanceLowerBound() == 11);
-			Assert.assertTrue(rel01.getDistanceUpperBound() == 150);
+			rel01 = this.stnu.getConstraints(this.stnu.getOriginTimePoint(), tp1);
+			Assert.assertNotNull(rel01);
+			Assert.assertFalse(rel01.isEmpty());
+			// check constraint bounds
+			bounds = this.stnu.getConstraintBounds(this.stnu.getOriginTimePoint(), tp1);
+			Assert.assertTrue(bounds[0] == 11);
+			Assert.assertTrue(bounds[1] == 150);
 			// print STN and TN
 			System.out.println(this.stnu);
 			System.out.println(stnu);
@@ -293,7 +314,9 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 			List<TimePointDistanceConstraint> list = this.stnu.getConstraints(tp1);
 			Assert.assertNotNull(list);
 			Assert.assertTrue(list.size() == 2);
-			list = this.stnu.getContingetConstraints();
+			
+			// get contingent constraints
+			list = this.stnu.getContingentConstraints();
 			Assert.assertTrue(list.size() == 1);
 			Assert.assertTrue(list.get(0).getDistanceLowerBound() == 5);
 			Assert.assertTrue(list.get(0).getDistanceUpperBound() == 150);
@@ -315,45 +338,17 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 				Assert.assertTrue(false);
 			}
 			catch (InconsistentDistanceConstraintException ex) {
+				
 				// exception expected
 				list = this.stnu.getConstraints(tp1);
 				Assert.assertNotNull(list);
 				Assert.assertTrue(list.size() == 2);
 				// get contingent constraints
-				list = this.stnu.getContingetConstraints();
+				list = this.stnu.getContingentConstraints();
 				Assert.assertTrue(list.get(0).getDistanceLowerBound() == 5);
 				Assert.assertTrue(list.get(0).getDistanceUpperBound() == 150);
 				Assert.assertTrue(!list.get(0).isControllable());
 				System.out.println(this.stnu);
-			}
-			
-			try 
-			{
-				// overwrite contingent constraint
-				TimePointDistanceConstraint o = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
-				o.setReference(tp1);
-				o.setTarget(tp2);
-				o.setDistanceLowerBound(23);
-				o.setDistanceUpperBound(55);
-				o.setControllable(false);
-				// add distance constraint
-				this.stnu.addDistanceConstraint(o);
-
-				// check data
-				list = this.stnu.getConstraints(tp1);
-				Assert.assertNotNull(list);
-				Assert.assertTrue(list.size() == 2);
-				list = this.stnu.getContingetConstraints();
-				Assert.assertTrue(list.size() == 1);
-				Assert.assertTrue(list.get(0).getDistanceLowerBound() == 23);
-				Assert.assertTrue(list.get(0).getDistanceUpperBound() == 55);
-				Assert.assertTrue(list.get(0).getReference().equals(tp1));
-				Assert.assertTrue(list.get(0).getTarget().equals(tp2));
-				Assert.assertFalse(c.isControllable());
-			}
-			catch (InconsistentDistanceConstraintException exx) {
-				System.err.println(exx.getMessage());
-				Assert.assertTrue(false);
 			}
 		}
 		catch (Exception ex) {
@@ -385,7 +380,7 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 			System.out.println(this.stnu);
 			
 			// check added contingent constraint
-			List<TimePointDistanceConstraint> list = this.stnu.getContingetConstraints();
+			List<TimePointDistanceConstraint> list = this.stnu.getContingentConstraints();
 			Assert.assertNotNull(list);
 			Assert.assertFalse(list.isEmpty());
 			Assert.assertTrue(list.get(0).getDistanceLowerBound() == 5);
@@ -410,7 +405,7 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 				list = this.stnu.getConstraints(tp1);
 				Assert.assertNotNull(list);
 				Assert.assertTrue(list.size() == 2);
-				list = this.stnu.getContingetConstraints();
+				list = this.stnu.getContingentConstraints();
 				Assert.assertTrue(list.get(0).getDistanceLowerBound() == 5);
 				Assert.assertTrue(list.get(0).getDistanceUpperBound() == 150);
 				Assert.assertTrue(!list.get(0).isControllable());
@@ -420,7 +415,7 @@ public class SimpleTemporalNetworkWithUncertaintyTestCaseTest {
 			// remove contingent constraint
 			this.stnu.removeConstraint(cc);
 			// check network
-			list = this.stnu.getContingetConstraints();
+			list = this.stnu.getContingentConstraints();
 			Assert.assertNotNull(list);
 			Assert.assertTrue(list.isEmpty());
 			Assert.assertFalse(list.contains(cc));

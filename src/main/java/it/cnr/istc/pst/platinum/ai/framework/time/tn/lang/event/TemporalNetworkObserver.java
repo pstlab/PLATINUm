@@ -2,10 +2,9 @@ package it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event;
 
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.event.ex.NotificationPropagationFailureException;
 
-
 /**
  * 
- * @author alessandroumbrico
+ * @author alessandro
  *
  */
 public interface TemporalNetworkObserver 
@@ -20,6 +19,6 @@ public interface TemporalNetworkObserver
 	 * @return
 	 * @throws NotificationPropagationFailureException
 	 */
-	public void notify(TemporalNetworkNotification info) 
-			throws NotificationPropagationFailureException;
+	public void notify(TemporalNetworkNotification info);
+	
 }

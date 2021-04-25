@@ -89,7 +89,7 @@ public class ExternalStateVariableComponentTestCase {
 		// check state variable object
 		Assert.assertNotNull(this.psv);
 		// create state variable description
-		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1");
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long [] {10, 30}, true);
 		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", new long[] {11, 25}, false);
 		// add transitions

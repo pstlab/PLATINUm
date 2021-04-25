@@ -240,12 +240,12 @@ public class StateVariableComponentTestCase
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
 		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", new long[] {22, 33}, false);
 		StateVariableValue v5 = this.psv.addStateVariableValue("Val-5", new long[] {5, 20}, false);
-		StateVariableValue v6 = this.psv.addStateVariableValue("Val-6", true);
-		StateVariableValue v7 = this.psv.addStateVariableValue("Val-7", true);
-		StateVariableValue v8 = this.psv.addStateVariableValue("Val-8", false);
+		StateVariableValue v6 = this.psv.addStateVariableValue("Val-6");
+		StateVariableValue v7 = this.psv.addStateVariableValue("Val-7");
+		StateVariableValue v8 = this.psv.addStateVariableValue("Val-8", new long[] {5, 10}, false);
 		
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
@@ -305,7 +305,7 @@ public class StateVariableComponentTestCase
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -361,7 +361,7 @@ public class StateVariableComponentTestCase
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -427,7 +427,7 @@ public class StateVariableComponentTestCase
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -456,6 +456,9 @@ public class StateVariableComponentTestCase
 			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
 			do 
 			{
+				// print diagnostic data about the network 
+				this.tf.printDiagnosticData();
+				
 				Assert.assertNotNull(flaws);
 				// get peak
 				Flaw flaw = flaws.get(0);
@@ -472,19 +475,11 @@ public class StateVariableComponentTestCase
 				
 				// print the network
 				System.out.println("Before propagation of flaw solution");
-				System.out.println(this.tf);
 				// apply 
 				this.psv.commit(solution);
 				schedulingStepCounter++;
 				// check consistency
 				this.tf.verify();
-				
-				// print the network
-				System.out.println("After propagation of flaw solution");
-				System.out.println(this.tf);
-				
-				
-				
 				// display component after scheduling
 				this.psv.display();
 				Thread.sleep(3000);
@@ -630,10 +625,10 @@ public class StateVariableComponentTestCase
 		Assert.assertNotNull(this.psv);
 		
 		// create the state variable description
-		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", true);
-		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
-		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4", true);
+		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1");
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2");
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
+		StateVariableValue v4 = this.psv.addStateVariableValue("Val-4");
 		
 		// add transitions
 		this.psv.addValueTransition(v1, v2);
@@ -728,7 +723,7 @@ public class StateVariableComponentTestCase
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);
@@ -802,7 +797,7 @@ public class StateVariableComponentTestCase
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
-		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3", true);
+		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
 		this.psv.addValueTransition(v3, v2);

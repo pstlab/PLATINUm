@@ -12,6 +12,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.query.TemporalQueryType
 import it.cnr.istc.pst.platinum.ai.framework.time.TemporalFacade;
 import it.cnr.istc.pst.platinum.ai.framework.time.TemporalFacadeBuilder;
 import it.cnr.istc.pst.platinum.ai.framework.time.TemporalInterval;
+import it.cnr.istc.pst.platinum.ai.framework.time.ex.PseudoControllabilityException;
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.TemporalConstraintFactory;
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.TemporalConstraintType;
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.allen.BeforeIntervalConstraint;
@@ -21,11 +22,10 @@ import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalDistanceQue
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalScheduleQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.solver.TemporalSolverType;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.TemporalNetworkType;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.ex.PseudoControllabilityCheckException;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 @TemporalFacadeConfiguration(
@@ -207,10 +207,14 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			constraint.setTarget(i2);
 			// propagate constraint
 			this.facade.propagate(constraint);
+			
+			// print data
+			this.facade.printDiagnosticData();
+			
 			// check consistency
 			this.facade.verify();
 		}
-		catch (PseudoControllabilityCheckException ex) {
+		catch (PseudoControllabilityException ex) {
 			// the network is not pseudo-controllable
 			System.out.println(ex.getMessage());
 			// get actual duration of the contingent interval
@@ -410,8 +414,9 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		System.out.println("[Test]: createTemporalIntervalsWithInconsistentConstraints() --------------------");
 		System.out.println();
 		try {
+			
 			// create flexible temporal interval
-			TemporalInterval i1 = facade.createTemporalInterval(true);
+			TemporalInterval i1 = this.facade.createTemporalInterval(true);
 			Assert.assertNotNull(i1);
 			Assert.assertNotNull(i1.getStartTime());
 			Assert.assertNotNull(i1.getEndTime());
@@ -421,7 +426,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			System.out.println(i1);
 			
 			// create flexible temporal interval with bounds
-			TemporalInterval i2 = facade.createTemporalInterval(new long[] {10, 20}, true);
+			TemporalInterval i2 = this.facade.createTemporalInterval(new long[] {10, 20}, true);
 			Assert.assertNotNull(i2);
 			Assert.assertNotNull(i2.getStartTime());
 			Assert.assertNotNull(i2.getEndTime());
@@ -440,7 +445,11 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			before1.setUpperBound(50);
 			
 			// propagate constraint
-			facade.propagate(before1);
+			this.facade.propagate(before1);
+			
+
+			this.facade.printDiagnosticData();
+			
 			// check consistency
 			this.facade.verify();
 
@@ -455,18 +464,25 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 				before2.setLowerBound(23);
 				before2.setUpperBound(45);
 				// propagate constraint
-				facade.propagate(before2);
+				this.facade.propagate(before2);
+			
+				this.facade.printDiagnosticData();
+				
 				// check consistency
 				this.facade.verify();
 			}
 			catch (ConsistencyCheckException ex) {
+				
 				// inconsistency expected
 				System.out.println(ex.getMessage());
 				System.out.println(this.facade);
 				System.out.println();
 				System.out.println("Retract inconsistent temporal constraint");
 				// remove inconsistent constraint
-				facade.retract(before2);
+				this.facade.retract(before2);
+				
+				this.facade.printDiagnosticData();
+				
 				// check consistency
 				this.facade.verify();
 				

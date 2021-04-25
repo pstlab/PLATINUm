@@ -4,7 +4,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyChec
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class PseudoControllabilityException extends ConsistencyCheckException {

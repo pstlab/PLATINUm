@@ -42,11 +42,11 @@ import it.cnr.istc.pst.platinum.control.platform.PlatformProxy;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 @FrameworkLoggerConfiguration(
-		level = FrameworkLoggingLevel.WARNING
+		level = FrameworkLoggingLevel.INFO
 )
 @MonitorConfiguration(
 		monitor = ConditionCheckingMonitor.class
@@ -527,9 +527,6 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			{
 				// handle current tick
 				this.currentTick = tick;
-				warning("{Executive} -> [FAILURE] Handle tick: " + tick + "\n");
-				// sync step only in "failure" mode
-				warning("{Executive} {tick: " + tick + "} -> [FAILURE] Synchronization step\n");
 				// handle observations
 				this.monitor.handleExecutionFailure(tick, this.cause);
 				
@@ -540,7 +537,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					// the executive cannot complete 
 					complete = false;
 					// waiting for a feedback of the node 
-					warning("{Executive} {tick: " + tick + "} -> [FAILURE] Terminating execution... waiting for feedback about dispatched starting command request :\n"
+					warning("{Executive} {tick: " + tick + "} {FAILURE} -> Waiting for feedback about dispatched starting command request :\n"
 							+ "\t- node: " + node + "\n");
 				}
 				
@@ -549,7 +546,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					// the executive cannot complete 
 					complete = false;
 					// waiting for a feedback of the node 
-					warning("{Executive} {tick: " + tick + "} -> [FAILURE] Terminating execution... waiting for feedback about dispatched command :\n"
+					warning("{Executive} {tick: " + tick + "} {FAILURE} -> Waiting for feedback about dispatched command :\n"
 							+ "\t- node: " + node + "\n");
 				}
 			}

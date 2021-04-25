@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class Query {

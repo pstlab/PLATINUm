@@ -4,7 +4,7 @@ package it.cnr.istc.pst.platinum.ai.framework.microkernel.query;
  * A QueryManager is an element responsible for handling and processing
  * a specific type of queries
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public interface QueryManager <T extends Query> {
