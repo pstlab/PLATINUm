@@ -230,9 +230,11 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TimePointDistanceConstraint> getContingentConstraints() {
 		// set of constraints
 		Set<TimePointDistanceConstraint> set = new HashSet<>();
+		// check time points
 		for (TimePoint point : this.points.values()) {
 			// add contingent constraints if any
 			if (this.contingents.containsKey(point)) {
@@ -241,6 +243,35 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			}
 		}
 		
+		// get the list
+		return new ArrayList<>(set);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public List<TimePointDistanceConstraint> getConstraints() {
+		// set of constraints
+		Set<TimePointDistanceConstraint> set = new HashSet<>();
+		// check time points
+		for (TimePoint point : this.points.values()) {
+			
+			// add contingent constraints 
+			if (this.contingents.containsKey(point)) {
+				set.addAll(this.contingents.get(point).values());
+			}
+			
+			// add requirements
+			if (this.requirements.containsKey(point)) {
+				// check targets
+				for (TimePoint target : this.requirements.get(point).keySet()) {
+					// add requirements 
+					set.addAll(this.requirements.get(point).get(target));
+				}
+			}
+		}
+
 		// get the list
 		return new ArrayList<>(set);
 	}
@@ -501,17 +532,21 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 				long[] bound1 = this.getConstraintBounds(reference, target);
 				// remove requirement constraint
 				this.requirements.get(reference).get(target).remove(c);
-				// check again intersection constraint 
-				long[] bound2 = this.getConstraintBounds(reference, target);
-				
-				// set change flag
-				change = bound2 == null || bound1[0] != bound2[0] || bound1[1] != bound2[1];
-				
 				// clear data structure if necessary
 				if (this.requirements.get(reference).get(target).isEmpty()) {
 					// remove entry 
 					this.requirements.get(reference).remove(target);
 				}
+				
+				if (this.requirements.get(reference).isEmpty()) {
+					// remove entry 
+					this.requirements.remove(reference);
+				}
+				
+				// check again intersection constraint 
+				long[] bound2 = this.getConstraintBounds(reference, target);
+				// set change flag
+				change = bound2 == null || bound1[0] != bound2[0] || bound1[1] != bound2[1];
 			}
 			
 		} else {
@@ -521,6 +556,7 @@ public final class SimpleTemporalNetworkWithUncertainty extends TemporalNetwork
 			
 				// remove contingent constraint
 				this.contingents.get(reference).remove(target);
+				this.contingents.remove(reference);
 				// set change flag
 				change = true;
 			}

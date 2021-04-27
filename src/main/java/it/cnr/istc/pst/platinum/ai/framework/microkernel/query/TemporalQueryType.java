@@ -4,14 +4,13 @@ import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalDistanceQue
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalOverlapQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalPseudoControllabilityQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalScheduleQuery;
-import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointDistanceFromOriginQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointDistanceQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointDistanceToHorizonQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointScheduleQuery;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public enum TemporalQueryType 
@@ -24,7 +23,7 @@ public enum TemporalQueryType
 	/**
 	 * Check the distance of a time point to the temporal origin
 	 */
-	TP_DISTANCE_FROM_ORIGIN(TimePointDistanceFromOriginQuery.class.getName()),
+//	TP_DISTANCE_FROM_ORIGIN(TimePointDistanceFromOriginQuery.class.getName()),
 	
 	/**
 	 * Check the distance of a time point to the temporal horizon

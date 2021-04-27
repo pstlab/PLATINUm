@@ -5,7 +5,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePointDistanceConstraint
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class TemporalConstraint extends Constraint 

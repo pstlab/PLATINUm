@@ -1309,6 +1309,7 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 			}
 			
 			try {
+				
 				// check unsolvable flaws
 				this.detectFlaws();
 			} 

@@ -616,9 +616,9 @@ public abstract class DomainComponent extends FrameworkObject
 		if (this.isActive(dec)) {
 			// warning information
 			warning("Trying to activate an already ACTIVE decision:\n- decision: " + dec + "\n");
-		}
-		else
-		{
+			
+		} else {
+			
 			// flag in case of roll-back
 			boolean free = false;
 			// check if decision is silent
@@ -1498,7 +1498,7 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 
 		// check flaws exist and are all unsolvable
-		if (list.isEmpty() && unsolvable) {
+		if (unsolvable) {
 			// throw exception if no solvable flaw was found by resolvers
 			throw new UnsolvableFlawException("Component [" + this.name + "] detects unsolvable flaws only!");
 		}

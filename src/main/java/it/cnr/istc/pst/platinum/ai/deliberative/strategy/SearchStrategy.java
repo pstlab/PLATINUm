@@ -36,7 +36,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class SearchStrategy extends FrameworkObject implements Comparator<SearchSpaceNode> 

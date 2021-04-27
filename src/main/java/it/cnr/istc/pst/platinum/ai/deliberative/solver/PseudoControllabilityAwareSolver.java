@@ -3,8 +3,6 @@ package it.cnr.istc.pst.platinum.ai.deliberative.solver;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
-import it.cnr.istc.pst.platinum.ai.deliberative.strategy.CostDepthSearchStrategy;
 import it.cnr.istc.pst.platinum.ai.deliberative.strategy.ex.EmptyFringeException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanElementStatus;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
@@ -16,18 +14,13 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.Flaw;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableFlawException;
 
 
-
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-@FlawSelectionHeuristicsConfiguration(
-		heuristics = PipelineFlawSelectionHeuristic.class
-)
-@SearchStrategyConfiguration(
-		strategy = CostDepthSearchStrategy.class
-)
+@FlawSelectionHeuristicsConfiguration
+@SearchStrategyConfiguration
 public class PseudoControllabilityAwareSolver extends Solver 
 {
 	/**
@@ -103,12 +96,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 				
 				// propagate extracted node
 				this.contextSwitch(last, node);
-				
 				// updated last propagated node
 				last = node;
-				
-				// check consistency of the resulting partial plan
-//				this.pdb.verify();
 				
 				// context switch done
 				info("[Context Switch] successfully done [step = " + this.stepCounter + "]:\n"
@@ -162,13 +151,6 @@ public class PseudoControllabilityAwareSolver extends Solver
 						+ "- Backtrack from node: " + last + "\n"
 						+ "- Plan:\n" + last.getPartialPlan() + "\n");
 			}
-//			catch (ConsistencyCheckException ex) 
-//			{
-//				// context switch failure
-//				warning("Context switch failure [step = " + this.stepCounter + "]:\n"
-//						+ "message: " + ex.getMessage() + "\n"
-//						+ "Plan:\n" + last.getPartialPlan() + "\n");
-//			}
 			catch (NoFlawFoundException ex) {
 				
 				// solution found stop search
@@ -211,7 +193,6 @@ public class PseudoControllabilityAwareSolver extends Solver
 			}
 			
 		} // end while
-		
 		
 		// get last expanded node
 		return last;

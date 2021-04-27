@@ -8,7 +8,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePointDistanceConstraint
 
 /**
  * 
- * @author alessandroumbrico
+ * @author alessandro
  *
  */
 public class AddRelationTemporalNetworkNotification extends TemporalNetworkNotification 

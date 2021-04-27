@@ -5,7 +5,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.lang.TemporalConstraintType;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class TimePointDistanceConstraint extends BinaryTemporalConstraint<TimePoint, TimePoint> 

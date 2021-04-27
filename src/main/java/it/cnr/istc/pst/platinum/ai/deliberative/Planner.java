@@ -18,11 +18,9 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.plan.PlanControlla
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.plan.SolutionPlan;
 import it.cnr.istc.pst.platinum.ai.framework.utils.log.FrameworkLoggingLevel;
 
-
-
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 @PlannerSolverConfiguration(

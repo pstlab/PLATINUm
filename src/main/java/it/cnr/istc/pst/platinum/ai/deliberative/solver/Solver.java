@@ -277,51 +277,26 @@ public abstract class Solver extends FrameworkObject
 		}
 				
 		// check flaw solutions
-		for (FlawSolution solution : flaw.getSolutions()) 
-		{
+		for (FlawSolution solution : flaw.getSolutions()) {
+			
 			// create operator
 			Operator op = new Operator(solution);
-//			try
-//			{
-//				// try to propagate operator
-//				this.pdb.propagate(op);
-//				// check plan database feasibility
-//				this.pdb.verify();
-				
-				// get plan with updated temporal bounds and variable binding
-				Plan plan = this.pdb.getPlan();
-				// create a child search space node
-				SearchSpaceNode child = new SearchSpaceNode(current, op);
-				// set partial plan
-				child.setPartialPlan(plan);
-				// look ahead of flaws representing the agenda of the node
-				for (Flaw f : this.pdb.checkFlaws()) {
-					// add checked flaw
-					child.addCheckedFlaw(f);
-				}
+			// get plan with updated temporal bounds and variable binding
+			Plan plan = this.pdb.getPlan();
+			// create a child search space node
+			SearchSpaceNode child = new SearchSpaceNode(current, op);
+			// set partial plan
+			child.setPartialPlan(plan);
+			
+			// look ahead of flaws representing the agenda of the node
+			for (Flaw f : this.pdb.checkFlaws()) {
+				// add checked flaw
+				child.addCheckedFlaw(f);
+			}
 
-				// add child
-				list.add(child);
-//			}
-//			catch (OperatorPropagationException | ConsistencyCheckException ex) {
-//				warning("Invalid operator found during search expansion phase:\n"
-//						+ "- current node: " + current + "\n"
-//						+ "- flaw: " + flaw + "\n"
-//						+ "- failed operator: " + op + "\n");
-//				
-//				// debug
-//				System.err.println("Invalid operator found during search expansion phase:\n"
-//						+ "- current node: " + current + "\n"
-//						+ "- flaw: " + flaw + "\n"
-//						+ "- failed operator: " + op + "\n");
-//			}
-//			finally {
-//				// retract operator
-//				this.pdb.retract(op);
-//			}
+			// add child
+			list.add(child);
 		}
-		
-		
 		
 		// get children
 		return list;

@@ -22,7 +22,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePoint;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public final class ObservationBehaviorCheckingResolver extends Resolver<StateVariable> implements Comparator<Decision> 
@@ -79,25 +79,24 @@ public final class ObservationBehaviorCheckingResolver extends Resolver<StateVar
 	 * @return
 	 */
 	@Override
-	protected List<Flaw> doFindFlaws() 
-	{
+	protected List<Flaw> doFindFlaws() {
+		
 		// list of gaps
 		List<Flaw> issues = new ArrayList<>();
 		// get the "ordered" list of tokens on the component
 		List<Decision> decs = this.component.getActiveDecisions();
 		// check decisions
-		if (decs.isEmpty()) 
-		{
+		if (decs.isEmpty()) {
 			// missing external variable observations
 			issues.add(new MissingObservation(FLAW_COUNTER.getAndIncrement(), this.component));
-		}
-		else
-		{
+			
+		} else {
+			
 			// sort decisions
 			Collections.sort(decs, this);
 			// look for gaps
-			for (int index = 0; index <= decs.size() - 2; index++) 
-			{
+			for (int index = 0; index <= decs.size() - 2; index++) {
+				
 				// get two adjacent tokens
 				Decision left = decs.get(index);
 				Decision right = decs.get(index + 1);
@@ -114,9 +113,10 @@ public final class ObservationBehaviorCheckingResolver extends Resolver<StateVar
 				// get result
 				long lb = query.getDistanceLowerBound();
 				long ub = query.getDistanceUpperBound();
+				
 				// check distance bounds
-				if (lb > 0 || (lb == 0 && ub > 0)) 
-				{
+				if (lb > 0 || (lb == 0 && ub > 0)) {
+					
 					// we've got a gap
 					IncompleteBehavior issue = new IncompleteBehavior(FLAW_COUNTER.getAndIncrement(), this.component, left, right);
 					// add the gap

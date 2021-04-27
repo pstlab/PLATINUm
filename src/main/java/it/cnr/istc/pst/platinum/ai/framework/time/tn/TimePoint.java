@@ -2,7 +2,7 @@ package it.cnr.istc.pst.platinum.ai.framework.time.tn;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class TimePoint extends TemporalData
@@ -28,6 +28,19 @@ public class TimePoint extends TemporalData
 		// initialize data
 		this.lb = this.domLb;
 		this.ub = this.domUb;
+	}
+	
+	/**
+	 * 
+	 * @param lb
+	 * @param ub
+	 */
+	public void clear(long lb, long ub) {
+		this.domLb = lb;
+		this.domUb = ub;
+		this.lb = this.domLb;
+		this.ub = this.domUb;
+		this.execTime = 0;
 	}
 	
 	/**

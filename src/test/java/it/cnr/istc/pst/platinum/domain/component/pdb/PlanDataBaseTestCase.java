@@ -102,7 +102,7 @@ public class PlanDataBaseTestCase
 			StateVariableValue v21 = c2.addStateVariableValue("Val21");
 			v21.addParameterPlaceHolder(xAxis);
 			
-			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {1, 5}, false);
+			StateVariableValue v22 = c2.addStateVariableValue("Val22");
 			StateVariableValue v23 = c2.addStateVariableValue("Val23");
 			// add transitions
 			c2.addValueTransition(v21, v22);
@@ -115,7 +115,7 @@ public class PlanDataBaseTestCase
 			ExternalStateVariable c3 = this.pdb.createDomainComponent("C3", DomainComponentType.SV_EXTERNAL);
 			// add values
 			StateVariableValue v31 = c3.addStateVariableValue("Val31");
-			StateVariableValue v32 = c3.addStateVariableValue("Val32", new long[] {5, 8}, false);
+			StateVariableValue v32 = c3.addStateVariableValue("Val32");
 			StateVariableValue v33 = c3.addStateVariableValue("Val33");
 			// add transitions
 			c3.addValueTransition(v31, v32);
@@ -133,8 +133,10 @@ public class PlanDataBaseTestCase
 			rule.addTemporalConstraint(rule.getTriggerer(), cd0, RelationType.DURING, new long[][] {{0, this.pdb.getHorizon()}, {0, this.pdb.getHorizon()}});
 			rule.addTemporalConstraint(rule.getTriggerer(), cd1, RelationType.BEFORE, new long[][] {{0, this.pdb.getHorizon()}, {0, this.pdb.getHorizon()}});
 			try {
+				
 				// add rule
 				this.pdb.addSynchronizationRule(rule);
+				
 			} catch (SynchronizationCycleException ex) {
 				System.err.println(ex.getMessage());
 				Assert.assertTrue(false);

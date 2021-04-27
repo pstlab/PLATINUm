@@ -212,7 +212,7 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			before1.setUpperBound(this.component.getHorizon());
 			before1.setReference(reference.getToken().getInterval());
 			before1.setTarget(target.getToken().getInterval());
-
+			
 			// propagate interval constraint
 			this.tdb.propagate(before1);
 			// check consistency
@@ -247,11 +247,12 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable>
 			before2.setUpperBound(this.component.getHorizon());
 			before2.setReference(target.getToken().getInterval());
 			before2.setTarget(reference.getToken().getInterval());
-
+			
 			// propagate interval constraint
 			this.tdb.propagate(before2);
 			// check consistency
 			this.tdb.verify();
+			
 			// add solution and deactivate relation
 			conflict.addSolution(pc2);
 		}

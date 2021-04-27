@@ -365,6 +365,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 				Double.MAX_VALUE - 1
 		};
 		
+		// set update flag
+		boolean update = false;
 		// compute makespan bounds
 		for (DomainComponent c : this.makespan.keySet()) {
 			// check primitive components only
@@ -373,7 +375,19 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 				mk[0] = Math.max(mk[0], this.makespan.get(c)[0]);
 				// update max
 				mk[1] = Math.min(mk[1], this.makespan.get(c)[1]);
+				// change update flag
+				update = true;
 			}
+		}
+		
+		// check update flag
+		if (!update) {
+			
+			// set default data 
+			mk = new double[] {
+					0, 
+					Double.MAX_VALUE - 1
+			};
 		}
 		
 		// get plan makespan 
@@ -392,6 +406,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 				Double.MIN_VALUE + 1 
 		};
 		
+		// set update flag
+		boolean update = false;
 		// check heuristic makespan bounds of components 
 		for (DomainComponent c : this.heuristicMakespan.keySet()) {
 			// consider primitive components only 
@@ -400,7 +416,18 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 				mk[0] = Math.min(mk[0], this.heuristicMakespan.get(c)[0]);
 				// update max
 				mk[1] = Math.max(mk[1], this.heuristicMakespan.get(c)[1]);
+				// change update flag
+				update = true;
 			}
+		}
+		
+		// check update flag
+		if (!update) {
+			// set default data 
+			mk = new double[] {
+					0, 
+					Double.MAX_VALUE - 1
+			};
 		}
 		
 		// get plan makespan 

@@ -37,7 +37,7 @@ public abstract class TemporalSolver<T extends Query> extends FrameworkObject im
 	 * 
 	 * @return
 	 */
-	public abstract boolean isConsistent();
+	public abstract boolean isValid();
 	
 	/**
 	 * 

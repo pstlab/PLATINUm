@@ -36,7 +36,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TemporalNetworkType;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 @TemporalFacadeConfiguration(
@@ -304,7 +304,7 @@ public class StateVariableComponentTestCase
 		Assert.assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
-		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
+		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, false);
 		StateVariableValue v3 = this.psv.addStateVariableValue("Val-3");
 		// add transitions
 		this.psv.addValueTransition(v1, v3);
@@ -329,9 +329,10 @@ public class StateVariableComponentTestCase
 			Assert.assertNotNull(flaws);
 			Assert.assertTrue(!flaws.isEmpty());
 			System.out.println(flaws);
-			Assert.assertTrue(flaws.size() == 1);
+			Assert.assertTrue(flaws.size() == 3);
 			System.out.println("Detected flaws ");
 			for (Flaw f : flaws) {
+				
 				// get flaws 
 				Assert.assertNotNull(f);
 				Assert.assertNotNull(f.getSolutions());
@@ -577,7 +578,7 @@ public class StateVariableComponentTestCase
 			System.out.println("Committed solution:\n- " + sol + "\n");
 			
 			// check pending decisions
-			Assert.assertFalse(this.psv.getPendingDecisions().isEmpty());
+			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions");
 			System.out.println(this.psv.getPendingDecisions());
 			
@@ -670,20 +671,18 @@ public class StateVariableComponentTestCase
 			// get solution
 			GapCompletion completion = (GapCompletion) gap.getSolutions().get(0);
 			
-			// apply solution
+			// apply solution - gap solution directly activate path's decisions if not domain theory expansion is necessary
 			this.psv.commit(completion);
 			this.tf.verify();
 			this.pf.verify();
 			
 			// check component
 			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
+			Assert.assertTrue(this.psv.getActiveDecisions().size() == 4);
 			System.out.println("Active Decisions:\n" + this.psv.getActiveDecisions());
-			Assert.assertFalse(this.psv.getPendingDecisions().isEmpty());
+			
+			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions:\n" + this.psv.getPendingDecisions());
-			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
-			System.out.println("Active relations:\n" + this.psv.getActiveRelations());
-			Assert.assertFalse(this.psv.getPendingRelations().isEmpty());
-			System.out.println("Pending relations:\n" + this.psv.getPendingRelations());
 			
 			System.out.println();
 			System.out.println();

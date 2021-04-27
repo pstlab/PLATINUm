@@ -4,7 +4,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.TemporalInterval;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class FixIntervalDurationConstraint extends UnaryTemporalConstraint<TemporalInterval>

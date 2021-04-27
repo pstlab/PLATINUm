@@ -56,7 +56,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointSchedul
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 @TemporalFacadeConfiguration(
@@ -324,11 +324,11 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 			throws ConsistencyCheckException 
 	{
 		// check temporal network consistency
-		if (!this.solver.isConsistent()) {
+		if (!this.solver.isValid()) {
 			throw new TemporalConsistencyException("The STNU is not valid!\nCheck propagated temporal constraints...\n");
 		}
 		
-		// check pseudo-controllability
+		// check also if the network is valid
 		if (!this.isPseudoControllable()) {
 			throw new PseudoControllabilityException("The STNU is not pseudo-controllable!\nCheck constraints on uncontrollable intervals...\n");
 		}
@@ -494,9 +494,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 			// time point queries
 			case TP_SCHEDULE :
 			case TP_DISTANCE : 
-			case TP_DISTANCE_FROM_ORIGIN : 
-			case TP_DISTANCE_TO_HORIZON : 
-			{
+			case TP_DISTANCE_TO_HORIZON : {
+				
 				// propagate time point query to the reasoner
 				this.solver.process((TimePointQuery) query);
 			}
@@ -704,7 +703,11 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 */
 	@Override
 	public String toString() {
-		return "[TemporalFacade\n\n" + this.tn.toString() + "\n\n" + this.solver.toString() + "\n\n]\n";
+		return "\nTemporal Network:\n"
+				+ "" + this.tn.toString() + "\n"
+				+ "--------------\n"
+				+ "Solver:\n"
+				+ "" + this.solver.toString() + "\n\n";
 	}
 	
 	/**
@@ -714,8 +717,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint[] doPropagateEqualsConstraint(EqualsIntervalConstraint equals) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
 		
 		// create distance constraint 
 		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
@@ -729,15 +731,14 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		// create distance constraint
 		TimePointDistanceConstraint c2 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		// set constraint data
-		c2.setReference(equals.getTarget().getEndTime());
-		c2.setTarget(equals.getReference().getEndTime());
+		c2.setReference(equals.getReference().getEndTime());
+		c2.setTarget(equals.getTarget().getEndTime());
 		c2.setDistanceLowerBound(0);
 		c2.setDistanceUpperBound(0);
 		c2.setControllable(true);
 		
 		// add constraints
 		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
-		
 		// get added distance constraints
 		return new TimePointDistanceConstraint[] {c1, c2};
 	}
@@ -749,8 +750,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint[] doPropagateContainsConstraint(ContainsIntervalConstraint contains) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create distance constraint
 		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		// set data
@@ -771,7 +772,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraints
 		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
-		
 		// get added constraints
 		return new TimePointDistanceConstraint[] {c1, c2};
 	}
@@ -783,8 +783,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint[] doPropagateDuringConstraint(DuringIntervalConstraint during) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c1.setReference(during.getTarget().getStartTime());
@@ -803,7 +803,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				
 		// add constraint
 		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
-		
 		// get added constraints
 		return new TimePointDistanceConstraint[] {c1, c2};
 	}
@@ -815,8 +814,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint[] doPropagateEndsDuringConstraint(EndsDuringIntervalConstraint edc) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c1.setReference(edc.getTarget().getStartTime());
@@ -835,7 +834,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint 
 		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
-		
 		// propagate constraints
 		return new TimePointDistanceConstraint[] {c1, c2};
 	}
@@ -867,7 +865,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint
 		this.tn.addDistanceConstraint(new TimePointDistanceConstraint[] {c1, c2});
-		
 		// propagate constraints
 		return new TimePointDistanceConstraint[] {c1, c2};
 	}
@@ -879,8 +876,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint doPropagateBeforeConstraint(BeforeIntervalConstraint before)
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c.setReference(before.getReference().getEndTime());
@@ -891,7 +888,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint
 		this.tn.addDistanceConstraint(c);
-		
 		// get propagated constraint
 		return c;
 	}
@@ -903,8 +899,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint doPropagateMeetsConstraint(MeetsIntervalConstraint meets) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c.setReference(meets.getReference().getEndTime());
@@ -915,7 +911,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint
 		this.tn.addDistanceConstraint(c);
-		
 		// get propagated constraint
 		return c;
 	}
@@ -927,8 +922,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint doPropagateAfterConstraint(AfterIntervalConstraint after) 
-			throws InconsistentDistanceConstraintException
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c.setReference(after.getTarget().getEndTime());
@@ -939,7 +934,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint
 		this.tn.addDistanceConstraint(c);
-		
 		// get propagated constraint
 		return c;
 	}
@@ -951,8 +945,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint doPropagateMetByConstraint(MetByIntervalConstraint metby) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c.setReference(metby.getTarget().getEndTime());
@@ -963,7 +957,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint
 		this.tn.addDistanceConstraint(c);
-		
 		// get propagated constraint
 		return c;
 	}
@@ -975,8 +968,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint doPropagateFixTimePointConstraint(FixTimePointConstraint fix) 
-			throws InconsistentDistanceConstraintException
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c.setReference(this.tn.getOriginTimePoint());
@@ -987,7 +980,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint
 		this.tn.addDistanceConstraint(c);
-		
 		// get propagated constraint
 		return c;
 	}
@@ -1000,8 +992,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @throws InconsistentDistanceConstraintException
 	 */
 	protected TimePointDistanceConstraint doPropagateFixIntervalDurationConstraint(FixIntervalDurationConstraint fix) 
-			throws InconsistentDistanceConstraintException 
-	{
+			throws InconsistentDistanceConstraintException {
+		
 		// create constraint
 		TimePointDistanceConstraint c = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
 		c.setReference(fix.getReference().getStartTime());
@@ -1012,7 +1004,6 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// add constraint
 		this.tn.addDistanceConstraint(c);
-		
 		// get propagated constraint
 		return c;
 	}
@@ -1031,40 +1022,26 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 		
 		// hypothesis
 		boolean pseudoControllable = true;
-		// check time points
-		for (TimePoint reference : this.tn.getTimePoints()) {
-			for (TimePoint target : this.tn.getTimePoints()) {
-				// get constraints
-				for (TimePointDistanceConstraint constraint : this.tn.getConstraints(reference, target)) {
-					
-					// check contingent constraints
-					if (!constraint.isControllable()) {
-						
-						// create query
-						TimePointDistanceQuery query = this.qf.create(TemporalQueryType.TP_DISTANCE);
-						query.setSource(reference);
-						query.setTarget(target);
-						// process query
-						this.solver.process(query);
-						
-						// get actual bounds
-						long dmin = query.getDistanceLowerBound();
-						long dmax = query.getDistanceUpperBound();
-						
-						// check duration
-						pseudoControllable = !(dmin > constraint.getDistanceLowerBound() || dmax < constraint.getDistanceUpperBound());
-					}
-					
-					// check if pseudo-controllable
-					if (!pseudoControllable) {
-						break;
-					}
-				}
+		
+		// get constraints
+		for (TimePointDistanceConstraint constraint : this.tn.getContingentConstraints()) {
+			
+			// check contingent constraints
+			if (!constraint.isControllable()) {
 				
-				// check if pseudo-controllable
-				if (!pseudoControllable) {
-					break;
-				}
+				// create query
+				TimePointDistanceQuery query = this.qf.create(TemporalQueryType.TP_DISTANCE);
+				query.setSource(constraint.getReference());
+				query.setTarget(constraint.getTarget());
+				// process query
+				this.solver.process(query);
+				
+				// get actual bounds
+				long dmin = query.getDistanceLowerBound();
+				long dmax = query.getDistanceUpperBound();
+				
+				// check duration
+				pseudoControllable = !(dmin > constraint.getDistanceLowerBound() || dmax < constraint.getDistanceUpperBound());
 			}
 			
 			// check if pseudo-controllable
@@ -1072,12 +1049,14 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 				break;
 			}
 		}
-		
+				
 		// get result
 		return pseudoControllable;
 	}
 
 	/**
+	 * 
+	 * For debugging only
 	 * 
 	 */
 	public void printDiagnosticData() {

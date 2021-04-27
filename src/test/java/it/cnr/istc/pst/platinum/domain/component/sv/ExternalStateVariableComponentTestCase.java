@@ -210,7 +210,7 @@ public class ExternalStateVariableComponentTestCase {
 				TemporalConstraintFactory iFactory = new TemporalConstraintFactory();
 				FixIntervalDurationConstraint constraint = iFactory.create(TemporalConstraintType.FIX_INTERVAL_DURATION);
 				constraint.setReference(d1.getToken().getInterval());
-				constraint.setDuration(7);
+				constraint.setDuration(12);
 				// propagate observation
 				this.tf.propagate(constraint);
 				Assert.assertTrue(false);

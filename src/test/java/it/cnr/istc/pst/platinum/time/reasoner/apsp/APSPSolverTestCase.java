@@ -132,7 +132,7 @@ public class APSPSolverTestCase
 			
 			
 			// print initial matrix
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			System.out.println(solver);
 			
 			// get the underlying distance graph
@@ -202,7 +202,7 @@ public class APSPSolverTestCase
 			APSPTemporalSolver solver = new APSPTemporalSolver(itn);
 
 			// create time points
-			List<TimePoint> tps = itn.addTimePoints(3);
+			List<TimePoint> tps = itn.addMultipleTimePoints(3);
 			
 			// create constraints
 			TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
@@ -232,7 +232,7 @@ public class APSPSolverTestCase
 			});
 			
 			// check inconsistency
-			Assert.assertFalse(solver.isConsistent());
+			Assert.assertFalse(solver.isValid());
 			// print initial distance information
 			System.out.println(solver);
 			// check number of propagations
@@ -255,7 +255,7 @@ public class APSPSolverTestCase
 			TemporalNetwork exTn = new SimpleTemporalNetworkWithUncertainty(ORIGIN, HORIZON);
 			
 			// create time points
-			List<TimePoint> tps = exTn.addTimePoints(2);
+			List<TimePoint> tps = exTn.addMultipleTimePoints(2);
 			
 			// create constraints
 			TimePointDistanceConstraint c1 = this.cf.create(TemporalConstraintType.TIME_POINT_DISTANCE);
@@ -280,11 +280,11 @@ public class APSPSolverTestCase
 			// create APSP solver
 			APSPTemporalSolver solver = new APSPTemporalSolver(exTn);
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			System.out.println(solver);
 			
 			// check information
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			// create query
 			TimePointScheduleQuery query = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 			// set point
@@ -352,7 +352,7 @@ public class APSPSolverTestCase
 			});
 			
 			// check information
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			// print distance matrix
 			System.out.println(solver);
 			// get distance between origin and p1
@@ -400,28 +400,28 @@ public class APSPSolverTestCase
 			// create APSP solver
 			APSPTemporalSolver solver =  new APSPTemporalSolver(this.tn);
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			
 			// create time point
 			TimePoint tp5 = this.tn.addTimePoint();
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			
 			// create time point
 			TimePoint tp6 = this.tn.addTimePoint();
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			// print network
 			System.out.println(solver);
 			
 			// delete time point
 			this.tn.removeTimePoint(tp5);
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			// delete time point
 			this.tn.removeTimePoint(tp6);
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			
 			// get distance between origin and tp1
 			TimePointScheduleQuery query1 = this.qf.create(TemporalQueryType.TP_SCHEDULE);
@@ -480,7 +480,7 @@ public class APSPSolverTestCase
 			// create APSP solver
 			APSPTemporalSolver solver = new APSPTemporalSolver(this.tn);
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			// check distances
 			TimePointScheduleQuery query = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 			// set point
@@ -503,7 +503,7 @@ public class APSPSolverTestCase
 			// add constraint
 			this.tn.addDistanceConstraint(rel);
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			// check distances
 			query = this.qf.create(TemporalQueryType.TP_SCHEDULE);
 			// set point
@@ -519,7 +519,7 @@ public class APSPSolverTestCase
 			// delete relation
 			this.tn.removeConstraint(rel);
 			// check consistency
-			Assert.assertTrue(solver.isConsistent());
+			Assert.assertTrue(solver.isValid());
 			// print network
 			System.out.println(solver);
 			
