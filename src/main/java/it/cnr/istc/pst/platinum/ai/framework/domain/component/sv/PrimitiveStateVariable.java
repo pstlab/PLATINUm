@@ -6,6 +6,8 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ResolverType;
 
 /**
  * 
+ * @author alessandro
+ *
  */
 public final class PrimitiveStateVariable extends StateVariable
 {

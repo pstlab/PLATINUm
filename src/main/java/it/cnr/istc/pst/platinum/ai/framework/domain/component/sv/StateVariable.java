@@ -13,7 +13,7 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.TransitionNotFo
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class StateVariable extends DomainComponent 
@@ -30,7 +30,7 @@ public abstract class StateVariable extends DomainComponent
 	protected StateVariable(String name, DomainComponentType type) {
 		super(name, type);
 		// initialize the list of values
-				this.values = new ArrayList<StateVariableValue>();
+		this.values = new ArrayList<StateVariableValue>();
 		// initialize transition function
 		this.transitions = new HashMap<>();
 	}

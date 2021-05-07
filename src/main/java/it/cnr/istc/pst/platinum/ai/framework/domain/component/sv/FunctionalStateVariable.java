@@ -6,7 +6,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ResolverType;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class FunctionalStateVariable extends StateVariable 

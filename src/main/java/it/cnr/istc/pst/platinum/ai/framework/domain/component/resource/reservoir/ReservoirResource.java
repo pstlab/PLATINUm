@@ -25,7 +25,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.lang.query.TimePointSchedul
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class ReservoirResource extends Resource
@@ -60,9 +60,9 @@ public class ReservoirResource extends Resource
 	 * 
 	 */
 	@PostConstruct
-	public void init() 
-	{
+	public void init() {
 		super.init();
+		
 		// create resource consumption value
 		this.consumption = new ResourceConsumptionValue(CONSUMPTION_LABEL, new long[] {1, this.tdb.getHorizon()}, true, this);
 		// set also the domains of the "amount" parameter 

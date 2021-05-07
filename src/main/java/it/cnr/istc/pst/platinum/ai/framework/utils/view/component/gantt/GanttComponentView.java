@@ -36,7 +36,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.view.component.ComponentView;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class GanttComponentView extends JFrame implements ComponentView, Comparator<Token> {

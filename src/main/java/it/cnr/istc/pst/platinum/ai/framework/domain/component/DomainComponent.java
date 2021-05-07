@@ -113,9 +113,6 @@ public abstract class DomainComponent extends FrameworkObject
 	@PostConstruct
 	protected synchronized void init() {
 		
-		
-		// set component view
-		this.view = new GanttComponentView(this);
 		// setup resolver index
 		for (Resolver<?> resv : this.resolvers) {
 			for (FlawType ft : resv.getFlawTypes()) {
@@ -248,6 +245,14 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 */
 	public void display() {
+		
+		// check view 
+		if (this.view == null) {
+			// create component view
+			this.view = new GanttComponentView(this);
+		}
+		
+		// display component's data
 		this.view.display();
 	}
 
