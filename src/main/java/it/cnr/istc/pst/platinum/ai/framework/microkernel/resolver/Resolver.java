@@ -2,6 +2,8 @@ package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +29,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.TemporalFacade;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  * @param <T>
  */
@@ -93,21 +95,48 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	 */
 	@Override
 	public synchronized List<Flaw> findFlaws() 
-			throws UnsolvableFlawException
-	{
+			throws UnsolvableFlawException {
+		
 		// list of flaws on the related component
 		List<Flaw> flaws = new ArrayList<>();
 		// find flaws on component
-		for (Flaw flaw :  this.doFindFlaws()) 
-		{
+		for (Flaw flaw :  this.doFindFlaws()) {
+			
 			// compute possible solutions
 			this.doComputeFlawSolutions(flaw);
 			// add flaw
 			flaws.add(flaw);
 		}
 		
+		// randomly select a flaw if any 
+		List<Flaw> list = new ArrayList<>();
+		if (flaws.size() > 1) {
+			
+			// get the flaw with the lowest number of solutions - fail first principle
+			Collections.sort(flaws, new Comparator<Flaw>() {
+				
+				/**
+				 * 
+				 */
+				@Override
+				public int compare(Flaw o1, Flaw o2) {
+					
+					// compare available solutions
+					return o1.getSolutions().size() < o2.getSolutions().size() ? -1 : 
+						o1.getSolutions().size() > o2.getSolutions().size() ? 1 : 0;
+				}
+			});
+			
+			// get the hardest flaw to solve
+			list.add(flaws.get(0));
+
+		} else {
+			
+			list = flaws;
+		}
+		
 		// get detected flaws
-		return flaws;
+		return list;
 	}
 	
 	/**
@@ -161,8 +190,8 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	 * 
 	 * @param solution
 	 */
-	protected void doRetract(FlawSolution solution) 
-	{
+	protected void doRetract(FlawSolution solution)  {
+		
 		// get the list of activated relations
 		for (Relation relation : solution.getActivatedRelations()) {
 			// get reference component

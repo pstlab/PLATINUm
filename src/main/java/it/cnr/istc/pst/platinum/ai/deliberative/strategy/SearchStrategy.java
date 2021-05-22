@@ -92,8 +92,8 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 	 * 
 	 */
 	@PostConstruct
-	protected void init() 
-	{
+	protected void init() {
+		
 		// get domain knowledge
 		DomainKnowledge dk = this.pdb.getDomainKnowledge();
 		// get the decomposition tree from the domain theory
@@ -116,20 +116,18 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
 		
-		// get mongodb
+		// get mongo
 		String mongodb = properties.getProperty("mongodb");
 		// check if exists
-		if (mongodb != null && !mongodb.equals("")) 
-		{
+		if (mongodb != null && !mongodb.equals("")) {
+			
 			// create a collection to the DB
-			if (client == null) 
-			{
+			if (client == null) {
 				// check DB host
 				String dbHost = properties.getProperty("mongodb_host");
 				// create client
 				client = MongoClients.create(dbHost);
 			}
-			
 			
 			// get DB 
 			MongoDatabase db = client.getDatabase(mongodb.trim());
@@ -147,43 +145,42 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 	 * @param value
 	 * @return
 	 */
-	private Map<DomainComponent, Double[]> computeCostProjections(ComponentValue value) 
-	{
+	private Map<DomainComponent, Double[]> computeCostProjections(ComponentValue value) {
+		
 		// set cost
 		Map<DomainComponent, Double[]> cost = new HashMap<>();
-		// get hierarchical value of the associated component
-		double hValue = this.pdb.getDomainKnowledge().getHierarchicalLevelValue(value.getComponent()) + 1;
-					
 		// check if leaf
 		if (!this.pgraph.containsKey(value) || 
-				this.pgraph.get(value).isEmpty()) 
-		{
+				this.pgraph.get(value).isEmpty()) {
+			
 			// set cost
 			cost.put(value.getComponent(), new Double[] {
-					1.0 * hValue,
-					1.0 * hValue
+					this.unificationCost,
+					this.unificationCost
 			});
-		}
-		else 
-		{
+			
+		} else {
+			
 			// get possible decompositions
-			for (List<ComponentValue> decomposition : this.pgraph.get(value))
-			{
+			for (List<ComponentValue> decomposition : this.pgraph.get(value)) {
+				
 				// decomposition costs
 				Map<DomainComponent, Double[]> dCosts = new HashMap<>();
-				for (ComponentValue subgoal : decomposition) 
-				{
+				for (ComponentValue subgoal : decomposition) {
+					
 					// compute planning cost of the subgoal
 					Map<DomainComponent, Double[]> update = this.computeCostProjections(subgoal);
 					for (DomainComponent c : update.keySet()) {
+						
 						if (!dCosts.containsKey(c)) {
 							// set cost
 							dCosts.put(c, new Double[] {
 									update.get(c)[0],
 									update.get(c)[1]
 							});
-						}
-						else {
+							
+						} else {
+							
 							// update cost
 							dCosts.put(c, new Double[] {
 									dCosts.get(c)[0] + update.get(c)[0],
@@ -194,16 +191,17 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 				}
 				
 				// update pessimistic and optimistic projections
-				for (DomainComponent c : dCosts.keySet()) 
-				{
+				for (DomainComponent c : dCosts.keySet()) {
 					if (!cost.containsKey(c)) {
+						
 						// set cost
 						cost.put(c, new Double[] {
 							dCosts.get(c)[0],
 							dCosts.get(c)[1]
 						});
-					}
-					else {
+						
+					} else {
+						
 						// get min and max
 						cost.put(c, new Double[] {
 								Math.min(cost.get(c)[0], dCosts.get(c)[0]),
@@ -215,18 +213,19 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 			
 			// set cost associated to the value
 			if (!cost.containsKey(value.getComponent())) {
+				
 				// set cost
 				cost.put(value.getComponent(), new Double[] {
-						1.0 * hValue,
-						1.0 * hValue
+						this.unificationCost,
+						this.unificationCost
 				});
-			}
-			else {
+				
+			} else {
 			
 				// weight cost according to the hierarchical value
 				cost.put(value.getComponent(), new Double[] {
-						1.0 * hValue + cost.get(value.getComponent())[0],
-						1.0 * hValue + cost.get(value.getComponent())[1]
+						this.unificationCost + cost.get(value.getComponent())[0],
+						this.unificationCost + cost.get(value.getComponent())[1]
 				});
 			}
 		}
@@ -236,7 +235,7 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 	}
 	
 	/**
-	 * Compute the (pessimistic) makespan projection by analyzing the extraced decomposition graph starting 
+	 * Compute the (pessimistic) makespan projection by analyzing the extracted decomposition graph starting 
 	 * from a given value of the domain
 	 * 
 	 * @param value
@@ -248,37 +247,39 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 		Map<DomainComponent, Double[]> makespan = new HashMap<>();
 		// check if leaf
 		if (!this.pgraph.containsKey(value) || 
-				this.pgraph.get(value).isEmpty()) 
-		{
+				this.pgraph.get(value).isEmpty()) {
+			
 			// set value expected minimum duration
 			makespan.put(value.getComponent(), new Double[] {
 					(double) value.getDurationLowerBound(),
-					(double) value.getDurationLowerBound()
+					(double) value.getDurationUpperBound()
 			});
-		}
-		else 
-		{
+			
+		} else {
+			
 			// check possible decompositions
-			for (List<ComponentValue> decomposition : this.pgraph.get(value))
-			{
+			for (List<ComponentValue> decomposition : this.pgraph.get(value)) {
+				
 				// set decomposition makespan 
 				Map<DomainComponent, Double[]> dMakespan = new HashMap<>();
 				// check subgoals
-				for (ComponentValue subgoal : decomposition) 
-				{
+				for (ComponentValue subgoal : decomposition) {
+					
 					// recursive call to compute (pessimistic) makespan estimation
 					Map<DomainComponent, Double[]> update = this.computeMakespanProjections(subgoal);
-					// increment decompostion makespan
+					// increment decomposition makespan
 					for (DomainComponent c : update.keySet()) {
-						// check decompostion makespan 
+						
+						// check decomposition  makespan 
 						if (!dMakespan.containsKey(c)) {
 							// add entry 
 							dMakespan.put(c, new Double[] {
 									update.get(c)[0],
 									update.get(c)[1]
 							});
-						}
-						else {
+							
+						} else {
+							
 							// increment component's makespan 
 							dMakespan.put(c, new Double[] {
 									dMakespan.get(c)[0] + update.get(c)[0],
@@ -290,15 +291,18 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 				
 				// update resulting makespan by taking into account the maximum value
 				for (DomainComponent c : dMakespan.keySet()) {
+					
 					// check makespan
 					if (!makespan.containsKey(c)) {
+						
 						// add entry
 						makespan.put(c, new Double[] {
 								dMakespan.get(c)[0],
 								dMakespan.get(c)[1]
 						});
-					}
-					else {
+						
+					} else {
+						
 						// set the pessimistic and optimistic projections
 						makespan.put(c, new Double[] {
 								Math.min(makespan.get(c)[0], dMakespan.get(c)[0]),
@@ -310,13 +314,14 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 			
 			// set cost associated to the value
 			if (!makespan.containsKey(value.getComponent())) {
+				
 				// set cost
 				makespan.put(value.getComponent(), new Double[] {
 						(double) value.getDurationLowerBound(),
 						(double) value.getDurationLowerBound()
 				});
-			}
-			else {
+				
+			} else {
 			
 				// increment makespan
 				makespan.put(value.getComponent(), new Double[] {

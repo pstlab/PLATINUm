@@ -181,16 +181,16 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * @return
 	 */
 	private boolean checkTemporalFeasibility(List<ResourceEvent<?>> schedule) {
+		
 		// feasibility flag
 		boolean feasible = true;
 		// list of propagated constraints
 		List<BeforeIntervalConstraint> committed = new ArrayList<>();
-		
 		// check pairs of events 
-		for (int index = 0; index < schedule.size() - 1 && feasible; index++)
-		{
-			try
-			{
+		for (int index = 0; index < schedule.size() - 1 && feasible; index++) {
+			
+			try {
+				
 				// get events
 				ResourceEvent<?> e1 = schedule.get(index);
 				ResourceEvent<?> e2 = schedule.get(index + 1);
@@ -209,23 +209,22 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				before.setLowerBound(0);
 				before.setUpperBound(this.tdb.getHorizon());
 				
-				// propagate constraint
-				this.tdb.propagate(before);
 				// add constraints to committed
 				committed.add(before);
-				
+				// propagate constraint
+				this.tdb.propagate(before);
 				// check temporal feasibility
 				this.tdb.verify();
-			}
-			catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
+				
+			} catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 				// not feasible schedule
 				feasible = false;
 				// log data
 				debug("Component [" + this.label + "] temporally unfeasible schedule:\n"
 						+ "- potential schedule critical set: " + schedule + "\n");
-			}
-			finally 
-			{
+				
+			} finally {
+				
 				// retract all committed constraints
 				for (BeforeIntervalConstraint before : committed) {
 					// retract temporal constraint

@@ -12,7 +12,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawType;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class OverlappingSet extends Flaw implements Comparable<OverlappingSet> 

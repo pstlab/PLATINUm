@@ -1,14 +1,13 @@
 package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.scheduling;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawSolution;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class PrecedenceConstraint extends FlawSolution 
+public class PrecedenceConstraint implements Comparable<PrecedenceConstraint>
 {
 	private Decision reference;				// reference decision of the precedence constraint
 	private Decision target;				// target decision of the precedence constraint
@@ -16,13 +15,10 @@ public class PrecedenceConstraint extends FlawSolution
 	
 	/**
 	 * 
-	 * @param set
 	 * @param reference
 	 * @param target
-	 * @param cost
 	 */
-	protected PrecedenceConstraint(OverlappingSet set, Decision reference, Decision target, double cost) {
-		super(set, cost);
+	protected PrecedenceConstraint(Decision reference, Decision target) {
 		this.reference = reference;
 		this.target = target;
 	}
@@ -67,15 +63,16 @@ public class PrecedenceConstraint extends FlawSolution
 		// JSON style object description
 		return "{ \"type\": \"PRECEDENCE_CONSTRAINT\", "
 				+ "\"reference\": " + this.reference + ", "
-				+ "\"target\": " + this.target + " }";
+				+ "\"target\": " + this.target + ", "
+				+ "\"preserved-space-heuristic\": " + this.preserved + " }";
 	}
 
 	/**
 	 * 
 	 */
 	@Override
-	public int compareTo(FlawSolution o) {
-		PrecedenceConstraint pc = (PrecedenceConstraint) o;
+	public int compareTo(PrecedenceConstraint pc) {
+		// compare preserved space heuristic
 		return this.preserved < pc.preserved ? -1 : this.preserved > pc.preserved ? 1 : 0;
 	}
 }

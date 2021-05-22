@@ -9,7 +9,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableF
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public interface FlawManager 

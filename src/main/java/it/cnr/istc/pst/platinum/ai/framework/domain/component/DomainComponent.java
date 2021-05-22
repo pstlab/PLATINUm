@@ -708,8 +708,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param dec
 	 */
-	public synchronized Set<Relation> deactivate(Decision dec) 
-	{
+	public synchronized Set<Relation> deactivate(Decision dec) {
+		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
 			throw new RuntimeException("Trying to delete a not local decision from a component:\n"
@@ -719,8 +719,10 @@ public abstract class DomainComponent extends FrameworkObject
 		
 		// check if already pending
 		if (this.isSilent(dec)) {
+			// restore silent decision to set it as "pending" 
+			this.restore(dec);
 			// warning information
-			throw new RuntimeException("Trying to deactivate a SILEN decision:\n"
+			warning("Trying to deactivate a SILENT decision:\n"
 					+ "- Decision: " + dec + "\n");	
 		}
 		

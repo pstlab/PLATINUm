@@ -5,7 +5,7 @@ import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.Parameter;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class Decision implements Comparable<Decision>

@@ -31,7 +31,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResource> 
@@ -54,6 +54,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	 * 
 	 */
 	private void load( ) {
+		
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
@@ -67,8 +68,8 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	 * 
 	 */
 	@Override
-	protected List<Flaw> doFindFlaws()
-	{
+	protected List<Flaw> doFindFlaws() {
+		
 		// load parameter if necessary
 		if (!this.load) {
 			this.load();
@@ -79,47 +80,35 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		// list of requirement events
 		List<RequirementResourceEvent> requirements = this.component.getRequirements();
 		// compute "pessimistic resource profiles"
-		for (int index = 0; index < requirements.size() - 1; index++)
-		{
+		for (int index = 0; index < requirements.size() - 1; index++) {
+			
 			// get current requirement event
 			RequirementResourceEvent event = requirements.get(index);
 			// prepare critical set
-			CriticalSet cs = new CriticalSet(FLAW_COUNTER.getAndIncrement(), (DiscreteResource) this.component);
+			CriticalSet cs = new CriticalSet(
+					FLAW_COUNTER.getAndIncrement(), 
+					(DiscreteResource) this.component);
+			
 			// add the current decision 
 			cs.addRequirementDecision(event);
 			// find possibly conflicting events
-			for (int jndex = index + 1; jndex < requirements.size(); jndex++)
-			{
+			for (int jndex = index + 1; jndex < requirements.size(); jndex++) {
+				
 				// get possibly conflicting event
 				RequirementResourceEvent conflicting = requirements.get(jndex);
-				// check if events conflict
-				debug("Checking possibly conflicting resource requirement events:\n"
-						+ "- component: " + this.component + "\n"
-						+ "- current critical set : " + cs + "\n"
-						+ "- possibly conflicting event: " + conflicting + "\n");
-				
 				// check if the current critical set can temporally overlap with the conflicting one
-				if (this.conflict(cs, conflicting))
-				{
+				if (this.conflict(cs, conflicting)) {
+					
 					// add the event to the critical set
 					cs.addRequirementDecision(conflicting);
-					// conflicting decision found
-					debug("Conflicting event found:\n"
-							+ "- component: " + this.component + "\n"
-							+ "- current critical set : " + cs + "\n"
-							+ "- possibly conflicting event: " + conflicting + "\n");
 				}
 			}
 			
 			// check the amount of requirement of the critical set
 			if (cs.getAmountOfRequirement() > this.component.getMaxCapacity()) {
+				
 				// add the critical set to the flaws
 				CSs.add(cs);
-				// a peak has been found
-				debug("A discrete resource peak has been found:\n"
-						+ "- component: " + this.component + "\n"
-						+ "- critical set: " + cs + "\n"
-						+ "- amount required: " + cs.getAmountOfRequirement() + "\n");
 			}
 		}
 		
@@ -128,20 +117,21 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	}
 	
 	/**
+	 * Check if a resource requirement overlaps ALL the activities of a given Critical Sets
 	 * 
 	 * @param set
 	 * @param event
 	 * @return
 	 */
-	private boolean conflict(CriticalSet set, RequirementResourceEvent event) 
-	{
+	private boolean conflict(CriticalSet set, RequirementResourceEvent event) {
+		
 		// conflicting flag
 		boolean conflict = true;
 		// get events of the critical set
 		List<RequirementResourceEvent> events = set.getRequirementEvents();
 		// check set of events
-		for (int index = 0; index < events.size() && conflict; index++)
-		{
+		for (int index = 0; index < events.size() && conflict; index++) {
+			
 			// get an event from the set
 			RequirementResourceEvent e = events.get(index);
 			// check if current decision and target overlap
@@ -160,7 +150,7 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	}
 	
 	/**
-	 * Å critical set (CS) is not necessary minimal. 
+	 * A critical set (CS) is not necessary minimal. 
 	 * 
 	 * This method samples a critical set in order to find all the minimal critical sets (MCSs) available.
 	 * 
@@ -259,8 +249,8 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 	 * @throws Exception - contains information concerning the unsolvable MCS
 	 */
 	private void computeMinimalCriticalSetSolutions(MinimalCriticalSet mcs) 
-			throws UnsolvableFlawException
-	{
+			throws UnsolvableFlawException {
+		
 		// list of events
 		List<RequirementResourceEvent> list = mcs.getEvents();
 		// for each pair of decisions check the feasibility of a precedence constraint and compute the resulting preserved heuristic value
@@ -397,29 +387,21 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 		 * For each MCS compute the set of feasible solutions and the related preserved heuristic value 
 		 */
 		
-		try
-		{
-			
-			// sort MCSs according to the total requirement
-			Collections.sort(mcss);	
-			// get the "best" MCS 
-			MinimalCriticalSet best = mcss.get(0);
-			// compute (minimal) critical set solutions 
-			this.computeMinimalCriticalSetSolutions(best);
-			
-			/*
-			 * Rate MCSs according to the computed preserved heuristic value and select the best one for expansion
-			 */
-			
-			// add computed solutions to the flow
-			for (PrecedenceConstraint pc : best.getSolutions()) {
-				// add this precedence constraint as a possible solution of the peak
-				flaw.addSolution(pc);
-			}
-		}
-		catch (Exception ex) {
-			// unsolvable MCS found
-			throw new UnsolvableFlawException("Unsolvable MCS found on discrete resourc e" + this.component.getName() + ":\n" + flaw);
+		// sort MCSs according to the total requirement
+		Collections.sort(mcss);	
+		// get the "best" MCS 
+		MinimalCriticalSet best = mcss.get(0);
+		// compute (minimal) critical set solutions 
+		this.computeMinimalCriticalSetSolutions(best);
+		
+		/*
+		 * Rate MCSs according to the computed preserved heuristic value and select the best one for expansion
+		 */
+		
+		// add computed solutions to the flow
+		for (PrecedenceConstraint pc : best.getSolutions()) {
+			// add this precedence constraint as a possible solution of the peak
+			flaw.addSolution(pc);
 		}
 	}
 	
