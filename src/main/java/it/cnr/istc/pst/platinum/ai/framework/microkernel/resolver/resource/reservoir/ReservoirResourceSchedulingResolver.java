@@ -2,7 +2,6 @@ package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.rese
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
@@ -34,8 +33,8 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  * @author alessandro
  *
  */
-public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResource> 
-{
+public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResource> {
+	
 	boolean load;
 	private double schedulingCost;
 	
@@ -66,8 +65,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * 
 	 */
 	@Override
-	protected List<Flaw> doFindFlaws() 
-	{
+	protected List<Flaw> doFindFlaws() {
+		
 		// check load
 		if (!this.load) {
 			this.load();
@@ -75,8 +74,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		
 		// list of flaws
 		List<Flaw> flaws = new ArrayList<>();
-		try
-		{
+		try {
+			
 			// check pessimistic resource profile
 			ReservoirResourceProfile prp = this.component.
 					computePessimisticResourceProfile();
@@ -85,8 +84,9 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			 * any and generate production checkpoints
 			 */
 			flaws = this.doComputeProfileOverflows(prp);
-		}
-		catch (ResourceProfileComputationException ex) {
+			
+		} catch (ResourceProfileComputationException ex) {
+			
 			// profile computation error
 			throw new RuntimeException("Resource profile computation error:\n- " + ex.getMessage() + "\n");
 		}
@@ -100,14 +100,14 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawException 
-	{
+			throws UnsolvableFlawException {
+		
 		// check flaw type
-		switch (flaw.getType()) 
-		{
+		switch (flaw.getType()) {
+		
 			// resource peak
-			case RESERVOIR_OVERFLOW : 
-			{
+			case RESERVOIR_OVERFLOW : {
+				
 				// get peak
 				ReservoirOverflow overflow = (ReservoirOverflow) flaw;
 				// solvable condition
@@ -128,7 +128,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			break;
 			
 			default : {
-				warning("Resolver [" + this.getClass().getName() + "] cannor resolver flaw of type " + flaw.getType() + "\n");
+				
+				warning("Resolver [" + this.getClass().getName() + "] cannot resolver flaw of type " + flaw.getType() + "\n");
 			}
 		}
 		
@@ -145,14 +146,15 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * @param initialLevel
 	 * @return
 	 */
-	private boolean checkCapacityFeasibility(List<ResourceEvent<?>> schedule, double initialLevel)
-	{
+	private boolean checkCapacityFeasibility(List<ResourceEvent<?>> schedule, double initialLevel) {
+		
 		// feasibility flag
 		boolean feasible = true;
 		// level of resource
 		double currentLevel = initialLevel;
 		// check resource level resulting from the schedule
 		for (int index = 0; index < schedule.size() && feasible; index++) {
+			
 			// get event
 			ResourceEvent<?> event = schedule.get(index);
 			// update the current level
@@ -161,13 +163,6 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			// check feasibility
 			feasible = currentLevel >= this.component.getMinCapacity() && 
 					currentLevel <= this.component.getMaxCapacity();
-		}
-		
-		// check feasibility
-		if (!feasible) {
-			// log data
-			debug("Component [" + this.label + "] capacity unfeasible schedule:\n"
-					+ "- potential schedule critical set: " + schedule + "\n");
 		}
 		
 		// get feasibility flag
@@ -243,10 +238,9 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * @param overflow
 	 */
 	protected void doFindFeasibleSchedule(ReservoirOverflow overflow) {
+		
 		// get the critical set
 		List<ResourceEvent<?>> cs = overflow.getCriticalSet();
-		// shuffle the list to increase the variability of considered schedules
-		Collections.shuffle(cs);
 		// start looking for a feasible schedule recursively 
 		this.doFindFeasibleSchedule(new ArrayList<>(), cs, overflow);
 	}
@@ -257,42 +251,32 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * @param cs
 	 * @param overflow
 	 */
-	private void doFindFeasibleSchedule(List<ResourceEvent<?>> schedule, List<ResourceEvent<?>> cs, ReservoirOverflow overflow) 
-	{
+	private void doFindFeasibleSchedule(List<ResourceEvent<?>> schedule, List<ResourceEvent<?>> cs, ReservoirOverflow overflow) {
+		
 		// check if a schedule is ready
-		if (cs.isEmpty()) 
-		{
-			// check built permutation as possible schedule of the critical set
-			debug("Component [" + this.label + "] check feasibility of schedule:\n"
-					+ "- scheduled critical set: " + schedule + "\n");
+		if (cs.isEmpty()) {
 			
 			// check schedule resource feasibility first and then temporal feasibility
 			if (this.checkCapacityFeasibility(schedule, overflow.getInitialLevel()) && 
-					this.checkTemporalFeasibility(schedule))
-			{
+					this.checkTemporalFeasibility(schedule)) {
+				
 				// create flaw solution
 				ResourceEventSchedule solution = new ResourceEventSchedule(overflow, schedule, this.schedulingCost);
 				// add solution to the flaw
 				overflow.addSolution(solution);
-				// feasible solution found
-				debug("Component [" + this.label + "] feasible solution found:\n"
-						+ "- overflow: " + overflow + "\n"
-						+ "- scheduled critical set: " + schedule + "\n");
 			}
-		}
-		else 
-		{
+			
+		} else {
+			
 			// check possible schedules until no solution is found 
-			for (int index = 0; index < cs.size() && overflow.getSolutions().isEmpty(); index++) 
-			{
+			for (int index = 0; index < cs.size(); index++) { // && overflow.getSolutions().isEmpty(); index++) {
+				
 				// get an event from the critical set
 				ResourceEvent<?> ev = cs.remove(index);
 				// add the event to the possible schedule
 				schedule.add(ev);
-				
 				// recursively build the permutation
 				this.doFindFeasibleSchedule(schedule, cs, overflow);
-				
 				// remove event from the permutation
 				schedule.remove(ev);
 				// restore data
@@ -306,23 +290,22 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 */
 	@Override
 	protected void doApply(FlawSolution solution) 
-			throws FlawSolutionApplicationException 
-	{
+			throws FlawSolutionApplicationException {
+		
 		// check flaw type
-		switch (solution.getFlaw().getType())
-		{
+		switch (solution.getFlaw().getType()) {
+		
 			// check flaw type
-			case RESERVOIR_OVERFLOW : 
-			{
+			case RESERVOIR_OVERFLOW : {
+				
 				// cast flaw solution
 				ResourceEventSchedule schedule = (ResourceEventSchedule) solution;
 				// get events
 				List<ResourceEvent<?>> events = schedule.getSchedule();
-				try
-				{
+				try {
+					
 					// create relation between associated decisions
-					for (int index = 0; index < events.size() - 1; index++)
-					{
+					for (int index = 0; index < events.size() - 1; index++) {
 						// get decisions
 						Decision reference = events.get(index).getDecision();
 						Decision target = events.get(index + 1).getDecision();
@@ -351,14 +334,13 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 					
 					// check temporal feasibility
 					this.tdb.verify();
-				}
-				catch (RelationPropagationException | ConsistencyCheckException ex) 
-				{
+					
+				} catch (RelationPropagationException | ConsistencyCheckException ex) {
+					
 					// failure while applying solution
 					debug("Error while applying flaw solution:\n"
 							+ "- solution: " + solution + "\n"
 							+ "- message: " + ex.getMessage() + "\n");
-					
 					
 					// deactivate created relation
 					for (Relation rel : solution.getActivatedRelations()) {
@@ -397,8 +379,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 	 * @param profile
 	 * @return
 	 */
-	private List<Flaw> doComputeProfileOverflows(ReservoirResourceProfile profile)
-	{
+	private List<Flaw> doComputeProfileOverflows(ReservoirResourceProfile profile) {
+		
 		// list of flaws found
 		List<Flaw> flaws = new ArrayList<>();
 		// get profile samples
@@ -410,25 +392,24 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		// set minimum and maximum level of resource within the critical set
 		long minCriticalSetLevel = Long.MAX_VALUE - 1;
 		long maxCriticalSetLevel = Long.MIN_VALUE + 1;
+		
 		// set of consumptions that may generate a peak
 		List<ResourceEvent<?>> criticalSet = new ArrayList<>();
 		// peak mode flag
 		boolean peakMode = false;
 		// analyze the resource profile until a peak is found
-		for (int index = 0; index < samples.size() && flaws.isEmpty(); index++)
-		{
+		for (int index = 0; index < samples.size() && flaws.isEmpty(); index++) {
+			
 			// current sample
 			ResourceUsageProfileSample sample = samples.get(index);
 			// get resource event
 			ResourceEvent<?> event = sample.getEvent();
 			
 			// check peak mode
-			if (!peakMode)
-			{
+			if (!peakMode) {
 				
 				// update the start peak level
 				startPeakLevel = currentLevel;
-				
 				// update the current level of the resource
 				currentLevel += event.getAmount();					// positive amount in case of production, negative in case of consumption
 				// check resource peak condition
@@ -443,9 +424,9 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 					minCriticalSetLevel = Math.min(minCriticalSetLevel, currentLevel);
 					maxCriticalSetLevel = Math.max(maxCriticalSetLevel, currentLevel);
 				}
-			}
-			else		// peak mode  
-			{
+				
+			} else {
+				
 				// add the current event to the critical set
 				criticalSet.add(event);
 				// get current level of the resource
@@ -456,14 +437,15 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				maxCriticalSetLevel = Math.max(maxCriticalSetLevel, currentLevel);
 				
 				// check peak condition
-				peakMode = currentLevel < this.component.getMinCapacity() || currentLevel > this.component.getMaxCapacity();				
+				peakMode = currentLevel < this.component.getMinCapacity() || 
+						currentLevel > this.component.getMaxCapacity();				
 				
 				// check if exit from peak condition
-				if (!peakMode) 
-				{
+				if (!peakMode) {
+
 					// check over production
-					if (maxCriticalSetLevel > this.component.getMaxCapacity()) 
-					{
+					if (maxCriticalSetLevel > this.component.getMaxCapacity()) {
+						
 						// get the maximum (positive) amount of over production
 						double delta = maxCriticalSetLevel - this.component.getMaxCapacity();
 						
@@ -481,8 +463,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 					}
 					
 					// check over consumption
-					if (minCriticalSetLevel < this.component.getMinCapacity())
-					{
+					if (minCriticalSetLevel < this.component.getMinCapacity()) {
+						
 						// get (negative) amount of over consumption
 						double delta = minCriticalSetLevel - this.component.getMinCapacity();
 						
@@ -503,11 +485,10 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 		
 		
 		// check if a peak must be closed - "final peak"
-		if (peakMode && flaws.isEmpty())	 
-		{
+		if (peakMode && flaws.isEmpty()) {
 			// check over production
-			if (maxCriticalSetLevel > this.component.getMaxCapacity()) 
-			{
+			if (maxCriticalSetLevel > this.component.getMaxCapacity()) {
+				
 				// get the maximum (positive) amount of over production
 				double delta = maxCriticalSetLevel - this.component.getMaxCapacity();
 				
@@ -524,11 +505,10 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 			}
 			
 			// check over consumption
-			if (minCriticalSetLevel < this.component.getMinCapacity())
-			{
+			if (minCriticalSetLevel < this.component.getMinCapacity()) {
+				
 				// get (negative) amount of over consumption
 				double delta = minCriticalSetLevel - this.component.getMinCapacity();
-				
 				// create reservoir overflow flaw
 				ReservoirOverflow overflow = new ReservoirOverflow(
 						FLAW_COUNTER.getAndIncrement(), 
