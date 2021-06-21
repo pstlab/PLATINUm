@@ -72,8 +72,8 @@ public class Planner extends FrameworkObject
 	 * @throws NoSolutionFoundException
 	 */
 	public SolutionPlan plan() 
-			throws NoSolutionFoundException 
-	{
+			throws NoSolutionFoundException {
+		
 		// get time 
 		long start = System.currentTimeMillis();
 		// find a solution to the planning problem

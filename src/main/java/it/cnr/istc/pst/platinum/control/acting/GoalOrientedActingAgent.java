@@ -8,6 +8,7 @@ import java.util.Map;
 
 import it.cnr.istc.pst.platinum.ai.deliberative.Planner;
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionPreparationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNode;
 import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNodeStatus;
@@ -35,11 +36,11 @@ import it.cnr.istc.pst.platinum.control.platform.RunnablePlatformProxy;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class GoalOrientedActingAgent implements PlatformObserver
-{	
+public class GoalOrientedActingAgent implements PlatformObserver {
+	
 	private final Object lock;								// lock state;
 	private ActingAgentStatus status;						// agent status
 
@@ -65,10 +66,10 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @param agentPropertyFile
 	 */
 	@SuppressWarnings("unchecked")
-	public GoalOrientedActingAgent(String agentPropertyFile) 
-	{
-		try
-		{
+	public GoalOrientedActingAgent(String agentPropertyFile) {
+		
+		try {
+			
 			// set lock and status
 			this.lock = new Object();
 			// set status
@@ -116,13 +117,7 @@ public class GoalOrientedActingAgent implements PlatformObserver
 			// read the class of the platform 
 			String platformClassName = this.properties.getProperty("platform");
 			// check if a platform is necessary
-			if (platformClassName != null && !platformClassName.equals("")) 
-			{
-				// print agent configuration
-				System.out.println("Configuration of the Goal-Oriented Acting Agent:\n"
-						+ "- Deliberative: " + plannerClassName + "\n"
-						+ "- Executive: " + executiveClassName + "\n"
-						+ "- Platform: " + platformClassName + "\n");
+			if (platformClassName != null && !platformClassName.equals("")) {
 				
 				// get platform configuration file 
 				String configFile = this.properties.getProperty("platform_config_file");
@@ -131,38 +126,46 @@ public class GoalOrientedActingAgent implements PlatformObserver
 					throw new RuntimeException("Specify a configuration file for the platform in \"" + agentPropertyFile + "\"!");
 				}
 				
+				// print agent configuration
+				System.out.println("Configuration of the Goal-Oriented Acting Agent:\n"
+						+ "\tDDL file: " +  ddlFile + "\n"
+						+ "\tDeliberative Clas: " + plannerClassName + "\n"
+						+ "\tExecutive Class: " + executiveClassName + "\n"
+						+ "\tPlatform Class: " + platformClassName + "\n"
+						+ "\tPlatform Config file: " + configFile + "\n");
+				
 				
 				// create platform PROXY
 				Class<? extends PlatformProxy> clazz = (Class<? extends PlatformProxy>) Class.forName(platformClassName); 
 				// create PROXY
 				this.proxy = PlatformProxyBuilder.build(clazz, configFile);
-			}
-			else 
-			{
+				
+			} else {
+				
 				// print agent configuration
 				System.out.println("Configuration of the Goal-Oriented Acting Agent:\n"
-						+ "- deliberative: " + plannerClassName + "\n"
-						+ "- executive: " + executiveClassName + "\n");
+						+ "\tDDL file: " +  ddlFile + "\n"
+						+ "\tDeliberative Clas: " + plannerClassName + "\n"
+						+ "\tExecutive Class: " + executiveClassName + "\n");
 			}
 			
 			
 			// setup deliberative and executive processes
 			this.setupProcesses();
 			
-			
-			
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
+		
+		
 	}
 	
 	
 	/**
 	 * 
 	 */
-	private void setupProcesses() 
-	{
+	private void setupProcesses() {
+		
 		// set the list of processes
 		this.processes = new ArrayList<>();
 		// set goal listener thread
@@ -173,18 +176,19 @@ public class GoalOrientedActingAgent implements PlatformObserver
 			 */
 			@Override
 			public void run() {
+				
 				boolean running = true;
-				while(running)
-				{
-					try
-					{
+				while(running) {
+					
+					try {
+						
 						// check buffered goals
 						Goal goal = waitGoal(GoalStatus.BUFFERED);
 						System.out.println("Selecting goal.. \n" + goal + "\n");
 						// simply select the extracted goal
 						select(goal);
-					}
-					catch (InterruptedException ex) {
+						
+					} catch (InterruptedException ex) {
 						running = false;
 					}
 				}
@@ -251,9 +255,10 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @param description
 	 */
 	public void buffer(AgentTaskDescription description) {
+		
 		// protect access to the queue
 		synchronized (this.queue) {
-			System.out.println("receiving task ...\n" + description + "\n");
+			System.out.println("[Agent] Receiving task ...\n" + description + "\n");
 			// create goal 
 			Goal goal = new Goal(description);
 			// set goal status
@@ -272,12 +277,12 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @throws InterruptedException
 	 */
 	public List<Goal> getResults() 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		// wait some finished or aborted goal
 		List<Goal> goals = new ArrayList<>();
-		synchronized (this.queue) 
-		{
+		synchronized (this.queue) {
+			
 			while (this.queue.get(GoalStatus.ABORTED).isEmpty() && 
 					this.queue.get(GoalStatus.FINISHED).isEmpty()) {
 				// wait
@@ -305,8 +310,10 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * 
 	 */
 	protected void select(Goal goal) {
+		
 		// protect access to the queue
 		synchronized (this.queue) {
+			
 			// remove goal form the current queue
 			this.queue.get(goal.getStatus()).remove(goal);
 			// set goal status
@@ -321,10 +328,11 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	/**
 	 * 
 	 */
-	protected void commit(Goal goal) 
-	{
+	protected void commit(Goal goal) {
+		
 		// protect access to the queue
 		synchronized (this.queue) {
+			
 			// remove goal form the current queue
 			this.queue.get(goal.getStatus()).remove(goal);
 			// set goal status
@@ -340,8 +348,10 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * 
 	 */
 	protected void suspend(Goal goal) {
+		
 		// protect access to the queue
 		synchronized (this.queue) {
+			
 			// remove goal form the current queue
 			this.queue.get(goal.getStatus()).remove(goal);
 			// set goal status
@@ -357,8 +367,10 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * 
 	 */
 	protected void finish(Goal goal) {
+		
 		// protect access to the queue
 		synchronized (this.queue) {
+			
 			// remove goal form the current queue
 			this.queue.get(goal.getStatus()).remove(goal);
 			// set goal status
@@ -374,8 +386,10 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * 
 	 */
 	protected void abort(Goal goal) {
+		
 		// protect access to the queue
 		synchronized (this.queue) {
+			
 			// remove goal form the current queue
 			this.queue.get(goal.getStatus()).remove(goal);
 			// set goal status
@@ -393,8 +407,8 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @throws PlatformException
 	 */
 	public void start() 
-			throws InterruptedException, PlatformException
-	{
+			throws InterruptedException, PlatformException {
+		
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.OFFLINE)) {
 				// wait 
@@ -454,13 +468,11 @@ public class GoalOrientedActingAgent implements PlatformObserver
 			p.join();
 		}
 		
-		
 		// stop platform PROXY
 		if (this.proxy instanceof RunnablePlatformProxy) {
 			// stop platform PROXY
 			((RunnablePlatformProxy) this.proxy).stop();
 		}
-
 		
 		synchronized (this.lock) {
 			// change status
@@ -477,8 +489,8 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @throws PlatformException
 	 */
 	public void initialize() 
-			throws InterruptedException, SynchronizationCycleException, PlatformException
-	{
+			throws InterruptedException, SynchronizationCycleException, PlatformException {
+		
 		synchronized (this.lock) {
 			while(!this.status.equals(ActingAgentStatus.RUNNING)) {
 				// wait a signal
@@ -507,8 +519,8 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @throws InterruptedException
 	 */
 	public void clear() 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.FAILURE) && 
 					!this.status.equals(ActingAgentStatus.READY)) {
@@ -546,8 +558,8 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @throws NoSolutionFoundException 
 	 */
 	protected boolean plan(Goal goal) 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		// wait when planning can be actually performed if necessary
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.READY)) {
@@ -568,13 +580,13 @@ public class GoalOrientedActingAgent implements PlatformObserver
 		List<Decision> goals = new ArrayList<>();
 		// list of fact decisions
 		List<Decision> facts = new ArrayList<>();
-		try
-		{
+		try {
+			
 			// get task description
 			AgentTaskDescription task = goal.getTaskDescription();
 			// set known information concerning components
-			for (TokenDescription f : task.getFacts()) 
-			{
+			for (TokenDescription f : task.getFacts()) {
+				
 				// get domain component
 				DomainComponent component = this.pdb.getComponentByName(f.getComponent());
 				// get goal referred value
@@ -628,8 +640,8 @@ public class GoalOrientedActingAgent implements PlatformObserver
 			}
 			
 			// set planning goals 
-			for (TokenDescription g : task.getGoals()) 
-			{
+			for (TokenDescription g : task.getGoals()) {
+				
 				// get domain component
 				DomainComponent component = this.pdb.getComponentByName(g.getComponent());
 				// get goal referred value
@@ -676,6 +688,8 @@ public class GoalOrientedActingAgent implements PlatformObserver
 						duration
 						);
 				
+				// set as mandatory expansion decision
+				decision.setMandatoryExpansion();
 				// add decision to goal list
 				goals.add(decision);
 			}
@@ -683,14 +697,15 @@ public class GoalOrientedActingAgent implements PlatformObserver
 			
 			// start planning time
 			long now = System.currentTimeMillis();
-			try
-			{
+			try {
+				
 				// deliberate on the current status of the plan database
 				SolutionPlan plan = this.deliberative.doHandle(this.pdb);
 				// set generated plan
 				goal.setPlan(plan);
-			}
-			catch (NoSolutionFoundException ex) {
+				
+			} catch (NoSolutionFoundException ex) {
+				
 				// failure - no plan can be found
 				success = false;
 				// remove and deactivate facts
@@ -704,16 +719,17 @@ public class GoalOrientedActingAgent implements PlatformObserver
 					g.getComponent().deactivate(g);
 					g.getComponent().free(g);
 				}
-			}
-			finally 
-			{
+				
+			} finally {
+				
 				// compute actual planning time
 				long time = System.currentTimeMillis() - now;
 				// add planning time attempt to the goal
 				goal.addPlanningAttempt(time);
 			}
-		}
-		catch (DecisionPropagationException ex) {
+			
+			
+		} catch (DecisionPropagationException ex) {
 			// problem setup error 
 			success = false;
 			// remove and deactivate facts
@@ -736,11 +752,13 @@ public class GoalOrientedActingAgent implements PlatformObserver
 		
 		// update agent status
 		synchronized (this.lock) {
+			
 			// update status according to the result of the planning process
 			if (success) {
 				this.status = ActingAgentStatus.READY;
-			}
-			else {
+				
+			} else {
+				
 				// failure
 				this.status = ActingAgentStatus.FAILURE;
 			}
@@ -760,8 +778,8 @@ public class GoalOrientedActingAgent implements PlatformObserver
 	 * @throws InterruptedException
 	 */
 	protected boolean execute(Goal goal) 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.READY)) {
 				// wait
@@ -776,19 +794,37 @@ public class GoalOrientedActingAgent implements PlatformObserver
 		
 		// execution result
 		boolean complete = true;
+		// re-planning flag
+		boolean replanning = false;
 		// start execution time
 		long now = System.currentTimeMillis();
-		try 
-		{
+		try {
+			
 			// execute the plan
 			this.executive.doHandle(goal);
-		}
-		catch (Exception ex) {
+			
+		} catch (ExecutionPreparationException ex) {
+			
 			// execution failure
 			complete = false;
-		}
-		finally 
-		{
+			// no re-planning since the execution has not even started
+			replanning = false;
+			
+			// print message
+			System.err.println(ex.getMessage());
+			
+		} catch (Exception ex) {
+			
+			// execution failure
+			complete = false;
+			// re-planning is necessary
+			replanning = true;
+			
+			// print message
+			System.err.println(ex.getMessage());
+			
+		} finally {
+			
 			// compute actual execution time
 			long time = System.currentTimeMillis() - now;
 			// add execution attempt time
@@ -798,10 +834,15 @@ public class GoalOrientedActingAgent implements PlatformObserver
 		// update agent status
 		synchronized (this.lock) {
 			// update status according to the execution results
-			if (complete) {
+			if (complete || 
+					!replanning) {
+				
+				// set ready status
 				this.status = ActingAgentStatus.READY;
-			}
-			else {
+				
+			} else {
+				
+				// suspend status for contingency handling and re-planning
 				this.status = ActingAgentStatus.SUSPENDED;
 			}
 			
@@ -810,7 +851,7 @@ public class GoalOrientedActingAgent implements PlatformObserver
 		}
 		
 		// return execution result
-		return complete;
+		return complete || !replanning;
 	}
 	
 	/**

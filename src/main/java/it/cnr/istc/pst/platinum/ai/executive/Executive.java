@@ -12,6 +12,7 @@ import it.cnr.istc.pst.platinum.ai.executive.dispatcher.Dispatcher;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedback;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedbackType;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionPreparationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.monitor.ConditionCheckingMonitor;
 import it.cnr.istc.pst.platinum.ai.executive.monitor.Monitor;
@@ -54,8 +55,8 @@ import it.cnr.istc.pst.platinum.control.platform.PlatformProxy;
 @DispatcherConfiguration(
 		dispatcher = ConditionCheckingDispatcher.class
 )
-public class Executive extends FrameworkObject implements ExecutionManager, PlatformObserver
-{
+public class Executive extends FrameworkObject implements ExecutionManager, PlatformObserver {
+	
 	@ExecutivePlanDataBasePlaceholder
 	protected ExecutivePlanDataBase pdb;										// the (executive) plan to execute
 	
@@ -82,19 +83,18 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	
 	private PlatformProxy platformProxy;										// platform PROXY to send commands to
 
-	
-	
 	/**
 	 * 
 	 */
-	protected Executive() 
-	{
+	protected Executive() {
 		super();
+		
 		// get executive file properties
 		this.properties = new FilePropertyReader(
 			FRAMEWORK_HOME + FilePropertyReader.DEFAULT_EXECUTIVE_PROPERTY);
 		// set clock and initial status
 		this.lock = new Object();
+		
 		// set status
 		this.status = ExecutionStatus.INACTIVE;
 		// set clock manager
@@ -123,16 +123,18 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * 
 	 * @param proxy
 	 */
-	public synchronized void link(PlatformProxy proxy) 
-	{
+	public synchronized void link(PlatformProxy proxy) {
+		
 		// check if already set
 		if (this.platformProxy == null) {
+			
 			// bind the executive
 			this.platformProxy = proxy;
 			// register to the PROXY
 			this.platformProxy.register(this);
-		}
-		else {
+			
+		} else {
+			
 			warning("Platform proxy already set. Do unlink before setting another platform proxy");
 		}
 	}
@@ -141,8 +143,10 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * 
 	 */
 	public synchronized void unlink() {
+		
 		// unlink form simulator
 		if (this.platformProxy != null) {
+			
 			// unregister
 			this.platformProxy.unregister(this);
 			// clear data
@@ -190,8 +194,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @param tick
 	 * @return
 	 */
-	public long convertTickToTau(long tick) 
-	{
+	public long convertTickToTau(long tick) {
+		
 		// covert tick to seconds from the execution start
 		double seconds = this.clock.convertClockTickToSeconds(tick);
 		// get property to convert seconds to time units
@@ -215,8 +219,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws InterruptedException
 	 */
 	public long getTau() 
-			throws InterruptedException 
-	{
+			throws InterruptedException {
+		
 		// current tick
 		long tick = this.clock.getCurrentTick();
 		// cover to tau
@@ -229,8 +233,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws InterruptedException
 	 */
 	public long getTick() 
-			throws InterruptedException 
-	{
+			throws InterruptedException {
+		
 		// return current tick
 		return this.clock.getCurrentTick();
 	}
@@ -249,9 +253,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @return
 	 */
 	public List<ExecutionNode> getNodes() {
+		
 		// list of nodes
 		List<ExecutionNode> list = new ArrayList<>();
 		for (ExecutionNodeStatus status : ExecutionNodeStatus.values()) {
+			
 			// skip failed nodes
 			if (!status.equals(ExecutionNodeStatus.FAILURE)) {
 				// add all nodes with current status
@@ -290,23 +296,23 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws PlatformException
 	 */
 	public void scheduleTokenStart(ExecutionNode node, long start) 
-			throws TemporalConstraintPropagationException, PlatformException 
-	{
+			throws TemporalConstraintPropagationException, PlatformException {
+		
 		// check controllability type
 		ControllabilityType type = node.getControllabilityType();
-		switch (type)
-		{
+		switch (type) {
+		
 			// schedule uncontrollable token
-			case UNCONTROLLABLE : 
-			{
+			case UNCONTROLLABLE : {
+				
 				// simply set the proper state - no propagation is needed in this case
 				this.updateNode(node, ExecutionNodeStatus.STARTING);
 			}
 			break;
 		
 			case PARTIALLY_CONTROLLABLE : 
-			case CONTROLLABLE : 
-			{
+			case CONTROLLABLE : {
+				
 				// actually schedule the start time of the token
 				this.pdb.scheduleStartTime(node, start);
 				// update node status
@@ -327,8 +333,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws ExecutionException
 	 */
 	public void scheduleUncontrollableTokenStart(ExecutionNode node, long start) 
-			throws TemporalConstraintPropagationException
-	{
+			throws TemporalConstraintPropagationException {
+		
 		// schedule the observed start time of the token
 		this.pdb.scheduleStartTime(node, start);
 		// update node status
@@ -343,8 +349,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws PlatformException
 	 */
 	public void scheduleTokenDuration(ExecutionNode node, long duration) 
-			throws TemporalConstraintPropagationException, PlatformException
-	{
+			throws TemporalConstraintPropagationException, PlatformException {
+		
 		// propagate scheduled duration time
 		this.pdb.scheduleDuration(node, duration);
 		// the node can be considered as executed
@@ -365,8 +371,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @param plan
 	 */
 	public final void initialize(PlanProtocolDescriptor plan) 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		// check status
 		synchronized (this.lock) {
 			while (!this.status.equals(ExecutionStatus.INACTIVE)) {
@@ -397,6 +403,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 */
 	public final boolean execute() 
 			throws Exception {
+		
 		// call executive starting at tick 0
 		return this.execute(0, null);
 	}
@@ -404,15 +411,19 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	/**
 	 * Blocking method which start the execution of the plan and waits for completion.
 	 * 
+	 * @param startTick
+	 * @param goal
 	 * @return
-	 * @throws Exception
+	 * @throws ExecutionException
+	 * @throws ExecutionPreparationException
+	 * @throws InterruptedException
 	 */
 	public final boolean execute(long startTick, Goal goal) 
-			throws Exception
-	{
+			throws ExecutionException, ExecutionPreparationException, InterruptedException {
+		
 		// check status
-		synchronized (this.lock) 
-		{
+		synchronized (this.lock) {
+			
 			// check lock condition
 			while (!this.status.equals(ExecutionStatus.READY)) {
 				this.status.wait();
@@ -428,8 +439,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		if (goal == null) {
 			// prepare execution
 			this.doPrepareExecution();
-		}
-		else {
+			
+		} else {
+			
 			// prepare execution
 			this.doPrepareExecution(goal);
 		}
@@ -442,8 +454,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		this.clock.join();
 		
 		// check execution failure or not 
-		if (this.failure.get()) 
-		{
+		if (this.failure.get()) {
+			
 			// execution failure
 			error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
 					+ "\t- cause: " + this.cause.getType() + "\n");
@@ -455,9 +467,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				// send signal 
 				this.lock.notifyAll();
 			}
-		}
-		else 
-		{
+			
+		} else {
+			
 			// successful execution 
 			info("Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");
 			
@@ -499,15 +511,15 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @return
 	 */
 	@Override
-	public boolean onTick(long tick)
-	{
+	public boolean onTick(long tick) {
+		
 		// execution completion flag
 		boolean complete = false;
-		try 
-		{
+		try  {
+			
 			// check failure flag
-			if (!this.failure.get()) 
-			{
+			if (!this.failure.get()) {
+				
 				// handle current tick
 				this.currentTick = tick;
 				debug("{Executive} -> Handle tick: " + tick + "\n");
@@ -522,9 +534,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
 						this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING).isEmpty() && 
 						this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
-			}
-			else 
-			{
+			
+			} else {
+				
 				// handle current tick
 				this.currentTick = tick;
 				// handle observations
@@ -534,6 +546,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				complete = true;
 				// get nodes in starting state
 				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING)) {
+					
 					// the executive cannot complete 
 					complete = false;
 					// waiting for a feedback of the node 
@@ -543,6 +556,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				
 				// get nodes in execution 
 				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
+					
 					// the executive cannot complete 
 					complete = false;
 					// waiting for a feedback of the node 
@@ -555,9 +569,10 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			long tau = this.convertTickToTau(tick);
 			// display executive window
 			this.displayWindow(tau);
-		}
-		catch (ExecutionException ex) 
-		{
+			
+			
+		} catch (ExecutionException ex)  {
+			
 			// set execution failure flag
 			this.failure.set(true);
 			// do not complete execution to wait for pending signals
@@ -568,9 +583,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			error("{Executive} {tick: " + tick + "} -> Error while executing plan:\n"
 					+ "\t- message: " + ex.getMessage() + "\n\n"
 					+ "Wait for execution feedbacks of pending controllable and partially-controllable tokens if any... \n\n");
-		}
-		catch (PlatformException ex) 
-		{
+			
+		} catch (PlatformException ex) {
+			
 			// set failure
 			this.failure.set(true);
 			// complete execution in this case
@@ -578,8 +593,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			// error message
 			error("{Executive} {tick: " + tick + "} -> Platform error:\n"
 					+ "\t- message: " + ex.getMessage() + "\n");
-		}
-		catch (InterruptedException ex) {
+			
+		} catch (InterruptedException ex) {
+			
 			// execution error
 			error(ex.getMessage());
 			// set execution failure 
@@ -598,8 +614,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws InterruptedException
 	 */
 	private void displayWindow(long tau) 
-			throws InterruptedException 
-	{
+			throws InterruptedException {
+		
 		// check property
 		if (this.getProperty(DISPLAY_PLAN_PROPERTY).equals("1")) {
 			// set the data-set to show
@@ -612,10 +628,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	/**
 	 * Perform some setting operation just before starting execution
 	 * 
-	 * @throws Exception
+	 * @throws ExecutionPreparationException
 	 */
 	protected void doPrepareExecution() 
-			throws Exception {
+			throws ExecutionPreparationException {
+		
 		// prepare execution
 		info("[Executive] Preparing execution...");
 	}
@@ -624,10 +641,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * Perform some setting operation just before starting execution
 	 * 
 	 * @param goal
-	 * @throws Exception
+	 * @throws ExecutionPreparationException
 	 */
 	protected void doPrepareExecution(Goal goal) 
-			throws Exception {
+			throws ExecutionPreparationException {
+		
 		// prepare execution
 		info("[Executive] Preparing execution of:\n- goal= " + goal + "\n");
 	}
@@ -638,8 +656,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws PlatformException
 	 */
 	public void sendStopCommandSignalToPlatform(ExecutionNode node) 
-			throws PlatformException
-	{
+			throws PlatformException {
+		
 		if (this.platformProxy != null && this.platformProxy.isPlatformCommand(node)) {
 			// also send stop command execution request
 			this.platformProxy.stopNode(node);
@@ -652,15 +670,15 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * @throws PlatformException
 	 */
 	public void sendStartCommandSignalToPlatform(ExecutionNode node) 
-			throws PlatformException
-	{
+			throws PlatformException {
+		
 		// check if a platform PROXY exists
-		if (this.platformProxy != null) 
-		{
+		if (this.platformProxy != null) {
+			
 			// check controllability type 
 			if (node.getControllabilityType().equals(ControllabilityType.PARTIALLY_CONTROLLABLE) || 
-					node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE))
-			{
+					node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE)) {
+				
 				// check if command to execute on platform
 				if (this.platformProxy.isPlatformCommand(node)) {
 	 				// send command and take operation ID
@@ -668,9 +686,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					// add entry to the index
 					this.dispatchedIndex.put(cmd, node);
 				}
-			}
-			else
-			{
+				
+			} else {
+				
 				// check if command to execute on platform
 				if (this.platformProxy.isPlatformCommand(node)) {
 					// require execution start
@@ -679,8 +697,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					this.dispatchedIndex.put(cmd, node);
 				}
 			}
-		}
-		else {
+			
+		} else {
 			
 			// nothing to do, no platform PROXY available
 		}
@@ -690,11 +708,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * Action execution feedback callback
 	 */
 	@Override
-	public void feedback(PlatformFeedback feedback) 
-	{
+	public void feedback(PlatformFeedback feedback) {
+		
 		// check feedback type
-		switch (feedback.getType())
-		{
+		switch (feedback.getType()) {
+		
 			// successful action execution
 			case SUCCESS : { 
 				// handle command positive feedback
@@ -729,8 +747,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * Handle general observations from the environment
 	 */
 	@Override
-	public void observation(PlatformObservation<? extends Object> obs) 
-	{
+	public void observation(PlatformObservation<? extends Object> obs) {
+		
 		/* 
 		 * TODO Auto-generated method stub
 		 */
@@ -740,16 +758,16 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * 
 	 * @param cmd
 	 */
-	private void success(PlatformCommand cmd) 
-	{
+	private void success(PlatformCommand cmd) {
+		
 		// check command  
-		if (this.dispatchedIndex.containsKey(cmd))
-		{
+		if (this.dispatchedIndex.containsKey(cmd)) {
+			
 			// get execution node
 			ExecutionNode node = this.dispatchedIndex.get(cmd);
 			// check node current status
-			if (node.getStatus().equals(ExecutionNodeStatus.STARTING)) 
-			{
+			if (node.getStatus().equals(ExecutionNodeStatus.STARTING)) {
+				
 				// create execution feedback
 				ExecutionFeedback feedback = new ExecutionFeedback(
 						this.currentTick,
@@ -760,9 +778,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				// got start execution feedback from a completely uncontrollable token
 				info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the start of the execution of an uncontrollable token:\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-			}
-			else if (node.getStatus().equals(ExecutionNodeStatus.IN_EXECUTION))
-			{
+				
+			} else if (node.getStatus().equals(ExecutionNodeStatus.IN_EXECUTION)) {
+				
 				// create execution feedback
 				ExecutionFeedback feedback = new ExecutionFeedback(
 						this.currentTick,
@@ -777,15 +795,14 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				// got end execution feedback from either a partially-controllable or uncontrollable token
 				info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-			}
-			else 
-			{
+				
+			} else {
+				
 				// nothing to do
 			}
 			
-		}
-		else 
-		{
+		} else {
+			
 			// no operation ID found 
 			warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
 		}
@@ -796,11 +813,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	 * 
 	 * @param cmd
 	 */
-	private void failure(PlatformCommand cmd) 
-	{
+	private void failure(PlatformCommand cmd) {
+		
 		// check command  
-		if (this.dispatchedIndex.containsKey(cmd))
-		{
+		if (this.dispatchedIndex.containsKey(cmd)) {
+			
 			// get execution node
 			ExecutionNode node = this.dispatchedIndex.get(cmd);
 			// create execution feedback
@@ -816,9 +833,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			// got end execution feedback from either a partially-controllable or uncontrollable token
 			info("{Executive} {tick: " + this.currentTick + "} -> Got \"failure\" feedback about the execution of token:\n"
 					+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-		}
-		else 
-		{
+			
+		} else {
+			
 			// no operation ID found 
 			warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
 		}

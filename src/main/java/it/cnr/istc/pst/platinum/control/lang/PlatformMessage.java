@@ -1,9 +1,8 @@
 package it.cnr.istc.pst.platinum.control.lang;
 
-
 /**
  * 
- * @author alessandroumbrico
+ * @author alessandro
  *
  */
 public abstract class PlatformMessage 

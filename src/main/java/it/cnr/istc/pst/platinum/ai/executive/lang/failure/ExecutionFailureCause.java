@@ -7,7 +7,7 @@ import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNode;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class ExecutionFailureCause 

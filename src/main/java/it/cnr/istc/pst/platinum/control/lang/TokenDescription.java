@@ -2,11 +2,11 @@ package it.cnr.istc.pst.platinum.control.lang;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class TokenDescription 
-{
+public class TokenDescription {
+	
 	private String component;				// name of the component the goal refers to 
 	private String value;					// temporal predicate of the component the goal refers to
 	private String[] labels;				// labels of the parameters of the predicate
@@ -104,5 +104,17 @@ public class TokenDescription
 		return duration;
 	}
 	
-	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return "{ "
+				+ "\"component\": \"" + this.component + "\", "
+				+ "\"value\": \"" + this.value + "\", "
+				+ (this.start != null ? "\"start\": [" + this.start[0] + ", " + this.start[1] + "], " : "\"start\": [1, +INF], " )
+				+ (this.duration != null ? "\"duration\": [" + this.duration[0] + ", " + this.duration[1] + "], " : "\"duration\": [1, +INF], ")
+				+ (this.end != null ? "\"end\": [" + this.end[0] + ", " + this.end[1] + "], " : "\"end\": [1, +INF], ")
+				+ "}";
+	}
 }

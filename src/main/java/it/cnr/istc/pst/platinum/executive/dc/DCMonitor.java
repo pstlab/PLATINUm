@@ -17,6 +17,8 @@ import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
 
 /**
  * 
+ * @author alessandro
+ *
  */
 public class DCMonitor extends Monitor<DCExecutive> 
 {
@@ -33,15 +35,11 @@ public class DCMonitor extends Monitor<DCExecutive>
 	 */
 	@Override
 	public void handleTick(long tick) 
-			throws ExecutionException, PlatformException
-	{
+			throws ExecutionException, PlatformException {
+		
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
-		// check received feedbacks
-//		List<ExecutionFeedback> feedbacks = this.getObservations();
-//		// manage uncontrollable tokens of the plan according to the feedbacks
-//		for (ExecutionFeedback feedback : feedbacks) {
-			
+		// check received observations
 		while (this.hasObservations()) {
 			
 			// get next feedback
@@ -173,13 +171,13 @@ public class DCMonitor extends Monitor<DCExecutive>
 	 */
 	@Override
 	public void handleExecutionFailure(long tick, ExecutionFailureCause cause) 
-			throws PlatformException
-	{
+			throws PlatformException {
+		
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
 		// manage uncontrollable tokens of the plan according to the feedbacks
-		while (this.hasObservations())
-		{
+		while (this.hasObservations()) {
+			
 			// get next observation
 			ExecutionFeedback feedback = this.next();
 			// get node 

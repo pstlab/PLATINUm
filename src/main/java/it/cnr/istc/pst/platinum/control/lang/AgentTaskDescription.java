@@ -5,11 +5,11 @@ import java.util.List;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class AgentTaskDescription extends PlatformMessage	
-{
+public class AgentTaskDescription extends PlatformMessage {
+	
 	private List<TokenDescription> goals;
 	private List<TokenDescription> facts;
 	
@@ -53,5 +53,28 @@ public class AgentTaskDescription extends PlatformMessage
 	 */
 	public List<TokenDescription> getGoals() {
 		return new ArrayList<>(this.goals);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		// JSON style description
+		String json = "{\n\tgoals: [\n";
+		for (TokenDescription goal : goals) {
+			// add JSON object description
+			json += "\t\t" + goal + ",\n";
+		}
+						
+		json += "\t],\n\n\tfacts: [\n";
+		for (TokenDescription fact : this.facts) {
+			// add JSON object description
+			json += "\t\t" + fact + ",\n";
+		}
+				
+		json += "\t],\n\n}\n";
+		// get JSON
+		return json;
 	}
 }

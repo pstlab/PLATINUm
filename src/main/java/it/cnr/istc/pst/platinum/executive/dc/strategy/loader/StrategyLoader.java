@@ -15,7 +15,6 @@ import java.util.Set;
 import it.cnr.istc.pst.platinum.executive.dc.strategy.ListStrategy;
 import it.cnr.istc.pst.platinum.executive.dc.strategy.State;
 import it.cnr.istc.pst.platinum.executive.dc.strategy.Strategy;
-import it.cnr.istc.pst.platinum.executive.dc.strategy.TreeStrategy;
 import it.cnr.istc.pst.platinum.executive.dc.strategy.clock.ClockSet;
 import it.cnr.istc.pst.platinum.executive.dc.strategy.result.Transition;
 
