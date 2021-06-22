@@ -12,6 +12,10 @@
   <organization>
   	<name>National Research Council of Italy</name>
  	</organization>
+	
+  <properties>
+    <skipTests>true</skipTests>
+  </properties>
   
   	<repositories>
   		<repository>
