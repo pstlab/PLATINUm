@@ -3,7 +3,7 @@
   
   <groupId>it.cnr.istc.pst</groupId>
   <artifactId>platinum</artifactId>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
   <packaging>jar</packaging>
   
   <name>PLATINUm</name>
@@ -12,14 +12,6 @@
   <organization>
   	<name>National Research Council of Italy</name>
  	</organization>
-	
-	
-  
-  <properties>
-    <maven.compiler.target>8</maven.compiler.target>
-    <maven.compiler.source>8</maven.compiler.source>
-    <skipTests>true</skipTests>
-  </properties>
   
   	<repositories>
   		<repository>
