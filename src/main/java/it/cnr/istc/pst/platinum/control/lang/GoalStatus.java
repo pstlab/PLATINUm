@@ -2,7 +2,7 @@ package it.cnr.istc.pst.platinum.control.lang;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public enum GoalStatus 

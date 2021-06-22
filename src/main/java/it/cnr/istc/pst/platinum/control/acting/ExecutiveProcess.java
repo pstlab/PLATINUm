@@ -52,19 +52,44 @@ public class ExecutiveProcess implements Runnable {
 				Goal goal = this.agent.waitGoal(GoalStatus.COMMITTED);
 				System.out.println("executing goal ...\n" + goal + "\n");
 				// execute extracted goal
-				boolean success = this.agent.execute(goal);
+				int code = this.agent.execute(goal);
 				
-				// check executive result
-				if (success) {
+				// check execution code
+				switch (code) {
+				
+					// success
+					case 1 : {
+						
+						// goal successfully executed
+						this.agent.finish(goal);
+					}
+					break;
 					
-					// goal execution successfully complete
-					this.agent.finish(goal);
+					// execution failure
+					case 2 : {
+						
+						// goal execution suspended due to some failure
+						this.agent.suspend(goal);
+					}
+					break;
 					
-				} else {
+					// execution error
+					case 3 : {
+						
+						// goal execution error due to some major failure
+						this.agent.abort(goal);
+					}
+					break;
 					
-					// goal execution suspended due to some errors
-					this.agent.suspend(goal);
+					default : {
+						
+						// unknown execution code
+						System.err.println("Unknown Execution code :\n"
+								+ "\t- goal: " + goal + "\n"
+								+ "\t- code: " + code + "\n"); 
+					}
 				}
+				
 				
 			} catch (InterruptedException ex) {
 				running = false;

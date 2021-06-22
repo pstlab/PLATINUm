@@ -772,12 +772,18 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	}
 	
 	/**
+	 * This method returns an execution code denoting the outcome of the execution. 
+	 * 
+	 * Possible values are the following:
+	 * 	1 - execution successfully completed
+	 *  2 - some execution failure has been detected and re-planning is necessary to fix the plan and restore the executive
+	 *  3 - some major error occurred during the execution and no re-planning can be done  
 	 * 
 	 * @param goal
-	 * @return
+	 * @return execution code within {1, 2, 3}
 	 * @throws InterruptedException
 	 */
-	protected boolean execute(Goal goal) 
+	protected int execute(Goal goal) 
 			throws InterruptedException {
 		
 		synchronized (this.lock) {
@@ -833,9 +839,9 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		
 		// update agent status
 		synchronized (this.lock) {
+			
 			// update status according to the execution results
-			if (complete || 
-					!replanning) {
+			if (complete) {
 				
 				// set ready status
 				this.status = ActingAgentStatus.READY;
@@ -850,8 +856,8 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			this.lock.notifyAll();
 		}
 		
-		// return execution result
-		return complete || !replanning;
+		// return execution code
+		return complete ? 1 : !replanning ? 3 : 2;
 	}
 	
 	/**
@@ -861,8 +867,8 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 * @throws InterruptedException
 	 */
 	protected boolean repair(Goal goal) 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.SUSPENDED)) {
 				// wait
@@ -879,27 +885,18 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		boolean success = true;
 		// start contingency handling time
 		long now = System.currentTimeMillis();
-		try
-		{
-			// repair plan data
-			System.out.println("\n\nPLAN REPAIR\n");
+		try {
 			
 			// list of kept decisions 
 			List<Decision> kept = new ArrayList<>();
 			// clear domain components
-			for (DomainComponent comp : this.pdb.getComponents())
-			{
-				// clear component 
-				System.out.println("CLEAR COMPONENT : " + comp.getName() + "\n");
+			for (DomainComponent comp : this.pdb.getComponents()) {
 				
-				// remove all pending decisions
-				System.out.println("\nREMOVE ALL PENDING DECISIONS\n");
 				// list of pending decisions
 				List<Decision> pendings = comp.getPendingDecisions();
-				for (Decision pending : pendings) 
-				{
+				for (Decision pending : pendings) {
+					
 					// completely remove decision and related relations
-					System.out.println("\nCLEAR DECISION " + pending + " AND RELATED RELATIONS");
 					comp.deactivate(pending);
 					comp.free(pending);
 				}
@@ -907,13 +904,10 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				// get execution trace 
 				List<ExecutionNode> trace = goal.getExecutionTraceByComponentName(comp.getName());
 				// remove active decisions that have not been executed
-				System.out.println("\nREMOVE ALL ACTIVE DECISIONS THAT HAVE NOT BEEN EXECUTED\n");
-				// list of active decisions
 				List<Decision> actives = comp.getActiveDecisions();
-				for (Decision active : actives)
-				{
+				for (Decision active : actives) {
+					
 					// check if the token has been executed
-					System.out.println("\nACTIVE DECISION " + active + "\n");
 					boolean executed = false;
 					for (ExecutionNode node : trace) {
 						// check if the temporal interval has been executed
@@ -925,13 +919,13 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 					
 					// check flag
 					if (executed) {
+						
 						// keep the decision as active
-						System.out.println("\nKEEP DECISION AS ACTIVE SINCE ALREADY EXECUTED");
 						kept.add(active);
-					}
-					else {
+						
+					} else {
+						
 						// clear and remove decision and related relations
-						System.out.println("\nREMOVE DECISION AND RELATED RELATIONS SINCE NOT EXECUTED");
 						comp.deactivate(active);
 						comp.free(active);
 					}
@@ -942,11 +936,11 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// check execution failure cause
 			ExecutionFailureCause cause = goal.getFailureCause();
 			// check type
-			switch (cause.getType())
-			{
+			switch (cause.getType()) {
+			
 				case NODE_DURATION_OVERFLOW : {
+					
 					// keep the decision as active and consider it as executed
-					System.out.println("\nHANDLE DURATION OVERFLOW FAILURE\n");
 					ExecutionNode node = cause.getInterruptionNode();
 					// find the related decision
 					for (DomainComponent comp : this.pdb.getComponents()) {
@@ -966,18 +960,18 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				
 				case NODE_EXECUTION_ERROR :
 				case NODE_START_OVERFLOW : {
+					
 					// remove decisions they are going to be re-planned
-					System.out.println("\nHANDLE START OVERFLOW FAILURE / EXECUTION ERRROR FAILURE\n");
 					ExecutionNode node = cause.getInterruptionNode();
 					// find the related decision
 					for (DomainComponent comp : this.pdb.getComponents()) {
 						// get active decisions
 						List<Decision> actives = comp.getActiveDecisions();
 						for (Decision active : actives) {
+
 							// check temporal intervals
 							if (node.getInterval().equals(active.getToken().getInterval())) {
 								// keep the decision as active 
-								System.out.println("\nREMOVE DECISION " + active + "\n");
 								comp.deactivate(active);
 								comp.free(active);
 							}
@@ -987,6 +981,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				break;
 				
 				default:
+					
 					throw new RuntimeException("Unknown Execution Failure Cause : " + cause.getType());
 			}
 			
@@ -995,8 +990,8 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// get task description
 			AgentTaskDescription task = goal.getTaskDescription();
 			// set planning goals 
-			for (TokenDescription g : task.getGoals()) 
-			{
+			for (TokenDescription g : task.getGoals()) {
+				
 				// get domain component
 				DomainComponent component = this.pdb.getComponentByName(g.getComponent());
 				// get goal referred value
@@ -1014,6 +1009,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				long[] end = g.getEnd();
 				if (end == null) {
 					end = new long[] {
+							
 						this.pdb.getOrigin(),
 						this.pdb.getHorizon()
 					};
@@ -1069,9 +1065,9 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			goal.setExecutionTick(goal.getFailureCause().getInterruptionTick());
 			// clear execution trace
 			goal.clearExecutionTrace();
-		}
-		catch (Exception ex) 
-		{
+			
+		} catch (Exception ex) {
+			
 			// error while repairing
 			success = false;
 			// error message
@@ -1098,9 +1094,10 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				// finally completely clear component
 				comp.clear();
 			}
-		}
-		finally 
-		{
+			
+			
+		} finally  {
+			
 			// compute actual planning time
 			long time = System.currentTimeMillis() - now;
 			// add planning time attempt to the goal
@@ -1110,11 +1107,14 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		
 		
 		synchronized (this.lock) {
+			
 			// update status according to the execution results
 			if (success) {
+				
 				this.status = ActingAgentStatus.READY;
-			}
-			else {
+				
+			} else {
+				
 				this.status = ActingAgentStatus.FAILURE;
 			}
 			
