@@ -1,6 +1,7 @@
 package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.plan;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,8 +39,8 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  * @author alessandro
  *
  */
-public class PlanRefinementResolver extends Resolver<DomainComponent>
-{	
+public class PlanRefinementResolver extends Resolver<DomainComponent> {
+	
 	private boolean load;
 	private double expansionCost;
 	private double unificationCost;
@@ -74,8 +75,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * 
 	 */
 	@Override
-	protected List<Flaw> doFindFlaws() 
-	{
+	protected List<Flaw> doFindFlaws() {
+		
 		// check load parameters
 		if (!this.load) {
 			this.load();
@@ -84,8 +85,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		// list of goals
 		List<Flaw> flaws = new ArrayList<>();
 		// check pending decisions
-		for (Decision decision : this.component.getPendingDecisions()) 
-		{
+		for (Decision decision : this.component.getPendingDecisions()) {
+			
 			// add sub-goal
 			Goal goal = new Goal(FLAW_COUNTER.getAndIncrement(), this.component, decision);
 			// check if external component
@@ -98,7 +99,6 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			flaws.add(goal);
 		}
 		
-		
 		// get flaws
 		return flaws;
 	}
@@ -108,8 +108,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 */
 	@Override
 	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawException 
-	{
+			throws UnsolvableFlawException {
+		
 		// get goal
 		Goal goal = (Goal) flaw;
 		
@@ -125,7 +125,6 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 			this.doComputeExpansionSolutions(goal);
 		}
 		 
-		
 		// check if solvable
 		if (!goal.isSolvable()) {
 			// simply throw exception
@@ -485,31 +484,41 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * 
 	 * @param goal
 	 */
-	private void doComputeUnificationSolutions(Goal goal) 
-	{
+	private void doComputeUnificationSolutions(Goal goal) {
+		
 		// get goal component
 		DomainComponent gComp = goal.getComponent();
+		// list of goal unifications found
+		List<GoalUnification> unifications = new ArrayList<>();
+		
 		// search active decisions that can be unified with the goal
-		for (Decision unif : gComp.getActiveDecisions()) 
-		{
+		for (Decision unif : gComp.getActiveDecisions()) {
+			
 			// check predicate and temporal unification
 			if (this.isPredicateUnificationFeasible(goal.getDecision(), unif) && 
-					this.isTemporalUnificationFeasible(goal.getDecision(), unif))
-			{
+					this.isTemporalUnificationFeasible(goal.getDecision(), unif)) {
+				
 				// possible unification found
 				GoalUnification unification = new GoalUnification(goal, unif, this.unificationCost);
-				// add unification solution
-				goal.addSolution(unification);
+				// add unifications
+				unifications.add(unification);
 				info("Feasible unification found:\n"
 						+ "- planning goal: " + goal + "\n"
 						+ "- unification decision: " + unification + "\n");
 			}
 			else {
+				
 				// unification not feasible
 				debug("No feasible unification:\n"
 						+ "- planning goal: " + goal + "\n"
 						+ "- decision : \"" + unif + "\"\n");
 			}
+		}
+		
+		// add unifications as goal solutions
+		Collections.shuffle(unifications);
+		for (GoalUnification unif : unifications) {
+			goal.addSolution(unif);
 		}
 	}
 
@@ -871,14 +880,17 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * 
 	 * @param goal
 	 */
-	private void doComputeExpansionSolutions(Goal goal) 
-	{
+	private void doComputeExpansionSolutions(Goal goal) {
+		
 		// get component
 		DomainComponent gComp = goal.getComponent();
 		// set of activated relations
 		List<Relation> rels = new ArrayList<>();
-		try 
-		{
+		// list of goal expansions
+		List<GoalExpansion> expansions = new ArrayList<>();
+		
+		try {
+			
 			// activate the goal and get activated relations
 			rels.addAll(gComp.activate(goal.getDecision()));
 			// check temporal and parameter consistency
@@ -887,37 +899,43 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		
 			// check rules
 			List<SynchronizationRule> rules = this.component.getSynchronizationRules(goal.getDecision().getValue());
-			if (rules.isEmpty()) 
-			{
+			if (rules.isEmpty()) {
+				
 				// the goal can be justified without applying rules
 				GoalExpansion expansion = new GoalExpansion(goal, this.expansionCost);
-				// add solution
-				goal.addSolution(expansion);
+				// add expansion 
+				expansions.add(expansion);
 				// print debug message
 				debug("Simple goal found no synchronization is triggered after expansion:\n"
 						+ "- planning goal: " + goal.getDecision() + "\n");
-			}
-			else 
-			{
+				
+			} else {
+				
 				// can do expansion
-				for (SynchronizationRule rule : rules) 
-				{
+				for (SynchronizationRule rule : rules) {
+					
 					// expansion solution
 					GoalExpansion expansion = new GoalExpansion(goal, rule, this.expansionCost);
-					// add solution
-					goal.addSolution(expansion);
+					// add expansion
+					expansions.add(expansion);
 					// print debug message
 					debug("Complex goal found:\n"
 							+ "- planning goal: " + goal.getDecision() + "\n"
 							+ "- synchronization rule: " + rule + "\n");
 				}
 			}
-		}
-		catch (DecisionPropagationException | ConsistencyCheckException ex) {
+			
+			// add all expansions found as solutions
+			Collections.shuffle(expansions);
+			for (GoalExpansion exp : expansions) {
+				goal.addSolution(exp);
+			}
+			
+		} catch (DecisionPropagationException | ConsistencyCheckException ex) {
 			// not feasible goal expansion
 			warning(ex.getMessage());
-		}
-		finally {
+			
+		} finally {
 			
 			// deactivate relations if any
 			for (Relation rel : rels) {
@@ -935,8 +953,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 	 * @throws Exception
 	 */
 	private void doApplyUnification(GoalUnification unification) 
-			throws FlawSolutionApplicationException 
-	{
+			throws FlawSolutionApplicationException {
+		
 		// get original goal
 		Decision goal = unification.getGoalDecision();
 		// get all (pending) relations concerning the planning goal
@@ -953,11 +971,11 @@ public class PlanRefinementResolver extends Resolver<DomainComponent>
 		// get pending relations associated to the goal
 		Set<Relation> gRels = goalComp.getRelations(goal);
 		// translate pending relations by replacing goal's information with unification decision's information
-		for (Relation rel : gRels)
-		{
+		for (Relation rel : gRels) {
+			
 			// check relation category
-			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) 
-			{
+			if (rel.getCategory().equals(ConstraintCategory.TEMPORAL_CONSTRAINT)) {
+				
 				// check relation reference
 				if (rel.getReference().equals(goal)) {
 					// replace reference 

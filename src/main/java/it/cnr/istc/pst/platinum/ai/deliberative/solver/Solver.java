@@ -57,6 +57,7 @@ public abstract class Solver extends FrameworkObject
 	 */
 	@PostConstruct
 	protected void init() {
+		
 		// create the root node
 		SearchSpaceNode root = new SearchSpaceNode();
 		// set initial partial plan

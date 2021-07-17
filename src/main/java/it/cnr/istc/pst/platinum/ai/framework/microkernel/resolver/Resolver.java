@@ -225,67 +225,6 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 		}
 	}
 	
-//	/**
-//	 * 
-//	 * @param constraint
-//	 * @throws ConstraintPropagationException
-//	 */
-//	protected void doPropagetConstraint(Constraint constraint) 
-//			throws ConstraintPropagationException 
-//	{
-//		// check constraint category
-//		switch (constraint.getCategory()) 
-//		{
-//			// temporal constraint
-//			case  TEMPORAL_CONSTRAINT : {
-//				// cast constraint
-//				TemporalConstraint cons = (TemporalConstraint) constraint;
-//				// propagate temporal constraint
-//				this.tdb.propagate(cons);
-//			}
-//			break;
-//			
-//			// parameter constraint
-//			case PARAMETER_CONSTRAINT : {
-//				// cast constraint
-//				ParameterConstraint  cons = (ParameterConstraint) constraint;
-//				// propagate parameter constraint
-//				this.pdb.propagate(cons);
-//			}
-//			break;
-//		}
-//	}
-	
-//	/**
-//	 * 
-//	 * @param constraint
-//	 */
-//	protected void doRetractConstraint(Constraint constraint) {
-//		// check constraint category
-//		switch (constraint.getCategory()) {
-//		
-//			// temporal constraint
-//			case  TEMPORAL_CONSTRAINT : {
-//				
-//				// cast constraint
-//				TemporalConstraint cons = (TemporalConstraint) constraint;
-//				// retract temporal constraint
-//				this.tdb.retract(cons);
-//			}
-//			break;
-//			
-//			// parameter constraint
-//			case PARAMETER_CONSTRAINT : {
-//				
-//				// cast constraint
-//				ParameterConstraint cons = (ParameterConstraint) constraint;
-//				// retract parameter constraint
-//				this.pdb.retract(cons);
-//			}
-//			break;
-//		}
-//	}
-	
 	/**
 	 * 
 	 * @param solution
@@ -301,8 +240,8 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 	 * @throws DecisionPropagationException
 	 */
 	protected void doRestore(FlawSolution solution) 
-			throws RelationPropagationException, DecisionPropagationException 
-	{
+			throws RelationPropagationException, DecisionPropagationException {
+		
 		// list of restored decisions
 		Set<Decision> dRestored = new HashSet<>();
 		// list of activated decisions
@@ -312,8 +251,8 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 		// list of activated relations
 		Set<Relation> rActivated = new HashSet<>();
 		
-		try
-		{
+		try {
+			
 			// get the list of created decisions
 			for (Decision decision : solution.getCreatedDecisions()) {
 				// get decision component
@@ -358,11 +297,12 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 			// check consistency
 			this.tdb.verify();
 			this.pdb.verify();
-		}
-		catch (DecisionPropagationException | ConsistencyCheckException ex) 
-		{
+			
+		} catch (DecisionPropagationException | ConsistencyCheckException ex) {
+			
 			// deactivate activated relations
 			for (Relation rel : rActivated) {
+				
 				// get reference component
 				DomainComponent refComp = rel.getReference().getComponent();
 				// deactivate relation
