@@ -15,8 +15,8 @@ import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
  * @author alessandro
  *
  */
-public class ConditionCheckingDispatcher extends Dispatcher<Executive> 
-{
+public class ConditionCheckingDispatcher extends Dispatcher<Executive> {
+	
 	/**
 	 * 
 	 * @param exec

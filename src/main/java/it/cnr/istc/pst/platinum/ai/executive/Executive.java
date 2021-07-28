@@ -313,8 +313,6 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			case PARTIALLY_CONTROLLABLE : 
 			case CONTROLLABLE : {
 				
-				// actually schedule the start time of the token
-				this.pdb.scheduleStartTime(node, start);
 				// update node status
 				this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 			}

@@ -17,11 +17,11 @@ import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class ConditionCheckingMonitor extends Monitor<Executive> 
-{
+public class ConditionCheckingMonitor extends Monitor<Executive> {
+	
 	/**
 	 * 
 	 * @param exec
@@ -35,13 +35,13 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 	 */
 	@Override
 	public void handleTick(long tick) 
-			throws ExecutionException, PlatformException
-	{
+			throws ExecutionException, PlatformException {
+		
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
 		// check received feedbacks
-		while (this.hasObservations())
-		{
+		while (this.hasObservations()) {
+			
 			// get next
 			ExecutionFeedback feedback = this.next();
 			// get node 
@@ -62,8 +62,8 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
 						info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-					}
-					catch (TemporalConstraintPropagationException ex) {
+						
+					} catch (TemporalConstraintPropagationException ex) {
 						
 						// update node state
 						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
@@ -87,8 +87,8 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 						this.executive.scheduleUncontrollableTokenStart(node, tau);
 						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-					}
-					catch (TemporalConstraintPropagationException ex) {
+						
+					} catch (TemporalConstraintPropagationException ex) {
 						
 						// update node state
 						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
@@ -143,15 +143,15 @@ public class ConditionCheckingMonitor extends Monitor<Executive>
 						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
 								+ "\t- duration: " + duration + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-					}
-					else {
+						
+					} else {
 						
 						// wait - not ready for dispatching
 						debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End conditions satisifed but node schedule not ready for ending\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					}
-				}
-				else {
+					
+				} else {
 					
 					// print a message in debug mode
 					debug("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> End execution conditions not satisfied yet\n"
