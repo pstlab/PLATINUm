@@ -52,8 +52,8 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive> {
 						// start node execution
 						info("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start executing node at time: " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-					}
-					catch (TemporalConstraintPropagationException ex) {
+						
+					} catch (TemporalConstraintPropagationException ex) {
 						
 						// set token as in execution and wait for feedbacks
 						this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
@@ -66,15 +66,15 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive> {
 								+ "\t- node: " + node + "\n", 
 								cause);
 					}
-				}
-				else  {
+					
+				} else  {
 					
 					// wait - not ready for dispatching
 					debug("{Dispatcher} {tick: " + tick + " } {tau: " + tau + "} -> Start conditions satisifed but node schedule not ready for dispatching\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
-			}
-			else {
+				
+			} else {
 				
 				// dispatching conditions not satisfied
 				debug("{Dispatcher} {tick: " + tick + "} {tau: " + tau + "} -> Start conditions not satisfied\n"

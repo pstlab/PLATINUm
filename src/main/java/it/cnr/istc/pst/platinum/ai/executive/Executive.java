@@ -334,7 +334,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			throws TemporalConstraintPropagationException {
 		
 		// schedule the observed start time of the token
-		this.pdb.scheduleStartTime(node, start);
+//		this.pdb.scheduleStartTime(node, start);s
 		// update node status
 		this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 	}
