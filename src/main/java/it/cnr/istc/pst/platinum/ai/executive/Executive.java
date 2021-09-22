@@ -82,6 +82,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	private ExecutionFailureCause cause;										// execution failure cause
 	
 	private PlatformProxy platformProxy;										// platform PROXY to send commands to
+	
+	private final List<PlanExecutionObserver> execObservers;					// plan execution observers
+	
 
 	/**
 	 * 
@@ -108,6 +111,28 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		if (this.getProperty(DISPLAY_PLAN_PROPERTY).equals("1")) {
 			// create executive window
 			this.window = new ExecutiveWindow("Executive Window");
+		}
+		
+		this.execObservers = new ArrayList<>();
+	}
+	
+	/**
+	 * 
+	 * @param o
+	 */
+	public void subscribe(PlanExecutionObserver o) {
+		synchronized (this.execObservers) {
+			this.execObservers.add(o);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param o
+	 */
+	public void unsubscribe(PlanExecutionObserver o) {
+		synchronized (this.execObservers) {
+			this.execObservers.remove(o);
 		}
 	}
 	
@@ -567,6 +592,26 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			long tau = this.convertTickToTau(tick);
 			// display executive window
 			this.displayWindow(tau);
+			
+			// notify plan execution observers
+			synchronized (this.execObservers) {
+				
+				// check observers
+				if (!this.execObservers.isEmpty()) {
+					
+					// get the list of nodes to be notified
+					List<ExecutionNode> nodes = new ArrayList<>(this.pdb.getNodesByStatus(ExecutionNodeStatus.EXECUTED));
+					// add nodes currently being executed
+					nodes.addAll(this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION));
+ 				
+					// forward notification to observers
+					for (PlanExecutionObserver o : this.execObservers) {
+						// notify the list of executed nodes
+						o.onTick(tick, this.failure.get(), nodes);
+						
+					}
+				}
+			}
 			
 			
 		} catch (ExecutionException ex)  {

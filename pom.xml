@@ -3,7 +3,7 @@
   
   <groupId>it.cnr.istc.pst</groupId>
   <artifactId>platinum</artifactId>
-  <version>1.2.7</version>
+  <version>1.2.8</version>
   <packaging>jar</packaging>
   
   <name>PLATINUm</name>
