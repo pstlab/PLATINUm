@@ -37,7 +37,7 @@ public class PlanFlawInspector extends FlawInspector
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
 		// get preference property
 		String[] prefs = properties.getProperty("preferences").trim().split(",");
-		// set prefernces
+		// set preferences
 		this.preferences = new FlawType[prefs.length];
 		for (int i = 0; i < prefs.length; i++) {
 			// set preference
