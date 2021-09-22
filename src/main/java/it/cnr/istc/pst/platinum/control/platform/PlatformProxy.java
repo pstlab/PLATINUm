@@ -11,12 +11,13 @@ import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNode;
 import it.cnr.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.cnr.istc.pst.platinum.control.lang.PlatformCommand;
 import it.cnr.istc.pst.platinum.control.lang.PlatformFeedback;
+import it.cnr.istc.pst.platinum.control.lang.PlatformFeedbackType;
 import it.cnr.istc.pst.platinum.control.lang.PlatformObservation;
 import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public abstract class PlatformProxy 
@@ -199,6 +200,58 @@ public abstract class PlatformProxy
 				observer.task(msg);
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @param params
+	 * @return
+	 */
+	public PlatformCommand create(String name, String[] params, ExecutionNode node) {
+		
+		// create platform command
+		PlatformCommand cmd = new PlatformCommand(
+				cmdIdCounter.getAndIncrement(), 
+				name, 
+				params, 
+				node, 
+				0);				// command type 0 = start execution request
+		
+		// return created command
+		return cmd;
+	}
+	
+	/**
+	 * 
+	 * @param cmd
+	 */
+	public void success(PlatformCommand cmd) {
+		
+		// create positive feedback
+		PlatformFeedback feedback = new PlatformFeedback(
+				obsIdCounter.getAndIncrement(), 
+				cmd, 
+				PlatformFeedbackType.SUCCESS);
+		
+		// notify feedback
+		this.notify(feedback);
+	}
+	
+	/**
+	 * 
+	 * @param cmd
+	 */
+	public void failure(PlatformCommand cmd) {
+
+		// create negative feedback
+		PlatformFeedback feedback = new PlatformFeedback(
+				obsIdCounter.getAndIncrement(), 
+				cmd, 
+				PlatformFeedbackType.FAILURE);
+		
+		// notify feedback
+		this.notify(feedback);
 	}
 	
 	

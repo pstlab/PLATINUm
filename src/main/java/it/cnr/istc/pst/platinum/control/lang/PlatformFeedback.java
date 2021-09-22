@@ -2,7 +2,7 @@ package it.cnr.istc.pst.platinum.control.lang;
 
 /**
  * 
- * @author alessandroumbrico
+ * @author alessandro
  *
  */
 public class PlatformFeedback extends PlatformMessage implements Comparable<PlatformFeedback> 

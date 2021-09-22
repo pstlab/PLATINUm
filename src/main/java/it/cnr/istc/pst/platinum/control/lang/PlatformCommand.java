@@ -26,8 +26,8 @@ public class PlatformCommand implements Comparable<PlatformCommand>
 	 * @param node
 	 * @param commandType
 	 */
-	public PlatformCommand(long id, PlatformCommandDescription desc, String[] paramValues,  ExecutionNode node, int commandType) 
-	{
+	public PlatformCommand(long id, PlatformCommandDescription desc, String[] paramValues,  ExecutionNode node, int commandType) {
+		
 		this.id = id; 
 		this.node = node;
 		// get command name from node

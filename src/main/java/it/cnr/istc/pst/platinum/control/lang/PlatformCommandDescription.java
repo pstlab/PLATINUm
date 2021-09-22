@@ -17,7 +17,7 @@ public class PlatformCommandDescription
 	 * @param parameters
 	 * @param duration
 	 */
-	public PlatformCommandDescription(String name, String[] parameters, float duration) {
+	private PlatformCommandDescription(String name, String[] parameters, float duration) {
 		this.name = name;
 		this.paramNames = parameters;
 		this.executionTime = duration;
