@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.ConstraintCategory;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.FrameworkObject;
@@ -170,7 +172,14 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 * @param plan
 	 */
 	public void setup(PlanProtocolDescriptor plan) {
+		
 		try {
+			
+			// clear executed nodes
+			this.clearExecutedNodes();
+			
+			
+			
 			
 			// get plan descriptor
 			this.plan = plan;
@@ -266,14 +275,14 @@ public class ExecutivePlanDataBase extends FrameworkObject
 							
 							// last node of the timeline
 							ExecutionNode last = list[pos];
-							// set previous ndoe
+							// set previous node
 							last.setPrev(list[pos-1]);
 							
 						} else {
 							
 							// intermediate node
 							ExecutionNode i = list[pos];
-							// set prev
+							// set previous
 							i.setPrev(list[pos-1]);
 							// set next
 							i.setNext(list[pos+1]);
@@ -730,6 +739,36 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		// setup dependency graph data structures
 		this.sdg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
 		this.edg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
+	}
+	
+	/**
+	 * 
+	 */
+	public void clearExecutedNodes() {
+		
+		// check executed nodes
+		Set<ExecutionNode> nodes = new HashSet<>(this.nodes.get(ExecutionNodeStatus.EXECUTED));
+		// clear nodes
+		this.nodes.get(ExecutionNodeStatus.EXECUTED).clear();
+		// clear execution graph
+		for (ExecutionNode node : nodes) {
+			// clear map entries
+			this.sdg.remove(node);
+			this.edg.remove(node);
+			
+			// clear edges
+			for (ExecutionNode n : this.sdg.keySet()) {
+				// remove edge
+				this.sdg.get(n).remove(node);
+				
+			}
+			
+			// clear edges
+			for (ExecutionNode n : this.edg.keySet()) {
+				// remove edge
+				this.edg.get(n).remove(node);
+			}
+		}
 	}
 	
 	/**
