@@ -175,12 +175,6 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		
 		try {
 			
-			// clear executed nodes
-			this.clearExecutedNodes();
-			
-			
-			
-			
 			// get plan descriptor
 			this.plan = plan;
 			// map token descriptor to nodes
