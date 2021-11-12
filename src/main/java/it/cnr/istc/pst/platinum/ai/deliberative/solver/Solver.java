@@ -25,8 +25,8 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableF
  * @author anacleto
  *
  */
-public abstract class Solver extends FrameworkObject 
-{
+public abstract class Solver extends FrameworkObject {
+	
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
 	
@@ -123,23 +123,25 @@ public abstract class Solver extends FrameworkObject
 	 * @throws OperatorPropagationException
 	 */
 	protected void propagate(SearchSpaceNode node) 
-			throws PlanRefinementException 
-	{
+			throws PlanRefinementException {
+		
 		// get the list of applied operators
 		List<Operator> operators = node.getOperators();
 		// list of committed operators
 		List<Operator> committed = new ArrayList<>();
-		try 
-		{
+		try {
+			
 			// propagate operators in chronological order
 			for (Operator operator : operators) {
+				
 				// propagate operator
 				this.pdb.propagate(operator);
 				// add committed operator
 				committed.add(operator);
 			}
-		}
-		catch (OperatorPropagationException ex) {
+			
+		} catch (OperatorPropagationException ex) {
+			
 			// retract committed operators in reverse order
 			Collections.reverse(committed);
 			for (Operator operator : committed) {
@@ -158,11 +160,11 @@ public abstract class Solver extends FrameworkObject
 	 * @throws PlanRefinementException
 	 */
 	protected void contextSwitch(SearchSpaceNode last, SearchSpaceNode extracted) 
-			throws PlanRefinementException 
-	{
+			throws PlanRefinementException {
+		
 		// compare the two nodes
-		if (last != null) 
-		{
+		if (last != null) {
+			
 			// prepare a list of operators to retract 
 			List<Operator> toRetract = new ArrayList<>();
 			// prepare a list of operators to propagate
@@ -185,6 +187,7 @@ public abstract class Solver extends FrameworkObject
 				
 				// check if no common operators have been found
 				if (!common) {
+					
 					// add operator to the different lists
 					toRetract.add(lastNodeOperators.get(i));
 					toPropagate.add(extractedNodeOperators.get(i));
@@ -212,17 +215,19 @@ public abstract class Solver extends FrameworkObject
 			
 			// list of committed operators
 			List<Operator> committed = new ArrayList<>();
-			try 
-			{
+			
+			try {
+				
 				// propagate operators in chronological order
 				for (Operator operator : toPropagate) {
+					
 					// propagate operator
 					this.pdb.propagate(operator);
 					// add committed operator
 					committed.add(operator);
 				}
-			}
-			catch (OperatorPropagationException  ex) {
+				
+			} catch (OperatorPropagationException  ex) {
 				
 				// retract committed operators in reverse order
 				Collections.reverse(committed);
@@ -234,11 +239,13 @@ public abstract class Solver extends FrameworkObject
 				// also restore retracted operators
 				Collections.reverse(toRetract);
 				for (Operator operator : toRetract) {
+					
 					try {
+					
 						// restore operator
 						this.pdb.propagate(operator);
-					}
-					catch (OperatorPropagationException exx) {
+						
+					} catch (OperatorPropagationException exx) {
 						warning("[ContextSwitch] Error while restoring operators after failure:\n"
 								+ "- message: " + ex.getMessage() + "\n");
 					}
@@ -247,8 +254,9 @@ public abstract class Solver extends FrameworkObject
 				// throw exception
 				throw new PlanRefinementException("Error while propagating node:\n" + extracted + "\n- message: " + ex.getMessage() + "\n");
 			}
-		}
-		else {
+			
+		} else {
+			
 			// simply propagate extracted node
 			this.propagate(extracted);
 		}
@@ -265,8 +273,8 @@ public abstract class Solver extends FrameworkObject
 	 * @throws UnsolvableFlawException
 	 */
 	protected List<SearchSpaceNode> expand(SearchSpaceNode current, Flaw flaw) 
-			throws UnsolvableFlawException
-	{
+			throws UnsolvableFlawException {
+		
 		// list of child nodes
 		List<SearchSpaceNode> list = new ArrayList<>();
 		// check if no expansion has done

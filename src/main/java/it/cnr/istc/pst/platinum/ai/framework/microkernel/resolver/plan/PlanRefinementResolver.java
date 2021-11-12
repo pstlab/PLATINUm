@@ -353,15 +353,13 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			// check consistency
 			this.tdb.verify();
 			this.pdb.verify();
-		}
-		catch (RelationPropagationException | ConsistencyCheckException ex) 
-		{
+			
+		} catch (RelationPropagationException | ConsistencyCheckException ex) {
+			
 			// get goal component
 			DomainComponent gComp = solution.getGoalDecision().getComponent();
 			// restore goal: SILENT -> PENDING
 			gComp.restore(solution.getGoalDecision());
-			
-			
 			
 			// deactivate committed relations
 			for (Relation rel : committed) {
@@ -371,11 +369,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			}
 			
 			// translated back relations
-			for (Relation rel : solution.getTranslatedReferenceGoalRelations())
-			{
+			for (Relation rel : solution.getTranslatedReferenceGoalRelations()) {
 				// check category
-				if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) 
-				{
+				if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
 					// get parameter relation
 					ParameterRelation pRel = (ParameterRelation) rel;
 					
@@ -894,7 +890,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			// activate the goal and get activated relations
 			rels.addAll(gComp.activate(goal.getDecision()));
 			// check temporal and parameter consistency
-			this.tdb.verify();
+//			this.tdb.verify();
 			this.pdb.verify();
 		
 			// check rules
@@ -931,7 +927,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 				goal.addSolution(exp);
 			}
 			
-		} catch (DecisionPropagationException | ConsistencyCheckException ex) {
+		} catch (DecisionPropagationException | ConsistencyCheckException  ex) {
 			// not feasible goal expansion
 			warning(ex.getMessage());
 			
@@ -1148,13 +1144,11 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			// check consistency
 			this.tdb.verify();
 			this.pdb.verify();
-		}
-		catch (RelationPropagationException | ConsistencyCheckException ex) 
-		{
+			
+		} catch (RelationPropagationException | ConsistencyCheckException ex) {
+
 			// restore goal: SILENT -> PENDING
 			goalComp.restore(goal);
-			
-			
 			// deactivate committed relations
 			for (Relation rel : committed) {
 				// get reference component
@@ -1164,14 +1158,12 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			
 			
 			// translated back relations
-			for (Relation rel : translatedReferenceGoalRelations)
-			{
+			for (Relation rel : translatedReferenceGoalRelations) {
 				// check category
-				if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) 
-				{
+				if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
+					
 					// get parameter relation
 					ParameterRelation pRel = (ParameterRelation) rel;
-					
 					// get relation reference parameter label
 					String refParamLabel = pRel.getReferenceParameterLabel();
 					// get label index
@@ -1191,16 +1183,15 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			}
 			
 			// translated back parameter relations
-			for (Relation rel : translatedTargetGoalRelations)
-			{
+			for (Relation rel : translatedTargetGoalRelations) {
+				
 				// check relation category 
-				if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT))
-				{
+				if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
 					// check relation
-					switch (rel.getType())
-					{
-						case EQUAL_PARAMETER : 
-						{
+					switch (rel.getType()) {
+					
+						case EQUAL_PARAMETER : {
+							
 							// get equal relation
 							EqualParameterRelation eqRel = (EqualParameterRelation) rel;
 							// get relation reference parameter label
@@ -1216,8 +1207,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 						}
 						break;
 							
-						case NOT_EQUAL_PARAMETER : 
-						{
+						case NOT_EQUAL_PARAMETER : {
+							
 							// get equal relation
 							NotEqualParameterRelation neqRel = (NotEqualParameterRelation) rel;
 							// get relation reference parameter label
@@ -1258,22 +1249,21 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 	 * @throws Exception
 	 */
 	private void doApplyExpansion(GoalExpansion expansion) 
-			throws FlawSolutionApplicationException 
-	{
+			throws FlawSolutionApplicationException {
+		
 		// get goal
 		Decision goal = expansion.getGoalDecision();
 		// check subgoals from selected synchronization rule if any
-		if (expansion.hasSubGoals()) 
-		{
+		if (expansion.hasSubGoals()) {
+			
 			// get the rule to apply
 			SynchronizationRule rule = expansion.getSynchronizationRule();
-			
 			// create an index of token variable
 			Map<TokenVariable, Decision> var2dec = new HashMap<>();
 			var2dec.put(rule.getTriggerer(), goal);
 			// add pending decisions
-			for (TokenVariable var : rule.getTokenVariables()) 
-			{
+			for (TokenVariable var : rule.getTokenVariables()) {
+				
 				// get target component
 				DomainComponent target = var.getValue().getComponent(); 
 				// create a pending decision
@@ -1300,14 +1290,13 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			}
 			
 			// add pending relations
-			for (SynchronizationConstraint c : rule.getConstraints()) 
-			{
+			for (SynchronizationConstraint c : rule.getConstraints()) {
 				// check category
-				switch (c.getCategory()) 
-				{
+				switch (c.getCategory()) {
+
 					// temporal category
-					case TEMPORAL_CONSTRAINT : 
-					{ 
+					case TEMPORAL_CONSTRAINT : {
+						
 						// temporal constraint
 						TemporalSynchronizationConstraint tc = (TemporalSynchronizationConstraint) c;
 						// get decisions
@@ -1325,8 +1314,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 					break;
 					
 					// parameter category
-					case PARAMETER_CONSTRAINT: 
-					{
+					case PARAMETER_CONSTRAINT: {
+						
 						// parameter constraint
 						ParameterSynchronizationConstraint pc = (ParameterSynchronizationConstraint) c;
 						// get decisions
@@ -1338,63 +1327,66 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 						ParameterRelation rel = (ParameterRelation) refComp.create(pc.getType(), reference, target);
 						
 						// check parameter relation type
-						switch (rel.getType())
-						{
+						switch (rel.getType()) {
+						
 							// bind parameter relation
-							case BIND_PARAMETER : 
-							{
+							case BIND_PARAMETER : {
+								
 								// bind constraint
 								BindParameterRelation bind = (BindParameterRelation) rel;
 								// set binding value
 								bind.setValue(pc.getTargetLabel());
 								// set reference label
-								if (pc.getReference().equals(rule.getTriggerer())) 
-								{
+								if (pc.getReference().equals(rule.getTriggerer())) {
+									
 									// get trigger label index
 									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
 									// set decision's label
 									String label = goal.getParameterLabelByIndex(index);
 									// set label
 									bind.setReferenceParameterLabel(label);
-								}
-								else {
+									
+								} else {
+									
 									bind.setReferenceParameterLabel(pc.getReferenceLabel());
 								}
 							}
 							break;
 							
 							// equal parameter relation
-							case EQUAL_PARAMETER : 
-							{
+							case EQUAL_PARAMETER : {
+								
 								// get relation
 								EqualParameterRelation eq = (EqualParameterRelation) rel;
 								
 								// check if source is the trigger
-								if (pc.getReference().equals(rule.getTriggerer())) 
-								{
+								if (pc.getReference().equals(rule.getTriggerer())) {
+									
 									// get trigger label index
 									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
 									// get decions's label
 									String label = goal.getParameterLabelByIndex(index);
 									// set label
 									eq.setReferenceParameterLabel(label);
-								}
-								else {
+									
+								} else {
+									
 									// directly set the label
 									eq.setReferenceParameterLabel(pc.getReferenceLabel());
 								}
 								
 								// check if target is the trigger
-								if (pc.getTarget().equals(rule.getTriggerer())) 
-								{
+								if (pc.getTarget().equals(rule.getTriggerer())) {
+									
 									// get trigger label index
 									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getTargetLabel());
 									// get decision's label
 									String label = goal.getParameterLabelByIndex(index);
 									// set label
 									eq.setTargetParameterLabel(label);
-								}
-								else {
+									
+								} else {
+									
 									// directly set the label
 									eq.setTargetParameterLabel(pc.getTargetLabel());
 								}
@@ -1402,37 +1394,38 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 							break;
 							
 							// not-equal parameter relation
-							case NOT_EQUAL_PARAMETER : 
-							{
+							case NOT_EQUAL_PARAMETER : {
+								
 								// get relation
 								NotEqualParameterRelation neq = (NotEqualParameterRelation) rel;
 								
 								// check if source is the trigger
-								if (pc.getReference().equals(rule.getTriggerer())) 
-								{
+								if (pc.getReference().equals(rule.getTriggerer())) {
+									
 									// get trigger label index
 									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getReferenceLabel());
 									// get decions's label
 									String label = goal.getParameterLabelByIndex(index);
 									// set label
 									neq.setReferenceParameterLabel(label);
-								}
-								else {
+									
+								} else {
+									
 									// directly set the label
 									neq.setReferenceParameterLabel(pc.getReferenceLabel());
 								}
 								
 								// check if target is the trigger
-								if (pc.getTarget().equals(rule.getTriggerer())) 
-								{
+								if (pc.getTarget().equals(rule.getTriggerer())) {
+									
 									// get trigger label index
 									int index = rule.getTriggerer().getParameterIndexByLabel(pc.getTargetLabel());
 									// get decision's label
 									String label = goal.getParameterLabelByIndex(index);
 									// set label
 									neq.setTargetParameterLabel(label);
-								}
-								else {
+									
+								} else {
 									// directly set the label
 									neq.setTargetParameterLabel(pc.getTargetLabel());
 								}
@@ -1451,8 +1444,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			}
 		}
 		
-		try
-		{
+		try {
+			
 			// activate goal decision 
 			DomainComponent goalComp = goal.getComponent();
 			// get goal-related activated relations
@@ -1463,11 +1456,11 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			expansion.addActivatedRelations(list);
 			
 			// check consistency 
-			this.tdb.verify();
+//			this.tdb.verify();
 			this.pdb.verify();
-		}
-		catch (DecisionPropagationException | ConsistencyCheckException ex) 
-		{
+			
+		} catch (DecisionPropagationException | ConsistencyCheckException ex) {
+			
 			// deactivate activated relations
 			for (Relation rel : expansion.getActivatedRelations()) {
 				// get reference component
@@ -1482,8 +1475,6 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 				refComp.delete(rel);
 			}
 
-			
-			
 			// deactivate activated decisions
 			for (Decision dec : expansion.getActivatedDecisions()) {
 				// get component
@@ -1508,8 +1499,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 	 * 
 	 * @param unification
 	 */
-	private void doRetractUnification(GoalUnification unification) 
-	{
+	private void doRetractUnification(GoalUnification unification) {
+		
 		// original goal 
 		Decision goal = unification.getGoalDecision();
 		
@@ -1526,11 +1517,10 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 		}
 		
 		// translated back relations
-		for (Relation rel : unification.getTranslatedReferenceGoalRelations())
-		{
+		for (Relation rel : unification.getTranslatedReferenceGoalRelations()){
 			// check category
-			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) 
-			{
+			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
+				
 				// get parameter relation
 				ParameterRelation pRel = (ParameterRelation) rel;
 				
@@ -1557,12 +1547,11 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			
 			// check relation category 
 			if (rel.getCategory().equals(ConstraintCategory.PARAMETER_CONSTRAINT)) {
-				
 				// check relation
 				switch (rel.getType()) {
 				
-					case EQUAL_PARAMETER : 
-					{
+					case EQUAL_PARAMETER : {
+						
 						// get equal relation
 						EqualParameterRelation eqRel = (EqualParameterRelation) rel;
 						// get relation reference parameter label
@@ -1578,8 +1567,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 					}
 					break;
 						
-					case NOT_EQUAL_PARAMETER : 
-					{
+					case NOT_EQUAL_PARAMETER : {
+						
 						// get equal relation
 						NotEqualParameterRelation neqRel = (NotEqualParameterRelation) rel;
 						// get relation reference parameter label

@@ -24,8 +24,8 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.reflection.FrameworkReflectio
 		ReverseHierarchyFlawInspector.class,
 		DegreeFlawInspector.class
 })
-public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
-{
+public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic {
+	
 	@PipelinePlaceholder
 	private List<FlawInspector> inspectors;
 	
@@ -42,8 +42,8 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 * 
 	 */
 	@PostConstruct
-	private void init() 
-	{
+	private void init() {
+		
 		// get annotation
 		PipelineConfiguration annot = FrameworkReflectionUtils.doFindnAnnotation(this.getClass(), PipelineConfiguration.class);
 		// get filter pipeline
@@ -60,8 +60,8 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 */
 	@Override
 	public Set<Flaw> filter(Set<Flaw> flaws) 
-			throws NoFlawFoundException 
-	{
+			throws NoFlawFoundException {
+		
 		// check if any flaw has been found
 		if (flaws.isEmpty()) {
 			// throw exception
@@ -87,8 +87,8 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 */
 	@Override
 	public Set<Flaw> choose() 
-			throws UnsolvableFlawException, NoFlawFoundException 
-	{
+			throws UnsolvableFlawException, NoFlawFoundException {
+		
 		// take the first inspector to detect flaws
 		FlawInspector inspector = this.inspectors.get(0);
 		// extract flaws
@@ -115,15 +115,15 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic
 	 * 
 	 */
 	@Override
-	public Set<Flaw> check()
-	{
+	public Set<Flaw> check() {
+		
 		// take the first inspector to detect flaws
 		FlawInspector inspector = this.inspectors.get(0);
 		// extract flaws
 		Set<Flaw> flaws = inspector.check();
 		// check flaws to filter
-		if (!flaws.isEmpty()) 
-		{
+		if (!flaws.isEmpty()) {
+			
 			// filter flaws according to other inspectors of the pipeline
 			for (int index = 1; index < this.inspectors.size(); index++) {
 				// get inspector

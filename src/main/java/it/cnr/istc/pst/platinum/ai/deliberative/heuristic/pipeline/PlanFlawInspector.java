@@ -32,11 +32,13 @@ public class PlanFlawInspector extends FlawInspector
 	 */
 	@PostConstruct 
 	protected void init() {
+		
 		// get deliberative property file
 		FilePropertyReader properties = new FilePropertyReader(
 				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
 		// get preference property
 		String[] prefs = properties.getProperty("preferences").trim().split(",");
+		
 		// set preferences
 		this.preferences = new FlawType[prefs.length];
 		for (int i = 0; i < prefs.length; i++) {
@@ -50,12 +52,13 @@ public class PlanFlawInspector extends FlawInspector
 	 */
 	@Override
 	public Set<Flaw> detectFlaws() 
-			throws UnsolvableFlawException 
-	{
+			throws UnsolvableFlawException {
+		
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// look for flaws of a given type
 		for (int index = 0; index < this.preferences.length && set.isEmpty(); index++) {
+			
 			// get type of flaw
 			FlawType type = this.preferences[index];
 			// detect flaws

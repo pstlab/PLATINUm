@@ -1523,13 +1523,13 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @throws UnsolvableFlawException
 	 */
 	public synchronized List<Flaw> detectFlaws(FlawType type) 
-			throws UnsolvableFlawException
-	{
+			throws UnsolvableFlawException {
+		
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// get resolver capable to handle the desired set of flaws, if any
-		if (this.flawType2resolver.containsKey(type))
-		{
+		if (this.flawType2resolver.containsKey(type)) {
+			
 			// get related resolver
 			Resolver<?> resv = this.flawType2resolver.get(type);
 			// detect flaws

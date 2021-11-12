@@ -1017,8 +1017,8 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 */
 	@Override
 	public synchronized List<Flaw> detectFlaws(FlawType type) 
-			throws UnsolvableFlawException
-	{
+			throws UnsolvableFlawException {
+		
 		// list of flaws to solve
 		List<Flaw> list = new ArrayList<>();
 		// simply query the components
