@@ -135,7 +135,10 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 						// compute (controllable) execution duration
 						long duration = Math.max(1, tau - node.getStart()[0]);
 						// send stop signal to the platform
-						this.executive.sendStopCommandSignalToPlatform(node);
+						
+						// TODO : Manage controllable tokens w.r.t. START and STOP commands to dispatch 
+						// this.executive.sendStopCommandSignalToPlatform(node);
+						
 						// set node as executed
 						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
 						
