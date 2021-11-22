@@ -755,7 +755,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			
 			// update status according to the result of the planning process
 			if (success) {
-				this.status = ActingAgentStatus.READY;
+				this.status = ActingAgentStatus.PREPARING_EXECUTION;
 				
 			} else {
 				
@@ -787,7 +787,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			throws InterruptedException {
 		
 		synchronized (this.lock) {
-			while (!this.status.equals(ActingAgentStatus.READY)) {
+			while (!this.status.equals(ActingAgentStatus.PREPARING_EXECUTION)) {
 				// wait
 				this.lock.wait();
 			}

@@ -219,6 +219,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				}
 			}
 		}
+		
 		// manage controllable tokens of the plan
 		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
 			

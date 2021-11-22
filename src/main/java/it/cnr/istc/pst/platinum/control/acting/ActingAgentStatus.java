@@ -50,6 +50,11 @@ public enum ActingAgentStatus
 	/**
 	 * 
 	 */
+	PREPARING_EXECUTION,
+	
+	/**
+	 * 
+	 */
 	EXECUTING,
 	
 	/**
