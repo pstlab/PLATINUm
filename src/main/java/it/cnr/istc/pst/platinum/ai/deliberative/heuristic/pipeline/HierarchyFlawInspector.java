@@ -12,11 +12,11 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableF
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class HierarchyFlawInspector extends FlawInspector 
-{
+public class HierarchyFlawInspector extends FlawInspector {
+	
 	/**
 	 * 
 	 */
@@ -29,8 +29,8 @@ public class HierarchyFlawInspector extends FlawInspector
 	 */
 	@Override
 	public Set<Flaw> detectFlaws() 
-			throws UnsolvableFlawException 
-	{
+			throws UnsolvableFlawException {
+		
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// get knowledge
@@ -38,8 +38,7 @@ public class HierarchyFlawInspector extends FlawInspector
 		// get the hierarchy
 		List<DomainComponent>[] hierarchy = knowledge.getDomainHierarchy();
 		// detect flaws according to the computed hierarchy of the domain
-		for (int index = 0; index < hierarchy.length && set.isEmpty(); index++)
-		{
+		for (int index = 0; index < hierarchy.length && set.isEmpty(); index++) {
 			// extract flaws of equivalent components
 			for (DomainComponent component : hierarchy[index]) {
 				// detect flaws
@@ -55,8 +54,8 @@ public class HierarchyFlawInspector extends FlawInspector
 	 * 
 	 */
 	@Override
-	public Set<Flaw> check() 
-	{
+	public Set<Flaw> check() {
+		
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// get knowledge
@@ -64,8 +63,7 @@ public class HierarchyFlawInspector extends FlawInspector
 		// get the hierarchy
 		List<DomainComponent>[] hierarchy = knowledge.getDomainHierarchy();
 		// detect flaws according to the computed hierarchy of the domain
-		for (int index = 0; index < hierarchy.length && set.isEmpty(); index++)
-		{
+		for (int index = 0; index < hierarchy.length && set.isEmpty(); index++) {
 			// extract flaws of equivalent components
 			for (DomainComponent component : hierarchy[index]) {
 				// detect flaws
@@ -81,8 +79,8 @@ public class HierarchyFlawInspector extends FlawInspector
 	 * 
 	 */
 	@Override
-	public Set<Flaw> filter(Collection<Flaw> flaws) 
-	{
+	public Set<Flaw> filter(Collection<Flaw> flaws) {
+		
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// get knowledge
@@ -90,14 +88,12 @@ public class HierarchyFlawInspector extends FlawInspector
 		// get the hierarchy
 		List<DomainComponent>[] hierarchy = knowledge.getDomainHierarchy();
 		// filter flaws according to the hierarchy of the related component
-		for (int hlevel = 0; hlevel < hierarchy.length && set.isEmpty(); hlevel++)
-		{
+		for (int hlevel = 0; hlevel < hierarchy.length && set.isEmpty(); hlevel++) {
 			// extract flaws of equivalent components
-			for (DomainComponent c : hierarchy[hlevel]) 
-			{
+			for (DomainComponent c : hierarchy[hlevel]) {
+				
 				// check component's flaws
-				for (Flaw flaw : flaws) 
-				{
+				for (Flaw flaw : flaws) {
 					// check flaw's component
 					if (flaw.getComponent().equals(c)) {
 						// add flaw

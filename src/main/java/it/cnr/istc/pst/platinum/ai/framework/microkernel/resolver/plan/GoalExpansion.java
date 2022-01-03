@@ -5,11 +5,11 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.pdb.Synchronizatio
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class GoalExpansion extends GoalJustification 
-{
+public class GoalExpansion extends GoalJustification {
+	
 	private SynchronizationRule rule;
 	
 	/**

@@ -1,7 +1,6 @@
 package it.cnr.istc.pst.platinum.ai.deliberative.heuristic.pipeline;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,13 +15,12 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.reflection.FrameworkReflectio
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 @PipelineConfiguration(pipeline= {
-		PlanFlawInspector.class,
-		ReverseHierarchyFlawInspector.class,
-		DegreeFlawInspector.class
+		HierarchicalPlanFlawInspector.class,
+		FailFirstFlawInspector.class
 })
 public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic {
 	
@@ -58,29 +56,29 @@ public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic {
 	/**
 	 * 
 	 */
-	@Override
-	public Set<Flaw> filter(Set<Flaw> flaws) 
-			throws NoFlawFoundException {
-		
-		// check if any flaw has been found
-		if (flaws.isEmpty()) {
-			// throw exception
-			throw new NoFlawFoundException("No flaw has been found in the current plan");
-		}
-		
-		// set of filtered
-		Set<Flaw> filtered = new HashSet<>(flaws);
-		// filter flaws according to other inspectors of the pipeline
-		for (int index = 0; index < this.inspectors.size(); index++) {
-			// get inspector
-			FlawInspector i = this.inspectors.get(index);
-			// apply inspector and get the subset of flaws
-			filtered = i.filter(filtered);
-		}
-		
-		// get filtered flaws
-		return filtered;
-	}
+//	@Override
+//	public Set<Flaw> filter(Set<Flaw> flaws) 
+//			throws NoFlawFoundException {
+//		
+//		// check if any flaw has been found
+//		if (flaws.isEmpty()) {
+//			// throw exception
+//			throw new NoFlawFoundException("No flaw has been found in the current plan");
+//		}
+//		
+//		// set of filtered
+//		Set<Flaw> filtered = new HashSet<>(flaws);
+//		// filter flaws according to other inspectors of the pipeline
+//		for (int index = 0; index < this.inspectors.size(); index++) {
+//			// get inspector
+//			FlawInspector i = this.inspectors.get(index);
+//			// apply inspector and get the subset of flaws
+//			filtered = i.filter(filtered);
+//		}
+//		
+//		// get filtered flaws
+//		return filtered;
+//	}
 	
 	/**
 	 * 

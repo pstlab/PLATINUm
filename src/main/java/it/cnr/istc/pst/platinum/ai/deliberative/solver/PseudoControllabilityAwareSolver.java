@@ -36,8 +36,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 	 */
 	@Override
 	public SearchSpaceNode solve() 
-			throws NoSolutionFoundException 
-	{
+			throws NoSolutionFoundException {
+		
 		// set solving start time
 		long start = System.currentTimeMillis();
 		// set solving step counter
@@ -48,19 +48,18 @@ public class PseudoControllabilityAwareSolver extends Solver
 		boolean search = true;
 		// solution flag
 		boolean solution = false;
+		
 		// search a solution
-		while (search) 
-		{
-			try 
-			{
+		while (search) {
+			try {
 				
 				// update step counter
 				this.stepCounter++;
 				// get time passed from the start 
 				long now = System.currentTimeMillis() - start;
 				// check timeout
-				if (this.timeout > 0 && now > this.timeout) 
-				{
+				if (this.timeout > 0 && now > this.timeout) {
+					
 					// no solution found stop search
 					search = false;
 					// set solving time
@@ -91,6 +90,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 						info += "- Op[" + i + "]: " + op + "\n";
 					}
 				}
+				
 				// info log 
 				info(info);
 				
@@ -131,8 +131,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 								+ "generator: " + child.getGenerator() + "\n");
 					}
 				}
-			}
-			catch (PlanRefinementException ex) {
+				
+			} catch (PlanRefinementException ex) {
 				
 				// refinement error
 				warning("Refinement error [step = " + this.stepCounter + "]:"
@@ -141,8 +141,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 						+ "- Discarded node: " + node + "\n"
 						+ "- Current node: " + last + "\n"
 						+ "- Plan:\n" + last.getPartialPlan() + "\n");
-			}
-			catch (UnsolvableFlawException ex) {
+				
+			} catch (UnsolvableFlawException ex) {
 				
 				// refinement error
 				warning("Unsolvable flaw found  [step = " + this.stepCounter + "]:\n"
@@ -150,8 +150,8 @@ public class PseudoControllabilityAwareSolver extends Solver
 						+ "- Message: " + ex.getMessage() + "\n"
 						+ "- Backtrack from node: " + last + "\n"
 						+ "- Plan:\n" + last.getPartialPlan() + "\n");
-			}
-			catch (NoFlawFoundException ex) {
+				
+			} catch (NoFlawFoundException ex) {
 				
 				// solution found stop search
 				search = false;
@@ -161,19 +161,18 @@ public class PseudoControllabilityAwareSolver extends Solver
 				this.time = System.currentTimeMillis() - start;
 				// pseudo-controllable solution found
 				info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
-			}
-			catch (EmptyFringeException ex) 
-			{
+				
+			} catch (EmptyFringeException ex)  {
+				
 				// no solution found stop search
 				search = false;
 				// set solving time
 				this.time = System.currentTimeMillis() - start;
 				// throw exception
 				throw new NoSolutionFoundException("No pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
-			}
-			// close connection
-			finally 
-			{
+			
+			} finally {
+				
 				// check if stopping search with a solution
 				if (!search && solution) {
 					
@@ -203,6 +202,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 	 */
 	@Override
 	public void clear() {
+		
 		// clear heuristics
 		this.heuristic.clear();
 		// clear the fringe

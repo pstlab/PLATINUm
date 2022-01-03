@@ -7,8 +7,8 @@ import it.cnr.istc.pst.platinum.ai.deliberative.solver.SearchSpaceNode;
  * @author alessandro
  *
  */
-public class DepthFirstSearchStrategy extends SearchStrategy 
-{
+public class DepthFirstSearchStrategy extends SearchStrategy {
+	
 	/**
 	 * 
 	 */

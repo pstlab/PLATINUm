@@ -67,8 +67,8 @@ public abstract class FlawSelectionHeuristic extends FrameworkObject
 	 * @return
 	 * @throws NoFlawFoundException
 	 */
-	public abstract Set<Flaw> filter(Set<Flaw> flaws) 
-			throws NoFlawFoundException;
+//	public abstract Set<Flaw> filter(Set<Flaw> flaws) 
+//			throws NoFlawFoundException;
 	
 	/**
 	 * 

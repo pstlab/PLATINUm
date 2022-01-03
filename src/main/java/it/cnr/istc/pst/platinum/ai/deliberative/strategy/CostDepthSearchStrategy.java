@@ -4,11 +4,11 @@ import it.cnr.istc.pst.platinum.ai.deliberative.solver.SearchSpaceNode;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class CostDepthSearchStrategy extends SearchStrategy
-{
+public class CostDepthSearchStrategy extends SearchStrategy {
+	
 	/**
 	 * 
 	 */

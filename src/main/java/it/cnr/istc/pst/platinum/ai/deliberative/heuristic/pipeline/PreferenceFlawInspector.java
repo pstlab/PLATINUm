@@ -13,18 +13,18 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class PlanFlawInspector extends FlawInspector 
-{
+public class PreferenceFlawInspector extends FlawInspector {
+	
 	private FlawType[] preferences;
 
 	/**
 	 * 
 	 */
-	protected PlanFlawInspector() {
-		super("PlanFlawInspector");
+	protected PreferenceFlawInspector() {
+		super("PreferenceFlawInspector");
 	}
 	
 	/**
@@ -74,6 +74,7 @@ public class PlanFlawInspector extends FlawInspector
 	 */
 	@Override
 	public Set<Flaw> check() {
+		
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// look for flaws of a given type
@@ -94,8 +95,8 @@ public class PlanFlawInspector extends FlawInspector
 	 * 
 	 */
 	@Override
-	public Set<Flaw> filter(Collection<Flaw> flaws) 
-	{
+	public Set<Flaw> filter(Collection<Flaw> flaws) {
+		
 		// filtered set
 		Set<Flaw> set = new HashSet<>();
 		// look for flaw of a given type

@@ -4,7 +4,7 @@ import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.pipeline.PipelineFlawS
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.SearchSpaceNode;
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.Solver;
-import it.cnr.istc.pst.platinum.ai.deliberative.strategy.DepthFirstSearchStrategy;
+import it.cnr.istc.pst.platinum.ai.deliberative.strategy.StandardDeviationMinimizationSearchStrategy;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanDataBase;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.FrameworkObject;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
@@ -24,21 +24,20 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.log.FrameworkLoggingLevel;
  *
  */
 @PlannerSolverConfiguration(
-		solver = PseudoControllabilityAwareSolver.class,
-		timeout = 180000
+		solver = PseudoControllabilityAwareSolver.class
 )
 @FlawSelectionHeuristicsConfiguration(
 		heuristics = PipelineFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-		strategy = DepthFirstSearchStrategy.class
+		strategy = StandardDeviationMinimizationSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(		
 		// set logging level
 		level = FrameworkLoggingLevel.INFO
 )
-public class Planner extends FrameworkObject 
-{
+public class Planner extends FrameworkObject {
+	
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
 	

@@ -7,11 +7,11 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public class GreedyDepthSearchStrategy extends SearchStrategy 
-{
+public class GreedyDepthSearchStrategy extends SearchStrategy {
+	
 	/**
 	 * 
 	 */

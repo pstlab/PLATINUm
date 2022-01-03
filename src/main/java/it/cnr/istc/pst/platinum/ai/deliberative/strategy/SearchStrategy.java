@@ -39,8 +39,8 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader
  * @author alessandro
  *
  */
-public abstract class SearchStrategy extends FrameworkObject implements Comparator<SearchSpaceNode> 
-{
+public abstract class SearchStrategy extends FrameworkObject implements Comparator<SearchSpaceNode> {
+	
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;												// reference to plan data-base
 	

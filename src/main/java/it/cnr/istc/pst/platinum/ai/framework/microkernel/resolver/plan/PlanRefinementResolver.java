@@ -190,8 +190,8 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 	 * @throws RelationPropagationException
 	 */
 	private void doRestoreUnification(GoalUnification solution) 
-			throws RelationPropagationException
-	{
+			throws RelationPropagationException {
+		
 		// restore relation translation
 		for (Relation rel : solution.getTranslatedReferenceGoalRelations()) {
 			
@@ -351,7 +351,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			}
 			
 			// check consistency
-			this.tdb.verify();
+//			this.tdb.verify();
 			this.pdb.verify();
 			
 		} catch (RelationPropagationException | ConsistencyCheckException ex) {
@@ -834,9 +834,9 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			}
 			
 			// check temporal consistency after activated relations
-			this.tdb.verify();
+//			this.tdb.verify();
 		}
-		catch (ConsistencyCheckException | RelationPropagationException ex) {
+		catch (RelationPropagationException ex) {
 			// not feasible unification 
 			feasible = false;
 			// not feasible unification
@@ -1142,7 +1142,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			unification.setTranslatedTargetGoalRealtion(translatedTargetGoalRelations);
 			
 			// check consistency
-			this.tdb.verify();
+//			this.tdb.verify();
 			this.pdb.verify();
 			
 		} catch (RelationPropagationException | ConsistencyCheckException ex) {

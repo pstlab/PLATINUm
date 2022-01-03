@@ -21,8 +21,8 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.plan.Plan;
  * @author anacleto
  *
  */
-public class SearchSpaceNode implements Comparable<SearchSpaceNode>
-{
+public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
+	
 	private static final AtomicInteger ID_COUNTER = new AtomicInteger(0);
 	
 	private int id;												// node unique ID
@@ -357,8 +357,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 * 
 	 * @return
 	 */
-	public double[] getPlanMakespan() 
-	{
+	public double[] getPlanMakespan() {
+		
 		// set the makespan
 		double[] mk = new double[] {
 				Double.MIN_VALUE + 1,  
@@ -398,8 +398,8 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 	 * 
 	 * @return
 	 */
-	public double[] getPlanHeuristicMakespan() 
-	{
+	public double[] getPlanHeuristicMakespan() {
+		
 		// set heuristic makespan
 		double[] mk = new double[] {
 				Double.MAX_VALUE - 1,
@@ -431,6 +431,76 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode>
 		}
 		
 		// get plan makespan 
+		return mk;
+	}
+	
+	/**
+	 * Compute the estimated makespan as the sum of the consolidated and heuristic makespan
+	 * 
+	 * @param component
+	 * @return
+	 */
+	public double[] getEstimatedMakespan(DomainComponent component) {
+		
+		// set heuristic makespan
+		double[] mk = new double[] {
+				0,
+				0
+		};
+		
+		// check if component exists
+		if (this.makespan.containsKey(component)) {
+			// set consolidated lower bound
+			mk[0] = this.makespan.get(component)[0];
+			mk[1] = this.makespan.get(component)[1];
+			
+		}
+		
+		// add heuristic value
+		if (this.heuristicMakespan.containsKey(component)) {
+			// increment
+			mk[0] += this.heuristicMakespan.get(component)[0];
+			mk[1] += this.heuristicMakespan.get(component)[1];
+		}
+
+		// get makespan
+		return mk;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<DomainComponent, Double[]> getEstimatedMakespan() {
+		
+		// set data
+		Map<DomainComponent, Double[]> mk = new HashMap<>();
+		
+		// check components
+		for (DomainComponent comp : this.makespan.keySet()) {
+			
+			// put consolidated minimum and maximum makespan
+			mk.put(comp, new Double[] {
+					this.makespan.get(comp)[0],
+					this.makespan.get(comp)[1]
+			});
+		}
+		
+		// consider heuristic values
+		for (DomainComponent comp : this.heuristicMakespan.keySet()) {
+			
+			// add heuristic values
+			double min = mk.containsKey(comp) ? mk.get(comp)[0] : 0;
+			double max = mk.containsKey(comp) ? mk.get(comp)[1] : 0;
+			
+			// add heuristic value
+			mk.put(comp, new Double[] {
+				min + this.heuristicMakespan.get(comp)[0],
+				max + this.heuristicMakespan.get(comp)[1]
+			});
+		}
+		
+		// get data
 		return mk;
 	}
 	

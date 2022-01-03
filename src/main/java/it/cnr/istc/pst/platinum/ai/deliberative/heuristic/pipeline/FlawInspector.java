@@ -11,11 +11,11 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableF
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
-public abstract class FlawInspector extends FrameworkObject 
-{
+public abstract class FlawInspector extends FrameworkObject {
+	
 	@PlanDataBasePlaceholder
 	protected PlanDataBase pdb;
 	
