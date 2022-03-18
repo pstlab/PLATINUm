@@ -60,8 +60,8 @@ public abstract class Monitor<T extends Executive> extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	protected boolean hasObservations()
-	{
+	protected boolean hasObservations() {
+		
 		// content flag
 		boolean hasObservations = true;
 		// protect access to the list of observations
