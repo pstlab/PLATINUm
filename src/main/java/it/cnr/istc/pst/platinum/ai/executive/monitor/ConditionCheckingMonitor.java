@@ -66,7 +66,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					} catch (TemporalConstraintPropagationException ex) {
 						
 						// update node state
-						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 						// create failure cause
 						ExecutionFailureCause cause = new NodeDurationOverflow(tick, node, duration);
 						// throw execution exception
@@ -91,7 +91,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					} catch (TemporalConstraintPropagationException ex) {
 						
 						// update node state
-						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 						// create failure cause
 						ExecutionFailureCause cause = new NodeStartOverflow(tick, node, tau);
 						// throw execution exception
@@ -107,7 +107,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				case TOKEN_EXECUTION_FAILURE : {
 					
 					// update node status
-					this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					// execution failure
 					ExecutionFailureCause cause = new NodeExecutionError(tick, node); 
 					// throw execution exception
@@ -191,7 +191,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					// compute node duration of the token in execution 
 					long duration = Math.max(1, tau - node.getStart()[0]);
 					// the node can be considered as executed
-					this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					// add repair information
 					cause.addRepairInfo(node, duration);
 					// info message
@@ -203,7 +203,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				case UNCONTROLLABLE_TOKEN_START : {
 					
 					// update node status
-					this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} -> Observed token execution start at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
@@ -212,7 +212,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				case TOKEN_EXECUTION_FAILURE : {
 					
 					// the node can be considered as executed
-					this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
+					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} -> Observed execution failure at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					
@@ -227,8 +227,8 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 			if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
 				
 				
-				// check if controllable node can stop
-				if (this.executive.canEnd(node)) {
+				// check if controllable node can be stopped
+				if (this.executive.canStop(node)) {
 					
 					// check node schedule
 					this.executive.checkSchedule(node);

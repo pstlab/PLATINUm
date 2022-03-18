@@ -81,8 +81,9 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	protected Map<ExecutionNodeStatus, List<ExecutionNode>> nodes;
 	
 	// execution dependency graphs
-	protected Map<ExecutionNode, Map<ExecutionNode, ExecutionNodeStatus>> sdg;		// start dependency graph
-	protected Map<ExecutionNode, Map<ExecutionNode, ExecutionNodeStatus>> edg;		// end dependency graph
+	protected Map<ExecutionNode, Map<ExecutionNode, ExecutionNodeStatus[]>> sdg;		// start dependency graph - array of disjunctive start conditions 
+	protected Map<ExecutionNode, Map<ExecutionNode, ExecutionNodeStatus[]>> edg;		// end dependency graph - array of disjunctive end conditions
+	protected Map<ExecutionNode, Map<ExecutionNode, ExecutionNodeStatus[]>> stop;		// stop dependency graph - array of disjunctive end conditions
 	
 	/**
 	 * 
@@ -110,6 +111,7 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		// set the dependency graph
 		this.sdg = new HashMap<>();
 		this.edg = new HashMap<>();
+		this.stop = new HashMap<>();
 	}
 	
 	/**
@@ -429,7 +431,7 @@ public class ExecutivePlanDataBase extends FrameworkObject
 					// print node and the related execution conditions
 					msg += "Execution node " + node + "\n";
 					msg += "\tNode execution starting conditions:\n";
-					Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
+					Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeStartDependencies(node);
 					for (ExecutionNode dep : dependencies.keySet()) {
 						msg += "\t\tCan start if -> " + dep.getId() + ":"+ dep.getGroundSignature() + " is in " + dependencies.get(dep) + "\n";
 					}
@@ -694,7 +696,7 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 * @param node
 	 * @return
 	 */
-	public Map<ExecutionNode, ExecutionNodeStatus> getNodeStartDependencies(ExecutionNode node) {
+	public Map<ExecutionNode, ExecutionNodeStatus[]> getNodeStartDependencies(ExecutionNode node) {
 		return new HashMap<>(this.sdg.get(node));
 	}
 	
@@ -703,9 +705,19 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 * @param node
 	 * @return
 	 */
-	public Map<ExecutionNode, ExecutionNodeStatus> getNodeEndDependencies(ExecutionNode node) {
+	public Map<ExecutionNode, ExecutionNodeStatus[]> getNodeEndDependencies(ExecutionNode node) {
 		return new HashMap<>(this.edg.get(node));
 	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public Map<ExecutionNode, ExecutionNodeStatus[]> getNodeStopDependencies(ExecutionNode node) {
+		return new HashMap<>(this.stop.get(node));
+	}
+	
 	
 	/**
 	 * 
@@ -731,8 +743,9 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		node.setStatus(initial);
 		this.nodes.get(initial).add(node);
 		// setup dependency graph data structures
-		this.sdg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
-		this.edg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus>());
+		this.sdg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus[]>());
+		this.edg.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus[]>());
+		this.stop.put(node, new HashMap<ExecutionNode, ExecutionNodeStatus[]>());
 	}
 	
 	/**
@@ -749,6 +762,7 @@ public class ExecutivePlanDataBase extends FrameworkObject
 			// clear map entries
 			this.sdg.remove(node);
 			this.edg.remove(node);
+			this.stop.remove(node);
 			
 			// clear edges
 			for (ExecutionNode n : this.sdg.keySet()) {
@@ -761,6 +775,12 @@ public class ExecutivePlanDataBase extends FrameworkObject
 			for (ExecutionNode n : this.edg.keySet()) {
 				// remove edge
 				this.edg.get(n).remove(node);
+			}
+			
+			// clear edges
+			for (ExecutionNode n : this.stop.keySet()) {
+				// remove edge
+				this.stop.get(n).remove(node);
 			}
 		}
 	}
@@ -801,9 +821,9 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 * @param dependency
 	 * @param condition
 	 */
-	protected void addStartExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus condition) {
+	protected void addStartExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus[] conditions) {
 		// add node's start dependency and related condition
-		this.sdg.get(node).put(dependency, condition);
+		this.sdg.get(node).put(dependency, conditions);
 	}
 
 	/**
@@ -812,9 +832,20 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 * @param dependency
 	 * @param condition
 	 */
-	protected void addEndExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus condition) {
+	protected void addEndExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus[] conditions) {
 		// add node's end dependency and related condition
-		this.edg.get(node).put(dependency, condition);
+		this.edg.get(node).put(dependency, conditions);
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @param dependency
+	 * @param conditions
+	 */
+	protected void addStopExecutionDependency(ExecutionNode node, ExecutionNode dependency, ExecutionNodeStatus[] conditions) {
+		// add node's end dependency and related condition
+		this.stop.get(node).put(dependency, conditions);
 	}
 	
 	/**
@@ -824,16 +855,30 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 */
 	public boolean checkEndExecutionDependencies(ExecutionNode node) {
 		
-		// flag 
-		boolean canEnd = true;
-		Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeEndDependencies(node);
-		if (!dependencies.isEmpty()) {
+		Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeEndDependencies(node);
+		// set end execution flag 
+		boolean canEnd = dependencies.isEmpty();
+		// check execution flag
+		if (!canEnd) {
+			
 			// check if conditions are satisfied
 			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
-			while (it.hasNext() && canEnd) {
+			// check all conditions
+			while (it.hasNext() && !canEnd) {
+				
 				// get next dependency
 				ExecutionNode d = it.next();
-				canEnd = d.getStatus().equals(dependencies.get(d));
+				// get end conditions
+				ExecutionNodeStatus[] conditions = dependencies.get(d);
+				// check if one of the disjunctive conditions is satisfied
+				for (ExecutionNodeStatus condition : conditions) {
+					// check condition
+					if (d.getStatus().equals(condition)) {
+						canEnd = true;
+						break;
+					}
+					
+				}
 			}
 		}
 		
@@ -846,21 +891,71 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 * @param node
 	 * @return
 	 */
-	public boolean checkStartExecutionDependencies(ExecutionNode node) {
+	public boolean checkStopExecutionDependencies(ExecutionNode node) {
 		
-		// flag
-		boolean canStart = true;
-		// get node's start dependencies
-		Map<ExecutionNode, ExecutionNodeStatus> dependencies = this.getNodeStartDependencies(node);
-		if (!dependencies.isEmpty()) {
+		Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeStopDependencies(node);
+		// set end execution flag 
+		boolean canStop = dependencies.isEmpty();
+		// check execution flag
+		if (!canStop) {
 			
 			// check if conditions are satisfied
 			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
-			while (it.hasNext() && canStart) {
+			// check all conditions
+			while (it.hasNext() && !canStop) {
+				
+				// get next dependency
+				ExecutionNode d = it.next();
+				// get end conditions
+				ExecutionNodeStatus[] conditions = dependencies.get(d);
+				// check if one of the disjunctive conditions is satisfied
+				for (ExecutionNodeStatus condition : conditions) {
+					// check condition
+					if (d.getStatus().equals(condition)) {
+						canStop = true;
+						break;
+					}
+					
+				}
+			}
+		}
+		
+		// true if the node can stop execution
+		return canStop;
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public boolean checkStartExecutionDependencies(ExecutionNode node) {
+		
+		// get node's start dependencies
+		Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeStartDependencies(node);
+		// set execution flag
+		boolean canStart = dependencies.isEmpty();
+		// check execution flag
+		if (!canStart) {
+			
+			// check if conditions are satisfied
+			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
+			// check all conditions
+			while (it.hasNext() && !canStart) {
+				
 				// get a dependency parent
 				ExecutionNode d = it.next();
-				// check condition
-				canStart = d.getStatus().equals(dependencies.get(d));
+				// get start conditions
+				ExecutionNodeStatus[] conditions = dependencies.get(d);
+				// check if one of the disjunctive conditions is satisfied
+				for (ExecutionNodeStatus condition : conditions) {
+					// check condition
+					if (d.getStatus().equals(condition)) {
+						// node can start
+						canStart = true;
+						break;
+					}
+				}
 			}
 		}
 		
@@ -980,7 +1075,9 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		this.facade.propagate(constraint);
 		
 		// set execution constraints
-		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+		this.addStartExecutionDependency(target, reference, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.EXECUTED
+		});
 	}
 	
 	/**
@@ -1003,7 +1100,9 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		this.facade.propagate(constraint);
 		
 		// set execution constraints
-		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+		this.addStartExecutionDependency(target, reference, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.EXECUTED
+		});
 	}
 	
 	/**
@@ -1030,7 +1129,9 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		this.facade.propagate(constraint);
 		
 		// add execution dependencies
-		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+		this.addStartExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.EXECUTED
+		});
 	}
 	
 	/**
@@ -1055,11 +1156,36 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		constraint.setEndTimeBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
-		// add execution dependencies
-		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
-		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
 		
-		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.EXECUTED);
+		
+		// add execution dependencies
+		this.addStartExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION
+		});
+		
+		this.addEndExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION,
+		});
+		
+		this.addEndExecutionDependency(target, reference, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.EXECUTED,
+		});
+		
+		
+		
+		
+		// add stop execution condition
+		this.addStopExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION,
+				ExecutionNodeStatus.FAILURE,
+		});
+		
+		// add stop execution condition
+		this.addStopExecutionDependency(target, reference, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.EXECUTED,
+				ExecutionNodeStatus.FAILURE,
+				ExecutionNodeStatus.WAITING
+		});
 	}
 	
 	/**
@@ -1084,11 +1210,34 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		constraint.setEndTimeBound(bounds[1]);
 		// propagate temporal constraint
 		this.facade.propagate(constraint);
-		// add execution dependencies
-		this.addStartExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
-		this.addEndExecutionDependency(target, reference, ExecutionNodeStatus.IN_EXECUTION);
 		
-		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.EXECUTED);
+		// add execution dependencies
+		this.addEndExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.EXECUTED,
+		});
+		
+		this.addStartExecutionDependency(target, reference, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION
+		});
+		
+		this.addEndExecutionDependency(target, reference, new ExecutionNodeStatus[] { 
+				ExecutionNodeStatus.IN_EXECUTION,
+		});
+		
+		
+		// add stop execution condition
+		this.addStopExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.EXECUTED,
+				ExecutionNodeStatus.FAILURE,
+				ExecutionNodeStatus.WAITING
+		});
+		
+		// add stop execution condition
+		this.addStopExecutionDependency(target, reference, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION,
+				ExecutionNodeStatus.FAILURE,
+				
+		});
 	}
 	
 	/**
@@ -1135,7 +1284,9 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		this.facade.propagate(constraint);
 		
 		// add start dependency
-		this.addStartExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+		this.addStartExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION
+		});
 	}
 	
 	/**
@@ -1162,6 +1313,16 @@ public class ExecutivePlanDataBase extends FrameworkObject
 		this.facade.propagate(constraint);
 		
 		// add end dependency
-		this.addEndExecutionDependency(reference, target, ExecutionNodeStatus.IN_EXECUTION);
+		this.addEndExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION,
+		});
+		
+		
+		// add stop execution condition
+		this.addStopExecutionDependency(reference, target, new ExecutionNodeStatus[] {
+				ExecutionNodeStatus.IN_EXECUTION,
+				ExecutionNodeStatus.FAILURE
+		});
+		
 	}
 }

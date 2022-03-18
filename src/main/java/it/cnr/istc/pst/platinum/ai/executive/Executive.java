@@ -214,6 +214,15 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	}
 	
 	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public boolean canStop(ExecutionNode node) {
+		return this.pdb.checkStopExecutionDependencies(node);
+	}
+	
+	/**
 	 * Convert clock's tick to time units from execution start
 	 * 
 	 * @param tick
