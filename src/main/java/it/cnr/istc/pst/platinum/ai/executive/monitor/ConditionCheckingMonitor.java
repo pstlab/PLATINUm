@@ -226,6 +226,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 			// check node controllability 
 			if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
 				
+				
 				// check if controllable node can stop
 				if (this.executive.canEnd(node)) {
 					
@@ -235,7 +236,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					if (tau >= node.getEnd()[0]) {
 						
 						// the node can be considered as executed
-						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
 						// send stop command
 						this.executive.sendStopCommandSignalToPlatform(node);
 						// info message

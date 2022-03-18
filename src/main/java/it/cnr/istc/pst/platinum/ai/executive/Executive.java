@@ -567,6 +567,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				
 				// hypothesis
 				complete = true;
+				
 				// get nodes in starting state
 				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING)) {
 					
@@ -579,6 +580,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				
 				// get nodes in execution 
 				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
+
 					
 					// the executive cannot complete 
 					complete = false;

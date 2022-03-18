@@ -20,7 +20,7 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.reflection.FrameworkReflectio
  */
 @PipelineConfiguration(pipeline= {
 		HierarchicalPlanFlawInspector.class,
-		FailFirstFlawInspector.class
+//		FailFirstFlawInspector.class
 })
 public class PipelineFlawSelectionHeuristic extends FlawSelectionHeuristic {
 	
