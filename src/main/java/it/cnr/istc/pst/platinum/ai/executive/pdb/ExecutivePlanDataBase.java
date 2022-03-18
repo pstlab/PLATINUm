@@ -855,30 +855,36 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 */
 	public boolean checkEndExecutionDependencies(ExecutionNode node) {
 		
-		Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeEndDependencies(node);
 		// set end execution flag 
-		boolean canEnd = dependencies.isEmpty();
-		// check execution flag
-		if (!canEnd) {
+		boolean canEnd = true;
+		// check dependencies if any
+		Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeEndDependencies(node);
+		if (!dependencies.isEmpty()) {
 			
 			// check if conditions are satisfied
 			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
-			// check all conditions
-			while (it.hasNext() && !canEnd) {
+			// at least one condition for each dependency should be satisfied
+			while (it.hasNext() && canEnd) {
 				
 				// get next dependency
 				ExecutionNode d = it.next();
-				// get end conditions
+				// get end conditions for the current node
 				ExecutionNodeStatus[] conditions = dependencies.get(d);
+				
+				// check if at least one is satisfied
+				boolean satisfied = false;
 				// check if one of the disjunctive conditions is satisfied
 				for (ExecutionNodeStatus condition : conditions) {
 					// check condition
 					if (d.getStatus().equals(condition)) {
-						canEnd = true;
+						satisfied = true;
 						break;
 					}
 					
 				}
+				
+				// update can end flag
+				canEnd = satisfied;
 			}
 		}
 		
@@ -893,30 +899,37 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 */
 	public boolean checkStopExecutionDependencies(ExecutionNode node) {
 		
+		// set stop condition
+		boolean canStop = true;
+		// check dependencies if any
 		Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeStopDependencies(node);
-		// set end execution flag 
-		boolean canStop = dependencies.isEmpty();
 		// check execution flag
-		if (!canStop) {
+		if (!dependencies.isEmpty()) {
 			
 			// check if conditions are satisfied
 			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
 			// check all conditions
-			while (it.hasNext() && !canStop) {
+			while (it.hasNext() && canStop) {
 				
 				// get next dependency
 				ExecutionNode d = it.next();
 				// get end conditions
 				ExecutionNodeStatus[] conditions = dependencies.get(d);
+				// check if at least one is satisfied
+				boolean satisfied = false;
+				
 				// check if one of the disjunctive conditions is satisfied
 				for (ExecutionNodeStatus condition : conditions) {
 					// check condition
 					if (d.getStatus().equals(condition)) {
-						canStop = true;
+						satisfied = true;
 						break;
 					}
 					
 				}
+				
+				// update can end flag
+				canStop = satisfied;
 			}
 		}
 		
@@ -931,31 +944,37 @@ public class ExecutivePlanDataBase extends FrameworkObject
 	 */
 	public boolean checkStartExecutionDependencies(ExecutionNode node) {
 		
+		// set start condition
+		boolean canStart = true;
 		// get node's start dependencies
 		Map<ExecutionNode, ExecutionNodeStatus[]> dependencies = this.getNodeStartDependencies(node);
-		// set execution flag
-		boolean canStart = dependencies.isEmpty();
 		// check execution flag
-		if (!canStart) {
+		if (!dependencies.isEmpty()) {
 			
 			// check if conditions are satisfied
 			Iterator<ExecutionNode> it = dependencies.keySet().iterator();
 			// check all conditions
-			while (it.hasNext() && !canStart) {
+			while (it.hasNext() && canStart) {
 				
 				// get a dependency parent
 				ExecutionNode d = it.next();
 				// get start conditions
 				ExecutionNodeStatus[] conditions = dependencies.get(d);
+				// check if at least one is satisfied
+				boolean satisfied = false;
+				
 				// check if one of the disjunctive conditions is satisfied
 				for (ExecutionNodeStatus condition : conditions) {
 					// check condition
 					if (d.getStatus().equals(condition)) {
 						// node can start
-						canStart = true;
+						satisfied = true;
 						break;
 					}
 				}
+				
+				// update can start flag
+				canStart = satisfied;
 			}
 		}
 		
