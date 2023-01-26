@@ -92,20 +92,6 @@ public class PlanDataBaseBuilder
 	 */
 	public synchronized static PlanDataBase createAndSet(String name, long origin, long horizon)
 	{
-//		try
-//		{
-//			// get framework logger configuration
-//			FrameworkLoggerConfiguration lAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, FrameworkLoggerConfiguration.class);
-//			// create logger
-//			FrameworkLogger logger = doCreateFrameworkLogger(lAnnot.level());
-//			
-//			// inject logger reference
-//			FrameworkReflectionUtils.doInjectStaticReferenceThroughAnnotation(PlanDataBaseComponent.class, FrameworkLoggerPlaceholder.class, logger);
-//		}
-//		catch (Exception ex) {
-//			throw new RuntimeException("Error while injecting logger into the framework:\n- message: " + ex.getMessage() + "\n");
-//		}
-		
 		// get temporal facade configuration
 		TemporalFacadeConfiguration tAnnot = FrameworkReflectionUtils.doFindnAnnotation(PlanDataBaseComponent.class, TemporalFacadeConfiguration.class);
 		// create temporal facade
