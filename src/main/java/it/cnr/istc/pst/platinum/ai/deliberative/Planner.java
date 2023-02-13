@@ -1,10 +1,10 @@
 package it.cnr.istc.pst.platinum.ai.deliberative;
 
-import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.pipeline.PipelineFlawSelectionHeuristic;
+import it.cnr.istc.pst.platinum.ai.deliberative.heuristic.HierarchicalFlawSelectionHeuristic;
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.PseudoControllabilityAwareSolver;
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.SearchSpaceNode;
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.Solver;
-import it.cnr.istc.pst.platinum.ai.deliberative.strategy.StandardDeviationMinimizationSearchStrategy;
+import it.cnr.istc.pst.platinum.ai.deliberative.strategy.DepthFirstSearchStrategy;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanDataBase;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.FrameworkObject;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.FrameworkLoggerConfiguration;
@@ -27,10 +27,10 @@ import it.cnr.istc.pst.platinum.ai.framework.utils.log.FrameworkLoggingLevel;
 		solver = PseudoControllabilityAwareSolver.class
 )
 @FlawSelectionHeuristicsConfiguration(
-		heuristics = PipelineFlawSelectionHeuristic.class
+		heuristics = HierarchicalFlawSelectionHeuristic.class
 )
 @SearchStrategyConfiguration(
-		strategy = StandardDeviationMinimizationSearchStrategy.class
+		strategy = DepthFirstSearchStrategy.class
 )
 @FrameworkLoggerConfiguration(		
 		// set logging level
