@@ -558,14 +558,19 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				// synch step
 				debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 				this.monitor.handleTick(tick);
-				// dispatching step
-				debug("{Executive} {tick: " + tick + "} -> Dispatching step\n");
-				this.dispatcher.handleTick(tick);
-				
 				// check if execution is complete
 				complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
 						this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING).isEmpty() && 
 						this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
+				
+				
+				// check complete flag 
+				if (!complete) {
+				
+					// dispatching step
+					debug("{Executive} {tick: " + tick + "} -> Dispatching step\n");
+					this.dispatcher.handleTick(tick);
+				}
 			
 			} else {
 				

@@ -37,11 +37,11 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive> {
 		// check human waiting nodes ready to dispatch
 		for (ExecutionNode node : this.executive.getNodes(ExecutionNodeStatus.WAITING)) {
 			
+			// check the actual bounds of the token
+			this.executive.checkSchedule(node);
 			// check if node can start
 			if (this.executive.canStart(node))  {
 				
-				// check the actual bounds of the token
-				this.executive.checkSchedule(node);
 				// schedule node if possible 
 				if (tau >= node.getStart()[0]) {
 					
