@@ -290,21 +290,33 @@ public abstract class Solver extends FrameworkObject {
 			
 			// create operator
 			Operator op = new Operator(solution);
-			// get plan with updated temporal bounds and variable binding
-			Plan plan = this.pdb.getPlan();
-			// create a child search space node
-			SearchSpaceNode child = new SearchSpaceNode(current, op);
-			// set partial plan
-			child.setPartialPlan(plan);
 			
-			// look ahead of flaws representing the agenda of the node
-			for (Flaw f : this.pdb.checkFlaws()) {
-				// add checked flaw
-				child.addCheckedFlaw(f);
+			try {
+				
+				// propagate operator
+				this.pdb.propagate(op);
+				// get plan with updated temporal bounds and variable binding
+				Plan plan = this.pdb.getPlan();
+				// create a child search space node
+				SearchSpaceNode child = new SearchSpaceNode(current, op);
+				// set partial plan
+				child.setPartialPlan(plan);
+				
+				// look ahead of flaws representing the agenda of the node
+				for (Flaw f : this.pdb.checkFlaws()) {
+					// add checked flaw
+					child.addCheckedFlaw(f);
+				}
+	
+				// add child
+				list.add(child);
+				// retract operator
+				this.pdb.retract(op);
+				
+			} catch (OperatorPropagationException ex) {
+				// flaw with unsolvable solution
+				throw new UnsolvableFlawException("Flaw with unsolvable solution found:\n- msg: " + ex.getMessage() + "\n");
 			}
-
-			// add child
-			list.add(child);
 		}
 		
 		// get children
