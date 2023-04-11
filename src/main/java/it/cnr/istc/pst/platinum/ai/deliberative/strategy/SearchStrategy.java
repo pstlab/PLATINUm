@@ -464,7 +464,7 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 		// compute an optimistic and pessimistic estimation of planning operations
 		Map<DomainComponent, Double[]> cost = new HashMap<>();
 		// check node flaws and compute heuristic estimation
-		for (Flaw flaw : node.getAgenda()) 
+		for (Flaw flaw : node.getFlaws()) 
 		{
 			// check planning goal 
 			if (flaw.getType().equals(FlawType.PLAN_REFINEMENT)) 
@@ -568,7 +568,7 @@ public abstract class SearchStrategy extends FrameworkObject implements Comparat
 		// initialize makespan projects
 		Map<DomainComponent, Double[]> projections = new HashMap<>();
 		// check node flaws and compute heuristic estimation
-		for (Flaw flaw : node.getAgenda()) 
+		for (Flaw flaw : node.getFlaws()) 
 		{
 			// check planning goals
 			if (flaw.getType().equals(FlawType.PLAN_REFINEMENT)) 

@@ -1,6 +1,4 @@
-package it.cnr.istc.pst.platinum.ai.deliberative.solver;
-
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
+package it.cnr.istc.pst.platinum.ai.framework.domain.component.pdb;
 
 /**
  * 
@@ -11,7 +9,7 @@ public class DecisionVariable implements Comparable<DecisionVariable>
 {
 	private int id;
 	private String component;
-	private String value;
+	private String predicate;		// grounded predicate
 	private long[] start;
 	private long[] end;
 	private long[] duration;
@@ -25,29 +23,22 @@ public class DecisionVariable implements Comparable<DecisionVariable>
 	 * @param end
 	 * @param duration
 	 */
-	protected DecisionVariable(int id, String component, String value, long[] start, long[] end, long[] duration) {
+	protected DecisionVariable(
+			int id, 
+			String component, 
+			String value, 
+			long[] start, 
+			long[] end, 
+			long[] duration) {
+		
 		this.id = id;
 		this.component = component;
-		this.value = value;
+		this.predicate = value;
 		this.start = start;
 		this.end = end;
 		this.duration = duration;
 	}
-	
-	/**
-	 * 
-	 * @param dec
-	 */
-	protected DecisionVariable(Decision dec) {
-		this.id = dec.getId();
-		this.component = dec.getComponent().getName();
-		this.value = dec.getToken().getPredicate().getGroundSignature();
-		this.start = dec.getStart();
-		this.end = dec.getEnd();
-		this.duration = dec.getDuration();
-	}
-	
-	
+
 	/**
 	 * 
 	 * @return
@@ -69,7 +60,7 @@ public class DecisionVariable implements Comparable<DecisionVariable>
 	 * @return
 	 */
 	public String getValue() {
-		return value;
+		return predicate;
 	}
 	
 	/**
@@ -146,7 +137,7 @@ public class DecisionVariable implements Comparable<DecisionVariable>
 		return "{ "
 				+ "\"id\": " + this.id + ", "
 				+ "\"component\": \"" + this.component + "\", "
-				+ "\"value\": \"" + this.value + "\", "
+				+ "\"predicate\": \"" + this.predicate + "\", "
 				+ "\"start\": [" + this.start[0] + ", " + this.start[1] + "], "
 				+ "\"end\": [" + this.end[0] + ", " + this.end[1] + "], "
 				+ "\"duration\": [" + this.duration[0] + ", " + this.duration[1] + "]"

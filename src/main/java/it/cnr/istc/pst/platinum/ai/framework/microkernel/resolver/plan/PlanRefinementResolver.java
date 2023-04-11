@@ -1456,7 +1456,7 @@ public class PlanRefinementResolver extends Resolver<DomainComponent> {
 			expansion.addActivatedRelations(list);
 			
 			// check consistency 
-//			this.tdb.verify();
+			this.tdb.verify();
 			this.pdb.verify();
 			
 		} catch (DecisionPropagationException | ConsistencyCheckException ex) {

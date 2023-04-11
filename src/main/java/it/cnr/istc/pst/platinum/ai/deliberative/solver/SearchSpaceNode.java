@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponentType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.Flaw;
@@ -18,7 +17,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.plan.Plan;
 
 /**
  * 
- * @author anacleto
+ * @author alessandro
  *
  */
 public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
@@ -28,11 +27,13 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	private int id;												// node unique ID
 	private List<Operator> operators;							// node generation trace
 	
-	private Map<DomainComponent, List<DecisionVariable>> plan;	// partial plan
- 	private Map<DomainComponent, List<Flaw>> agenda; 			// flaws associated to the resulting partial plan
- 	
- 	// consolidated information about a partial plan 
- 	private Map<DomainComponent, Double[]> makespan;				// consolidated makespan of SVs
+	private Plan plan;											// associated (partial) plan
+	
+//	private Map<DomainComponent, List<DecisionVariable>> plan;	// partial plan
+// 	private Map<DomainComponent, List<Flaw>> agenda; 			// flaws associated to the resulting partial plan
+// 	
+// 	// consolidated information about a partial plan 
+// 	private Map<DomainComponent, Double[]> makespan;			// consolidated makespan of SVs
  	private Map<DomainComponent, Double> cost;					// consolidated planning cost of SVs
  	
  	// heuristic information about a partial plan 
@@ -44,18 +45,21 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	/**
 	 * 
 	 */
-	protected SearchSpaceNode() {
+	protected SearchSpaceNode() 
+	{
 		// set node's id
 		this.id = ID_COUNTER.getAndIncrement();
 		// set operators
 		this.operators = new ArrayList<>();
-		// set agenda
-		this.agenda = new HashMap<>();
 		
+		// initialize (partial) plan
+//		this.plan = new Plan();
+		
+		// set agenda
+//		this.agenda = new HashMap<>();
 		// set additional metric
 		this.domainSpecificMetric = null;
-		
-		this.makespan = new HashMap<>();
+//		this.makespan = new HashMap<>();
 		this.cost = new HashMap<>();
 		this.heuristicMakespan = new HashMap<>();
 		this.heuristicCost = new HashMap<>();
@@ -67,14 +71,19 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	 * @param parent
 	 * @param op
 	 */
-	protected SearchSpaceNode(SearchSpaceNode parent, Operator op) {
+	protected SearchSpaceNode(SearchSpaceNode parent, Operator op) 
+	{
 		this();
 		// set operators
 		this.operators = new ArrayList<>(parent.getOperators());
 		// add generator
 		this.operators.add(op);
+		
+		// set (partial) plan
+		this.plan = parent.getPlan();
+		
 		// set agenda
-		this.agenda = new HashMap<>();
+//		this.agenda = new HashMap<>();
 		
 		// set additional metric
 		this.domainSpecificMetric = null;
@@ -94,7 +103,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 		
 		
 		// set makespan 
-		this.makespan = new HashMap<>();
+//		this.makespan = new HashMap<>();
 		this.heuristicCost = new HashMap<>();
 		this.heuristicMakespan = new HashMap<>();
 	}
@@ -106,6 +115,14 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	 */
 	public int getId() {
 		return id;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Plan getPlan() {
+		return new Plan(this.plan);
 	}
 	
 	/**
@@ -127,28 +144,32 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	/**
 	 * 
 	 * @param flaw
-	 * @return
 	 */
-	public void addCheckedFlaw(Flaw flaw) {
-		if (!this.agenda.containsKey(flaw.getComponent())) {
-			this.agenda.put(flaw.getComponent(), new ArrayList<>());
-		}
-		
-		// add the flaw
-		this.agenda.get(flaw.getComponent()).add(flaw);
+	public void addFlaw(Flaw flaw) {
+		// add the flaw to the underlying plan description
+		this.plan.add(flaw.getComponent(), flaw);
+//		if (!this.agenda.containsKey(flaw.getComponent())) {
+//			this.agenda.put(flaw.getComponent(), new ArrayList<>());
+//		}
+//		
+//		// add the flaw
+//		this.agenda.get(flaw.getComponent()).add(flaw);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Set<Flaw> getAgenda() {
-		Set<Flaw> list = new HashSet<>();
-		for (DomainComponent comp : this.agenda.keySet()) {
-			list.addAll(this.agenda.get(comp));
-		}
+	public Set<Flaw> getFlaws() {
+		// get flaws from the underlying plan description
+		return new HashSet<>(this.plan.getFlaws());
 		
-		return list;
+//		Set<Flaw> list = new HashSet<>();
+//		for (DomainComponent comp : this.agenda.keySet()) {
+//			list.addAll(this.agenda.get(comp));
+//		}
+//		
+//		return list;
 	}
 	
 	/**
@@ -157,15 +178,15 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	 */
 	public Set<Flaw> getFlaws(FlawType type) {
 		Set<Flaw> list = new HashSet<>();
-		for (DomainComponent comp : this.agenda.keySet()) {
-			for (Flaw flaw : this.agenda.get(comp)) {
-				// check flaw type
-				if (flaw.getType().equals(type)) {
-					// add the flaw
-					list.add(flaw);
-				}
+//		for (DomainComponent comp : this.agenda.keySet()) {
+		for (Flaw flaw : this.plan.getFlaws()) {
+			// check flaw type
+			if (flaw.getType().equals(type)) {
+				// add the flaw
+				list.add(flaw);
 			}
 		}
+//		}
 		
 		return list;
 	}
@@ -175,11 +196,11 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	 * @return
 	 */
 	public int getNumberOfFlaws() {
-		int number = 0;
-		for (List<Flaw> list : this.agenda.values()) {
-			number += list.size();
-		}
-		return number;
+//		int number = 0;
+//		for (List<Flaw> list : this.agenda.values()) {
+//			number += list.size();
+//		}
+		return this.getFlaws().size();
 	}
 	
 	
@@ -189,7 +210,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	 * @return
 	 */
 	public Set<Flaw> getFlaws(DomainComponent comp) {
-		return new HashSet<>(this.agenda.get(comp));
+		return new HashSet<>(this.plan.getFlaws(comp));
 	}
 	
 	/**
@@ -234,81 +255,89 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	
 	/**
 	 * 
+	 * @param plan
+	 */
+	public void setPartialPlan(Plan plan) {
+		this.plan = plan;
+	}
+	
+	/**
+	 * 
 	 * @param partialPlan
 	 */
-	public void setPartialPlan(Plan partialPlan) 
-	{
-		// set the partial plan 
-		this.plan = new HashMap<>();
-		// set of components 
-		Set<DomainComponent> cset = new HashSet<>();
-		
-		// check decisions
-		for (Decision dec : partialPlan.getDecisions()) 
-		{
-			// add component entry 
-			if (!this.plan.containsKey(dec.getComponent())) {
-				// add entry 
-				this.plan.put(dec.getComponent(), new ArrayList<>());
-			}
-			
-			// add decision variable
-			this.plan.get(dec.getComponent()).add(new DecisionVariable(dec));
-			
-			// check if primitive component
-			if (dec.getComponent().getType().equals(DomainComponentType.SV_PRIMITIVE)) {
-				// add component 
-				cset.add(dec.getComponent());
-			}
-		}
-		
-		
-		
-		// set makespan 
-		for (DomainComponent c : cset) 
-		{
-			// get component's decisions
-			if (this.plan.containsKey(c) && !this.plan.get(c).isEmpty()) 
-			{
-				// check last decision
-				DecisionVariable last = this.plan.get(c).get(0);
-				for (int index = 1; index < this.plan.get(c).size(); index++) {
-					// get current decision 
-					DecisionVariable d = this.plan.get(c).get(index);
-					
-					// check if last
-					if (d.getEnd()[0] > last.getEnd()[0]) {
-						// update last decision
-						last = d;
-					}
-				}
-				
-				
-				
-				// set component makespan according to end time bounds of the last decision
-				this.makespan.put(c, new Double[] {
-						(double) last.getEnd()[0],
-						(double) last.getEnd()[1]
-				});
-			}
-			else {
-				// no decision 
-				this.makespan.put(c, new Double[] {
-					(double) 0,
-					(double) 0
-				});
-			}
-		}
-	}
+//	public void setPartialPlan(Plan partialPlan) 
+//	{
+//		// set the partial plan 
+//		this.plan = new HashMap<>();
+//		// set of components 
+//		Set<DomainComponent> cset = new HashSet<>();
+//		
+//		// check decisions
+//		for (Decision dec : partialPlan.getDecisions()) 
+//		{
+//			// add component entry 
+//			if (!this.plan.containsKey(dec.getComponent())) {
+//				// add entry 
+//				this.plan.put(dec.getComponent(), new ArrayList<>());
+//			}
+//			
+//			// add decision variable
+//			this.plan.get(dec.getComponent()).add(new DecisionVariable(dec));
+//			
+//			// check if primitive component
+//			if (dec.getComponent().getType().equals(DomainComponentType.SV_PRIMITIVE)) {
+//				// add component 
+//				cset.add(dec.getComponent());
+//			}
+//		}
+//		
+//		
+//		
+//		// set makespan 
+//		for (DomainComponent c : cset) 
+//		{
+//			// get component's decisions
+//			if (this.plan.containsKey(c) && !this.plan.get(c).isEmpty()) 
+//			{
+//				// check last decision
+//				DecisionVariable last = this.plan.get(c).get(0);
+//				for (int index = 1; index < this.plan.get(c).size(); index++) {
+//					// get current decision 
+//					DecisionVariable d = this.plan.get(c).get(index);
+//					
+//					// check if last
+//					if (d.getEnd()[0] > last.getEnd()[0]) {
+//						// update last decision
+//						last = d;
+//					}
+//				}
+//				
+//				
+//				
+//				// set component makespan according to end time bounds of the last decision
+//				this.makespan.put(c, new Double[] {
+//						(double) last.getEnd()[0],
+//						(double) last.getEnd()[1]
+//				});
+//			}
+//			else {
+//				// no decision 
+//				this.makespan.put(c, new Double[] {
+//					(double) 0,
+//					(double) 0
+//				});
+//			}
+//		}
+//	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public Map<DomainComponent, List<DecisionVariable>> getPartialPlan() {
-		// set the partial plan 
-		return new HashMap<>(this.plan);
-	}
+//	public Map<DomainComponent, List<DecisionVariable>> getPartialPlan() {
+//		// set the partial plan 
+//		return new HashMap<>(this.plan);
+//	}
 	
 	/**
 	 * 
@@ -365,16 +394,18 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 				Double.MAX_VALUE - 1
 		};
 		
+		
+		
 		// set update flag
 		boolean update = false;
 		// compute makespan bounds
-		for (DomainComponent c : this.makespan.keySet()) {
+		for (DomainComponent c : this.plan.getMakespan().keySet()) {
 			// check primitive components only
 			if (c.getType().equals(DomainComponentType.SV_PRIMITIVE)) {
 				// update min and max
-				mk[0] = Math.max(mk[0], this.makespan.get(c)[0]);
+				mk[0] = Math.max(mk[0], this.plan.getMakespan().get(c)[0]);
 				// update max
-				mk[1] = Math.min(mk[1], this.makespan.get(c)[1]);
+				mk[1] = Math.min(mk[1], this.plan.getMakespan().get(c)[1]);
 				// change update flag
 				update = true;
 			}
@@ -382,7 +413,6 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 		
 		// check update flag
 		if (!update) {
-			
 			// set default data 
 			mk = new double[] {
 					0, 
@@ -443,18 +473,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	public double[] getEstimatedMakespan(DomainComponent component) {
 		
 		// set heuristic makespan
-		double[] mk = new double[] {
-				0,
-				0
-		};
-		
-		// check if component exists
-		if (this.makespan.containsKey(component)) {
-			// set consolidated lower bound
-			mk[0] = this.makespan.get(component)[0];
-			mk[1] = this.makespan.get(component)[1];
-			
-		}
+		double[] mk = this.plan.getMakespan(component);
 		
 		// add heuristic value
 		if (this.heuristicMakespan.containsKey(component)) {
@@ -474,21 +493,10 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	public Map<DomainComponent, Double[]> getEstimatedMakespan() {
 		
 		// set data
-		Map<DomainComponent, Double[]> mk = new HashMap<>();
-		
-		// check components
-		for (DomainComponent comp : this.makespan.keySet()) {
-			
-			// put consolidated minimum and maximum makespan
-			mk.put(comp, new Double[] {
-					this.makespan.get(comp)[0],
-					this.makespan.get(comp)[1]
-			});
-		}
-		
+		Map<DomainComponent, Double[]> mk = this.plan.getMakespan();
 		// consider heuristic values
-		for (DomainComponent comp : this.heuristicMakespan.keySet()) {
-			
+		for (DomainComponent comp : this.heuristicMakespan.keySet()) 
+		{
 			// add heuristic values
 			double min = mk.containsKey(comp) ? mk.get(comp)[0] : 0;
 			double max = mk.containsKey(comp) ? mk.get(comp)[1] : 0;
@@ -509,7 +517,7 @@ public class SearchSpaceNode implements Comparable<SearchSpaceNode> {
 	 * @return
 	 */
 	public Map<DomainComponent, Double[]> getMakespan() {
-		return new HashMap<>(this.makespan);
+		return new HashMap<>(this.plan.getMakespan());
 	}
 	
 	/**

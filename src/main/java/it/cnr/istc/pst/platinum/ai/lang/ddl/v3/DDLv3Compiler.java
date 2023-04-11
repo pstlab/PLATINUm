@@ -280,7 +280,6 @@ public class DDLv3Compiler extends DomainCompiler
 					ProblemFluent fluent = label2fluent.get(ddlpc.getLeftTerm());
 					// check relation type
 					if (ddlpc.getEnumerationConstraintType().equals(DDLEnumerationParameterConstraintType.NEQ)) {
-						// FIXME : <----- IMPLEMENTARE
 						throw new RuntimeException("Unknown enumeration constraint type " + ddlpc.getEnumerationConstraintType());
 					}
 					
@@ -315,7 +314,6 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME <<<<<---- IMPLEMENTARE
 								throw new RuntimeException("Unknown numeric constraint type " + ddlpc.getNumericConstraintType());
 							}
 						}
@@ -331,7 +329,6 @@ public class DDLv3Compiler extends DomainCompiler
 					else {
 						// check relation type
 						if (ddlpc.getNumericConstraintType().equals(DDLNumericParameterConstraintType.NEQ)) {
-							// FIXME : <<<<<<<<------ IMPLEMENTARE
 							throw new RuntimeException("Unknown numeric constraint type " + ddlpc.getNumericConstraintType());
 						}
 						
@@ -622,9 +619,7 @@ public class DDLv3Compiler extends DomainCompiler
 					});
 		}
 		else {
-			/*
-			 * TODO : <<<<----- CHECK OTHER TYPES OF TEMPORAL RELATIONS
-			 */
+			
 			throw new RuntimeException("Unknown temporal relation " + ddlRelType);
 		}
 	}
@@ -1086,7 +1081,7 @@ public class DDLv3Compiler extends DomainCompiler
 						break;
 						
 						default : {
-							// FIXME : <------- MANAGE MISSING CASES
+
 							throw new RuntimeException("Unknownw enumeration constraint type " + ddlEnumerationConstraint.getEnumerationConstraintType());
 						}
 					}
@@ -1133,7 +1128,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -1168,7 +1163,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -1519,7 +1514,7 @@ public class DDLv3Compiler extends DomainCompiler
 						break;
 						
 						default : {
-							// FIXME : <------- MANAGE MISSING CASES
+
 							throw new RuntimeException("Unknownw enumeration constraint type " + ddlEnumerationConstraint.getEnumerationConstraintType());
 						}
 					}
@@ -1566,7 +1561,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -1601,7 +1596,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -1814,7 +1809,6 @@ public class DDLv3Compiler extends DomainCompiler
 				break;
 				
 				default : {
-					// FIXME <<<<----- IMPLEMENTARE
 					throw new RuntimeException("Unknownw target decision found into synchronization " + ddlTarget);
 				}
 			}
@@ -1887,7 +1881,7 @@ public class DDLv3Compiler extends DomainCompiler
 						break;
 						
 						default : {
-							// FIXME : <------- MANAGE MISSING CASES
+
 							throw new RuntimeException("Unknownw enumeration constraint type " + ddlEnumerationConstraint.getEnumerationConstraintType());
 						}
 					}
@@ -1933,7 +1927,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -1966,7 +1960,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -2303,7 +2297,7 @@ public class DDLv3Compiler extends DomainCompiler
 						break;
 						
 						default : {
-							// FIXME : <------- MANAGE MISSING CASES
+
 							throw new RuntimeException("Unknownw enumeration constraint type " + ddlEnumerationConstraint.getEnumerationConstraintType());
 						}
 					}
@@ -2350,7 +2344,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -2385,7 +2379,7 @@ public class DDLv3Compiler extends DomainCompiler
 							break;
 							
 							default : {
-								// FIXME : <------- MANAGE MISSING CASES
+
 								throw new RuntimeException("Unknownw numeric constraint type " + ddlNumericConstraint.getNumericConstraintType());
 							}
 						}
@@ -2551,9 +2545,7 @@ public class DDLv3Compiler extends DomainCompiler
 					});
 		}
 		else {
-			/*
-			 * TODO : <<<<<------ CHECK OTHER TYPES OF TEMPORAL RELATIONS
-			 */
+			
 			throw new RuntimeException("Unknown temporal relation " + ddlRelType);
 		}
 	}
@@ -2783,10 +2775,6 @@ public class DDLv3Compiler extends DomainCompiler
 									case GT : 
 									case LE : 
 									case LT : {
-										
-										/*
-										 * FIXME -> VERIFICARE GESTIONE PARAMETRI "bind" 
-										 */
 										
 										throw new RuntimeException("Manage GE|GT|LE|LT parameter constraint");
 									}

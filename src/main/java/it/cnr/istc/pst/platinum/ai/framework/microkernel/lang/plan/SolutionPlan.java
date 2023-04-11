@@ -449,7 +449,7 @@ public class SolutionPlan
 						EnumerationParameter enuPar = (EnumerationParameter) param;
 						// one single value is expected
 						paramValues[i] = new String[] {
-								enuPar.getValues()[0]
+								enuPar.getValues().toString()
 						};
 						// set default value to parameter bounds
 						paramBounds[i] = new long[] {};

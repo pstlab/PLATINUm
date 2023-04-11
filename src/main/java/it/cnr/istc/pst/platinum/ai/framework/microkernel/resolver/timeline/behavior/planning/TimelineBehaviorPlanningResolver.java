@@ -603,10 +603,6 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						
 						default : {
 							
-							/*
-							 * TODO: <<<<----- VERIFICARE SE VANNO GESTITI ALTRI TIPI DI VINCOLI
-							 */
-							
 							throw new RuntimeException("Unknown parameter constraint type in state variable transition " + pConsType);
 						}
 					}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.cnr.istc.pst.platinum.ai.deliberative.strategy.ex.EmptyFringeException;
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanElementStatus;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.deliberative.FlawSelectionHeuristicsConfiguration;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.deliberative.SearchStrategyConfiguration;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.NoFlawFoundException;
@@ -101,19 +100,19 @@ public class PseudoControllabilityAwareSolver extends Solver
 				
 				// context switch done
 				info("[Context Switch] successfully done [step = " + this.stepCounter + "]:\n"
-						+ "Plan: " + last.getPartialPlan() + "\n");
+						+ "Plan: " + last.getPlan() + "\n");
 				
 				// print information concerning current partial plan	
 				debug("Detailed plan after propagation: "  + node.getGenerator() + "\n"
 							+ "\tplan:\n"
 							+ "\t\tdecisions= " + this.pdb.getPlan().getDecisions() + "\n"
-							+ "\t\trelations= " + this.pdb.getPlan().getRelations() + "\n\n"
-							+ "\tpending plan (agenda):\n"
-							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
-							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n"
-							+ "\tsilent plan:\n"
-							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.SILENT).getDecisions() + "\n"
-							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.SILENT).getRelations() + "\n\n");
+							+ "\t\trelations= " + this.pdb.getPlan().getRelations() + "\n\n");
+//							+ "\tpending plan (agenda):\n"
+//							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
+//							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n"
+//							+ "\tsilent plan:\n"
+//							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.SILENT).getDecisions() + "\n"
+//							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.SILENT).getRelations() + "\n\n");
 				
  				// choose the best flaws to solve
 				List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
@@ -140,7 +139,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 						+ "- Message: " + ex.getMessage() + "\n"
 						+ "- Discarded node: " + node + "\n"
 						+ "- Current node: " + last + "\n"
-						+ "- Plan:\n" + last.getPartialPlan() + "\n");
+						+ "- Plan:\n" + last.getPlan() + "\n");
 				
 			} catch (UnsolvableFlawException ex) {
 				
@@ -149,7 +148,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 						+ "- Solver step: [ChooseFlaws]\n"
 						+ "- Message: " + ex.getMessage() + "\n"
 						+ "- Backtrack from node: " + last + "\n"
-						+ "- Plan:\n" + last.getPartialPlan() + "\n");
+						+ "- Plan:\n" + last.getPlan() + "\n");
 				
 			} catch (NoFlawFoundException ex) {
 				

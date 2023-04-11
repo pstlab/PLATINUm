@@ -12,6 +12,7 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.delib
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.deliberative.SearchStrategyPlaceholder;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.inject.framework.PlanDataBasePlaceholder;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.lifecycle.PostConstruct;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.OperatorPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.PlanRefinementException;
@@ -56,15 +57,15 @@ public abstract class Solver extends FrameworkObject {
 	 * 
 	 */
 	@PostConstruct
-	protected void init() {
-		
+	protected void init() 
+	{
 		// create the root node
 		SearchSpaceNode root = new SearchSpaceNode();
 		// set initial partial plan
 		root.setPartialPlan(this.pdb.getPlan());
 		// check flaws
 		for (Flaw f : this.pdb.checkFlaws()) {
-			root.addCheckedFlaw(f);
+			root.addFlaw(f);
 		}
 		
 		// enqueue the root node
@@ -295,25 +296,30 @@ public abstract class Solver extends FrameworkObject {
 				
 				// propagate operator
 				this.pdb.propagate(op);
-				// get plan with updated temporal bounds and variable binding
-				Plan plan = this.pdb.getPlan();
+				// verify consistency of the plan database
+				this.pdb.verify();
+	
 				// create a child search space node
 				SearchSpaceNode child = new SearchSpaceNode(current, op);
+				
+				
+				// get plan with updated temporal bounds and variable binding
+				Plan plan = this.pdb.getPlan();
 				// set partial plan
 				child.setPartialPlan(plan);
 				
 				// look ahead of flaws representing the agenda of the node
 				for (Flaw f : this.pdb.checkFlaws()) {
 					// add checked flaw
-					child.addCheckedFlaw(f);
+					child.addFlaw(f);
 				}
-	
+				
 				// add child
 				list.add(child);
 				// retract operator
 				this.pdb.retract(op);
 				
-			} catch (OperatorPropagationException ex) {
+			} catch (OperatorPropagationException | ConsistencyCheckException ex) {
 				// flaw with unsolvable solution
 				throw new UnsolvableFlawException("Flaw with unsolvable solution found:\n- msg: " + ex.getMessage() + "\n");
 			}

@@ -75,7 +75,7 @@ public interface PlanDataBase
 	 * @param status
 	 * @return
 	 */
-	public Plan getPlan(PlanElementStatus status);
+//	public Plan getPlan(PlanElementStatus status);
 	
 	/**
 	 * 

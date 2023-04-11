@@ -460,7 +460,7 @@ public abstract class DomainComponent extends FrameworkObject
 			// check if still present in the data structure
 			if (this.localRelations.contains(rel)) 
 			{
-				// check also if active - FIXME: check if this case occurs
+				// check also if active 
 				if (rel.getConstraint() != null) {
 					// warning trying to restore an active relation
 					warning("Trying to restore an ACTIVE relation!");
@@ -480,7 +480,7 @@ public abstract class DomainComponent extends FrameworkObject
 				// check if still present in the data structure
 				if (globalRelations.contains(rel)) 
 				{
-					// check also if active - FIXME: check if this case occurs
+					// check also if active 
 					if (rel.getConstraint() != null) {
 						// warning trying to restore an active relation
 						warning("Trying to restore an ACTIVE relation!");
@@ -1076,6 +1076,7 @@ public abstract class DomainComponent extends FrameworkObject
 		// check pending global relations
 		synchronized (globalRelations) {
 			for (Relation rel : globalRelations) {
+				
 				// check reference and target decisions
 				if ((rel.getReference().equals(dec) || 
 						rel.getTarget().equals(dec)) && 

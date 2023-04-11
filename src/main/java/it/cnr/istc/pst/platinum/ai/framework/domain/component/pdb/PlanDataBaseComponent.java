@@ -14,7 +14,7 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponentType;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanDataBase;
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanElementStatus;
+import it.cnr.istc.pst.platinum.ai.framework.domain.component.Predicate;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.DecisionPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.FlawSolutionApplicationException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.RelationPropagationException;
@@ -52,11 +52,18 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.paramete
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.parameter.ParameterRelation;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.temporal.TemporalRelation;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.query.ParameterQueryType;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.query.TemporalQueryType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableFlawException;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.csp.solver.ParameterSolverType;
+import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.EnumerationParameter;
+import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.NumericParameter;
+import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.Parameter;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.ParameterDomain;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.ParameterDomainType;
+import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.query.CheckValuesParameterQuery;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.query.ComputeSolutionParameterQuery;
+import it.cnr.istc.pst.platinum.ai.framework.time.TemporalInterval;
+import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalScheduleQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.solver.TemporalSolverType;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.TemporalNetworkType;
 
@@ -373,6 +380,70 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	
 	/**
 	 * 
+	 * @param decision
+	 * @return
+	 */
+	private DecisionVariable prepareDecisionVariable(Decision decision) 
+	{
+		// get predicate
+		Predicate predicate = decision.getToken().getPredicate();
+		// prepare ground predicate
+		String groundPredicate = predicate.getValue().getLabel();
+		// check parameters
+		for (Parameter<?> param : predicate.getParameters()) 
+		{
+			// query the plan database to retrieve values
+			CheckValuesParameterQuery query = this.pdb.createQuery(ParameterQueryType.CHECK_PARAMETER_VALUES);
+			query.setParameter(param);
+			this.pdb.process(query);
+			
+			String val = "";
+			// check parameter type
+			switch (param.getType()) 
+			{
+				case ENUMERATION_PARAMETER_TYPE : 
+				{
+					EnumerationParameter ep = (EnumerationParameter) param;
+					// check bounded values
+					for (int index = 0; index < ep.getValues().length; index++) {
+						if (index > 0) {
+							val += "_";
+						}
+						
+						val += ep.getValues()[index];
+					}
+				}
+				break;
+				
+				case NUMERIC_PARAMETER_TYPE : 
+				{
+					NumericParameter np = (NumericParameter) param;
+					val += np.getLowerBound() + "_" + np.getUpperBound();
+				}
+				break;
+			}
+			
+			// update grounded predicate
+			groundPredicate += "-" + val;
+		}
+		
+		IntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
+		query.setInterval(decision.getToken().getInterval());
+		this.tdb.process(query);
+		TemporalInterval i = query.getInterval();
+		
+		// add decision variable to plan description
+		return new DecisionVariable(
+				decision.getId(), 
+				decision.getComponent().getName(), 
+				groundPredicate, 
+				new long[] {i.getStartTime().getLowerBound(), i.getStartTime().getUpperBound()}, 
+				new long[] {i.getEndTime().getLowerBound(), i.getEndTime().getUpperBound()}, 
+				new long[] {i.getDurationLowerBound(), i.getDurationUpperBound()});
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	@Override
@@ -380,12 +451,15 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	{
 		// initialize the plan
 		Plan plan = new Plan();
-		// get decisions
-		for (Decision goal : this.getActiveDecisions()) {
-			plan.add(goal);
+		// set decisions
+		for (Decision decision : this.getActiveDecisions())  
+		{
+			// add decision variable to plan description
+			plan.add(decision.getComponent(), this.prepareDecisionVariable(decision));
+//			plan.add(goal);
 		}
 		
-		// get relations
+		// set relations
 		for (Relation rel : this.getActiveRelations()) {
 			plan.add(rel);
 		}
@@ -398,50 +472,50 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	/**
 	 * 
 	 */
-	@Override
-	public synchronized Plan getPlan(PlanElementStatus status) 
-	{ 
-		// prepare the plan
-		Plan plan = new Plan();
-		// check desired level
-		switch (status) 
-		{
-			// get the plan
-			case ACTIVE : {
-				// get currently active plan
-				plan = this.getPlan();
-			}
-			break;
-			
-			// get the pending plan
-			case PENDING : {
-				// get pending decisions
-				for (Decision goal : this.getPendingDecisions()) {
-					plan.add(goal);
-				}
-				// get pending relations
-				for (Relation rel : this.getPendingRelations()) {
-					plan.add(rel);
-				}
-			}
-			break;
-			
-			// get silent plan
-			case SILENT : {
-				// get silent decisions
-				for (Decision dec : this.getSilentDecisions()) {
-					plan.add(dec);
-				}
-				// get silent relations
-				for (Relation rel : this.getSilentRelations()) {
-					plan.add(rel);
-				}
-			}
-			break;
-		}
-		
-		return plan;
-	}
+//	@Override
+//	public synchronized Plan getPlan(PlanElementStatus status) 
+//	{
+//		// prepare the plan
+//		Plan plan = new Plan();
+//		// check desired level
+//		switch (status) 
+//		{
+//			// get the plan
+//			case ACTIVE : {
+//				// get currently active plan
+//				plan = this.getPlan();
+//			}
+//			break;
+//			
+//			// get the pending plan
+//			case PENDING : {
+//				// get pending decisions
+//				for (Decision decision : this.getPendingDecisions()) {
+//					plan.add(decision);
+//				}
+//				// get pending relations
+//				for (Relation rel : this.getPendingRelations()) {
+//					plan.add(rel);
+//				}
+//			}
+//			break;
+//			
+//			// get silent plan
+//			case SILENT : {
+//				// get silent decisions
+//				for (Decision decision : this.getSilentDecisions()) {
+//					plan.add(decision);
+//				}
+//				// get silent relations
+//				for (Relation rel : this.getSilentRelations()) {
+//					plan.add(rel);
+//				}
+//			}
+//			break;
+//		}
+//		
+//		return plan;
+//	}
 	
 	/**
 	 * 
