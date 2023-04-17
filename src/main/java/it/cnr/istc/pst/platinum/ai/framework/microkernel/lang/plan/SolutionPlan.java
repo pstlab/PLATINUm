@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.cnr.istc.pst.platinum.ai.deliberative.solver.SearchSpaceNode;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponentType;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Token;
@@ -37,6 +38,7 @@ public class SolutionPlan
 	private long horizion;
 	private long solvingTime;
 	private String name;
+	private SearchSpaceNode solutionNode;
 	private Set<Timeline> timelines;
 	private Set<Timeline> observations;
 	private List<Relation> relations;
@@ -57,6 +59,22 @@ public class SolutionPlan
 		this.relations = new ArrayList<>();
 		this.profiles = new HashSet<>();
 		this.controllability = PlanControllabilityType.UNKNOWN;
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 */
+	public void setSolutionNode(SearchSpaceNode node) {
+		this.solutionNode = node;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public SearchSpaceNode getSolutionNode() {
+		return this.solutionNode;
 	}
 	
 	/**

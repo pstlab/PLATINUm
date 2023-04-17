@@ -81,6 +81,7 @@ public class Planner extends FrameworkObject {
 		// extract solution plan
 		SolutionPlan plan = this.pdb.getSolutionPlan();
 		plan.setControllability(PlanControllabilityType.PSEUDO_CONTROLLABILITY);
+		plan.setSolutionNode(this.currentSolution);
 		
 		// check solving time 
 		long time = System.currentTimeMillis() - start;
