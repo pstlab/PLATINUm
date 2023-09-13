@@ -294,9 +294,6 @@ public class ParameterFacade extends FrameworkObject implements QueryManager<Par
 			}
 		}
 
-		/*
-		 * TODO: VERIFICARE SE PARAMETRI "ISOLATI" VANNO RIMOSSI
-		 */
 	}
 	
 	/**

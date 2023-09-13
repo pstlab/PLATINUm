@@ -786,6 +786,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			}
 			break;
 			
+			case INTERRUPTED: {
+				// handle failure
+				this.failure(feedback.getCmd());
+			}
+			
 			case UNKNOWN : {
 				// runtime exception
 				throw new RuntimeException("Received UNKNOWN feedback type:\n- cmd: " + feedback.getCmd());
@@ -808,9 +813,10 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	@Override
 	public void observation(PlatformObservation<? extends Object> obs) {
 		
-		/* 
-		 * TODO Auto-generated method stub
+		/**
+		 * TODO 
 		 */
+		throw new RuntimeException("[Executive] Implement observation() method...");
 	}
 	
 	/**
@@ -884,7 +890,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					this.currentTick,
 					node, 
 					ExecutionFeedbackType.TOKEN_EXECUTION_FAILURE);
-				
+			
 			// forward feedback to the monitor
 			this.monitor.addExecutionFeedback(feedback);
 			// remove operation ID from index
