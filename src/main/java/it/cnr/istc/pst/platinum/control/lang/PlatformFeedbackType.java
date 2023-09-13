@@ -8,19 +8,24 @@ package it.cnr.istc.pst.platinum.control.lang;
 public enum PlatformFeedbackType 
 {
 	/**
-	 * Feedback concerning the successful execution of an action
-	 */
-	SUCCESS(1),
-	
-	/**
-	 * Feedback concerning execution failure of an action
-	 */
-	FAILURE(0),
-	
-	/**
 	 * Unknown feedback type
 	 */
-	UNKNOWN(-1);
+	UNKNOWN(-1),
+	
+	/**
+	 * Feedback concerning the successful execution of an action
+	 */
+	SUCCESS(0),
+	
+	/**
+	 * Feedback concerning the failure of the execution of an action
+	 */
+	FAILURE(1),
+
+	/**
+	 * Feedback concerning the interrupted execution of an action
+	 */
+	INTERRUPTED(2);
 	
 	
 	private int value;
