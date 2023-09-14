@@ -226,7 +226,6 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 			// check node controllability 
 			if (node.getControllabilityType().equals(ControllabilityType.CONTROLLABLE)) {
 				
-				
 				// check if controllable node can be stopped
 				if (this.executive.canStop(node)) {
 					

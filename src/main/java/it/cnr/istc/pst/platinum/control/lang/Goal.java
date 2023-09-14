@@ -23,6 +23,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 {
 	private static AtomicLong GoalIdCounter = new AtomicLong(0);
 	private long id;
+	private long priority; 								// goal priority
 	private long timestamp;
 	private AgentTaskDescription description;			// goal and facts description 
 	private GoalStatus status;
@@ -71,6 +72,22 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 		this.managementStrategyTime = -1;
 		this.isOutOfBounds = false;
 		this.maxOutOfBounds = -1;
+	}
+	
+	/**
+	 * 
+	 * @param priority
+	 */
+	public void setPriority(long priority) {
+		this.priority = priority;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getPriority() {
+		return priority;
 	}
 	
 	/**
@@ -379,8 +396,11 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	 */
 	@Override
 	public int compareTo(Goal o) {
-		// chronological order
-		return this.timestamp < o.timestamp ? -1 : this.timestamp > o.timestamp ? 1 : 0;
+		
+		// compare priority and time
+		return this.priority > o.priority ? -1 : 
+			this.priority == o.priority && this.timestamp < o.timestamp ? -1 : 
+				this.priority == o.priority && this.timestamp == o.timestamp ? 0 : 1;
 	}
 	
 	/**
@@ -388,6 +408,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	 */
 	@Override
 	public int compare(ExecutionNode o1, ExecutionNode o2) {
+		
 		// compare start times
 		TimePoint s1 = o1.getInterval().getStartTime();
 		TimePoint s2 = o2.getInterval().getStartTime();
@@ -400,7 +421,7 @@ public class Goal implements Comparable<Goal>, Comparator<ExecutionNode>
 	 */
 	@Override
 	public String toString() {
-		return "[Goal id: " + this.id +", status: " + this.status + "]";
+		return "[Goal id: " + this.id +", priority: " + this.priority + ",  status: " + this.status + "]";
 	}
 
 }
