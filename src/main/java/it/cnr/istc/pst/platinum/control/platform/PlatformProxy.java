@@ -27,7 +27,7 @@ public abstract class PlatformProxy
 	
 	protected final List<PlatformObserver> observers;							// list of platform observers
 	
-	protected Map<Long, PlatformCommand> dispatchedIndex;				// index of dispatched commands by command ID
+	protected Map<Long, PlatformCommand> dispatchedIndex;						// index of dispatched commands by command ID
 	
 	/**
 	 * 
@@ -79,6 +79,13 @@ public abstract class PlatformProxy
 			// send signal
 			this.observers.notifyAll();
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void clearDispatchedIndex() {
+		this.dispatchedIndex.clear();
 	}
 	
 	/**
