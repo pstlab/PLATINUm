@@ -1325,7 +1325,7 @@ public abstract class DomainComponent extends FrameworkObject
 			catch (ConstraintPropagationException ex) {
 				// clear relation
 				rel.clear();
-				// not that the relation is still "pending"
+				// note that the relation is still "pending"
 				throw new RelationPropagationException(ex.getMessage());
 			}
 		}

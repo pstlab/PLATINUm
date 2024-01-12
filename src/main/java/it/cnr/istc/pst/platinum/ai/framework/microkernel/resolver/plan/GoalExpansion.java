@@ -1,5 +1,8 @@
 package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.plan;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.pdb.SynchronizationRule;
 
@@ -11,6 +14,7 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.pdb.Synchronizatio
 public class GoalExpansion extends GoalJustification {
 	
 	private SynchronizationRule rule;
+	private List<GoalSchedule> schedules;
 	
 	/**
 	 * 
@@ -21,6 +25,7 @@ public class GoalExpansion extends GoalJustification {
 	protected GoalExpansion(Goal goal, SynchronizationRule rule, double cost) {
 		super(goal, JustificationType.EXPANSION, cost);
 		this.rule = rule;
+		this.schedules = new ArrayList<>();
 	}
 	
 	/**
@@ -31,7 +36,25 @@ public class GoalExpansion extends GoalJustification {
 	protected GoalExpansion(Goal goal, double cost) {
 		super(goal, JustificationType.EXPANSION, cost);
 		this.rule = null;
+		this.schedules = new ArrayList<>();
 	}
+	
+	/**
+	 * 
+	 * @param schedule
+	 */
+	public void addGoalSchedule(GoalSchedule schedule) {
+		this.schedules.add(schedule);
+	}
+	
+	/**
+	 * 
+	 */
+	public List<GoalSchedule> getGoalSchedules() {
+		return new ArrayList<>(this.schedules);
+	}
+	
+	
 	
 	/**
 	 * 

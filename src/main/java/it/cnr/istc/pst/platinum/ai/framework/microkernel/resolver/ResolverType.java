@@ -2,6 +2,7 @@ package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver;
 
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawType;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.plan.PlanRefinementResolver;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.plan.TimelineAwarePlanRefinementResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.discrete.DiscreteResourceSchedulingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.resource.reservoir.ReservoirResourceSchedulingResolver;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.checking.ObservationBehaviorCheckingResolver;
@@ -18,11 +19,26 @@ public enum ResolverType
 {
 	/**
 	 * Special type of resolver responsible for managing 
-	 * synchronization rules and plan refinement
+	 * synchronization rules and plan refinement.
 	 */
 	PLAN_REFINEMENT(
 			PlanRefinementResolver.class.getName(), 
 			"Plan Refinement", 
+			new FlawType[] {
+					FlawType.PLAN_REFINEMENT
+			}),
+	
+	/**
+	 * Special type type of resolver responsible for 
+	 * managing synchronization rules and plan refinement.
+	 * 
+	 * In particular, this resolver makes integrated planning and 
+	 * scheduling decisions taking into account the semantics of 
+	 * the timelines.
+	 */
+	TIMELINE_AWARE_PLAN_REFINEMENT(
+			TimelineAwarePlanRefinementResolver.class.getName(),
+			"Timeline-aware Plan Refinement",
 			new FlawType[] {
 					FlawType.PLAN_REFINEMENT
 			}),
