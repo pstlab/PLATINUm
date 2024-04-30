@@ -4,7 +4,6 @@ import java.util.Map;
 
 import it.cnr.istc.pst.platinum.ai.deliberative.solver.SearchSpaceNode;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
-import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.lifecycle.PostConstruct;
 
 /**
  * 
@@ -18,11 +17,6 @@ public class GreedyDepthSearchStrategy extends SearchStrategy {
 	 */
 	protected GreedyDepthSearchStrategy() {
 		super("GreedyDepthSearchStrategy");
-	}
-	
-	@PostConstruct
-	public void init() {
-		
 	}
 	
 	/**

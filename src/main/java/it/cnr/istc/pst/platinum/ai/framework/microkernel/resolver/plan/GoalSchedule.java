@@ -51,4 +51,11 @@ public class GoalSchedule {
 	public long getUpperBound() {
 		return ub;
 	}
+	
+	/*
+	 * 
+	 */
+	public String toString() {
+		return "Goal scheduling constraint " + this.left + " BEFORE " + this.right + "";
+	}
 }

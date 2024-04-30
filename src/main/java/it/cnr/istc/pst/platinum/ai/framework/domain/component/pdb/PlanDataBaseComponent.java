@@ -66,6 +66,7 @@ import it.cnr.istc.pst.platinum.ai.framework.time.TemporalInterval;
 import it.cnr.istc.pst.platinum.ai.framework.time.lang.query.IntervalScheduleQuery;
 import it.cnr.istc.pst.platinum.ai.framework.time.solver.TemporalSolverType;
 import it.cnr.istc.pst.platinum.ai.framework.time.tn.TemporalNetworkType;
+import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader;
 
 /**
  * 
@@ -103,6 +104,8 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	
 	// domain theory
 	private Map<String, ParameterDomain> parameterDomains;
+	
+	private boolean allowRecursiveRules;								// check if recursive rules are allowed
 		
 	/**
 	 * 
@@ -115,10 +118,12 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	protected PlanDataBaseComponent(String name) 
 	{
 		super(name, DomainComponentType.PLAN_DATABASE);
+		
 		// initialize data structures
 		this.components = new HashMap<>();
 		this.parameterDomains = new HashMap<>();
 		this.problem = null;
+		this.allowRecursiveRules = false;				// default behavior
 	}
 	
 	/**
@@ -145,6 +150,13 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 		DecisionIdCounter.set(0);
 		// reset relation counter
 		RELATION_COUNTER.set(0);
+		
+		// check property file
+		FilePropertyReader properties = new FilePropertyReader(
+				FRAMEWORK_HOME + FilePropertyReader.DEFAULT_DELIBERATIVE_PROPERTY);
+		// check property flag
+		this.allowRecursiveRules = properties.getProperty("allow-recursive-rules").equals("1");
+		
 	}
 	
 	/**
@@ -237,7 +249,12 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 							TokenVariable target = cons.getTarget();
 							if (!target.equals(existingRuleTrigger) && target.getValue().equals(value)) { 
 								// we've got a cycle
-								throw new SynchronizationCycleException("A cycle has been detected after the introduction of synchronization rule " + rule);
+								warning("A cycle has been detected after the introduction of synchronization rule\n" + rule + "\n");
+								// check recursive rules flag
+								if (!this.allowRecursiveRules) {
+									// stop parsing on detected cycle
+									throw new SynchronizationCycleException("A cycle has been detected after the introduction of synchronization rule " + rule);
+								}
 							}
 						}
 					}
