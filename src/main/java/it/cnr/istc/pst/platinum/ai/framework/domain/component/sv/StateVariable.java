@@ -1,7 +1,6 @@
 package it.cnr.istc.pst.platinum.ai.framework.domain.component.sv;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,89 +128,59 @@ public abstract class StateVariable extends DomainComponent
 	 * @param target
 	 * @return
 	 */
-	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) 
-	{
-		// list of all acyclic paths that start from the source value and end to the target value
-		List<ValuePath> result = new ArrayList<>();
-		// check the case in which the source value is equal to the target value
-		if (source.equals(target))
-		{
-			// just start the search starting from the direct successors of the current value
-			for (ComponentValue successor : this.getDirectSuccessors(source))
-			{
-				// just avoid reflexive transition (that should not be allowed in the domain specification)
-				if (!source.equals(successor)) {
-					// get list of paths
-					for (ValuePath path : this.computePaths(successor, target, new ArrayList<>())) {
-						// add the source value in front of the path
-						path.addFirstStep(source);
-						// add the path to the result list
-						result.add(path);
-					}
-				}
-			}
-		}
-		else {
-			// call recursive function to compute all acyclic paths between state variable values
-			result = this.computePaths(source, target, new ArrayList<>());
-		}
+	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) {
 		
-		// sort paths according to their length
-		Collections.sort(result);
+		// list of all acyclic paths that start from the source value and end to the target value
+		List<ValuePath> paths = new ArrayList<>();	
+		// initialize value path
+		ValuePath path = new ValuePath();
+		path.addLastStep(source);
+		// call recursive method to unfold state variable description and build possible paths
+		this.computePaths(source, target, path, paths);
 		// get the result list
-		return result;
+		return paths;
 	}
 	
 	/**
 	 * 
 	 * @param source
 	 * @param target
-	 * @param visited
 	 * @return
 	 */
-	private List<ValuePath> computePaths(ComponentValue source, ComponentValue target, List<ComponentValue> visited)
-	{
-		// result list
-		List<ValuePath> result = new ArrayList<>();
+	private void computePaths(ComponentValue source, ComponentValue target, ValuePath path, List<ValuePath> paths) { //, List<ComponentValue> visited) {
 		
 		// compare source value and target value
 		if (source.equals(target)) {
-			// create value path
-			ValuePath path = new ValuePath();
-			// add last step
-			path.addLastStep(source);
-			// add to result
-			result.add(path);
-		}
-		else
-		{
-			// add current node to visited list
-			visited.add(source);
-			// navigate the state variable towards the target value
-			for (ComponentValue value : this.getDirectSuccessors(source))
-			{
-				// check cycle
-				if (!visited.contains(value))
-				{
-					// get partial paths found through recursive call
-					List<ValuePath> paths = this.computePaths(value, target, visited);
-					// aggregate and build the result
-					for (ValuePath path : paths) 
-					{
-						// add current value the current (partial) path 
-						path.addFirstStep(source);
-						// add the current (partial) path to the result list
-						result.add(path);
-					}
-				}
-			}
+			// add path to the paths
+			paths.add(path);
 			
-			// remove visited value
-			visited.remove(source);
+		} else {
+			
+			// add source to the path
+//			path.addLastStep(source);
+			// check successors of the (current) source node
+			for (ComponentValue successor : this.getDirectSuccessors(source)) {
+				
+				// check if the successor is contained in the current value path to avoid cycles
+				if (!path.contains(successor)) {
+					// create an alternative path for each successor
+					ValuePath otherPath = new ValuePath(path.getSteps());
+					
+					// add source
+					path.addLastStep(source);
+					// add successor
+					otherPath.addLastStep(successor);
+					// recursive call
+					this.computePaths(successor, target, otherPath, paths);
+					
+				}
+//				else {
+//					
+//					// log something
+//					System.out.println("\n>>>>> Source [" + source.getLabel() + "] Successor [" + successor.getLabel()+ "], Target [" + target.getLabel() + "]\n--> skip path: " + path + "\n");
+//				}
+			}
 		}
-		
-		// get list of paths
-		return result;
 	}
 	
 	/**

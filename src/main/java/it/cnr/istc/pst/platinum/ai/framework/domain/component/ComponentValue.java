@@ -213,6 +213,6 @@ public abstract class ComponentValue
 	@Override
 	public String toString() {
 		// JSON style object description
-		return "{ id: " + this.id+ ", label: \"" + this.label + "\", component: \"" + this.component.getName() + "\" }";
+		return "{\"label\": \"" + this.label + "\"}";
 	}
 }

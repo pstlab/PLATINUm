@@ -1,6 +1,7 @@
 package it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.timeline.behavior.planning;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -328,33 +329,34 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	 * 
 	 */
 	@Override
-	protected void doComputeFlawSolutions(Flaw flaw) 
-			throws UnsolvableFlawException 
-	{
+	protected void doComputeFlawSolutions(Flaw flaw) throws UnsolvableFlawException {
+		
+		
 		// get the gap
 		Gap gap = (Gap) flaw;
 		// check gap type
-		switch (gap.getGapType()) 
-		{
+		switch (gap.getGapType()) {
+		
 			// incomplete time-line
-			case INCOMPLETE_TIMELINE : 
-			{
+			case INCOMPLETE_TIMELINE : {
+				
 				// check all (acyclic) paths among tokens
 				List<ValuePath> paths = this.component.getPaths(
 						gap.getLeftDecision().getValue(), 
 						gap.getRightDecision().getValue());
 				
+				// sort paths
+				Collections.sort(paths);
 				// check found solutions
 				if (paths.isEmpty()) {
 					// not gap completion found between the two tokens
 					throw new UnsolvableFlawException("Not gap completion found:\n"
 							+ "- gap: " + gap + "\n");
-				}
-				else 
-				{
+				} else  {
+					
 					// compute a solution for each possible value path
-					for (ValuePath path : paths) 
-					{
+					for (ValuePath path : paths) {
+						
 						// get steps
 						List<ComponentValue> steps = path.getSteps();
 						// remove the source and destination values from the path
@@ -370,11 +372,11 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 						List<Relation> rCreated = new ArrayList<>();
 						List<Relation> rActivated = new ArrayList<>();
 						
-						try 
-						{
+						try {
+							
 							// check solution feasibility
-							if (solution.getPath().isEmpty()) 
-							{
+							if (solution.getPath().isEmpty()) {
+								
 								// direct token transition between active decisions
 								Decision reference = solution.getLeftDecision();
 								Decision target = solution.getRightDecision();
@@ -401,17 +403,17 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 										rActivated.add(pRel);
 									}
 								}
-							}
-							else 
-							{
+								
+							} else {
+								
 								// create the list of the decisions
 								List<Decision> transition = new ArrayList<>();
 								// add the gap-left decision
 								transition.add(solution.getLeftDecision());
 									
 								// intermediate values and related relations can be activated since no synchronization is entailed
-								for (ComponentValue value : solution.getPath()) 
-								{
+								for (ComponentValue value : solution.getPath()) {
+									
 									// create parameters' labels
 									String[] labels = new String[value.getNumberOfParameterPlaceHolders()];
 									for (int index = 0; index < labels.length; index++) {
