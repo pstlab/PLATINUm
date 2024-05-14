@@ -2,8 +2,10 @@ package it.cnr.istc.pst.platinum.ai.framework.domain.component.sv;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ComponentValue;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
@@ -15,11 +17,13 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.TransitionNotFo
  * @author alessandro
  *
  */
-public abstract class StateVariable extends DomainComponent 
-{
+public abstract class StateVariable extends DomainComponent {
+	
 	protected List<StateVariableValue> values;							
 	// SV's transition function
 	protected Map<StateVariableValue, Map<StateVariableValue, Transition>> transitions;
+	
+	protected Map<StateVariableValue, Map<StateVariableValue, Transition>> inverseTransitions;
 	
 	/**
 	 * 
@@ -32,6 +36,8 @@ public abstract class StateVariable extends DomainComponent
 		this.values = new ArrayList<StateVariableValue>();
 		// initialize transition function
 		this.transitions = new HashMap<>();
+		// initialize transition function
+		this.inverseTransitions = new HashMap<>();
 	}
 	
 	/**
@@ -46,8 +52,10 @@ public abstract class StateVariable extends DomainComponent
 		StateVariableValue value = new StateVariableValue(label, duration, controllable, this);
 		// add to available values
 		this.values.add(value);
-		// add transition
-		this.transitions.put(value, new HashMap<StateVariableValue, Transition>());
+		// initialize transition data structure
+		this.transitions.put(value, new HashMap<>());
+		// initialize inverse transition data structure
+		this.inverseTransitions.put(value, new HashMap<>());
 		// get value
 		return value;
 	}
@@ -78,8 +86,22 @@ public abstract class StateVariable extends DomainComponent
 		
 		// create transition
 		Transition t = new Transition(reference, target);
+		
+		// check transition
+		if (!this.transitions.containsKey(reference)) {
+			this.transitions.put(reference, new HashMap<>());
+		}
+		
 		// add transition
 		this.transitions.get(reference).put(target, t);
+		
+		// check inverse transition
+		if (!this.inverseTransitions.containsKey(target) ) {
+			this.inverseTransitions.put(target, new HashMap<>());
+		}
+		// add inverse transition
+		this.inverseTransitions.get(target).put(reference, t);
+		
 		// get transition
 		return t;
 	}
@@ -90,9 +112,8 @@ public abstract class StateVariable extends DomainComponent
 	 * @param target
 	 * @return
 	 */
-	public Transition getTransition(ComponentValue reference, ComponentValue target) 
-			throws TransitionNotFoundException 
-	{
+	public Transition getTransition(ComponentValue reference, ComponentValue target)  throws TransitionNotFoundException {
+		
 		// check if transition exists
 		if (!this.transitions.containsKey(reference) || !this.transitions.get(reference).containsKey(target)) {
 			// transition not found
@@ -116,71 +137,116 @@ public abstract class StateVariable extends DomainComponent
 	}
 	
 	/**
-	 * Analyze the state machine of the SV to extract all possible "acyclic" 
-	 * paths between two values.
+	 * Returns the direct predecessors of the value according to 
+	 * the transition function of the State Variable
 	 * 
-	 * Please note that "acyclic" paths do not consider the case in which the 
-	 * source is the same value as the target of the path. Indeed, it could be 
-	 * necessary to find acyclic paths that starts and ends with the same state
-	 * variable value
-	 * 
-	 * @param source
-	 * @param target
+	 * @param value
 	 * @return
 	 */
-	public List<ValuePath> getPaths(ComponentValue source, ComponentValue target) {
-		
-		// list of all acyclic paths that start from the source value and end to the target value
-		List<ValuePath> paths = new ArrayList<>();	
-		// initialize value path
-		ValuePath path = new ValuePath();
-		path.addLastStep(source);
-		// call recursive method to unfold state variable description and build possible paths
-		this.computePaths(source, target, path, paths);
-		// get the result list
-		return paths;
+	public List<ComponentValue> getDirectPredecessors(ComponentValue value) {
+		// get predecessors as a list
+		return new ArrayList<>(this.inverseTransitions.get(value).keySet());
 	}
 	
 	/**
+	 * Analyze the state machine of the SV to extract the shortest acyclic path between two values.
 	 * 
 	 * @param source
 	 * @param target
 	 * @return
 	 */
-	private void computePaths(ComponentValue source, ComponentValue target, ValuePath path, List<ValuePath> paths) { //, List<ComponentValue> visited) {
+	public ValuePath getShortestPath(ComponentValue source, ComponentValue target) {
 		
-		// compare source value and target value
-		if (source.equals(target)) {
-			// add path to the paths
-			paths.add(path);
+		// call recursive method to unfold state variable description and build possible paths
+		ValuePath path = this.bfs(source, target);
+		// get the shortest path
+		return path;
+	}
+	
+	/**
+	 * Compute the shortest path from a source to the target through Breadth-First search
+	 * 
+	 * @param source
+	 * @param target
+	 * @param path
+	 * @param fringe
+	 * @return
+	 */
+	private ValuePath bfs(ComponentValue source, ComponentValue target) {
+		
+		// initialize fringe
+		List<ComponentValue> fringe = new ArrayList<>();
+		// visited values
+		Set<ComponentValue> visited = new HashSet<>();
+		// initialize the associative map to keep track of parents
+		Map<ComponentValue, ComponentValue> parents = new HashMap<>();
+		// set the fringe
+		for (ComponentValue succ : this.getDirectSuccessors(source) ) {
+			// add to fringe
+			fringe.add(succ);
+			// update parent index
+			parents.put(succ, source);
 			
-		} else {
+		}
+		
+		// add the first step
+		visited.add(source);
+		// initialize parent map
+		parents.put(source, null);
+		// set last value
+		ComponentValue last = source;
+		ComponentValue lastParent = source;
+		
+		// explore the fringe
+		while (!fringe.isEmpty()) {
 			
-			// add source to the path
-//			path.addLastStep(source);
-			// check successors of the (current) source node
-			for (ComponentValue successor : this.getDirectSuccessors(source)) {
+			// get the first value from the fringe
+			ComponentValue value = fringe.remove(0);
+			// check value
+			if (value.equals(target)) {
 				
-				// check if the successor is contained in the current value path to avoid cycles
-				if (!path.contains(successor)) {
-					// create an alternative path for each successor
-					ValuePath otherPath = new ValuePath(path.getSteps());
+				// update last value and stop the search
+				last = value;
+				// stop the search
+				break;
+				
+			} else {
+				
+				// check if already visited
+				if (!visited.contains(value) ) {
 					
-					// add source
-					path.addLastStep(source);
-					// add successor
-					otherPath.addLastStep(successor);
-					// recursive call
-					this.computePaths(successor, target, otherPath, paths);
+					// add the value to the set of visited ones
+					visited.add(value);
+					lastParent = value;
+					for (ComponentValue succ : this.getDirectSuccessors(value)) {
+						
+						// add to fringe
+						fringe.add(succ);
+						// set visited parent
+						parents.put(succ, lastParent);
+					}
 					
+					// update last value
+					last = value;
 				}
-//				else {
-//					
-//					// log something
-//					System.out.println("\n>>>>> Source [" + source.getLabel() + "] Successor [" + successor.getLabel()+ "], Target [" + target.getLabel() + "]\n--> skip path: " + path + "\n");
-//				}
 			}
 		}
+		
+		
+		// prepare the path to reconstruct
+		ValuePath path = new ValuePath();
+		
+		do {
+			
+			// add to the head to reconstruct the path from the back
+			path.addFirstStep(last);
+			// update to the next step by retrieving the parent
+			last = parents.get(last);
+			
+		} while (last != null);
+		
+		// get computed (shortest) path
+		return path;
 	}
 	
 	/**

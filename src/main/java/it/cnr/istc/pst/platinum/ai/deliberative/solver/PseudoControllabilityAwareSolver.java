@@ -72,7 +72,6 @@ public class PseudoControllabilityAwareSolver extends Solver
 				
 				// extract a node from the fringe
 				node = this.fringe.dequeue();
-
 				// info message
 				String info = "Extracted node [step = " + this.stepCounter + "]:\n"
 						+ "- Node: " + node + "\n";
@@ -97,6 +96,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				this.contextSwitch(last, node);
 				// updated last propagated node
 				last = node;
+		
 				
 				// context switch done
 				info("[Context Switch] successfully done [step = " + this.stepCounter + "]:\n"

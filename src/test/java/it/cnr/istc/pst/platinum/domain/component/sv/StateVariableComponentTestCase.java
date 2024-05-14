@@ -262,35 +262,20 @@ public class StateVariableComponentTestCase
 		System.out.println(this.psv);
 		
 		// get paths between v1 and v6
-		List<ValuePath> paths = this.psv.getPaths(v1, v6);
-		Assert.assertNotNull(paths);
-		Assert.assertTrue(paths.size() == 2);
-		System.out.println("Two paths expected between Val-1 and Val-6:");
-		for (ValuePath path : paths) {
-			System.out.println("\t- " + path + "\n");
-		}
+		ValuePath path = this.psv.getShortestPath(v1, v6);
+		Assert.assertNotNull(path);
+		System.out.println("\t- " + path + "\n");
 		
 		// get paths between v1 and v6
-		paths = this.psv.getPaths(v1, v1);
-		Assert.assertNotNull(paths);
-		Assert.assertTrue(paths.size() == 4);
-		System.out.println("Four paths expected between Val-1 and Val-1:");
-		for (ValuePath path : paths) {
-			System.out.println("\t- " + path + "\n");
-		}
+		path = this.psv.getShortestPath(v1, v1);
+		System.out.println("\t- " + path + "\n");
 		
 		// check no path case
-		paths = this.psv.getPaths(v7, v1);
-		Assert.assertNotNull(paths);
-		System.out.println("No path expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v1);
-		Assert.assertTrue(paths.isEmpty());
-		Assert.assertTrue(paths.size() == 0);
+		path = this.psv.getShortestPath(v7, v1);
+		Assert.assertNull(path);
 		
-		paths = this.psv.getPaths(v7, v7);
-		Assert.assertNotNull(paths);
-		System.out.println("No path expected [" + paths.size() + "]:\n- source: " + v7 + "\n- target: " + v7);
-		Assert.assertTrue(paths.isEmpty());
-		Assert.assertTrue(paths.size() == 0);
+		path= this.psv.getShortestPath(v7, v7);
+		Assert.assertNull(path);
 	}
 	
 	/**

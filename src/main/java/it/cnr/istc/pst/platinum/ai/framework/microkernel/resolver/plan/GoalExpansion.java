@@ -54,7 +54,13 @@ public class GoalExpansion extends GoalJustification {
 		return new ArrayList<>(this.schedules);
 	}
 	
-	
+	/**
+	 * 
+	 * @return
+	 */
+	public SynchronizationRule getRule() {
+		return rule;
+	}
 	
 	/**
 	 * 

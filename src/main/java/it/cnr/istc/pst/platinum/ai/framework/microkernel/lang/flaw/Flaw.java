@@ -80,6 +80,14 @@ public abstract class Flaw
 	
 	/**
 	 * 
+	 * @param sols
+	 */
+	public final void setSolutions(List<FlawSolution> sols) {
+		this.solutions = new ArrayList<>(sols);
+	}
+	
+	/**
+	 * 
 	 * @param solution
 	 */
 	public final void addSolution(FlawSolution solution) {
