@@ -334,7 +334,7 @@ public class ExecutivePlanDataBase extends FrameworkObject
 							ParameterDescriptor param= token.getParameter(index);
 							// check type
 							if (param.getType().equals(ParameterTypeDescriptor.NUMERIC)) {
-								// set t							ype
+								// set type
 								paramTypes[index] = ParameterType.NUMERIC_PARAMETER_TYPE;
 								// set value
 								paramValues[index] = Long.toString(param.getBounds()[0]);

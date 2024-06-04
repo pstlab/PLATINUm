@@ -14,7 +14,6 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.RelationPropaga
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.TransitionNotFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.StateVariable;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.Transition;
-import it.cnr.istc.pst.platinum.ai.framework.domain.component.sv.ValuePath;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.Flaw;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.flaw.FlawSolution;
@@ -328,7 +327,8 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 	 * 
 	 */
 	@Override
-	protected void doComputeFlawSolutions(Flaw flaw) throws UnsolvableFlawException {
+	protected void doComputeFlawSolutions(Flaw flaw) 
+			throws UnsolvableFlawException {
 		
 		
 		// get the gap
@@ -339,38 +339,24 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 			// incomplete time-line
 			case INCOMPLETE_TIMELINE : {
 				
-				// check all (acyclic) paths among tokens
-				ValuePath path = this.component.getShortestPath(
-						gap.getLeftDecision().getValue(), 
-						gap.getRightDecision().getValue());
-				
-				// check found solutions
-				if (path == null) {
-					// not gap completion found between the two tokens
-					throw new UnsolvableFlawException("Not gap completion found:\n"
-							+ "- gap: " + gap + "\n");
-				} else  {
+				// extract the direct predecessors of the right decision
+				List<ComponentValue> predecessors = this.component.getDirectPredecessors(gap.getRightDecision().getValue());
+				// create an alternative solution for each feasible predecessor
+				for (ComponentValue pred : predecessors) {
 					
-					// get steps
-					List<ComponentValue> steps = path.getSteps();
-					
-					// remove the source and destination values from the path
-					steps.remove(0);
-					steps.remove(steps.size() - 1);
-					// gap solution
-					GapCompletion solution = new GapCompletion(gap, steps, this.cost);
-					
-					// list of created and activated decisions
-					List<Decision> dCreated = new ArrayList<>();
-					List<Decision> dActivated = new ArrayList<>();
-					// list of created and activated relations
-					List<Relation> rCreated = new ArrayList<>();
-					List<Relation> rActivated = new ArrayList<>();
-					
-					try {
+					// check if direct transition
+					if (pred.equals(gap.getLeftDecision().getValue())) {
 						
-						// check solution feasibility
-						if (solution.getPath().isEmpty()) {
+						// direct transition from left to right
+						GapCompletion solution = new GapCompletion(gap, new ArrayList<>(), this.cost);
+						// list of created and activated decisions
+						List<Decision> dCreated = new ArrayList<>();
+						List<Decision> dActivated = new ArrayList<>();
+						// list of created and activated relations
+						List<Relation> rCreated = new ArrayList<>();
+						List<Relation> rActivated = new ArrayList<>();
+						
+						try {
 							
 							// direct token transition between active decisions
 							Decision reference = solution.getLeftDecision();
@@ -399,124 +385,148 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 								}
 							}
 							
-						} else {
+							// the solution is feasible
+							this.tdb.verify();
+							this.pdb.verify();
 							
-							// create the list of the decisions
-							List<Decision> transition = new ArrayList<>();
-							// add the gap-left decision
-							transition.add(solution.getLeftDecision());
-								
-							// intermediate values and related relations can be activated since no synchronization is entailed
-							for (ComponentValue value : solution.getPath()) {
-								
-								// create parameters' labels
-								String[] labels = new String[value.getNumberOfParameterPlaceHolders()];
-								for (int index = 0; index < labels.length; index++) {
-									// set parameter label
-									labels[index] = "label-" + index;
-								}
-								
-								// create pending decision
-								Decision dec = this.component.create(value, labels);
-								// these decisions can be set as mandatory expansion
-								dec.setMandatoryExpansion();
-								// add created decision to transition
-								transition.add(dec);
-								// add pending decision
-								dCreated.add(dec);
-
-								// activate the decision if possible
-								if (!value.isComplex()) {
-									
-									// activated decision
-									Set<Relation> list = this.component.activate(dec);
-									// add activated decisions
-									dActivated.add(dec);
-									// add activated relations
-									rActivated.addAll(list);
-								}
+							// valid solution
+							gap.addSolution(solution);
+							
+						} catch (RelationPropagationException | TransitionNotFoundException |  ConsistencyCheckException ex) {
+							// discard this path as not temporally feasible
+							warning("Unfeasible direct transition for timelime behavior completion:\n"
+									+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]");
+						} finally {
+							
+							// deactivate relations
+							for (Relation rel : rActivated) {
+								this.component.deactivate(rel);
 							}
-								
-							// add the gap-right decision
-							transition.add(solution.getRightDecision());
 							
-							// create relations needed to enforce the transition
-							for (int index = 0; index < transition.size() - 1; index++) 
-							{
-								// get adjacent decisions
-								Decision reference = transition.get(index);
-								Decision target = transition.get(index + 1);
-								
-								// create pending relation
-								MeetsRelation meets = this.component.create(RelationType.MEETS, reference, target);
-								// add created relation
-								rCreated.add(meets);
+							// delete relation
+							for (Relation rel : rCreated) {
+								this.component.delete(rel);
+							}
+							
+							// deactivate decision
+							for (Decision dec : dActivated) {
+								this.component.deactivate(dec);
+							}
+							
+							// free and then delete decision
+							for (Decision dec : dCreated) {
+								// free decision
+								this.component.free(dec);
+								// completely remove decision reference
+								this.component.delete(dec);
+							}
+						}
+					
+					} else {
+						
+						
+						// set (partial) steps to complete the gap 
+						List<ComponentValue> steps = new ArrayList<>();
+						steps.add(pred);
+						
+						// transition from left to right through the "step" value
+						GapCompletion solution = new GapCompletion(gap, steps, this.cost);
+						// list of created and activated decisions
+						List<Decision> dCreated = new ArrayList<>();
+						List<Decision> dActivated = new ArrayList<>();
+						// list of created and activated relations
+						List<Relation> rCreated = new ArrayList<>();
+						List<Relation> rActivated = new ArrayList<>();
+						
+						try {
+							
+							
+							// create parameters' labels
+							String[] labels = new String[pred.getNumberOfParameterPlaceHolders()];
+							for (int index = 0; index < labels.length; index++) {
+								// set parameter label
+								labels[index] = "label-" + index;
+							}
+							
+							// create pending decision
+							Decision dec = this.component.create(pred, labels);
+							// these decisions can be set as mandatory expansion
+							dec.setMandatoryExpansion();
+							// add pending decision
+							dCreated.add(dec);
+
+							// activate the decision if possible
+							if (!pred.isComplex()) {
+								// activated decision
+								Set<Relation> list = this.component.activate(dec);
+								// add activated decisions
+								dActivated.add(dec);
+								// add activated relations
+								rActivated.addAll(list);
+							}
+							
+							// create pending relation
+							MeetsRelation meets = this.component.create(RelationType.MEETS, dec, gap.getRightDecision());
+							// add created relation
+							rCreated.add(meets);
+							// activate relation if possible
+							if (this.component.activate(meets)) {
+								// add to activated relations
+								rActivated.add(meets);
+							}
+							
+							// create parameter relations
+							Set<Relation> pRels = this.createParameterRelations(dec, gap.getRightDecision());
+							// check relations
+							for (Relation prel : pRels) {
+								// add relation to solution
+								rCreated.add(prel);
 								// activate relation if possible
-								if (this.component.activate(meets)) {
+								if (this.component.activate(prel)) {
 									// add to activated relations
-									rActivated.add(meets);
-								}
-								
-								// create parameter relations
-								Set<Relation> pRels = this.createParameterRelations(reference, target);
-								// check relations
-								for (Relation prel : pRels) {
-									// add relation to solution
 									rCreated.add(prel);
-									// activate relation if possible
-									if (this.component.activate(prel)) {
-										// add to activated relations
-										rCreated.add(prel);
-									}
 								}
 							}
-						}
-
-						// check feasibility
-						this.tdb.verify();
-						this.pdb.verify();
-						
-						// add solution to the flaw since everything is feasible
-						gap.addSolution(solution);
-						// print gap information
-						debug("Gap found on component " + this.component.getName() + ":\n"
-								+ "- gap distance: [dmin= " + gap.getDmin() + ", dmax= " +  gap.getDmax() + "] \n"
-								+ "- left-side decision: " + gap.getLeftDecision() + "\n"
-								+ "- right-side decision: " + gap.getRightDecision() + "\n"
-								+ "- solution path: " + path + "\n");
-					}
-					catch (RelationPropagationException | TransitionNotFoundException | DecisionPropagationException |  ConsistencyCheckException ex) {
-						// discard this path as not temporally feasible
-						warning("Unfeasible transition path for timelime behavior completion:\n"
-								+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
-								+ "- path: " + path + "\n");
-					}
-					finally {
-						
-						// deactivate relations
-						for (Relation rel : rActivated) {
-							this.component.deactivate(rel);
-						}
-						
-						// delete relation
-						for (Relation rel : rCreated) {
-							this.component.delete(rel);
-						}
-						
-						// deactivate decision
-						for (Decision dec : dActivated) {
-							this.component.deactivate(dec);
-						}
-						
-						// free and then delete decision
-						for (Decision dec : dCreated) {
-							// free decision
-							this.component.free(dec);
-							// completely remove decision reference
-							this.component.delete(dec);
+							
+							// the solution is feasible
+							this.tdb.verify();
+							this.pdb.verify();
+							
+							// valid (partial) solution
+							gap.addSolution(solution);
+							
+						} catch (RelationPropagationException | TransitionNotFoundException | DecisionPropagationException |  ConsistencyCheckException ex) {
+							// discard this path as not temporally feasible
+							warning("Unfeasible (partial) transition path for timelime behavior completion:\n"
+									+ "- gap distance: [dmin= " + gap.getDmin() +", " + gap.getDmax() + "]\n"
+									+ "- intermediate: " + pred + "\n");
+						} finally {
+							
+							// deactivate relations
+							for (Relation rel : rActivated) {
+								this.component.deactivate(rel);
+							}
+							
+							// delete relation
+							for (Relation rel : rCreated) {
+								this.component.delete(rel);
+							}
+							
+							// deactivate decision
+							for (Decision dec : dActivated) {
+								this.component.deactivate(dec);
+							}
+							
+							// free and then delete decision
+							for (Decision dec : dCreated) {
+								// free decision
+								this.component.free(dec);
+								// completely remove decision reference
+								this.component.delete(dec);
+							}
 						}
 					}
-				}	
+				}
 			}
 			break;
 		
