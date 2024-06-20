@@ -576,7 +576,15 @@ public class SolutionPlan
 		String description = "{\n"
 				+ "\t\"horizon\": " + this.horizion + ",\n"
 				+ "\t\"controllability\": \"" + this.controllability.toString().toLowerCase() + "\",\n"
-				+ "\t\"makespan\": [" + mk[0] + ", " + mk[1] + "],\n";
+				+ "\t\"makespan\": [" + mk[0] + ", " + mk[1] + "],\n"
+				+ "\t\"solving_time\": " + solvingTime + ",\n";
+		
+		// check domain specific metric if any
+		if (solutionNode.getDomainSpecificMetric() != null) {
+			description += "\n";
+			description += "\t\"metric\": " + solutionNode.getDomainSpecificMetric().toString();
+			description += "\n";
+		}
 		
 		// start description of timelines 
 		description += "\t\"timelines\": [\n";

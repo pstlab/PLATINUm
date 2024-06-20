@@ -182,8 +182,11 @@ public class PseudoControllabilityAwareSolver extends Solver
 				// check if stopping search without a solution
 				if (!search && !solution)  {
 					
-					// backtrack from the last propagated node
-					this.backtrack(last);
+					if (last != null) {
+						// backtrack from the last propagated node
+						this.backtrack(last);
+					}
+					
 					// clear search data structures
 					this.clear();
 					

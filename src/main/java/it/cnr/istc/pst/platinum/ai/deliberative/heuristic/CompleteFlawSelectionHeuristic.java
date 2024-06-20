@@ -2,7 +2,6 @@ package it.cnr.istc.pst.platinum.ai.deliberative.heuristic;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.NoFlawFoundException;
@@ -14,12 +13,12 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableF
  * @author anacleto
  *
  */
-public class RandomFlawSelectionHeuristic extends FlawSelectionHeuristic
+public class CompleteFlawSelectionHeuristic extends FlawSelectionHeuristic
 {
 	/**
 	 * 
 	 */
-	protected RandomFlawSelectionHeuristic() {
+	protected CompleteFlawSelectionHeuristic() {
 		super("RandomFlawSelectionHeuristic");
 	}
 	
@@ -38,13 +37,8 @@ public class RandomFlawSelectionHeuristic extends FlawSelectionHeuristic
 			throw new NoFlawFoundException("No flaw has been found in the current plan");
 		}
 		
-		// randomly select a flaw to solve
-		Random rand = new Random(System.currentTimeMillis());
-		int index = rand.nextInt(flaws.size());
-		// get randomly selected flaw
-		Set<Flaw> set = new HashSet<>();
-		set.add(flaws.get(index));
-		return set;
+		// consider all flaws for plan refinement
+		return new HashSet<>(flaws);
 	}
 
 	/**
