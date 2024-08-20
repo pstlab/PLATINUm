@@ -582,7 +582,7 @@ public class SolutionPlan
 		// check domain specific metric if any
 		if (solutionNode.getDomainSpecificMetric() != null) {
 			description += "\n";
-			description += "\t\"metric\": " + solutionNode.getDomainSpecificMetric().toString();
+			description += "\t\"metric\": " + solutionNode.getDomainSpecificMetric().toString() + ",\n";
 			description += "\n";
 		}
 		
@@ -630,7 +630,7 @@ public class SolutionPlan
 		description += "\t],\n\n";
 		
 		// start description of observations
-		description += "\tobservations: [\n";
+		description += "\t\"observations\": [\n";
 		for (Timeline tl : this.observations) {
 			description += "\t\t{\n"
 					+ "\t\t\tname: \"" + tl.getComponent().getName() + "\",\n"
@@ -647,7 +647,7 @@ public class SolutionPlan
 		description += "\t],\n\n";
 		
 		// start description of relations
-		description += "\trelations: [\n";
+		description += "\t\"relations\": [\n";
 		for (Relation rel : this.relations) {
 			description += "\t\t" + rel +  ",\n";
 		}
