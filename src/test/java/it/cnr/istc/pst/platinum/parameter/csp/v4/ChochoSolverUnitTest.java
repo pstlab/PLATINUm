@@ -2,11 +2,9 @@ package it.cnr.istc.pst.platinum.parameter.csp.v4;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.csp.event.AddConstraintParameterNotification;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.csp.event.AddParameterNotification;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.csp.event.DelConstraintParameterNotification;
@@ -38,7 +36,7 @@ public class ChochoSolverUnitTest
 	/**
 	 * 
 	 */
-	@Before
+	@BeforeAll
 	public void init() {
 		System.out.println("**********************************************************************************");
 		System.out.println("****************************** Choco Solver Test Case ****************************");
@@ -51,7 +49,7 @@ public class ChochoSolverUnitTest
 	/**
 	 * 
 	 */
-	@After
+	@AfterEach
 	public void clear() {
 		this.solver = null;
 		System.gc();
@@ -126,7 +124,7 @@ public class ChochoSolverUnitTest
 		System.out.println("[Test]: createVariablesTest() --------------------");
 		System.out.println();
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		
 		// create numeric parameter domain
@@ -166,7 +164,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(info);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 	}
 	
 	
@@ -179,7 +177,7 @@ public class ChochoSolverUnitTest
 			throws Exception
 	{
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		
 		// create numeric parameter domain
@@ -221,7 +219,7 @@ public class ChochoSolverUnitTest
 		// send notification
 		this.solver.update(info);
 		
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		// create bind constraint
 		BindParameterConstraint bind = this.paramFactory.createParameterConstraint(ParameterConstraintType.BIND);
@@ -236,7 +234,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		// create bind constraint
 		bind = this.paramFactory.createParameterConstraint(ParameterConstraintType.BIND);
@@ -251,7 +249,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 	}
 	
@@ -266,7 +264,7 @@ public class ChochoSolverUnitTest
 		System.out.println("[Test]: addVariablesAndInconsistentConstraintsTest() --------------------");
 		System.out.println();
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		// create enumeration parameter
 		EnumerationParameterDomain edom = this.paramFactory.createParameterDomain("locations", 
@@ -288,7 +286,7 @@ public class ChochoSolverUnitTest
 		// send notification
 		this.solver.update(info);
 		
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		// create bind constraint
 		BindParameterConstraint bind = this.paramFactory.createParameterConstraint(ParameterConstraintType.BIND);
@@ -303,7 +301,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		// create bind constraint
 		bind = this.paramFactory.createParameterConstraint(ParameterConstraintType.BIND);
@@ -318,7 +316,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertFalse(this.solver.isConsistent());
+		assertFalse(this.solver.isConsistent());
 		
 		
 		// retract last propagated constraint
@@ -329,7 +327,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(delInfo);
 		
 		// check model 
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		// delete parameter
@@ -340,7 +338,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(dpInfo);
 		
 		// check model 
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 	}
 	
@@ -355,7 +353,7 @@ public class ChochoSolverUnitTest
 		System.out.println("[Test]: addVariablesAndConstraintsTest() --------------------");
 		System.out.println();
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		// create enumeration parameter
 		EnumerationParameterDomain edom = this.paramFactory.createParameterDomain("locations", 
@@ -380,7 +378,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(apInfo);
 		
 		// check consistency
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		// create equal constraint
@@ -395,7 +393,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		// create bind constraint
@@ -409,7 +407,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		// add inconsistent constraint
@@ -422,7 +420,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertFalse(this.solver.isConsistent());
+		assertFalse(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		// retract last propagated constraint
@@ -432,7 +430,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(dcInfo);
 		
 		// check model 
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 	}
 	
@@ -447,7 +445,7 @@ public class ChochoSolverUnitTest
 		System.out.println("[Test]: addVariableExcludeConstraintAndQueryTest() --------------------");
 		System.out.println();
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		
 		// create enumeration parameter
 		EnumerationParameterDomain edom = this.paramFactory.createParameterDomain("locations", 
@@ -469,7 +467,7 @@ public class ChochoSolverUnitTest
 		this.solver.update(apInfo);
 		
 		// check consistency
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		// create bind constraint
@@ -483,19 +481,19 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		this.solver.computeValues(p1);
 		String[] vals = p1.getValues();
-		Assert.assertTrue(vals.length < p1.getDomainValues().length);
+		assertTrue(vals.length < p1.getDomainValues().length);
 		// verify that the value "kitchen" has been actually excluded
 		boolean found = false;
 		for (int i= 0; i < vals.length && !found; i++) { 
 			found = vals[i].equals("kitchen");
 			System.out.println("- val: " + vals[i]);
 		}
-		Assert.assertFalse(found);
+		assertFalse(found);
 		
 		// exclude another value
 		ex = this.paramFactory.createParameterConstraint(ParameterConstraintType.EXCLUDE);
@@ -508,19 +506,19 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		this.solver.computeValues(p1);
 		vals = p1.getValues();
-		Assert.assertTrue(vals.length < p1.getDomainValues().length);
+		assertTrue(vals.length < p1.getDomainValues().length);
 		// verify that the value "kitchen" has been actually excluded
 		found = false;
 		for (int i= 0; i < vals.length && !found; i++) { 
 			found = vals[i].equals("kitchen");
 			System.out.println("- val: " + vals[i]);
 		}
-		Assert.assertFalse(found);
+		assertFalse(found);
 		
 		// redundant constraint
 		ex = this.paramFactory.createParameterConstraint(ParameterConstraintType.EXCLUDE);
@@ -533,18 +531,18 @@ public class ChochoSolverUnitTest
 		this.solver.update(acInfo);
 		
 		// check model
-		Assert.assertTrue(this.solver.isConsistent());
+		assertTrue(this.solver.isConsistent());
 		System.out.println(this.solver);
 		
 		this.solver.computeValues(p1);
 		vals = p1.getValues();
-		Assert.assertTrue(vals.length < p1.getDomainValues().length);
+		assertTrue(vals.length < p1.getDomainValues().length);
 		// verify that the value "kitchen" has been actually excluded
 		found = false;
 		for (int i= 0; i < vals.length && !found; i++) { 
 			found = vals[i].equals("kitchen");
 			System.out.println("- val: " + vals[i]);
 		}
-		Assert.assertFalse(found);
+		assertFalse(found);
 	}
 }

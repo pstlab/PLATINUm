@@ -3,10 +3,9 @@ package it.cnr.istc.pst.platinum.domain.component.sv;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.DomainComponentBuilder;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
@@ -57,7 +56,7 @@ public class StateVariableComponentTestCase
 	/**
 	 * 
 	 */
-	@Before
+	@BeforeAll
 	public void init() 
 	{
 		System.out.println("**********************************************************************************");
@@ -78,7 +77,7 @@ public class StateVariableComponentTestCase
 	/**
 	 * 
 	 */
-	@After
+	@AfterEach
 	public void clear() {
 		this.psv = null;
 		this.tf = null;
@@ -98,7 +97,7 @@ public class StateVariableComponentTestCase
 		System.out.println();
 		
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.tf.getHorizon()}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long [] {10, 30}, true);
@@ -117,7 +116,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: addDecisionsTest() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
@@ -145,7 +144,7 @@ public class StateVariableComponentTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -157,7 +156,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: detectGapFlawsTest() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
@@ -190,9 +189,9 @@ public class StateVariableComponentTestCase
 			
 			// get time-line
 			List<Decision> decisions = this.psv.getActiveDecisions();
-			Assert.assertNotNull(decisions);
-			Assert.assertTrue(!decisions.isEmpty());
-			Assert.assertTrue(decisions.size() == 2);
+			assertNotNull(decisions);
+			assertTrue(!decisions.isEmpty());
+			assertTrue(decisions.size() == 2);
 			
 			// check temporal bounds
 			System.out.println("State Variable's decisions");
@@ -200,21 +199,21 @@ public class StateVariableComponentTestCase
 				System.out.println("\t- " + dec);
 				// check end times
 				if (dec.getValue().getLabel().equals(v1.getLabel())) {
-					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getLowerBound() == 23);
-					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getUpperBound() == 23);
+					assertTrue(dec.getToken().getInterval().getEndTime().getLowerBound() == 23);
+					assertTrue(dec.getToken().getInterval().getEndTime().getUpperBound() == 23);
 				}
 				if (dec.getValue().getLabel().equals(v2.getLabel())) {
-					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getLowerBound() == 80);
-					Assert.assertTrue(dec.getToken().getInterval().getEndTime().getUpperBound() == 80);
+					assertTrue(dec.getToken().getInterval().getEndTime().getLowerBound() == 80);
+					assertTrue(dec.getToken().getInterval().getEndTime().getUpperBound() == 80);
 				} 
 			}
 			
 			
 			// check that only a gap is found
 			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_BEHAVIOR_PLANNING);
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertTrue(!flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			// a gap has been found
 			System.out.println("Detected flaws");
 			for (Flaw f : flaws) {
@@ -223,7 +222,7 @@ public class StateVariableComponentTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -236,7 +235,7 @@ public class StateVariableComponentTestCase
 		System.out.println();
 		
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
@@ -263,7 +262,7 @@ public class StateVariableComponentTestCase
 		
 		// get paths between v1 and v6
 		ValuePath path = this.psv.getShortestPath(v1, v6);
-		Assert.assertNotNull(path);
+		assertNotNull(path);
 		System.out.println("\t- " + path + "\n");
 		
 		// get paths between v1 and v6
@@ -272,10 +271,10 @@ public class StateVariableComponentTestCase
 		
 		// check no path case
 		path = this.psv.getShortestPath(v7, v1);
-		Assert.assertNull(path);
+		assertNull(path);
 		
 		path= this.psv.getShortestPath(v7, v7);
-		Assert.assertNull(path);
+		assertNull(path);
 	}
 	
 	/**
@@ -286,7 +285,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: detectStateVariablePeaksTest() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, false);
@@ -311,18 +310,18 @@ public class StateVariableComponentTestCase
 			
 			// check flaws
 			List<Flaw> flaws = this.psv.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(!flaws.isEmpty());
 			System.out.println(flaws);
-			Assert.assertTrue(flaws.size() == 3);
+			assertTrue(flaws.size() == 3);
 			System.out.println("Detected flaws ");
 			for (Flaw f : flaws) {
 				
 				// get flaws 
-				Assert.assertNotNull(f);
-				Assert.assertNotNull(f.getSolutions());
-				Assert.assertTrue(!f.getSolutions().isEmpty());
-				Assert.assertNotNull(f.getSolutions().get(0));
+				assertNotNull(f);
+				assertNotNull(f.getSolutions());
+				assertTrue(!f.getSolutions().isEmpty());
+				assertNotNull(f.getSolutions().get(0));
 			}
 
 			// print state variable information
@@ -331,7 +330,7 @@ public class StateVariableComponentTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -343,7 +342,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: detectAndSolveStateVariablePeaksTest() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
@@ -368,16 +367,16 @@ public class StateVariableComponentTestCase
 			
 			// check flaws
 			List<Flaw> flaws = this.psv.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(!flaws.isEmpty());
 			
 			// check solutions
-			Assert.assertNotNull(flaws.get(0).getSolutions());
-			Assert.assertTrue(!flaws.get(0).getSolutions().isEmpty());
+			assertNotNull(flaws.get(0).getSolutions());
+			assertTrue(!flaws.get(0).getSolutions().isEmpty());
 			
 			// get a solution
 			FlawSolution solution = flaws.get(0).getSolutions().get(0);
-			Assert.assertNotNull(solution);
+			assertNotNull(solution);
 			System.out.println("Selected Peak solution to apply");
 			System.out.println(solution);
 			
@@ -393,11 +392,11 @@ public class StateVariableComponentTestCase
 
 			// check flaws
 			flaws = this.psv.detectFlaws();
-			Assert.assertTrue(!flaws.isEmpty());
+			assertTrue(!flaws.isEmpty());
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -409,7 +408,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: displayStateVariableComponentAndSolvePeaksTest() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
@@ -445,17 +444,17 @@ public class StateVariableComponentTestCase
 				// print diagnostic data about the network 
 				this.tf.printDiagnosticData();
 				
-				Assert.assertNotNull(flaws);
+				assertNotNull(flaws);
 				// get peak
 				Flaw flaw = flaws.get(0);
-				Assert.assertTrue(!flaws.isEmpty());
+				assertTrue(!flaws.isEmpty());
 				
 				// check solutions
-				Assert.assertNotNull(flaw.getSolutions());
+				assertNotNull(flaw.getSolutions());
 				
 				// get a solution
 				FlawSolution solution = flaw.getSolutions().get(0);
-				Assert.assertNotNull(solution);
+				assertNotNull(solution);
 				System.out.println("Selected Peak solution to apply");
 				System.out.println(solution);
 				
@@ -476,11 +475,11 @@ public class StateVariableComponentTestCase
 			while (!flaws.isEmpty());
 			// check number of scheduling steps done
 			System.out.println("Scheduling done in " + schedulingStepCounter + " steps");
-			Assert.assertTrue(schedulingStepCounter > 0);
+			assertTrue(schedulingStepCounter > 0);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -492,7 +491,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: detectAndSolveGapFlaws() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {1, this.tf.getHorizon()}, true);
@@ -531,9 +530,9 @@ public class StateVariableComponentTestCase
 			
 			// get decisions
 			List<Decision> decisions = this.psv.getActiveDecisions();
-			Assert.assertNotNull(decisions);
-			Assert.assertTrue(!decisions.isEmpty());
-			Assert.assertTrue(decisions.size() == 2);
+			assertNotNull(decisions);
+			assertTrue(!decisions.isEmpty());
+			assertTrue(decisions.size() == 2);
 			
 			
 			// display component
@@ -542,9 +541,9 @@ public class StateVariableComponentTestCase
 	
 			// check that only a gap is found
 			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_BEHAVIOR_PLANNING);
-			Assert.assertNotNull(flaws);
-			Assert.assertFalse(flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertFalse(flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			// a gap has been found
 			System.out.println("Detected flaws");
 			for (Flaw f : flaws) {
@@ -554,7 +553,7 @@ public class StateVariableComponentTestCase
 			// get flaw
 			Gap gap = (Gap) flaws.get(0);
 			// check solution
-			Assert.assertTrue(gap.getSolutions().size() == 2);
+			assertTrue(gap.getSolutions().size() == 2);
 			
 			// select a solution to commit
 			FlawSolution sol = flaws.get(0).getSolutions().get(0);
@@ -563,7 +562,7 @@ public class StateVariableComponentTestCase
 			System.out.println("Committed solution:\n- " + sol + "\n");
 			
 			// check pending decisions
-			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
+			assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions");
 			System.out.println(this.psv.getPendingDecisions());
 			
@@ -581,22 +580,22 @@ public class StateVariableComponentTestCase
 			Thread.sleep(5000);
 			
 			// check pending decisions
-			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 4);
+			assertTrue(this.psv.getPendingDecisions().isEmpty());
+			assertTrue(this.psv.getActiveDecisions().size() == 4);
 
 			// check if all pending relations have been propagated
 			Set<Relation> prel = this.psv.getPendingRelations();
-			Assert.assertTrue(prel.isEmpty());
+			assertTrue(prel.isEmpty());
 			
 			// check flaws
 			flaws = this.psv.detectFlaws();
-			Assert.assertTrue(flaws.isEmpty());
+			assertTrue(flaws.isEmpty());
 			
 			this.tf.verify();
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -608,7 +607,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: commitAndRollbackStateVariableGapFlaws() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1");
@@ -635,24 +634,24 @@ public class StateVariableComponentTestCase
 			this.psv.activate(d2);
 			
 			// check component
-			Assert.assertNotNull(this.psv.getActiveDecisions());
-			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
-			Assert.assertNotNull(this.psv.getPendingDecisions());
-			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
-			Assert.assertTrue(this.psv.getPendingRelations().isEmpty());
+			assertNotNull(this.psv.getActiveDecisions());
+			assertFalse(this.psv.getActiveDecisions().isEmpty());
+			assertTrue(this.psv.getActiveDecisions().size() == 2);
+			assertNotNull(this.psv.getPendingDecisions());
+			assertTrue(this.psv.getPendingDecisions().isEmpty());
+			assertTrue(this.psv.getActiveRelations().isEmpty());
+			assertTrue(this.psv.getPendingRelations().isEmpty());
 			
 			// check that only a gap is found
 			List<Flaw> flaws = this.psv.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertFalse(flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertFalse(flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			
 			// get flaw
 			Gap gap = (Gap) flaws.get(0);
 			// check solution
-			Assert.assertTrue(gap.getSolutions().size() == 1);
+			assertTrue(gap.getSolutions().size() == 1);
 			// get solution
 			GapCompletion completion = (GapCompletion) gap.getSolutions().get(0);
 			
@@ -662,11 +661,11 @@ public class StateVariableComponentTestCase
 			this.pf.verify();
 			
 			// check component
-			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 4);
+			assertFalse(this.psv.getActiveDecisions().isEmpty());
+			assertTrue(this.psv.getActiveDecisions().size() == 4);
 			System.out.println("Active Decisions:\n" + this.psv.getActiveDecisions());
 			
-			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
+			assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions:\n" + this.psv.getPendingDecisions());
 			
 			System.out.println();
@@ -678,20 +677,20 @@ public class StateVariableComponentTestCase
 			this.pf.verify();
 			
 			// check component
-			Assert.assertNotNull(this.psv.getActiveDecisions());
-			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
+			assertNotNull(this.psv.getActiveDecisions());
+			assertFalse(this.psv.getActiveDecisions().isEmpty());
 			System.out.println("Active Decisions:\n" + this.psv.getActiveDecisions());
-			Assert.assertNotNull(this.psv.getPendingDecisions());
-			Assert.assertTrue(this.psv.getPendingDecisions().isEmpty());
+			assertNotNull(this.psv.getPendingDecisions());
+			assertTrue(this.psv.getPendingDecisions().isEmpty());
 			System.out.println("Pending decisions:\n" + this.psv.getPendingDecisions());
-			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
+			assertTrue(this.psv.getActiveRelations().isEmpty());
 			System.out.println("Active relations:\n" + this.psv.getActiveRelations());
-			Assert.assertTrue(this.psv.getPendingRelations().isEmpty());
+			assertTrue(this.psv.getPendingRelations().isEmpty());
 			System.out.println("Pending relations:\n" + this.psv.getPendingRelations());
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -703,7 +702,7 @@ public class StateVariableComponentTestCase
 		System.out.println("[Test]: commitAndRollbackStateVariableSchedulingFlaws() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1",new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
@@ -726,20 +725,20 @@ public class StateVariableComponentTestCase
 			
 			// check flaws
 			List<Flaw> flaws = this.psv.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertFalse(flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
-			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
-			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
+			assertNotNull(flaws);
+			assertFalse(flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
+			assertTrue(this.psv.getActiveRelations().isEmpty());
+			assertFalse(this.psv.getActiveDecisions().isEmpty());
+			assertTrue(this.psv.getActiveDecisions().size() == 2);
 			
 			// check solutions
-			Assert.assertNotNull(flaws.get(0).getSolutions());
-			Assert.assertTrue(!flaws.get(0).getSolutions().isEmpty());
+			assertNotNull(flaws.get(0).getSolutions());
+			assertTrue(!flaws.get(0).getSolutions().isEmpty());
 			
 			// get a solution
 			FlawSolution solution = flaws.get(0).getSolutions().get(0);
-			Assert.assertNotNull(solution);
+			assertNotNull(solution);
 			System.out.println(solution);
 			
 			
@@ -748,25 +747,25 @@ public class StateVariableComponentTestCase
 			this.tf.verify();
 			
 			// check relations
-			Assert.assertFalse(this.psv.getActiveRelations().isEmpty());
-			Assert.assertTrue(this.psv.getActiveRelations().size() == 1);
+			assertFalse(this.psv.getActiveRelations().isEmpty());
+			assertTrue(this.psv.getActiveRelations().size() == 1);
 			System.out.println("Active Relations:\n- " + this.psv.getActiveRelations());
-			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
+			assertFalse(this.psv.getActiveDecisions().isEmpty());
+			assertTrue(this.psv.getActiveDecisions().size() == 2);
 			
 			// roll-back solution
 			this.psv.rollback(solution);
 			this.tf.verify();
 			
 			// check relations
-			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
+			assertTrue(this.psv.getActiveRelations().isEmpty());
 			System.out.println("Active Relations:\n- " + this.psv.getActiveRelations());
-			Assert.assertFalse(this.psv.getActiveDecisions().isEmpty());
-			Assert.assertTrue(this.psv.getActiveDecisions().size() == 2);
+			assertFalse(this.psv.getActiveDecisions().isEmpty());
+			assertTrue(this.psv.getActiveDecisions().size() == 2);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -800,17 +799,17 @@ public class StateVariableComponentTestCase
 			
 			// detect flaws
 			List<Flaw> flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
-			Assert.assertNotNull(flaws);
-			Assert.assertFalse(flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertFalse(flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			
 			// get the flaw
 			Flaw flaw = flaws.get(0);
 			// check solutions
 			List<FlawSolution> solutions = flaw.getSolutions();
-			Assert.assertNotNull(solutions);
-			Assert.assertFalse(solutions.isEmpty());
-			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			assertNotNull(solutions);
+			assertFalse(solutions.isEmpty());
+			assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
 			
 			// apply a solution
 			FlawSolution solution = solutions.get(0);
@@ -824,8 +823,8 @@ public class StateVariableComponentTestCase
 			
 			// no flaws expected
 			flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(flaws.isEmpty());
 			System.out.println("No more flaws on resource " + this.psv + "\n");
 			
 			// try to roll-back applied solution
@@ -840,17 +839,17 @@ public class StateVariableComponentTestCase
 			
 			// flaws expected
 			flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
-			Assert.assertNotNull(flaws);
-			Assert.assertFalse(flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertFalse(flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			
 			// try again to solve the the flaw and check the resulting state
 			flaw = flaws.get(0);
 			// check solutions
 			solutions = flaw.getSolutions();
-			Assert.assertNotNull(solutions);
-			Assert.assertFalse(solutions.isEmpty());
-			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			assertNotNull(solutions);
+			assertFalse(solutions.isEmpty());
+			assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
 			
 			// apply a solution
 			solution = solutions.get(0);
@@ -864,13 +863,13 @@ public class StateVariableComponentTestCase
 			
 			// no flaws expected
 			flaws = this.psv.detectFlaws(FlawType.TIMELINE_OVERFLOW);
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(flaws.isEmpty());
 			System.out.println("No more flaws on resource " + this.psv + "\n");
 		}
 		catch (FlawSolutionApplicationException | ConsistencyCheckException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 }

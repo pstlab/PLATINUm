@@ -3,10 +3,10 @@ package it.cnr.istc.pst.platinum.domain.component.resource;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.DomainComponentBuilder;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
@@ -57,7 +57,7 @@ public class DiscreteResourceComponentTestCase
 	/**
 	 * 
 	 */
-	@Before
+	@BeforeAll
 	public void init() {
 		System.out.println("**********************************************************************************");
 		System.out.println("************************* Discrete Resource Component Test Case ***********************");
@@ -80,7 +80,7 @@ public class DiscreteResourceComponentTestCase
 	/**
 	 * 
 	 */
-	@After
+	@AfterEach
 	public void clear() {
 		this.resource = null;
 		this.pdb = null;
@@ -99,18 +99,18 @@ public class DiscreteResourceComponentTestCase
 		System.out.println();
 		
 		// check state variable object
-		Assert.assertNotNull(this.resource);
+		assertNotNull(this.resource);
 		// check values
 		List<RequirementResourceValue> values = this.resource.getValues();
-		Assert.assertNotNull(values);
-		Assert.assertTrue(values.size() == 1);
+		assertNotNull(values);
+		assertTrue(values.size() == 1);
 		RequirementResourceValue req = values.get(0);
-		Assert.assertNotNull(req);
-		Assert.assertTrue(req.getNumberOfParameterPlaceHolders() == 1);
+		assertNotNull(req);
+		assertTrue(req.getNumberOfParameterPlaceHolders() == 1);
 		// check min capacity
-		Assert.assertTrue(this.resource.getMinCapacity() == 0);
+		assertTrue(this.resource.getMinCapacity() == 0);
 		// check max capacity
-		Assert.assertTrue(this.resource.getMaxCapacity() == 10);
+		assertTrue(this.resource.getMaxCapacity() == 10);
 		// add transitions
 		System.out.println(this.resource);
 	}
@@ -141,13 +141,13 @@ public class DiscreteResourceComponentTestCase
 			// process query
 			this.pdb.process(query);
 			// check value
-			Assert.assertTrue(param.getLowerBound() == 3);
-			Assert.assertTrue(param.getUpperBound() == 3);
+			assertTrue(param.getLowerBound() == 3);
+			assertTrue(param.getUpperBound() == 3);
 			System.out.println(param);
 		} 
 		catch (ConsistencyCheckException | RelationPropagationException | DecisionPropagationException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -194,9 +194,9 @@ public class DiscreteResourceComponentTestCase
 			
 			// check peak
 			List<Flaw> flaws = this.resource.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertTrue(!flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			System.out.println("#" + flaws.size() + " peaks found");
 			for (Flaw flaw : flaws) {
 				System.out.println("peak -> " + flaw + "\n");
@@ -204,7 +204,7 @@ public class DiscreteResourceComponentTestCase
 		}
 		catch (ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -256,7 +256,7 @@ public class DiscreteResourceComponentTestCase
 		}
 		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -337,7 +337,7 @@ public class DiscreteResourceComponentTestCase
 		}
 		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -409,7 +409,7 @@ public class DiscreteResourceComponentTestCase
 		}
 		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -446,17 +446,17 @@ public class DiscreteResourceComponentTestCase
 			
 			// detect flaws
 			List<Flaw> flaws = this.resource.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertFalse(flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertFalse(flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			
 			// get the flaw
 			Flaw flaw = flaws.get(0);
 			// check solutions
 			List<FlawSolution> solutions = flaw.getSolutions();
-			Assert.assertNotNull(solutions);
-			Assert.assertFalse(solutions.isEmpty());
-			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			assertNotNull(solutions);
+			assertFalse(solutions.isEmpty());
+			assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
 			
 			// apply a solution
 			FlawSolution solution = solutions.get(0);
@@ -471,8 +471,8 @@ public class DiscreteResourceComponentTestCase
 			
 			// no flaws expected
 			flaws = this.resource.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(flaws.isEmpty());
 			System.out.println("No more flaws on resource " + this.resource + "\n");
 			
 			// try to roll-back applied solution
@@ -488,17 +488,17 @@ public class DiscreteResourceComponentTestCase
 			
 			// flaws expected
 			flaws = this.resource.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertFalse(flaws.isEmpty());
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertFalse(flaws.isEmpty());
+			assertTrue(flaws.size() == 1);
 			
 			// try again to solve the the flaw and check the resulting state
 			flaw = flaws.get(0);
 			// check solutions
 			solutions = flaw.getSolutions();
-			Assert.assertNotNull(solutions);
-			Assert.assertFalse(solutions.isEmpty());
-			Assert.assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
+			assertNotNull(solutions);
+			assertFalse(solutions.isEmpty());
+			assertTrue(solutions.size() >= 1 && solutions.size() <= 2);
 			
 			// apply a solution
 			solution = solutions.get(0);
@@ -513,13 +513,13 @@ public class DiscreteResourceComponentTestCase
 			
 			// no flaws expected
 			flaws = this.resource.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(flaws.isEmpty());
 			System.out.println("No more flaws on resource " + this.resource + "\n");
 		}
 		catch (FlawSolutionApplicationException | ConsistencyCheckException | RelationPropagationException | DecisionPropagationException | UnsolvableFlawException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -539,7 +539,7 @@ public class DiscreteResourceComponentTestCase
 	{
 		// get requirement value
 		RequirementResourceValue requirement = this.resource.getRequirementValue();
-		Assert.assertNotNull(requirement);
+		assertNotNull(requirement);
 		
 		// create and post requirement activity  
 		Decision activity = this.resource.create(requirement, 
@@ -582,8 +582,8 @@ public class DiscreteResourceComponentTestCase
 		do
 		{
 			// check detected peaks
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(!flaws.isEmpty());
 			System.out.println("There is/are " + flaws.size() + " peak(s) on resource\n");
 			// randomly select a solution
 			Random rand = new Random(System.currentTimeMillis());
@@ -596,8 +596,8 @@ public class DiscreteResourceComponentTestCase
 			
 			// check available flaw solutions
 			List<FlawSolution> solutions = flaw.getSolutions();
-			Assert.assertNotNull(solutions);
-			Assert.assertFalse(solutions.isEmpty());
+			assertNotNull(solutions);
+			assertFalse(solutions.isEmpty());
 			System.out.println("There is/are " + solutions.size() + " solution(s) available\n");
 			
 			// randomly select a solution

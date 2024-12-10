@@ -2,10 +2,10 @@ package it.cnr.istc.pst.platinum.domain.component.pdb;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.PlanDataBaseBuilder;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ComponentValue;
@@ -33,19 +33,20 @@ import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.EnumerationParameter
 import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.ParameterDomain;
 import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.ParameterDomainType;
 
+
+
 /**
  * 
  * @author alessandro
  *
  */
-public class PlanDataBaseTestCase 
-{
+public class PlanDataBaseTestCase {
 	private PlanDataBaseComponent pdb;
 	
 	/**
 	 * 
 	 */
-	@Before
+	@BeforeAll
 	public void init() {
 		System.out.println("**********************************************************************************");
 		System.out.println("****************************** PDB Component Test Case ***************************");
@@ -57,7 +58,7 @@ public class PlanDataBaseTestCase
 	/**
 	 * 
 	 */
-	@After
+	@AfterEach
 	public void clear() {
 		this.pdb = null;
 		System.gc();
@@ -139,7 +140,7 @@ public class PlanDataBaseTestCase
 				
 			} catch (SynchronizationCycleException ex) {
 				System.err.println(ex.getMessage());
-				Assert.assertTrue(false);
+				assertTrue(false);
 			}
 	
 			// create Problem
@@ -175,10 +176,10 @@ public class PlanDataBaseTestCase
 					new long[] {this.pdb.getOrigin(), this.pdb.getHorizon()}, 
 					new long[] {this.pdb.getOrigin(), this.pdb.getHorizon()});
 			
-			Assert.assertNotNull(problem);
-			Assert.assertNotNull(problem.getFacts());
-			Assert.assertTrue(problem.getFacts().size() == 5);
-			Assert.assertTrue(problem.getGoals().size() == 1);
+			assertNotNull(problem);
+			assertNotNull(problem.getFacts());
+			assertTrue(problem.getFacts().size() == 5);
+			assertTrue(problem.getGoals().size() == 1);
 		
 			// set problem
 			this.pdb.setup(problem);
@@ -189,11 +190,11 @@ public class PlanDataBaseTestCase
 		}
 		catch (ProblemInitializationException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -206,19 +207,19 @@ public class PlanDataBaseTestCase
 		System.out.println();
 		try {
 			// check PDB
-			Assert.assertNotNull(this.pdb);
+			assertNotNull(this.pdb);
 			System.out.println(this.pdb);
 			
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c1);
+			assertNotNull(c1);
 			// add values
 			StateVariableValue v11 = c1.addStateVariableValue("Val11", new long[] {4, 8}, false);
-			Assert.assertNotNull(v11);
+			assertNotNull(v11);
 			StateVariableValue v12 = c1.addStateVariableValue("Val12");
-			Assert.assertNotNull(v12);
+			assertNotNull(v12);
 			StateVariableValue v13 = c1.addStateVariableValue("Val13", new long[] {2, 8}, false);
-			Assert.assertNotNull(v13);
+			assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
 			c1.addValueTransition(v12, v11);
@@ -232,14 +233,14 @@ public class PlanDataBaseTestCase
 			
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c2);
+			assertNotNull(c2);
 			// add values
 			StateVariableValue v21 = c2.addStateVariableValue("Val21");
-			Assert.assertNotNull(v21);
+			assertNotNull(v21);
 			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {2, 7}, false);
-			Assert.assertNotNull(v22);
+			assertNotNull(v22);
 			StateVariableValue v23 = c2.addStateVariableValue("Val23");
-			Assert.assertNotNull(v23);
+			assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -250,22 +251,22 @@ public class PlanDataBaseTestCase
 			this.pdb.addDomainComponent(c2);
 			
 			List<ComponentValue> values = ((PlanDataBaseComponent) this.pdb).getValues();
-			Assert.assertNotNull(values);
-			Assert.assertFalse(values.isEmpty());
-			Assert.assertTrue(values.size() == 6);
+			assertNotNull(values);
+			assertFalse(values.isEmpty());
+			assertTrue(values.size() == 6);
 			
 			List<Decision> decs = ((PlanDataBaseComponent) this.pdb).getActiveDecisions();
-			Assert.assertNotNull(decs);
-			Assert.assertTrue(decs.isEmpty());
+			assertNotNull(decs);
+			assertTrue(decs.isEmpty());
 			
 			// create synchronization
 			SynchronizationRule rule = this.pdb.createSynchronizationRule(v13, new String[] {});
-			Assert.assertNotNull(rule);
+			assertNotNull(rule);
 			// add constraint
 			TokenVariable cd0 = rule.addTokenVariable(v23, new String[] {});
-			Assert.assertNotNull(cd0);
+			assertNotNull(cd0);
 			SynchronizationConstraint constraint = rule.addTemporalConstraint(rule.getTriggerer(), cd0, RelationType.DURING, new long[][] {{0, this.pdb.getHorizon()}, {0, this.pdb.getHorizon()}});
-			Assert.assertNotNull(constraint);
+			assertNotNull(constraint);
 			System.out.println(rule);
 			
 			System.out.println();
@@ -276,7 +277,7 @@ public class PlanDataBaseTestCase
 		} 
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 
@@ -290,19 +291,19 @@ public class PlanDataBaseTestCase
 		System.out.println();
 		try {
 			// check PDB
-			Assert.assertNotNull(this.pdb);
+			assertNotNull(this.pdb);
 			System.out.println(this.pdb);
 			
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c1);
+			assertNotNull(c1);
 			// add values
 			StateVariableValue v11 = c1.addStateVariableValue("Val11");
-			Assert.assertNotNull(v11);
+			assertNotNull(v11);
 			StateVariableValue v12 = c1.addStateVariableValue("Val12");
-			Assert.assertNotNull(v12);
+			assertNotNull(v12);
 			StateVariableValue v13 = c1.addStateVariableValue("Val13", new long[] {4, 8}, false);
-			Assert.assertNotNull(v13);
+			assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
 			c1.addValueTransition(v12, v11);
@@ -314,14 +315,14 @@ public class PlanDataBaseTestCase
 			
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c2);
+			assertNotNull(c2);
 			// add values
 			StateVariableValue v21 = c2.addStateVariableValue("Val21", new long[] {2, 7}, false);
-			Assert.assertNotNull(v21);
+			assertNotNull(v21);
 			StateVariableValue v22 = c2.addStateVariableValue("Val22");
-			Assert.assertNotNull(v22);
+			assertNotNull(v22);
 			StateVariableValue v23 = c2.addStateVariableValue("Val23");
-			Assert.assertNotNull(v23);
+			assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -330,20 +331,20 @@ public class PlanDataBaseTestCase
 			this.pdb.addDomainComponent(c2);
 			
 			List<ComponentValue> values = ((PlanDataBaseComponent) this.pdb).getValues();
-			Assert.assertNotNull(values);
-			Assert.assertFalse(values.isEmpty());
-			Assert.assertTrue(values.size() == 6);
+			assertNotNull(values);
+			assertFalse(values.isEmpty());
+			assertTrue(values.size() == 6);
 			
 			List<Decision> decs = ((PlanDataBaseComponent) this.pdb).getActiveDecisions();
-			Assert.assertNotNull(decs);
-			Assert.assertTrue(decs.isEmpty());
+			assertNotNull(decs);
+			assertTrue(decs.isEmpty());
 			
 			// create synchronization
 			SynchronizationRule rule = this.pdb.createSynchronizationRule(v13, new String[] {});
-			Assert.assertNotNull(rule);
+			assertNotNull(rule);
 			// add constraint
 			TokenVariable cd0 = rule.addTokenVariable(v23, new String[] {});
-			Assert.assertNotNull(cd0);
+			assertNotNull(cd0);
 			SynchronizationConstraint constraint = rule.addTemporalConstraint(
 					rule.getTriggerer(), 
 					cd0, 
@@ -352,18 +353,18 @@ public class PlanDataBaseTestCase
 						{0, this.pdb.getHorizon()},
 						{0, this.pdb.getHorizon()}
 					});
-			Assert.assertNotNull(constraint);
+			assertNotNull(constraint);
 			try {
 				// add rule
 				this.pdb.addSynchronizationRule(rule);
 			} catch (SynchronizationCycleException ex) {
 				System.err.println(ex.getMessage());
-				Assert.assertTrue(false);
+				assertTrue(false);
 			}
 			
 			// print pending decisions
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
 			// print data
 			System.out.println("PDB Agenda:");
 			System.out.println(((PlanDataBaseComponent) this.pdb).getPendingDecisions());
@@ -375,11 +376,11 @@ public class PlanDataBaseTestCase
 			
 			// add pending decision
 			Decision dec = ((PlanDataBaseComponent) this.pdb).create(v13, new String[] {});
-			Assert.assertNotNull(dec);
-			Assert.assertTrue(this.pdb.isPending(dec));
-			Assert.assertFalse(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().size() == 1);
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
+			assertNotNull(dec);
+			assertTrue(this.pdb.isPending(dec));
+			assertFalse(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().size() == 1);
+			assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
 			// print data
 			System.out.println("PDB Agenda:");
 			System.out.println(((PlanDataBaseComponent) this.pdb).getPendingDecisions());
@@ -388,27 +389,27 @@ public class PlanDataBaseTestCase
 		
 			// check flaws
 			List<Flaw> flaws = this.pdb.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertTrue(flaws.size() == 1);
 			Goal goal = (Goal) flaws.get(0);
 			// check goal
-			Assert.assertTrue(goal.getDecision().equals(dec));
+			assertTrue(goal.getDecision().equals(dec));
 			List<FlawSolution> solutions = goal.getSolutions();
-			Assert.assertNotNull(solutions);
-			Assert.assertTrue(solutions.size() == 1);
+			assertNotNull(solutions);
+			assertTrue(solutions.size() == 1);
 			
 			// get expansion solution
 			GoalExpansion exp = (GoalExpansion) solutions.get(0);
 			// check rule
-			Assert.assertTrue(exp.getSynchronizationRule().equals(rule));
+			assertTrue(exp.getSynchronizationRule().equals(rule));
 			
 			// solve flaw
 			this.pdb.commit(exp);
 			
-			Assert.assertFalse(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().size() == 1);
-			Assert.assertFalse(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().size() == 1);
+			assertFalse(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().size() == 1);
+			assertFalse(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().size() == 1);
 			
 			// print data
 			System.out.println("PDB Agenda:");
@@ -422,7 +423,7 @@ public class PlanDataBaseTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -436,18 +437,18 @@ public class PlanDataBaseTestCase
 		System.out.println();
 		try {
 			// check PDB
-			Assert.assertNotNull(this.pdb);
+			assertNotNull(this.pdb);
 			
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c1);
+			assertNotNull(c1);
 			// add values
 			StateVariableValue v11 = c1.addStateVariableValue("Val11");
-			Assert.assertNotNull(v11);
+			assertNotNull(v11);
 			StateVariableValue v12 = c1.addStateVariableValue("Val12");
-			Assert.assertNotNull(v12);
+			assertNotNull(v12);
 			StateVariableValue v13 = c1.addStateVariableValue("Val13");
-			Assert.assertNotNull(v13);
+			assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
 			c1.addValueTransition(v12, v11);
@@ -460,14 +461,14 @@ public class PlanDataBaseTestCase
 			
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c2);
+			assertNotNull(c2);
 			// add values
 			StateVariableValue v21 = c2.addStateVariableValue("Val21");
-			Assert.assertNotNull(v21);
+			assertNotNull(v21);
 			StateVariableValue v22 = c2.addStateVariableValue("Val22", new long[] {1, 20}, false);
-			Assert.assertNotNull(v22);
+			assertNotNull(v22);
 			StateVariableValue v23 = c2.addStateVariableValue("Val23", new long[] {2, 8}, false);
-			Assert.assertNotNull(v23);
+			assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -477,21 +478,21 @@ public class PlanDataBaseTestCase
 			System.out.println(c2);
 			
 			List<ComponentValue> values = ((PlanDataBaseComponent) this.pdb).getValues();
-			Assert.assertNotNull(values);
-			Assert.assertFalse(values.isEmpty());
-			Assert.assertTrue(values.size() == 6);
+			assertNotNull(values);
+			assertFalse(values.isEmpty());
+			assertTrue(values.size() == 6);
 			
 			List<Decision> decs = ((PlanDataBaseComponent) this.pdb).getActiveDecisions();
-			Assert.assertNotNull(decs);
-			Assert.assertTrue(decs.isEmpty());
+			assertNotNull(decs);
+			assertTrue(decs.isEmpty());
 			
 			// create synchronization
 			SynchronizationRule rule = this.pdb.createSynchronizationRule(v13, new String[] {});
-			Assert.assertNotNull(rule);
+			assertNotNull(rule);
 			
 			// add constraint
 			TokenVariable cd0 = rule.addTokenVariable(v23, new String[] {});
-			Assert.assertNotNull(cd0);
+			assertNotNull(cd0);
 			SynchronizationConstraint constraint = rule.addTemporalConstraint(
 					rule.getTriggerer(), 
 					cd0, 
@@ -501,15 +502,15 @@ public class PlanDataBaseTestCase
 						{0, this.pdb.getHorizon()}
 					});
 			
-			Assert.assertNotNull(constraint);
+			assertNotNull(constraint);
 			
 			// add rule
 			this.pdb.addSynchronizationRule(rule);
 			System.out.println(rule);
 		
 			// print pending decisions
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
 		
 			// add pending decision
 			Decision dec1 = ((PlanDataBaseComponent) this.pdb).create(v13, new String[] {});
@@ -521,28 +522,28 @@ public class PlanDataBaseTestCase
 			
 			// check flaws
 			List<Flaw> flaws = this.pdb.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(!flaws.isEmpty());
+			assertNotNull(flaws);
+			assertTrue(!flaws.isEmpty());
 			for (Flaw flaw : flaws) {
 				// check flaw
 				if (flaw instanceof Goal) {
 					Goal goal = (Goal) flaw;
-					Assert.assertTrue(goal.getDecision().equals(dec1));
+					assertTrue(goal.getDecision().equals(dec1));
 					System.out.println(goal);
 				}
 				if (flaw instanceof OverlappingSet) {
 					OverlappingSet peak = (OverlappingSet) flaw;
-					Assert.assertTrue(peak.size() == 2);
-					Assert.assertTrue(peak.getDecisions().contains(dec2));
-					Assert.assertTrue(peak.getDecisions().contains(dec3));
-					Assert.assertFalse(peak.getDecisions().contains(dec1));
+					assertTrue(peak.size() == 2);
+					assertTrue(peak.getDecisions().contains(dec2));
+					assertTrue(peak.getDecisions().contains(dec3));
+					assertFalse(peak.getDecisions().contains(dec1));
 					System.out.println(peak);
 				}
 			}
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -557,18 +558,18 @@ public class PlanDataBaseTestCase
 		try {
 			
 			// check PDB
-			Assert.assertNotNull(this.pdb);
+			assertNotNull(this.pdb);
 			
 			// create state variable 
 			PrimitiveStateVariable c1 = this.pdb.createDomainComponent("C1", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c1);
+			assertNotNull(c1);
 			// add values
 			StateVariableValue v11 = c1.addStateVariableValue("Val11");
-			Assert.assertNotNull(v11);
+			assertNotNull(v11);
 			StateVariableValue v12 = c1.addStateVariableValue("Val12", new long[] {5, 10}, false);
-			Assert.assertNotNull(v12);
+			assertNotNull(v12);
 			StateVariableValue v13 = c1.addStateVariableValue("Val13");
-			Assert.assertNotNull(v13);
+			assertNotNull(v13);
 			// add transitions
 			c1.addValueTransition(v11, v12);
 			c1.addValueTransition(v12, v11);
@@ -580,14 +581,14 @@ public class PlanDataBaseTestCase
 			
 			// create state variables
 			PrimitiveStateVariable c2 = this.pdb.createDomainComponent("C2", DomainComponentType.SV_PRIMITIVE);
-			Assert.assertNotNull(c2);
+			assertNotNull(c2);
 			// add values
 			StateVariableValue v21 = c2.addStateVariableValue("Val21");
-			Assert.assertNotNull(v21);
+			assertNotNull(v21);
 			StateVariableValue v22 = c2.addStateVariableValue("Val22");
-			Assert.assertNotNull(v22);
+			assertNotNull(v22);
 			StateVariableValue v23 = c2.addStateVariableValue("Val23");
-			Assert.assertNotNull(v23);
+			assertNotNull(v23);
 			// add transitions
 			c2.addValueTransition(v21, v22);
 			c2.addValueTransition(v22, v23);
@@ -596,20 +597,20 @@ public class PlanDataBaseTestCase
 			this.pdb.addDomainComponent(c2);		
 			
 			List<ComponentValue> values = ((PlanDataBaseComponent) this.pdb).getValues();
-			Assert.assertNotNull(values);
-			Assert.assertFalse(values.isEmpty());
-			Assert.assertTrue(values.size() == 6);
+			assertNotNull(values);
+			assertFalse(values.isEmpty());
+			assertTrue(values.size() == 6);
 			
 			List<Decision> decs = ((PlanDataBaseComponent) this.pdb).getActiveDecisions();
-			Assert.assertNotNull(decs);
-			Assert.assertTrue(decs.isEmpty());
+			assertNotNull(decs);
+			assertTrue(decs.isEmpty());
 			
 			// create synchronization
 			SynchronizationRule rule = this.pdb.createSynchronizationRule(v13, new String[] {});
-			Assert.assertNotNull(rule);
+			assertNotNull(rule);
 			// add constraint
 			TokenVariable cd0 = rule.addTokenVariable(v23, new String[] {});
-			Assert.assertNotNull(cd0);
+			assertNotNull(cd0);
 			SynchronizationConstraint constraint = rule.addTemporalConstraint(
 					rule.getTriggerer(), 
 					cd0, 
@@ -617,7 +618,7 @@ public class PlanDataBaseTestCase
 					new long[][] {
 						{0, this.pdb.getHorizon()}, {0, this.pdb.getHorizon()}
 					});
-			Assert.assertNotNull(constraint);
+			assertNotNull(constraint);
 			// add rule
 			this.pdb.addSynchronizationRule(rule);
 			
@@ -625,8 +626,8 @@ public class PlanDataBaseTestCase
 			System.out.println(this.pdb);
 			
 			// print pending decisions
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
-			Assert.assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getPendingDecisions().isEmpty());
+			assertTrue(((PlanDataBaseComponent) this.pdb).getActiveDecisions().isEmpty());
 		
 		
 			Decision dec1 = ((PlanDataBaseComponent) this.pdb).
@@ -665,7 +666,7 @@ public class PlanDataBaseTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -679,7 +680,7 @@ public class PlanDataBaseTestCase
 		System.out.println();
 		try {
 			// check PDB
-			Assert.assertNotNull(this.pdb);
+			assertNotNull(this.pdb);
 			System.out.println(this.pdb);
 			
 			// create state variable 
@@ -735,8 +736,8 @@ public class PlanDataBaseTestCase
 			System.out.println(((PlanDataBaseComponent) this.pdb).getActiveDecisions());
 			// check flaws
 			List<Flaw> flaws = this.pdb.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.size() == 2);
+			assertNotNull(flaws);
+			assertTrue(flaws.size() == 2);
 			
 
 			System.out.println("Detected flaws");
@@ -748,13 +749,13 @@ public class PlanDataBaseTestCase
 			System.out.println(flaw.getSolutions());
 			
 			// check solutions
-			Assert.assertFalse(flaw.getSolutions().isEmpty());
-			Assert.assertTrue(flaw.getSolutions().size() == 3);
+			assertFalse(flaw.getSolutions().isEmpty());
+			assertTrue(flaw.getSolutions().size() == 3);
 			
 			for (FlawSolution sol : flaw.getSolutions()) {
 				if(sol instanceof GoalUnification) {
 					GoalUnification unif = (GoalUnification) sol;
-					Assert.assertTrue(unif.getGoalDecision().equals(g1));
+					assertTrue(unif.getGoalDecision().equals(g1));
 				}
 			}
 			
@@ -763,7 +764,7 @@ public class PlanDataBaseTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -777,7 +778,7 @@ public class PlanDataBaseTestCase
 		System.out.println();
 		try {
 			// check PDB
-			Assert.assertNotNull(this.pdb);
+			assertNotNull(this.pdb);
 			System.out.println(this.pdb);
 			
 			// create state variable 
@@ -840,15 +841,15 @@ public class PlanDataBaseTestCase
 			
 			// check flaws
 			List<Flaw> flaws = this.pdb.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertTrue(flaws.size() == 1);
 			
-			Assert.assertNotNull(this.pdb.getPendingDecisions());
-			Assert.assertTrue(this.pdb.getPendingDecisions().size() == 1);
-			Assert.assertNotNull(this.pdb.getActiveDecisions());
-			Assert.assertTrue(this.pdb.getActiveDecisions().size() == 2);
-			Assert.assertTrue(this.pdb.getPendingDecisions().contains(g1));
-			Assert.assertFalse(this.pdb.getActiveDecisions().contains(g1));
+			assertNotNull(this.pdb.getPendingDecisions());
+			assertTrue(this.pdb.getPendingDecisions().size() == 1);
+			assertNotNull(this.pdb.getActiveDecisions());
+			assertTrue(this.pdb.getActiveDecisions().size() == 2);
+			assertTrue(this.pdb.getPendingDecisions().contains(g1));
+			assertFalse(this.pdb.getActiveDecisions().contains(g1));
 			System.out.println(g1);
 			
 			// get flaw solution
@@ -859,28 +860,28 @@ public class PlanDataBaseTestCase
 			this.pdb.commit(exp);
 			
 			// check data
-			Assert.assertNotNull(this.pdb.getPendingDecisions());
-			Assert.assertTrue(this.pdb.getPendingDecisions().size() == 1);
-			Assert.assertNotNull(this.pdb.getActiveDecisions());
-			Assert.assertTrue(this.pdb.getActiveDecisions().size() == 3);
-			Assert.assertTrue(this.pdb.getActiveDecisions().contains(g1));
+			assertNotNull(this.pdb.getPendingDecisions());
+			assertTrue(this.pdb.getPendingDecisions().size() == 1);
+			assertNotNull(this.pdb.getActiveDecisions());
+			assertTrue(this.pdb.getActiveDecisions().size() == 3);
+			assertTrue(this.pdb.getActiveDecisions().contains(g1));
 			System.out.println(g1);
 			
 			// retract solution
 			this.pdb.rollback(exp);
 			
 			// check data
-			Assert.assertNotNull(this.pdb.getPendingDecisions());
-			Assert.assertTrue(this.pdb.getPendingDecisions().size() == 1);
-			Assert.assertNotNull(this.pdb.getActiveDecisions());
-			Assert.assertTrue(this.pdb.getActiveDecisions().size() == 2);
-			Assert.assertFalse(this.pdb.getActiveDecisions().contains(g1));
-			Assert.assertTrue(this.pdb.getPendingDecisions().contains(g1));
+			assertNotNull(this.pdb.getPendingDecisions());
+			assertTrue(this.pdb.getPendingDecisions().size() == 1);
+			assertNotNull(this.pdb.getActiveDecisions());
+			assertTrue(this.pdb.getActiveDecisions().size() == 2);
+			assertFalse(this.pdb.getActiveDecisions().contains(g1));
+			assertTrue(this.pdb.getPendingDecisions().contains(g1));
 			System.out.println(g1);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -893,7 +894,7 @@ public class PlanDataBaseTestCase
 		System.out.println();
 		try {
 			// check PDB
-			Assert.assertNotNull(this.pdb);
+			assertNotNull(this.pdb);
 			
 			// create parameter domains
 			EnumerationParameterDomain positions = this.pdb.createParameterDomain("positions", 
@@ -957,15 +958,15 @@ public class PlanDataBaseTestCase
 			
 			// check flaws
 			List<Flaw> flaws = this.pdb.detectFlaws();
-			Assert.assertNotNull(flaws);
-			Assert.assertTrue(flaws.size() == 1);
+			assertNotNull(flaws);
+			assertTrue(flaws.size() == 1);
 			
-			Assert.assertNotNull(this.pdb.getPendingDecisions());
-			Assert.assertTrue(this.pdb.getPendingDecisions().size() == 1);
-			Assert.assertNotNull(this.pdb.getActiveDecisions());
-			Assert.assertTrue(this.pdb.getActiveDecisions().size() == 1);
-			Assert.assertTrue(this.pdb.getPendingDecisions().contains(g1));
-			Assert.assertFalse(this.pdb.getActiveDecisions().contains(g1));
+			assertNotNull(this.pdb.getPendingDecisions());
+			assertTrue(this.pdb.getPendingDecisions().size() == 1);
+			assertNotNull(this.pdb.getActiveDecisions());
+			assertTrue(this.pdb.getActiveDecisions().size() == 1);
+			assertTrue(this.pdb.getPendingDecisions().contains(g1));
+			assertFalse(this.pdb.getActiveDecisions().contains(g1));
 			System.out.println(g1);
 			
 			// get flaw solution
@@ -977,11 +978,11 @@ public class PlanDataBaseTestCase
 			this.pdb.verify();
 			
 			// check data
-			Assert.assertNotNull(this.pdb.getPendingDecisions());
-			Assert.assertTrue(this.pdb.getPendingDecisions().size() == 1);
-			Assert.assertNotNull(this.pdb.getActiveDecisions());
-			Assert.assertTrue(this.pdb.getActiveDecisions().size() == 2);
-			Assert.assertTrue(this.pdb.getActiveDecisions().contains(g1));
+			assertNotNull(this.pdb.getPendingDecisions());
+			assertTrue(this.pdb.getPendingDecisions().size() == 1);
+			assertNotNull(this.pdb.getActiveDecisions());
+			assertTrue(this.pdb.getActiveDecisions().size() == 2);
+			assertTrue(this.pdb.getActiveDecisions().contains(g1));
 			System.out.println(g1);
 			
 			
@@ -996,17 +997,17 @@ public class PlanDataBaseTestCase
 			this.pdb.verify();
 			
 			// check data
-			Assert.assertNotNull(this.pdb.getPendingDecisions());
-			Assert.assertTrue(this.pdb.getPendingDecisions().size() == 1);
-			Assert.assertNotNull(this.pdb.getActiveDecisions());
-			Assert.assertTrue(this.pdb.getActiveDecisions().size() == 1);
-			Assert.assertFalse(this.pdb.getActiveDecisions().contains(g1));
-			Assert.assertTrue(this.pdb.getPendingDecisions().contains(g1));
+			assertNotNull(this.pdb.getPendingDecisions());
+			assertTrue(this.pdb.getPendingDecisions().size() == 1);
+			assertNotNull(this.pdb.getActiveDecisions());
+			assertTrue(this.pdb.getActiveDecisions().size() == 1);
+			assertFalse(this.pdb.getActiveDecisions().contains(g1));
+			assertTrue(this.pdb.getPendingDecisions().contains(g1));
 			System.out.println(g1);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 }

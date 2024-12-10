@@ -73,7 +73,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	@TemporalSolverPlaceholder
 	protected TemporalSolver<TimePointQuery> solver;					// time point reasoner
 	
-	protected Set<TemporalInterval> intervals;							// set of created temporal intervals
+	protected Set<TemporalInterval> intervals;
+	// set of created temporal intervals
 	protected TemporalQueryFactory qf;									// temporal query factory
 	protected TemporalConstraintFactory cf;	 							// temporal constraint factory
 	
@@ -118,7 +119,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public synchronized TimePoint createTimePoint() 
+	public synchronized TimePoint createTimePoint()
+	//crea un timepoint che puo stare in qualunque punto dell asse temporale [0 +horizon)
 			throws TimePointCreationException 
 	{
 		// time point to create
@@ -140,7 +142,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public synchronized TimePoint createTimePoint(long at) 
+	public synchronized TimePoint createTimePoint(long at)
+	//deve stare in un certo istante temporale [at, horizon-at)
 			throws TimePointCreationException {
 		// time point to create
 		TimePoint point = null;
@@ -161,7 +164,9 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * @return
 	 * @throws TimePointCreationException
 	 */
-	public synchronized TimePoint createTimePoint(long[] bounds) 
+	public synchronized TimePoint createTimePoint(long[] bounds)
+	//come quello senza niente 5,10 la distanza tra l orizzonte temporale
+	// sarà massimo 10 e minimo 5 mentre quello senza bound puo scorrere su tutto l asse quello con bound puo scorrere tra due valori 5, 10
 			throws TimePointCreationException {
 		// time point to create
 		TimePoint point = null;

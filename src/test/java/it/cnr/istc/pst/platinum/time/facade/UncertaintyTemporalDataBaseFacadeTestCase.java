@@ -1,9 +1,8 @@
 package it.cnr.istc.pst.platinum.time.facade;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.framework.TemporalFacadeConfiguration;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
@@ -43,7 +42,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 	/**
 	 * 
 	 */
-	@Before
+	@BeforeAll
 	public void setupTest() {
 		System.out.println("**********************************************************************************");
 		System.out.println("********************** Uncertainty Temporal Facade Test Case *********************");
@@ -61,7 +60,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 	/**
 	 * 
 	 */
-	@After
+	@AfterEach
 	public void setDownTest() {
 		System.out.println();
 		System.out.println("**********************************************************************************");
@@ -77,14 +76,14 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		System.out.println();
 		try {
 			// check facade
-			Assert.assertNotNull(this.facade);
+			assertNotNull(this.facade);
 			// check consistency
 			this.facade.verify();
 			System.out.println(this.facade);
 			System.out.println("Ok!");
 		} catch (ConsistencyCheckException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -98,25 +97,25 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		try {
 			// create flexible temporal interval
 			TemporalInterval i1 = this.facade.createTemporalInterval(true);
-			Assert.assertNotNull(i1);
-			Assert.assertNotNull(i1.getStartTime());
-			Assert.assertNotNull(i1.getEndTime());
-			Assert.assertTrue(i1.getNominalDurationLowerBound() == 1);
-			Assert.assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
+			assertNotNull(i1);
+			assertNotNull(i1.getStartTime());
+			assertNotNull(i1.getEndTime());
+			assertTrue(i1.getNominalDurationLowerBound() == 1);
+			assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
 			// print interval description
 			System.out.println(i1);
 			
 			// create flexible temporal interval with bounds
 			TemporalInterval i2 = facade.createTemporalInterval(new long[] {10, 20}, true);
-			Assert.assertNotNull(i2);
-			Assert.assertNotNull(i2.getStartTime());
-			Assert.assertNotNull(i2.getEndTime());
-			Assert.assertTrue(i2.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i2.getNominalDurationUpperBound() == 20);
+			assertNotNull(i2);
+			assertNotNull(i2.getStartTime());
+			assertNotNull(i2.getEndTime());
+			assertTrue(i2.getNominalDurationLowerBound() == 10);
+			assertTrue(i2.getNominalDurationUpperBound() == 20);
 			// print interval description
 			System.out.println(i2);
 			
-			Assert.assertFalse(i1.equals(i2));
+			assertFalse(i1.equals(i2));
 			
 			// print temporal network information
 			System.out.println(this.facade);
@@ -136,36 +135,36 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		try {
 			// create flexible temporal interval
 			TemporalInterval i1 = this.facade.createTemporalInterval(new long[] {1, HORIZON}, false);
-			Assert.assertNotNull(i1);
-			Assert.assertNotNull(i1.getStartTime());
-			Assert.assertNotNull(i1.getEndTime());
-			Assert.assertTrue(i1.getNominalDurationLowerBound() == 1);
-			Assert.assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
+			assertNotNull(i1);
+			assertNotNull(i1.getStartTime());
+			assertNotNull(i1.getEndTime());
+			assertTrue(i1.getNominalDurationLowerBound() == 1);
+			assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
 			// print interval description
 			System.out.println(i1);
 			
 			// create flexible temporal interval with bounds
 			TemporalInterval i2 = this.facade.createTemporalInterval(new long[] {10, 20}, false);
-			Assert.assertNotNull(i2);
-			Assert.assertNotNull(i2.getStartTime());
-			Assert.assertNotNull(i2.getEndTime());
-			Assert.assertTrue(i2.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i2.getNominalDurationUpperBound() == 20);
+			assertNotNull(i2);
+			assertNotNull(i2.getStartTime());
+			assertNotNull(i2.getEndTime());
+			assertTrue(i2.getNominalDurationLowerBound() == 10);
+			assertTrue(i2.getNominalDurationUpperBound() == 20);
 			// print interval description
 			System.out.println(i2);
 			
-			Assert.assertFalse(i1.equals(i2));
+			assertFalse(i1.equals(i2));
 			this.facade.verify();
 			// print temporal network information
 			System.out.println(this.facade);
 		}
 		catch (ConsistencyCheckException ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -181,24 +180,24 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		{
 			// create flexible temporal interval
 			i1 = this.facade.createTemporalInterval(new long[] {10, 50}, false);
-			Assert.assertNotNull(i1);
-			Assert.assertNotNull(i1.getStartTime());
-			Assert.assertNotNull(i1.getEndTime());
-			Assert.assertTrue(i1.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i1.getNominalDurationUpperBound() == 50);
+			assertNotNull(i1);
+			assertNotNull(i1.getStartTime());
+			assertNotNull(i1.getEndTime());
+			assertTrue(i1.getNominalDurationLowerBound() == 10);
+			assertTrue(i1.getNominalDurationUpperBound() == 50);
 			// print interval description
 			System.out.println("Added Contingent Interval: " + i1);
 			
 			// create flexible temporal interval with bounds
 			TemporalInterval i2 = this.facade.createTemporalInterval(new long[] {10, 30}, true);
-			Assert.assertNotNull(i2);
-			Assert.assertNotNull(i2.getStartTime());
-			Assert.assertNotNull(i2.getEndTime());
-			Assert.assertTrue(i2.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i2.getNominalDurationUpperBound() == 30);
+			assertNotNull(i2);
+			assertNotNull(i2.getStartTime());
+			assertNotNull(i2.getEndTime());
+			assertTrue(i2.getNominalDurationLowerBound() == 10);
+			assertTrue(i2.getNominalDurationUpperBound() == 30);
 			// print interval description
 			System.out.println("Added Interval: " + i2);
-			Assert.assertFalse(i1.equals(i2));
+			assertFalse(i1.equals(i2));
 			
 			// create and propagate temporal constraint
 			DuringIntervalConstraint constraint = this.intervalFactory.
@@ -231,7 +230,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		}
 		catch (Exception exx) {
 			System.err.println(exx.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -245,24 +244,24 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		try {
 			// create flexible temporal interval
 			TemporalInterval i1 = this.facade.createTemporalInterval(new long[] {10, 50}, true);
-			Assert.assertNotNull(i1);
-			Assert.assertNotNull(i1.getStartTime());
-			Assert.assertNotNull(i1.getEndTime());
-			Assert.assertTrue(i1.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i1.getNominalDurationUpperBound() == 50);
+			assertNotNull(i1);
+			assertNotNull(i1.getStartTime());
+			assertNotNull(i1.getEndTime());
+			assertTrue(i1.getNominalDurationLowerBound() == 10);
+			assertTrue(i1.getNominalDurationUpperBound() == 50);
 			// print interval description
 			System.out.println("Added Interval: " + i1);
 			
 			// create flexible temporal interval with bounds
 			TemporalInterval i2 = this.facade.createTemporalInterval(new long[] {10, 30}, false);
-			Assert.assertNotNull(i2);
-			Assert.assertNotNull(i2.getStartTime());
-			Assert.assertNotNull(i2.getEndTime());
-			Assert.assertTrue(i2.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i2.getNominalDurationUpperBound() == 30);
+			assertNotNull(i2);
+			assertNotNull(i2.getStartTime());
+			assertNotNull(i2.getEndTime());
+			assertTrue(i2.getNominalDurationLowerBound() == 10);
+			assertTrue(i2.getNominalDurationUpperBound() == 30);
 			// print interval description
 			System.out.println("Added Contingent Interval: " + i2);
-			Assert.assertFalse(i1.equals(i2));
+			assertFalse(i1.equals(i2));
 			
 			// create and propagate temporal constraint
 			DuringIntervalConstraint constraint = this.intervalFactory.
@@ -297,7 +296,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -312,7 +311,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		try {
 			// create temporal intervals
 			TemporalInterval i1 = facade.createTemporalInterval(true);
-			Assert.assertNotNull(i1);
+			assertNotNull(i1);
 
 			// check consistency
 			this.facade.verify();
@@ -328,7 +327,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			
 			// create another temporal interval
 			TemporalInterval i2 = facade.createTemporalInterval(true);
-			Assert.assertNotNull(i2);
+			assertNotNull(i2);
 			
 			// check consistency
 			this.facade.verify();
@@ -367,21 +366,21 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		try {
 			// create flexible temporal interval
 			TemporalInterval i1 = facade.createTemporalInterval(true);
-			Assert.assertNotNull(i1);
-			Assert.assertNotNull(i1.getStartTime());
-			Assert.assertNotNull(i1.getEndTime());
-			Assert.assertTrue(i1.getNominalDurationLowerBound() == 1);
-			Assert.assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
+			assertNotNull(i1);
+			assertNotNull(i1.getStartTime());
+			assertNotNull(i1.getEndTime());
+			assertTrue(i1.getNominalDurationLowerBound() == 1);
+			assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
 			// print interval description
 			System.out.println(i1);
 			
 			// create flexible temporal interval with bounds
 			TemporalInterval i2 = facade.createTemporalInterval(new long[] {10, 20}, true);
-			Assert.assertNotNull(i2);
-			Assert.assertNotNull(i2.getStartTime());
-			Assert.assertNotNull(i2.getEndTime());
-			Assert.assertTrue(i2.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i2.getNominalDurationUpperBound() == 20);
+			assertNotNull(i2);
+			assertNotNull(i2.getStartTime());
+			assertNotNull(i2.getEndTime());
+			assertTrue(i2.getNominalDurationLowerBound() == 10);
+			assertTrue(i2.getNominalDurationUpperBound() == 20);
 			// print interval description
 			System.out.println(i2);
 			
@@ -417,21 +416,21 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			
 			// create flexible temporal interval
 			TemporalInterval i1 = this.facade.createTemporalInterval(true);
-			Assert.assertNotNull(i1);
-			Assert.assertNotNull(i1.getStartTime());
-			Assert.assertNotNull(i1.getEndTime());
-			Assert.assertTrue(i1.getNominalDurationLowerBound() == 1);
-			Assert.assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
+			assertNotNull(i1);
+			assertNotNull(i1.getStartTime());
+			assertNotNull(i1.getEndTime());
+			assertTrue(i1.getNominalDurationLowerBound() == 1);
+			assertTrue(i1.getNominalDurationUpperBound() == HORIZON);
 			// print interval description
 			System.out.println(i1);
 			
 			// create flexible temporal interval with bounds
 			TemporalInterval i2 = this.facade.createTemporalInterval(new long[] {10, 20}, true);
-			Assert.assertNotNull(i2);
-			Assert.assertNotNull(i2.getStartTime());
-			Assert.assertNotNull(i2.getEndTime());
-			Assert.assertTrue(i2.getNominalDurationLowerBound() == 10);
-			Assert.assertTrue(i2.getNominalDurationUpperBound() == 20);
+			assertNotNull(i2);
+			assertNotNull(i2.getStartTime());
+			assertNotNull(i2.getEndTime());
+			assertTrue(i2.getNominalDurationLowerBound() == 10);
+			assertTrue(i2.getNominalDurationUpperBound() == 20);
 			// print interval description
 			System.out.println(i2);
 			
@@ -492,7 +491,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -557,7 +556,7 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -615,8 +614,8 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			// process query
 			facade.process(distanceQuery);
 			// check result
-			Assert.assertTrue(distanceQuery.getDistanceLowerBound() == 0);
-			Assert.assertTrue(distanceQuery.getDistanceUpperBound() == 0);
+			assertTrue(distanceQuery.getDistanceLowerBound() == 0);
+			assertTrue(distanceQuery.getDistanceUpperBound() == 0);
 			
 			// make duration query
 			IntervalScheduleQuery query = this.queryFactory.
@@ -625,13 +624,13 @@ public class UncertaintyTemporalDataBaseFacadeTestCase
 			// process query
 			facade.process(query);
 			// check actual interval duration after inference
-			Assert.assertTrue(i3.getDurationLowerBound() == 17);
-			Assert.assertNotNull(i3.getDurationUpperBound() == 70);
+			assertTrue(i3.getDurationLowerBound() == 17);
+			assertNotNull(i3.getDurationUpperBound() == 70);
 		
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cb4a06bc-a955-49c4-8a72-7c2990b4a514" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/ai/framework/time/tn/TimePointTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_cp_profiler_cpprof_java_1_3_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_protobuf_protobuf_java_2_6_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__dk_brics_automaton_automaton_1_11_8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_sf_trove4j_trove4j_3_0_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_ST4_4_0_8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr_3_5_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_antlr_antlr_runtime_3_5_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_choco_solver_choco_sat_1_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_choco_solver_choco_solver_4_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_choco_solver_cutoffseq_1_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_javabits_jgrapht_jgrapht_core_0_9_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jfree_jcommon_1_0_23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jfree_jfreechart_1_0_19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongo_java_driver_3_12_9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/it/cnr/istc/pst/platinum/ai/framework/time/TemporalFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/cnr/istc/pst/platinum/ai/framework/time/TemporalFacade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/it/cnr/istc/pst/platinum/ai/framework/time/tn/TimePoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/cnr/istc/pst/platinum/ai/framework/time/tn/TimePoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/pdb/PlanDataBaseTestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/pdb/PlanDataBaseTestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/resource/DiscreteResourceComponentTestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/resource/DiscreteResourceComponentTestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/sv/ExternalStateVariableComponentTestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/sv/ExternalStateVariableComponentTestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/sv/StateVariableComponentTestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/domain/component/sv/StateVariableComponentTestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/parameter/csp/v4/ChochoSolverUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/parameter/csp/v4/ChochoSolverUnitTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/parameter/facade/CSPParameterDataBaseFacadeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/parameter/facade/CSPParameterDataBaseFacadeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/stats/mongo/MongoModelDatasetTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/stats/mongo/MongoModelDatasetTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/facade/UncertaintyTemporalDataBaseFacadeTestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/facade/UncertaintyTemporalDataBaseFacadeTestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/reasoner/apsp/APSPSolverTestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/reasoner/apsp/APSPSolverTestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/tn/SimpleTemporalNetworkTestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/tn/SimpleTemporalNetworkTestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/tn/SimpleTemporalNetworkWithUncertaintyTestCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/it/cnr/istc/pst/platinum/time/tn/SimpleTemporalNetworkWithUncertaintyTestCaseTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit3 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2p7B46xm0b8b2bMZy2ixOn41IAy" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit3&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3&quot;: &quot;junit.framework.TestCase&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/trapa/OneDrive/Desktop/there is a world/Dev/openSource/Lab_open_source-2024_2025&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="junit.framework.TestCase" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="it.cnr.istc.pst.platinum.ai.framework.time.tn" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Maven.platinum [clean,site]">
+    <configuration name="TimePointTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="platinum" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.cnr.istc.pst.platinum.ai.framework.time.tn.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.cnr.istc.pst.platinum.ai.framework.time.tn" />
+      <option name="MAIN_CLASS_NAME" value="it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePointTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TimePointTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="platinum (2)" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.cnr.istc.pst.platinum.ai.framework.time.tn.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.cnr.istc.pst.platinum.ai.framework.time.tn" />
+      <option name="MAIN_CLASS_NAME" value="it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePointTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="platinum (2) [clean,install] (1)" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="install" />
+              </list>
+            </option>
+            <option name="pomFileName" value="dependency-reduced-pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="platinum (2) [clean,install]" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="install" />
+              </list>
+            </option>
+            <option name="pomFileName" value="pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="platinum [clean,site]" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="site" />
+              </list>
+            </option>
+            <option name="pomFileName" value="pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Maven.platinum [clean,site]" />
+        <item itemvalue="Maven.platinum (2) [clean,install]" />
+        <item itemvalue="JUnit.TimePointTest (1)" />
+        <item itemvalue="JUnit.TimePointTest" />
+        <item itemvalue="Maven.platinum (2) [clean,install] (1)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cb4a06bc-a955-49c4-8a72-7c2990b4a514" name="Changes" comment="" />
+      <created>1732107038807</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1732107038807</updated>
+      <workItem from="1732107041890" duration="1329000" />
+      <workItem from="1732203369376" duration="3005000" />
+      <workItem from="1732260194332" duration="1733000" />
+      <workItem from="1732701304891" duration="1641000" />
+      <workItem from="1732782082623" duration="3000" />
+      <workItem from="1732804479642" duration="8000" />
+      <workItem from="1733820074965" duration="665000" />
+      <workItem from="1733825426415" duration="2683000" />
+      <workItem from="1733841683402" duration="1094000" />
+      <workItem from="1733842816800" duration="961000" />
+      <workItem from="1733843812648" duration="10000" />
+      <workItem from="1733843835729" duration="3000" />
+      <workItem from="1733843927408" duration="2128000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

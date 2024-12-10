@@ -1,9 +1,8 @@
 package it.cnr.istc.pst.platinum.parameter.facade;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.annotation.cfg.framework.ParameterFacadeConfiguration;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.ConsistencyCheckException;
@@ -37,7 +36,7 @@ public class CSPParameterDataBaseFacadeTest
 	/**
 	 * 
 	 */
-	@Before
+	@BeforeAll
 	public void init() 
 	{
 		System.out.println("**********************************************************************************");
@@ -51,7 +50,7 @@ public class CSPParameterDataBaseFacadeTest
 	/**
 	 * 
 	 */
-	@After
+	@AfterEach
 	public void clear() {
 		this.facade = null;
 		System.gc();
@@ -70,16 +69,16 @@ public class CSPParameterDataBaseFacadeTest
 		System.out.println();
 		// create facade
 		this.facade = ParameterFacadeBuilder.createAndSet(this);
-		Assert.assertNotNull(this.facade);
+		assertNotNull(this.facade);
 		try
 		{
 			// check consistency
 			this.facade.verify();
 			System.out.println("Ok!");
-			Assert.assertTrue(true);
+			assertTrue(true);
 		}
 		catch (ConsistencyCheckException ex) {
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -129,10 +128,10 @@ public class CSPParameterDataBaseFacadeTest
 			// check consistency
 			this.facade.verify();
 			System.out.println("Ok!");
-			Assert.assertTrue(true);
+			assertTrue(true);
 		}
 		catch (ConsistencyCheckException ex) {
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 		
 		// assign a value to a variable
@@ -148,10 +147,10 @@ public class CSPParameterDataBaseFacadeTest
 			// check consistency
 			this.facade.verify();
 			System.out.println("Ok!");
-			Assert.assertTrue(true);
+			assertTrue(true);
 		}
 		catch (ConsistencyCheckException ex) {
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 		
 		
@@ -161,8 +160,8 @@ public class CSPParameterDataBaseFacadeTest
 		// process query
 		this.facade.process(query);
 		// check values
-		Assert.assertTrue(r1location.getValues().length == 1);
-		Assert.assertTrue(r1location.getValues()[0].equals("rock2"));
+		assertTrue(r1location.getValues().length == 1);
+		assertTrue(r1location.getValues()[0].equals("rock2"));
 		System.out.println(r1location);
 		
 		// check values of parameter "r2locaiton"
@@ -171,8 +170,8 @@ public class CSPParameterDataBaseFacadeTest
 		this.facade.process(query);
 		// check values
 		System.out.println(r2location);
-		Assert.assertTrue(r2location.getValues().length < r2location.getDomain().getValues().length);
-		Assert.assertTrue(r2location.getValues().length == r2location.getDomain().getValues().length - 1);
+		assertTrue(r2location.getValues().length < r2location.getDomain().getValues().length);
+		assertTrue(r2location.getValues().length == r2location.getDomain().getValues().length - 1);
 		
 		// further constrain the values of parameter "r2location"
 		ExcludeParameterConstraint ex = this.cFactory.createParameterConstraint(ParameterConstraintType.EXCLUDE);
@@ -187,10 +186,10 @@ public class CSPParameterDataBaseFacadeTest
 			// check consistency
 			this.facade.verify();
 			System.out.println("Ok!");
-			Assert.assertTrue(true);
+			assertTrue(true);
 		}
 		catch (ConsistencyCheckException exx) {
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 		
 		// check remaining values
@@ -199,8 +198,8 @@ public class CSPParameterDataBaseFacadeTest
 		this.facade.process(query);
 		// check values
 		System.out.println(r2location);
-		Assert.assertTrue(r2location.getValues().length < r2location.getDomain().getValues().length);
-		Assert.assertTrue(r2location.getValues().length == r2location.getDomain().getValues().length - 2);
+		assertTrue(r2location.getValues().length < r2location.getDomain().getValues().length);
+		assertTrue(r2location.getValues().length == r2location.getDomain().getValues().length - 2);
 	}
 
 }

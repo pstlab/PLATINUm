@@ -1,12 +1,12 @@
 package it.cnr.istc.pst.platinum.stats.mongo;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.Test;
+
 
 import it.cnr.istc.pst.platinum.stats.ModelDataset;
 import it.cnr.istc.pst.platinum.stats.TokenExecutionData;

@@ -1,9 +1,8 @@
 package it.cnr.istc.pst.platinum.domain.component.sv;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import it.cnr.istc.pst.platinum.ai.framework.domain.DomainComponentBuilder;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
@@ -49,7 +48,7 @@ public class ExternalStateVariableComponentTestCase {
 	/**
 	 * 
 	 */
-	@Before
+	@BeforeEach
 	public void init() {
 		System.out.println("**********************************************************************************");
 		System.out.println("************************* State Variable Component Test Case ***********************");
@@ -67,7 +66,7 @@ public class ExternalStateVariableComponentTestCase {
 	/**
 	 * 
 	 */
-	@After
+	@AfterEach
 	public void clear() {
 		this.psv = null;
 		this.tf = null;
@@ -87,7 +86,7 @@ public class ExternalStateVariableComponentTestCase {
 		System.out.println();
 		
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1");
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long [] {10, 30}, true);
@@ -106,7 +105,7 @@ public class ExternalStateVariableComponentTestCase {
 		System.out.println("[Test]: addDecisionsTest() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {5, 5}, true);
 		StateVariableValue v2 = this.psv.addStateVariableValue("Val-2", new long[] {10, 30}, true);
@@ -140,10 +139,10 @@ public class ExternalStateVariableComponentTestCase {
 			// print decision
 			System.out.println(d1);
 			// check bounds
-			Assert.assertTrue(d1.getStart()[0] == 10);
-			Assert.assertTrue(d1.getStart()[1] == 10);
-			Assert.assertTrue(d1.getDuration()[0] == 5);
-			Assert.assertTrue(d1.getDuration()[1] == 5);
+			assertTrue(d1.getStart()[0] == 10);
+			assertTrue(d1.getStart()[1] == 10);
+			assertTrue(d1.getDuration()[0] == 5);
+			assertTrue(d1.getDuration()[1] == 5);
 			
 			// create query
 			query = qFactory.create(TemporalQueryType.INTERVAL_SCHEDULE);
@@ -154,10 +153,10 @@ public class ExternalStateVariableComponentTestCase {
 			// print decision
 			System.out.println(d2);
 			// check bounds
-			Assert.assertTrue(d2.getStart()[0] == this.tf.getOrigin());
-			Assert.assertTrue(d2.getStart()[1] == (this.tf.getHorizon() - v2.getDurationBounds()[0]));
-			Assert.assertTrue(d2.getDuration()[0] == v2.getDurationBounds()[0]);
-			Assert.assertTrue(d2.getDuration()[1] == v2.getDurationBounds()[1]);
+			assertTrue(d2.getStart()[0] == this.tf.getOrigin());
+			assertTrue(d2.getStart()[1] == (this.tf.getHorizon() - v2.getDurationBounds()[0]));
+			assertTrue(d2.getDuration()[0] == v2.getDurationBounds()[0]);
+			assertTrue(d2.getDuration()[1] == v2.getDurationBounds()[1]);
 			
 			// print state variable information
 			System.out.println();
@@ -166,7 +165,7 @@ public class ExternalStateVariableComponentTestCase {
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
@@ -178,7 +177,7 @@ public class ExternalStateVariableComponentTestCase {
 		System.out.println("[Test]: addObservationTest() --------------------");
 		System.out.println();
 		// check state variable object
-		Assert.assertNotNull(this.psv);
+		assertNotNull(this.psv);
 		// create the state variable description
 		StateVariableValue v1 = this.psv.addStateVariableValue("Val-1", new long[] {2, 10}, true);
 		System.out.println(this.psv);
@@ -213,7 +212,7 @@ public class ExternalStateVariableComponentTestCase {
 				constraint.setDuration(12);
 				// propagate observation
 				this.tf.propagate(constraint);
-				Assert.assertTrue(false);
+				assertTrue(false);
 			}
 			catch (Exception ex) {
 				System.out.println("\n> " + ex.getMessage() + "\n");
@@ -232,7 +231,7 @@ public class ExternalStateVariableComponentTestCase {
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
-			Assert.assertTrue(false);
+			assertTrue(false);
 		}
 	}
 	
