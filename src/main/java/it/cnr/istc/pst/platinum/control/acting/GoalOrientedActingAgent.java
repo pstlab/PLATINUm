@@ -156,8 +156,6 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
-		
-		
 	}
 	
 	
