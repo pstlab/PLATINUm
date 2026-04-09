@@ -8,6 +8,7 @@ import java.util.Map;
 
 import it.cnr.istc.pst.platinum.ai.deliberative.Planner;
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionPreparationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNode;
@@ -243,7 +244,9 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 */
 	@Override
 	public void observation(PlatformObservation<? extends Object> obs) {
+		
 		// nothing to do
+		throw new RuntimeException("Observation handling not implemented yet!");
 	}
 	
 	
@@ -402,10 +405,9 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	/**
 	 * 
 	 * @throws InterruptedException
-	 * @throws PlatformException
 	 */
 	public void start() 
-			throws InterruptedException, PlatformException {
+			throws InterruptedException {
 		
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.OFFLINE)) {
@@ -419,21 +421,39 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			this.lock.notifyAll();
 		}
 		
-		// start PROXY if necessary
-		if (this.proxy instanceof RunnablePlatformProxy) {
-			// start runnable PROXY
-			((RunnablePlatformProxy) this.proxy).start();
-		}
-		
-		
-		// start all internal processes
-		for (Thread p : this.processes) {
-			p.start();
+		// set running flag
+		boolean running = true;
+		try {
+			
+			// start PROXY if necessary
+			if (this.proxy instanceof RunnablePlatformProxy) {
+				// start runnable PROXY
+				((RunnablePlatformProxy) this.proxy).start();
+			}
+			
+			
+			// start all internal processes
+			for (Thread p : this.processes) {
+				p.start();
+			}
+		} catch (PlatformException ex) {
+			// set running flag
+			running = false;
+			System.err.println("Impossible to start the agent, error while settingup the plaform proxy: " + ex.getMessage());
 		}
 
+		// change agent status
 		synchronized (this.lock) {
-			// change status
-			this.status = ActingAgentStatus.RUNNING;
+			
+			// check running flag
+			if (running) {
+				// change status
+				this.status = ActingAgentStatus.RUNNING;
+			} else {
+				// back to offline status
+				this.status = ActingAgentStatus.OFFLINE;
+				
+			}
 			// notify all
 			this.lock.notifyAll();
 		}
@@ -444,11 +464,14 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 * @throws InterruptedException
 	 */
 	public void stop() 
-			throws InterruptedException, PlatformException
+			throws InterruptedException
 	{
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.READY) && 
-					!this.status.equals(ActingAgentStatus.RUNNING)) {
+					!this.status.equals(ActingAgentStatus.RUNNING) && 
+					!this.status.equals(ActingAgentStatus.DELIBERATING) && 
+					!this.status.equals(ActingAgentStatus.EXECUTING)) {
+				
 				// wait 
 				this.lock.wait();
 			}
@@ -459,17 +482,22 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			this.lock.notifyAll();
 		}
 		
-		
-		// interrupt internal processes and wait termination
-		for (Thread p : this.processes) {
-			p.interrupt();
-			p.join();
-		}
-		
-		// stop platform PROXY
-		if (this.proxy instanceof RunnablePlatformProxy) {
+		try {
+			
+			// interrupt internal processes and wait termination
+			for (Thread p : this.processes) {
+				p.interrupt();
+				p.join();
+			}
+			
 			// stop platform PROXY
-			((RunnablePlatformProxy) this.proxy).stop();
+			if (this.proxy instanceof RunnablePlatformProxy) {
+				// stop platform PROXY
+				((RunnablePlatformProxy) this.proxy).stop();
+			}
+			
+		} catch (PlatformException ex) {
+			System.out.println("Error while stopping the platform proxy: " + ex.getMessage());
 		}
 		
 		synchronized (this.lock) {
@@ -483,11 +511,9 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	/**
 	 * 
 	 * @throws InterruptedException
-	 * @throws SynchronizationCycleException
-	 * @throws PlatformException
 	 */
 	public void initialize() 
-			throws InterruptedException, SynchronizationCycleException, PlatformException {
+			throws InterruptedException {
 		
 		synchronized (this.lock) {
 			while(!this.status.equals(ActingAgentStatus.RUNNING)) {
@@ -501,12 +527,32 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			this.lock.notifyAll();
 		}
 		
-		// set plan database on the given planning domain
-		this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
+		
+		// initialization flag
+		boolean initialized =  true;
+		try {
+			
+			// set plan database on the given planning domain
+			this.pdb = PlanDataBaseBuilder.createAndSet(this.ddl);
+			
+		} catch (SynchronizationCycleException ex) {
+			initialized = false;
+			System.err.println("Error while initializing the agent on DDL: " + this.ddl + "\n" + ex.getMessage());
+		}
 		
 		synchronized (this.lock) {
-			// change status
-			this.status = ActingAgentStatus.READY;
+			
+			// check initialization flag
+			if (initialized) {
+				// agent initialized and ready for planning and execution
+				this.status = ActingAgentStatus.READY;
+				
+			} else {
+				// initialization error back to running state
+				this.status = ActingAgentStatus.RUNNING;
+				
+			}
+			
 			// send signal
 			this.lock.notifyAll();
 		}
@@ -520,8 +566,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			throws InterruptedException {
 		
 		synchronized (this.lock) {
-			while (!this.status.equals(ActingAgentStatus.FAILURE) && 
-					!this.status.equals(ActingAgentStatus.READY)) {
+			while (!this.status.equals(ActingAgentStatus.READY)) {
 				// wait
 				this.lock.wait();
 			}
@@ -553,7 +598,6 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 * 
 	 * @return
 	 * @throws InterruptedException
-	 * @throws NoSolutionFoundException 
 	 */
 	protected boolean plan(Goal goal) 
 			throws InterruptedException {
@@ -753,12 +797,14 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			
 			// update status according to the result of the planning process
 			if (success) {
+				// the deliberative process moves the goal to "committed" state and ready for execution
 				this.status = ActingAgentStatus.PREPARING_EXECUTION;
 				
 			} else {
 				
-				// failure
-				this.status = ActingAgentStatus.FAILURE;
+				// the deliberative process moves the goal to "aborted" state and go back to ready state for next planning 
+				//this.status = ActingAgentStatus.FAILURE;
+				this.status = ActingAgentStatus.READY;
 			}
 			
 			// send signal
@@ -778,7 +824,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 *  3 - some major error occurred during the execution and no re-planning can be done  
 	 * 
 	 * @param goal
-	 * @return execution code within {1, 2, 3}
+	 * @return execution code within {1 - success, 2 - contingency and re-planning, 3 - contingency and abort}
 	 * @throws InterruptedException
 	 */
 	protected int execute(Goal goal) 
@@ -809,23 +855,32 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			
 		} catch (ExecutionPreparationException ex) {
 			
-			// execution failure
+			// failure
 			complete = false;
 			// no re-planning since the execution has not even started
 			replanning = false;
 			
 			// print message
-			System.err.println(ex.getMessage());
+			System.err.println("Execution preparation error, interrupt execution and abort goal: " + ex.getMessage());
 			
-		} catch (Exception ex) {
+		} catch (ExecutionException | InterruptedException ex) {	// distinguish between failures requiring re-planning, and signals/failures requiring goal abort
 			
 			// execution failure
 			complete = false;
-			// re-planning is necessary
-			replanning = true;
+			// no re-planning attempts
+			replanning = false;
 			
+			System.err.println("Execution execption after signals or contingency, interrupt execution and abort goal: " + ex.getMessage());
+			
+		} catch (PlatformException ex) {		// distinguish between failures requiring re-planning, and signals/failures requiring goal abort
+							
+			// execution failure
+			complete = false;
+			// re-planning attempt 
+			replanning = true;
 			// print message
-			System.err.println(ex.getMessage());
+			System.err.println("Execution contingency, complete goal execution through replanning: " + ex.getMessage());
+
 			
 		} finally {
 			
@@ -846,8 +901,18 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				
 			} else {
 				
-				// suspend status for contingency handling and re-planning
-				this.status = ActingAgentStatus.SUSPENDED;
+				// check re-planning flag
+				if (replanning) {
+				
+					// suspend status for contingency handling and re-planning
+					this.status = ActingAgentStatus.SUSPENDED;
+					
+				} else {
+					
+					// the executive process moves the goal to aborted state
+					this.status = ActingAgentStatus.READY;
+					
+				}
 			}
 			
 			// send signal
@@ -855,7 +920,9 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		}
 		
 		// return execution code
-		return complete ? 1 : !replanning ? 3 : 2;
+		return complete ? 1 : 	// execution completed successfully
+			replanning ? 2 : 	// try re-planning
+				3;				// abort goal execution
 	}
 	
 	/**
@@ -1064,7 +1131,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// clear execution trace
 			goal.clearExecutionTrace();
 			
-		} catch (Exception ex) {
+		} catch (NoSolutionFoundException ex) {			// failure while trying to repair the plan
 			
 			// error while repairing
 			success = false;
@@ -1109,11 +1176,15 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// update status according to the execution results
 			if (success) {
 				
-				this.status = ActingAgentStatus.READY;
+				//this.status = ActingAgentStatus.READY;
+				// plan successfully repaired, the process will move the goal to "committed" state to resume execution
+				this.status = ActingAgentStatus.PREPARING_EXECUTION;
 				
 			} else {
 				
-				this.status = ActingAgentStatus.FAILURE;
+				//this.status = ActingAgentStatus.FAILURE;
+				// the process will move the goal to "aborted" state 
+				this.status = ActingAgentStatus.READY;
 			}
 			
 			// send signal

@@ -76,7 +76,7 @@ public class ExecutiveProcess implements Runnable {
 					// execution error
 					case 3 : {
 						
-						// goal execution error due to some major failure
+						// goal execution abort due to major failures, opportunities or stop signals
 						this.agent.abort(goal);
 					}
 					break;
@@ -129,6 +129,7 @@ public class ExecutiveProcess implements Runnable {
 			
 			// run the executive starting at a given tick
 			boolean complete = exec.execute(goal.getExecutionTick(), goal);
+			
 			// check execution result 
 			if (!complete) {
 				
