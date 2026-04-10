@@ -1,7 +1,6 @@
 package it.cnr.istc.pst.platinum.ai.executive.dispatcher;
 
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
-import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeObservationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.NodeStartOverflow;
@@ -30,7 +29,7 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive> {
 	 */
 	@Override
 	public final void handleTick(long tick) 
-			throws ExecutionException, PlatformException {
+			throws NodeObservationException, PlatformException {
 		
 		// get tau
 		long tau = this.executive.convertTickToTau(tick);
@@ -55,13 +54,13 @@ public class ConditionCheckingDispatcher extends Dispatcher<Executive> {
 						
 					} catch (TemporalConstraintPropagationException ex) {
 						
-						// set token as in execution and wait for feedbacks
-						this.executive.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
+						// update node state
+						this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 						// create execution cause
 						ExecutionFailureCause cause = new NodeStartOverflow(tick, node, tau);
 						// throw execution exception
 						throw new NodeObservationException(
-								"The dispatched start time of the token does not comply with the plan:\n"
+								"Error while propagating start time constraint, token not dispaatched:\n"
 								+ "\t- start: " + tau + "\n"
 								+ "\t- node: " + node + "\n", 
 								cause);

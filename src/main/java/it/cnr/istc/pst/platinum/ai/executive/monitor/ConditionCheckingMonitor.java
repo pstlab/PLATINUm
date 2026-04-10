@@ -2,8 +2,7 @@ package it.cnr.istc.pst.platinum.ai.executive.monitor;
 
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedback;
-import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
-import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeExecutionErrorException;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeExecutionFailureException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeObservationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.NodeDurationOverflow;
@@ -35,7 +34,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 	 */
 	@Override
 	public void handleTick(long tick) 
-			throws ExecutionException, PlatformException {
+			throws NodeExecutionFailureException, NodeObservationException, PlatformException {
 		
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
@@ -56,10 +55,8 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					long duration = Math.max(1, tau - node.getStart()[0]);
 					try {
 						
-						// schedule token duration
+						// schedule token duration and update node status
 						this.executive.scheduleTokenDuration(node, duration);
-						// update node status
-						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
 						info("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} -> Observed token execution with duration " + duration + " \n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 						
@@ -87,7 +84,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 						this.executive.scheduleUncontrollableTokenStart(node, tau);
 						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Observed token execution start at time " + tau + "\n"
 								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
-						
+
 					} catch (TemporalConstraintPropagationException ex) {
 						
 						// update node state
@@ -111,8 +108,8 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					// execution failure
 					ExecutionFailureCause cause = new NodeExecutionError(tick, node); 
 					// throw execution exception
-					throw new NodeExecutionErrorException(
-							"Node execution error:\n\t- node: " + node + "\n", 
+					throw new NodeExecutionFailureException(
+							"Node execution failure received:\n\t- node: " + node + "\n", 
 							cause);
 				}
 			}
@@ -134,18 +131,30 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 						
 						// compute (controllable) execution duration
 						long duration = Math.max(1, tau - node.getStart()[0]);
-						// send stop signal to the platform
+									
+						try {
 						
-						// TODO : Manage controllable tokens w.r.t. START and STOP commands to dispatch 
-						// this.executive.sendStopCommandSignalToPlatform(node);
+							// schedule token duration 
+							this.executive.scheduleTokenDuration(node, duration);					
+							// token scheduled
+							info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
+									+ "\t- duration: " + duration + "\n"
+									+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+							
+						} catch (TemporalConstraintPropagationException ex) {
+							
+							// update node state
+							this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
+							// create failure cause
+							ExecutionFailureCause cause = new NodeDurationOverflow(tick, node, duration);
+							// throw execution exception
+							throw new NodeObservationException(
+									"The propaged duration of the (controllable) token does not comply with the expected one:\n"
+									+ "\t- duration: " + duration + "\n"
+									+ "\t- node: " + node + "\n", 
+									cause); 
+						}
 						
-						// set node as executed
-						this.executive.updateNode(node, ExecutionNodeStatus.EXECUTED);
-						
-						// token scheduled
-						info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} -> Scheduling duration for controllable token\n"
-								+ "\t- duration: " + duration + "\n"
-								+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 						
 					} else {
 						
@@ -165,7 +174,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 	}
 	
 	/**
-	 * 
+	 * This method does not propagate any temporal information, it handle the transition from an execution failure state by collecting missing feedback
 	 */
 	@Override
 	public void handleExecutionFailure(long tick, ExecutionFailureCause cause) 
@@ -190,7 +199,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					
 					// compute node duration of the token in execution 
 					long duration = Math.max(1, tau - node.getStart()[0]);
-					// the node can be considered as executed
+					// ensure node in failure status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					// add repair information
 					cause.addRepairInfo(node, duration);
@@ -202,7 +211,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				
 				case UNCONTROLLABLE_TOKEN_START : {
 					
-					// update node status
+					// ensure node in failure status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} -> Observed token execution start at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
@@ -211,7 +220,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				
 				case TOKEN_EXECUTION_FAILURE : {
 					
-					// the node can be considered as executed
+					// ensure node in failure status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} -> Observed execution failure at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");

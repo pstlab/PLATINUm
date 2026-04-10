@@ -334,12 +334,13 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		
 		// check controllability type
 		ControllabilityType type = node.getControllabilityType();
+		// check token type
 		switch (type) {
 		
 			// schedule uncontrollable token
 			case UNCONTROLLABLE : {
 				
-				// simply set the proper state - no propagation is needed in this case
+				// simply set an intermediate state waiting for uncontrollable token start feedback
 				this.updateNode(node, ExecutionNodeStatus.STARTING);
 			}
 			break;
@@ -347,12 +348,13 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			case PARTIALLY_CONTROLLABLE : 
 			case CONTROLLABLE : {
 				
+				// schedule token start time
+				this.pdb.scheduleStartTime(node, start);
 				// update node status
 				this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 			}
 			break;
 		}
-		
 		
 		// dispatch the command through the executive if needed
 		this.sendStartCommandSignalToPlatform(node);
@@ -367,8 +369,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 	public void scheduleUncontrollableTokenStart(ExecutionNode node, long start) 
 			throws TemporalConstraintPropagationException {
 		
-		// schedule the observed start time of the token
-//		this.pdb.scheduleStartTime(node, start);s
+		// propagate the observed start time of the uncontrollable token
+		this.pdb.scheduleStartTime(node, start);
 		// update node status
 		this.updateNode(node, ExecutionNodeStatus.IN_EXECUTION);
 	}
@@ -466,57 +468,63 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			this.lock.notifyAll();
 		}
 
-		
-		// check goal 
-		if (goal == null) {
-			// prepare execution
-			this.doPrepareExecution();
+		try {
 			
-		} else {
-			
-			// prepare execution
-			this.doPrepareExecution(goal);
-		}
-		
-		// set dispatching index
-		this.dispatchedIndex = new ConcurrentHashMap<>();
-		// start clock
-		this.clock.start(startTick);
-		// wait execution completes
-		this.clock.join();
-		
-		// check execution failure or not 
-		if (this.failure.get()) {
-			
-			// execution failure
-			error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
-					+ "\t- cause: " + this.cause.getType() + "\n");
-			
-			// update executive status
-			synchronized (this.lock) {
-				// set error state
-				this.status = ExecutionStatus.ERROR;
-				// send signal 
-				this.lock.notifyAll();
+			// check goal 
+			if (goal == null) {
+				// prepare execution
+				this.doPrepareExecution();
+				
+			} else {
+				
+				// prepare execution
+				this.doPrepareExecution(goal);
 			}
 			
-		} else {
+			// set dispatching index
+			this.dispatchedIndex = new ConcurrentHashMap<>();
+			// start clock
+			this.clock.start(startTick);
+			// wait execution completes
+			this.clock.join();
 			
-			// successful execution 
-			info("Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");
-			
-			// update executive status
-			synchronized (this.lock) {
-				// set inactive status
-				this.status = ExecutionStatus.INACTIVE;
-				// send signal 
-				this.lock.notifyAll();
+			// check execution failure or not 
+			if (this.failure.get()) {
+				
+				// execution failure
+				error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
+						+ "\t- cause: " + this.cause.getType() + "\n");
+				
+				// update executive status
+				synchronized (this.lock) {
+					// set error state
+					this.status = ExecutionStatus.FAILURE;
+					// send signal 
+					this.lock.notifyAll();
+				}
+				
+			} else {
+				
+				// successful execution 
+				info("Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");
+				
+				// update executive status
+				synchronized (this.lock) {
+					// set inactive status
+					this.status = ExecutionStatus.INACTIVE;
+					// send signal 
+					this.lock.notifyAll();
+				}
 			}
-		}
+						
+		} finally { 
 			
-		// clear monitor and dispatcher
-		this.monitor.clear();
-		this.dispatcher.clear();
+			// clear monitor and dispatcher
+			this.monitor.clear();
+			this.dispatcher.clear();
+		}
+		
+		
 		// return execution result
 		return !this.failure.get();
 	}
@@ -549,24 +557,26 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		boolean complete = false;
 		try  {
 			
+			// handle current tick
+			this.currentTick = tick;
+			debug("{Executive} -> Handle tick: " + tick + "\n");
+			
+			
 			// check failure flag
 			if (!this.failure.get()) {
 				
-				// handle current tick
-				this.currentTick = tick;
-				debug("{Executive} -> Handle tick: " + tick + "\n");
-				// synch step
+								// synch step
 				debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 				this.monitor.handleTick(tick);
-				// check if execution is complete
+				
+				// check execution termination condition 
 				complete = this.pdb.getNodesByStatus(ExecutionNodeStatus.WAITING).isEmpty() &&
 						this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING).isEmpty() && 
-						this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty();
+						this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).isEmpty(); 
 				
-				
-				// check complete flag 
+				// check termination flag
 				if (!complete) {
-				
+					
 					// dispatching step
 					debug("{Executive} {tick: " + tick + "} -> Dispatching step\n");
 					this.dispatcher.handleTick(tick);
@@ -574,33 +584,19 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			
 			} else {
 				
-				// handle current tick
-				this.currentTick = tick;
+				warning("{Executive} {tick: " + tick + "} -> Failure handling step\n");
 				// handle observations
 				this.monitor.handleExecutionFailure(tick, this.cause);
+				// count the size of feedback pending
+				int count = this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING).size() 
+						+ this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION).size();
 				
-				// hypothesis
-				complete = true;
-				
-				// get nodes in starting state
-				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING)) {
-					
-					// the executive cannot complete 
-					complete = false;
-					// waiting for a feedback of the node 
-					warning("{Executive} {tick: " + tick + "} {FAILURE} -> Waiting for feedback about dispatched starting command request :\n"
-							+ "\t- node: " + node + "\n");
-				}
-				
-				// get nodes in execution 
-				for (ExecutionNode node : this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION)) {
-
-					
-					// the executive cannot complete 
-					complete = false;
-					// waiting for a feedback of the node 
-					warning("{Executive} {tick: " + tick + "} {FAILURE} -> Waiting for feedback about dispatched command :\n"
-							+ "\t- node: " + node + "\n");
+				// check termination condition flag
+				complete = count == 0;
+				// check termination
+				if (!complete) {
+					// wait feedback
+					warning("{Executive} {tick: " + tick + "} {FAILURE} -> Waiting for " + count +  " feedback about dispatched commands\n");
 				}
 			}
 			
@@ -638,6 +634,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			complete = false;
 			// set execution failure cause
 			this.cause = ex.getFailureCause();
+			// set status to repairing
+			this.status = ExecutionStatus.FAILURE_HANDLING;
 			// error message
 			error("{Executive} {tick: " + tick + "} -> Error while executing plan:\n"
 					+ "\t- message: " + ex.getMessage() + "\n\n"
@@ -649,18 +647,24 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			this.failure.set(true);
 			// complete execution in this case
 			complete = true;
+			// set status to failure
+			this.status = ExecutionStatus.FAILURE;
 			// error message
 			error("{Executive} {tick: " + tick + "} -> Platform error:\n"
 					+ "\t- message: " + ex.getMessage() + "\n");
 			
 		} catch (InterruptedException ex) {
 			
-			// execution error
-			error(ex.getMessage());
+			
 			// set execution failure 
 			this.failure.set(true);
 			// complete execution in this case
 			complete = true;
+			// set status to interrupted
+			this.status = ExecutionStatus.INTERRUPTED;
+			// execution error
+			error("{Executive} {tick: " + tick + "} -> Interruption received:\n"
+					+ "\t- message: " + ex.getMessage() + "\n");
 		}
 
 		// get boolean flag
@@ -755,11 +759,10 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					// add entry to the index
 					this.dispatchedIndex.put(cmd, node);
 				}
+			
+			
 			}
 			
-		} else {
-			
-			// nothing to do, no platform PROXY available
 		}
 	}
 	

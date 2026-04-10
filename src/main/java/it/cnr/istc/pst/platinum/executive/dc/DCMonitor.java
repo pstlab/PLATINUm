@@ -2,7 +2,7 @@ package it.cnr.istc.pst.platinum.executive.dc;
 
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedback;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
-import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeExecutionErrorException;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeExecutionFailureException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeObservationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.NodeDurationOverflow;
@@ -117,7 +117,7 @@ public class DCMonitor extends Monitor<DCExecutive>
 					// execution failure
 					ExecutionFailureCause cause = new NodeExecutionError(tick, node); 
 					// throw execution exception
-					throw new NodeExecutionErrorException(
+					throw new NodeExecutionFailureException(
 							"Node execution error:\n\t- node: " + node + "\n", 
 							cause);
 				}
