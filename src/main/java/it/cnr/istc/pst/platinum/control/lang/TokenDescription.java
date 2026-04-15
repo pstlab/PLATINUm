@@ -112,6 +112,7 @@ public class TokenDescription {
 		return "{ "
 				+ "\"component\": \"" + this.component + "\", "
 				+ "\"value\": \"" + this.value + "\", "
+				+ "\"parameters\": [" + (this.labels != null && this.labels.length > 0 ? this.labels[0] : "none") + "]"
 				+ (this.start != null ? "\"start\": [" + this.start[0] + ", " + this.start[1] + "], " : "\"start\": [1, +INF], " )
 				+ (this.duration != null ? "\"duration\": [" + this.duration[0] + ", " + this.duration[1] + "], " : "\"duration\": [1, +INF], ")
 				+ (this.end != null ? "\"end\": [" + this.end[0] + ", " + this.end[1] + "], " : "\"end\": [1, +INF], ")

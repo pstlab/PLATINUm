@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.cnr.istc.pst.platinum.ai.deliberative.Planner;
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
@@ -19,9 +22,13 @@ import it.cnr.istc.pst.platinum.ai.framework.domain.component.Decision;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.DomainComponent;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanDataBase;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.DecisionPropagationException;
+import it.cnr.istc.pst.platinum.ai.framework.domain.component.ex.RelationPropagationException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.NoSolutionFoundException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.ex.SynchronizationCycleException;
 import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.plan.SolutionPlan;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.Relation;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.RelationType;
+import it.cnr.istc.pst.platinum.ai.framework.microkernel.lang.relations.parameter.BindParameterRelation;
 import it.cnr.istc.pst.platinum.ai.framework.utils.properties.FilePropertyReader;
 import it.cnr.istc.pst.platinum.control.lang.AgentTaskDescription;
 import it.cnr.istc.pst.platinum.control.lang.Goal;
@@ -41,6 +48,8 @@ import it.cnr.istc.pst.platinum.control.platform.RunnablePlatformProxy;
  *
  */
 public class GoalOrientedActingAgent implements PlatformObserver {
+	
+	private static final Logger logger = LoggerFactory.getLogger(GoalOrientedActingAgent.class);
 	
 	private final Object lock;								// lock state;
 	private ActingAgentStatus status;						// agent status
@@ -128,7 +137,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				}
 				
 				// print agent configuration
-				System.out.println("Configuration of the Goal-Oriented Acting Agent:\n"
+				logger.debug("Configuration of the Goal-Oriented Acting Agent:\n"
 						+ "\tDDL file: " +  ddlFile + "\n"
 						+ "\tDeliberative Clas: " + plannerClassName + "\n"
 						+ "\tExecutive Class: " + executiveClassName + "\n"
@@ -144,7 +153,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			} else {
 				
 				// print agent configuration
-				System.out.println("Configuration of the Goal-Oriented Acting Agent:\n"
+				logger.debug("Configuration of the Goal-Oriented Acting Agent:\n"
 						+ "\tDDL file: " +  ddlFile + "\n"
 						+ "\tDeliberative Clas: " + plannerClassName + "\n"
 						+ "\tExecutive Class: " + executiveClassName + "\n");
@@ -183,7 +192,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 						
 						// check buffered goals
 						Goal goal = waitGoal(GoalStatus.BUFFERED);
-						System.out.println("Selecting goal.. \n" + goal + "\n");
+						logger.debug("Selecting goal.. \n" + goal + "\n");
 						// simply select the extracted goal
 						select(goal);
 						
@@ -259,7 +268,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		
 		// protect access to the queue
 		synchronized (this.queue) {
-			System.out.println("[Agent] Receiving task ...\n" + description + "\n");
+			logger.info("[Agent] Receiving task ...\n" + description + "\n");
 			// create goal 
 			Goal goal = new Goal(description);
 			// set goal status
@@ -439,7 +448,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		} catch (PlatformException ex) {
 			// set running flag
 			running = false;
-			System.err.println("Impossible to start the agent, error while settingup the plaform proxy: " + ex.getMessage());
+			logger.warn("Impossible to start the agent, error while settingup the plaform proxy: " + ex.getMessage());
 		}
 
 		// change agent status
@@ -464,8 +473,8 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 * @throws InterruptedException
 	 */
 	public void stop() 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.READY) && 
 					!this.status.equals(ActingAgentStatus.RUNNING) && 
@@ -497,7 +506,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			}
 			
 		} catch (PlatformException ex) {
-			System.out.println("Error while stopping the platform proxy: " + ex.getMessage());
+			logger.warn("Error while stopping the platform proxy: " + ex.getMessage());
 		}
 		
 		synchronized (this.lock) {
@@ -537,7 +546,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			
 		} catch (SynchronizationCycleException ex) {
 			initialized = false;
-			System.err.println("Error while initializing the agent on DDL: " + this.ddl + "\n" + ex.getMessage());
+			logger.warn("Error while initializing the agent on DDL: " + this.ddl + "\n" + ex.getMessage());
 		}
 		
 		synchronized (this.lock) {
@@ -622,120 +631,20 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		List<Decision> goals = new ArrayList<>();
 		// list of fact decisions
 		List<Decision> facts = new ArrayList<>();
+		// list of created (and activated) relations
+		List<Relation> activatedRelations = new ArrayList<>();
+		
+		
 		try {
 			
 			// get task description
 			AgentTaskDescription task = goal.getTaskDescription();
-			// set known information concerning components
-			for (TokenDescription f : task.getFacts()) {
-				
-				// get domain component
-				DomainComponent component = this.pdb.getComponentByName(f.getComponent());
-				// get goal referred value
-				ComponentValue value = component.getValueByName(f.getValue());
-				// check start time bound
-				long[] start = f.getStart();
-				if (start == null) {
-					start = new long[] {
-						this.pdb.getOrigin(),
-						this.pdb.getHorizon()
-					};
-				}
-				
-				// check end time bound
-				long[] end = f.getEnd();
-				if (end == null) {
-					end = new long[] {
-						this.pdb.getOrigin(),
-						this.pdb.getHorizon()
-					};
-				}
-				
-				// check duration bound
-				long[] duration = f.getDuration();
-				if (duration == null) {
-					duration = new long[] {
-						value.getDurationLowerBound(),
-						value.getDurationUpperBound()
-					};
-				}
-				
-				// check labels
-				String[] labels = f.getLabels();
-				if (labels == null) {
-					labels = new String[] {};
-				}
-				
-				// create fact decision
-				Decision decision = component.create(
-						value, 
-						labels,
-						start,
-						end,
-						duration
-						);
-				
-				// also activate fact decision
-				component.activate(decision);
-				// add decision to fact list
-				facts.add(decision);
-			}
-			
-			// set planning goals 
-			for (TokenDescription g : task.getGoals()) {
-				
-				// get domain component
-				DomainComponent component = this.pdb.getComponentByName(g.getComponent());
-				// get goal referred value
-				ComponentValue value = component.getValueByName(g.getValue());
-				// check start time bound
-				long[] start = g.getStart();
-				if (start == null) {
-					start = new long[] {
-						this.pdb.getOrigin(),
-						this.pdb.getHorizon()
-					};
-				}
-				
-				// check end time bound
-				long[] end = g.getEnd();
-				if (end == null) {
-					end = new long[] {
-						this.pdb.getOrigin(),
-						this.pdb.getHorizon()
-					};
-				}
-				
-				// check duration bound
-				long[] duration = g.getDuration();
-				if (duration == null) {
-					duration = new long[] {
-						value.getDurationLowerBound(),
-						value.getDurationUpperBound()
-					};
-				}
-				
-				// check labels
-				String[] labels = g.getLabels();
-				if (labels == null) {
-					labels = new String[] {};
-				}
-				
-				// create goal decision
-				Decision decision = component.create(
-						value, 
-						labels,
-						start,
-						end,
-						duration
-						);
-				
-				// set as mandatory expansion decision
-				decision.setMandatoryExpansion();
-				// add decision to goal list
-				goals.add(decision);
-			}
-			
+			// create plan data and propagate relations
+			this.propagate(
+					task, 
+					goals, 
+					facts, 
+					activatedRelations);
 			
 			// start planning time
 			long now = System.currentTimeMillis();
@@ -771,7 +680,8 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			}
 			
 			
-		} catch (DecisionPropagationException ex) {
+		} catch (DecisionPropagationException | RelationPropagationException ex) {
+			
 			// problem setup error 
 			success = false;
 			// remove and deactivate facts
@@ -787,7 +697,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			}
 			
 			// print an error message
-			System.err.println("Error while propagating intial facts from task description:\n"
+			logger.warn("Error while propagating intial facts from task description:\n"
 					+ "\t- message: " + ex.getMessage() + "\n");
 		}
 		
@@ -861,7 +771,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			replanning = false;
 			
 			// print message
-			System.err.println("Execution preparation error, interrupt execution and abort goal: " + ex.getMessage());
+			logger.warn("Execution preparation error, interrupt execution and abort goal: " + ex.getMessage());
 			
 		} catch (ExecutionException | InterruptedException ex) {	// distinguish between failures requiring re-planning, and signals/failures requiring goal abort
 			
@@ -870,7 +780,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// no re-planning attempts
 			replanning = false;
 			
-			System.err.println("Execution execption after signals or contingency, interrupt execution and abort goal: " + ex.getMessage());
+			logger.warn("Execution execption after signals or contingency, interrupt execution and abort goal: " + ex.getMessage());
 			
 		} catch (PlatformException ex) {		// distinguish between failures requiring re-planning, and signals/failures requiring goal abort
 							
@@ -879,7 +789,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// re-planning attempt 
 			replanning = true;
 			// print message
-			System.err.println("Execution contingency, complete goal execution through replanning: " + ex.getMessage());
+			logger.warn("Execution contingency, complete goal execution through replanning: " + ex.getMessage());
 
 			
 		} finally {
@@ -1015,7 +925,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 							// check temporal intervals
 							if (node.getInterval().equals(active.getToken().getInterval())) {
 								// keep the decision as active 
-								System.out.println("\nKEEP DECISION " + active + "\n");
+								logger.debug("\nKEEP DECISION " + active + "\n");
 								kept.add(active);
 							}
 						}
@@ -1109,7 +1019,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 						ExecutionNodeStatus.IN_EXECUTION);
 				
 				// add decision to goal list
-				System.out.println("REPAIR GOAL : [" + decision.getId() +"]:" + decision.getComponent().getName() + "." + decision.getValue().getLabel() + " "
+				logger.warn("REPAIR GOAL : [" + decision.getId() +"]:" + decision.getComponent().getName() + "." + decision.getValue().getLabel() + " "
 						+ "AT [" + decision.getStart()[0]  + ", " + decision.getStart()[1] + "] "
 						+ "[" + decision.getEnd()[0] + ", " + decision.getEnd()[1] + "] "
 						+ "[" + decision.getDuration()[0] + ", " + decision.getDuration()[1] + "]");
@@ -1136,7 +1046,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// error while repairing
 			success = false;
 			// error message
-			System.err.println("Error while trying to repair the plan\n"
+			logger.warn("Error while trying to repair the plan\n"
 					+ "\t- message: " + ex.getMessage() + "\n");
 			
 			// completely clear all the plan database
@@ -1225,5 +1135,197 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		
 		// get extracted goal
 		return goal;
+	}
+	
+	
+	/**
+	 * 
+	 * @param task
+	 * @param goals
+	 * @param facts
+	 * @param activatedRelations
+	 * @throws DecisionPropagationException 
+	 * @throws RelationPropagationException 
+	 */
+	private void propagate(AgentTaskDescription task, 
+			List<Decision> goals, 
+			List<Decision> facts, 
+			List<Relation> activatedRelations) 
+					throws DecisionPropagationException, RelationPropagationException {
+		
+		// fact ID
+		int factId = 0;
+		// set known information concerning components
+		for (TokenDescription f : task.getFacts()) {
+			
+			// get domain component
+			DomainComponent component = this.pdb.getComponentByName(f.getComponent());
+			// get fact referred value
+			ComponentValue value = component.getValueByName(f.getValue());
+			
+			// check start time bound
+			long[] start = f.getStart();
+			if (start == null) {
+				start = new long[] {
+						this.pdb.getOrigin(),
+						this.pdb.getHorizon()
+				};
+			}
+			
+			// check end time bound
+			long[] end = f.getEnd();
+			if (end == null) {
+				end = new long[] {
+					this.pdb.getOrigin(),
+					this.pdb.getHorizon()
+				};
+			}
+			
+			// check duration bound
+			long[] duration = f.getDuration();
+			if (duration == null) {
+				duration = new long[] {
+						value.getDurationLowerBound(),
+						value.getDurationUpperBound()
+				};
+			}
+			
+			// set labels
+			String[] labels = new String[] {};
+			// get parameters
+			String[] params = f.getLabels();
+			if (params != null && params.length > 0) {
+				// set parameter labels
+				labels = new String[params.length];
+				for (int i = 0; i < params.length; i++) {
+					// create parameter label
+					labels[i] = "?f" + factId + "l" + i;
+				}
+			}
+			
+			// create fact decision
+			Decision decision = component.create(
+					value,
+					labels,
+					start,
+					end,
+					duration);
+			
+			// also activate fact decisions
+			component.activate(decision);
+			// add activated decision to facts
+			facts.add(decision);
+			
+			
+			// bind parameter labels
+			for (int i = 0; i < params.length; i++) {
+				
+				// get parameter label
+				String pLabel = labels[i];
+				// get parameter value
+				String pValue = params[i];
+				
+				// create BIND parameter relation
+				BindParameterRelation pRel = component.create(
+						RelationType.BIND_PARAMETER,
+						decision,
+						decision);		// reflexive relation
+				// set relation data
+				pRel.setReferenceParameterLabel(pLabel);
+				pRel.setValue(pValue);
+				
+				// activate relation
+				component.activate(pRel);
+				// add activated relation
+				activatedRelations.add(pRel);
+			}
+			
+			// increment fact ID counter
+			factId++;
+		}
+		
+		
+		// goal ID counter
+		int goalId = 0;
+		// set planning data
+		for (TokenDescription g : task.getGoals()) {
+			
+			// get domain component
+			DomainComponent component = this.pdb.getComponentByName(g.getComponent());
+			// get goal signature
+			ComponentValue value = component.getValueByName(g.getValue());
+			
+			// check start time bound
+			long[] start = g.getStart();
+			if (start == null) {
+				start = new long[] {
+						this.pdb.getOrigin(),
+						this.pdb.getHorizon()
+				};
+			}
+			
+			// check end time bound
+			long[] end = g.getEnd();
+			if (end == null) {
+				end = new long[] {
+						this.pdb.getOrigin(),
+						this.pdb.getHorizon()
+				};
+			}
+			
+			// check duration bound
+			long[] duration = g.getDuration();
+			if (duration == null) {
+				duration = new long[] {
+						value.getDurationLowerBound(),
+						value.getDurationUpperBound()
+				};
+			}
+			
+			// set parameter labels
+			String[] labels = new String[] {};
+			// get parameters
+			String[] params = g.getLabels();
+			if (params != null && params.length > 0) {
+				// set parameter labels
+				labels = new String[params.length];
+				for (int i = 0; i < params.length; i++) {
+					// create parameter label
+					labels[i] = "?g" + goalId + "l" + i;
+				}
+			}
+			
+			// create goal decision
+			Decision decision = component.create(
+					value,
+					labels,
+					start,
+					end,
+					duration);
+			// add decision to goals
+			goals.add(decision);
+			
+			// do not activate goals - bind parameter labels
+			for (int i = 0; i < params.length; i++) {
+				
+				// get parameter label
+				String pLabel = labels[i];
+				// get parameter value
+				String pValue = params[i];
+				
+				// create BIND parameter relation
+				BindParameterRelation pRel = component.create(
+						RelationType.BIND_PARAMETER,
+						decision,
+						decision);		// reflexive relation
+				// set relation data
+				pRel.setReferenceParameterLabel(pLabel);
+				pRel.setValue(pValue);
+			}
+			
+			// increment goal ID
+			goalId++;
+		}
+		
 	}
 }

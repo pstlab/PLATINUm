@@ -492,7 +492,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			if (this.failure.get()) {
 				
 				// execution failure
-				error("Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
+				error("{Executive} Execution failure:\n\t- tick: " + this.cause.getInterruptionTick() +"\n"
 						+ "\t- cause: " + this.cause.getType() + "\n");
 				
 				// update executive status
@@ -506,8 +506,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			} else {
 				
 				// successful execution 
-				info("Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");
-				
+				info("{Executive} Execution successfully complete:\n\t- tick: " + this.currentTick + "\n");				
 				// update executive status
 				synchronized (this.lock) {
 					// set inactive status
@@ -697,7 +696,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			throws ExecutionPreparationException {
 		
 		// prepare execution
-		info("[Executive] Preparing execution...");
+		info("{Executive} Preparing execution...");
 	}
 	
 	/**
@@ -710,7 +709,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			throws ExecutionPreparationException {
 		
 		// prepare execution
-		info("[Executive] Preparing execution of:\n- goal= " + goal + "\n");
+		info("{Executive} Preparing execution of:\n- goal= " + goal + "\n");
 	}
 	
 	/**

@@ -11,8 +11,9 @@ import java.util.logging.Logger;
  * @author anacleto
  *
  */
-public class FrameworkLogger
-{
+public class FrameworkLogger {
+	
+	
 	private static Logger logger; 		// the logger
 	
 	/**
