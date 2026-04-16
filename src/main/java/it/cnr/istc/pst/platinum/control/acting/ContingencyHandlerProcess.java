@@ -41,7 +41,6 @@ public class ContingencyHandlerProcess implements Runnable {
 				System.out.println("... repairing goal\n" + goal + "\n");
 				// try to repair the goal 
 				boolean success = this.agent.repair(goal);
-				
 				// check executive result
 				if (success) {
 				

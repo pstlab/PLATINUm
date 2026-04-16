@@ -12,6 +12,7 @@ import it.cnr.istc.pst.platinum.ai.executive.dispatcher.Dispatcher;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedback;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedbackType;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionInterruptException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionPreparationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.monitor.ConditionCheckingMonitor;
@@ -559,8 +560,6 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			// handle current tick
 			this.currentTick = tick;
 			debug("{Executive} -> Handle tick: " + tick + "\n");
-			
-			
 			// check failure flag
 			if (!this.failure.get()) {
 				
@@ -612,8 +611,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					
 					// get the list of nodes to be notified
 					List<ExecutionNode> nodes = new ArrayList<>(this.pdb.getNodesByStatus(ExecutionNodeStatus.EXECUTED));
-					// add nodes currently being executed
+					// add nodes currently being executed or started
 					nodes.addAll(this.pdb.getNodesByStatus(ExecutionNodeStatus.IN_EXECUTION));
+					nodes.addAll(this.pdb.getNodesByStatus(ExecutionNodeStatus.STARTING));
  				
 					// forward notification to observers
 					for (PlanExecutionObserver o : this.execObservers) {
@@ -624,6 +624,29 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				}
 			}
 			
+			
+		} catch (InterruptedException | ExecutionInterruptException ex) {
+			
+			// set execution failure 
+			this.failure.set(true);
+			// complete execution in this case
+			complete = true;
+			// set status to interrupted
+			this.status = ExecutionStatus.INTERRUPTED;
+			// execution error
+			error("{Executive} {tick: " + tick + "} -> Interruption received:\n"
+					+ "\t- message: " + ex.getMessage() + "\n");
+		} catch (PlatformException ex) {
+			
+			// set failure
+			this.failure.set(true);
+			// complete execution in this case
+			complete = true;
+			// set status to failure
+			this.status = ExecutionStatus.FAILURE;
+			// error message
+			error("{Executive} {tick: " + tick + "} -> Platform error:\n"
+					+ "\t- message: " + ex.getMessage() + "\n");
 			
 		} catch (ExecutionException ex)  {
 			
@@ -640,31 +663,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					+ "\t- message: " + ex.getMessage() + "\n\n"
 					+ "Wait for execution feedbacks of pending controllable and partially-controllable tokens if any... \n\n");
 			
-		} catch (PlatformException ex) {
-			
-			// set failure
-			this.failure.set(true);
-			// complete execution in this case
-			complete = true;
-			// set status to failure
-			this.status = ExecutionStatus.FAILURE;
-			// error message
-			error("{Executive} {tick: " + tick + "} -> Platform error:\n"
-					+ "\t- message: " + ex.getMessage() + "\n");
-			
-		} catch (InterruptedException ex) {
-			
-			
-			// set execution failure 
-			this.failure.set(true);
-			// complete execution in this case
-			complete = true;
-			// set status to interrupted
-			this.status = ExecutionStatus.INTERRUPTED;
-			// execution error
-			error("{Executive} {tick: " + tick + "} -> Interruption received:\n"
-					+ "\t- message: " + ex.getMessage() + "\n");
-		}
+		} 
 
 		// get boolean flag
 		return complete;
@@ -789,8 +788,8 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			break;
 			
 			case INTERRUPTED: {
-				// handle failure
-				this.failure(feedback.getCmd());
+				// handle interrupt
+				this.interrupt(feedback.getCmd());
 			}
 			
 			case UNKNOWN : {
@@ -855,10 +854,11 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 						node.getControllabilityType().equals(ControllabilityType.UNCONTROLLABLE) ? 
 								ExecutionFeedbackType.UNCONTROLLABLE_TOKEN_COMPLETE : 
 								ExecutionFeedbackType.PARTIALLY_CONTROLLABLE_TOKEN_COMPLETE);
-				// forward feedback to the monitor
-				this.monitor.addExecutionFeedback(feedback);
+				
 				// remove operation ID from index
 				this.dispatchedIndex.remove(cmd);
+				// forward feedback to the monitor
+				this.monitor.addExecutionFeedback(feedback);
 				// got end execution feedback from either a partially-controllable or uncontrollable token
 				info("{Executive} {tick: " + this.currentTick + "} -> Got \"positive\" feedback about the end of the execution of either a partially-controllable or uncontrollable token:\n"
 						+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
@@ -893,12 +893,44 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 					node, 
 					ExecutionFeedbackType.TOKEN_EXECUTION_FAILURE);
 			
-			// forward feedback to the monitor
-			this.monitor.addExecutionFeedback(feedback);
 			// remove operation ID from index
 			this.dispatchedIndex.remove(cmd);
+			// forward feedback to the monitor
+			this.monitor.addExecutionFeedback(feedback);
 			// got end execution feedback from either a partially-controllable or uncontrollable token
 			info("{Executive} {tick: " + this.currentTick + "} -> Got \"failure\" feedback about the execution of token:\n"
+					+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
+			
+		} else {
+			
+			// no operation ID found 
+			warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
+		}
+	}
+	
+	/**
+	 * 
+	 * @param cmd
+	 */
+	private void interrupt(PlatformCommand cmd) {
+		
+		// check command  
+		if (this.dispatchedIndex.containsKey(cmd)) {
+			
+			// get execution node
+			ExecutionNode node = this.dispatchedIndex.get(cmd);
+			// create execution feedback
+			ExecutionFeedback feedback = new ExecutionFeedback(
+					this.currentTick,
+					node, 
+					ExecutionFeedbackType.PLAN_INTERRUPT);
+			
+			// remove operation ID from index
+			this.dispatchedIndex.remove(cmd);
+			// forward feedback to the monitor
+			this.monitor.addExecutionFeedback(feedback);
+			// got end execution feedback from either a partially-controllable or uncontrollable token
+			info("{Executive} {tick: " + this.currentTick + "} -> Got \"interrupt\" feedback duringthe execution of token:\n"
 					+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 			
 		} else {

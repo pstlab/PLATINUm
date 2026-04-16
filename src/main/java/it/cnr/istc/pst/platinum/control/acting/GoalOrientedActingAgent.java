@@ -2,9 +2,11 @@ package it.cnr.istc.pst.platinum.control.acting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -862,15 +864,76 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 		long now = System.currentTimeMillis();
 		try {
 			
-			// list of kept decisions 
-			List<Decision> kept = new ArrayList<>();
+			// list of decisions to keep in the plan database as initial state of plan repair
+			Set<Decision> kept = new HashSet<>();
+			
+			
+			// check execution failure cause
+			ExecutionFailureCause cause = goal.getFailureCause();
+			// check type
+			switch (cause.getType()) {
+			
+				case NODE_DURATION_OVERFLOW : {
+					
+					// keep the decision as active and consider it as executed
+					ExecutionNode node = cause.getInterruptionNode();
+					// get node's component
+					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
+					// find the related decision
+//								for (DomainComponent comp : this.pdb.getComponents()) {
+					// get active decisions
+					List<Decision> actives = comp.getActiveDecisions();
+					for (Decision active : actives) {
+						// check temporal intervals
+						if (node.getInterval().equals(active.getToken().getInterval())) {
+							// keep the decision as active 
+							logger.debug("\nKEEP DECISION " + active + "\n");
+							kept.add(active);
+						}
+					}
+//								}
+				}
+				break;
+				
+				case NODE_EXECUTION_ERROR :
+				case NODE_START_OVERFLOW : {
+					
+					// remove decisions they are going to be re-planned
+					ExecutionNode node = cause.getInterruptionNode();
+					// get node's component
+					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
+
+					// find the related decision
+//								for (DomainComponent comp : this.pdb.getComponents()) {
+					
+					// get active decisions
+					List<Decision> actives = comp.getActiveDecisions();
+					for (Decision active : actives) {
+
+						// check temporal intervals
+						if (node.getInterval().equals(active.getToken().getInterval())) {
+							// keep the decision as active 
+							comp.deactivate(active);
+							comp.free(active);
+						}
+					}
+//								}
+				}
+				break;
+				
+				case EXECUTION_INTERRUPT: {
+					logger.debug("Interrupting execution..");
+				}
+				break;
+			}
+			
+
 			// clear domain components
 			for (DomainComponent comp : this.pdb.getComponents()) {
 				
 				// list of pending decisions
 				List<Decision> pendings = comp.getPendingDecisions();
-				for (Decision pending : pendings) {
-					
+				for (Decision pending : pendings) {					
 					// completely remove decision and related relations
 					comp.deactivate(pending);
 					comp.free(pending);
@@ -885,6 +948,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 					// check if the token has been executed
 					boolean executed = false;
 					for (ExecutionNode node : trace) {
+						
 						// check if the temporal interval has been executed
 						if (node.getInterval().equals(active.getToken().getInterval())){
 							executed = true;
@@ -907,63 +971,10 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				}
 			}
 			
-			
-			// check execution failure cause
-			ExecutionFailureCause cause = goal.getFailureCause();
-			// check type
-			switch (cause.getType()) {
-			
-				case NODE_DURATION_OVERFLOW : {
-					
-					// keep the decision as active and consider it as executed
-					ExecutionNode node = cause.getInterruptionNode();
-					// find the related decision
-					for (DomainComponent comp : this.pdb.getComponents()) {
-						// get active decisions
-						List<Decision> actives = comp.getActiveDecisions();
-						for (Decision active : actives) {
-							// check temporal intervals
-							if (node.getInterval().equals(active.getToken().getInterval())) {
-								// keep the decision as active 
-								logger.debug("\nKEEP DECISION " + active + "\n");
-								kept.add(active);
-							}
-						}
-					}
-				}
-				break;
-				
-				case NODE_EXECUTION_ERROR :
-				case NODE_START_OVERFLOW : {
-					
-					// remove decisions they are going to be re-planned
-					ExecutionNode node = cause.getInterruptionNode();
-					// find the related decision
-					for (DomainComponent comp : this.pdb.getComponents()) {
-						// get active decisions
-						List<Decision> actives = comp.getActiveDecisions();
-						for (Decision active : actives) {
-
-							// check temporal intervals
-							if (node.getInterval().equals(active.getToken().getInterval())) {
-								// keep the decision as active 
-								comp.deactivate(active);
-								comp.free(active);
-							}
-						}
-					}
-				}
-				break;
-				
-				default:
-					
-					throw new RuntimeException("Unknown Execution Failure Cause : " + cause.getType());
-			}
-			
-			
-			
-			// get task description
+			// prepare task description for plan repair from the original goal
 			AgentTaskDescription task = goal.getTaskDescription();
+			// count goals
+			int goalId = 0;
 			// set planning goals 
 			for (TokenDescription g : task.getGoals()) {
 				
@@ -983,8 +994,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 				// check end time bound
 				long[] end = g.getEnd();
 				if (end == null) {
-					end = new long[] {
-							
+					end = new long[] {							
 						this.pdb.getOrigin(),
 						this.pdb.getHorizon()
 					};
@@ -998,16 +1008,20 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 						value.getDurationUpperBound()
 					};
 				}
+
 				
-				// check labels
-				String[] labels = g.getLabels();
-				if (labels == null) {
-					labels = new String[] {};
+				// set parameter labels
+				String[] labels = new String[] {};
+				// get parameters
+				String[] params = g.getLabels();
+				if (params != null && params.length > 0) {
+					// set parameter labels
+					labels = new String[params.length];
+					for (int i = 0; i < params.length; i++) {
+						// create parameter label
+						labels[i] = "?g" + goalId + "l" + i;
+					}
 				}
-				
-				/*
-				 * TODO : check parameter relations
-				 */
 				
 				// create goal decision
 				Decision decision = component.create(
@@ -1017,12 +1031,33 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 						end,
 						duration,
 						ExecutionNodeStatus.IN_EXECUTION);
+		
+				// do not activate goals - bind parameter labels
+				for (int i = 0; i < params.length; i++) {
+					
+					// get parameter label
+					String pLabel = labels[i];
+					// get parameter value
+					String pValue = params[i];
+					
+					// create BIND parameter relation
+					BindParameterRelation pRel = component.create(
+							RelationType.BIND_PARAMETER,
+							decision,
+							decision);		// reflexive relation
+					// set relation data
+					pRel.setReferenceParameterLabel(pLabel);
+					pRel.setValue(pValue);
+				}
 				
 				// add decision to goal list
 				logger.warn("REPAIR GOAL : [" + decision.getId() +"]:" + decision.getComponent().getName() + "." + decision.getValue().getLabel() + " "
 						+ "AT [" + decision.getStart()[0]  + ", " + decision.getStart()[1] + "] "
 						+ "[" + decision.getEnd()[0] + ", " + decision.getEnd()[1] + "] "
 						+ "[" + decision.getDuration()[0] + ", " + decision.getDuration()[1] + "]");
+				
+				// increment goal counter
+				goalId++;
 			}
 			
 			
@@ -1115,8 +1150,8 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 * @throws InterruptedException
 	 */
 	protected Goal waitGoal(GoalStatus status) 
-			throws InterruptedException
-	{
+			throws InterruptedException {
+		
 		// goal 
 		Goal goal = null;
 		// wait a selected goal

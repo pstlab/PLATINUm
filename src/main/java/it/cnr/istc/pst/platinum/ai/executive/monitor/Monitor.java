@@ -17,8 +17,9 @@ import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
  * @author anacleto
  *
  */
-public abstract class Monitor<T extends Executive> extends FrameworkObject
-{
+public abstract class Monitor<T extends Executive> extends FrameworkObject {
+	
+	
 	@ExecutivePlaceholder
 	protected T executive;
 	

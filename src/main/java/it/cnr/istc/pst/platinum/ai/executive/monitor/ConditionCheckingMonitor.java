@@ -2,9 +2,11 @@ package it.cnr.istc.pst.platinum.ai.executive.monitor;
 
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedback;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionInterruptException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeExecutionFailureException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeObservationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
+import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionInterruptCause;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.NodeDurationOverflow;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.NodeExecutionError;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.NodeStartOverflow;
@@ -34,7 +36,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 	 */
 	@Override
 	public void handleTick(long tick) 
-			throws NodeExecutionFailureException, NodeObservationException, PlatformException {
+			throws NodeExecutionFailureException, ExecutionInterruptException, NodeObservationException, PlatformException {
 		
 		// convert tick to tau
 		long tau = this.executive.convertTickToTau(tick);
@@ -101,6 +103,8 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				}
 				break;
 				
+				// failure feedback and interrupts
+				
 				case TOKEN_EXECUTION_FAILURE : {
 					
 					// update node status
@@ -111,6 +115,31 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					throw new NodeExecutionFailureException(
 							"Node execution failure received:\n\t- node: " + node + "\n", 
 							cause);
+				}
+				
+				case PLAN_INTERRUPT : {
+					
+					// update node status of all nodes in execution
+					for (ExecutionNode n : this.executive.getNodes(ExecutionNodeStatus.IN_EXECUTION)) {
+						// update node status
+						this.executive.updateNode(n, ExecutionNodeStatus.FAILURE);
+					}
+					
+					for (ExecutionNode n : this.executive.getNodes(ExecutionNodeStatus.STARTING)) {
+						// update node status
+						this.executive.updateNode(n, ExecutionNodeStatus.FAILURE);
+					}
+					
+					for (ExecutionNode n : this.executive.getNodes(ExecutionNodeStatus.WAITING)) {
+						// update node status
+						this.executive.updateNode(n, ExecutionNodeStatus.FAILURE);
+					}
+					
+					// execution failure
+					ExecutionFailureCause cause = new ExecutionInterruptCause(tick, node); 
+					// throw execution exception
+					throw new ExecutionInterruptException("Execution interrupt received", cause);
+					
 				}
 			}
 		}
@@ -199,6 +228,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					
 					// compute node duration of the token in execution 
 					long duration = Math.max(1, tau - node.getStart()[0]);
+					duration = Math.min(duration, node.getDuration()[1]);
 					// ensure node in failure status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
 					// add repair information
@@ -226,6 +256,15 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					
 				}
+				break;
+				
+				case PLAN_INTERRUPT : {
+					
+					// execution interruption
+					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {INTERRUPT-HANDLING} -> Received interrupt at time " + tau + "\n");
+				}
+				break;
+				
 			}
 		}
 		

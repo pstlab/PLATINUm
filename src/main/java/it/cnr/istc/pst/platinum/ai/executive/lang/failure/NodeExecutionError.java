@@ -23,6 +23,6 @@ public class NodeExecutionError extends ExecutionFailureCause
 	 */
 	@Override
 	public String toString() {
-		return "[ActionExecutionError] Failure while executing the action\n";
+		return "Node execution failure(tick: " + this.getInterruptionTick() + "): " + this.getInterruptionNode();
 	}
 }

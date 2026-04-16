@@ -20,8 +20,8 @@ import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
  * @author alessandro
  *
  */
-public abstract class PlatformProxy 
-{	
+public abstract class PlatformProxy {
+	
 	protected static final AtomicInteger obsIdCounter = new AtomicInteger(0);
 	protected static final AtomicInteger cmdIdCounter = new AtomicInteger(0);
 	
@@ -164,8 +164,8 @@ public abstract class PlatformProxy
 	 * 
 	 * @param observation
 	 */
-	public void notify(PlatformObservation<? extends Object> observation) 
-	{
+	public void notify(PlatformObservation<? extends Object> observation) {
+		
 		// get platform observers
 		synchronized (observers) {
 			// notify observers
@@ -180,8 +180,8 @@ public abstract class PlatformProxy
 	 * 
 	 * @param feedback
 	 */
-	public void notify(PlatformFeedback feedback) 
-	{
+	public void notify(PlatformFeedback feedback) {
+		
 		// get platform observers
 		synchronized (observers) {
 			// notify observers
@@ -267,8 +267,8 @@ public abstract class PlatformProxy
 	 * @param node
 	 * @return
 	 */
-	public static String extractCommandName(ExecutionNode node) 
-	{ 
+	public static String extractCommandName(ExecutionNode node) {
+		
 		// get signature
 		String name = node.getGroundSignature();
 		// "clear" command name from "control tags"
@@ -293,6 +293,7 @@ public abstract class PlatformProxy
 	 * @return
 	 */
 	public static String[] extractCommandParameters(ExecutionNode node) {
+		
 		// extract command parameter from node to execute
 		String[] splits = node.getGroundSignature().split("-");
 		// get parameters

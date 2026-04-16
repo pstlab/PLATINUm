@@ -20,5 +20,10 @@ public enum ExecutionFailureCauseType
 	/**
 	 * Synchronization error between the planned start time of an uncontrollable action and its real start
 	 */
-	NODE_START_OVERFLOW;
+	NODE_START_OVERFLOW,
+	
+	/**
+	 * Execution interrupt issued from the environment
+	 */
+	EXECUTION_INTERRUPT;
 }

@@ -1,6 +1,8 @@
 package it.cnr.istc.pst.platinum.ai.executive.lang;
 
+
 /**
+ * Enumeration of types of feedback handled by the executive during the execution of a plan
  * 
  * @author anacleto
  *
@@ -25,6 +27,11 @@ public enum ExecutionFeedbackType {
 	/**
 	 * Feedback about failure of the execution of a token
 	 */
-	TOKEN_EXECUTION_FAILURE
+	TOKEN_EXECUTION_FAILURE,
+	
+	/**
+	 * Feedback about interrupt of the whole plan being executed
+	 */
+	PLAN_INTERRUPT
 	
 }
