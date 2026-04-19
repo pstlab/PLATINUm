@@ -126,7 +126,7 @@ public class ExternalStateVariableComponentTestCase {
 			this.psv.activate(d3);
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			this.pf.verify();
 			
 			// check flexible schedule
@@ -192,7 +192,7 @@ public class ExternalStateVariableComponentTestCase {
 			System.out.println(d1 + " - duration bounds: [" + d1.getDuration()[0] + ", " + d1.getDuration()[1] + "]");
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			this.pf.verify();
 			
 			// check flexible schedule
@@ -220,7 +220,7 @@ public class ExternalStateVariableComponentTestCase {
 			}
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			this.pf.verify();
 			
 			// check schedule

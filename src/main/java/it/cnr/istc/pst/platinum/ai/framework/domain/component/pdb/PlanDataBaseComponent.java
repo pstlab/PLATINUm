@@ -173,8 +173,8 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * 
 	 */
 	@Override
-	public synchronized void clear() 
-	{
+	public synchronized void clear() {
+		
 		// clear components
 		for (DomainComponent component : this.components.values()) {
 			// clear component
@@ -563,14 +563,16 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 	 * the exception reports information concerning the values
 	 * that have been "squeezed" during the solving process 
 	 * 
+	 * @param checkPseudo - flag to check pseudo-controllability of a plan 
+	 * 
 	 * @throws ConsistencyCheckException
 	 */
 	@Override
-	public synchronized void verify() 
-			throws ConsistencyCheckException 
-	{
+	public synchronized void verify(boolean checkPseudo) 
+			throws ConsistencyCheckException {
+		
 		// check temporal consistency of the network
-		this.tdb.verify();
+		this.tdb.verify(checkPseudo);
 		// check parameter consistency
 		this.pdb.verify();
 	}

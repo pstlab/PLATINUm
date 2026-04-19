@@ -208,8 +208,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 				committed.add(before);
 				// propagate constraint
 				this.tdb.propagate(before);
-				// check temporal feasibility
-				this.tdb.verify();
+				// check time consistency - consider temporal flexibility only
+				this.tdb.verify(false);
 				
 			} catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 				// not feasible schedule
@@ -331,9 +331,8 @@ public class ReservoirResourceSchedulingResolver extends Resolver<ReservoirResou
 						solution.addActivatedRelation(before);
 					}
 					
-					
-					// check temporal feasibility
-					this.tdb.verify();
+					// check time consistency - consider temporal flexibility only
+					this.tdb.verify(false);
 					
 				} catch (RelationPropagationException | ConsistencyCheckException ex) {
 					

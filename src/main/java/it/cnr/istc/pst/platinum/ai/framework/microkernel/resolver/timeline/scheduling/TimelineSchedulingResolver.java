@@ -98,8 +98,8 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable> {
 				this.component.activate(before);
 				// add activated relations to solution
 				solution.addActivatedRelation(before);
-				// check feasibility
-				this.tdb.verify();
+				// check time consistency - consider temporal flexibility only
+				this.tdb.verify(false);
 			}
 			
 		} catch (RelationPropagationException | ConsistencyCheckException ex) {
@@ -349,8 +349,8 @@ public final class TimelineSchedulingResolver extends Resolver<StateVariable> {
 				committed.add(before);
 				// propagate constraint
 				this.tdb.propagate(before);
-				// check temporal feasibility
-				this.tdb.verify();
+				// check time consistency - consider temporal flexibility only
+				this.tdb.verify(false);
 				
 			} catch (TemporalConstraintPropagationException | ConsistencyCheckException ex) {
 				

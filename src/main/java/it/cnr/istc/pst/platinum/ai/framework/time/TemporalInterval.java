@@ -9,8 +9,8 @@ import it.cnr.istc.pst.platinum.ai.framework.time.tn.TimePointDistanceConstraint
  * @author alessandro
  *
  */
-public class TemporalInterval extends TemporalData
-{
+public class TemporalInterval extends TemporalData {
+	
 	private TimePoint start;					// time point's start time
 	private TimePoint end;						// time point's end time
 	private long nominalDurationLowerBound;		// interval's nominal duration lower bound

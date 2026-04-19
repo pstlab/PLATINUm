@@ -234,7 +234,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					// add repair information
 					cause.addRepairInfo(node, duration);
 					// info message
-					debug("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} {FAILURE-HANDLING} -> Observed token execution with duration " + duration + " \n"
+					debug("{Monitor} {tick: " + tick + "} {tau: " +  tau + "} {FAILUREHANDLING} {PARTIALLY/UNCONTROLLABLE TOKEN COMPLETE} -> Observed token execution with duration " + duration + " \n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
@@ -243,7 +243,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					
 					// ensure node in failure status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
-					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} -> Observed token execution start at time " + tau + "\n"
+					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} {UNCONTROLLABLE TOKEN START} -> Observed token execution start at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 				}
 				break;
@@ -252,7 +252,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 					
 					// ensure node in failure status
 					this.executive.updateNode(node, ExecutionNodeStatus.FAILURE);
-					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} -> Observed execution failure at time " + tau + "\n"
+					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} {TOKEN FAILURE} -> Observed execution failure at time " + tau + "\n"
 							+ "\t- node: " + node.getGroundSignature() + " (" + node + ")\n");
 					
 				}
@@ -261,7 +261,7 @@ public class ConditionCheckingMonitor extends Monitor<Executive> {
 				case PLAN_INTERRUPT : {
 					
 					// execution interruption
-					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {INTERRUPT-HANDLING} -> Received interrupt at time " + tau + "\n");
+					info("{Monitor} {tick: " + tick + "} {tau: " + tau + "} {FAILURE-HANDLING} {PLAN INTERRUPT} -> Received interrupt at time " + tau + "\n");
 				}
 				break;
 				

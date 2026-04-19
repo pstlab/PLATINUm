@@ -58,6 +58,20 @@ public class AgentTaskDescription extends PlatformMessage {
 	/**
 	 * 
 	 */
+	public void clearFacts() {
+		this.facts = new ArrayList<>();
+	}
+	
+	/**
+	 * 
+	 */
+	public void clearGoals() {
+		this.goals = new ArrayList<>();
+	}
+	
+	/**
+	 * 
+	 */
 	@Override
 	public String toString() {
 		// JSON style description

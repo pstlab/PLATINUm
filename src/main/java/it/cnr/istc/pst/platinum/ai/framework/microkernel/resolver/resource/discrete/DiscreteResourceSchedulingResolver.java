@@ -281,8 +281,8 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					
 					// verify constraint feasibility through constraint propagation
 					this.tdb.propagate(before);
-					// check temporal consistency
-					this.tdb.verify();
+					// check time consistency - consider temporal flexibility only
+					this.tdb.verify(false);
 					
 
 					// compute the preserved space heuristic value resulting after constraint propagation
@@ -325,9 +325,8 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 					
 					// verify constraint feasibility through constraint propagation
 					this.tdb.propagate(before);
-					// check temporal consistency
-					this.tdb.verify();
-					
+					// check time consistency - consider temporal flexibility only
+					this.tdb.verify(false);
 					
 					// compute the preserved space heuristic value resulting after constraint propagation
 					double preserved = this.computePreservedSpaceHeuristicValue(
@@ -434,11 +433,11 @@ public class DiscreteResourceSchedulingResolver extends Resolver<DiscreteResourc
 			// add activated relations to solution
 			solution.addActivatedRelation(before);
 			
-			// check (temporal) consistency
-			this.tdb.verify();
-		}
-		catch (RelationPropagationException | ConsistencyCheckException ex) 
-		{
+			// check time consistency - consider temporal flexibility only
+			this.tdb.verify(false);
+			
+		} catch (RelationPropagationException | ConsistencyCheckException ex) {
+			
 			// deactivate created relation
 			for (Relation rel : solution.getActivatedRelations()) {
 				// get reference

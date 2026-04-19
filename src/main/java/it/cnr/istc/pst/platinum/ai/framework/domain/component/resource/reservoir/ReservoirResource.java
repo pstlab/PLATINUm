@@ -221,18 +221,19 @@ public class ReservoirResource extends Resource
 	 * 
 	 */
 	public ReservoirResourceProfile computeOptimisticResourceProfile() 
-			throws ResourceProfileComputationException
-	{
+			throws ResourceProfileComputationException {
+		
+		
 		// initialize optimistic profile
 		ReservoirResourceProfile orp = new ReservoirResourceProfile();
 		// list of committed temporal constraints
 		List<TemporalConstraint> committed = new ArrayList<>();
-		try
-		{
+		try {
+			
 			// get consumptions
 			List<ConsumptionResourceEvent> consumptions = this.getConsumptions();
-			for (ConsumptionResourceEvent consumption : consumptions)
-			{
+			for (ConsumptionResourceEvent consumption : consumptions) {
+				
 				// get consumption temporal event
 				TimePoint event = consumption.getEvent();
 				// get amount of resource consumed (negative number)
@@ -255,8 +256,8 @@ public class ReservoirResource extends Resource
 				this.tdb.propagate(fix);
 				// add to committed
 				committed.add(fix);
-				// check consistency
-				this.tdb.verify();
+				// check consistency - consider temporal flexibility only
+				this.tdb.verify(false);
 				
 				// create profile sample
 				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(consumption, time, amount);
@@ -266,8 +267,8 @@ public class ReservoirResource extends Resource
 			
 			// get productions
 			List<ProductionResourceEvent> productions = this.getProductions();
-			for (ProductionResourceEvent production : productions)
-			{
+			for (ProductionResourceEvent production : productions) {
+				
 				// get production temporal event
 				TimePoint event = production.getEvent();
 				// get amount of resource produced (positive number)
@@ -290,8 +291,8 @@ public class ReservoirResource extends Resource
 				this.tdb.propagate(fix);
 				// add to committed
 				committed.add(fix);
-				// check consistency
-				this.tdb.verify();
+				// check consistency - consider temporal flexibility only
+				this.tdb.verify(false);
 				
 				
 				// create profile sample
@@ -355,8 +356,8 @@ public class ReservoirResource extends Resource
 				this.tdb.propagate(fix);
 				// add to committed
 				committed.add(fix);
-				// check consistency
-				this.tdb.verify();
+				// check consistency - consider temporal flexibility only
+				this.tdb.verify(false);
 				
 				// create profile sample
 				ResourceUsageProfileSample sample = new ResourceUsageProfileSample(consumption, time, amount);
@@ -390,8 +391,8 @@ public class ReservoirResource extends Resource
 				this.tdb.propagate(fix);
 				// add to committed
 				committed.add(fix);
-				// check consistency
-				this.tdb.verify();
+				// check consistency - consider temporal flexibility only
+				this.tdb.verify(false);
 				
 				
 				// create profile sample

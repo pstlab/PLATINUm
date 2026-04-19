@@ -136,7 +136,7 @@ public class StateVariableComponentTestCase
 			this.psv.activate(d3);
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			this.pf.verify();
 			// print state variable information
 			System.out.println();
@@ -185,7 +185,7 @@ public class StateVariableComponentTestCase
 			this.psv.activate(d2);
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			this.pf.verify();
 			
 			// get time-line
@@ -465,7 +465,7 @@ public class StateVariableComponentTestCase
 				this.psv.commit(solution);
 				schedulingStepCounter++;
 				// check consistency
-				this.tf.verify();
+				this.tf.verify(true);
 				// display component after scheduling
 				this.psv.display();
 				Thread.sleep(3000);
@@ -527,7 +527,7 @@ public class StateVariableComponentTestCase
 			this.psv.activate(d2);
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			
 			// get decisions
 			List<Decision> decisions = this.psv.getActiveDecisions();
@@ -575,7 +575,7 @@ public class StateVariableComponentTestCase
 			}
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			// display component
 			this.psv.display();
 			Thread.sleep(5000);
@@ -592,7 +592,7 @@ public class StateVariableComponentTestCase
 			flaws = this.psv.detectFlaws();
 			Assert.assertTrue(flaws.isEmpty());
 			
-			this.tf.verify();
+			this.tf.verify(true);
 		}
 		catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -658,7 +658,7 @@ public class StateVariableComponentTestCase
 			
 			// apply solution - gap solution directly activate path's decisions if not domain theory expansion is necessary
 			this.psv.commit(completion);
-			this.tf.verify();
+			this.tf.verify(true);
 			this.pf.verify();
 			
 			// check component
@@ -674,7 +674,7 @@ public class StateVariableComponentTestCase
 			
 			// roll-back solution
 			this.psv.rollback(completion);
-			this.tf.verify();
+			this.tf.verify(true);
 			this.pf.verify();
 			
 			// check component
@@ -745,7 +745,7 @@ public class StateVariableComponentTestCase
 			
 			// commit solution
 			this.psv.commit(solution);
-			this.tf.verify();
+			this.tf.verify(true);
 			
 			// check relations
 			Assert.assertFalse(this.psv.getActiveRelations().isEmpty());
@@ -756,7 +756,7 @@ public class StateVariableComponentTestCase
 			
 			// roll-back solution
 			this.psv.rollback(solution);
-			this.tf.verify();
+			this.tf.verify(true);
 			
 			// check relations
 			Assert.assertTrue(this.psv.getActiveRelations().isEmpty());
@@ -818,7 +818,7 @@ public class StateVariableComponentTestCase
 			this.psv.commit(solution);
 			
 			// check consistency 
-			this.tf.verify();
+			this.tf.verify(true);
 			System.out.println(".... solution successfully applied\n");
 			
 			
@@ -834,7 +834,7 @@ public class StateVariableComponentTestCase
 			this.psv.rollback(solution);
 			
 			// check consistency
-			this.tf.verify();
+			this.tf.verify(true);
 			System.out.println(".... solution successfully retracted\n");
 			
 			
@@ -858,7 +858,7 @@ public class StateVariableComponentTestCase
 			this.psv.commit(solution);
 			
 			// check consistency 
-			this.tf.verify();
+			this.tf.verify(true);
 			System.out.println(".... solution successfully applied\n");
 			
 			

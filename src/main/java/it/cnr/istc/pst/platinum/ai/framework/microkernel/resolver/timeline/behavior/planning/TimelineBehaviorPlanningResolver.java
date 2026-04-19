@@ -105,8 +105,9 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					}
 				}
 				
-				// check feasibility
-				this.tdb.verify();
+				// check time consistency - consider temporal flexibility only
+				this.tdb.verify(false);
+				// check parameter assignment consistency
 				this.pdb.verify();
 			}
 			catch (TransitionNotFoundException | RelationPropagationException | ConsistencyCheckException ex) 
@@ -203,8 +204,9 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 					}
 				}
 				
-				// check consistency
-				this.tdb.verify();
+				// check time consistency - consider temporal flexibility only
+				this.tdb.verify(false);
+				// check parameter assignment consistency
 				this.pdb.verify();
 			}
 			catch (Exception ex) {
@@ -385,8 +387,9 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 								}
 							}
 							
-							// the solution is feasible
-							this.tdb.verify();
+							// check time consistency - consider temporal flexibility only
+							this.tdb.verify(false);
+							// check parameter assignment consistency
 							this.pdb.verify();
 							
 							// valid solution
@@ -488,8 +491,9 @@ public final class TimelineBehaviorPlanningResolver extends Resolver<StateVariab
 								}
 							}
 							
-							// the solution is feasible
-							this.tdb.verify();
+							// check time consistency - consider temporal flexibility only
+							this.tdb.verify(false);
+							// check parameter assignment consistency
 							this.pdb.verify();
 							
 							// valid (partial) solution

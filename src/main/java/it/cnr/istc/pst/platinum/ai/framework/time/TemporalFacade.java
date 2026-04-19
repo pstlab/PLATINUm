@@ -320,7 +320,7 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 	 * 
 	 * 
 	 */
-	public synchronized void verify() 
+	public synchronized void verify(boolean checkPseudo) 
 			throws ConsistencyCheckException {
 		
 		// check temporal network consistency
@@ -328,8 +328,8 @@ public class TemporalFacade extends FrameworkObject implements QueryManager<Temp
 			throw new TemporalConsistencyException("The STNU is not valid!\nCheck propagated temporal constraints...\n");
 		}
 		
-		// check also if the network is valid
-		if (!this.isPseudoControllable()) {
+		// check pseudo controllability if necessary 
+		if (checkPseudo && !this.isPseudoControllable()) {
 			throw new PseudoControllabilityException("The STNU is not pseudo-controllable!\nCheck constraints on uncontrollable intervals...\n");
 		}
 	}

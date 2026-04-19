@@ -20,15 +20,16 @@ import it.cnr.istc.pst.platinum.ai.framework.microkernel.resolver.ex.UnsolvableF
  */
 @FlawSelectionHeuristicsConfiguration
 @SearchStrategyConfiguration
-public class PseudoControllabilityAwareSolver extends Solver 
-{
+public class TimeFlexibilityAwareSolver extends Solver {
+	
 	/**
 	 * 
 	 * @param timeout
 	 */
-	protected PseudoControllabilityAwareSolver(long timeout) {
-		super("PseudoControllabilityAwareSolver", timeout);
-		this.checkPseudo = true;								// check pseudo-controllability
+	protected TimeFlexibilityAwareSolver(long timeout) {
+		super("FlexibleTimeAwareSolver", timeout);
+		// set pseudo-controllability flat
+		this.checkPseudo = false;					// do not check pseudo-controllability
 	}
 	
 	/**
@@ -109,12 +110,6 @@ public class PseudoControllabilityAwareSolver extends Solver
 							+ "\tplan:\n"
 							+ "\t\tdecisions= " + this.pdb.getPlan().getDecisions() + "\n"
 							+ "\t\trelations= " + this.pdb.getPlan().getRelations() + "\n\n");
-//							+ "\tpending plan (agenda):\n"
-//							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.PENDING).getDecisions() + "\n"
-//							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.PENDING).getRelations() + "\n\n"
-//							+ "\tsilent plan:\n"
-//							+ "\t\tdecisions= " + this.pdb.getPlan(PlanElementStatus.SILENT).getDecisions() + "\n"
-//							+ "\t\trelations= " + this.pdb.getPlan(PlanElementStatus.SILENT).getRelations() + "\n\n");
 				
  				// choose the best flaws to solve
 				List<Flaw> flaws = new ArrayList<>(this.heuristic.choose());
@@ -161,7 +156,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				// set solving time
 				this.time = System.currentTimeMillis() - start;
 				// pseudo-controllable solution found
-				info("Pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
+				info("Solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 				
 			} catch (EmptyFringeException ex)  {
 				
@@ -170,7 +165,7 @@ public class PseudoControllabilityAwareSolver extends Solver
 				// set solving time
 				this.time = System.currentTimeMillis() - start;
 				// throw exception
-				throw new NoSolutionFoundException("No pseudo-controllable solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
+				throw new NoSolutionFoundException("No solution found after " + (this.time / 1000) + " (secs) and " + this.stepCounter + " solving steps\n");
 			
 			} finally {
 				

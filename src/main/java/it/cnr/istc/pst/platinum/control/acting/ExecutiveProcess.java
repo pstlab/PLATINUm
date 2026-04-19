@@ -3,6 +3,9 @@ package it.cnr.istc.pst.platinum.control.acting;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.cnr.istc.pst.platinum.ai.executive.Executive;
 import it.cnr.istc.pst.platinum.ai.executive.ExecutiveBuilder;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
@@ -23,6 +26,8 @@ import it.cnr.istc.pst.platinum.control.lang.ex.PlatformException;
  *
  */
 public class ExecutiveProcess implements Runnable {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ExecutiveProcess.class);
 	
 	private GoalOrientedActingAgent agent;
 	private Class<? extends Executive> eClass;
@@ -50,7 +55,7 @@ public class ExecutiveProcess implements Runnable {
 				
 				// take a goal to plan for
 				Goal goal = this.agent.waitGoal(GoalStatus.COMMITTED);
-				System.out.println("executing goal ...\n" + goal + "\n");
+				logger.debug("Start executing committed goal\n- goal: " + goal + "\n");
 				// execute extracted goal
 				int code = this.agent.execute(goal);
 				
@@ -62,6 +67,7 @@ public class ExecutiveProcess implements Runnable {
 						
 						// goal successfully executed
 						this.agent.finish(goal);
+						logger.debug("Goal execution finished\n- goal: " + goal + "\n");
 					}
 					break;
 					
@@ -70,6 +76,7 @@ public class ExecutiveProcess implements Runnable {
 						
 						// goal execution suspended due to some failure
 						this.agent.suspend(goal);
+						logger.warn("Goal execution suspended\n- goal: " + goal + "\n");
 					}
 					break;
 					
@@ -78,6 +85,7 @@ public class ExecutiveProcess implements Runnable {
 						
 						// goal execution abort due to major failures, opportunities or stop signals
 						this.agent.abort(goal);
+						logger.warn("Goal execution aborted\n- goal: " + goal + "\n");
 					}
 					break;
 					
@@ -89,7 +97,6 @@ public class ExecutiveProcess implements Runnable {
 								+ "\t- code: " + code + "\n"); 
 					}
 				}
-				
 				
 			} catch (InterruptedException ex) {
 				running = false;
@@ -106,7 +113,7 @@ public class ExecutiveProcess implements Runnable {
 	 * @throws PlatformException
 	 */
 	protected void doHandle(Goal goal) 
-			throws InterruptedException, ExecutionException, ExecutionPreparationException, PlatformException  {
+			throws InterruptedException, ExecutionPreparationException, PlatformException, ExecutionException {
 		
 		// get solution plan 
 		SolutionPlan plan = goal.getPlan();
@@ -114,22 +121,20 @@ public class ExecutiveProcess implements Runnable {
 		Executive exec = ExecutiveBuilder.createAndSet(this.eClass, 0, plan.getHorizon());
 		// export plan 
 		PlanProtocolDescriptor desc = plan.export();
-		System.out.println("\n\nREADY TO EXECUTE PLAN:\n" + desc + "\n\n");
-		// set the executive according to the plan being executed
-		exec.initialize(desc);
-		
-		// bind simulator if any
-		if (this.agent.proxy != null) {
-			// bind simulator
-			exec.link(this.agent.proxy);
-		}
-		
-		
+		logger.debug("Ready to execute plan\n" + desc + "\n");
+	
 		try {
 			
-			// run the executive starting at a given tick
-			boolean complete = exec.execute(goal.getExecutionTick(), goal);
+			// set the executive according to the plan being executed
+			exec.initialize(desc);
+			// bind simulator if any
+			if (this.agent.proxy != null) {
+				// bind simulator
+				exec.link(this.agent.proxy);
+			}
 			
+			// run the executive starting at a given tick
+			boolean complete = exec.execute(goal.getExecutionTick(), goal);			
 			// check execution result 
 			if (!complete) {
 				
@@ -163,7 +168,7 @@ public class ExecutiveProcess implements Runnable {
 				}
 				
 				// throw exception
-				throw new ExecutionException("Execution failure... try to repair the plan through replanning... \n"
+				throw new ExecutionException("Execution failre, adapt plan through replanning\n"
 						+ "\t- cause: " + cause + "\n", cause);
 			}
 			
@@ -174,7 +179,6 @@ public class ExecutiveProcess implements Runnable {
 				// unlink from simulator
 				exec.unlink();
 			}
-			
 		}
 	}
 }

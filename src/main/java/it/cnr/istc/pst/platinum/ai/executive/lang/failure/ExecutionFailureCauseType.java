@@ -5,8 +5,8 @@ package it.cnr.istc.pst.platinum.ai.executive.lang.failure;
  * @author anacleto
  *
  */
-public enum ExecutionFailureCauseType 
-{
+public enum ExecutionFailureCauseType {
+	
 	/**
 	 * General action execution error
 	 */

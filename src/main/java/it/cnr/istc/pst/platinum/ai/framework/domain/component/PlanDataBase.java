@@ -72,13 +72,6 @@ public interface PlanDataBase
 	
 	/**
 	 * 
-	 * @param status
-	 * @return
-	 */
-//	public Plan getPlan(PlanElementStatus status);
-	
-	/**
-	 * 
 	 * @return
 	 */
 	public List<DomainComponent> getComponents();
@@ -97,9 +90,10 @@ public interface PlanDataBase
 	 * The procedure verifies also pseudo-controllability by checking 
 	 * "squeezed" uncontrollable tokens
 	 * 
+	 * @param checkPseudo - flag to check pseudo-controllability
 	 * @throws ConsistencyCheckException
 	 */
-	public void verify() 
+	public void verify(boolean checkPseudo) 
 			throws ConsistencyCheckException;
 	
 	/**

@@ -7,8 +7,8 @@ import it.cnr.istc.pst.platinum.ai.executive.pdb.ExecutionNode;
  * @author anacleto
  *
  */
-public class NodeDurationOverflow extends ExecutionFailureCause 
-{
+public class NodeDurationOverflow extends ExecutionFailureCause {
+	
 	private long observedDuration;
 	
 	/**
@@ -35,7 +35,7 @@ public class NodeDurationOverflow extends ExecutionFailureCause
 	 */
 	@Override
 	public String toString() {
-		return "[DurationOverflow] The observed duration exceeds the upper bound of the domain specification\n"
+		return "The observed duration exceeds the upper bound of the domain specification\n"
 				+ "\t- observed-duration= " + this.observedDuration + "\n";
 	}
 }

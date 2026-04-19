@@ -974,7 +974,7 @@ public class PlanDataBaseTestCase
 			
 			// apply solution
 			this.pdb.commit(exp);
-			this.pdb.verify();
+			this.pdb.verify(true);
 			
 			// check data
 			Assert.assertNotNull(this.pdb.getPendingDecisions());
@@ -993,7 +993,7 @@ public class PlanDataBaseTestCase
 			
 			// retract solution
 			this.pdb.rollback(exp);
-			this.pdb.verify();
+			this.pdb.verify(true);
 			
 			// check data
 			Assert.assertNotNull(this.pdb.getPendingDecisions());

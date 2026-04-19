@@ -355,8 +355,9 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 				}
 			}
 			
-			// check consistency
-			this.tdb.verify();
+			// check time consistency - consider temporal flexibility only
+			this.tdb.verify(false);
+			// check parameter assignment consistency
 			this.pdb.verify();
 			
 		} catch (RelationPropagationException | ConsistencyCheckException ex) {
@@ -837,8 +838,8 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 				}
 			}
 			
-			// check temporal consistency after activated relations
-			this.tdb.verify();
+			// check time consistency - consider temporal flexibility only
+			this.tdb.verify(false);
 			
 		} catch (ConsistencyCheckException | RelationPropagationException ex) {
 			
@@ -896,11 +897,12 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 			
 			// activate goal decision and check its feasibility
 			rels = gComp.activate(goal.getDecision());
-			// check temporal and parameter consistency
-			this.tdb.verify();
+			// // check time consistency - consider temporal flexibility only
+			this.tdb.verify(false);
+			// check parameter assignment consistency
 			this.pdb.verify();
+			
 			info("Goal decision consistent.. check possible schedules and refinements\n-\t " + goal.getDecision());
-
 			// evaluate possible schedules of the goal w.r.t. existing tokens.
 			if (!tokens.isEmpty()) {
 				
@@ -917,8 +919,8 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 					
 					// propagate temporal constraint
 					this.tdb.propagate(c0);
-					// check temporal consistency
-					this.tdb.verify();
+					// check time consistency - consider temporal flexibility only
+					this.tdb.verify(false);
 					
 					//  consistent so create a possible refinements considering this schedule
 					for (GoalExpansion exp : this.expansions(goal)) {
@@ -933,7 +935,6 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 						// add expansion and related relation as feasible refinement of the goal
 						goal.addSolution(exp);
 						debug("Add goal expansion solution\n\t- " + exp + "\n");
-						
 					}
 					
 				} catch (TemporalConstraintPropagationException | ConsistencyCheckException  ix) {
@@ -975,8 +976,8 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 						// propagate constraints
 						this.tdb.propagate(c1);
 						this.tdb.propagate(c2);
-						// check temporal consistency
-						this.tdb.verify();
+						// check time consistency - consider temporal flexibility only
+						this.tdb.verify(false);
 					
 						//  consistent so create a possible refinements considering this schedule
 						for (GoalExpansion exp : this.expansions(goal)) {
@@ -1031,9 +1032,9 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 					
 					// propagate temporal constraint
 					this.tdb.propagate(c3);
-					// check temporal consistency
-					this.tdb.verify();
-					
+					// check time consistency - consider temporal flexibility only
+					this.tdb.verify(false);
+
 					//  consistent so create a possible refinements considering this schedule
 					for (GoalExpansion exp : this.expansions(goal)) {
 						
@@ -1325,8 +1326,9 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 			unification.setTranslatedReferenceGoalRelation(translatedReferenceGoalRelations);
 			unification.setTranslatedTargetGoalRealtion(translatedTargetGoalRelations);
 			
-			// check consistency
-			this.tdb.verify();
+			// check time consistency - consider temporal flexibility only
+			this.tdb.verify(false);
+			// check parameter assignment consistency
 			this.pdb.verify();
 			
 		} catch (RelationPropagationException | ConsistencyCheckException ex) {
@@ -1666,8 +1668,9 @@ public class TimelineAwarePlanRefinementResolver extends Resolver<DomainComponen
 				expansion.addActivatedRelation(rel);
 			}
 			
-			// check consistency 
-			this.tdb.verify();
+			// check time consistency - consider temporal flexibility only
+			this.tdb.verify(false);
+			// check parameter assignment consistency
 			this.pdb.verify();
 			
 		} catch (RelationPropagationException | DecisionPropagationException | ConsistencyCheckException ex) {

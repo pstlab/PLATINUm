@@ -164,8 +164,8 @@ public abstract class DomainComponent extends FrameworkObject
 	/**
 	 * Clear component data structure
 	 */
-	public synchronized void clear() 
-	{
+	public synchronized void clear() {
+		
 		// delete all active relations
 		for (Relation relation : this.getActiveRelations()) {
 			// deactivate relation
@@ -185,7 +185,11 @@ public abstract class DomainComponent extends FrameworkObject
 		}
 		
 		// clear component data structures
-		this.decisions.clear();
+		for (PlanElementStatus s : PlanElementStatus.values()) {
+			this.decisions.get(s).clear();
+		}
+		
+		// clear relations
 		this.localRelations.clear();
 	}
 	
@@ -374,13 +378,12 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public synchronized List<Decision> getActiveDecisions() 
-	{
+	public synchronized List<Decision> getActiveDecisions() {
+		
 		// list of active decisions with schedule information
 		List<Decision> list = new ArrayList<>();
 		// get schedule information
-		for (Decision dec : this.decisions.get(PlanElementStatus.ACTIVE)) 
-		{
+		for (Decision dec : this.decisions.get(PlanElementStatus.ACTIVE)) {
 			// create query
 			IntervalScheduleQuery query = this.tdb.createTemporalQuery(TemporalQueryType.INTERVAL_SCHEDULE);
 			// set related temporal interval
@@ -410,23 +413,23 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param dec
 	 */
-	public synchronized void restore(Decision dec) 
-	{
+	public synchronized void restore(Decision dec)  {
+		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to restore a not local decision on component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Restoring a decision not owning to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// if active something goes wrong
 		if (this.isActive(dec)) {
 			// unexpected behavior
-			throw new RuntimeException("Trying to restore an active decision:\n- decision: " + dec + "\n");
+			throw new RuntimeException("Restoring an active decision:\n- decision: " + dec + "\n");
 		}
 		
 		// check if pending
 		if (this.isPending(dec)) {
 			// warning information
-			warning("Trying to restore an already pending decision:\n- decision: " + dec + "\n");
+			warning("Restoring an already pending decision:\n- decision: " + dec + "\n");
 //			throw new RuntimeException("Trying to restore an already pending decision:\n- decision: " + dec + "\n");
 		}
 		
@@ -443,15 +446,15 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param rel
 	 */
-	public synchronized void restore(Relation rel) 
-	{
+	public synchronized void restore(Relation rel)  {
+		
 		// get reference component
 		DomainComponent refComp = rel.getReference().getComponent();
 		DomainComponent targetComp = rel.getTarget().getComponent();
 		// check components
 		if (!refComp.equals(this) && !targetComp.equals(this)) {
 			// unknown relation - global "external" relation
-			throw new RuntimeException("Trying to restore a relation \"unknown\" to component:\n- component: " + this.name + "\n- relation: " + rel + "\n");
+			throw new RuntimeException("Restoring a relation \"unknown\" to component:\n- component: " + this.name + "\n- relation: " + rel + "\n");
 		}
 		
 		// restore local relation
@@ -502,8 +505,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param value
 	 * @return
 	 */
-	public synchronized Decision create(ComponentValue value, String[] labels) 
-	{
+	public synchronized Decision create(ComponentValue value, String[] labels) {
 		// create decision
 		return this.create(
 				value,
@@ -557,15 +559,17 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public synchronized Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) 
-	{
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration) {
+		
 		// check if value is known to the component
 		if (!value.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to add a decision with a value unknown to the component:\n- component: " + this.name + "\n- value: " + value + "\n");
+			throw new RuntimeException("Creating a decision not owning to component:\n- component: " + this.name + "\n- value: " + value + "\n");
 		}
 		
 		// set decision
 		Decision dec = new Decision(DecisionIdCounter.getAndIncrement(), value, labels, start, end, duration);
+		
+		
 		// add decision the the agenda
 		this.decisions.get(PlanElementStatus.PENDING).add(dec);
 		// get decision
@@ -581,11 +585,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param duration
 	 * @return
 	 */
-	public synchronized Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus status) 
-	{
+	public synchronized Decision create(ComponentValue value, String[] labels, long[] start, long[] end, long[] duration, ExecutionNodeStatus status) {
+		
 		// check if value is known to the component
 		if (!value.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to add a decision with a value unknown to the component:\n- component: " + this.name + "\n- value: " + value + "\n");
+			throw new RuntimeException("Creating a decision not owning to component:\n- component: " + this.name + "\n- value: " + value + "\n");
 		}
 		
 		// set decision
@@ -612,7 +616,7 @@ public abstract class DomainComponent extends FrameworkObject
 		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to add a not local decision to a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Activating a decision not owning to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// list of relations to activate
@@ -635,8 +639,8 @@ public abstract class DomainComponent extends FrameworkObject
 			}
 			
 			// check if decision is pending
-			if (this.isPending(dec)) 
-			{
+			if (this.isPending(dec)) {
+				
 				// token to create
 				Token token = null;
 				try 
@@ -666,8 +670,8 @@ public abstract class DomainComponent extends FrameworkObject
 						rels.add(rel);
 					}
 				}
-				catch (RelationPropagationException ex) 
-				{
+				catch (RelationPropagationException ex) {
+					
 					// deactivate relations
 					for (Relation rel : rels) {
 						this.deactivate(rel);
@@ -684,8 +688,7 @@ public abstract class DomainComponent extends FrameworkObject
 					
 					// throw exception
 					throw new DecisionPropagationException(ex.getMessage());
-				}
-				catch (TemporalIntervalCreationException | ParameterCreationException ex) {
+				} catch (TemporalIntervalCreationException | ParameterCreationException ex) {
 					
 					// reset SILENT decision if necessary
 					if (free) {
@@ -712,9 +715,9 @@ public abstract class DomainComponent extends FrameworkObject
 		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to delete a not local decision from a component:\n"
-					+ "- Component: " + this.name + "\n"
-					+ "- Decision: " + dec + "\n");
+			throw new RuntimeException("Deleting a decision not owning to component:\n"
+					+ "- componnet: " + this.name + "\n"
+					+ "- decision: " + dec + "\n");
 		}
 		
 		// check if already pending
@@ -780,11 +783,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param dec
 	 */
-	public synchronized void free(Decision dec) 
-	{
+	public synchronized void free(Decision dec) {
+		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to free a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Deleting a decision not owning to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// check if already SILENT
@@ -813,11 +816,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param dec
 	 */
-	public void delete(Decision dec)
-	{
+	public void delete(Decision dec) {
+		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Trying to free a not local decision from a component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Deleting a decision not owning to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// check if active ACTIVE -> PENDING
@@ -848,21 +851,21 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized <T extends Relation> T create(RelationType type, Decision reference, Decision target) 
-	{
+	public synchronized <T extends Relation> T create(RelationType type, Decision reference, Decision target) {
+		
 		// get reference component
 		DomainComponent refComp = reference.getComponent();
 		// get target component
 		DomainComponent targetComp = target.getComponent();
 		if (!refComp.equals(this) && !targetComp.equals(this)) {
 			// "external" relation
-			throw new RuntimeException("Trying to create an \"external\" relation for component:\n- component: " + this.name + "\n- reference: " + reference + "\n- target: " + target + "\n");
+			throw new RuntimeException("Creating an \"external\" relation for component:\n- component: " + this.name + "\n- reference: " + reference + "\n- target: " + target + "\n");
 		}
 		
 		// relation 
 		T rel = null;
-		try 
-		{
+		try {
+			
 			// get class
 			Class<T> clazz = (Class<T>) Class.forName(type.getRelationClassName());
 			// get constructor
@@ -883,8 +886,7 @@ public abstract class DomainComponent extends FrameworkObject
 					globalRelations.add(rel);
 				}
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
 		
@@ -898,11 +900,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public synchronized Set<Relation> getActiveRelations(Decision dec)
-	{
+	public synchronized Set<Relation> getActiveRelations(Decision dec) {
+		
 		// check if local relation
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Unknown decision to component:- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Wrong association of decision to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// list of active relations
@@ -944,11 +946,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param target
 	 * @return
 	 */
-	public synchronized Set<Relation> getActiveRelations(Decision reference, Decision target)
-	{
+	public synchronized Set<Relation> getActiveRelations(Decision reference, Decision target) {
+		
 		// check if local relation
 		if (!reference.getComponent().equals(this) && !target.getComponent().equals(this)) {
-			throw new RuntimeException("Unknown decisions to component:- component: " + this.name + "\n- reference: " + reference + "\n- target: " + target + "\n");
+			throw new RuntimeException("Wrong association of decision to component:\n- component: " + this.name + "\n- reference: " + reference + "\n- target: " + target + "\n");
 		}
 		
 		// list of active relations
@@ -989,8 +991,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public synchronized Set<Relation> getActiveRelations()
-	{
+	public synchronized Set<Relation> getActiveRelations() {
+		
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
 		// check local relations
@@ -1011,8 +1013,8 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @return
 	 */
-	public synchronized Set<Relation> getPendingRelations()
-	{
+	public synchronized Set<Relation> getPendingRelations() {
+		
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
 		// check local relations
@@ -1034,6 +1036,7 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @return
 	 */
 	public synchronized Set<Relation> getRelations() {
+		
 		// list of active relations
 		Set<Relation> set = new HashSet<>();
 		// check local relations
@@ -1052,11 +1055,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public synchronized Set<Relation> getToActivateRelations(Decision dec) 
-	{
+	public synchronized Set<Relation> getToActivateRelations(Decision dec) {
+		
 		// check decision component
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Unknown decision to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Wrong association of decision to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// list of relations
@@ -1097,11 +1100,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public synchronized Set<Relation> getPendingRelations(Decision dec) 
-	{
+	public synchronized Set<Relation> getPendingRelations(Decision dec) {
+		
 		// check if local decision
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Unknown decision to component:- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Wrong association of decisoin to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// list of relations
@@ -1139,11 +1142,11 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param dec
 	 * @return
 	 */
-	public synchronized Set<Relation> getRelations(Decision dec)
-	{
+	public synchronized Set<Relation> getRelations(Decision dec) {
+		
 		// check if local decision
 		if (!dec.getComponent().equals(this)) {
-			throw new RuntimeException("Unknown decision to component:- component: " + this.name + "\n- decision: " + dec + "\n");
+			throw new RuntimeException("Wrong association of decision to component:\n- component: " + this.name + "\n- decision: " + dec + "\n");
 		}
 		
 		// list local of relations
@@ -1207,14 +1210,14 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param relation
 	 */
-	public synchronized void delete(Relation relation) 
-	{
+	public synchronized void delete(Relation relation) {
+		
 		// check reference and target components
 		DomainComponent refComp = relation.getReference().getComponent();
 		DomainComponent tarComp = relation.getTarget().getComponent();
 		if (!refComp.equals(this) && !tarComp.equals(this)) {
 			// "external" relation
-			throw new RuntimeException("Trying to free an \"external\" relation for component:\n- component: " + this.name + "\n- relation: " + relation + "\n");
+			throw new RuntimeException("Deleting a relation of an \"external\" component:\n- component: " + this.name + "\n- relation: " + relation + "\n");
 		}
 		
 		// deactivate relation if necessary
@@ -1277,23 +1280,23 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @throws RelationPropagationException
 	 */
 	public synchronized boolean activate(Relation rel) 
-			throws RelationPropagationException 
-	{
+			throws RelationPropagationException {
+		
 		// check reference and target components
 		DomainComponent refComp = rel.getReference().getComponent();
 		DomainComponent tarComp = rel.getTarget().getComponent();
 		if (!refComp.equals(this) && !tarComp.equals(this)) {
 			// "external" relation
-			throw new RuntimeException("Trying to add an \"external\" relation for component:\n- component: " + this.name + "\n- relation: " + rel+ "\n");
+			throw new RuntimeException("Activating a relation on an \"external\" component:\n- component: " + this.name + "\n- relation: " + rel+ "\n");
 		}
 		
 		// check if can be activated
 		boolean canBeActivated = rel.canBeActivated();
 		// check no constraint is associated and if related decisions are active 
-		if (canBeActivated) 
-		{
-			try
-			{
+		if (canBeActivated) {
+			
+			try {
+				
 				// check relation type
 				switch (rel.getCategory()) 
 				{
@@ -1330,8 +1333,9 @@ public abstract class DomainComponent extends FrameworkObject
 			}
 		}
 		else {
+			
 			// debug information
-			debug("The decision you want to activate is already active or the related decision are not active yet:\n- " + rel + "\n");
+			debug("Relation cannot be activated:\n- " + rel + "\n");
 		}
 		
 		// get flag
@@ -1344,12 +1348,12 @@ public abstract class DomainComponent extends FrameworkObject
 	 * @param relations
 	 */
 	public synchronized void activate(Set<Relation> relations) 
-			throws RelationPropagationException 
-	{
+			throws RelationPropagationException {
+		
 		// list of committed relations
 		List<Relation> committed = new ArrayList<>();
-		try 
-		{
+		try {
+			
 			// propagate relations
 			for (Relation rel : relations) {
 				// propagate relation
@@ -1358,8 +1362,7 @@ public abstract class DomainComponent extends FrameworkObject
 					committed.add(rel);
 				}
 			}
-		} 
-		catch (RelationPropagationException ex) {
+		} catch (RelationPropagationException ex) {
 			
 			// error while propagating relations
 			for (Relation rel : committed) {
@@ -1378,22 +1381,21 @@ public abstract class DomainComponent extends FrameworkObject
 	 * 
 	 * @param rel
 	 */
-	public synchronized void deactivate(Relation rel) 
-	{
+	public synchronized void deactivate(Relation rel) {
+		
 		// check reference and target components
 		DomainComponent refComp = rel.getReference().getComponent();
 		DomainComponent tarComp = rel.getTarget().getComponent();
 		if (!refComp.equals(this) && !tarComp.equals(this)) {
 			// "external" relation
-			throw new RuntimeException("Trying to delete an \"external\" relation for component:\n- component: " + this.name + "\n- relation: " + rel+ "\n");
+			throw new RuntimeException("Deleting relation on an \"external\" component:\n- component: " + this.name + "\n- relation: " + rel+ "\n");
 		}
 		
 		// check underlying constraint
-		if (rel.getConstraint() != null)
-		{
+		if (rel.getConstraint() != null) {
 			// check relation type
-			switch (rel.getCategory()) 
-			{
+			switch (rel.getCategory())  {
+			
 				// temporal constraint
 				case TEMPORAL_CONSTRAINT : 
 				{

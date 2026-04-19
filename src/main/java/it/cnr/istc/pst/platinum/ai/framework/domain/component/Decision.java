@@ -8,8 +8,8 @@ import it.cnr.istc.pst.platinum.ai.framework.parameter.lang.Parameter;
  * @author alessandro
  *
  */
-public class Decision implements Comparable<Decision>
-{
+public class Decision implements Comparable<Decision> {
+	
 	private int id;
 	private Decision causalLink;		// set "generator" decision
 	private ComponentValue value;

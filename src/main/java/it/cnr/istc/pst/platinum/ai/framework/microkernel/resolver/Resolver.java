@@ -293,8 +293,9 @@ public abstract class Resolver<T extends DomainComponent> extends FrameworkObjec
 				rActivated.add(relation);
 			}
 			
-			// check consistency
-			this.tdb.verify();
+			// check time consistency - consider temporal flexibility only
+			this.tdb.verify(false);
+			// check parameter assignment consistency
 			this.pdb.verify();
 			
 		} catch (DecisionPropagationException | ConsistencyCheckException ex) {

@@ -12,8 +12,9 @@ import it.cnr.istc.pst.platinum.ai.executive.dispatcher.Dispatcher;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedback;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ExecutionFeedbackType;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionException;
-import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionInterruptException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.ex.ExecutionPreparationException;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeExecutionFailureException;
+import it.cnr.istc.pst.platinum.ai.executive.lang.ex.NodeObservationException;
 import it.cnr.istc.pst.platinum.ai.executive.lang.failure.ExecutionFailureCause;
 import it.cnr.istc.pst.platinum.ai.executive.monitor.ConditionCheckingMonitor;
 import it.cnr.istc.pst.platinum.ai.executive.monitor.Monitor;
@@ -563,7 +564,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			// check failure flag
 			if (!this.failure.get()) {
 				
-								// synch step
+				// synch step
 				debug("{Executive} {tick: " + tick + "} -> Synchronization step\n");
 				this.monitor.handleTick(tick);
 				
@@ -595,6 +596,9 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 				if (!complete) {
 					// wait feedback
 					warning("{Executive} {tick: " + tick + "} {FAILURE} -> Waiting for " + count +  " feedback about dispatched commands\n");
+				} else {
+					// failure handling completed
+					warning("{Executive} {tick: " + tick + "} {FAILURE} -> Failure handling completed\n");
 				}
 			}
 			
@@ -625,18 +629,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			}
 			
 			
-		} catch (InterruptedException | ExecutionInterruptException ex) {
-			
-			// set execution failure 
-			this.failure.set(true);
-			// complete execution in this case
-			complete = true;
-			// set status to interrupted
-			this.status = ExecutionStatus.INTERRUPTED;
-			// execution error
-			error("{Executive} {tick: " + tick + "} -> Interruption received:\n"
-					+ "\t- message: " + ex.getMessage() + "\n");
-		} catch (PlatformException ex) {
+		}  catch (PlatformException ex) {
 			
 			// set failure
 			this.failure.set(true);
@@ -648,7 +641,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			error("{Executive} {tick: " + tick + "} -> Platform error:\n"
 					+ "\t- message: " + ex.getMessage() + "\n");
 			
-		} catch (ExecutionException ex)  {
+		} catch (NodeObservationException | NodeExecutionFailureException ex)  {
 			
 			// set execution failure flag
 			this.failure.set(true);
@@ -661,9 +654,22 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 			// error message
 			error("{Executive} {tick: " + tick + "} -> Error while executing plan:\n"
 					+ "\t- message: " + ex.getMessage() + "\n\n"
-					+ "Wait for execution feedbacks of pending controllable and partially-controllable tokens if any... \n\n");
+					+ "Wait for execution feedback of pending controllable and partially-controllable tokens if any... \n\n");
 			
-		} 
+		} catch (InterruptedException | ExecutionException ex) {		// ExecutionInterruptException -> ExecutionException
+		
+			
+			// set execution failure 
+			this.failure.set(true);
+			// complete execution in this case
+			complete = true;
+			// set status to interrupted
+			this.status = ExecutionStatus.INTERRUPTED;
+			// execution error
+			error("{Executive} {tick: " + tick + "} -> Interruption received:\n"
+					+ "\t- message: " + ex.getMessage() + "\n");
+			
+		}
 
 		// get boolean flag
 		return complete;
@@ -871,7 +877,7 @@ public class Executive extends FrameworkObject implements ExecutionManager, Plat
 		} else {
 			
 			// no operation ID found 
-			warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t-data: " + cmd.getData() + "\n");
+			warning("{Executive} {tick: " + this.currentTick + "} -> Receiving feedback about an unknown operation:\n\t- cmd: " + cmd + "\n\t- data: " + cmd.getData() + "\n");
 		}
 	}
 	

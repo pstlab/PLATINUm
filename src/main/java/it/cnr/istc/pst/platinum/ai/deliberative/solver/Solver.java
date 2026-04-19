@@ -42,6 +42,8 @@ public abstract class Solver extends FrameworkObject {
 	protected long stepCounter;
 	protected String label;
 	
+	protected boolean checkPseudo;			// pseudo-controllability flag 
+	
 	/**
 	 * 
 	 * @param label
@@ -51,6 +53,8 @@ public abstract class Solver extends FrameworkObject {
 		super();
 		this.label = label;
 		this.timeout = timeout;
+		// set default flag
+		this.checkPseudo = true;			// check pseudo-controllability by default
 	}
 	
 	/**
@@ -297,7 +301,7 @@ public abstract class Solver extends FrameworkObject {
 				// propagate operator
 				this.pdb.propagate(op);
 				// verify consistency of the plan database
-				this.pdb.verify();
+				this.pdb.verify(this.checkPseudo);
 	
 				// create a child search space node
 				SearchSpaceNode child = new SearchSpaceNode(current, op);

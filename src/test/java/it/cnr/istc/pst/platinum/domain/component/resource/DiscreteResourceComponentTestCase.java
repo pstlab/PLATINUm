@@ -464,7 +464,7 @@ public class DiscreteResourceComponentTestCase
 			this.resource.commit(solution);
 			
 			// check consistency 
-			this.tdb.verify();
+			this.tdb.verify(true);
 			this.pdb.verify();
 			System.out.println(".... solution successfully applied\n");
 			
@@ -481,7 +481,7 @@ public class DiscreteResourceComponentTestCase
 			this.resource.rollback(solution);
 			
 			// check consistency
-			this.tdb.verify();
+			this.tdb.verify(true);
 			this.pdb.verify();
 			System.out.println(".... solution successfully retracted\n");
 			
@@ -506,7 +506,7 @@ public class DiscreteResourceComponentTestCase
 			this.resource.commit(solution);
 			
 			// check consistency 
-			this.tdb.verify();
+			this.tdb.verify(true);
 			this.pdb.verify();
 			System.out.println(".... solution successfully applied\n");
 			
@@ -558,7 +558,7 @@ public class DiscreteResourceComponentTestCase
 		// post constraint
 		this.resource.activate(bind);
 		// check consistency
-		this.tdb.verify();
+		this.tdb.verify(true);
 		this.pdb.verify();
 		
 		// get decision 
@@ -611,7 +611,7 @@ public class DiscreteResourceComponentTestCase
 			this.resource.commit(solution);
 			
 			// check consistency 
-			this.tdb.verify();
+			this.tdb.verify(true);
 			this.pdb.verify();
 			
 			System.out.println("... Solution successfully applied\n");
