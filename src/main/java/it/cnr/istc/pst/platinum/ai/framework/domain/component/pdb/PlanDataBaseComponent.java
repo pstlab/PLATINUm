@@ -194,10 +194,11 @@ public final class PlanDataBaseComponent extends DomainComponent implements Plan
 			// clear global relations
 			globalRelations.clear();
 		}
+		
 		// clear problem
-		this.problem = null;
+		//this.problem = null;
 		// clear domain knowledge
-		this.knowledge = null;
+		//this.knowledge = null;
 	}
 	
 	/**

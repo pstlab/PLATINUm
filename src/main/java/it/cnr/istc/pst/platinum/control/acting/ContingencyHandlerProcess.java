@@ -1,5 +1,8 @@
 package it.cnr.istc.pst.platinum.control.acting;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.cnr.istc.pst.platinum.ai.deliberative.Planner;
 import it.cnr.istc.pst.platinum.ai.deliberative.PlannerBuilder;
 import it.cnr.istc.pst.platinum.ai.framework.domain.component.PlanDataBase;
@@ -14,6 +17,9 @@ import it.cnr.istc.pst.platinum.control.lang.GoalStatus;
  *
  */
 public class ContingencyHandlerProcess implements Runnable {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ContingencyHandlerProcess.class);
+
 	
 	private GoalOrientedActingAgent agent;
 	
@@ -38,7 +44,7 @@ public class ContingencyHandlerProcess implements Runnable {
 				
 				// take a goal to plan for
 				Goal goal = this.agent.waitGoal(GoalStatus.SUSPENDED);
-				System.out.println("Repairing goal\n" + goal + "\n");
+				logger.info("Repairing goal\n" + goal + "\n");
 				// try to repair the goal 
 				boolean success = this.agent.repair(goal);
 				// check executive result

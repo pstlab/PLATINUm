@@ -6,6 +6,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  * 
  * @author anacleto
@@ -13,8 +14,8 @@ import java.util.logging.Logger;
  */
 public class FrameworkLogger {
 	
-	
 	private static Logger logger; 		// the logger
+
 	
 	/**
 	 * 
