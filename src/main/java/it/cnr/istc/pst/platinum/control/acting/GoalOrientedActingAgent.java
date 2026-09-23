@@ -826,6 +826,8 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	}
 	
 	/**
+	 * Taken from ROXANNE 
+	 * 
 	 * 
 	 * @param goal
 	 * @return
@@ -833,7 +835,7 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 	 */
 	protected boolean repair(Goal goal) 
 			throws InterruptedException {
-		
+
 		synchronized (this.lock) {
 			while (!this.status.equals(ActingAgentStatus.SUSPENDED)) {
 				// wait
@@ -845,83 +847,371 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 			// send signal
 			this.lock.notifyAll();
  		}
-		
-		// repairing result
-		boolean success = true;
+
+		// check if execution continues and re-planning is actually necessary
+		boolean proceed = true;
 		// start contingency handling time
 		long now = System.currentTimeMillis();
 		try {
-			
-			// check execution failure cause
-			ExecutionFailureCause cause = goal.getFailureCause();
-			// list of decisions to keep in the plan database as initial state of plan repair
-			Map<DomainComponent, List<Decision>> keep = new HashMap<>();
-			logger.warn("{REPAIRING} {cause: " + cause.getType() + "} Prepare the executed portion of the plan to be kept in the timelines");
-		
-			
-		
-//			// check cause type
-//			if (cause.getType().equals(ExecutionFailureCauseType.NODE_DURATION_OVERFLOW)) {
-//				// check node's component
-//				DomainComponent comp = this.pdb.getComponentByName(cause.getInterruptionNode().getComponent());
-//				// check active decisions 
-//				for (Decision dec : comp.getActiveDecisions()) {
-//					// check interval
-//					if (dec.getToken().getInterval().equals(cause.getInterruptionNode().getInterval())) {
-//						// keep decision
-//						keep.add(dec);
-//						logger.warn("Keep node failed for DURATION_OVERFLOW in the initial state as executed:\n"
-//								+ "- node: " + cause.getInterruptionNode() + "\n"
-//								+ "- dec: " + dec + "\n");
-//						
-//						// stop searching
-//						break;
-//					}
-//				}
-//
-//			} else {
-//				
-//				// do not keep failed nodes into the plan
-//				logger.warn("Do not keep nodes failed for {EXECUTION_ERROR|START_OVERFLOW} and re-evaluate them when replanning:\n"
-//						+ "- node:" + cause.getInterruptionNode() + "\n"
-//						+ "- dec: " + cause.getInterruptionNode().getInterval() + "\n");
-//			}
-//			
-			
-			
-			// check failure type and prepare the supporting data structures
-			switch (cause.getType()) {
-			
-				case NODE_EXECUTION_ERROR :
-				case NODE_START_OVERFLOW :
-				case NODE_DURATION_OVERFLOW : {
-					
-					// keep the decision as active and consider it as executed
-					ExecutionNode node = cause.getInterruptionNode();
-					// get node's component
-					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
-					// get active decisions
-					List<Decision> actives = comp.getActiveDecisions();
-					for (Decision dec : actives) {
-						// check temporal intervals
-						if (node.getInterval().equals(dec.getToken().getInterval())) {
-							// keep the decision as active
-							if (!keep.containsKey(dec.getComponent())) {
-								keep.put(dec.getComponent(), new ArrayList<>());
-							}
-							
-							keep.get(dec.getComponent()).add(dec);
-							logger.warn("Keep node failed for DURATION_OVERFLOW in the initial state as executed:\n- node: " + node + "\n- dec: " + dec);
+
+			// repair plan data
+			logger.info("Clearing plan structure before re-planning");
+
+			// list of kept decisions 
+			List<Decision> kept = new ArrayList<>();
+			// clear domain components
+			for (DomainComponent comp : this.pdb.getComponents()) {
+
+				// clear component 
+				logger.info("Clearing component \"" + comp.getName() + "\"");
+				// list of pending decisions
+				List<Decision> pendings = comp.getPendingDecisions();
+				for (Decision pending : pendings) {
+
+					// completely remove decision and related relations
+					logger.info("\tClearing PENDING component decision \"" + pending + "\" ...");
+					comp.deactivate(pending);
+					comp.free(pending);
+				}
+
+				// get execution trace 
+				List<ExecutionNode> trace = goal.getExecutionTraceByComponentName(comp.getName());
+				// remove active decisions that have not been executed
+				logger.info("Check ACTIVE decisions of the component");
+				// list of active decisions
+				List<Decision> actives = comp.getActiveDecisions();
+				for (Decision active : actives) {
+
+					boolean executed = false;
+					for (ExecutionNode node : trace) {
+						// check if the temporal interval has been executed
+						if (node.getInterval().equals(active.getToken().getInterval())) {
+							executed = true;
 							break;
 						}
 					}
+
+					// check flag
+					if (executed) {
+
+						// keep the decision as active
+						logger.info("\tKeep ACTIVE decision \"" + active + "\" since completely executed ... ");
+						kept.add(active);
+					} else {
+
+						// clear and remove decision and related relations
+						logger.info("\tClear ACTIVE decision \"" + active + "\" and related relations since not executed yet");
+						comp.deactivate(active);
+						comp.free(active);
+					}
+				}
+			}
+
+
+			// check execution failure cause
+			ExecutionFailureCause cause = goal.getFailureCause();
+			logger.info("Check cause of execution failure");
+			// check type
+			switch (cause.getType()) {
+				case NODE_DURATION_OVERFLOW: {
+
+					// keep the decision as active and consider it as executed
+					logger.info("Handle DURATION OVERFLOW failure ...");
+					ExecutionNode node = cause.getInterruptionNode();
+					// find the related decision
+					for (DomainComponent comp : this.pdb.getComponents()) {
+						// get active decisions
+						List<Decision> actives = comp.getActiveDecisions();
+						for (Decision active : actives) {
+							// check temporal intervals
+							if (node.getInterval().equals(active.getToken().getInterval())) {
+								// keep the decision as active 
+								logger.debug("\tKeep active decision \"" + active + "\"");
+								kept.add(active);
+							}
+						}
+					}
+
+					// proceed with execution
+					proceed = true;
 				}
 				break;
+
+				case NODE_START_OVERFLOW: {
+
+					// remove decisions that would be re-planned
+					logger.info("Handle START OVERFLOW or TOKEN EXECUTION ERROR failures ...\n");
+					ExecutionNode node = cause.getInterruptionNode();
+					// find the related decision
+					for (DomainComponent comp : this.pdb.getComponents()) {
+						// get active decisions
+						List<Decision> actives = comp.getActiveDecisions();
+						for (Decision active : actives) {
+							// check temporal intervals
+							if (node.getInterval().equals(active.getToken().getInterval())) {
+								// keep the decision as active 
+								logger.debug("\tClear ACTIVE decision \"" + active + "\"");
+								comp.deactivate(active);
+								comp.free(active);
+							}
+						}
+					}
+
+					// proceed with execution
+					proceed = true;
+				}
+				break;
+
+				case NODE_EXECUTION_ERROR: {
+
+					// remove decisions that would be re-planned
+					logger.info("Handle NODE EXECUTION ERROR failure ...");
+					ExecutionNode node = cause.getInterruptionNode();
+					// find the related decision
+					for (DomainComponent comp : this.pdb.getComponents()) {
+						// check active decisions
+						for (Decision active : comp.getActiveDecisions()) {
+							// check temporal intervals
+							if (node.getInterval().equals(active.getToken().getInterval())) {
+								// keep the decision as active
+								logger.debug("\tClear (failed) active decision \"" + active + "\"");
+								comp.deactivate(active);
+							}
+						}
+					}
+
+					// stop execution
+					proceed = false;
+					// clear platform
+					this.proxy.clearDispatchedIndex();
+
+					// protect access to the queue
+					synchronized (this.queue) {
+
+						// set goal status
+						goal.setStatus(GoalStatus.BUFFERED);
+						goal.setExecutionTick(0);
+
+						// add a goal to the queue
+						this.queue.get(goal.getStatus()).add(goal);
+						// send signal
+						this.queue.notifyAll();
+					}
+				}
+				break;
+
+				default:
+					throw new RuntimeException("Unknown Execution Failure Cause \"" + cause.getType() + "\"");
+			}
+
+			// check proceed flag
+			if (proceed) {
+
+				// get task description
+				AgentTaskDescription task = goal.getTaskDescription();
+				// set planning goals
+				for (TokenDescription g : task.getGoals()) {
+
+					// get domain component
+					DomainComponent component = this.pdb.getComponentByName(g.getComponent());
+					// get goal referred value
+					ComponentValue value = component.getValueByName(g.getValue());
+					// check start time bound
+					long[] start = g.getStart();
+					if (start == null) {
+						start = new long[]{
+								this.pdb.getOrigin(),
+								this.pdb.getHorizon()
+						};
+					}
+
+					// check end time bound
+					long[] end = g.getEnd();
+					if (end == null) {
+						end = new long[]{
+								this.pdb.getOrigin(),
+								this.pdb.getHorizon()
+						};
+					}
+
+					// check duration bound
+					long[] duration = g.getDuration();
+					if (duration == null) {
+						duration = new long[]{
+								value.getDurationLowerBound(),
+								value.getDurationUpperBound()
+						};
+					}
+
+					// check labels
+					String[] labels = g.getLabels();
+					if (labels == null) {
+						labels = new String[]{};
+					}
+
+
+					// TODO : check parameter relations
+
+					// create goal decision
+					Decision decision = component.create(
+							value,
+							labels,
+							start,
+							end,
+							duration,
+							ExecutionNodeStatus.IN_EXECUTION);
+
+					// add decision to goal list
+					logger.info("Start re-planning for goal : [" + decision.getId() + "]:" + decision.getComponent().getName() + "." + decision.getValue().getLabel() + " "
+							+ "AT [" + decision.getStart()[0] + ", " + decision.getStart()[1] + "] "
+							+ "[" + decision.getEnd()[0] + ", " + decision.getEnd()[1] + "] "
+							+ "[" + decision.getDuration()[0] + ", " + decision.getDuration()[1] + "]");
+				}
+
+
+				// deliberate on the current status of the plan database
+				SolutionPlan plan = this.contingencyHandler.doHandle(this.pClass, this.pdb);
+				// set repaired plan
+				goal.setPlan(plan);
+				// set goal as repaired
+				goal.setRepaired(true);
+				// set the tick the execution will start
+				goal.setExecutionTick(goal.getFailureCause().getInterruptionTick());
+				// clear execution trace
+				goal.clearExecutionTrace();
+			}
+
+		} catch (Exception ex) {
+
+			// error while repairing
+			proceed = false;
+			// error message
+			logger.error("Error while trying to repair the plan\n"
+					+ "\t- message: " + ex.getMessage() + "\n");
+			
+			// completely clear all the plan database
+			for (DomainComponent comp : this.pdb.getComponents()) {
+				// remove all pending decisions
+				List<Decision> pendings = comp.getPendingDecisions();
+				for (Decision pending : pendings) {
+					comp.deactivate(pending);
+					comp.free(pending);
+					
+				}
 				
+				// remove all active decisions
+				List<Decision> actives = comp.getActiveDecisions();
+				for (Decision active : actives) {
+					comp.deactivate(active);
+					comp.free(active);
+				}
+				
+				// completely clear component
+				comp.clear();
+			}
+		}  finally {
+
+			// compute actual planning time
+			long time = System.currentTimeMillis() - now;
+			// add planning time attempt to the goal
+			goal.addContingencyHandlingAttempt(time);
+			goal.addPlanningAttempt(time);
+		}
+
+
+		synchronized (this.lock) {
+
+			// update status according to the execution results
+			if (proceed) {
+				// re-plan and proceed execution
+				this.status = ActingAgentStatus.PREPARING_EXECUTION;
+
+			} else {
+
+				// stop execution and make the agent ready to plan again
+				this.status = ActingAgentStatus.READY;
+			}
+
+			// send signal
+			this.lock.notifyAll();
+		}
+		
+		// return execution result
+		return proceed;
+	}
+	
+//	/**
+//	 * 
+//	 * @param goal
+//	 * @return
+//	 * @throws InterruptedException
+//	 */
+//	protected boolean repair(Goal goal) 
+//			throws InterruptedException {
+//		
+//		synchronized (this.lock) {
+//			while (!this.status.equals(ActingAgentStatus.SUSPENDED)) {
+//				// wait
+//				this.lock.wait();
+//			}
+//			
+//			// update status
+//			this.status = ActingAgentStatus.DELIBERATING;
+//			// send signal
+//			this.lock.notifyAll();
+// 		}
+//		
+//		// repairing result
+//		boolean success = true;
+//		// start contingency handling time
+//		long now = System.currentTimeMillis();
+//		try {
+//			
+//			// check execution failure cause
+//			ExecutionFailureCause cause = goal.getFailureCause();
+//			// list of decisions to keep in the plan database as initial state of plan repair
+//			Map<DomainComponent, List<Decision>> keep = new HashMap<>();
+//			logger.warn("{REPAIRING} {cause: " + cause.getType() + "} Prepare the executed portion of the plan to be kept in the timelines");
+//		
+//			
+//		
+////			// check cause type
+////			if (cause.getType().equals(ExecutionFailureCauseType.NODE_DURATION_OVERFLOW)) {
+////				// check node's component
+////				DomainComponent comp = this.pdb.getComponentByName(cause.getInterruptionNode().getComponent());
+////				// check active decisions 
+////				for (Decision dec : comp.getActiveDecisions()) {
+////					// check interval
+////					if (dec.getToken().getInterval().equals(cause.getInterruptionNode().getInterval())) {
+////						// keep decision
+////						keep.add(dec);
+////						logger.warn("Keep node failed for DURATION_OVERFLOW in the initial state as executed:\n"
+////								+ "- node: " + cause.getInterruptionNode() + "\n"
+////								+ "- dec: " + dec + "\n");
+////						
+////						// stop searching
+////						break;
+////					}
+////				}
+////
+////			} else {
+////				
+////				// do not keep failed nodes into the plan
+////				logger.warn("Do not keep nodes failed for {EXECUTION_ERROR|START_OVERFLOW} and re-evaluate them when replanning:\n"
+////						+ "- node:" + cause.getInterruptionNode() + "\n"
+////						+ "- dec: " + cause.getInterruptionNode().getInterval() + "\n");
+////			}
+////			
+//			
+//			
+//			// check failure type and prepare the supporting data structures
+//			switch (cause.getType()) {
+//			
 //				case NODE_EXECUTION_ERROR :
-//				case NODE_START_OVERFLOW : {
+//				case NODE_START_OVERFLOW :
+//				case NODE_DURATION_OVERFLOW : {
 //					
-//					// remove decisions they are going to be re-planned
+//					// keep the decision as active and consider it as executed
 //					ExecutionNode node = cause.getInterruptionNode();
 //					// get node's component
 //					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
@@ -930,39 +1220,106 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 //					for (Decision dec : actives) {
 //						// check temporal intervals
 //						if (node.getInterval().equals(dec.getToken().getInterval())) {
-//							// keep the decision as active 
-//							comp.deactivate(dec);
-//							comp.free(dec);
-//							logger.warn("Do not keep nodes failed for {EXECUTION_ERROR|START_OVERFLOW} and re-evaluate them when replanning:\n- node:" + node + "\n- dec: " + dec);
+//							// keep the decision as active
+//							if (!keep.containsKey(dec.getComponent())) {
+//								keep.put(dec.getComponent(), new ArrayList<>());
+//							}
+//							
+//							keep.get(dec.getComponent()).add(dec);
+//							logger.warn("Keep node failed for DURATION_OVERFLOW in the initial state as executed:\n- node: " + node + "\n- dec: " + dec);
 //							break;
 //						}
 //					}
 //				}
 //				break;
-				
-				case EXECUTION_INTERRUPT: {
-					// clear the whole plan database structure
-					for (DomainComponent comp : this.pdb.getComponents()) {
-						// get active decisions
-						List<Decision> actives = comp.getActiveDecisions();
-						for (Decision dec : actives) {
-							// deactivate and remove decision
-							comp.deactivate(dec);
-							comp.free(dec);
-							logger.warn("Remove all active nodes due {INTERRUPT}:\n- dec: " + dec);
-						}
-					}
-				}
-				break;
-			}
-			
-
-			// check execution trace by component
+//				
+////				case NODE_EXECUTION_ERROR :
+////				case NODE_START_OVERFLOW : {
+////					
+////					// remove decisions they are going to be re-planned
+////					ExecutionNode node = cause.getInterruptionNode();
+////					// get node's component
+////					DomainComponent comp = this.pdb.getComponentByName(node.getComponent());
+////					// get active decisions
+////					List<Decision> actives = comp.getActiveDecisions();
+////					for (Decision dec : actives) {
+////						// check temporal intervals
+////						if (node.getInterval().equals(dec.getToken().getInterval())) {
+////							// keep the decision as active 
+////							comp.deactivate(dec);
+////							comp.free(dec);
+////							logger.warn("Do not keep nodes failed for {EXECUTION_ERROR|START_OVERFLOW} and re-evaluate them when replanning:\n- node:" + node + "\n- dec: " + dec);
+////							break;
+////						}
+////					}
+////				}
+////				break;
+//				
+//				case EXECUTION_INTERRUPT: {
+//					// clear the whole plan database structure
+//					for (DomainComponent comp : this.pdb.getComponents()) {
+//						// get active decisions
+//						List<Decision> actives = comp.getActiveDecisions();
+//						for (Decision dec : actives) {
+//							// deactivate and remove decision
+//							comp.deactivate(dec);
+//							comp.free(dec);
+//							logger.warn("Remove all active nodes due {INTERRUPT}:\n- dec: " + dec);
+//						}
+//					}
+//				}
+//				break;
+//			}
+//			
+//
+//			// check execution trace by component
+////			for (DomainComponent comp : this.pdb.getComponents()) {
+////				// check execution trace
+////				logger.warn("Check execution trace of component: " + comp.getName());
+////				List<ExecutionNode> trace = goal.getExecutionTraceByComponentName(comp.getName());
+////				// check executed nodes
+////				for (ExecutionNode iTrace : trace) {
+////					if (iTrace.getStatus().equals(ExecutionNodeStatus.EXECUTED)) {
+////						
+////						// find the decision from the active ones
+////						for (Decision dec : comp.getActiveDecisions()) {
+////							// check intervals
+////							if (dec.getToken().getInterval().equals(iTrace.getInterval())) {
+////								// keep the interval into the plan
+////								if (!keep.containsKey(comp)) {
+////									keep.put(comp, new ArrayList<>());
+////								}
+////								
+////								// keep decision
+////								keep.get(comp).add(dec);
+////								logger.warn("Keep executed node into the plan:\n"
+////										+ "- node: " + cause.getInterruptionNode() + "\n"
+////										+ "- dec: " + dec + "\n");
+////								
+////								// stop searching
+////								break;
+////							}
+////						}
+////					}
+////				}
+////			}
+//			
+//			// clear domain components
 //			for (DomainComponent comp : this.pdb.getComponents()) {
-//				// check execution trace
-//				logger.warn("Check execution trace of component: " + comp.getName());
+//				
+//				logger.warn("Clear structure of component: " + comp.getName());
+//				// list of pending decisions
+//				List<Decision> pendings = comp.getPendingDecisions();
+//				for (Decision dec : pendings) {					
+//					// completely remove decision and related relations
+//					comp.deactivate(dec);
+//					comp.free(dec);
+//					logger.warn("Remove pending decision:\n- dec: " + dec);
+//				}
+//				
+//				// get execution trace 
 //				List<ExecutionNode> trace = goal.getExecutionTraceByComponentName(comp.getName());
-//				// check executed nodes
+//				logger.warn("Component execution trace:\n" + trace);
 //				for (ExecutionNode iTrace : trace) {
 //					if (iTrace.getStatus().equals(ExecutionNodeStatus.EXECUTED)) {
 //						
@@ -987,269 +1344,227 @@ public class GoalOrientedActingAgent implements PlatformObserver {
 //						}
 //					}
 //				}
+//				
+////				// remove active decisions that have not been executed
+////				List<Decision> actives = comp.getActiveDecisions();
+////				for (Decision dec : actives) {
+////					
+////					// compare decision with execution trace to check if executed
+////					for (ExecutionNode iTrace : trace) {
+////						// check if the temporal interval has been executed
+////						if (iTrace.getInterval().equals(dec.getToken().getInterval())){
+////							
+////							// node executed, keep it in the next state
+////							keep.add(dec);
+////							logger.warn("Keep active decision from the component:\n- dec: " + dec);
+////							break;
+////							
+////						} else {
+////							// not executed, deactivate and remove from the component
+////							comp.deactivate(dec);
+////							comp.free(dec);
+////							logger.warn("Remove active decision from the component:\n- dec: " + dec);
+////							break;
+////						}
+////					}
+////				}
 //			}
-			
-			// clear domain components
-			for (DomainComponent comp : this.pdb.getComponents()) {
-				
-				logger.warn("Clear structure of component: " + comp.getName());
-				// list of pending decisions
-				List<Decision> pendings = comp.getPendingDecisions();
-				for (Decision dec : pendings) {					
-					// completely remove decision and related relations
-					comp.deactivate(dec);
-					comp.free(dec);
-					logger.warn("Remove pending decision:\n- dec: " + dec);
-				}
-				
-				// get execution trace 
-				List<ExecutionNode> trace = goal.getExecutionTraceByComponentName(comp.getName());
-				logger.warn("Component execution trace:\n" + trace);
-				for (ExecutionNode iTrace : trace) {
-					if (iTrace.getStatus().equals(ExecutionNodeStatus.EXECUTED)) {
-						
-						// find the decision from the active ones
-						for (Decision dec : comp.getActiveDecisions()) {
-							// check intervals
-							if (dec.getToken().getInterval().equals(iTrace.getInterval())) {
-								// keep the interval into the plan
-								if (!keep.containsKey(comp)) {
-									keep.put(comp, new ArrayList<>());
-								}
-								
-								// keep decision
-								keep.get(comp).add(dec);
-								logger.warn("Keep executed node into the plan:\n"
-										+ "- node: " + cause.getInterruptionNode() + "\n"
-										+ "- dec: " + dec + "\n");
-								
-								// stop searching
-								break;
-							}
-						}
-					}
-				}
-				
-//				// remove active decisions that have not been executed
-//				List<Decision> actives = comp.getActiveDecisions();
-//				for (Decision dec : actives) {
+//			
+//			// prepare task description for plan repair from the original goal
+//			AgentTaskDescription task = goal.getTaskDescription();
+//			// clear task description facts
+//			task.clearFacts();
+//			// reset components' facts according to execution 
+//			for (DomainComponent comp : this.pdb.getComponents()) {
+//				// get executed decisions
+//				List<Decision> executed = keep.containsKey(comp) ? keep.get(comp) : new ArrayList<>();
+//				for (Decision dec : executed) {
+//					// create task fact
+//					task.addFactDescription(new TokenDescription(
+//							comp.getName(), 
+//							dec.getValue().getLabel(), 
+//							dec.getParameterLabels(), 
+//							new long[] {
+//									this.pdb.getOrigin(),
+//									this.pdb.getHorizon()
+//							},
+//							new long[] {
+//									dec.getToken().getInterval().getEndTime().getLowerBound(),
+//									dec.getToken().getInterval().getEndTime().getUpperBound()
+//							}, 
+//							new long[] {
+//									dec.getToken().getInterval().getDurationLowerBound(),
+//									dec.getToken().getInterval().getDurationUpperBound()
+//							}));
+//				}
+//			}
 //					
-//					// compare decision with execution trace to check if executed
-//					for (ExecutionNode iTrace : trace) {
-//						// check if the temporal interval has been executed
-//						if (iTrace.getInterval().equals(dec.getToken().getInterval())){
-//							
-//							// node executed, keep it in the next state
-//							keep.add(dec);
-//							logger.warn("Keep active decision from the component:\n- dec: " + dec);
-//							break;
-//							
-//						} else {
-//							// not executed, deactivate and remove from the component
-//							comp.deactivate(dec);
-//							comp.free(dec);
-//							logger.warn("Remove active decision from the component:\n- dec: " + dec);
-//							break;
-//						}
+//			
+//			// count goals
+//			int goalId = 0;
+//			// reset planning goals 
+//			for (TokenDescription g : task.getGoals()) {
+//				
+//				// get domain component
+//				DomainComponent component = this.pdb.getComponentByName(g.getComponent());
+//				// get goal referred value
+//				ComponentValue value = component.getValueByName(g.getValue());
+//				// check start time bound
+//				long[] start = g.getStart();
+//				if (start == null) {
+//					start = new long[] {
+//						this.pdb.getOrigin(),
+//						this.pdb.getHorizon()
+//					};
+//				}
+//				
+//				// check end time bound
+//				long[] end = g.getEnd();
+//				if (end == null) {
+//					end = new long[] {							
+//						this.pdb.getOrigin(),
+//						this.pdb.getHorizon()
+//					};
+//				}
+//				
+//				// check duration bound
+//				long[] duration = g.getDuration();
+//				if (duration == null) {
+//					duration = new long[] {
+//						value.getDurationLowerBound(),
+//						value.getDurationUpperBound()
+//					};
+//				}
+//
+//				
+//				// set parameter labels
+//				String[] labels = new String[] {};
+//				// get parameters
+//				String[] params = g.getLabels();
+//				if (params != null && params.length > 0) {
+//					// set parameter labels
+//					labels = new String[params.length];
+//					for (int i = 0; i < params.length; i++) {
+//						// create parameter label
+//						labels[i] = "?g" + goalId + "l" + i;
 //					}
 //				}
-			}
-			
-			// prepare task description for plan repair from the original goal
-			AgentTaskDescription task = goal.getTaskDescription();
-			// clear task description facts
-			task.clearFacts();
-			// reset components' facts according to execution 
-			for (DomainComponent comp : this.pdb.getComponents()) {
-				// get executed decisions
-				List<Decision> executed = keep.containsKey(comp) ? keep.get(comp) : new ArrayList<>();
-				for (Decision dec : executed) {
-					// create task fact
-					task.addFactDescription(new TokenDescription(
-							comp.getName(), 
-							dec.getValue().getLabel(), 
-							dec.getParameterLabels(), 
-							new long[] {
-									this.pdb.getOrigin(),
-									this.pdb.getHorizon()
-							},
-							new long[] {
-									dec.getToken().getInterval().getEndTime().getLowerBound(),
-									dec.getToken().getInterval().getEndTime().getUpperBound()
-							}, 
-							new long[] {
-									dec.getToken().getInterval().getDurationLowerBound(),
-									dec.getToken().getInterval().getDurationUpperBound()
-							}));
-				}
-			}
-					
-			
-			// count goals
-			int goalId = 0;
-			// reset planning goals 
-			for (TokenDescription g : task.getGoals()) {
-				
-				// get domain component
-				DomainComponent component = this.pdb.getComponentByName(g.getComponent());
-				// get goal referred value
-				ComponentValue value = component.getValueByName(g.getValue());
-				// check start time bound
-				long[] start = g.getStart();
-				if (start == null) {
-					start = new long[] {
-						this.pdb.getOrigin(),
-						this.pdb.getHorizon()
-					};
-				}
-				
-				// check end time bound
-				long[] end = g.getEnd();
-				if (end == null) {
-					end = new long[] {							
-						this.pdb.getOrigin(),
-						this.pdb.getHorizon()
-					};
-				}
-				
-				// check duration bound
-				long[] duration = g.getDuration();
-				if (duration == null) {
-					duration = new long[] {
-						value.getDurationLowerBound(),
-						value.getDurationUpperBound()
-					};
-				}
-
-				
-				// set parameter labels
-				String[] labels = new String[] {};
-				// get parameters
-				String[] params = g.getLabels();
-				if (params != null && params.length > 0) {
-					// set parameter labels
-					labels = new String[params.length];
-					for (int i = 0; i < params.length; i++) {
-						// create parameter label
-						labels[i] = "?g" + goalId + "l" + i;
-					}
-				}
-				
-				// create goal decision
-				Decision decision = component.create(
-						value, 
-						labels,
-						start,
-						end,
-						duration,
-						ExecutionNodeStatus.IN_EXECUTION);
-		
-				// do not activate goals - bind parameter labels
-				for (int i = 0; i < params.length; i++) {
-					
-					// get parameter label
-					String pLabel = labels[i];
-					// get parameter value
-					String pValue = params[i];
-					
-					// create BIND parameter relation
-					BindParameterRelation pRel = component.create(
-							RelationType.BIND_PARAMETER,
-							decision,
-							decision);		// reflexive relation
-					// set relation data
-					pRel.setReferenceParameterLabel(pLabel);
-					pRel.setValue(pValue);
-				}
-				
-				// increment goal counter
-				goalId++;
-			}
-		
-			
-			// add decision to goal list
-			logger.warn("Replanning for task:\n " + task + "\n");
-			// deliberate on the current status of the plan database
-			SolutionPlan plan = this.contingencyHandler.doHandle(
-					this.pClass, 
-					this.pdb);
-			
-			
-			// set repaired plan
-			goal.setPlan(plan);
-			// set goal as repaired
-			goal.setRepaired(true);
-			// set the tick the execution will start
-			goal.setExecutionTick(goal.getFailureCause().getInterruptionTick());
-			// clear execution trace
-			goal.clearExecutionTrace();
-			
-		} catch (NoSolutionFoundException ex) {			// failure while trying to repair the plan
-			
-			// error while repairing
-			success = false;
-			// error message
-			logger.warn("Error while trying to repair the plan\n"
-					+ "\t- message: " + ex.getMessage() + "\n");
-			
-			// completely clear all the plan database
-			for (DomainComponent comp : this.pdb.getComponents()) {
-				// remove all pending decisions
-				List<Decision> pendings = comp.getPendingDecisions();
-				for (Decision pending : pendings) {
-					comp.deactivate(pending);
-					comp.free(pending);
-					
-				}
-				
-				// remove all active decisions
-				List<Decision> actives = comp.getActiveDecisions();
-				for (Decision active : actives) {
-					comp.deactivate(active);
-					comp.free(active);
-				}
-				
-				// finally completely clear component
-				comp.clear();
-			}
-			
-			
-		} finally  {
-			
-			// compute actual planning time
-			long time = System.currentTimeMillis() - now;
-			// add planning time attempt to the goal
-			goal.addContingencyHandlingAttempt(time);
-			goal.addPlanningAttempt(time);
-		}
-		
-		
-		synchronized (this.lock) {
-			
-			// update status according to the execution results
-			if (success) {
-				
-				//this.status = ActingAgentStatus.READY;
-				// plan successfully repaired, the process will move the goal to "committed" state to resume execution
-				this.status = ActingAgentStatus.PREPARING_EXECUTION;
-				
-			} else {
-				
-				//this.status = ActingAgentStatus.FAILURE;
-				// the process will move the goal to "aborted" state 
-				this.status = ActingAgentStatus.READY;
-			}
-			
-			// send signal
-			this.lock.notifyAll();
-		}
-		
-		// return execution result
-		return success;
-	}
-	
-	
-	
+//				
+//				// create goal decision
+//				Decision decision = component.create(
+//						value, 
+//						labels,
+//						start,
+//						end,
+//						duration,
+//						ExecutionNodeStatus.IN_EXECUTION);
+//		
+//				// do not activate goals - bind parameter labels
+//				for (int i = 0; i < params.length; i++) {
+//					
+//					// get parameter label
+//					String pLabel = labels[i];
+//					// get parameter value
+//					String pValue = params[i];
+//					
+//					// create BIND parameter relation
+//					BindParameterRelation pRel = component.create(
+//							RelationType.BIND_PARAMETER,
+//							decision,
+//							decision);		// reflexive relation
+//					// set relation data
+//					pRel.setReferenceParameterLabel(pLabel);
+//					pRel.setValue(pValue);
+//				}
+//				
+//				// increment goal counter
+//				goalId++;
+//			}
+//		
+//			
+//			// add decision to goal list
+//			logger.warn("Replanning for task:\n " + task + "\n");
+//			// deliberate on the current status of the plan database
+//			SolutionPlan plan = this.contingencyHandler.doHandle(
+//					this.pClass, 
+//					this.pdb);
+//			
+//			
+//			// set repaired plan
+//			goal.setPlan(plan);
+//			// set goal as repaired
+//			goal.setRepaired(true);
+//			// set the tick the execution will start
+//			goal.setExecutionTick(goal.getFailureCause().getInterruptionTick());
+//			// clear execution trace
+//			goal.clearExecutionTrace();
+//			
+//		} catch (NoSolutionFoundException ex) {			// failure while trying to repair the plan
+//			
+//			// error while repairing
+//			success = false;
+//			// error message
+//			logger.warn("Error while trying to repair the plan\n"
+//					+ "\t- message: " + ex.getMessage() + "\n");
+//			
+//			// completely clear all the plan database
+//			for (DomainComponent comp : this.pdb.getComponents()) {
+//				// remove all pending decisions
+//				List<Decision> pendings = comp.getPendingDecisions();
+//				for (Decision pending : pendings) {
+//					comp.deactivate(pending);
+//					comp.free(pending);
+//					
+//				}
+//				
+//				// remove all active decisions
+//				List<Decision> actives = comp.getActiveDecisions();
+//				for (Decision active : actives) {
+//					comp.deactivate(active);
+//					comp.free(active);
+//				}
+//				
+//				// finally completely clear component
+//				comp.clear();
+//			}
+//			
+//			
+//		} finally  {
+//			
+//			// compute actual planning time
+//			long time = System.currentTimeMillis() - now;
+//			// add planning time attempt to the goal
+//			goal.addContingencyHandlingAttempt(time);
+//			goal.addPlanningAttempt(time);
+//		}
+//		
+//		
+//		synchronized (this.lock) {
+//			
+//			// update status according to the execution results
+//			if (success) {
+//				
+//				//this.status = ActingAgentStatus.READY;
+//				// plan successfully repaired, the process will move the goal to "committed" state to resume execution
+//				this.status = ActingAgentStatus.PREPARING_EXECUTION;
+//				
+//			} else {
+//				
+//				//this.status = ActingAgentStatus.FAILURE;
+//				// the process will move the goal to "aborted" state 
+//				this.status = ActingAgentStatus.READY;
+//			}
+//			
+//			// send signal
+//			this.lock.notifyAll();
+//		}
+//		
+//		// return execution result
+//		return success;
+//	}
+//	
+//	
+//	
 	
 	
 	/**
